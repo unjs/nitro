@@ -86,7 +86,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         // // Find all unique package names
         const pkgs = new Set<string>()
         for (const file of tracedFiles) {
-          const [, baseDir, pkgName, _importPath] = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(file)
+          const [, baseDir, pkgName] = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(file)
           pkgs.add(resolve(baseDir, pkgName, 'package.json'))
         }
 

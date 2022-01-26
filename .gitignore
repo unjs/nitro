@@ -1,0 +1,67 @@
+# Dependencies
+node_modules
+jspm_packages
+
+package-lock.json
+# */**/yarn.lock
+
+# Logs
+*.log
+
+# Temp directories
+.temp
+.tmp
+.cache
+
+# Yarn
+**/.yarn/cache
+**/.yarn/*state*
+
+# Generated dirs
+dist
+.nuxt
+.nuxt-*
+.output
+.gen
+nuxt.d.ts
+
+# Junit reports
+reports
+
+# Coverage reports
+coverage
+*.lcov
+.nyc_output
+
+# VSCode
+.vscode
+
+# Intellij idea
+*.iml
+.idea
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+.vercel_build_output
+.build-*
+.env
+.netlify

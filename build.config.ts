@@ -4,8 +4,7 @@ export default defineBuildConfig({
   declaration: true,
   entries: [
     'src/index',
-    { input: 'src/runtime/', outDir: 'dist/runtime', format: 'esm' },
-    { input: 'src/runtime/', outDir: 'dist/runtime', format: 'cjs', declaration: false }
+    { input: 'src/runtime/', outDir: 'dist/runtime', format: 'esm' }
   ],
   dependencies: [
     '@cloudflare/kv-asset-handler',

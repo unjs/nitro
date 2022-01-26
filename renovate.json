@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "@nuxtjs"
+  ],
+  "ignoreDeps": []
+}
