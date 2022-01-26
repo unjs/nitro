@@ -2,6 +2,9 @@
 node_modules
 jspm_packages
 
+# Nitro
+nitro.d.ts
+
 package-lock.json
 # */**/yarn.lock
 

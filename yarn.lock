@@ -4530,6 +4530,7 @@ __metadata:
     listhen: ^0.2.6
     mime: ^3.0.0
     mlly: ^0.4.1
+    mri: ^1.2.0
     node-fetch: ^3.2.0
     ohmyfetch: ^0.4.15
     ora: ^6.0.1

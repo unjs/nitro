@@ -93,8 +93,10 @@ export function createDevServer (nitro: Nitro) {
   // SSR Proxy
   const proxy = httpProxy.createProxy()
   const proxyHandle = promisifyHandle((req: IncomingMessage, res: ServerResponse) => {
-    proxy.web(req, res, { target: currentWorker.address }, (error: unknown) => {
-      console.error('[proxy]', error)
+    proxy.web(req, res, { target: currentWorker.address }, (error: any) => {
+      if (error.code !== 'ECONNRESET') {
+        console.error('[proxy]', error)
+      }
     })
   })
   app.use((req, res) => {

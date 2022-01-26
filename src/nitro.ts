@@ -25,6 +25,7 @@ const nitroDefaults: NitroConfig = {
     publicDir: '{{ output.dir }}/public'
   },
   storage: { mounts: {} },
+  commands: {},
   assets: {
     // inline: !config.dev,
     dirs: {}
@@ -34,7 +35,13 @@ const nitroDefaults: NitroConfig = {
   routerBase: '/',
   publicPath: '/',
   runtimeConfig: {
-    public: {},
+    public: {
+      app: {
+        baseURL: '/',
+        cdnURL: undefined,
+        buildAssetsDir: '_dist'
+      }
+    },
     private: {}
   }
 }
