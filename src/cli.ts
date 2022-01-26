@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import mri from 'mri'
 import { resolve } from 'pathe'
 import { createNitro } from './nitro'

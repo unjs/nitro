@@ -1,5 +1,6 @@
+import type { Storage } from 'unstorage'
+
 declare module '#storage' {
-  import type { Storage } from 'unstorage'
   export const storage: Storage
 }
 
@@ -13,7 +14,7 @@ declare module '#assets' {
 declare module '#config' {
   export const privateConfig: Record<string, any>
   export const publicConfig: Record<string, any>
-  const runtimeConfig: PrivateRuntimeConfig & PublicRuntimeConfig
+  const runtimeConfig: privateConfig & publicConfig
   export default runtimeConfig
 }
 
@@ -24,3 +25,5 @@ declare module '#paths' {
   export const buildAssetsURL: (...path: string[]) => string
   export const publicAssetsURL: (...path: string[]) => string
 }
+
+export default {}

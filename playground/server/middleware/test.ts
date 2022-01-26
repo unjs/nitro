@@ -1,5 +1,5 @@
 
-export default (req, res, next) => {
+export default (_req, _res, next) => {
   console.log('middleware!')
   next()
 }

@@ -110,7 +110,8 @@ function extendConfig (config: NitroConfig): NitroConfig {
 
   let _extends = config.extends
   if (typeof config.extends === 'string') {
-    _extends = PRESETS[config.extends] || tryImport(config.rootDir, config.extends) || {}
+    type Preset = NitroConfig['preset']
+    _extends = (PRESETS as Record<string, Preset>)[config.extends] || tryImport(config.rootDir, config.extends) || {}
     if (!_extends) {
       throw new Error('Cannot resolve config: ' + config.extends)
     }
