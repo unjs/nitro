@@ -119,13 +119,14 @@ async function _build (nitro: Nitro) {
   await nitro.hooks.callHook('nitro:compiled', nitro)
 
   // Show deploy and preview hints
-  const rOutDir = relative(process.cwd(), nitro.options.output.dir)
+  // TODO
+  // const rOutDir = relative(process.cwd(), nitro.options.output.dir)
   if (nitro.options.commands.preview) {
     // consola.info(`You can preview this build using \`${rewriteBuildPaths(nitroContext.commands.preview, rOutDir)}\``)
-    consola.info('You can preview this build using `nuxi preview`')
+    // consola.info('You can preview this build using `nuxi preview`')
   }
   if (nitro.options.commands.deploy) {
-    consola.info(`You can deploy this build using \`${rewriteBuildPaths(nitro.options.commands.deploy, rOutDir)}\``)
+    // consola.info(`You can deploy this build using \`${rewriteBuildPaths(nitro.options.commands.deploy, rOutDir)}\``)
   }
 
   return {

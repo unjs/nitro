@@ -54,11 +54,6 @@ if ('serviceWorker' in navigator) {
     output: {
       serverDir: '{{ output.dir }}/public/_server'
     },
-    nuxtHooks: {
-      'generate:page' (page) {
-        page.html = page.html.replace('</body>', script + '</body>')
-      }
-    },
     hooks: {
       'nitro:document' (tmpl) {
         tmpl.contents = tmpl.contents.replace('</body>', script + '</body>')

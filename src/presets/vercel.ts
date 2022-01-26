@@ -6,7 +6,7 @@ export const vercel = defineNitroPreset({
   extends: 'node',
   entry: '#nitro/entries/vercel',
   output: {
-    dir: '{{ _nuxt.rootDir }}/.vercel_build_output',
+    dir: '{{ options.rootDir }}/.vercel_build_output',
     serverDir: '{{ output.dir }}/functions/node/server',
     publicDir: '{{ output.dir }}/static'
   },

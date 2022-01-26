@@ -3,6 +3,7 @@ import archiver from 'archiver'
 import { join, resolve } from 'pathe'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../nitro'
+import type { Nitro } from '../types'
 
 // eslint-disable-next-line
 export const azure_functions = defineNitroPreset({
@@ -13,7 +14,7 @@ export const azure_functions = defineNitroPreset({
     deploy: 'az functionapp deployment source config-zip -g <resource-group> -n <app-name> --src {{ output.dir }}/deploy.zip'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: any) {
+    async 'nitro:compiled' (ctx: Nitro) {
       await writeRoutes(ctx)
     }
   }
@@ -34,7 +35,7 @@ function zipDirectory (dir: string, outfile: string): Promise<undefined> {
   })
 }
 
-async function writeRoutes ({ output: { dir, serverDir } }) {
+async function writeRoutes (nitro: Nitro) {
   const host = {
     version: '2.0',
     extensions: { http: { routePrefix: '' } }
@@ -67,7 +68,7 @@ async function writeRoutes ({ output: { dir, serverDir } }) {
     ]
   }
 
-  await writeFile(resolve(serverDir, 'function.json'), JSON.stringify(functionDefinition))
-  await writeFile(resolve(dir, 'host.json'), JSON.stringify(host))
-  await zipDirectory(dir, join(dir, 'deploy.zip'))
+  await writeFile(resolve(nitro.options.serverDir, 'function.json'), JSON.stringify(functionDefinition))
+  await writeFile(resolve(nitro.options.output.dir, 'host.json'), JSON.stringify(host))
+  await zipDirectory(nitro.options.output.dir, join(nitro.options.output.dir, 'deploy.zip'))
 }

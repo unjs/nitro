@@ -5,6 +5,7 @@ import { globby } from 'globby'
 import { readPackageJSON } from 'pkg-types'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../nitro'
+import type { Nitro } from '../types'
 
 export const firebase = defineNitroPreset({
   entry: '#nitro/entries/firebase',
@@ -19,16 +20,16 @@ export const firebase = defineNitroPreset({
   }
 })
 
-async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir, modulesDir } }: Nitro) {
-  if (!fse.existsSync(join(rootDir, 'firebase.json'))) {
+async function writeRoutes (nitro: Nitro) {
+  if (!fse.existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
-        source: relative(rootDir, serverDir)
+        source: relative(nitro.options.rootDir, nitro.options.serverDir)
       },
       hosting: [
         {
           site: '<your_project_id>',
-          public: relative(rootDir, publicDir),
+          public: relative(nitro.options.rootDir, nitro.options.publicDir),
           cleanUrls: true,
           rewrites: [
             {
@@ -39,13 +40,13 @@ async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir
         }
       ]
     }
-    await writeFile(resolve(rootDir, 'firebase.json'), JSON.stringify(firebase))
+    await writeFile(resolve(nitro.options.rootDir, 'firebase.json'), JSON.stringify(firebase))
   }
 
   const _require = createRequire(import.meta.url)
 
-  const jsons = await globby(`${serverDir}/node_modules/**/package.json`)
-  const prefixLength = `${serverDir}/node_modules/`.length
+  const jsons = await globby(`${nitro.options.serverDir}/node_modules/**/package.json`)
+  const prefixLength = `${nitro.options.serverDir}/node_modules/`.length
   const suffixLength = '/package.json'.length
   const dependencies = jsons.reduce((obj, packageJson) => {
     const dirname = packageJson.slice(prefixLength, -suffixLength)
@@ -57,19 +58,19 @@ async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir
 
   let nodeVersion = '14'
   try {
-    const currentNodeVersion = fse.readJSONSync(join(rootDir, 'package.json')).engines.node
+    const currentNodeVersion = fse.readJSONSync(join(nitro.options.rootDir, 'package.json')).engines.node
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }
   } catch { }
 
   const getPackageVersion = async (id) => {
-    const pkg = await readPackageJSON(id, { url: modulesDir })
+    const pkg = await readPackageJSON(id, { url: nitro.options.modulesDir })
     return pkg.version
   }
 
   await writeFile(
-    resolve(serverDir, 'package.json'),
+    resolve(nitro.options.serverDir, 'package.json'),
     JSON.stringify(
       {
         private: true,

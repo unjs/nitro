@@ -2,16 +2,17 @@ import { existsSync, promises as fsp } from 'fs'
 import { join } from 'pathe'
 import consola from 'consola'
 import { defineNitroPreset } from '../nitro'
+import type { Nitro } from '../types'
 
 export const netlify = defineNitroPreset({
   extends: 'lambda',
   output: {
-    dir: '{{ _nuxt.rootDir }}/.netlify/functions-internal',
-    publicDir: '{{ _nuxt.rootDir }}/dist'
+    dir: '{{ options.rootDir }}/.netlify/functions-internal',
+    publicDir: '{{ options.rootDir }}/dist'
   },
   hooks: {
-    async 'nitro:compiled' (ctx) {
-      const redirectsPath = join(ctx.output.publicDir, '_redirects')
+    async 'nitro:compiled' (nitro: Nitro) {
+      const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
       let contents = '/* /.netlify/functions/server 200'
       if (existsSync(redirectsPath)) {
         const currentRedirects = await fsp.readFile(redirectsPath, 'utf-8')
@@ -24,8 +25,8 @@ export const netlify = defineNitroPreset({
       }
       await fsp.writeFile(redirectsPath, contents)
     },
-    'nitro:rollup:before' (ctx: any) {
-      ctx.rollupConfig.output.entryFileNames = 'server.ts'
+    'nitro:rollup:before' (nitro: Nitro) {
+      nitro.options.rollupConfig.output.entryFileNames = 'server.ts'
     }
   },
   ignore: [

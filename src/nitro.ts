@@ -51,7 +51,7 @@ export function createNitro (config: NitroConfig = {}): Nitro {
   config = defu(config, nitroDefaults)
 
   // Apply preset defaults
-  config.extends = config.preset = config.extends || config.preset || process.env.NITRO_PRESET || detectTarget() || 'server'
+  config.extends = config.preset = process.env.NITRO_PRESET || config.extends || config.preset || detectTarget() || 'server'
   config = extendConfig(config)
 
   // Normalize options

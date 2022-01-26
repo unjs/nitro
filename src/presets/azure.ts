@@ -3,6 +3,7 @@ import { globby } from 'globby'
 import { join, resolve } from 'pathe'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../nitro'
+import type { Nitro } from '../types'
 
 export const azure = defineNitroPreset({
   entry: '#nitro/entries/azure',
@@ -14,13 +15,13 @@ export const azure = defineNitroPreset({
     preview: 'npx @azure/static-web-apps-cli start {{ output.publicDir }} --api-location {{ output.serverDir }}/..'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: any) {
+    async 'nitro:compiled' (ctx: Nitro) {
       await writeRoutes(ctx)
     }
   }
 })
 
-async function writeRoutes ({ output }) {
+async function writeRoutes (nitro) {
   const host = {
     version: '2.0'
   }
@@ -32,7 +33,7 @@ async function writeRoutes ({ output }) {
     }
   }
 
-  const indexPath = resolve(output.publicDir, 'index.html')
+  const indexPath = resolve(nitro.options.output.publicDir, 'index.html')
   const indexFileExists = fse.existsSync(indexPath)
   if (!indexFileExists) {
     config.routes.unshift(
@@ -48,10 +49,10 @@ async function writeRoutes ({ output }) {
   }
 
   const folderFiles = await globby([
-    join(output.publicDir, 'index.html'),
-    join(output.publicDir, '**/index.html')
+    join(nitro.options.output.publicDir, 'index.html'),
+    join(nitro.options.output.publicDir, '**/index.html')
   ])
-  const prefix = output.publicDir.length
+  const prefix = nitro.options.output.publicDir.length
   const suffix = '/index.html'.length
   folderFiles.forEach(file =>
     config.routes.unshift({
@@ -60,7 +61,7 @@ async function writeRoutes ({ output }) {
     })
   )
 
-  const otherFiles = await globby([join(output.publicDir, '**/*.html'), join(output.publicDir, '*.html')])
+  const otherFiles = await globby([join(nitro.options.output.publicDir, '**/*.html'), join(nitro.options.output.publicDir, '*.html')])
   otherFiles.forEach((file) => {
     if (file.endsWith('index.html')) {
       return
@@ -97,9 +98,9 @@ async function writeRoutes ({ output }) {
     ]
   }
 
-  await writeFile(resolve(output.serverDir, 'function.json'), JSON.stringify(functionDefinition))
-  await writeFile(resolve(output.serverDir, '../host.json'), JSON.stringify(host))
-  await writeFile(resolve(output.publicDir, 'staticwebapp.config.json'), JSON.stringify(config))
+  await writeFile(resolve(nitro.options.output.serverDir, 'function.json'), JSON.stringify(functionDefinition))
+  await writeFile(resolve(nitro.options.output.serverDir, '../host.json'), JSON.stringify(host))
+  await writeFile(resolve(nitro.options.output.publicDir, 'staticwebapp.config.json'), JSON.stringify(config))
   if (!indexFileExists) {
     await writeFile(indexPath, '')
   }
