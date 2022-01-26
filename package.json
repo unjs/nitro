@@ -73,7 +73,6 @@
     "vue-server-renderer": "^2.6.14"
   },
   "devDependencies": {
-    "@nuxt/schema": "npm:@nuxt/schema-edge@latest",
     "@nuxtjs/eslint-config-typescript": "^8.0.0",
     "@types/fs-extra": "^9.0.13",
     "@types/http-proxy": "^1.17.8",
