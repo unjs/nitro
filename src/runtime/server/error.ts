@@ -2,12 +2,12 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 const cwd = process.cwd()
 
-const hasReqHeader = (req, header, includes) => req.headers[header] && req.headers[header].toLowerCase().includes(includes)
+// const hasReqHeader = (req, header, includes) => req.headers[header] && req.headers[header].toLowerCase().includes(includes)
 
 const isDev = process.env.NODE_ENV === 'development'
 
-export function handleError (error, req: IncomingMessage, res: ServerResponse) {
-  const isJsonRequest = hasReqHeader(req, 'accept', 'application/json') || hasReqHeader(req, 'user-agent', 'curl/') || hasReqHeader(req, 'user-agent', 'httpie/')
+export function handleError (error, _req: IncomingMessage, res: ServerResponse) {
+  // const isJsonRequest = hasReqHeader(req, 'accept', 'application/json') || hasReqHeader(req, 'user-agent', 'curl/') || hasReqHeader(req, 'user-agent', 'httpie/')
 
   const stack = (error.stack || '')
     .split('\n')
