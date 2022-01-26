@@ -1,10 +1,10 @@
 import { resolve } from 'pathe'
-import { extendPreset, writeFile } from '../utils'
-import { NitroPreset, NitroContext } from '../context'
-import { node } from './node'
+import { writeFile } from '../utils'
+import { defineNitroPreset } from '../nitro'
 
-export const vercel: NitroPreset = extendPreset(node, {
-  entry: '{{ _internal.runtimeDir }}/entries/vercel',
+export const vercel = defineNitroPreset({
+  extends: 'node',
+  entry: '#nitro/entries/vercel',
   output: {
     dir: '{{ _nuxt.rootDir }}/.vercel_build_output',
     serverDir: '{{ output.dir }}/functions/node/server',
@@ -14,13 +14,13 @@ export const vercel: NitroPreset = extendPreset(node, {
     'vercel.json'
   ],
   hooks: {
-    async 'nitro:compiled' (ctx: NitroContext) {
+    async 'nitro:compiled' (ctx: any) {
       await writeRoutes(ctx)
     }
   }
 })
 
-async function writeRoutes ({ output }: NitroContext) {
+async function writeRoutes ({ output }) {
   const routes = [
     {
       src: '/sw.js',

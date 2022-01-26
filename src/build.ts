@@ -4,21 +4,19 @@ import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig } from './rollup/config'
-import { hl, prettyPath, serializeTemplate, writeFile, isDirectory, replaceAll } from './utils'
-import { NitroContext } from './context'
+import { prettyPath, writeFile, isDirectory, replaceAll } from './utils'
 import { scanMiddleware } from './server/middleware'
+import type { Nitro } from './types'
 
-export async function prepare (nitroContext: NitroContext) {
-  consola.info(`Nitro preset is ${hl(nitroContext.preset)}`)
+export async function prepare (nitro: Nitro) {
+  await cleanupDir(nitro.options.output.dir)
 
-  await cleanupDir(nitroContext.output.dir)
-
-  if (!nitroContext.output.publicDir.startsWith(nitroContext.output.dir)) {
-    await cleanupDir(nitroContext.output.publicDir)
+  if (!nitro.options.output.publicDir.startsWith(nitro.options.output.dir)) {
+    await cleanupDir(nitro.options.output.publicDir)
   }
 
-  if (!nitroContext.output.serverDir.startsWith(nitroContext.output.dir)) {
-    await cleanupDir(nitroContext.output.serverDir)
+  if (!nitro.options.output.serverDir.startsWith(nitro.options.output.dir)) {
+    await cleanupDir(nitro.options.output.serverDir)
   }
 }
 
@@ -27,51 +25,48 @@ async function cleanupDir (dir: string) {
   await fse.emptyDir(dir)
 }
 
-export async function generate (nitroContext: NitroContext) {
+export async function generate (nitro: Nitro) {
   consola.start('Generating public...')
 
-  await nitroContext._internal.hooks.callHook('nitro:generate', nitroContext)
-
-  const publicDir = nitroContext._nuxt.publicDir
-  if (await isDirectory(publicDir)) {
-    await fse.copy(publicDir, nitroContext.output.publicDir)
-  }
-
-  const clientDist = resolve(nitroContext._nuxt.buildDir, 'dist/client')
+  const clientDist = resolve(nitro.options.buildDir, 'dist/client')
   if (await isDirectory(clientDist)) {
-    const buildAssetsDir = join(nitroContext.output.publicDir, nitroContext._nuxt.buildAssetsDir)
-    await fse.copy(clientDist, buildAssetsDir)
+    await fse.copy(clientDist, join(nitro.options.output.publicDir, nitro.options.publicPath))
   }
 
-  consola.success('Generated public ' + prettyPath(nitroContext.output.publicDir))
+  const publicDir = nitro.options.publicDir
+  if (await isDirectory(publicDir)) {
+    await fse.copy(publicDir, nitro.options.output.publicDir)
+  }
+
+  consola.success('Generated public ' + prettyPath(nitro.options.output.publicDir))
 }
 
-export async function build (nitroContext: NitroContext) {
+export async function build (nitro: Nitro) {
   // Compile html template
-  const htmlSrc = resolve(nitroContext._nuxt.buildDir, `views/${{ 2: 'app', 3: 'document' }[2]}.template.html`)
-  const htmlTemplate = { src: htmlSrc, contents: '', dst: '' }
-  htmlTemplate.dst = htmlTemplate.src.replace(/.html$/, '.mjs').replace('app.template.mjs', 'document.template.mjs')
-  htmlTemplate.contents = nitroContext.vfs[htmlTemplate.src] || await fse.readFile(htmlTemplate.src, 'utf-8')
-  await nitroContext._internal.hooks.callHook('nitro:document', htmlTemplate)
-  const compiled = 'export default ' + serializeTemplate(htmlTemplate.contents)
-  await writeFile(htmlTemplate.dst, compiled)
+  // const htmlSrc = resolve(nitro.options.buildDir, `views/${{ 2: 'app', 3: 'document' }[2]}.template.html`)
+  // const htmlTemplate = { src: htmlSrc, contents: '', dst: '' }
+  // htmlTemplate.dst = htmlTemplate.src.replace(/.html$/, '.mjs').replace('app.template.mjs', 'document.template.mjs')
+  // htmlTemplate.contents = nitro.vfs[htmlTemplate.src] || await fse.readFile(htmlTemplate.src, 'utf-8')
+  // await nitro.hooks.callHook('nitro:document', htmlTemplate)
+  // const compiled = 'export default ' + serializeTemplate(htmlTemplate.contents)
+  // await writeFile(htmlTemplate.dst, compiled)
 
-  nitroContext.rollupConfig = getRollupConfig(nitroContext)
-  await nitroContext._internal.hooks.callHook('nitro:rollup:before', nitroContext)
-  return nitroContext._nuxt.dev ? _watch(nitroContext) : _build(nitroContext)
+  nitro.options.rollupConfig = getRollupConfig(nitro)
+  await nitro.hooks.callHook('nitro:rollup:before', nitro)
+  return nitro.options.dev ? _watch(nitro) : _build(nitro)
 }
 
-export async function writeTypes (nitroContext: NitroContext) {
+async function writeTypes (nitro: Nitro) {
   const routeTypes: Record<string, string[]> = {}
 
   const middleware = [
-    ...nitroContext.scannedMiddleware,
-    ...nitroContext.middleware
+    ...nitro.scannedMiddleware,
+    ...nitro.options.middleware
   ]
 
   for (const mw of middleware) {
     if (typeof mw.handle !== 'string') { continue }
-    const relativePath = relative(nitroContext._nuxt.buildDir, mw.handle).replace(/\.[a-z]+$/, '')
+    const relativePath = relative(nitro.options.buildDir, mw.handle).replace(/\.[a-z]+$/, '')
     routeTypes[mw.route] = routeTypes[mw.route] || []
     routeTypes[mw.route].push(`Awaited<ReturnType<typeof import('${relativePath}').default>>`)
   }
@@ -88,58 +83,58 @@ export async function writeTypes (nitroContext: NitroContext) {
     'export {}'
   ]
 
-  await writeFile(join(nitroContext._nuxt.buildDir, 'nitro.d.ts'), lines.join('\n'))
+  await writeFile(join(nitro.options.buildDir, 'nitro.d.ts'), lines.join('\n'))
 }
 
-async function _build (nitroContext: NitroContext) {
-  nitroContext.scannedMiddleware = await scanMiddleware(nitroContext._nuxt.serverDir)
-  await writeTypes(nitroContext)
+async function _build (nitro: Nitro) {
+  nitro.scannedMiddleware = await scanMiddleware(nitro.options.serverDir)
+  await writeTypes(nitro)
 
   consola.start('Building server...')
-  const build = await rollup.rollup(nitroContext.rollupConfig).catch((error) => {
+  const build = await rollup.rollup(nitro.options.rollupConfig).catch((error) => {
     consola.error('Rollup error: ' + error.message)
     throw error
   })
 
   consola.start('Writing server bundle...')
-  await build.write(nitroContext.rollupConfig.output)
+  await build.write(nitro.options.rollupConfig.output)
 
   const rewriteBuildPaths = (input: unknown, to: string) =>
-    typeof input === 'string' ? replaceAll(input, nitroContext.output.dir, to) : undefined
+    typeof input === 'string' ? replaceAll(input, nitro.options.output.dir, to) : undefined
 
   // Write build info
-  const nitroConfigPath = resolve(nitroContext.output.dir, 'nitro.json')
+  const nitroConfigPath = resolve(nitro.options.output.dir, 'nitro.json')
   const buildInfo = {
     date: new Date(),
-    preset: nitroContext.preset,
+    // preset: nitro.options.preset,
     commands: {
-      preview: rewriteBuildPaths(nitroContext.commands.preview, '.'),
-      deploy: rewriteBuildPaths(nitroContext.commands.deploy, '.')
+      preview: rewriteBuildPaths(nitro.options.commands.preview, '.'),
+      deploy: rewriteBuildPaths(nitro.options.commands.deploy, '.')
     }
   }
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2))
 
   consola.success('Server built')
-  await printFSTree(nitroContext.output.serverDir)
-  await nitroContext._internal.hooks.callHook('nitro:compiled', nitroContext)
+  await printFSTree(nitro.options.output.serverDir)
+  await nitro.hooks.callHook('nitro:compiled', nitro)
 
   // Show deploy and preview hints
-  const rOutDir = relative(process.cwd(), nitroContext.output.dir)
-  if (nitroContext.commands.preview) {
+  const rOutDir = relative(process.cwd(), nitro.options.output.dir)
+  if (nitro.options.commands.preview) {
     // consola.info(`You can preview this build using \`${rewriteBuildPaths(nitroContext.commands.preview, rOutDir)}\``)
     consola.info('You can preview this build using `nuxi preview`')
   }
-  if (nitroContext.commands.deploy) {
-    consola.info(`You can deploy this build using \`${rewriteBuildPaths(nitroContext.commands.deploy, rOutDir)}\``)
+  if (nitro.options.commands.deploy) {
+    consola.info(`You can deploy this build using \`${rewriteBuildPaths(nitro.options.commands.deploy, rOutDir)}\``)
   }
 
   return {
-    entry: resolve(nitroContext.rollupConfig.output.dir, nitroContext.rollupConfig.output.entryFileNames as string)
+    entry: resolve(nitro.options.rollupConfig.output.dir, nitro.options.rollupConfig.output.entryFileNames as string)
   }
 }
 
-function startRollupWatcher (nitroContext: NitroContext) {
-  const watcher = rollup.watch(nitroContext.rollupConfig)
+function startRollupWatcher (nitro: Nitro) {
+  const watcher = rollup.watch(nitro.options.rollupConfig)
   let start: number
 
   watcher.on('event', (event) => {
@@ -155,31 +150,31 @@ function startRollupWatcher (nitroContext: NitroContext) {
 
       // Finished building all bundles
       case 'END':
-        nitroContext._internal.hooks.callHook('nitro:compiled', nitroContext)
+        nitro.hooks.callHook('nitro:compiled', nitro)
         consola.success('Nitro built', start ? `in ${Date.now() - start} ms` : '')
         return
 
       // Encountered an error while bundling
       case 'ERROR':
         consola.error('Rollup error: ' + event.error)
-        // consola.error(event.error)
+      // consola.error(event.error)
     }
   })
   return watcher
 }
 
-async function _watch (nitroContext: NitroContext) {
-  let watcher = startRollupWatcher(nitroContext)
+async function _watch (nitro: Nitro) {
+  let watcher = startRollupWatcher(nitro)
 
-  nitroContext.scannedMiddleware = await scanMiddleware(nitroContext._nuxt.serverDir,
+  nitro.scannedMiddleware = await scanMiddleware(nitro.options.serverDir,
     (middleware, event) => {
-      nitroContext.scannedMiddleware = middleware
+      nitro.scannedMiddleware = middleware
       if (['add', 'addDir'].includes(event)) {
         watcher.close()
-        writeTypes(nitroContext).catch(console.error)
-        watcher = startRollupWatcher(nitroContext)
+        writeTypes(nitro).catch(console.error)
+        watcher = startRollupWatcher(nitro)
       }
     }
   )
-  await writeTypes(nitroContext)
+  await writeTypes(nitro)
 }

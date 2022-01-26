@@ -1,17 +1,16 @@
 import { existsSync, promises as fsp } from 'fs'
 import { join } from 'pathe'
 import consola from 'consola'
-import { extendPreset } from '../utils'
-import { NitroContext, NitroPreset } from '../context'
-import { lambda } from './lambda'
+import { defineNitroPreset } from '../nitro'
 
-export const netlify: NitroPreset = extendPreset(lambda, {
+export const netlify = defineNitroPreset({
+  extends: 'lambda',
   output: {
     dir: '{{ _nuxt.rootDir }}/.netlify/functions-internal',
     publicDir: '{{ _nuxt.rootDir }}/dist'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: NitroContext) {
+    async 'nitro:compiled' (ctx) {
       const redirectsPath = join(ctx.output.publicDir, '_redirects')
       let contents = '/* /.netlify/functions/server 200'
       if (existsSync(redirectsPath)) {
@@ -25,7 +24,7 @@ export const netlify: NitroPreset = extendPreset(lambda, {
       }
       await fsp.writeFile(redirectsPath, contents)
     },
-    'nitro:rollup:before' (ctx: NitroContext) {
+    'nitro:rollup:before' (ctx: any) {
       ctx.rollupConfig.output.entryFileNames = 'server.ts'
     }
   },
@@ -36,6 +35,7 @@ export const netlify: NitroPreset = extendPreset(lambda, {
 })
 
 // eslint-disable-next-line
-export const netlify_builder: NitroPreset = extendPreset(netlify, {
-  entry: '{{ _internal.runtimeDir }}/entries/netlify_builder'
+export const netlify_builder = defineNitroPreset({
+  extends: netlify,
+  entry: '#nitro/entries/netlify_builder'
 })

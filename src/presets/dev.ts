@@ -1,9 +1,8 @@
-import { extendPreset } from '../utils'
-import { NitroPreset } from '../context'
-import { node } from './node'
+import { defineNitroPreset } from '../nitro'
 
-export const dev: NitroPreset = extendPreset(node, {
-  entry: '{{ _internal.runtimeDir }}/entries/dev',
+export const dev = defineNitroPreset({
+  extends: 'node',
+  entry: '#nitro/entries/dev',
   output: {
     serverDir: '{{ _nuxt.buildDir }}/nitro'
   },

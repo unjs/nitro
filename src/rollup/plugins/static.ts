@@ -5,17 +5,18 @@ import { relative, resolve } from 'pathe'
 import virtual from '@rollup/plugin-virtual'
 import { globbySync } from 'globby'
 import type { Plugin } from 'rollup'
-import type { NitroContext } from '../../context'
+import type { Nitro } from '../../types'
 
-export function staticAssets (context: NitroContext) {
+export function staticAssets (nitro: Nitro) {
   const assets: Record<string, { type: string, etag: string, mtime: string, path: string }> = {}
 
-  const files = globbySync('**/*.*', { cwd: context.output.publicDir, absolute: false })
+  const files = globbySync('**/*.*', { cwd: nitro.options.output.publicDir, absolute: false })
 
   for (const id of files) {
+    // @ts-ignore
     let type = mime.getType(id) || 'text/plain'
     if (type.startsWith('text')) { type += '; charset=utf-8' }
-    const fullPath = resolve(context.output.publicDir, id)
+    const fullPath = resolve(nitro.options.output.publicDir, id)
     const etag = createEtag(readFileSync(fullPath))
     const stat = statSync(fullPath)
 
@@ -23,7 +24,7 @@ export function staticAssets (context: NitroContext) {
       type,
       etag,
       mtime: stat.mtime.toJSON(),
-      path: relative(context.output.serverDir, fullPath)
+      path: relative(nitro.options.output.serverDir, fullPath)
     }
   }
 

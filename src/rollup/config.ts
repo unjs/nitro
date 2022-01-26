@@ -1,5 +1,5 @@
 import { pathToFileURL } from 'url'
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
@@ -14,16 +14,14 @@ import wasmPlugin from '@rollup/plugin-wasm'
 import inject from '@rollup/plugin-inject'
 import { visualizer } from 'rollup-plugin-visualizer'
 import * as unenv from 'unenv'
-import devalue from '@nuxt/devalue'
 
 import type { Preset } from 'unenv'
 import { sanitizeFilePath } from 'mlly'
-import { NitroContext } from '../context'
+import type { Nitro } from '../types'
 import { resolvePath } from '../utils'
-import { pkgDir } from '../dirs'
-
+import { runtimeDir } from '../dirs'
 import { dynamicRequire } from './plugins/dynamic-require'
-import { externals, NodeExternalsOptions } from './plugins/externals'
+import { externals } from './plugins/externals'
 import { timing } from './plugins/timing'
 // import { autoMock } from './plugins/automock'
 import { staticAssets, dirnames } from './plugins/static'
@@ -35,54 +33,54 @@ import { storage } from './plugins/storage'
 
 export type RollupConfig = InputOptions & { output: OutputOptions }
 
-export const getRollupConfig = (nitroContext: NitroContext) => {
+export const getRollupConfig = (nitro: Nitro) => {
   const extensions: string[] = ['.ts', '.mjs', '.js', '.json', '.node']
 
-  const nodePreset = nitroContext.node === false ? unenv.nodeless : unenv.node
+  const nodePreset = nitro.options.node === false ? unenv.nodeless : unenv.node
 
   const builtinPreset: Preset = {
     alias: {
       // General
       debug: 'unenv/runtime/npm/debug',
       consola: 'unenv/runtime/npm/consola',
-      // Vue 2
-      encoding: 'unenv/runtime/mock/proxy',
-      he: 'unenv/runtime/mock/proxy',
-      resolve: 'unenv/runtime/mock/proxy',
-      'source-map': 'unenv/runtime/mock/proxy',
-      'lodash.template': 'unenv/runtime/mock/proxy',
-      'serialize-javascript': 'unenv/runtime/mock/proxy',
-      // Vue 3
-      'estree-walker': 'unenv/runtime/mock/proxy',
-      '@babel/parser': 'unenv/runtime/mock/proxy',
-      '@vue/compiler-core': 'unenv/runtime/mock/proxy',
-      '@vue/compiler-dom': 'unenv/runtime/mock/proxy',
-      '@vue/compiler-ssr': 'unenv/runtime/mock/proxy',
-      ...nitroContext.alias
+      // // Vue 2
+      // encoding: 'unenv/runtime/mock/proxy',
+      // he: 'unenv/runtime/mock/proxy',
+      // resolve: 'unenv/runtime/mock/proxy',
+      // 'source-map': 'unenv/runtime/mock/proxy',
+      // 'lodash.template': 'unenv/runtime/mock/proxy',
+      // 'serialize-javascript': 'unenv/runtime/mock/proxy',
+      // // Vue 3
+      // 'estree-walker': 'unenv/runtime/mock/proxy',
+      // '@babel/parser': 'unenv/runtime/mock/proxy',
+      // '@vue/compiler-core': 'unenv/runtime/mock/proxy',
+      // '@vue/compiler-dom': 'unenv/runtime/mock/proxy',
+      // '@vue/compiler-ssr': 'unenv/runtime/mock/proxy',
+      ...nitro.options.alias
     }
   }
 
-  const env = unenv.env(nodePreset, builtinPreset, nitroContext.env)
+  const env = unenv.env(nodePreset, builtinPreset, nitro.options.unenv)
 
-  if (nitroContext.sourceMap) {
+  if (nitro.options.sourceMap) {
     env.polyfill.push('source-map-support/register.js')
   }
 
   // TODO: #590
-  const _require = createRequire(import.meta.url)
-  if (nitroContext._nuxt.majorVersion === 3) {
-    env.alias['vue/server-renderer'] = 'vue/server-renderer'
-    env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
-    env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitroContext._nuxt.dev ? '' : '.prod'}.js`)
-  }
+  // const _require = createRequire(import.meta.url)
+  // if (nitro.options.majorVersion === 3) {
+  //   env.alias['vue/server-renderer'] = 'vue/server-renderer'
+  //   env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
+  //   env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitro.options.dev ? '' : '.prod'}.js`)
+  // }
 
-  const buildServerDir = join(nitroContext._nuxt.buildDir, 'dist/server')
-  const runtimeAppDir = join(nitroContext._internal.runtimeDir, 'app')
+  const buildServerDir = join(nitro.options.buildDir, 'dist/server')
+  const runtimeAppDir = join(runtimeDir, 'app')
 
   const rollupConfig: RollupConfig = {
-    input: resolvePath(nitroContext, nitroContext.entry),
+    input: resolvePath(nitro, nitro.options.entry),
     output: {
-      dir: nitroContext.output.serverDir,
+      dir: nitro.options.output.serverDir,
       entryFileNames: 'index.mjs',
       chunkFileNames (chunkInfo) {
         let prefix = ''
@@ -92,25 +90,25 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
           prefix = join('app', relative(buildServerDir, dirname(lastModule)))
         } else if (lastModule.startsWith(runtimeAppDir)) {
           prefix = 'app'
-        } else if (lastModule.startsWith(nitroContext._nuxt.buildDir)) {
+        } else if (lastModule.startsWith(nitro.options.buildDir)) {
           prefix = 'nuxt'
-        } else if (lastModule.startsWith(nitroContext._internal.runtimeDir)) {
+        } else if (lastModule.startsWith(runtimeDir)) {
           prefix = 'nitro'
-        } else if (nitroContext.middleware.find(m => lastModule.startsWith(m.handle as string))) {
+        } else if (nitro.options.middleware.find(m => lastModule.startsWith(m.handle as string))) {
           prefix = 'middleware'
         } else if (lastModule.includes('assets')) {
           prefix = 'assets'
         }
         return join('chunks', prefix, '[name].mjs')
       },
-      inlineDynamicImports: nitroContext.inlineDynamicImports,
+      inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: 'esm',
       exports: 'auto',
       intro: '',
       outro: '',
       preferConst: true,
       sanitizeFileName: sanitizeFilePath,
-      sourcemap: !!nitroContext.sourceMap,
+      sourcemap: nitro.options.sourceMap,
       sourcemapExcludeSources: true,
       sourcemapPathTransform (relativePath, sourcemapPath) {
         return resolve(dirname(sourcemapPath), relativePath)
@@ -124,19 +122,19 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     onwarn (warning, rollupWarn) {
       if (
         !['CIRCULAR_DEPENDENCY', 'EVAL'].includes(warning.code) &&
-       !warning.message.includes('Unsupported source map comment')
+        !warning.message.includes('Unsupported source map comment')
       ) {
         rollupWarn(warning)
       }
     },
     treeshake: {
       moduleSideEffects (id) {
-        return nitroContext.moduleSideEffects.some(match => id.startsWith(match))
+        return nitro.options.moduleSideEffects.some(match => id.startsWith(match))
       }
     }
   }
 
-  if (nitroContext.timing) {
+  if (nitro.options.timing) {
     rollupConfig.plugins.push(timing())
   }
 
@@ -144,41 +142,43 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   rollupConfig.plugins.push(raw())
 
   // WASM import support
-  if (nitroContext.experiments.wasm) {
+  if (nitro.options.experiments.wasm) {
     rollupConfig.plugins.push(wasmPlugin())
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
   rollupConfig.plugins.push(replace({
-    sourceMap: !!nitroContext.sourceMap,
+    // @ts-ignore https://github.com/rollup/plugins/pull/810
     preventAssignment: true,
     values: {
-      'process.env.NODE_ENV': nitroContext._nuxt.dev ? '"development"' : '"production"',
+      'process.env.NODE_ENV': nitro.options.dev ? '"development"' : '"production"',
       'typeof window': '"undefined"',
       'global.': 'globalThis.',
       'process.server': 'true',
       'process.client': 'false',
-      'process.env.NUXT_NO_SSR': JSON.stringify(!nitroContext._nuxt.ssr),
-      'process.env.NUXT_STATIC_BASE': JSON.stringify(nitroContext._nuxt.staticAssets.base),
-      'process.env.NUXT_STATIC_VERSION': JSON.stringify(nitroContext._nuxt.staticAssets.version),
-      'process.env.NUXT_FULL_STATIC': nitroContext._nuxt.fullStatic as unknown as string,
-      'process.env.NITRO_PRESET': JSON.stringify(nitroContext.preset),
-      'process.env.RUNTIME_CONFIG': devalue(nitroContext._nuxt.runtimeConfig),
-      'process.env.DEBUG': JSON.stringify(nitroContext._nuxt.dev)
+      // 'process.env.NUXT_NO_SSR': JSON.stringify(!nitro.options.ssr),
+      'process.env.ROUTER_BASE': JSON.stringify(nitro.options.routerBase),
+      'process.env.PUBLIC_PATH': JSON.stringify(nitro.options.publicPath),
+      // 'process.env.NUXT_STATIC_BASE': JSON.stringify(nitro.options.staticAssets.base),
+      // 'process.env.NUXT_STATIC_VERSION': JSON.stringify(nitro.options.staticAssets.version),
+      // 'process.env.NUXT_FULL_STATIC': nitro.options.fullStatic as unknown as string,
+      // 'process.env.NITRO_PRESET': JSON.stringify(nitro.options.preset),
+      'process.env.RUNTIME_CONFIG': JSON.stringify(nitro.options.runtimeConfig),
+      'process.env.DEBUG': JSON.stringify(nitro.options.dev)
     }
   }))
 
   // ESBuild
   rollupConfig.plugins.push(esbuild({
     target: 'es2019',
-    sourceMap: !!nitroContext.sourceMap,
-    ...nitroContext.esbuild?.options
+    sourceMap: true,
+    ...nitro.options.esbuild?.options
   }))
 
   // Dynamic Require Support
   rollupConfig.plugins.push(dynamicRequire({
-    dir: resolve(nitroContext._nuxt.buildDir, 'dist/server'),
-    inline: nitroContext.node === false || nitroContext.inlineDynamicImports,
+    dir: resolve(nitro.options.buildDir, 'dist/server'),
+    inline: nitro.options.node === false || nitro.options.inlineDynamicImports,
     ignore: [
       'client.manifest.mjs',
       'server.js',
@@ -189,25 +189,25 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   }))
 
   // Assets
-  rollupConfig.plugins.push(assets(nitroContext.assets))
+  rollupConfig.plugins.push(assets(nitro.options.assets))
 
   // Static
   // TODO: use assets plugin
-  if (nitroContext.serveStatic) {
+  if (nitro.options.serveStatic) {
     rollupConfig.plugins.push(dirnames())
-    rollupConfig.plugins.push(staticAssets(nitroContext))
+    rollupConfig.plugins.push(staticAssets(nitro))
   }
 
   // Storage
-  rollupConfig.plugins.push(storage(nitroContext.storage))
+  rollupConfig.plugins.push(storage(nitro.options.storage))
 
   // Middleware
   rollupConfig.plugins.push(middleware(() => {
     const _middleware = [
-      ...nitroContext.scannedMiddleware,
-      ...nitroContext.middleware
+      ...nitro.scannedMiddleware,
+      ...nitro.options.middleware
     ]
-    if (nitroContext.serveStatic) {
+    if (nitro.options.serveStatic) {
       _middleware.unshift({ route: '/', handle: '#nitro/server/static' })
     }
     return _middleware
@@ -219,41 +219,33 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   }))
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
-  const renderer = nitroContext.renderer || (nitroContext._nuxt.majorVersion === 3 ? 'vue3' : 'vue2')
-  const vue2ServerRenderer = 'vue-server-renderer/' + (nitroContext._nuxt.dev ? 'build.dev.js' : 'build.prod.js')
+  // const renderer = nitro.options.renderer || (nitro.options.majorVersion === 3 ? 'vue3' : 'vue2')
+  // const vue2ServerRenderer = 'vue-server-renderer/' + (nitro.options.dev ? 'build.dev.js' : 'build.prod.js')
   rollupConfig.plugins.push(alias({
     entries: {
-      '#nitro': nitroContext._internal.runtimeDir,
-      '#nitro-renderer': resolve(nitroContext._internal.runtimeDir, 'app', renderer),
-      '#paths': resolve(nitroContext._internal.runtimeDir, 'app/paths'),
-      '#config': resolve(nitroContext._internal.runtimeDir, 'app/config'),
-      '#nitro-vue-renderer': vue2ServerRenderer,
+      '#nitro': runtimeDir,
+      // '#nitro-renderer': resolve(runtimeDir, 'app', renderer),
+      '#config': resolve(runtimeDir, 'app/config'),
+      // '#nitro-vue-renderer': vue2ServerRenderer,
       // Only file and data URLs are supported by the default ESM loader on Windows (#427)
-      '#build': nitroContext._nuxt.dev && process.platform === 'win32'
-        ? pathToFileURL(nitroContext._nuxt.buildDir).href
-        : nitroContext._nuxt.buildDir,
-      '~': nitroContext._nuxt.srcDir,
-      '@/': nitroContext._nuxt.srcDir,
-      '~~': nitroContext._nuxt.rootDir,
-      '@@/': nitroContext._nuxt.rootDir,
+      '#build': nitro.options.dev && process.platform === 'win32'
+        ? pathToFileURL(nitro.options.buildDir).href
+        : nitro.options.buildDir,
+      '~': nitro.options.srcDir,
+      '@/': nitro.options.srcDir,
+      '~~': nitro.options.rootDir,
+      '@@/': nitro.options.rootDir,
       ...env.alias
     }
   }))
 
-  const moduleDirectories = [
-    resolve(nitroContext._nuxt.rootDir, 'node_modules'),
-    ...nitroContext._nuxt.modulesDir,
-    resolve(pkgDir, '../node_modules'),
-    'node_modules'
-  ]
-
   // Externals Plugin
-  if (nitroContext.externals) {
-    rollupConfig.plugins.push(externals(defu(nitroContext.externals as NodeExternalsOptions, {
-      outDir: nitroContext.output.serverDir,
-      moduleDirectories,
+  if (nitro.options.externals) {
+    rollupConfig.plugins.push(externals(defu(nitro.options.externals as any, {
+      outDir: nitro.options.output.serverDir,
+      moduleDirectories: nitro.options.modulesDir,
       external: [
-        ...(nitroContext._nuxt.dev ? [nitroContext._nuxt.buildDir] : [])
+        ...(nitro.options.dev ? [nitro.options.buildDir] : [])
       ],
       inline: [
         '#',
@@ -262,16 +254,16 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         '~~',
         '@@/',
         'virtual:',
-        nitroContext._internal.runtimeDir,
-        nitroContext._nuxt.srcDir,
-        nitroContext._nuxt.rootDir,
-        nitroContext._nuxt.serverDir,
-        ...nitroContext.middleware.map(m => m.handle).filter(i => typeof i === 'string') as string[],
-        ...(nitroContext._nuxt.dev ? [] : ['vue', '@vue/', '@nuxt/'])
+        runtimeDir,
+        nitro.options.srcDir,
+        nitro.options.rootDir,
+        nitro.options.serverDir,
+        ...nitro.options.middleware.map(m => m.handle),
+        ...(nitro.options.dev ? [] : ['vue', '@vue/', '@nuxt/'])
       ],
       traceOptions: {
         base: '/',
-        processCwd: nitroContext._nuxt.rootDir,
+        processCwd: nitro.options.rootDir,
         exportsOnly: true
       }
     })))
@@ -281,8 +273,8 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   rollupConfig.plugins.push(nodeResolve({
     extensions,
     preferBuiltins: true,
-    rootDir: nitroContext._nuxt.rootDir,
-    moduleDirectories,
+    rootDir: nitro.options.rootDir,
+    moduleDirectories: nitro.options.modulesDir,
     // 'module' is intentionally not supported because of externals
     mainFields: ['main'],
     exportConditions: [
@@ -298,7 +290,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
 
   // https://github.com/rollup/plugins/tree/master/packages/commonjs
   rollupConfig.plugins.push(commonjs({
-    sourceMap: !!nitroContext.sourceMap,
     esmExternals: id => !id.startsWith('unenv/'),
     requireReturnsDefault: 'auto'
   }))
@@ -307,16 +298,11 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   rollupConfig.plugins.push(json())
 
   // https://github.com/rollup/plugins/tree/master/packages/inject
-  rollupConfig.plugins.push(inject({
-    // TODO: https://github.com/rollup/plugins/pull/1066
-    // @ts-ignore
-    sourceMap: !!nitroContext.sourceMap,
-    ...env.inject
-  }))
+  rollupConfig.plugins.push(inject(env.inject))
 
   // https://github.com/TrySound/rollup-plugin-terser
-  // https://github.com/terser/terser#minify-nitroContext
-  if (nitroContext.minify) {
+  // https://github.com/terser/terser#minify-Nitro
+  if (nitro.options.minify) {
     rollupConfig.plugins.push(terser({
       mangle: {
         keep_fnames: true,
@@ -328,11 +314,11 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     }))
   }
 
-  if (nitroContext.analyze) {
+  if (nitro.options.analyze) {
     // https://github.com/btd/rollup-plugin-visualizer
     rollupConfig.plugins.push(visualizer({
-      ...nitroContext.analyze,
-      filename: nitroContext.analyze.filename.replace('{name}', 'nitro'),
+      ...nitro.options.analyze,
+      filename: nitro.options.analyze.filename.replace('{name}', 'nitro'),
       title: 'Nitro Server bundle stats'
     }))
   }

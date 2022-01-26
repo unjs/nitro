@@ -1,10 +1,10 @@
 import { resolve } from 'pathe'
-import { extendPreset, writeFile } from '../utils'
-import { NitroContext, NitroPreset } from '../context'
-import { worker } from './worker'
+import { writeFile } from '../utils'
+import { defineNitroPreset } from '../nitro'
 
-export const cloudflare: NitroPreset = extendPreset(worker, {
-  entry: '{{ _internal.runtimeDir }}/entries/cloudflare',
+export const cloudflare = defineNitroPreset({
+  extends: 'worker',
+  entry: '#nitro/entries/cloudflare',
   ignore: [
     'wrangler.toml'
   ],
@@ -13,7 +13,7 @@ export const cloudflare: NitroPreset = extendPreset(worker, {
     deploy: 'cd {{ output.serverDir }} && npx wrangler publish'
   },
   hooks: {
-    async 'nitro:compiled' ({ output, _nuxt }: NitroContext) {
+    async 'nitro:compiled' ({ output }: any) {
       await writeFile(resolve(output.dir, 'package.json'), JSON.stringify({ private: true, main: './server/index.mjs' }, null, 2))
       await writeFile(resolve(output.dir, 'package-lock.json'), JSON.stringify({ lockfileVersion: 1 }, null, 2))
     }

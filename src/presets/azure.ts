@@ -2,10 +2,10 @@ import fse from 'fs-extra'
 import { globby } from 'globby'
 import { join, resolve } from 'pathe'
 import { writeFile } from '../utils'
-import { NitroPreset, NitroContext } from '../context'
+import { defineNitroPreset } from '../nitro'
 
-export const azure: NitroPreset = {
-  entry: '{{ _internal.runtimeDir }}/entries/azure',
+export const azure = defineNitroPreset({
+  entry: '#nitro/entries/azure',
   externals: true,
   output: {
     serverDir: '{{ output.dir }}/server/functions'
@@ -14,13 +14,13 @@ export const azure: NitroPreset = {
     preview: 'npx @azure/static-web-apps-cli start {{ output.publicDir }} --api-location {{ output.serverDir }}/..'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: NitroContext) {
+    async 'nitro:compiled' (ctx: any) {
       await writeRoutes(ctx)
     }
   }
-}
+})
 
-async function writeRoutes ({ output }: NitroContext) {
+async function writeRoutes ({ output }) {
   const host = {
     version: '2.0'
   }

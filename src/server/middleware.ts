@@ -2,8 +2,8 @@ import { resolve, join, extname } from 'pathe'
 import { joinURL } from 'ufo'
 import { globby } from 'globby'
 import { watch } from 'chokidar'
-import { tryResolveModule, tryResolvePath } from '@nuxt/kit'
-import type { Nuxt } from '@nuxt/schema'
+// import { tryResolveModule, tryResolvePath } from '@nuxt/kit'
+// import type { Nuxt } from '@nuxt/schema'
 import type { Middleware } from 'h3'
 
 export interface ServerMiddleware {
@@ -68,33 +68,33 @@ export function scanMiddleware (serverDir: string, onChange?: (results: ServerMi
   return scan()
 }
 
-export function resolveMiddleware (nuxt: Nuxt) {
-  const middleware: ServerMiddleware[] = []
-  const legacyMiddleware: ServerMiddleware[] = []
+// export function resolveMiddleware (nuxt: Nuxt) {
+//   const middleware: ServerMiddleware[] = []
+//   const legacyMiddleware: ServerMiddleware[] = []
 
-  for (let m of nuxt.options.serverMiddleware) {
-    if (typeof m === 'string' || typeof m === 'function' /* legacy middleware */) { m = { handler: m } }
-    const route = m.path || m.route || '/'
-    const handle = m.handler || m.handle
-    if (typeof handle !== 'string' || typeof route !== 'string') {
-      legacyMiddleware.push(m)
-    } else {
-      delete m.handler
-      delete m.path
-      middleware.push({
-        ...m,
-        handle: tryResolvePath(handle, {
-          extensions: ['.ts', '.mjs', '.js', '.cjs'],
-          alias: nuxt.options.alias,
-          base: nuxt.options.srcDir
-        }) || tryResolveModule(handle, { paths: nuxt.options.modulesDir }),
-        route
-      })
-    }
-  }
+//   for (let m of nuxt.options.serverMiddleware) {
+//     if (typeof m === 'string' || typeof m === 'function' /* legacy middleware */) { m = { handler: m } }
+//     const route = m.path || m.route || '/'
+//     const handle = m.handler || m.handle
+//     if (typeof handle !== 'string' || typeof route !== 'string') {
+//       legacyMiddleware.push(m)
+//     } else {
+//       delete m.handler
+//       delete m.path
+//       middleware.push({
+//         ...m,
+//         handle: tryResolvePath(handle, {
+//           extensions: ['.ts', '.mjs', '.js', '.cjs'],
+//           alias: nuxt.options.alias,
+//           base: nuxt.options.srcDir
+//         }) || tryResolveModule(handle, { paths: nuxt.options.modulesDir }),
+//         route
+//       })
+//     }
+//   }
 
-  return {
-    middleware,
-    legacyMiddleware
-  }
-}
+//   return {
+//     middleware,
+//     legacyMiddleware
+//   }
+// }

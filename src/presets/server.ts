@@ -1,11 +1,15 @@
-import { extendPreset } from '../utils'
-import { NitroPreset } from '../context'
-import { node } from './node'
+import consola from 'consola'
+import { hl, prettyPath } from '../utils'
+import { defineNitroPreset } from '../nitro'
 
-export const server: NitroPreset = extendPreset(node, {
-  entry: '{{ _internal.runtimeDir }}/entries/server',
+export const server = defineNitroPreset({
+  extends: 'node',
+  entry: '#nitro/entries/server',
   serveStatic: true,
-  commands: {
-    preview: 'node {{ output.serverDir }}/index.mjs'
+  hooks: {
+    'nitro:compiled' (nitro) {
+      // TODO: Use commands
+      consola.success('Ready to run', hl('node ' + prettyPath(nitro.options.output.serverDir) + '/index.mjs'))
+    }
   }
 })

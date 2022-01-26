@@ -2,18 +2,16 @@ import { Worker } from 'worker_threads'
 
 import { IncomingMessage, ServerResponse } from 'http'
 import { existsSync, promises as fsp } from 'fs'
-import { loading as loadingTemplate } from '@nuxt/design'
 import chokidar, { FSWatcher } from 'chokidar'
 import debounce from 'p-debounce'
 import { promisifyHandle, createApp, Middleware, useBase } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
-import servePlaceholder from 'serve-placeholder'
+// import servePlaceholder from 'serve-placeholder'
 import serveStatic from 'serve-static'
 import { resolve } from 'pathe'
 import connect from 'connect'
-import { joinURL } from 'ufo'
-import type { NitroContext } from '../context'
+import type { Nitro } from '../types'
 import { handleVfs } from './vfs'
 
 export interface NitroWorker {
@@ -56,9 +54,9 @@ async function killWorker (worker?: NitroWorker) {
   }
 }
 
-export function createDevServer (nitroContext: NitroContext) {
+export function createDevServer (nitro: Nitro) {
   // Worker
-  const workerEntry = resolve(nitroContext.output.dir, nitroContext.output.serverDir, 'index.mjs')
+  const workerEntry = resolve(nitro.options.output.dir, nitro.options.output.serverDir, 'index.mjs')
 
   let currentWorker: NitroWorker
 
@@ -77,12 +75,11 @@ export function createDevServer (nitroContext: NitroContext) {
   const app = createApp()
 
   // _nuxt and static
-  const buildAssetsURL = joinURL(nitroContext._nuxt.baseURL, nitroContext._nuxt.buildAssetsDir)
-  app.use(buildAssetsURL, serveStatic(resolve(nitroContext._nuxt.buildDir, 'dist/client')))
-  app.use(nitroContext._nuxt.baseURL, serveStatic(resolve(nitroContext._nuxt.publicDir)))
+  app.use(nitro.options.publicPath, serveStatic(resolve(nitro.options.buildDir, 'dist/client')))
+  app.use(nitro.options.routerBase, serveStatic(resolve(nitro.options.publicDir)))
 
   // debugging endpoint to view vfs
-  app.use('/_vfs', useBase('/_vfs', handleVfs(nitroContext)))
+  app.use('/_vfs', useBase('/_vfs', handleVfs(nitro)))
 
   // Dynamic Middlwware
   const legacyMiddleware = createDynamicMiddleware()
@@ -91,7 +88,7 @@ export function createDevServer (nitroContext: NitroContext) {
   app.use(devMiddleware.middleware)
 
   // serve placeholder 404 assets instead of hitting SSR
-  app.use(buildAssetsURL, servePlaceholder())
+  // app.use(nitro.options.publicPath, servePlaceholder())
 
   // SSR Proxy
   const proxy = httpProxy.createProxy()
@@ -110,7 +107,8 @@ export function createDevServer (nitroContext: NitroContext) {
       return proxyHandle(req, res)
     } else {
       res.setHeader('Content-Type', 'text/html; charset=UTF-8')
-      res.end(loadingTemplate({}))
+      res.end('Not ready!')
+      // res.end(loadingTemplate({}))
     }
   })
 
@@ -130,8 +128,8 @@ export function createDevServer (nitroContext: NitroContext) {
     if (watcher) { return }
     const dReload = debounce(() => reload().catch(console.warn), 200, { before: true })
     watcher = chokidar.watch([
-      resolve(nitroContext.output.serverDir, pattern),
-      resolve(nitroContext._nuxt.buildDir, 'dist/server', pattern)
+      resolve(nitro.options.output.serverDir, pattern),
+      resolve(nitro.options.buildDir, 'dist/server', pattern)
     ]).on('all', event => events.includes(event) && dReload())
   }
 
@@ -144,7 +142,7 @@ export function createDevServer (nitroContext: NitroContext) {
     await Promise.all(listeners.map(l => l.close()))
     listeners = []
   }
-  nitroContext._internal.hooks.hook('close', close)
+  nitro.hooks.hook('close', close)
 
   return {
     reload,

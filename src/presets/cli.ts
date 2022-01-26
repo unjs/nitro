@@ -1,12 +1,12 @@
 import consola from 'consola'
-import { extendPreset, prettyPath } from '../utils'
-import { NitroPreset, NitroContext } from '../context'
-import { node } from './node'
+import { prettyPath } from '../utils'
+import { defineNitroPreset } from '../nitro'
 
-export const cli: NitroPreset = extendPreset(node, {
-  entry: '{{ _internal.runtimeDir }}/entries/cli',
+export const cli = defineNitroPreset({
+  extends: 'node',
+  entry: '#nitro/entries/cli',
   hooks: {
-    'nitro:compiled' ({ output }: NitroContext) {
+    'nitro:compiled' ({ output }: any) {
       consola.info('Run with `node ' + prettyPath(output.serverDir) + ' [route]`')
     }
   }

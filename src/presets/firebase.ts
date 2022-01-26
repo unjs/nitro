@@ -4,22 +4,22 @@ import fse from 'fs-extra'
 import { globby } from 'globby'
 import { readPackageJSON } from 'pkg-types'
 import { writeFile } from '../utils'
-import { NitroPreset, NitroContext } from '../context'
+import { defineNitroPreset } from '../nitro'
 
-export const firebase: NitroPreset = {
-  entry: '{{ _internal.runtimeDir }}/entries/firebase',
+export const firebase = defineNitroPreset({
+  entry: '#nitro/entries/firebase',
   externals: true,
   commands: {
     deploy: 'npx firebase deploy'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: NitroContext) {
+    async 'nitro:compiled' (ctx) {
       await writeRoutes(ctx)
     }
   }
-}
+})
 
-async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir, modulesDir } }: NitroContext) {
+async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir, modulesDir } }: Nitro) {
   if (!fse.existsSync(join(rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
@@ -61,7 +61,7 @@ async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }
-  } catch {}
+  } catch { }
 
   const getPackageVersion = async (id) => {
     const pkg = await readPackageJSON(id, { url: modulesDir })
