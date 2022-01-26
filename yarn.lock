@@ -374,13 +374,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxt/design@npm:0.1.5":
-  version: 0.1.5
-  resolution: "@nuxt/design@npm:0.1.5"
-  checksum: 1e75ba0c7e9519754d185133e1bc97d2056201b2c6ad99a9196ffb94e787a4ee9fa2a64b1dd868febece5b3370c8a50388033b65455edc939fe67bcc1f4bbe8b
-  languageName: node
-  linkType: hard
-
 "@nuxt/devalue@npm:^2.0.0":
   version: 2.0.0
   resolution: "@nuxt/devalue@npm:2.0.0"
@@ -4489,7 +4482,6 @@ __metadata:
   dependencies:
     "@cloudflare/kv-asset-handler": ^0.2.0
     "@netlify/functions": ^0.11.0
-    "@nuxt/design": 0.1.5
     "@nuxt/devalue": ^2.0.0
     "@nuxtjs/eslint-config-typescript": ^8.0.0
     "@rollup/plugin-alias": ^3.1.9
@@ -4552,6 +4544,9 @@ __metadata:
     vue: 3.2.29
     vue-bundle-renderer: ^0.3.5
     vue-server-renderer: ^2.6.14
+  bin:
+    nitro: ./dist/cli.mjs
+    nitropack: ./dist/cli.mjs
   languageName: unknown
   linkType: soft
 
