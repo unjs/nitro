@@ -1,11 +1,10 @@
-import { extendPreset } from '../utils'
-import { NitroPreset } from '../context'
-import { node } from './node'
+import { defineNitroPreset } from '../nitro'
 
-export const server: NitroPreset = extendPreset(node, {
-  entry: '{{ _internal.runtimeDir }}/entries/server',
+export const server = defineNitroPreset({
+  extends: 'node',
+  entry: '#nitro/entries/server',
   serveStatic: true,
   commands: {
-    preview: 'node {{ output.serverDir }}/index.mjs'
+    preview: 'node {{ options.output.serverDir }}/index.mjs'
   }
 })

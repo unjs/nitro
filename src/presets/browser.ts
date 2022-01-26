@@ -2,13 +2,12 @@ import { existsSync, promises as fsp } from 'fs'
 import { resolve } from 'pathe'
 import consola from 'consola'
 import { joinURL } from 'ufo'
-import { extendPreset, prettyPath } from '../utils'
-import { NitroPreset, NitroContext, NitroInput } from '../context'
-import { worker } from './worker'
+import { prettyPath } from '../utils'
+import { defineNitroPreset } from '../nitro'
 
-export const browser: NitroPreset = extendPreset(worker, (input: NitroInput) => {
-  // TODO: Join base at runtime
-  const baseURL = input._nuxt.baseURL
+export const browser = defineNitroPreset((_input) => {
+  // TODO
+  const baseURL = '/'
 
   const script = `<script>
 if ('serviceWorker' in navigator) {
@@ -49,21 +48,17 @@ if ('serviceWorker' in navigator) {
 
 </html>`
 
-  return <NitroInput> {
-    entry: '{{ _internal.runtimeDir }}/entries/service-worker',
+  return {
+    extends: 'worker',
+    entry: '#nitro/entries/service-worker',
     output: {
       serverDir: '{{ output.dir }}/public/_server'
-    },
-    nuxtHooks: {
-      'generate:page' (page) {
-        page.html = page.html.replace('</body>', script + '</body>')
-      }
     },
     hooks: {
       'nitro:document' (tmpl) {
         tmpl.contents = tmpl.contents.replace('</body>', script + '</body>')
       },
-      async 'nitro:compiled' ({ output }: NitroContext) {
+      async 'nitro:compiled' ({ output }: any) {
         await fsp.writeFile(resolve(output.publicDir, 'sw.js'), `self.importScripts('${joinURL(baseURL, '_server/index.mjs')}');`, 'utf8')
 
         // Temp fix

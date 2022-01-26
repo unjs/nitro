@@ -2,12 +2,10 @@ import { createRequire } from 'module'
 import { relative, dirname, resolve } from 'pathe'
 import fse from 'fs-extra'
 import jiti from 'jiti'
-import defu from 'defu'
-import { mergeHooks } from 'hookable'
 import consola from 'consola'
 import chalk from 'chalk'
 import { getProperty } from 'dot-prop'
-import type { NitroPreset, NitroInput } from '../context'
+import { Nitro } from '../types'
 
 export function hl (str: string) {
   return chalk.cyan(str)
@@ -51,18 +49,24 @@ export async function writeFile (file: string, contents: string, log = false) {
   }
 }
 
-export function evalTemplate (ctx, input: string | ((ctx) => string)): string {
-  if (typeof input === 'function') {
-    input = input(ctx)
+export function resolvePath (nitro: Nitro, path: string | ((nitro: Nitro) => string), resolveBase: string = ''): string {
+  if (typeof path === 'function') {
+    path = path(nitro)
   }
-  if (typeof input !== 'string') {
-    throw new TypeError('Invalid template: ' + input)
-  }
-  return compileTemplate(input)(ctx)
-}
 
-export function resolvePath (nitroContext: NitroInput, input: string | ((nitroContext: NitroInput) => string), resolveBase: string = ''): string {
-  return resolve(resolveBase, evalTemplate(nitroContext, input))
+  if (typeof path !== 'string') {
+    throw new TypeError('Invalid path: ' + path)
+  }
+
+  path = compileTemplate(path)(nitro.options)
+
+  for (const base in nitro.options.alias) {
+    if (path.startsWith(base)) {
+      path = nitro.options.alias[base] + path.substr(base.length)
+    }
+  }
+
+  return resolve(resolveBase, path)
 }
 
 export function replaceAll (input: string, from: string, to: string) {
@@ -88,20 +92,6 @@ export async function isDirectory (path: string) {
     return (await fse.stat(path)).isDirectory()
   } catch (_err) {
     return false
-  }
-}
-
-export function extendPreset (base: NitroPreset, preset: NitroPreset): NitroPreset {
-  return (config: NitroInput) => {
-    if (typeof preset === 'function') {
-      preset = preset(config)
-    }
-    if (typeof base === 'function') {
-      base = base(config)
-    }
-    return defu({
-      hooks: mergeHooks(base.hooks, preset.hooks)
-    }, preset, base)
   }
 }
 

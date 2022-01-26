@@ -1,7 +1,7 @@
 
-import { NitroPreset } from '../context'
+import { defineNitroPreset } from '../nitro'
 
-export const lambda: NitroPreset = {
-  entry: '{{ _internal.runtimeDir }}/entries/lambda',
+export const lambda = defineNitroPreset({
+  entry: '#nitro/entries/lambda',
   externals: true
-}
+})

@@ -1,18 +1,18 @@
 import { existsSync, promises as fsp } from 'fs'
 import { join } from 'pathe'
 import consola from 'consola'
-import { extendPreset } from '../utils'
-import { NitroContext, NitroPreset } from '../context'
-import { lambda } from './lambda'
+import { defineNitroPreset } from '../nitro'
+import type { Nitro } from '../types'
 
-export const netlify: NitroPreset = extendPreset(lambda, {
+export const netlify = defineNitroPreset({
+  extends: 'lambda',
   output: {
-    dir: '{{ _nuxt.rootDir }}/.netlify/functions-internal',
-    publicDir: '{{ _nuxt.rootDir }}/dist'
+    dir: '{{ options.rootDir }}/.netlify/functions-internal',
+    publicDir: '{{ options.rootDir }}/dist'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: NitroContext) {
-      const redirectsPath = join(ctx.output.publicDir, '_redirects')
+    async 'nitro:compiled' (nitro: Nitro) {
+      const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
       let contents = '/* /.netlify/functions/server 200'
       if (existsSync(redirectsPath)) {
         const currentRedirects = await fsp.readFile(redirectsPath, 'utf-8')
@@ -25,8 +25,8 @@ export const netlify: NitroPreset = extendPreset(lambda, {
       }
       await fsp.writeFile(redirectsPath, contents)
     },
-    'nitro:rollup:before' (ctx: NitroContext) {
-      ctx.rollupConfig.output.entryFileNames = 'server.ts'
+    'nitro:rollup:before' (nitro: Nitro) {
+      nitro.options.rollupConfig.output.entryFileNames = 'server.ts'
     }
   },
   ignore: [
@@ -36,6 +36,7 @@ export const netlify: NitroPreset = extendPreset(lambda, {
 })
 
 // eslint-disable-next-line
-export const netlify_builder: NitroPreset = extendPreset(netlify, {
-  entry: '{{ _internal.runtimeDir }}/entries/netlify_builder'
+export const netlify_builder = defineNitroPreset({
+  extends: netlify,
+  entry: '#nitro/entries/netlify_builder'
 })

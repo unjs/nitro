@@ -4,6 +4,7 @@ export default defineBuildConfig({
   declaration: true,
   entries: [
     'src/index',
+    'src/cli',
     { input: 'src/runtime/', outDir: 'dist/runtime', format: 'esm' }
   ],
   dependencies: [

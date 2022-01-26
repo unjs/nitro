@@ -1,24 +1,20 @@
+import type { Storage } from 'unstorage'
+
 declare module '#storage' {
-  import type { Storage } from 'unstorage'
   export const storage: Storage
 }
 
 declare module '#assets' {
   export interface AssetMeta { type?: string, etag?: string, mtime?: string }
-
-  export const assets: {
-    getKeys(): Promise<string[]>
-    hasItem(id: string): Promise<boolean>
-    getItem<T = any> (id: string): Promise<T>
-    getMeta(id: string): Promise<AssetMeta>
-  }
+  export function readAsset<T = any> (id: string): Promise<T>
+  export function statAsset (id: string): Promise<AssetMeta>
+  export function getKeys() : Promise<string[]>
 }
 
 declare module '#config' {
-  import type { PublicRuntimeConfig, PrivateRuntimeConfig } from '@nuxt/schema'
-  export const privateConfig: PrivateRuntimeConfig
-  export const publicConfig: PublicRuntimeConfig
-  const runtimeConfig: PrivateRuntimeConfig & PublicRuntimeConfig
+  export const privateConfig: Record<string, any>
+  export const publicConfig: Record<string, any>
+  const runtimeConfig: privateConfig & publicConfig
   export default runtimeConfig
 }
 
@@ -29,3 +25,5 @@ declare module '#paths' {
   export const buildAssetsURL: (...path: string[]) => string
   export const publicAssetsURL: (...path: string[]) => string
 }
+
+export default {}

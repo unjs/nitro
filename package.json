@@ -3,22 +3,31 @@
   "version": "0.0.0",
   "license": "MIT",
   "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./cli": "./dist/cli.mjs"
+  },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "nitro": "./dist/cli.mjs",
+    "nitropack": "./dist/cli.mjs"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "unbuild",
+    "dev": "yarn nitro dev playground",
+    "dev:build": "yarn nitro build playground",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
+    "nitro": "jiti ./src/cli.ts",
     "prepack": "yarn build"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.2.0",
     "@netlify/functions": "^0.11.0",
-    "@nuxt/design": "0.1.5",
     "@nuxt/devalue": "^2.0.0",
-    "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-inject": "^4.0.4",
@@ -52,6 +61,7 @@
     "listhen": "^0.2.6",
     "mime": "^3.0.0",
     "mlly": "^0.4.1",
+    "mri": "^1.2.0",
     "node-fetch": "^3.2.0",
     "ohmyfetch": "^0.4.15",
     "ora": "^6.0.1",
@@ -73,7 +83,6 @@
     "vue-server-renderer": "^2.6.14"
   },
   "devDependencies": {
-    "@nuxt/schema": "npm:@nuxt/schema-edge@latest",
     "@nuxtjs/eslint-config-typescript": "^8.0.0",
     "@types/fs-extra": "^9.0.13",
     "@types/http-proxy": "^1.17.8",

@@ -1,14 +1,13 @@
 // import ansiHTML from 'ansi-html'
 import type { IncomingMessage, ServerResponse } from 'http'
-import { error500, error404, errorDev } from '@nuxt/design'
 const cwd = process.cwd()
 
-const hasReqHeader = (req, header, includes) => req.headers[header] && req.headers[header].toLowerCase().includes(includes)
+// const hasReqHeader = (req, header, includes) => req.headers[header] && req.headers[header].toLowerCase().includes(includes)
 
 const isDev = process.env.NODE_ENV === 'development'
 
-export function handleError (error, req: IncomingMessage, res: ServerResponse) {
-  const isJsonRequest = hasReqHeader(req, 'accept', 'application/json') || hasReqHeader(req, 'user-agent', 'curl/') || hasReqHeader(req, 'user-agent', 'httpie/')
+export function handleError (error, _req: IncomingMessage, res: ServerResponse) {
+  // const isJsonRequest = hasReqHeader(req, 'accept', 'application/json') || hasReqHeader(req, 'user-agent', 'curl/') || hasReqHeader(req, 'user-agent', 'httpie/')
 
   const stack = (error.stack || '')
     .split('\n')
@@ -50,14 +49,14 @@ export function handleError (error, req: IncomingMessage, res: ServerResponse) {
   }
 
   // JSON response
-  if (isJsonRequest) {
-    res.setHeader('Content-Type', 'application/json')
-    return res.end(JSON.stringify(errorObject))
-  }
+  // if (isJsonRequest) {
+  res.setHeader('Content-Type', 'application/json')
+  return res.end(JSON.stringify(errorObject))
+  // }
 
   // HTML response
-  const errorTemplate = is404 ? error404 : (isDev ? errorDev : error500)
-  const html = errorTemplate(errorObject)
-  res.setHeader('Content-Type', 'text/html;charset=UTF-8')
-  res.end(html)
+  // const errorTemplate = is404 ? error404 : (isDev ? errorDev : error500)
+  // const html = errorTemplate(errorObject)
+  // res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+  // res.end(html)
 }
