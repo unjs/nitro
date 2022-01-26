@@ -3,7 +3,7 @@
 import mri from 'mri'
 import { resolve } from 'pathe'
 import { createNitro } from './nitro'
-import { build } from './build'
+import { build, prepare } from './build'
 import { createDevServer } from './server/dev'
 
 async function main () {
@@ -19,6 +19,7 @@ async function main () {
     })
     const server = createDevServer(nitro)
     await server.listen({})
+    await prepare(nitro)
     await build(nitro)
     await server.reload()
     return
@@ -30,6 +31,7 @@ async function main () {
       dev: false,
       preset: 'server'
     })
+    await prepare(nitro)
     await build(nitro)
     process.exit(0)
   }
