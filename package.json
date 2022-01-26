@@ -18,7 +18,6 @@
     "@netlify/functions": "^0.11.0",
     "@nuxt/design": "0.1.5",
     "@nuxt/devalue": "^2.0.0",
-    "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-inject": "^4.0.4",
