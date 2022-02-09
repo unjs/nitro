@@ -81,9 +81,7 @@
     "table": "^6.8.0",
     "ufo": "^0.7.9",
     "unenv": "^0.4.3",
-    "unstorage": "^0.3.3",
-    "vue-bundle-renderer": "^0.3.5",
-    "vue-server-renderer": "^2.6.14"
+    "unstorage": "^0.3.3"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^8.0.0",
