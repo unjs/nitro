@@ -1,6 +1,6 @@
 import { resolve } from 'pathe'
 import { writeFile } from '../utils'
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
 export const cloudflare = defineNitroPreset({

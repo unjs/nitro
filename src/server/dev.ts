@@ -60,7 +60,7 @@ export function createDevServer (nitro: Nitro) {
 
   let currentWorker: NitroWorker
 
-  async function reload () {
+  async function _reload () {
     // Create a new worker
     const newWorker = await initWorker(workerEntry)
 
@@ -70,6 +70,8 @@ export function createDevServer (nitro: Nitro) {
     // Replace new worker as current
     currentWorker = newWorker
   }
+  const reload = debounce(() => _reload().catch(console.warn), 200, { before: true })
+  nitro.hooks.hook('nitro:dev:reload', reload)
 
   // App
   const app = createApp()
@@ -110,7 +112,6 @@ export function createDevServer (nitro: Nitro) {
     } else {
       res.setHeader('Content-Type', 'text/html; charset=UTF-8')
       res.end('Not ready!')
-      // res.end(loadingTemplate({}))
     }
   })
 
@@ -123,16 +124,16 @@ export function createDevServer (nitro: Nitro) {
   }
 
   // Watch for dist and reload worker
+  // TODO: Remove support?
   const pattern = '**/*.{js,json,cjs,mjs}'
   const events = ['add', 'change']
   let watcher: FSWatcher
   function watch () {
     if (watcher) { return }
-    const dReload = debounce(() => reload().catch(console.warn), 200, { before: true })
     watcher = chokidar.watch([
       resolve(nitro.options.output.serverDir, pattern),
       resolve(nitro.options.buildDir, 'dist/server', pattern)
-    ]).on('all', event => events.includes(event) && dReload())
+    ]).on('all', event => events.includes(event) && reload())
   }
 
   // Close handler

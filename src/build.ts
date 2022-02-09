@@ -87,7 +87,7 @@ async function writeTypes (nitro: Nitro) {
 }
 
 async function _build (nitro: Nitro) {
-  nitro.scannedMiddleware = await scanMiddleware(nitro.options.serverDir)
+  nitro.scannedMiddleware = await scanMiddleware(nitro.options.srcDir)
   await writeTypes(nitro)
 
   consola.start('Building server...')
@@ -153,6 +153,7 @@ function startRollupWatcher (nitro: Nitro) {
       case 'END':
         nitro.hooks.callHook('nitro:compiled', nitro)
         consola.success('Nitro built', start ? `in ${Date.now() - start} ms` : '')
+        nitro.hooks.callHook('nitro:dev:reload')
         return
 
       // Encountered an error while bundling
@@ -166,8 +167,7 @@ function startRollupWatcher (nitro: Nitro) {
 
 async function _watch (nitro: Nitro) {
   let watcher = startRollupWatcher(nitro)
-
-  nitro.scannedMiddleware = await scanMiddleware(nitro.options.serverDir,
+  nitro.scannedMiddleware = await scanMiddleware(nitro.options.srcDir,
     (middleware, event) => {
       nitro.scannedMiddleware = middleware
       if (['add', 'addDir'].includes(event)) {

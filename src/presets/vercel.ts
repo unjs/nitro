@@ -1,6 +1,6 @@
 import { resolve } from 'pathe'
 import { writeFile } from '../utils'
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 
 export const vercel = defineNitroPreset({
   extends: 'node',

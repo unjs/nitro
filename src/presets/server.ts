@@ -1,4 +1,4 @@
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 
 export const server = defineNitroPreset({
   extends: 'node',

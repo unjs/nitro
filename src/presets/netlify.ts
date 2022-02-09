@@ -1,7 +1,7 @@
 import { existsSync, promises as fsp } from 'fs'
 import { join } from 'pathe'
 import consola from 'consola'
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
 export const netlify = defineNitroPreset({

@@ -4,7 +4,7 @@ import fse from 'fs-extra'
 import { globby } from 'globby'
 import { readPackageJSON } from 'pkg-types'
 import { writeFile } from '../utils'
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
 export const firebase = defineNitroPreset({
@@ -24,7 +24,7 @@ async function writeRoutes (nitro: Nitro) {
   if (!fse.existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
-        source: relative(nitro.options.rootDir, nitro.options.serverDir)
+        source: relative(nitro.options.rootDir, nitro.options.srcDir)
       },
       hosting: [
         {
@@ -45,8 +45,8 @@ async function writeRoutes (nitro: Nitro) {
 
   const _require = createRequire(import.meta.url)
 
-  const jsons = await globby(`${nitro.options.serverDir}/node_modules/**/package.json`)
-  const prefixLength = `${nitro.options.serverDir}/node_modules/`.length
+  const jsons = await globby(`${nitro.options.srcDir}/node_modules/**/package.json`)
+  const prefixLength = `${nitro.options.srcDir}/node_modules/`.length
   const suffixLength = '/package.json'.length
   const dependencies = jsons.reduce((obj, packageJson) => {
     const dirname = packageJson.slice(prefixLength, -suffixLength)
@@ -70,7 +70,7 @@ async function writeRoutes (nitro: Nitro) {
   }
 
   await writeFile(
-    resolve(nitro.options.serverDir, 'package.json'),
+    resolve(nitro.options.srcDir, 'package.json'),
     JSON.stringify(
       {
         private: true,

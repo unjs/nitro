@@ -1,10 +1,10 @@
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 
 export const dev = defineNitroPreset({
   extends: 'node',
   entry: '#nitro/entries/dev',
   output: {
-    serverDir: '{{ options.buildDir }}/nitro'
+    serverDir: '{{ buildDir }}/nitro'
   },
   externals: { trace: false },
   inlineDynamicImports: true, // externals plugin limitation

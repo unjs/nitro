@@ -12,7 +12,7 @@ async function main () {
   const rootDir = resolve(args._[1] || '.')
 
   if (command === 'dev') {
-    const nitro = createNitro({
+    const nitro = await createNitro({
       rootDir,
       dev: true,
       preset: 'dev'
@@ -21,12 +21,11 @@ async function main () {
     await server.listen({})
     await prepare(nitro)
     await build(nitro)
-    await server.reload()
     return
   }
 
   if (command === 'build') {
-    const nitro = createNitro({
+    const nitro = await createNitro({
       rootDir,
       dev: false,
       preset: 'server'

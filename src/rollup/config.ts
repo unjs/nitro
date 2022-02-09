@@ -14,7 +14,6 @@ import wasmPlugin from '@rollup/plugin-wasm'
 import inject from '@rollup/plugin-inject'
 import { visualizer } from 'rollup-plugin-visualizer'
 import * as unenv from 'unenv'
-
 import type { Preset } from 'unenv'
 import { sanitizeFilePath } from 'mlly'
 import type { Nitro } from '../types'
@@ -258,7 +257,7 @@ export const getRollupConfig = (nitro: Nitro) => {
         runtimeDir,
         nitro.options.srcDir,
         nitro.options.rootDir,
-        nitro.options.serverDir,
+        nitro.options.srcDir,
         ...nitro.options.middleware.map(m => m.handle),
         ...(nitro.options.dev ? [] : ['vue', '@vue/', '@nuxt/'])
       ],

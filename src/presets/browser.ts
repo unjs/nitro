@@ -3,7 +3,7 @@ import { resolve } from 'pathe'
 import consola from 'consola'
 import { joinURL } from 'ufo'
 import { prettyPath } from '../utils'
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 
 export const browser = defineNitroPreset((_input) => {
   // TODO

@@ -1,4 +1,4 @@
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 
 export const node = defineNitroPreset({
   entry: '#nitro/entries/node',

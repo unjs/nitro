@@ -1,1 +1,0 @@
-export default () => 'Nitro works!'

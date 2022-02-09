@@ -20,6 +20,7 @@ export interface NitroHooks {
   'nitro:document': (htmlTemplate: { src: string, contents: string, dst: string }) => void
   'nitro:rollup:before': (nitro: Nitro) => void | Promise<void>
   'nitro:compiled': (nitro: Nitro) => void
+  'nitro:dev:reload': () => void
   'close': () => void
 }
 
@@ -39,7 +40,7 @@ export interface NitroOptions {
   buildDir: string
   generateDir: string
   publicDir: string
-  serverDir: string
+  srcDir: string
   modulesDir: string[]
   entry: string
 

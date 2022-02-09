@@ -1,6 +1,7 @@
 {
   "name": "nitropack",
   "version": "0.0.0",
+  "description": "Next Generation Web Tooling",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -20,6 +21,7 @@
     "build": "unbuild",
     "dev": "yarn nitro dev playground",
     "dev:build": "yarn nitro build playground",
+    "dev:start": "node playground/.output/server/index.mjs",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
     "nitro": "jiti ./src/cli.ts",
     "prepack": "yarn build"

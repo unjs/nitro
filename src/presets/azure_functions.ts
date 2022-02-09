@@ -2,7 +2,7 @@ import { createWriteStream } from 'fs'
 import archiver from 'archiver'
 import { join, resolve } from 'pathe'
 import { writeFile } from '../utils'
-import { defineNitroPreset } from '../nitro'
+import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
 // eslint-disable-next-line
@@ -68,7 +68,7 @@ async function writeRoutes (nitro: Nitro) {
     ]
   }
 
-  await writeFile(resolve(nitro.options.serverDir, 'function.json'), JSON.stringify(functionDefinition))
+  await writeFile(resolve(nitro.options.srcDir, 'function.json'), JSON.stringify(functionDefinition))
   await writeFile(resolve(nitro.options.output.dir, 'host.json'), JSON.stringify(host))
   await zipDirectory(nitro.options.output.dir, join(nitro.options.output.dir, 'deploy.zip'))
 }
