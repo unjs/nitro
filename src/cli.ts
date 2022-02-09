@@ -5,6 +5,7 @@ import { resolve } from 'pathe'
 import { createNitro } from './nitro'
 import { build, prepare } from './build'
 import { createDevServer } from './server/dev'
+import { copyPublicAssets } from '.'
 
 async function main () {
   const args = mri(process.argv.slice(2))
@@ -31,6 +32,7 @@ async function main () {
       preset: 'server'
     })
     await prepare(nitro)
+    await copyPublicAssets(nitro)
     await build(nitro)
     process.exit(0)
   }

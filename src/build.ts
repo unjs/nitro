@@ -25,7 +25,7 @@ async function cleanupDir (dir: string) {
   await fse.emptyDir(dir)
 }
 
-export async function generate (nitro: Nitro) {
+export async function copyPublicAssets (nitro: Nitro) {
   consola.start('Generating public...')
 
   const clientDist = resolve(nitro.options.buildDir, 'dist/client')
