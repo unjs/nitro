@@ -5,7 +5,7 @@ import { join } from 'path'
 import { mkdirSync } from 'fs'
 import { threadId, parentPort } from 'worker_threads'
 import { isWindows, provider } from 'std-env'
-import { handle } from '../server'
+import { handle } from '..'
 
 const server = new Server(handle)
 

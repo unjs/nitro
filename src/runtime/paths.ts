@@ -1,5 +1,5 @@
 import { joinURL } from 'ufo'
-import config from '#config'
+import config from '#nitro/config'
 
 export function baseURL () {
   return config.app.baseURL

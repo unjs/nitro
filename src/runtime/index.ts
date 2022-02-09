@@ -1,4 +1,4 @@
-import '../app/config'
+import './config'
 import { createApp, useBase } from 'h3'
 import { createFetch } from 'ohmyfetch'
 import destr from 'destr'

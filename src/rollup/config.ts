@@ -207,7 +207,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       ...nitro.options.middleware
     ]
     if (nitro.options.serveStatic) {
-      _middleware.unshift({ route: '/', handle: '#nitro/server/static' })
+      _middleware.unshift({ route: '/', handle: '#nitro/static' })
     }
     return _middleware
   }))
@@ -224,13 +224,13 @@ export const getRollupConfig = (nitro: Nitro) => {
     entries: {
       '#nitro': runtimeDir,
       // '#nitro-renderer': resolve(runtimeDir, 'app', renderer),
-      '#config': resolve(runtimeDir, 'app/config'),
-      '#paths': resolve(runtimeDir, 'app/paths'),
+      '#config': resolve(runtimeDir, 'config'),
+      '#paths': resolve(runtimeDir, 'paths'),
       // '#nitro-vue-renderer': vue2ServerRenderer,
       // Only file and data URLs are supported by the default ESM loader on Windows (#427)
-      '#build': nitro.options.dev && process.platform === 'win32'
-        ? pathToFileURL(nitro.options.buildDir).href
-        : nitro.options.buildDir,
+      // '#build': nitro.options.dev && process.platform === 'win32'
+      //   ? pathToFileURL(nitro.options.buildDir).href
+      //   : nitro.options.buildDir,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,

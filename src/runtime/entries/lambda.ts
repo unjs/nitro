@@ -1,6 +1,6 @@
 import '#polyfill'
 import { withQuery } from 'ufo'
-import { localCall } from '../server'
+import { localCall } from '..'
 
 export async function handler (event, context) {
   const r = await localCall({

@@ -1,4 +1,4 @@
 import '#polyfill'
-import { handle } from '../server'
+import { handle } from '..'
 
 export default handle

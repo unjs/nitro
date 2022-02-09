@@ -1,2 +1,2 @@
 import '#polyfill'
-export * from '../server'
+export * from '..'

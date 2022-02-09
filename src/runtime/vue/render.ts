@@ -1,8 +1,8 @@
 import type { ServerResponse } from 'http'
 import { createRenderer } from 'vue-bundle-renderer'
 import devalue from '@nuxt/devalue'
-import { privateConfig, publicConfig } from './config'
-import { buildAssetsURL } from './paths'
+import { privateConfig, publicConfig } from '../server/config'
+import { buildAssetsURL } from '../paths'
 // @ts-ignore
 import htmlTemplate from '#build/views/document.template.mjs'
 

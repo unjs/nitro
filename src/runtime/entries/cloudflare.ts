@@ -1,8 +1,8 @@
 import '#polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
-import { localCall } from '../server'
-import { requestHasBody, useRequestBody } from '../server/utils'
+import { localCall } from '..'
+import { requestHasBody, useRequestBody } from '../utils'
 import { buildAssetsURL, baseURL } from '#paths'
 
 addEventListener('fetch', (event: any) => {

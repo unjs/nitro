@@ -1,7 +1,7 @@
 // @ts-nocheck
 import '#polyfill'
-import { localCall } from '../server'
-import { requestHasBody, useRequestBody } from '../server/utils'
+import { localCall } from '..'
+import { requestHasBody, useRequestBody } from '../utils'
 
 const STATIC_ASSETS_BASE = process.env.NUXT_STATIC_BASE + '/' + process.env.NUXT_STATIC_VERSION
 
