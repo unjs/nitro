@@ -1,4 +1,4 @@
-import { pathToFileURL } from 'url'
+// import { pathToFileURL } from 'url'
 // import { createRequire } from 'module'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
