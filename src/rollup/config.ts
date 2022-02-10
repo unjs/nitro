@@ -66,10 +66,14 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   // TODO: #590
-  const _require = createRequire(import.meta.url)
-  env.alias['vue/server-renderer'] = 'vue/server-renderer'
-  env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
-  env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitro.options.dev ? '' : '.prod'}.js`)
+  try {
+    const _require = createRequire(import.meta.url)
+    env.alias['vue/server-renderer'] = 'vue/server-renderer'
+    env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
+    env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitro.options.dev ? '' : '.prod'}.js`)
+  } catch (_err) {
+    // Ignore when vue not installed
+  }
 
   const buildServerDir = join(nitro.options.buildDir, 'dist/server')
   const runtimeAppDir = join(runtimeDir, 'app')
