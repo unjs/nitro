@@ -1309,6 +1309,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bundle-runner@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "bundle-runner@npm:0.0.1"
+  dependencies:
+    source-map: ^0.7.3
+  checksum: 26a2f681a82e57b27e788fbce71096d9417af078c09b06d0038fade878417809732ea5a785b0e4dfbe69f2b4980f8523710fae9a59e883e2680fc92e90bfc2d3
+  languageName: node
+  linkType: hard
+
 "c12@npm:^0.1.2":
   version: 0.1.2
   resolution: "c12@npm:0.1.2"
@@ -4514,6 +4523,7 @@ __metadata:
     unenv: ^0.4.3
     unstorage: ^0.3.3
     vue: 3.2.29
+    vue-bundle-renderer: ^0.3.5
   bin:
     nitro: ./dist/cli.mjs
     nitropack: ./dist/cli.mjs
@@ -6380,6 +6390,15 @@ unbuild@latest:
     spdx-correct: ^3.0.0
     spdx-expression-parse: ^3.0.0
   checksum: 35703ac889d419cf2aceef63daeadbe4e77227c39ab6287eeb6c1b36a746b364f50ba22e88591f5d017bc54685d8137bc2d328d0a896e4d3fd22093c0f32a9ad
+  languageName: node
+  linkType: hard
+
+"vue-bundle-renderer@npm:^0.3.5":
+  version: 0.3.5
+  resolution: "vue-bundle-renderer@npm:0.3.5"
+  dependencies:
+    bundle-runner: ^0.0.1
+  checksum: 7c6814890b25d480994476b751776af852f87ae320b175b76a1913ba510caf09ff0d938c5468bccebc31a9288fb55d66bf31d044454a098a8c638a73c3580c7a
   languageName: node
   linkType: hard
 

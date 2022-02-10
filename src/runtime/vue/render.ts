@@ -1,7 +1,7 @@
 import type { ServerResponse } from 'http'
 import { createRenderer } from 'vue-bundle-renderer'
 import devalue from '@nuxt/devalue'
-import { privateConfig, publicConfig } from '../server/config'
+import { privateConfig, publicConfig } from '../config'
 import { buildAssetsURL } from '../paths'
 // @ts-ignore
 import htmlTemplate from '#build/views/document.template.mjs'
@@ -67,7 +67,7 @@ function renderToString (ssrContext) {
   return getRenderer().then(renderToString => renderToString(ssrContext))
 }
 
-export async function renderMiddleware (req, res: ServerResponse) {
+export default async function renderMiddleware (req, res: ServerResponse) {
   let url = req.url
 
   // payload.json request detection

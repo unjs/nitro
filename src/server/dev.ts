@@ -124,7 +124,7 @@ export function createDevServer (nitro: Nitro) {
   }
 
   // Watch for dist and reload worker
-  // TODO: Remove support?
+  // TODO: Remove?
   const pattern = '**/*.{js,json,cjs,mjs}'
   const events = ['add', 'change']
   let watcher: FSWatcher

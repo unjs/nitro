@@ -29,7 +29,6 @@ const NitroDefaults: NitroConfig = {
     dirs: {}
   },
   publicDir: 'public',
-  srcDir: undefined,
   routerBase: '/',
   publicPath: '/',
   runtimeConfig: {

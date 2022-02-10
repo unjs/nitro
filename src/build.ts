@@ -4,7 +4,7 @@ import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig } from './rollup/config'
-import { prettyPath, writeFile, isDirectory, replaceAll } from './utils'
+import { prettyPath, writeFile, isDirectory, replaceAll, serializeTemplate } from './utils'
 import { scanMiddleware } from './server/middleware'
 import type { Nitro } from './types'
 
@@ -43,13 +43,15 @@ export async function copyPublicAssets (nitro: Nitro) {
 
 export async function build (nitro: Nitro) {
   // Compile html template
-  // const htmlSrc = resolve(nitro.options.buildDir, `views/${{ 2: 'app', 3: 'document' }[2]}.template.html`)
-  // const htmlTemplate = { src: htmlSrc, contents: '', dst: '' }
-  // htmlTemplate.dst = htmlTemplate.src.replace(/.html$/, '.mjs').replace('app.template.mjs', 'document.template.mjs')
-  // htmlTemplate.contents = nitro.vfs[htmlTemplate.src] || await fse.readFile(htmlTemplate.src, 'utf-8')
-  // await nitro.hooks.callHook('nitro:document', htmlTemplate)
-  // const compiled = 'export default ' + serializeTemplate(htmlTemplate.contents)
-  // await writeFile(htmlTemplate.dst, compiled)
+  const htmlSrc = resolve(nitro.options.buildDir, 'views/app.template.html')
+  const htmlTemplate = { src: htmlSrc, contents: '', dst: '' }
+  htmlTemplate.dst = htmlTemplate.src.replace(/.html$/, '.mjs').replace('app.template.mjs', 'document.template.mjs')
+  htmlTemplate.contents = nitro.vfs[htmlTemplate.src] || await fse.readFile(htmlTemplate.src, 'utf-8').catch(() => '')
+  if (htmlTemplate.contents) {
+    await nitro.hooks.callHook('nitro:document', htmlTemplate)
+    const compiled = 'export default ' + serializeTemplate(htmlTemplate.contents)
+    await writeFile(htmlTemplate.dst, compiled)
+  }
 
   nitro.options.rollupConfig = getRollupConfig(nitro)
   await nitro.hooks.callHook('nitro:rollup:before', nitro)

@@ -1,4 +1,4 @@
-// import { pathToFileURL } from 'url'
+import { pathToFileURL } from 'url'
 // import { createRequire } from 'module'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
@@ -209,6 +209,9 @@ export const getRollupConfig = (nitro: Nitro) => {
     if (nitro.options.serveStatic) {
       _middleware.unshift({ route: '/', handle: '#nitro/static' })
     }
+    if (nitro.options.renderer) {
+      _middleware.push({ route: '/', handle: nitro.options.renderer })
+    }
     return _middleware
   }))
 
@@ -218,19 +221,13 @@ export const getRollupConfig = (nitro: Nitro) => {
   }))
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
-  // const renderer = nitro.options.renderer || (nitro.options.majorVersion === 3 ? 'vue3' : 'vue2')
-  // const vue2ServerRenderer = 'vue-server-renderer/' + (nitro.options.dev ? 'build.dev.js' : 'build.prod.js')
   rollupConfig.plugins.push(alias({
     entries: {
       '#nitro': runtimeDir,
-      // '#nitro-renderer': resolve(runtimeDir, 'app', renderer),
       '#config': resolve(runtimeDir, 'config'),
       '#paths': resolve(runtimeDir, 'paths'),
-      // '#nitro-vue-renderer': vue2ServerRenderer,
-      // Only file and data URLs are supported by the default ESM loader on Windows (#427)
-      // '#build': nitro.options.dev && process.platform === 'win32'
-      //   ? pathToFileURL(nitro.options.buildDir).href
-      //   : nitro.options.buildDir,
+      '#nitro-renderer': resolve(runtimeDir, 'vue/vue3'),
+      '#build': pathToFileURL(nitro.options.buildDir).href,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,
