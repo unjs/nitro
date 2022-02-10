@@ -1,5 +1,5 @@
 // import { pathToFileURL } from 'url'
-// import { createRequire } from 'module'
+import { createRequire } from 'module'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
@@ -43,18 +43,18 @@ export const getRollupConfig = (nitro: Nitro) => {
       debug: 'unenv/runtime/npm/debug',
       consola: 'unenv/runtime/npm/consola',
       // // Vue 2
-      // encoding: 'unenv/runtime/mock/proxy',
-      // he: 'unenv/runtime/mock/proxy',
-      // resolve: 'unenv/runtime/mock/proxy',
-      // 'source-map': 'unenv/runtime/mock/proxy',
-      // 'lodash.template': 'unenv/runtime/mock/proxy',
-      // 'serialize-javascript': 'unenv/runtime/mock/proxy',
+      encoding: 'unenv/runtime/mock/proxy',
+      he: 'unenv/runtime/mock/proxy',
+      resolve: 'unenv/runtime/mock/proxy',
+      'source-map': 'unenv/runtime/mock/proxy',
+      'lodash.template': 'unenv/runtime/mock/proxy',
+      'serialize-javascript': 'unenv/runtime/mock/proxy',
       // // Vue 3
-      // 'estree-walker': 'unenv/runtime/mock/proxy',
-      // '@babel/parser': 'unenv/runtime/mock/proxy',
-      // '@vue/compiler-core': 'unenv/runtime/mock/proxy',
-      // '@vue/compiler-dom': 'unenv/runtime/mock/proxy',
-      // '@vue/compiler-ssr': 'unenv/runtime/mock/proxy',
+      'estree-walker': 'unenv/runtime/mock/proxy',
+      '@babel/parser': 'unenv/runtime/mock/proxy',
+      '@vue/compiler-core': 'unenv/runtime/mock/proxy',
+      '@vue/compiler-dom': 'unenv/runtime/mock/proxy',
+      '@vue/compiler-ssr': 'unenv/runtime/mock/proxy',
       ...nitro.options.alias
     }
   }
@@ -66,12 +66,10 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   // TODO: #590
-  // const _require = createRequire(import.meta.url)
-  // if (nitro.options.majorVersion === 3) {
-  //   env.alias['vue/server-renderer'] = 'vue/server-renderer'
-  //   env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
-  //   env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitro.options.dev ? '' : '.prod'}.js`)
-  // }
+  const _require = createRequire(import.meta.url)
+  env.alias['vue/server-renderer'] = 'vue/server-renderer'
+  env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
+  env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitro.options.dev ? '' : '.prod'}.js`)
 
   const buildServerDir = join(nitro.options.buildDir, 'dist/server')
   const runtimeAppDir = join(runtimeDir, 'app')
