@@ -25,7 +25,7 @@ export interface NitroHooks {
 }
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T
-type NitroPreset = string | NitroConfig | ((input: NitroConfig) => NitroConfig)
+// type NitroPreset = string | NitroConfig | ((input: NitroConfig) => NitroConfig)
 
 export interface NitroConfig extends DeepPartial<NitroOptions> {
   preset?: string
@@ -40,7 +40,6 @@ export interface NitroOptions {
   buildDir: string
   generateDir: string
   publicDir: string
-  srcDir: string
   modulesDir: string[]
   entry: string
 
@@ -88,7 +87,7 @@ export interface NitroOptions {
   }
 
   commands: {
-    preview: string | ((config: NitroContext) => string)
-    deploy: string | ((config: NitroContext) => string)
+    preview: string | ((nitro: Nitro) => string)
+    deploy: string | ((nitro: Nitro) => string)
   }
 }
