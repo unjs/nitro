@@ -3,9 +3,8 @@
 import mri from 'mri'
 import { resolve } from 'pathe'
 import { createNitro } from './nitro'
-import { build, prepare } from './build'
+import { build, prepare, copyPublicAssets } from './build'
 import { createDevServer } from './server/dev'
-import { copyPublicAssets } from '.'
 
 async function main () {
   const args = mri(process.argv.slice(2))
