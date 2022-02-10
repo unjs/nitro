@@ -58,7 +58,7 @@ export async function build (nitro: Nitro) {
   return nitro.options.dev ? _watch(nitro) : _build(nitro)
 }
 
-async function writeTypes (nitro: Nitro) {
+export async function writeTypes (nitro: Nitro) {
   const routeTypes: Record<string, string[]> = {}
 
   const middleware = [
