@@ -1,4 +1,4 @@
-import { pathToFileURL } from 'url'
+// import { pathToFileURL } from 'url'
 // import { createRequire } from 'module'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
@@ -227,7 +227,8 @@ export const getRollupConfig = (nitro: Nitro) => {
       '#config': resolve(runtimeDir, 'config'),
       '#paths': resolve(runtimeDir, 'paths'),
       '#nitro-renderer': resolve(runtimeDir, 'vue/vue3'),
-      '#build': pathToFileURL(nitro.options.buildDir).href,
+      // TODO: Fix windows issue
+      '#build': nitro.options.buildDir,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,
