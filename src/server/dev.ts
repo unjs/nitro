@@ -19,8 +19,11 @@ export interface NitroWorker {
   address: string
 }
 
-function initWorker (filename): Promise<NitroWorker> {
+function initWorker (filename): Promise<NitroWorker | null> {
   return new Promise((resolve, reject) => {
+    if (!existsSync(filename)) {
+      return null
+    }
     const worker = new Worker(filename)
     worker.once('exit', (code) => {
       if (code) {
