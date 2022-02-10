@@ -1,12 +1,13 @@
 import { resolve } from 'pathe'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
+import type { Nitro } from '../types'
 
 export const vercel = defineNitroPreset({
   extends: 'node',
   entry: '#nitro/entries/vercel',
   output: {
-    dir: '{{ options.rootDir }}/.vercel_build_output',
+    dir: '{{ rootDir }}/.vercel_build_output',
     serverDir: '{{ output.dir }}/functions/node/server',
     publicDir: '{{ output.dir }}/static'
   },
@@ -14,13 +15,13 @@ export const vercel = defineNitroPreset({
     'vercel.json'
   ],
   hooks: {
-    async 'nitro:compiled' (ctx: any) {
-      await writeRoutes(ctx)
+    async 'nitro:compiled' (nitro: Nitro) {
+      await writeRoutes(nitro)
     }
   }
 })
 
-async function writeRoutes ({ output }) {
+async function writeRoutes (nitro: Nitro) {
   const routes = [
     {
       src: '/sw.js',
@@ -45,5 +46,5 @@ async function writeRoutes ({ output }) {
     }
   ]
 
-  await writeFile(resolve(output.dir, 'config/routes.json'), JSON.stringify(routes, null, 2))
+  await writeFile(resolve(nitro.options.output.dir, 'config/routes.json'), JSON.stringify(routes, null, 2))
 }

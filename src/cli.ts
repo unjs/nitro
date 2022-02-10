@@ -27,8 +27,7 @@ async function main () {
   if (command === 'build') {
     const nitro = await createNitro({
       rootDir,
-      dev: false,
-      preset: 'server'
+      dev: false
     })
     await prepare(nitro)
     await copyPublicAssets(nitro)
