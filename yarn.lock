@@ -1309,6 +1309,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"c12@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "c12@npm:0.1.2"
+  dependencies:
+    defu: ^5.0.1
+    dotenv: ^14.3.2
+    gittar: ^0.1.1
+    jiti: ^1.12.14
+    mlly: ^0.4.1
+    pathe: ^0.2.0
+    rc9: ^1.2.0
+  checksum: 1977c1de00603a68b0ce0d825ec809afbf6443179dbf6cc2615cc050046dc8e43faa7aca30b538c7f177187fad23031fa8e263a427d9fc06e8d35fbdd9d5fe38
+  languageName: node
+  linkType: hard
+
 "cacache@npm:^15.2.0":
   version: 15.3.0
   resolution: "cacache@npm:15.3.0"
@@ -1748,6 +1763,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"defu@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "defu@npm:2.0.4"
+  checksum: 685e64d7350cbc48599269d0eb346c80ffa656f4dea7b68fe5cb58cdc2e6681abbcaa77880f6697fac0d8876bfd58bdd4bc4d1607bd1c027e9ecef500086575b
+  languageName: node
+  linkType: hard
+
 "defu@npm:^5.0.0, defu@npm:^5.0.1":
   version: 5.0.1
   resolution: "defu@npm:5.0.1"
@@ -1776,7 +1798,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"destr@npm:^1.1.0":
+"destr@npm:^1.0.0, destr@npm:^1.1.0":
   version: 1.1.0
   resolution: "destr@npm:1.1.0"
   checksum: 0fafca1cbfbb7b543eef3d66fa83c7580310e091cd11063e04d0cd9ab5fb55122c119c9aebdee394c7e91160ca0e07f5f96b7c6041801a9e9f277dbc818ba377
@@ -1832,6 +1854,13 @@ __metadata:
   dependencies:
     type-fest: ^2.10.0
   checksum: c4b75618da609b2eefe04a173e89181d200283a1c68c404c4041b730ab49d6adb8ad4a806ebd4feaa6d76bcb7fd943b4129c23b0729a05623ef0d12fe203a7cf
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^14.3.2":
+  version: 14.3.2
+  resolution: "dotenv@npm:14.3.2"
+  checksum: 86c06758915d6facc35275f4a7fafc16705b6f3b44befaa8abca91367991efc8ff8db5437d3cc14778231d19fb97610fe82d60f8a53ba723cdb69fe4171439aa
   languageName: node
   linkType: hard
 
@@ -2880,6 +2909,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"flat@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "flat@npm:5.0.2"
+  bin:
+    flat: cli.js
+  checksum: 12a1536ac746db74881316a181499a78ef953632ddd28050b7a3a43c62ef5462e3357c8c29d76072bb635f147f7a9a1f0c02efef6b4be28f8db62ceb3d5c7f5d
+  languageName: node
+  linkType: hard
+
 "flatted@npm:^3.1.0":
   version: 3.2.4
   resolution: "flatted@npm:3.2.4"
@@ -3101,6 +3139,16 @@ __metadata:
     call-bind: ^1.0.2
     get-intrinsic: ^1.1.1
   checksum: 9ceff8fe968f9270a37a1f73bf3f1f7bda69ca80f4f80850670e0e7b9444ff99323f7ac52f96567f8b5f5fbe7ac717a0d81d3407c7313e82810c6199446a5247
+  languageName: node
+  linkType: hard
+
+"gittar@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "gittar@npm:0.1.1"
+  dependencies:
+    mkdirp: ^0.5.1
+    tar: ^4.4.1
+  checksum: fcc6127a9ce36116f1d2e429b896ab133c27ddd84817a48ccb88b3039caca33e1f8566fe00d14c6e7c16a0aa65cf543c94588427e5b72c52c1cd4d8d87414744
   languageName: node
   linkType: hard
 
@@ -3804,6 +3852,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jiti@npm:^1.12.14":
+  version: 1.12.15
+  resolution: "jiti@npm:1.12.15"
+  bin:
+    jiti: bin/jiti.js
+  checksum: 8e53259f427eb7a7c0cd834c284e18cd05760cb7f0f15b4971ab11874e8b0e7b15fc1f13000eb3a8c7f804ff15637a283d6595858811d61effe8c5aeaacb02ac
+  languageName: node
+  linkType: hard
+
 "joycon@npm:^3.0.1":
   version: 3.1.1
   resolution: "joycon@npm:3.1.1"
@@ -4413,6 +4470,7 @@ __metadata:
     "@types/serve-static": ^1.13.10
     "@vercel/nft": ^0.17.4
     archiver: ^5.3.0
+    c12: ^0.1.2
     chalk: ^5.0.0
     chokidar: ^3.5.3
     connect: ^3.7.0
@@ -5103,6 +5161,17 @@ __metadata:
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
   checksum: 0a268d4fea508661cf5743dfe3d5f47ce214fd6b7dec1de0da4d669dd4ef3d2144468ebe4179049eff253d9d27e719c88dae55be64f954e80135a0cada804ec9
+  languageName: node
+  linkType: hard
+
+"rc9@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "rc9@npm:1.2.0"
+  dependencies:
+    defu: ^2.0.4
+    destr: ^1.0.0
+    flat: ^5.0.0
+  checksum: b5356c61156a442bc10ac34c1c163d056c8ca2a88af584fd2d7fb42daf00e446d7522c8f4e18818d4a300e65d60eed86e9464311d247777bfb41bc49c4979ff6
   languageName: node
   linkType: hard
 
@@ -5945,7 +6014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^4":
+"tar@npm:^4, tar@npm:^4.4.1":
   version: 4.4.19
   resolution: "tar@npm:4.4.19"
   dependencies:

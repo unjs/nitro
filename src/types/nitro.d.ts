@@ -28,8 +28,8 @@ type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPar
 type NitroPreset = string | NitroConfig | ((input: NitroConfig) => NitroConfig)
 
 export interface NitroConfig extends DeepPartial<NitroOptions> {
-  extends?: NitroPreset
-  preset?: NitroPreset
+  preset?: string
+  extends?: string[]
 }
 
 export interface NitroOptions {

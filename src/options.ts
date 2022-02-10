@@ -1,11 +1,11 @@
-import defu from 'defu'
 import { resolve } from 'pathe'
+import { loadConfig } from 'c12'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
 import * as PRESETS from './presets'
-import { tryImport, detectTarget } from './utils'
+import { detectTarget } from './utils'
 
-const defaultNitroConfig = () => ({
+const NitroDefaults: NitroConfig = {
   alias: {
     '#nitro': runtimeDir
   },
@@ -42,15 +42,28 @@ const defaultNitroConfig = () => ({
     },
     private: {}
   }
-}) as NitroConfig
+}
 
-export function loadOptions (config: NitroConfig = {}): NitroOptions {
-  // Apply nitro defaults
-  config = defu(config, defaultNitroConfig())
-
-  // Apply preset defaults
-  config.extends = config.preset = process.env.NITRO_PRESET || config.extends || config.preset || detectTarget() || 'server'
-  config = extendConfig(config)
+export async function loadOptions (overrideConfig: NitroConfig = {}): Promise<NitroOptions> {
+  const { config } = await loadConfig({
+    name: 'nitro',
+    defaults: NitroDefaults,
+    resolve (id: string) {
+      type PT = Map<String, NitroConfig>
+      if ((PRESETS as any as PT)[id]) {
+        return {
+          config: (PRESETS as any as PT)[id]
+        }
+      }
+      return null
+    },
+    overrides: {
+      ...overrideConfig,
+      extends: [
+        overrideConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'server'
+      ]
+    }
+  })
 
   // Normalize options
   const options = config as NitroOptions
@@ -65,25 +78,6 @@ export function loadOptions (config: NitroConfig = {}): NitroOptions {
   return options
 }
 
-function extendConfig (config: NitroConfig): NitroConfig {
-  if (!config.extends) {
-    return config
-  }
-
-  let _extends = config.extends
-  if (typeof config.extends === 'string') {
-    type Preset = NitroConfig['preset']
-    _extends = (PRESETS as Record<string, Preset>)[config.extends] || tryImport(config.rootDir, config.extends) || {}
-    if (!_extends) {
-      throw new Error('Cannot resolve config: ' + config.extends)
-    }
-    _extends = (_extends as any).default || _extends
-  }
-  if (typeof _extends === 'function') {
-    _extends = _extends(config)
-  }
-
-  // TODO: Merge hooks
-  const preset = extendConfig(_extends as NitroConfig)
-  return defu(config, preset)
+export function defineNitroConfig (config: NitroConfig): NitroConfig {
+  return config
 }
