@@ -1,4 +1,4 @@
-#  Nitopack
+#  Nitropack
 
 > Next Generation Web Tooling
 
