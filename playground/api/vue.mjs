@@ -31,6 +31,6 @@ const htmlTemplate = vueHTML => `
 
 export default async () => {
   const app = createSSRApp(createVueApp())
-  const vueHTML = await renderToString(app)
+  const vueHTML = await renderToString(app).catch(_err => `<!-- SSR Error: ${_err} -->`)
   return htmlTemplate(vueHTML)
 }

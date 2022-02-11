@@ -3,7 +3,7 @@
 import mri from 'mri'
 import { resolve } from 'pathe'
 import { createNitro } from './nitro'
-import { build, prepare, copyPublicAssets } from './build'
+import { build, prerender, prepare, copyPublicAssets } from './build'
 import { createDevServer } from './server/dev'
 
 async function main () {
@@ -32,6 +32,7 @@ async function main () {
     await prepare(nitro)
     await copyPublicAssets(nitro)
     await build(nitro)
+    await prerender(nitro)
     process.exit(0)
   }
 

@@ -1,1 +1,1 @@
-export default () => 'API Works!'
+export default () => ({ api: 'Works!' })

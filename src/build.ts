@@ -7,6 +7,7 @@ import { getRollupConfig } from './rollup/config'
 import { prettyPath, writeFile, isDirectory, replaceAll, serializeTemplate } from './utils'
 import { scanMiddleware } from './server/middleware'
 import type { Nitro } from './types'
+import { createNitro } from './nitro'
 
 export async function prepare (nitro: Nitro) {
   await cleanupDir(nitro.options.output.dir)
@@ -56,6 +57,28 @@ export async function build (nitro: Nitro) {
   nitro.options.rollupConfig = getRollupConfig(nitro)
   await nitro.hooks.callHook('nitro:rollup:before', nitro)
   return nitro.options.dev ? _watch(nitro) : _build(nitro)
+}
+
+export async function prerender (nitro: Nitro) {
+  // Skip if no prerender routes specified
+  const routes = nitro.options.prerender.routes
+  if (!routes.length) {
+    return
+  }
+  // Build with prerender preset
+  nitro = await createNitro({
+    rootDir: nitro.options.rootDir,
+    preset: 'prerender'
+  })
+  await build(nitro)
+  // Import entry
+  const app = await import(resolve(nitro.options.output.serverDir, 'index.mjs'))
+  for (const route of routes) {
+    const res = await app.localFetch(route)
+    const isJSON = (res.headers.get('content-type') || '').includes('json')
+    const contents = await res.text()
+    await writeFile(join(nitro.options.output.publicDir, route + (isJSON ? '.json' : '.html')), contents, true)
+  }
 }
 
 export async function writeTypes (nitro: Nitro) {

@@ -28,6 +28,10 @@ const NitroDefaults: NitroConfig = {
     // inline: !config.dev,
     dirs: {}
   },
+  routes: {},
+  prerender: {
+    routes: []
+  },
   publicDir: 'public',
   buildDir: 'dist',
   generateDir: 'dist',
@@ -49,6 +53,7 @@ export async function loadOptions (overrideConfig: NitroConfig = {}): Promise<Ni
   const { config } = await loadConfig({
     name: 'nitro',
     defaults: NitroDefaults,
+    cwd: overrideConfig.rootDir,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       if ((PRESETS as any as PT)[id]) {

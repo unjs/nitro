@@ -29,11 +29,16 @@ type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPar
 export type NitroPreset = NitroConfig | ((input: NitroConfig) => NitroConfig)
 
 export interface NitroConfig extends DeepPartial<NitroOptions> {
-  preset?: string
   extends?: string | string[]
 }
 
+export interface NitroRouteRule {
+  swr?: number
+  redirect?: string
+}
+
 export interface NitroOptions {
+  preset: string
   unenv: UnenvPreset
 
   rootDir: string
@@ -47,6 +52,14 @@ export interface NitroOptions {
   routerBase: string
   publicPath: string
   staticAssets: any
+
+  routes: {
+    [path: string]: NitroRouteRule
+  },
+
+  prerender: {
+    routes: string[]
+  },
 
   hooks: NestedHooks<NitroHooks>
 
