@@ -4,7 +4,8 @@ export default defineNitroConfig({
   prerender: {
     routes: [
       '/api/vue',
-      '/api/test'
+      '/api/test',
+      '/api/cache'
     ]
   }
 })

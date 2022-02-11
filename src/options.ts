@@ -81,6 +81,22 @@ export async function loadOptions (overrideConfig: NitroConfig = {}): Promise<Ni
   options.modulesDir.push(resolve(options.rootDir, 'node_modules'))
   options.modulesDir.push(resolve(pkgDir, 'node_modules'))
 
+  // Dev-only storage
+  if (options.dev) {
+    const fsMounts = {
+      root: resolve(options.rootDir),
+      src: resolve(options.srcDir),
+      build: resolve(options.buildDir),
+      cache: resolve(options.rootDir, '.cache')
+    }
+    for (const p in fsMounts) {
+      options.storage.mounts[p] = options.storage.mounts[p] || {
+        driver: 'fs',
+        driverOptions: { base: fsMounts[p] }
+      }
+    }
+  }
+
   return options
 }
 
