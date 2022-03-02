@@ -1,6 +1,6 @@
 import './config'
 import { createApp, useBase } from 'h3'
-import { createFetch } from 'ohmyfetch'
+import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { timingMiddleware } from './timing'
@@ -21,6 +21,6 @@ export const handle = useBase(process.env.ROUTER_BASE, app)
 export const localCall = createCall(handle)
 export const localFetch = createLocalFetch(localCall, globalThis.fetch)
 
-export const $fetch = createFetch({ fetch: localFetch })
+export const $fetch = createFetch({ fetch: localFetch, Headers })
 
 globalThis.$fetch = $fetch
