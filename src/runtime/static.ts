@@ -17,10 +17,11 @@ export default async function serveStatic (req, res) {
   let id = withLeadingSlash(withoutTrailingSlash(parseURL(req.url).pathname))
   let asset = getAsset(id)
 
-  // Try index.html
-  if (!asset) {
-    const _id = joinURL(id + 'index.html')
-    const _asset = getAsset(_id)
+  const alternatives = [decodeURIComponent(id), id + '/index.html', decodeURIComponent(id) + '/index.html']
+
+  while (!asset && alternatives.length) {
+    const _id = alternatives.shift()
+    const _asset = getAsset(id)
     if (_asset) {
       asset = _asset
       id = _id
