@@ -99,7 +99,7 @@
     "execa": "^6.0.0",
     "miniflare": "^2.3.0",
     "unbuild": "latest",
-    "vitest": "^0.3.2",
+    "vitest": "^0.6.0",
     "vue": "3.2.29",
     "vue-bundle-renderer": "^0.3.5"
   },

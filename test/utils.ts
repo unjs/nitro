@@ -4,7 +4,7 @@ import { listen, Listener } from 'listhen'
 import { $fetch } from 'ohmyfetch'
 import { expect, it, beforeAll, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
-import * as _nitro from '..'
+import * as _nitro from '../src'
 
 const { createNitro, build } = (_nitro as any as { default: typeof _nitro }).default || _nitro
 
