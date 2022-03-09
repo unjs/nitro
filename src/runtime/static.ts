@@ -1,5 +1,5 @@
 import { createError } from 'h3'
-import { withoutTrailingSlash, withLeadingSlash, parseURL, joinURL } from 'ufo'
+import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
 // @ts-ignore
 import { getAsset, readAsset } from '#static'
 import { buildAssetsDir } from '#paths'
@@ -14,16 +14,15 @@ export default async function serveStatic (req, res) {
     return
   }
 
-  let id = withLeadingSlash(withoutTrailingSlash(parseURL(req.url).pathname))
-  let asset = getAsset(id)
+  let id = decodeURIComponent(withLeadingSlash(withoutTrailingSlash(parseURL(req.url).pathname)))
+  let asset
 
-  // Try index.html
-  if (!asset) {
-    const _id = joinURL(id + 'index.html')
+  for (const _id of [id, id + '/index.html']) {
     const _asset = getAsset(_id)
     if (_asset) {
       asset = _asset
       id = _id
+      break
     }
   }
 
