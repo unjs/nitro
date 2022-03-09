@@ -2720,6 +2720,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"escape-string-regexp@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "escape-string-regexp@npm:5.0.0"
+  checksum: 20daabe197f3cb198ec28546deebcf24b3dbb1a5a269184381b3116d12f0532e06007f4bc8da25669d6a7f8efb68db0758df4cd981f57bc5b57f521a3e12c59e
+  languageName: node
+  linkType: hard
+
 "eslint-config-standard@npm:^16.0.3":
   version: 16.0.3
   resolution: "eslint-config-standard@npm:16.0.3"
@@ -4582,6 +4589,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"magic-string@npm:^0.26.0":
+  version: 0.26.1
+  resolution: "magic-string@npm:0.26.1"
+  dependencies:
+    sourcemap-codec: ^1.4.8
+  checksum: 23f21f5734346ddfbabd7b9834e3ecda3521e3e1db81166c1513b45b729489bbed1eafa8cd052c7db7fdc7c68ebc5c03bc00dd5a23697edda15dbecaf8c98397
+  languageName: node
+  linkType: hard
+
 "make-dir@npm:^3.0.0, make-dir@npm:^3.1.0":
   version: 3.1.0
   resolution: "make-dir@npm:3.1.0"
@@ -4887,6 +4903,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mlly@npm:^0.4.3":
+  version: 0.4.3
+  resolution: "mlly@npm:0.4.3"
+  checksum: d9d50babe73ab1157565e518dd38f7c4f0c3813ff36bb4eaff65ea51ea768f1ac76b0ae739edf261425dafe2efff11ef15546adbd94c2cd6e42beea8029a3aba
+  languageName: node
+  linkType: hard
+
 "mri@npm:^1.1.6, mri@npm:^1.2.0":
   version: 1.2.0
   resolution: "mri@npm:1.2.0"
@@ -5038,6 +5061,7 @@ __metadata:
     ufo: ^0.7.9
     unbuild: latest
     unenv: ^0.4.3
+    unimport: 0.0.8
     unstorage: ^0.3.3
     vitest: ^0.3.2
     vue: 3.2.29
@@ -6399,7 +6423,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sourcemap-codec@npm:^1.4.4":
+"sourcemap-codec@npm:^1.4.4, sourcemap-codec@npm:^1.4.8":
   version: 1.4.8
   resolution: "sourcemap-codec@npm:1.4.8"
   checksum: b57981c05611afef31605732b598ccf65124a9fcb03b833532659ac4d29ac0f7bfacbc0d6c5a28a03e84c7510e7e556d758d0bb57786e214660016fb94279316
@@ -6956,6 +6980,20 @@ unbuild@latest:
   languageName: node
   linkType: hard
 
+"unimport@npm:0.0.8":
+  version: 0.0.8
+  resolution: "unimport@npm:0.0.8"
+  dependencies:
+    "@rollup/pluginutils": ^4.1.2
+    escape-string-regexp: ^5.0.0
+    local-pkg: ^0.4.1
+    magic-string: ^0.26.0
+    mlly: ^0.4.3
+    unplugin: ^0.3.3
+  checksum: ac6e2ef860b274c28093117c23071aaa35f484f88ff23cd25a4f4d114c24e72969f46f729b26023546ffdc1016ef42e5fc399d14389c0c0374f4a74b17ff1955
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^1.1.1":
   version: 1.1.1
   resolution: "unique-filename@npm:1.1.1"
@@ -6985,6 +7023,29 @@ unbuild@latest:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 4fa18d8d8d977c55cb09715385c203197105e10a6d220087ec819f50cb68870f02942244f1017565484237f1f8c5d3cd413631b1ae104d3096f24fdfde1b4aa2
+  languageName: node
+  linkType: hard
+
+"unplugin@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "unplugin@npm:0.3.3"
+  dependencies:
+    webpack-virtual-modules: ^0.4.3
+  peerDependencies:
+    esbuild: ">=0.13"
+    rollup: ^2.50.0
+    vite: ^2.3.0
+    webpack: 4 || 5
+  peerDependenciesMeta:
+    esbuild:
+      optional: true
+    rollup:
+      optional: true
+    vite:
+      optional: true
+    webpack:
+      optional: true
+  checksum: 11361432eed70ebd61da313d68f85b8c582738560a41cbfcb7c52e99c0654c9bcf83abb7db2bce74cbda63f8c691501cafb4208f04f0ef2542eee254c93cd3c5
   languageName: node
   linkType: hard
 
@@ -7204,6 +7265,13 @@ unbuild@latest:
   version: 3.0.1
   resolution: "webidl-conversions@npm:3.0.1"
   checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
+  languageName: node
+  linkType: hard
+
+"webpack-virtual-modules@npm:^0.4.3":
+  version: 0.4.3
+  resolution: "webpack-virtual-modules@npm:0.4.3"
+  checksum: 158d30633e0d9be3cfcde10fe959b28df5d5adb1068e0f057fcfb10b0b16ede6c892eba438f6ced089c7c442087748c2fcd1e3f035e4e2dc6760517a8c227714
   languageName: node
   linkType: hard
 

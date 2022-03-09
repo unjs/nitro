@@ -16,6 +16,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import * as unenv from 'unenv'
 import type { Preset } from 'unenv'
 import { sanitizeFilePath } from 'mlly'
+import unimportPlugin from 'unimport/unplugin'
 import type { Nitro } from '../types'
 import { resolvePath } from '../utils'
 import { runtimeDir } from '../dirs'
@@ -138,6 +139,10 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   if (nitro.options.timing) {
     rollupConfig.plugins.push(timing())
+  }
+
+  if (nitro.options.autoImport) {
+    rollupConfig.plugins.push(unimportPlugin.rollup(nitro.options.autoImport))
   }
 
   // Raw asset loader

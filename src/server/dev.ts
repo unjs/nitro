@@ -86,7 +86,7 @@ export function createDevServer (nitro: Nitro) {
   // debugging endpoint to view vfs
   app.use('/_vfs', useBase('/_vfs', handleVfs(nitro)))
 
-  // Dynamic Middlwware
+  // Dynamic Middleware
   const legacyMiddleware = createDynamicMiddleware()
   const devMiddleware = createDynamicMiddleware()
   app.use(legacyMiddleware.middleware)
