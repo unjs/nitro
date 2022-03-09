@@ -1,5 +1,6 @@
 import { resolve } from 'pathe'
 import { createHooks } from 'hookable'
+import { createUnimport } from 'unimport'
 import type { NitroConfig, Nitro } from './types'
 import { resolvePath } from './utils'
 import { loadOptions } from './options'
@@ -43,6 +44,10 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Assets
   nitro.options.assets.dirs.server = {
     dir: resolve(nitro.options.srcDir, 'server/assets'), meta: true
+  }
+
+  if (nitro.options.autoImport) {
+    nitro.unimport = createUnimport(nitro.options.autoImport)
   }
 
   return nitro

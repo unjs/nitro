@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import type { Preset as UnenvPreset } from 'unenv'
+import type { Unimport, UnimportOptions } from 'unimport'
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
@@ -14,6 +15,7 @@ export interface Nitro {
   scannedMiddleware: NitroOptions['middleware'],
   vfs: Record<string, string>
   hooks: Hookable<NitroHooks>
+  unimport?: Unimport
 }
 
 export interface NitroHooks {
@@ -104,4 +106,6 @@ export interface NitroOptions {
     preview: string | ((nitro: Nitro) => string)
     deploy: string | ((nitro: Nitro) => string)
   }
+
+  autoImport: UnimportOptions
 }
