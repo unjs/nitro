@@ -20,7 +20,7 @@ export function staticAssets (nitro: Nitro) {
     const etag = createEtag(readFileSync(fullPath))
     const stat = statSync(fullPath)
 
-    assets['/' + id] = {
+    assets['/' + decodeURIComponent(id)] = {
       type,
       etag,
       mtime: stat.mtime.toJSON(),
