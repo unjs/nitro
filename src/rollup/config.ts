@@ -163,6 +163,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       'global.': 'globalThis.',
       'process.server': 'true',
       'process.client': 'false',
+      'process.dev': String(nitro.options.dev),
       // 'process.env.NUXT_NO_SSR': JSON.stringify(!nitro.options.ssr),
       'process.env.ROUTER_BASE': JSON.stringify(nitro.options.routerBase),
       'process.env.PUBLIC_PATH': JSON.stringify(nitro.options.publicPath),
