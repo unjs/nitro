@@ -1,5 +1,5 @@
 import { existsSync, promises as fsp } from 'fs'
-import { resolve, dirname, normalize, join } from 'pathe'
+import { resolve, dirname, normalize, join, isAbsolute } from 'pathe'
 import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport } from 'mlly'
@@ -17,6 +17,18 @@ export interface NodeExternalsOptions {
 
 export function externals (opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>()
+
+  const _resolveCache = new Map()
+  const _resolve = async (id: string) => {
+    let resolved = _resolveCache.get(id)
+    if (resolved) { return resolved }
+    resolved = await resolvePath(id, {
+      conditions: opts.exportConditions,
+      url: opts.moduleDirectories
+    })
+    _resolveCache.set(id, resolved)
+    return resolved
+  }
 
   return {
     name: 'node-externals',
@@ -37,20 +49,15 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       // Id without .../node_modules/
       const idWithoutNodeModules = id.split('node_modules/').pop()
 
-      // const matchedExternal = opts.external.find(i => idWithoutNodeModules.startsWith(i) || id.startsWith(i))
-
       // Check for explicit inlines
       if (opts.inline.find(i => (id.startsWith(i) || idWithoutNodeModules.startsWith(i)))) {
         return null
       }
 
-      // Resolve id (rollup then native node ESM)
+      // Resolve id (rollup > esm)
       const resolved = await this.resolve(originalId, importer, { ...options, skipSelf: true }) || { id }
       if (!existsSync(resolved.id)) {
-        resolved.id = await resolvePath(resolved.id, {
-          conditions: opts.exportConditions,
-          url: opts.moduleDirectories
-        })
+        resolved.id = await _resolve(resolved.id)
       }
 
       // Inline invalid node imports
@@ -61,28 +68,59 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         }
       }
 
-      // Track externals
-      trackedExternals.add(resolved.id)
-
-      // Try to extract package name from path
-      const { pkgName } = parseNodeModulePath(resolved.id)
-
-      // Inline in trace-mode when cannot extract package name
-      if (!pkgName && opts.trace !== false) {
-        return null
-      }
-
-      // External with package name in trace mode
-      if (opts.trace !== false) {
+      // Externalize with full path if trace is disabled
+      if (opts.trace === false) {
         return {
-          id: pkgName,
+          ...resolved,
           external: true
         }
       }
 
-      // External with full pack in normal mode
+      // -- Trace externals --
+
+      // Try to extract package name from path
+      const { pkgName, subpath } = parseNodeModulePath(resolved.id)
+
+      // Inline if cannot detect package name
+      if (!pkgName) {
+        return null
+      }
+
+      // Normally package name should be same as originalId
+      // Edge cases: Subpath export and full paths
+      if (pkgName !== originalId) {
+        // Subpath export
+        if (!isAbsolute(originalId)) {
+          const fullPath = await _resolve(originalId)
+          trackedExternals.add(fullPath)
+          return {
+            id: originalId,
+            external: true
+          }
+        }
+
+        // Absolute path, we are not sure about subpath to generate import statement
+        // Guess as main subpath export
+        const packageEntry = await _resolve(pkgName).catch(() => null)
+        if (packageEntry !== originalId) {
+          // Guess subpathexport
+          const guessedSubpath = pkgName + subpath.replace(/\.[a-z]+$/, '')
+          const resolvedGuess = await _resolve(guessedSubpath).catch(() => null)
+          if (resolvedGuess === originalId) {
+            trackedExternals.add(resolvedGuess)
+            return {
+              id: guessedSubpath,
+              external: true
+            }
+          }
+          // Inline since we cannot guess subpath
+          return null
+        }
+      }
+
+      trackedExternals.add(resolved.id)
       return {
-        ...resolved,
+        id: pkgName,
         external: true
       }
     },
@@ -113,7 +151,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         // Check for duplicate versions
         const existingPkgDir = tracedPackages.get(pkgName)
         if (existingPkgDir && existingPkgDir !== pkgDir) {
-          console.warn(`Multiple versions of package ${pkgName} detected in:\n`, [
+          console.warn(`Multiple versions of package ${pkgName} detected in:\n` + [
             existingPkgDir,
             pkgDir
           ].map(p => '  - ' + p).join('\n'))
@@ -158,10 +196,11 @@ export function externals (opts: NodeExternalsOptions): Plugin {
 }
 
 function parseNodeModulePath (path: string) {
-  const [, baseDir, pkgName] = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(path)
+  const [, baseDir, pkgName, subpath] = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(path)
   return {
     baseDir,
-    pkgName
+    pkgName,
+    subpath
   }
 }
 
