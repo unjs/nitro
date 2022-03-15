@@ -1,5 +1,5 @@
 import { existsSync, promises as fsp } from 'fs'
-import { resolve, dirname, normalize } from 'pathe'
+import { resolve, dirname, normalize, join } from 'pathe'
 import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport } from 'mlly'
@@ -87,46 +87,72 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       }
     },
     async buildEnd () {
-      if (opts.trace !== false) {
-        for (const pkgName of opts.traceInclude || []) {
-          const path = await this.resolve(pkgName)
-          if (path?.id) {
-            trackedExternals.add(path.id)
-          }
-        }
-        const tracedFiles = await nodeFileTrace(Array.from(trackedExternals), opts.traceOptions)
-          .then(r => Array.from(r.fileList).map(f => resolve(opts.traceOptions.base, f)))
-          .then(r => r.filter(file => file.includes('node_modules')))
+      if (opts.trace === false) {
+        return
+      }
 
-        // Find all unique package names
-        const pkgs = new Set<string>()
-        for (const file of tracedFiles) {
-          const { baseDir, pkgName } = parseNodeModulePath(file)
-          pkgs.add(resolve(baseDir, pkgName, 'package.json'))
-        }
-
-        for (const pkg of pkgs) {
-          if (!tracedFiles.includes(pkg)) {
-            tracedFiles.push(pkg)
-          }
-        }
-
-        const writeFile = async (file) => {
-          if (!await isFile(file)) { return }
-          const src = resolve(opts.traceOptions.base, file)
-          const dst = resolve(opts.outDir, 'node_modules', file.replace(/^.*?node_modules[\\/](.*)$/, '$1'))
-          await fsp.mkdir(dirname(dst), { recursive: true })
-          await fsp.copyFile(src, dst)
-        }
-        if (process.platform === 'win32') {
-          // Workaround for EBUSY on windows (#424)
-          for (const file of tracedFiles) {
-            await writeFile(file)
-          }
-        } else {
-          await Promise.all(tracedFiles.map(writeFile))
+      // Force trace paths
+      for (const pkgName of opts.traceInclude || []) {
+        const path = await this.resolve(pkgName)
+        if (path?.id) {
+          trackedExternals.add(path.id)
         }
       }
+
+      // Trace files
+      const tracedFiles = await nodeFileTrace(Array.from(trackedExternals), opts.traceOptions)
+        .then(r => Array.from(r.fileList).map(f => resolve(opts.traceOptions.base, f)))
+        .then(r => r.filter(file => file.includes('node_modules')))
+
+      // Keep track of npm packages
+      const tracedPackages = new Map() // name => pkgDir
+      for (const file of tracedFiles) {
+        const { baseDir, pkgName } = parseNodeModulePath(file)
+        const pkgDir = resolve(baseDir, pkgName)
+
+        // Check for duplicate versions
+        const existingPkgDir = tracedPackages.get(pkgName)
+        if (existingPkgDir && existingPkgDir !== pkgDir) {
+          console.warn(`Multiple versions of package ${pkgName} detected in:\n`, [
+            existingPkgDir,
+            pkgDir
+          ].map(p => '  - ' + p).join('\n'))
+          continue
+        }
+
+        // Add to traced packages
+        tracedPackages.set(pkgName, pkgDir)
+      }
+
+      // Ensure all package.json files are traced
+      for (const pkgDir of tracedPackages.values()) {
+        const pkgJSON = join(pkgDir, 'package.json')
+        if (!tracedFiles.includes(pkgJSON)) {
+          tracedFiles.push(pkgJSON)
+        }
+      }
+
+      const writeFile = async (file) => {
+        if (!await isFile(file)) { return }
+        const src = resolve(opts.traceOptions.base, file)
+        const dst = resolve(opts.outDir, 'node_modules', file.replace(/^.*?node_modules[\\/](.*)$/, '$1'))
+        await fsp.mkdir(dirname(dst), { recursive: true })
+        await fsp.copyFile(src, dst)
+      }
+      if (process.platform === 'win32') {
+        // Workaround for EBUSY on windows (#424)
+        for (const file of tracedFiles) {
+          await writeFile(file)
+        }
+      } else {
+        await Promise.all(tracedFiles.map(writeFile))
+      }
+
+      // Write an informative package.json
+      await fsp.writeFile(resolve(opts.outDir, 'package.json'), JSON.stringify({
+        private: true,
+        bundledDependencies: Array.from(tracedPackages.keys())
+      }, null, 2), 'utf8')
     }
   }
 }
