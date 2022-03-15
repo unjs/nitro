@@ -99,11 +99,11 @@ export async function writeTypes (nitro: Nitro) {
   let autoImportedTypes: string[] = []
 
   if (nitro.unimport) {
-    autoImportedTypes = nitro.unimport
-      .generateTypeDecarations()
-      .trim()
-      .split('\n')
-      .slice(0, -1) // Remove the last `export {}`
+    autoImportedTypes = [
+      nitro.unimport
+        .generateTypeDecarations({ exportHelper: false })
+        .trim()
+    ]
   }
 
   const lines = [

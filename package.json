@@ -84,7 +84,7 @@
     "table": "^6.8.0",
     "ufo": "^0.7.9",
     "unenv": "^0.4.3",
-    "unimport": "0.0.8",
+    "unimport": "^0.1.0",
     "unstorage": "^0.3.3"
   },
   "devDependencies": {
