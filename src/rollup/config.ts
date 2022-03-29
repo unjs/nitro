@@ -234,6 +234,7 @@ export const getRollupConfig = (nitro: Nitro) => {
     entries: {
       '#nitro': runtimeDir,
       '#config': resolve(runtimeDir, 'config'),
+      '#_config': resolve(runtimeDir, 'config'),
       '#paths': resolve(runtimeDir, 'paths'),
       '#cache': resolve(runtimeDir, 'cache'),
       '#nitro-renderer': resolve(runtimeDir, 'vue/vue3'),
