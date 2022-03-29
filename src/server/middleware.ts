@@ -29,10 +29,10 @@ function filesToMiddleware (files: string[], baseDir: string, baseURL: string, o
         .slice(0, file.length - extname(file).length)
         .replace(/\/index$/, '')
     )
-    const handle = resolve(baseDir, file)
+    const handler = resolve(baseDir, file)
     return {
       route,
-      handle
+      handler
     }
   })
     .sort((a, b) => b.route.localeCompare(a.route))

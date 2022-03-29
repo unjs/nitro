@@ -1,4 +1,4 @@
-import { createError } from 'h3'
+import { createError, defineEventHandler } from 'h3'
 import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
 // @ts-ignore
 import { getAsset, readAsset } from '#static'
@@ -9,12 +9,12 @@ const METHODS = ['HEAD', 'GET']
 const TWO_DAYS = 2 * 60 * 60 * 24
 const STATIC_ASSETS_BASE = process.env.NUXT_STATIC_BASE + '/' + process.env.NUXT_STATIC_VERSION
 
-export default async function serveStatic (req, res) {
-  if (!METHODS.includes(req.method)) {
+export default defineEventHandler(async (event) => {
+  if (!METHODS.includes(event.req.method)) {
     return
   }
 
-  let id = decodeURIComponent(withLeadingSlash(withoutTrailingSlash(parseURL(req.url).pathname)))
+  let id = decodeURIComponent(withLeadingSlash(withoutTrailingSlash(parseURL(event.req.url).pathname)))
   let asset
 
   for (const _id of [id, id + '/index.html']) {
@@ -38,36 +38,38 @@ export default async function serveStatic (req, res) {
     return
   }
 
-  const ifNotMatch = req.headers['if-none-match'] === asset.etag
+  const ifNotMatch = event.req.headers['if-none-match'] === asset.etag
   if (ifNotMatch) {
-    res.statusCode = 304
-    return res.end('Not Modified (etag)')
+    event.res.statusCode = 304
+    event.res.end('Not Modified (etag)')
+    return
   }
 
-  const ifModifiedSinceH = req.headers['if-modified-since']
+  const ifModifiedSinceH = event.req.headers['if-modified-since']
   if (ifModifiedSinceH && asset.mtime) {
     if (new Date(ifModifiedSinceH) >= new Date(asset.mtime)) {
-      res.statusCode = 304
-      return res.end('Not Modified (mtime)')
+      event.res.statusCode = 304
+      event.res.end('Not Modified (mtime)')
+      return
     }
   }
 
   if (asset.type) {
-    res.setHeader('Content-Type', asset.type)
+    event.res.setHeader('Content-Type', asset.type)
   }
 
   if (asset.etag) {
-    res.setHeader('ETag', asset.etag)
+    event.res.setHeader('ETag', asset.etag)
   }
 
   if (asset.mtime) {
-    res.setHeader('Last-Modified', asset.mtime)
+    event.res.setHeader('Last-Modified', asset.mtime)
   }
 
   if (isBuildAsset) {
-    res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
+    event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
   }
 
   const contents = await readAsset(id)
-  return res.end(contents)
-}
+  event.res.end(contents)
+})

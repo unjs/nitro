@@ -1,6 +1,4 @@
 import { Worker } from 'worker_threads'
-
-import { IncomingMessage, ServerResponse } from 'http'
 import { existsSync, promises as fsp } from 'fs'
 import chokidar, { FSWatcher } from 'chokidar'
 import { debounce } from 'perfect-debounce'

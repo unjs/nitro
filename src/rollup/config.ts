@@ -97,7 +97,7 @@ export const getRollupConfig = (nitro: Nitro) => {
           prefix = 'nuxt'
         } else if (lastModule.startsWith(runtimeDir)) {
           prefix = 'nitro'
-        } else if (nitro.options.middleware.find(m => lastModule.startsWith(m.handle as string))) {
+        } else if (nitro.options.middleware.find(m => lastModule.startsWith(m.handler as string))) {
           prefix = 'middleware'
         } else if (lastModule.includes('assets')) {
           prefix = 'assets'

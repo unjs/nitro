@@ -86,7 +86,7 @@ function getKey (...args) {
   return args.length ? hash(args, {}) : ''
 }
 
-export function cachifyHandle (handle: Handler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
+export function cachifyHandle (handler: Handler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
   const _opts: CachifyOptions = {
     getKey: req => req.originalUrl || req.url,
     transform (entry, _req, res) {
@@ -111,7 +111,7 @@ export function cachifyHandle (handle: Handler, opts: Omit<CachifyOptions, 'getK
   }
 
   return cachify(async (req, res) => {
-    const body = await handle(req, res)
+    const body = await handler(req, res)
     const headers = res.getHeaders()
     return { body, headers }
   }, _opts)

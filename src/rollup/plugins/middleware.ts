@@ -52,10 +52,10 @@ export default middleware
 }
 
 function dumpMiddleware (middleware: ServerMiddleware[]) {
-  const data = middleware.map(({ route, handle, ...props }) => {
+  const data = middleware.map(({ route, handler, ...props }) => {
     return [
       (route && route !== '/') ? route : '*',
-      relative(process.cwd(), handle as string),
+      relative(process.cwd(), handler as string),
       dumpObject(props)
     ]
   })

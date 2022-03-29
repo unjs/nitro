@@ -1,5 +1,5 @@
-import type { ServerResponse } from 'http'
 import { createRenderer } from 'vue-bundle-renderer'
+import { defineEventHandler } from 'h3'
 import devalue from '@nuxt/devalue'
 import { privateConfig, publicConfig } from '../config'
 import { buildAssetsURL } from '../paths'
@@ -67,8 +67,8 @@ function renderToString (ssrContext) {
   return getRenderer().then(renderToString => renderToString(ssrContext))
 }
 
-export default async function renderMiddleware (req, res: ServerResponse) {
-  let url = req.url
+export default defineEventHandler(async (event) => {
+  let url = event.req.url
 
   // payload.json request detection
   let isPayloadReq = false
@@ -80,11 +80,16 @@ export default async function renderMiddleware (req, res: ServerResponse) {
   // Initialize ssr context
   const ssrContext = {
     url,
-    req,
-    res,
+    event,
+    req: event.req,
+    res: event.res,
     runtimeConfig: { private: privateConfig, public: publicConfig },
-    noSSR: req.spa || req.headers['x-nuxt-no-ssr'],
-    ...(req.context || {})
+    noSSR: event.req.headers['x-nuxt-no-ssr'],
+
+    error: undefined,
+    redirected: undefined,
+    nuxt: undefined, /* NuxtApp */
+    payload: undefined
   }
 
   // Render app
@@ -95,7 +100,7 @@ export default async function renderMiddleware (req, res: ServerResponse) {
     throw ssrContext.error
   }
 
-  if (ssrContext.redirected || res.writableEnded) {
+  if (ssrContext.redirected || event.res.writableEnded) {
     return
   }
 
@@ -113,16 +118,16 @@ export default async function renderMiddleware (req, res: ServerResponse) {
   let data
   if (isPayloadReq) {
     data = renderPayload(payload, url)
-    res.setHeader('Content-Type', 'text/javascript;charset=UTF-8')
+    event.res.setHeader('Content-Type', 'text/javascript;charset=UTF-8')
   } else {
     data = await renderHTML(payload, rendered, ssrContext)
-    res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+    event.res.setHeader('Content-Type', 'text/html;charset=UTF-8')
   }
 
   const error = ssrContext.nuxt && ssrContext.nuxt.error
-  res.statusCode = error ? error.statusCode : 200
-  res.end(data, 'utf-8')
-}
+  event.res.statusCode = error ? error.statusCode : 200
+  event.res.end(data, 'utf-8')
+})
 
 async function renderHTML (payload, rendered, ssrContext) {
   const state = `<script>window.__NUXT__=${devalue(payload)}</script>`
