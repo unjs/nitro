@@ -2,6 +2,7 @@
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
+import devalue from '@nuxt/devalue'
 import { terser } from 'rollup-plugin-terser'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
@@ -160,7 +161,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       // 'process.env.NUXT_STATIC_VERSION': JSON.stringify(nitro.options.staticAssets.version),
       // 'process.env.NUXT_FULL_STATIC': nitro.options.fullStatic as unknown as string,
       // 'process.env.NITRO_PRESET': JSON.stringify(nitro.options.preset),
-      'process.env.RUNTIME_CONFIG': JSON.stringify(nitro.options.runtimeConfig),
+      'process.env.RUNTIME_CONFIG': devalue(nitro.options.runtimeConfig),
       'process.env.DEBUG': JSON.stringify(nitro.options.dev)
     }
   }))
