@@ -1,6 +1,6 @@
 export * from './build'
 export * from './nitro'
-export * from './server/middleware'
+export * from './scan'
 export * from './server/dev'
 export * from './options'
 export * from './types'

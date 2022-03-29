@@ -1,5 +1,4 @@
 // import { pathToFileURL } from 'url'
-import { createRequire } from 'module'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
@@ -26,7 +25,7 @@ import { timing } from './plugins/timing'
 // import { autoMock } from './plugins/automock'
 import { staticAssets, dirnames } from './plugins/static'
 import { assets } from './plugins/assets'
-import { middleware } from './plugins/middleware'
+import { handlers } from './plugins/handlers'
 import { esbuild } from './plugins/esbuild'
 import { raw } from './plugins/raw'
 import { storage } from './plugins/storage'
@@ -67,16 +66,6 @@ export const getRollupConfig = (nitro: Nitro) => {
     env.polyfill.push('source-map-support/register.js')
   }
 
-  // TODO: #590
-  try {
-    const _require = createRequire(import.meta.url)
-    env.alias['vue/server-renderer'] = 'vue/server-renderer'
-    env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
-    env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitro.options.dev ? '' : '.prod'}.js`)
-  } catch (_err) {
-    // Ignore when vue not installed
-  }
-
   const buildServerDir = join(nitro.options.buildDir, 'dist/server')
   const runtimeAppDir = join(runtimeDir, 'app')
 
@@ -97,8 +86,8 @@ export const getRollupConfig = (nitro: Nitro) => {
           prefix = 'nuxt'
         } else if (lastModule.startsWith(runtimeDir)) {
           prefix = 'nitro'
-        } else if (nitro.options.middleware.find(m => lastModule.startsWith(m.handler as string))) {
-          prefix = 'middleware'
+        } else if (nitro.options.handlers.find(m => lastModule.startsWith(m.handler as string))) {
+          prefix = 'handlers'
         } else if (lastModule.includes('assets')) {
           prefix = 'assets'
         }
@@ -209,19 +198,19 @@ export const getRollupConfig = (nitro: Nitro) => {
   // Storage
   rollupConfig.plugins.push(storage(nitro.options.storage))
 
-  // Middleware
-  rollupConfig.plugins.push(middleware(() => {
-    const _middleware = [
-      ...nitro.scannedMiddleware,
-      ...nitro.options.middleware
+  // Handlers
+  rollupConfig.plugins.push(handlers(() => {
+    const handlers = [
+      ...nitro.scannedHandlers,
+      ...nitro.options.handlers
     ]
     if (nitro.options.serveStatic) {
-      _middleware.unshift({ route: '/', handle: '#nitro/static' })
+      handlers.unshift({ handler: '#nitro/static' })
     }
     if (nitro.options.renderer) {
-      _middleware.push({ route: '/', handle: nitro.options.renderer })
+      handlers.push({ handler: nitro.options.renderer })
     }
-    return _middleware
+    return handlers
   }))
 
   // Polyfill
@@ -267,7 +256,7 @@ export const getRollupConfig = (nitro: Nitro) => {
         nitro.options.srcDir,
         nitro.options.rootDir,
         nitro.options.srcDir,
-        ...nitro.options.middleware.map(m => m.handle),
+        ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string'),
         ...(nitro.options.dev ? [] : ['vue', '@vue/', '@nuxt/'])
       ],
       traceOptions: {

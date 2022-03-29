@@ -14,7 +14,7 @@ const NitroDefaults: NitroConfig = {
   experiments: {},
   moduleSideEffects: ['unenv/runtime/polyfill/'],
   scanDirs: [],
-  middleware: [],
+  handlers: [],
   modulesDir: [],
   ignore: [],
   hooks: {},

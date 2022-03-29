@@ -3,56 +3,57 @@ import { relative } from 'pathe'
 import table from 'table'
 import isPrimitive from 'is-primitive'
 import { isDebug } from 'std-env'
-import type { ServerMiddleware } from '../../server/middleware'
+import type { NitroHandlerConfig } from '../../types'
 import virtual from './virtual'
 
 const unique = (arr: any[]) => Array.from(new Set(arr))
 
-export function middleware (getMiddleware: () => ServerMiddleware[]) {
+export function handlers (getHandlers: () => NitroHandlerConfig[]) {
   const getImportId = p => '_' + hasha(p).slice(0, 6)
 
   let lastDump = ''
 
   return virtual({
-    '#server-middleware': {
+    '#server-handlers': {
       load: () => {
-        const middleware = getMiddleware()
+        const handler = getHandlers()
 
         if (isDebug) {
-          const dumped = dumpMiddleware(middleware)
+          const dumped = dumpHandler(handler)
           if (dumped !== lastDump) {
             lastDump = dumped
-            if (middleware.length) {
+            if (handler.length) {
               console.log(dumped)
             }
           }
         }
 
         // Imports take priority
-        const imports = unique(middleware.filter(m => m.lazy === false).map(m => m.handler || m.handle))
+        const imports = unique(handler.filter(m => m.lazy === false).map(m => m.handler))
 
         // Lazy imports should fill in the gaps
-        const lazyImports = unique(middleware.filter(m => m.lazy !== false && !imports.includes(m.handler || m.handle)).map(m => m.handler || m.handle))
+        const lazyImports = unique(handler.filter(m => m.lazy !== false && !imports.includes(m.handler)).map(m => m.handler))
 
         const code = `
 ${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).join('\n')}
 
 ${lazyImports.map(handler => `const ${getImportId(handler)} = () => import('${handler}');`).join('\n')}
 
-const middleware = [
-${middleware.map(m => `  { route: '${m.route}', handler: ${getImportId(m.handler || m.handle)}, lazy: ${m.lazy || true} }`).join(',\n')}
+const handlers = [
+${handler.map(m => `  { route: '${m.route || '/'}', handler: ${getImportId(m.handler)}, lazy: ${m.lazy || true} }`).join(',\n')}
 ];
 
-export default middleware
+export default handlers
   `.trim()
+        // console.log(code)
         return code
       }
     }
   })
 }
 
-function dumpMiddleware (middleware: ServerMiddleware[]) {
-  const data = middleware.map(({ route, handler, ...props }) => {
+function dumpHandler (handler: NitroHandlerConfig[]) {
+  const data = handler.map(({ route, handler, ...props }) => {
     return [
       (route && route !== '/') ? route : '*',
       relative(process.cwd(), handler as string),
@@ -60,7 +61,7 @@ function dumpMiddleware (middleware: ServerMiddleware[]) {
     ]
   })
   return table.table([
-    ['Route', 'Handle', 'Options'],
+    ['Path', 'Handler', 'Options'],
     ...data
   ], {
     singleLine: true,

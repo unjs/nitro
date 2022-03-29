@@ -14,7 +14,7 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     options,
     hooks: createHooks(),
     vfs: {},
-    scannedMiddleware: []
+    scannedHandlers: []
   }
 
   // Init hooks

@@ -6,7 +6,7 @@ import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch
 import { timingMiddleware } from './timing'
 import { handleError } from './error'
 // @ts-ignore
-import serverMiddleware from '#server-middleware'
+import serverHandlers from '#server-handlers'
 
 export const app = createApp({
   debug: destr(process.env.DEBUG),
@@ -14,9 +14,7 @@ export const app = createApp({
 })
 
 app.use(timingMiddleware)
-app.use(serverMiddleware)
-
-app.use('/test', () => 'OK')
+app.use(serverHandlers)
 
 export const localCall = createCall(app.nodeHandler as any)
 export const localFetch = createLocalFetch(localCall, globalThis.fetch)

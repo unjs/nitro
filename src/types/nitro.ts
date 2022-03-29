@@ -6,13 +6,13 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { StorageOptions } from '../rollup/plugins/storage'
 import type { AssetOptions } from '../rollup/plugins/assets'
-import type { ServerMiddleware } from '../server/middleware'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
+import { NitroHandlerConfig } from './handler'
 
 export interface Nitro {
   options: NitroOptions,
-  scannedMiddleware: NitroOptions['middleware'],
+  scannedHandlers: NitroHandlerConfig[],
   vfs: Record<string, string>
   hooks: Hookable<NitroHooks>
   unimport?: Unimport
@@ -66,7 +66,7 @@ export interface NitroOptions {
 
   hooks: NestedHooks<NitroHooks>
 
-  middleware: ServerMiddleware[]
+  handlers: NitroHandlerConfig[]
 
   storage: StorageOptions,
   assets: AssetOptions,
