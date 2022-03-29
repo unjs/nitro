@@ -2,10 +2,12 @@ import { relative, resolve, join } from 'pathe'
 import consola from 'consola'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
+import { watch } from 'chokidar'
+import { debounce } from 'perfect-debounce'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig } from './rollup/config'
 import { prettyPath, writeFile, isDirectory, replaceAll, serializeTemplate } from './utils'
-import { scanMiddleware } from './server/middleware'
+import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
 import { createNitro } from './nitro'
 
@@ -85,15 +87,15 @@ export async function writeTypes (nitro: Nitro) {
   const routeTypes: Record<string, string[]> = {}
 
   const middleware = [
-    ...nitro.scannedMiddleware,
-    ...nitro.options.middleware
+    ...nitro.scannedHandlers,
+    ...nitro.options.handlers
   ]
 
   for (const mw of middleware) {
     if (typeof mw.handler !== 'string') { continue }
     const relativePath = relative(nitro.options.buildDir, mw.handler).replace(/\.[a-z]+$/, '')
-    routeTypes[mw.route] = routeTypes[mw.route] || []
-    routeTypes[mw.route].push(`Awaited<ReturnType<typeof import('${relativePath}').default>>`)
+    routeTypes[mw.path] = routeTypes[mw.path] || []
+    routeTypes[mw.path].push(`Awaited<ReturnType<typeof import('${relativePath}').default>>`)
   }
 
   let autoImportedTypes: string[] = []
@@ -123,7 +125,7 @@ export async function writeTypes (nitro: Nitro) {
 }
 
 async function _build (nitro: Nitro) {
-  nitro.scannedMiddleware = await scanMiddleware(nitro)
+  await scanHandlers(nitro)
   await writeTypes(nitro)
 
   consola.start('Building server...')
@@ -202,16 +204,31 @@ function startRollupWatcher (nitro: Nitro) {
 }
 
 async function _watch (nitro: Nitro) {
-  let watcher = startRollupWatcher(nitro)
-  nitro.scannedMiddleware = await scanMiddleware(nitro,
-    (middleware, event) => {
-      nitro.scannedMiddleware = middleware
-      if (['add', 'addDir'].includes(event)) {
-        watcher.close()
-        writeTypes(nitro).catch(console.error)
-        watcher = startRollupWatcher(nitro)
-      }
+  let rollupWatcher: rollup.RollupWatcher
+
+  const reload = debounce(async () => {
+    if (rollupWatcher) { await rollupWatcher.close() }
+    await scanHandlers(nitro)
+    rollupWatcher = startRollupWatcher(nitro)
+    await writeTypes(nitro)
+  })
+
+  const watchPatterns = nitro.options.scanDirs.flatMap(dir => [
+    join(dir, 'api'),
+    join(dir, 'middleware', GLOB_SCAN_PATTERN)
+  ])
+
+  const watchReloadEvents = new Set(['add', 'addDir', 'unlink', 'unlinkDir'])
+  const reloadWacher = watch(watchPatterns, { ignoreInitial: true }).on('all', (event) => {
+    if (watchReloadEvents.has(event)) {
+      reload()
     }
-  )
-  await writeTypes(nitro)
+  })
+
+  nitro.hooks.hook('close', () => {
+    rollupWatcher.close()
+    reloadWacher.close()
+  })
+
+  await reload()
 }
