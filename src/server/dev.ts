@@ -3,7 +3,7 @@ import { Worker } from 'worker_threads'
 import { IncomingMessage, ServerResponse } from 'http'
 import { existsSync, promises as fsp } from 'fs'
 import chokidar, { FSWatcher } from 'chokidar'
-import debounce from 'p-debounce'
+import { debounce } from 'perfect-debounce'
 import { promisifyHandle, createApp, Middleware, useBase } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
@@ -73,7 +73,7 @@ export function createDevServer (nitro: Nitro) {
     // Replace new worker as current
     currentWorker = newWorker
   }
-  const reload = debounce(() => _reload().catch(console.warn), 200, { before: true })
+  const reload = debounce(() => _reload().catch(console.warn))
   nitro.hooks.hook('nitro:dev:reload', reload)
 
   // App
