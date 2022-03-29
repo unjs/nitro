@@ -125,7 +125,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const error = ssrContext.nuxt && ssrContext.nuxt.error
-  event.res.statusCode = error ? error.statusCode : 200
+  if (error && error.statusCode && event.res.statusCode === 200) {
+    event.res.statusCode = error.statusCode
+  }
   event.res.end(data, 'utf-8')
 })
 
