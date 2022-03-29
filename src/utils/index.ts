@@ -142,3 +142,17 @@ export function readPackageJson (
     throw error
   }
 }
+
+export function resolveAliases (aliases: Record<string, string>) {
+  for (const key in aliases) {
+    for (const alias in aliases) {
+      if (!['~', '@', '#'].includes(alias[0])) { continue }
+      if (alias === '@' && !aliases[key].startsWith('@/')) { continue } // Don't resolve @foo/bar
+
+      if (aliases[key].startsWith(alias)) {
+        aliases[key] = aliases[alias] + aliases[key].slice(alias.length)
+      }
+    }
+  }
+  return aliases
+}

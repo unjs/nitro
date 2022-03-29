@@ -18,7 +18,7 @@ import type { Preset } from 'unenv'
 import { sanitizeFilePath } from 'mlly'
 import unimportPlugin from 'unimport/unplugin'
 import type { Nitro } from '../types'
-import { resolvePath } from '../utils'
+import { resolveAliases, resolvePath } from '../utils'
 import { runtimeDir } from '../dirs'
 import { dynamicRequire } from './plugins/dynamic-require'
 import { externals } from './plugins/externals'
@@ -221,7 +221,7 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
   rollupConfig.plugins.push(alias({
-    entries: {
+    entries: resolveAliases({
       '#nitro': runtimeDir,
       '#config': resolve(runtimeDir, 'config'),
       '#_config': resolve(runtimeDir, 'config'),
@@ -235,7 +235,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       '~~': nitro.options.rootDir,
       '@@/': nitro.options.rootDir,
       ...env.alias
-    }
+    })
   }))
 
   // Externals Plugin
