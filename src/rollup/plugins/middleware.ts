@@ -29,32 +29,33 @@ export function middleware (getMiddleware: () => ServerMiddleware[]) {
         }
 
         // Imports take priority
-        const imports = unique(middleware.filter(m => m.lazy === false).map(m => m.handle))
+        const imports = unique(middleware.filter(m => m.lazy === false).map(m => m.handler || m.handle))
 
         // Lazy imports should fill in the gaps
-        const lazyImports = unique(middleware.filter(m => m.lazy !== false && !imports.includes(m.handle)).map(m => m.handle))
+        const lazyImports = unique(middleware.filter(m => m.lazy !== false && !imports.includes(m.handler || m.handle)).map(m => m.handler || m.handle))
 
-        return `
-  ${imports.map(handle => `import ${getImportId(handle)} from '${handle}';`).join('\n')}
+        const code = `
+${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).join('\n')}
 
-  ${lazyImports.map(handle => `const ${getImportId(handle)} = () => import('${handle}');`).join('\n')}
+${lazyImports.map(handler => `const ${getImportId(handler)} = () => import('${handler}');`).join('\n')}
 
-  const middleware = [
-    ${middleware.map(m => `{ route: '${m.route}', handle: ${getImportId(m.handle)}, lazy: ${m.lazy || true}, promisify: ${m.promisify !== undefined ? m.promisify : true} }`).join(',\n')}
-  ];
+const middleware = [
+${middleware.map(m => `  { route: '${m.route}', handler: ${getImportId(m.handler || m.handle)}, lazy: ${m.lazy || true} }`).join(',\n')}
+];
 
-  export default middleware
-  `
+export default middleware
+  `.trim()
+        return code
       }
     }
   })
 }
 
 function dumpMiddleware (middleware: ServerMiddleware[]) {
-  const data = middleware.map(({ route, handle, ...props }) => {
+  const data = middleware.map(({ route, handler, ...props }) => {
     return [
       (route && route !== '/') ? route : '*',
-      relative(process.cwd(), handle as string),
+      relative(process.cwd(), handler as string),
       dumpObject(props)
     ]
   })

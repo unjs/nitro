@@ -90,8 +90,8 @@ export async function writeTypes (nitro: Nitro) {
   ]
 
   for (const mw of middleware) {
-    if (typeof mw.handle !== 'string') { continue }
-    const relativePath = relative(nitro.options.buildDir, mw.handle).replace(/\.[a-z]+$/, '')
+    if (typeof mw.handler !== 'string') { continue }
+    const relativePath = relative(nitro.options.buildDir, mw.handler).replace(/\.[a-z]+$/, '')
     routeTypes[mw.route] = routeTypes[mw.route] || []
     routeTypes[mw.route].push(`Awaited<ReturnType<typeof import('${relativePath}').default>>`)
   }

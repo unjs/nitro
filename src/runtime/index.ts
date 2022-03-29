@@ -1,5 +1,5 @@
 import './config'
-import { createApp, useBase } from 'h3'
+import { createApp } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
@@ -8,7 +8,7 @@ import { handleError } from './error'
 // @ts-ignore
 import serverMiddleware from '#server-middleware'
 
-const app = createApp({
+export const app = createApp({
   debug: destr(process.env.DEBUG),
   onError: handleError
 })
@@ -16,9 +16,9 @@ const app = createApp({
 app.use(timingMiddleware)
 app.use(serverMiddleware)
 
-export const stack = app.stack
-export const handle = useBase(process.env.ROUTER_BASE, app)
-export const localCall = createCall(handle)
+app.use('/test', () => 'OK')
+
+export const localCall = createCall(app.nodeHandler as any)
 export const localFetch = createLocalFetch(localCall, globalThis.fetch)
 
 export const $fetch = createFetch({ fetch: localFetch, Headers })

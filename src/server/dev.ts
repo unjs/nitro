@@ -1,10 +1,8 @@
 import { Worker } from 'worker_threads'
-
-import { IncomingMessage, ServerResponse } from 'http'
 import { existsSync, promises as fsp } from 'fs'
 import chokidar, { FSWatcher } from 'chokidar'
 import { debounce } from 'perfect-debounce'
-import { promisifyHandle, createApp, Middleware, useBase } from 'h3'
+import { createApp, defineEventHandler, Middleware } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 // import servePlaceholder from 'serve-placeholder'
@@ -12,7 +10,7 @@ import serveStatic from 'serve-static'
 import { resolve } from 'pathe'
 import connect from 'connect'
 import type { Nitro } from '../types'
-import { handleVfs } from './vfs'
+import { createVFSHandler } from './vfs'
 
 export interface NitroWorker {
   worker: Worker,
@@ -84,7 +82,7 @@ export function createDevServer (nitro: Nitro) {
   app.use(nitro.options.routerBase, serveStatic(resolve(nitro.options.publicDir)))
 
   // debugging endpoint to view vfs
-  app.use('/_vfs', useBase('/_vfs', handleVfs(nitro)))
+  app.use('/_vfs', createVFSHandler(nitro))
 
   // Dynamic Middleware
   const legacyMiddleware = createDynamicMiddleware()
@@ -97,26 +95,25 @@ export function createDevServer (nitro: Nitro) {
 
   // SSR Proxy
   const proxy = httpProxy.createProxy()
-  const proxyHandle = promisifyHandle((req: IncomingMessage, res: ServerResponse) => {
-    proxy.web(req, res, { target: currentWorker.address }, (error: any) => {
-      if (error.code !== 'ECONNRESET') {
-        console.error('[proxy]', error)
-      }
-    })
-  })
-  app.use((req, res) => {
+  app.use(defineEventHandler((event) => {
     if (currentWorker?.address) {
       // Workaround to pass legacy req.spa to proxy
-      // @ts-ignore
-      if (req.spa) {
-        req.headers['x-nuxt-no-ssr'] = 'true'
+      if ((event.req as any).spa) {
+        event.req.headers['x-nuxt-no-ssr'] = 'true'
       }
-      return proxyHandle(req, res)
+      return new Promise((resolve, reject) => {
+        proxy.web(event.req, event.res, { target: currentWorker.address }, (error: any) => {
+          if (error.code !== 'ECONNRESET') {
+            reject(error)
+          }
+          resolve()
+        })
+      })
     } else {
-      res.setHeader('Content-Type', 'text/html; charset=UTF-8')
-      res.end('Not ready!')
+      event.res.setHeader('Content-Type', 'text/html; charset=UTF-8')
+      event.res.end('Not ready!')
     }
-  })
+  }))
 
   // Listen
   let listeners: Listener[] = []

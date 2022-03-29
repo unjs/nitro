@@ -1,12 +1,12 @@
 // import ansiHTML from 'ansi-html'
-import type { IncomingMessage, ServerResponse } from 'http'
+import type { CompatibilityEvent } from 'h3'
 const cwd = process.cwd()
 
 // const hasReqHeader = (req, header, includes) => req.headers[header] && req.headers[header].toLowerCase().includes(includes)
 
 const isDev = process.env.NODE_ENV === 'development'
 
-export function handleError (error, _req: IncomingMessage, res: ServerResponse) {
+export function handleError (error, event: CompatibilityEvent) {
   // const isJsonRequest = hasReqHeader(req, 'accept', 'application/json') || hasReqHeader(req, 'user-agent', 'curl/') || hasReqHeader(req, 'user-agent', 'httpie/')
 
   const stack = (error.stack || '')
@@ -40,8 +40,8 @@ export function handleError (error, _req: IncomingMessage, res: ServerResponse) 
       : ''
   }
 
-  res.statusCode = error.statusCode || 500
-  res.statusMessage = error.statusMessage || 'Internal Server Error'
+  event.res.statusCode = error.statusCode || 500
+  event.res.statusMessage = error.statusMessage || 'Internal Server Error'
 
   // Console output
   if (!is404) {
@@ -50,8 +50,8 @@ export function handleError (error, _req: IncomingMessage, res: ServerResponse) 
 
   // JSON response
   // if (isJsonRequest) {
-  res.setHeader('Content-Type', 'application/json')
-  return res.end(JSON.stringify(errorObject))
+  event.res.setHeader('Content-Type', 'application/json')
+  return event.res.end(JSON.stringify(errorObject))
   // }
 
   // HTML response

@@ -11,10 +11,10 @@ export interface ServerMiddleware {
    */
   path?: string
 
-  handle?: Middleware | string
   /**
-   * @deprecated use handle
+   * @deprecated use handler
    */
+  handle?: Middleware | string
   handler?: Middleware | string
 
   lazy?: boolean // Default is true
@@ -29,10 +29,10 @@ function filesToMiddleware (files: string[], baseDir: string, baseURL: string, o
         .slice(0, file.length - extname(file).length)
         .replace(/\/index$/, '')
     )
-    const handle = resolve(baseDir, file)
+    const handler = resolve(baseDir, file)
     return {
       route,
-      handle
+      handler
     }
   })
     .sort((a, b) => b.route.localeCompare(a.route))
