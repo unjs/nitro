@@ -1,5 +1,4 @@
 // import { pathToFileURL } from 'url'
-import { createRequire } from 'module'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
@@ -65,16 +64,6 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   if (nitro.options.sourceMap) {
     env.polyfill.push('source-map-support/register.js')
-  }
-
-  // TODO: #590
-  try {
-    const _require = createRequire(import.meta.url)
-    env.alias['vue/server-renderer'] = 'vue/server-renderer'
-    env.alias['vue/compiler-sfc'] = 'vue/compiler-sfc'
-    env.alias.vue = _require.resolve(`vue/dist/vue.cjs${nitro.options.dev ? '' : '.prod'}.js`)
-  } catch (_err) {
-    // Ignore when vue not installed
   }
 
   const buildServerDir = join(nitro.options.buildDir, 'dist/server')
