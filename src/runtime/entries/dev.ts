@@ -5,9 +5,9 @@ import { join } from 'path'
 import { mkdirSync } from 'fs'
 import { threadId, parentPort } from 'worker_threads'
 import { isWindows, provider } from 'std-env'
-import { handle } from '..'
+import { app } from '..'
 
-const server = new Server(handle)
+const server = new Server(app.nodeHandler)
 
 function getAddress () {
   // https://github.com/nuxt/framework/issues/1636

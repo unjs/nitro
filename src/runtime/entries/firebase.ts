@@ -2,6 +2,6 @@ import '#polyfill'
 
 // @ts-ignore
 import functions from 'firebase-functions'
-import { handle } from '..'
+import { app } from '..'
 
-export const server = functions.https.onRequest(handle)
+export const server = functions.https.onRequest(app.nodeHandler)

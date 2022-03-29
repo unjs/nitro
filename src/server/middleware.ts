@@ -11,10 +11,10 @@ export interface ServerMiddleware {
    */
   path?: string
 
-  handle?: Middleware | string
   /**
-   * @deprecated use handle
+   * @deprecated use handler
    */
+  handle?: Middleware | string
   handler?: Middleware | string
 
   lazy?: boolean // Default is true

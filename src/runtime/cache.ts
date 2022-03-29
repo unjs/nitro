@@ -1,5 +1,5 @@
 import hash from 'object-hash'
-import type { Handle } from 'h3'
+import type { Handler } from 'h3'
 import { storage } from '#storage'
 
 export interface CacheEntry {
@@ -86,7 +86,7 @@ function getKey (...args) {
   return args.length ? hash(args, {}) : ''
 }
 
-export function cachifyHandle (handle: Handle, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
+export function cachifyHandle (handle: Handler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
   const _opts: CachifyOptions = {
     getKey: req => req.originalUrl || req.url,
     transform (entry, _req, res) {

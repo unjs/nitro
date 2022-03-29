@@ -1,4 +1,4 @@
 import '#polyfill'
-import { handle } from '..'
+import { app } from '..'
 
-export default handle
+export default app.nodeHandler
