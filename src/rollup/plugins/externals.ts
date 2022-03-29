@@ -3,6 +3,7 @@ import { resolve, dirname, normalize, join, isAbsolute } from 'pathe'
 import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport } from 'mlly'
+import semver from 'semver'
 
 export interface NodeExternalsOptions {
   inline?: string[]
@@ -142,6 +143,17 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         .then(r => Array.from(r.fileList).map(f => resolve(opts.traceOptions.base, f)))
         .then(r => r.filter(file => file.includes('node_modules')))
 
+      // Read package.json with cache
+      const packageJSONCache = new Map() // pkgDir => contents
+      const getPackageJson = async (pkgDir: string) => {
+        if (packageJSONCache.has(pkgDir)) {
+          return packageJSONCache.get(pkgDir)
+        }
+        const pkgJSON = JSON.parse(await fsp.readFile(resolve(pkgDir, 'package.json'), 'utf8'))
+        packageJSONCache.set(pkgDir, pkgJSON)
+        return pkgJSON
+      }
+
       // Keep track of npm packages
       const tracedPackages = new Map() // name => pkgDir
       for (const file of tracedFiles) {
@@ -151,13 +163,19 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         // Check for duplicate versions
         const existingPkgDir = tracedPackages.get(pkgName)
         if (existingPkgDir && existingPkgDir !== pkgDir) {
-          console.warn(`Multiple versions of package ${pkgName} detected in:\n` + [
-            existingPkgDir,
-            pkgDir
-          ].map(p => '  - ' + p).join('\n'))
-          continue
+          const v1 = await getPackageJson(existingPkgDir).then(r => r.version)
+          const v2 = await getPackageJson(pkgDir).then(r => r.version)
+          if (semver.gte(v1, v2)) {
+            // Existing record is newer or same. Just skip.
+            continue
+          }
+          if (semver.major(v1) !== semver.major(v2)) {
+            console.warn(`Multiple major versions of package ${pkgName} are being externalized. Picking latest version.\n` + [
+              existingPkgDir + '@' + v1,
+              pkgDir + '@' + v2
+            ].map(p => '  - ' + p).join('\n'))
+          }
         }
-
         // Add to traced packages
         tracedPackages.set(pkgName, pkgDir)
       }
