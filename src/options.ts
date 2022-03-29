@@ -13,6 +13,7 @@ const NitroDefaults: NitroConfig = {
   analyze: false,
   experiments: {},
   moduleSideEffects: ['unenv/runtime/polyfill/'],
+  scanDirs: [],
   middleware: [],
   modulesDir: [],
   ignore: [],
@@ -80,6 +81,9 @@ export async function loadOptions (overrideConfig: NitroConfig = {}): Promise<Ni
   }
   options.modulesDir.push(resolve(options.rootDir, 'node_modules'))
   options.modulesDir.push(resolve(pkgDir, 'node_modules'))
+  if (!options.scanDirs.length) {
+    options.scanDirs = [options.srcDir]
+  }
 
   // Dev-only storage
   if (options.dev) {

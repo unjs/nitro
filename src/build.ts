@@ -123,7 +123,7 @@ export async function writeTypes (nitro: Nitro) {
 }
 
 async function _build (nitro: Nitro) {
-  nitro.scannedMiddleware = await scanMiddleware(nitro.options.srcDir)
+  nitro.scannedMiddleware = await scanMiddleware(nitro)
   await writeTypes(nitro)
 
   consola.start('Building server...')
@@ -203,7 +203,7 @@ function startRollupWatcher (nitro: Nitro) {
 
 async function _watch (nitro: Nitro) {
   let watcher = startRollupWatcher(nitro)
-  nitro.scannedMiddleware = await scanMiddleware(nitro.options.srcDir,
+  nitro.scannedMiddleware = await scanMiddleware(nitro,
     (middleware, event) => {
       nitro.scannedMiddleware = middleware
       if (['add', 'addDir'].includes(event)) {

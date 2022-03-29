@@ -45,6 +45,7 @@ export interface NitroOptions {
 
   rootDir: string
   srcDir: string
+  scanDirs: string[]
   buildDir: string
   generateDir: string
   publicDir: string
