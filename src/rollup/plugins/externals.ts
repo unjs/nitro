@@ -214,7 +214,10 @@ export function externals (opts: NodeExternalsOptions): Plugin {
 }
 
 function parseNodeModulePath (path: string) {
-  const [, baseDir, pkgName, subpath] = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(path)
+  if (!path) { return null }
+  const match = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(normalize(path))
+  if (!match) { return null }
+  const [, baseDir, pkgName, subpath] = match
   return {
     baseDir,
     pkgName,
