@@ -1,5 +1,6 @@
 import { resolve } from 'pathe'
 import { describe } from 'vitest'
+import destr from 'destr'
 import { setupTest, startServer, testNitro } from '../utils'
 
 describe('nitro:preset:vercel', () => {
@@ -9,9 +10,10 @@ describe('nitro:preset:vercel', () => {
       .then(r => r.default || r)
     await startServer(ctx, handle)
     return async ({ url }) => {
-      const data = await ctx.fetch(url)
+      const res = await ctx.fetch(url)
       return {
-        data
+        data: destr(await res.text()),
+        status: res.status
       }
     }
   })

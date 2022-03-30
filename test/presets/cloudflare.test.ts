@@ -1,4 +1,5 @@
 import { resolve } from 'pathe'
+import destr from 'destr'
 import { Miniflare } from 'miniflare'
 import { describe } from 'vitest'
 
@@ -9,12 +10,15 @@ describe('nitro:preset:cloudflare', () => {
   testNitro(ctx, () => {
     const mf = new Miniflare({ scriptPath: resolve(ctx.outDir, 'server/index.mjs') })
     return async ({ url, headers, method, body }) => {
-      const data = await mf.dispatchFetch('http://localhost' + url, {
+      const res = await mf.dispatchFetch('http://localhost' + url, {
         headers: headers || {},
         method: method || 'GET',
         body
-      }).then(r => r.text())
-      return { data }
+      })
+      return {
+        data: destr(await res.text()),
+        status: res.status
+      }
     }
   })
 })

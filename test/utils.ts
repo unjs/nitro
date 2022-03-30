@@ -1,9 +1,10 @@
 import { resolve } from 'pathe'
 import destr from 'destr'
 import { listen, Listener } from 'listhen'
-import { $fetch } from 'ohmyfetch'
+import { fetch } from 'ohmyfetch'
 import { expect, it, beforeAll, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
+import { joinURL } from 'ufo'
 import * as _nitro from '../src'
 
 const { createNitro, build } = (_nitro as any as { default: typeof _nitro }).default || _nitro
@@ -23,7 +24,7 @@ export function setupTest (preset) {
     preset,
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, '.output', preset),
-    fetch: url => $fetch(url, { baseURL: ctx.server!.url })
+    fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)))
   }
 
   beforeAll(async () => {
@@ -60,8 +61,24 @@ export function testNitro (_ctx, getHandler) {
     const { data: helloData } = await handler({ url: '/api/hello' })
     const { data: heyData } = await handler({ url: '/api/hey' })
     const { data: kebabData } = await handler({ url: '/api/kebab' })
-    expect(destr(helloData)).to.have.string('Hello API')
-    expect(destr(heyData)).to.have.string('Hey API')
-    expect(destr(kebabData)).to.have.string('hello-world')
+    expect(helloData).to.have.string('Hello API')
+    expect(heyData).to.have.string('Hey API')
+    expect(kebabData).to.have.string('hello-world')
+  })
+
+  it('handles errors', async () => {
+    const { data, status } = await handler({ url: '/api/error' })
+    expect(data).toMatchInlineSnapshot(`
+      {
+        "description": "",
+        "message": "Service Unavailable",
+        "statusCode": 503,
+        "statusMessage": "Service Unavailable",
+        "url": "/",
+      }
+      `)
+    expect(status).toBe(503)
+    const { data: heyData } = await handler({ url: '/api/hey' })
+    expect(heyData).to.have.string('Hey API')
   })
 }
