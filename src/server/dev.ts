@@ -2,7 +2,7 @@ import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import chokidar, { FSWatcher } from 'chokidar'
 import { debounce } from 'perfect-debounce'
-import { createApp, defineEventHandler, Middleware } from 'h3'
+import { CompatibilityEvent, createApp, defineEventHandler, Middleware } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 // import servePlaceholder from 'serve-placeholder'
@@ -14,27 +14,32 @@ import { createVFSHandler } from './vfs'
 
 export interface NitroWorker {
   worker: Worker,
-  address: string
+  address: { host: string, port: number, socketPath?: string }
 }
 
 function initWorker (filename): Promise<NitroWorker | null> {
   return new Promise((resolve, reject) => {
+    let _resolved = false
     if (!existsSync(filename)) {
       return null
     }
     const worker = new Worker(filename)
     worker.once('exit', (code) => {
       if (code) {
-        reject(new Error('[worker] exited with code: ' + code))
+        _resolved = true
+        reject(new Error(`Nitro worker exited with code (${code})`))
       }
     })
-    worker.on('error', (err) => {
-      console.error('[worker]', err)
-      err.message = '[worker] ' + err.message
-      reject(err)
+    worker.once('error', (err) => {
+      if (!_resolved) {
+        _resolved = true
+        err.message = '[worker init]' + err.message
+        reject(err)
+      }
     })
     worker.on('message', (event) => {
       if (event && event.address) {
+        _resolved = true
         resolve({
           worker,
           address: event.address
@@ -50,8 +55,8 @@ async function killWorker (worker?: NitroWorker) {
   }
   await worker.worker?.terminate()
   worker.worker = null
-  if (worker.address && existsSync(worker.address)) {
-    await fsp.rm(worker.address).catch(() => {})
+  if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
+    await fsp.rm(worker.address.socketPath)
   }
 }
 
@@ -59,19 +64,26 @@ export function createDevServer (nitro: Nitro) {
   // Worker
   const workerEntry = resolve(nitro.options.output.dir, nitro.options.output.serverDir, 'index.mjs')
 
-  let currentWorker: NitroWorker
+  let lastError: Error = null
 
+  let currentWorker: NitroWorker = null
   async function _reload () {
+    // Kill old worker
+    const oldWorker = currentWorker
+    currentWorker = null
+    await killWorker(oldWorker)
     // Create a new worker
-    const newWorker = await initWorker(workerEntry)
-
-    // Kill old worker in background
-    killWorker(currentWorker).catch(err => console.error(err))
-
-    // Replace new worker as current
-    currentWorker = newWorker
+    currentWorker = await initWorker(workerEntry)
   }
-  const reload = debounce(() => _reload().catch(console.warn))
+  const reload = debounce(() => _reload()
+    .then(() => {
+      lastError = null
+    })
+    .catch((error) => {
+      console.error('[worker reload]', error)
+      lastError = error
+    })
+  )
   nitro.hooks.hook('nitro:dev:reload', reload)
 
   // App
@@ -96,23 +108,23 @@ export function createDevServer (nitro: Nitro) {
   // SSR Proxy
   const proxy = httpProxy.createProxy()
   app.use(defineEventHandler((event) => {
-    if (currentWorker?.address) {
-      // Workaround to pass legacy req.spa to proxy
-      if ((event.req as any).spa) {
-        event.req.headers['x-nuxt-no-ssr'] = 'true'
-      }
-      return new Promise((resolve, reject) => {
-        proxy.web(event.req, event.res, { target: currentWorker.address }, (error: any) => {
-          if (error.code !== 'ECONNRESET') {
-            reject(error)
-          }
-          resolve()
-        })
-      })
-    } else {
-      event.res.setHeader('Content-Type', 'text/html; charset=UTF-8')
-      event.res.end('Not ready!')
+    const address = currentWorker?.address
+    if (!address || (address.socketPath && !existsSync(address.socketPath))) {
+      return sendUnavailable(event, lastError)
     }
+    // Workaround to pass legacy req.spa to proxy
+    if ((event.req as any).spa) {
+      event.req.headers['x-nuxt-no-ssr'] = 'true'
+    }
+    return new Promise((resolve, reject) => {
+      proxy.web(event.req, event.res, { target: address }, (error: any) => {
+        lastError = error
+        if (error.code !== 'ECONNRESET') {
+          reject(error)
+        }
+        resolve()
+      })
+    })
   }))
 
   // Listen
@@ -161,6 +173,26 @@ export function createDevServer (nitro: Nitro) {
 interface DynamicMiddleware {
   set: (input: Middleware) => void
   middleware: Middleware
+}
+
+function sendUnavailable (event: CompatibilityEvent, error?: Error) {
+  event.res.setHeader('Content-Type', 'text/html; charset=UTF-8')
+  event.res.statusCode = 503
+  event.res.statusMessage = 'Service Unavailable'
+  event.res.end(`<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <title>Nitro dev server</title>
+    <style> body { margin: 2em; } </style>
+  </head>
+    ${error ? '' : '<meta http-equiv="refresh" content="1">'}
+  </head>
+  <body>
+    <h1>Nitro worker is unavailable.</h1>
+    ${error ? `<pre>${error.stack}</pre>` : 'Please try again in few seconds...'}
+  </body>
+</html>
+`)
 }
 
 function createDynamicMiddleware (): DynamicMiddleware {

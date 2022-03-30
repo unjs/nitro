@@ -47,7 +47,6 @@ function renderHTMLError (error: ParsedError): string {
   <html lang="en">
   <head>
     <title>${error.statusMessage} (${error.statusCode})</title>
-    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/7.0.0/normalize.css">
     <style> body { margin: 2em; } </style>
   </head>
   <body>

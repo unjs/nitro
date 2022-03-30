@@ -31,6 +31,6 @@ server.listen(listenAddress, () => {
     event: 'listen',
     address: typeof _address === 'string'
       ? { socketPath: _address }
-      : `http://localhost:${_address.port}`
+      : { host: _address.address, port: _address.port }
   })
 })
