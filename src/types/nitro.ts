@@ -61,6 +61,7 @@ export interface NitroOptions {
   },
 
   prerender: {
+    crawlLinks: boolean
     routes: string[]
   },
 

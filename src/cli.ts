@@ -3,7 +3,8 @@
 import mri from 'mri'
 import { resolve } from 'pathe'
 import { createNitro } from './nitro'
-import { build, prerender, prepare, copyPublicAssets } from './build'
+import { build, prepare, copyPublicAssets } from './build'
+import { prerender } from './prerender'
 import { createDevServer } from './server/dev'
 
 async function main () {

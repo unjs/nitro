@@ -31,6 +31,7 @@ const NitroDefaults: NitroConfig = {
   },
   routes: {},
   prerender: {
+    crawlLinks: false,
     routes: []
   },
   publicDir: 'public',
