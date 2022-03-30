@@ -27,7 +27,7 @@ export default function handleError (error: any, event: CompatibilityEvent) {
 
   // Console output
   if (statusCode !== 404) {
-    console.error(error.message + '\n' + stack.map(l => '  ' + l.text).join('  \n'))
+    console.error('[nitro] [request error]', error.message + '\n' + stack.map(l => '  ' + l.text).join('  \n'))
   }
 
   event.res.statusCode = statusCode
