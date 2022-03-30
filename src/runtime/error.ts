@@ -17,7 +17,6 @@ export function handleError (error, event: CompatibilityEvent) {
       const text = line
         .replace(cwd + '/', './')
         .replace('webpack:/', '')
-        .replace('.vue', '.js') // TODO: Support sourcemap
         .trim()
       return {
         text,

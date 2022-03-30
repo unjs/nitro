@@ -43,20 +43,6 @@ export const getRollupConfig = (nitro: Nitro) => {
       // General
       debug: 'unenv/runtime/npm/debug',
       consola: 'unenv/runtime/npm/consola',
-      // Vue 2
-      encoding: 'unenv/runtime/mock/proxy',
-      he: 'unenv/runtime/mock/proxy',
-      resolve: 'unenv/runtime/mock/proxy',
-      'source-map': 'unenv/runtime/mock/proxy',
-      'lodash.template': 'unenv/runtime/mock/proxy',
-      'serialize-javascript': 'unenv/runtime/mock/proxy',
-      // Vue 3
-      'estree-walker': 'unenv/runtime/mock/proxy',
-      '@babel/parser': 'unenv/runtime/mock/proxy',
-      '@vue/compiler-core': 'unenv/runtime/mock/proxy',
-      '@vue/compiler-dom': 'unenv/runtime/mock/proxy',
-      '@vue/compiler-ssr': 'unenv/runtime/mock/proxy',
-      '@vue/devtools-api': 'unenv/runtime/mock/proxy',
       ...nitro.options.alias
     }
   }
@@ -222,7 +208,6 @@ export const getRollupConfig = (nitro: Nitro) => {
       '#_config': resolve(runtimeDir, 'config'),
       '#paths': resolve(runtimeDir, 'paths'),
       '#cache': resolve(runtimeDir, 'cache'),
-      '#nitro-renderer': resolve(runtimeDir, 'vue/vue3'),
       // TODO: Fix windows issue
       '#build': nitro.options.buildDir,
       '~': nitro.options.srcDir,
@@ -253,6 +238,7 @@ export const getRollupConfig = (nitro: Nitro) => {
         nitro.options.rootDir,
         nitro.options.srcDir,
         ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string'),
+        // TODO: Move to Nuxt
         ...(nitro.options.dev ? [] : ['vue', '@vue/', '@nuxt/'])
       ],
       traceOptions: {

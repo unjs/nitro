@@ -14,9 +14,7 @@ export default defineBuildConfig({
     'connect',
     'destr',
     'ohmyfetch',
-    'ora',
-    'vue-bundle-renderer',
-    'vue-server-renderer'
+    'ora'
   ],
   externals: [
     '@nuxt/schema'
