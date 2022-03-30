@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from 'fs'
 import { resolve, dirname, normalize, join, isAbsolute } from 'pathe'
 import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
-import { resolvePath, isValidNodeImport } from 'mlly'
+import { resolvePath, isValidNodeImport, normalizeid } from 'mlly'
 import semver from 'semver'
 
 export interface NodeExternalsOptions {
@@ -73,6 +73,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       if (opts.trace === false) {
         return {
           ...resolved,
+          id: normalizeid(resolved.id),
           external: true
         }
       }
