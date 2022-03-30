@@ -236,8 +236,6 @@ export const getRollupConfig = (nitro: Nitro) => {
         'virtual:',
         runtimeDir,
         nitro.options.srcDir,
-        nitro.options.rootDir,
-        nitro.options.srcDir,
         ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string'),
         // TODO: Move to Nuxt
         ...(nitro.options.dev ? [] : ['vue', '@vue/', '@nuxt/'])
