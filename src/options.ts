@@ -1,5 +1,6 @@
 import { resolve } from 'pathe'
 import { loadConfig } from 'c12'
+import { klona } from 'klona/full'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
 import * as PRESETS from './presets'
@@ -51,11 +52,13 @@ const NitroDefaults: NitroConfig = {
   }
 }
 
-export async function loadOptions (overrideConfig: NitroConfig = {}): Promise<NitroOptions> {
+export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
+  userConfig = klona(userConfig)
+
   const { config } = await loadConfig({
     name: 'nitro',
     defaults: NitroDefaults,
-    cwd: overrideConfig.rootDir,
+    cwd: userConfig.rootDir,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       if ((PRESETS as any as PT)[id]) {
@@ -66,15 +69,16 @@ export async function loadOptions (overrideConfig: NitroConfig = {}): Promise<Ni
       return null
     },
     overrides: {
-      ...overrideConfig,
+      ...userConfig,
       extends: [
-        overrideConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'server'
+        userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'server'
       ]
     }
   })
 
   // Normalize options
-  const options = config as NitroOptions
+  const options = klona(config) as NitroOptions
+  options._config = userConfig
   options.rootDir = resolve(options.rootDir || '.')
   options.srcDir = resolve(options.srcDir || options.rootDir)
   for (const key of ['srcDir', 'publicDir', 'generateDir', 'buildDir']) {

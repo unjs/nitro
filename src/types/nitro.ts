@@ -40,6 +40,8 @@ export interface NitroRouteRule {
 }
 
 export interface NitroOptions {
+  _config: NitroConfig
+
   preset: string
   unenv: UnenvPreset
 
