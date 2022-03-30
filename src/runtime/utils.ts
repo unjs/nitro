@@ -27,11 +27,19 @@ export async function useRequestBody (request: globalThis.Request): Promise<any>
   }
 }
 
-const hasReqHeader = (req, header, includes) => req.headers[header] && req.headers[header].toLowerCase().includes(includes)
+export function hasReqHeader (req, header, includes) {
+  return req.headers[header] && req.headers[header].toLowerCase().includes(includes)
+}
 
-export const isJsonRequest = (event: CompatibilityEvent) => hasReqHeader(event.req, 'accept', 'application/json') || hasReqHeader(event.req, 'user-agent', 'curl/') || hasReqHeader(event.req, 'user-agent', 'httpie/')
+export function isJsonRequest (event: CompatibilityEvent) {
+  return hasReqHeader(event.req, 'accept', 'application/json') ||
+    hasReqHeader(event.req, 'user-agent', 'curl/') ||
+    hasReqHeader(event.req, 'user-agent', 'httpie/') ||
+    event.req.url.endsWith('.json') ||
+    event.req.url.includes('/api/')
+}
 
-export const normalizeError = (error: any) => {
+export function normalizeError (error: any) {
   const cwd = process.cwd()
   const stack = (error.stack || '')
     .split('\n')
@@ -41,6 +49,7 @@ export const normalizeError = (error: any) => {
       const text = line
         .replace(cwd + '/', './')
         .replace('webpack:/', '')
+        .replace('file://', '')
         .trim()
       return {
         text,
@@ -51,7 +60,7 @@ export const normalizeError = (error: any) => {
     })
 
   const statusCode = error.statusCode || 500
-  const statusMessage = error.statusMessage ?? (statusCode === 404 ? 'Page Not Found' : 'Internal Server Error')
+  const statusMessage = error.statusMessage ?? (statusCode === 404 ? 'Route Not Found' : 'Internal Server Error')
   const message = error.message || error.toString()
 
   return {
