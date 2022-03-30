@@ -65,6 +65,7 @@ export function createDevServer (nitro: Nitro) {
   const workerEntry = resolve(nitro.options.output.dir, nitro.options.output.serverDir, 'index.mjs')
 
   let lastError: Error = null
+  let reloadPromise: Promise<void> = null
 
   let currentWorker: NitroWorker = null
   async function _reload () {
@@ -75,15 +76,17 @@ export function createDevServer (nitro: Nitro) {
     // Create a new worker
     currentWorker = await initWorker(workerEntry)
   }
-  const reload = debounce(() => _reload()
-    .then(() => {
+  const reload = debounce(() => {
+    reloadPromise = _reload().then(() => {
       lastError = null
-    })
-    .catch((error) => {
+    }).catch((error) => {
       console.error('[worker reload]', error)
       lastError = error
+    }).finally(() => {
+      reloadPromise = null
     })
-  )
+    return reloadPromise
+  })
   nitro.hooks.hook('nitro:dev:reload', reload)
 
   // App
@@ -107,7 +110,8 @@ export function createDevServer (nitro: Nitro) {
 
   // SSR Proxy
   const proxy = httpProxy.createProxy()
-  app.use(defineEventHandler((event) => {
+  app.use(defineEventHandler(async (event) => {
+    await reloadPromise
     const address = currentWorker?.address
     if (!address || (address.socketPath && !existsSync(address.socketPath))) {
       return sendUnavailable(event, lastError)
