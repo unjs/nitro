@@ -8,10 +8,8 @@ describe('nitro:preset:node', () => {
     const { app } = await import(resolve(ctx.outDir, 'server/index.mjs'))
     await startServer(ctx, app.nodeHandler)
     return async ({ url }) => {
-      const data = await ctx.fetch(url)
-      return {
-        data
-      }
+      const res = await ctx.fetch(url)
+      return res
     }
   })
 })

@@ -22,7 +22,8 @@ describe('nitro:preset:lambda', () => {
       }
       const res = await handler(event)
       return {
-        data: res.body
+        data: res.body,
+        status: res.statusCode
       }
     }
   })
@@ -50,7 +51,8 @@ describe('nitro:preset:lambda', () => {
       }
       const res = await handler(event)
       return {
-        data: res.body
+        data: res.body,
+        status: res.statusCode
       }
     }
   })
