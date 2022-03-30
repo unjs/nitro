@@ -4370,6 +4370,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"klona@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "klona@npm:2.0.5"
+  checksum: 8c976126ea252b766e648a4866e1bccff9d3b08432474ad80c559f6c7265cf7caede2498d463754d8c88c4759895edd8210c85c0d3155e6aae4968362889466f
+  languageName: node
+  linkType: hard
+
 "lazystream@npm:^1.0.0":
   version: 1.0.1
   resolution: "lazystream@npm:1.0.1"
@@ -5004,6 +5011,7 @@ __metadata:
     http-proxy: ^1.18.1
     is-primitive: ^3.0.1
     jiti: ^1.13.0
+    klona: ^2.0.5
     listhen: ^0.2.6
     mime: ^3.0.0
     miniflare: ^2.3.0

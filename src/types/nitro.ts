@@ -40,6 +40,8 @@ export interface NitroRouteRule {
 }
 
 export interface NitroOptions {
+  _config: NitroConfig
+
   preset: string
   unenv: UnenvPreset
 
@@ -61,6 +63,7 @@ export interface NitroOptions {
   },
 
   prerender: {
+    crawlLinks: boolean
     routes: string[]
   },
 

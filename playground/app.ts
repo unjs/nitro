@@ -1,6 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+import { defineEventHandler } from 'h3'
 
+export default defineEventHandler(() => {
+  return `<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -19,4 +21,5 @@
     </ul>
   </body>
 
-</html>
+</html>`
+})
