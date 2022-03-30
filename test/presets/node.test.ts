@@ -1,6 +1,5 @@
 import { resolve } from 'pathe'
 import { describe } from 'vitest'
-import destr from 'destr'
 import { startServer, setupTest, testNitro } from '../utils'
 
 describe('nitro:preset:node', () => {
@@ -11,7 +10,7 @@ describe('nitro:preset:node', () => {
     return async ({ url }) => {
       const res = await ctx.fetch(url)
       return {
-        data: destr(await res.text()),
+        data: await res.text(),
         status: res.status
       }
     }

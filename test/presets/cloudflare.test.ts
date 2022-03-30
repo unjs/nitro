@@ -1,5 +1,4 @@
 import { resolve } from 'pathe'
-import destr from 'destr'
 import { Miniflare } from 'miniflare'
 import { describe } from 'vitest'
 
@@ -16,7 +15,7 @@ describe('nitro:preset:cloudflare', () => {
         body
       })
       return {
-        data: destr(await res.text()),
+        data: await res.text(),
         status: res.status
       }
     }

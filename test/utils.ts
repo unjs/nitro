@@ -1,5 +1,6 @@
 import { resolve } from 'pathe'
 import { listen, Listener } from 'listhen'
+import destr from 'destr'
 import { fetch } from 'ohmyfetch'
 import { expect, it, beforeAll, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
@@ -60,14 +61,14 @@ export function testNitro (_ctx, getHandler) {
     const { data: helloData } = await handler({ url: '/api/hello' })
     const { data: heyData } = await handler({ url: '/api/hey' })
     const { data: kebabData } = await handler({ url: '/api/kebab' })
-    expect(helloData).to.have.string('Hello API')
-    expect(heyData).to.have.string('Hey API')
-    expect(kebabData).to.have.string('hello-world')
+    expect(destr(helloData)).to.have.string('Hello API')
+    expect(destr(heyData)).to.have.string('Hey API')
+    expect(destr(kebabData)).to.have.string('hello-world')
   })
 
   it('handles errors', async () => {
     const { data, status } = await handler({ url: '/api/error' })
-    expect(data).toMatchInlineSnapshot(`
+    expect(destr(data)).toMatchInlineSnapshot(`
       {
         "description": "",
         "message": "Service Unavailable",
@@ -78,6 +79,6 @@ export function testNitro (_ctx, getHandler) {
       `)
     expect(status).toBe(503)
     const { data: heyData } = await handler({ url: '/api/hey' })
-    expect(heyData).to.have.string('Hey API')
+    expect(destr(heyData)).to.have.string('Hey API')
   })
 }
