@@ -1,5 +1,6 @@
 import { resolve } from 'pathe'
 import { describe } from 'vitest'
+import destr from 'destr'
 import type { APIGatewayProxyEvent, APIGatewayProxyEventV2 } from 'aws-lambda'
 import { setupTest, testNitro } from '../utils'
 
@@ -22,7 +23,7 @@ describe('nitro:preset:lambda', () => {
       }
       const res = await handler(event)
       return {
-        data: res.body,
+        data: destr(res.body),
         status: res.statusCode
       }
     }
@@ -51,7 +52,7 @@ describe('nitro:preset:lambda', () => {
       }
       const res = await handler(event)
       return {
-        data: res.body,
+        data: destr(res.body),
         status: res.statusCode
       }
     }
