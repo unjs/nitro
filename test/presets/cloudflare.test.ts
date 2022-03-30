@@ -1,5 +1,6 @@
 import { resolve } from 'pathe'
 import { Miniflare } from 'miniflare'
+import destr from 'destr'
 import { describe } from 'vitest'
 
 import { setupTest, testNitro } from '../utils'
@@ -15,7 +16,7 @@ describe('nitro:preset:cloudflare', () => {
         body
       })
       return {
-        data: await res.text(),
+        data: destr(await res.text()),
         status: res.status
       }
     }

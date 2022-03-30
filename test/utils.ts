@@ -69,7 +69,15 @@ export function testNitro (_ctx, getHandler) {
 
   it('handles errors', async () => {
     const { data, status } = await handler({ url: '/api/error' })
-    expect(data).toMatchInlineSnapshot('"{\\"url\\":\\"/\\",\\"statusCode\\":503,\\"statusMessage\\":\\"Service Unavailable\\",\\"message\\":\\"Service Unavailable\\",\\"description\\":\\"\\"}"')
+    expect(data).toMatchInlineSnapshot(`
+      {
+        "description": "",
+        "message": "Service Unavailable",
+        "statusCode": 503,
+        "statusMessage": "Service Unavailable",
+        "url": "/",
+      }
+      `)
     expect(status).toBe(503)
     const { data: heyData } = await handler({ url: '/api/hey' })
     expect(heyData).to.have.string('Hey API')
