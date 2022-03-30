@@ -159,6 +159,9 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       const tracedPackages = new Map() // name => pkgDir
       for (const file of tracedFiles) {
         const { baseDir, pkgName } = parseNodeModulePath(file)
+        if (!pkgName) {
+          continue
+        }
         const pkgDir = resolve(baseDir, pkgName)
 
         // Check for duplicate versions
@@ -215,9 +218,9 @@ export function externals (opts: NodeExternalsOptions): Plugin {
 }
 
 function parseNodeModulePath (path: string) {
-  if (!path) { return null }
+  if (!path) { return {} }
   const match = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(normalize(path))
-  if (!match) { return null }
+  if (!match) { return {} }
   const [, baseDir, pkgName, subpath] = match
   return {
     baseDir,
