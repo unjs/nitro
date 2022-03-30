@@ -25,6 +25,7 @@ export function setupTest (preset) {
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, '.output', preset),
     fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)))
+      .then(async res => ({ status: res.status, data: destr(await res.text()) }))
   }
 
   beforeAll(async () => {
@@ -61,24 +62,16 @@ export function testNitro (_ctx, getHandler) {
     const { data: helloData } = await handler({ url: '/api/hello' })
     const { data: heyData } = await handler({ url: '/api/hey' })
     const { data: kebabData } = await handler({ url: '/api/kebab' })
-    expect(destr(helloData)).to.have.string('Hello API')
-    expect(destr(heyData)).to.have.string('Hey API')
-    expect(destr(kebabData)).to.have.string('hello-world')
+    expect(helloData).to.have.string('Hello API')
+    expect(heyData).to.have.string('Hey API')
+    expect(kebabData).to.have.string('hello-world')
   })
 
   it('handles errors', async () => {
     const { data, status } = await handler({ url: '/api/error' })
-    expect(destr(data)).toMatchInlineSnapshot(`
-      {
-        "description": "",
-        "message": "Service Unavailable",
-        "statusCode": 503,
-        "statusMessage": "Service Unavailable",
-        "url": "/",
-      }
-      `)
+    expect(data).toMatchInlineSnapshot('"{\\"url\\":\\"/\\",\\"statusCode\\":503,\\"statusMessage\\":\\"Service Unavailable\\",\\"message\\":\\"Service Unavailable\\",\\"description\\":\\"\\"}"')
     expect(status).toBe(503)
     const { data: heyData } = await handler({ url: '/api/hey' })
-    expect(destr(heyData)).to.have.string('Hey API')
+    expect(heyData).to.have.string('Hey API')
   })
 }

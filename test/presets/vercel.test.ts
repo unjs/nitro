@@ -10,10 +10,7 @@ describe('nitro:preset:vercel', () => {
     await startServer(ctx, handle)
     return async ({ url }) => {
       const res = await ctx.fetch(url)
-      return {
-        data: await res.text(),
-        status: res.status
-      }
+      return res
     }
   })
 })
