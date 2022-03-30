@@ -17,29 +17,22 @@ export interface NitroWorker {
   address: { host: string, port: number, socketPath?: string }
 }
 
-function initWorker (filename): Promise<NitroWorker | null> {
+function initWorker (filename: string): Promise<NitroWorker> | null {
+  if (!existsSync(filename)) {
+    return null
+  }
   return new Promise((resolve, reject) => {
-    let _resolved = false
-    if (!existsSync(filename)) {
-      return null
-    }
     const worker = new Worker(filename)
     worker.once('exit', (code) => {
-      if (code) {
-        _resolved = true
-        reject(new Error(`Nitro worker exited with code (${code})`))
-      }
+      reject(new Error(code ? '[worker] exited with code: ' + code : '[worker] exited'))
     })
     worker.once('error', (err) => {
-      if (!_resolved) {
-        _resolved = true
-        err.message = '[worker init]' + err.message
-        reject(err)
-      }
+      err.message = '[worker init]' + err.message
+      reject(err)
     })
     worker.on('message', (event) => {
       if (event && event.address) {
-        _resolved = true
+        worker.removeAllListeners()
         resolve({
           worker,
           address: event.address
@@ -54,6 +47,7 @@ async function killWorker (worker?: NitroWorker) {
     return
   }
   await worker.worker?.terminate()
+  worker.worker.removeAllListeners()
   worker.worker = null
   if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
     await fsp.rm(worker.address.socketPath)
