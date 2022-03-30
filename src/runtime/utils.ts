@@ -51,7 +51,7 @@ export const normalizeError = (error: any) => {
     })
 
   const statusCode = error.statusCode || 500
-  const statusMessage = error.statusMessage ?? statusCode === 404 ? 'Page Not Found' : 'Internal Server Error'
+  const statusMessage = error.statusMessage ?? (statusCode === 404 ? 'Page Not Found' : 'Internal Server Error')
   const message = error.message || error.toString()
 
   return {
