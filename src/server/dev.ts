@@ -30,15 +30,17 @@ function initWorker (filename: string): Promise<NitroWorker> | null {
       err.message = '[worker init]' + err.message
       reject(err)
     })
-    worker.on('message', (event) => {
-      if (event && event.address) {
-        worker.removeAllListeners()
-        resolve({
-          worker,
-          address: event.address
-        } as NitroWorker)
+    const addressLitener = (event) => {
+      if (!event || !event.address) {
+        return
       }
-    })
+      worker.off('message', addressLitener)
+      resolve({
+        worker,
+        address: event.address
+      } as NitroWorker)
+    }
+    worker.on('message', addressLitener)
   })
 }
 
@@ -46,8 +48,8 @@ async function killWorker (worker?: NitroWorker) {
   if (!worker) {
     return
   }
-  await worker.worker?.terminate()
   worker.worker.removeAllListeners()
+  await worker.worker?.terminate()
   worker.worker = null
   if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
     await fsp.rm(worker.address.socketPath)
