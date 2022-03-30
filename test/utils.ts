@@ -1,5 +1,4 @@
 import { resolve } from 'pathe'
-import destr from 'destr'
 import { listen, Listener } from 'listhen'
 import { fetch } from 'ohmyfetch'
 import { expect, it, beforeAll, afterAll } from 'vitest'
