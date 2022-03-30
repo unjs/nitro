@@ -1,3 +1,5 @@
+import type { CompatibilityEvent } from 'h3'
+
 const METHOD_WITH_BODY_RE = /post|put|patch/i
 const TEXT_MIME_RE = /application\/text|text\/html/
 const JSON_MIME_RE = /application\/json/
@@ -22,5 +24,40 @@ export async function useRequestBody (request: globalThis.Request): Promise<any>
   } else {
     const blob = await request.blob()
     return URL.createObjectURL(blob)
+  }
+}
+
+const hasReqHeader = (req, header, includes) => req.headers[header] && req.headers[header].toLowerCase().includes(includes)
+
+export const isJsonRequest = (event: CompatibilityEvent) => hasReqHeader(event.req, 'accept', 'application/json') || hasReqHeader(event.req, 'user-agent', 'curl/') || hasReqHeader(event.req, 'user-agent', 'httpie/')
+
+export const normalizeError = (error: any) => {
+  const cwd = process.cwd()
+  const stack = (error.stack || '')
+    .split('\n')
+    .splice(1)
+    .filter(line => line.includes('at '))
+    .map((line) => {
+      const text = line
+        .replace(cwd + '/', './')
+        .replace('webpack:/', '')
+        .trim()
+      return {
+        text,
+        internal: (line.includes('node_modules') && !line.includes('.cache')) ||
+          line.includes('internal') ||
+          line.includes('new Promise')
+      }
+    })
+
+  const statusCode = error.statusCode || 500
+  const statusMessage = error.statusMessage ?? statusCode === 404 ? 'Page Not Found' : 'Internal Server Error'
+  const message = error.message || error.toString()
+
+  return {
+    stack,
+    statusCode,
+    statusMessage,
+    message
   }
 }
