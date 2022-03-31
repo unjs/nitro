@@ -36,7 +36,7 @@ const NitroDefaults: NitroConfig = {
     routes: []
   },
   publicDir: 'public',
-  buildDir: 'dist',
+  buildDir: '.nitro',
   generateDir: 'dist',
   routerBase: '/',
   publicPath: '/',
