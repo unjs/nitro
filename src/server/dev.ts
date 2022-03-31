@@ -185,11 +185,10 @@ function sendUnavailable (event: CompatibilityEvent, error?: Error) {
     <title>Nitro dev server</title>
     <style> body { margin: 2em; } </style>
   </head>
-    ${error ? '' : '<meta http-equiv="refresh" content="1">'}
   </head>
   <body>
     <h1>Nitro worker is unavailable.</h1>
-    ${error ? `<pre>${error.stack}</pre>` : 'Please try again in few seconds...'}
+    ${error ? `<pre>${error.stack}</pre>` : 'Please try again in a few seconds...'}
   </body>
 </html>
 `)
