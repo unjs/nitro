@@ -121,7 +121,7 @@ async function _build (nitro: Nitro) {
   const nitroConfigPath = resolve(nitro.options.output.dir, 'nitro.json')
   const buildInfo = {
     date: new Date(),
-    // preset: nitro.options.preset,
+    preset: nitro.options.preset,
     commands: {
       preview: rewriteBuildPaths(nitro.options.commands.preview, '.'),
       deploy: rewriteBuildPaths(nitro.options.commands.deploy, '.')
