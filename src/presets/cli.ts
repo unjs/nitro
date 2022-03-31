@@ -4,6 +4,6 @@ export const cli = defineNitroPreset({
   extends: 'node',
   entry: '#nitro/entries/cli',
   commands: {
-    preview: 'Run with node {{ options.srcDir }} [route]'
+    preview: 'Run with node ./server/index.mjs [route]'
   }
 })

@@ -114,17 +114,14 @@ async function _build (nitro: Nitro) {
   consola.start('Writing server bundle...')
   await build.write(nitro.options.rollupConfig.output)
 
-  const rewriteBuildPaths = (input: unknown, to: string) =>
-    typeof input === 'string' ? replaceAll(input, nitro.options.output.dir, to) : undefined
-
   // Write build info
   const nitroConfigPath = resolve(nitro.options.output.dir, 'nitro.json')
   const buildInfo = {
     date: new Date(),
     preset: nitro.options.preset,
     commands: {
-      preview: rewriteBuildPaths(nitro.options.commands.preview, '.'),
-      deploy: rewriteBuildPaths(nitro.options.commands.deploy, '.')
+      preview: nitro.options.commands.preview,
+      deploy: nitro.options.commands.deploy
     }
   }
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2))
@@ -134,14 +131,15 @@ async function _build (nitro: Nitro) {
   await nitro.hooks.callHook('nitro:compiled', nitro)
 
   // Show deploy and preview hints
-  // TODO
-  // const rOutDir = relative(process.cwd(), nitro.options.output.dir)
-  if (nitro.options.commands.preview) {
-    // consola.info(`You can preview this build using \`${rewriteBuildPaths(nitroContext.commands.preview, rOutDir)}\``)
-    // consola.info('You can preview this build using `nuxi preview`')
+  const rOutput = relative(process.cwd(), nitro.options.output.dir)
+  const rewriteRelativePaths = (input: string) => {
+    return input.replaceAll(/\s\.\/([^\s]+)/g, ` ${rOutput}/$1`)
   }
-  if (nitro.options.commands.deploy) {
-    // consola.info(`You can deploy this build using \`${rewriteBuildPaths(nitro.options.commands.deploy, rOutDir)}\``)
+  if (buildInfo.commands.preview) {
+    consola.info(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
+  }
+  if (buildInfo.commands.deploy) {
+    consola.info(`You can deploy this build using \`${rewriteRelativePaths(buildInfo.commands.deploy)}\``)
   }
 
   return {

@@ -5,6 +5,6 @@ export const server = defineNitroPreset({
   entry: '#nitro/entries/server',
   serveStatic: true,
   commands: {
-    preview: 'node {{ options.output.serverDir }}/index.mjs'
+    preview: 'node ./server/index.mjs'
   }
 })

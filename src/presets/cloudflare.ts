@@ -10,8 +10,8 @@ export const cloudflare = defineNitroPreset({
     'wrangler.toml'
   ],
   commands: {
-    preview: 'npx miniflare {{ options.output.serverDir }}/index.mjs --site {{ options.output.publicDir }}',
-    deploy: 'cd {{ options.output.serverDir }} && npx wrangler publish'
+    preview: 'npx miniflare ./server/index.mjs --site ./public',
+    deploy: 'cd ./server && npx wrangler publish'
   },
   hooks: {
     async 'nitro:compiled' (nitro: Nitro) {

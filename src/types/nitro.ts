@@ -107,8 +107,8 @@ export interface NitroOptions {
   }
 
   commands: {
-    preview: string | ((nitro: Nitro) => string)
-    deploy: string | ((nitro: Nitro) => string)
+    preview: string
+    deploy: string
   }
 
   autoImport: UnimportOptions
