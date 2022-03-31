@@ -4,7 +4,7 @@ export const prerender = defineNitroPreset({
   extends: 'node',
   entry: '#nitro/entries/node',
   output: {
-    dir: '{{ buildDir }}/prerender'
+    serverDir: '{{ buildDir }}/prerender'
   },
   externals: { trace: false }
 })
