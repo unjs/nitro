@@ -1,12 +1,11 @@
 import { relative, resolve, join } from 'pathe'
-import consola from 'consola'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import { watch } from 'chokidar'
 import { debounce } from 'perfect-debounce'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig } from './rollup/config'
-import { prettyPath, writeFile, isDirectory, replaceAll, serializeTemplate } from './utils'
+import { prettyPath, writeFile, isDirectory, serializeTemplate } from './utils'
 import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
 
@@ -23,12 +22,12 @@ export async function prepare (nitro: Nitro) {
 }
 
 async function cleanupDir (dir: string) {
-  consola.info('Cleaning up', prettyPath(dir))
+  // consola.info('Cleaning up', prettyPath(dir))
   await fse.emptyDir(dir)
 }
 
 export async function copyPublicAssets (nitro: Nitro) {
-  consola.start('Generating public...')
+  nitro.logger.start('Generating public...')
 
   const clientDist = resolve(nitro.options.buildDir, 'dist/client')
   if (await isDirectory(clientDist)) {
@@ -40,7 +39,7 @@ export async function copyPublicAssets (nitro: Nitro) {
     await fse.copy(publicDir, nitro.options.output.publicDir)
   }
 
-  consola.success('Generated public ' + prettyPath(nitro.options.output.publicDir))
+  nitro.logger.success('Generated public ' + prettyPath(nitro.options.output.publicDir))
 }
 
 export async function build (nitro: Nitro) {
@@ -105,13 +104,13 @@ async function _build (nitro: Nitro) {
   await scanHandlers(nitro)
   await writeTypes(nitro)
 
-  consola.start('Building server...')
+  nitro.logger.start('Building server...')
   const build = await rollup.rollup(nitro.options.rollupConfig).catch((error) => {
-    consola.error('Rollup error: ' + error.message)
+    nitro.logger.error('Rollup error: ' + error.message)
     throw error
   })
 
-  consola.start('Writing server bundle...')
+  nitro.logger.start('Writing server bundle...')
   await build.write(nitro.options.rollupConfig.output)
 
   // Write build info
@@ -126,8 +125,10 @@ async function _build (nitro: Nitro) {
   }
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2))
 
-  consola.success('Server built')
-  await printFSTree(nitro.options.output.serverDir)
+  nitro.logger.success('Server built')
+  if (nitro.options.logLevel > 1) {
+    await printFSTree(nitro.options.output.serverDir)
+  }
   await nitro.hooks.callHook('nitro:compiled', nitro)
 
   // Show deploy and preview hints
@@ -136,10 +137,10 @@ async function _build (nitro: Nitro) {
     return input.replaceAll(/\s\.\/([^\s]+)/g, ` ${rOutput}/$1`)
   }
   if (buildInfo.commands.preview) {
-    consola.info(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
+    nitro.logger.info(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
   }
   if (buildInfo.commands.deploy) {
-    consola.info(`You can deploy this build using \`${rewriteRelativePaths(buildInfo.commands.deploy)}\``)
+    nitro.logger.info(`You can deploy this build using \`${rewriteRelativePaths(buildInfo.commands.deploy)}\``)
   }
 
   return {
@@ -165,14 +166,14 @@ function startRollupWatcher (nitro: Nitro) {
       // Finished building all bundles
       case 'END':
         nitro.hooks.callHook('nitro:compiled', nitro)
-        consola.success('Nitro built', start ? `in ${Date.now() - start} ms` : '')
+        nitro.logger.success('Nitro built', start ? `in ${Date.now() - start} ms` : '')
         nitro.hooks.callHook('nitro:dev:reload')
         return
 
       // Encountered an error while bundling
       case 'ERROR':
-        consola.error('Rollup error: ' + event.error)
-      // consola.error(event.error)
+        nitro.logger.error('Rollup error: ' + event.error)
+      // nitro.logger.error(event.error)
     }
   })
   return watcher

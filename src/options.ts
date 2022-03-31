@@ -35,6 +35,7 @@ const NitroDefaults: NitroConfig = {
     crawlLinks: false,
     routes: []
   },
+  logLevel: 3,
   publicDir: 'public',
   buildDir: '.nitro',
   generateDir: 'dist',

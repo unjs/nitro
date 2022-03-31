@@ -1,9 +1,9 @@
 import { existsSync, promises as fsp } from 'fs'
 import { resolve } from 'pathe'
-import consola from 'consola'
 import { joinURL } from 'ufo'
 import { prettyPath } from '../utils'
 import { defineNitroPreset } from '../preset'
+import type { Nitro } from '../types'
 
 export const browser = defineNitroPreset((_input) => {
   // TODO
@@ -58,20 +58,20 @@ if ('serviceWorker' in navigator) {
       'nitro:document' (tmpl) {
         tmpl.contents = tmpl.contents.replace('</body>', script + '</body>')
       },
-      async 'nitro:compiled' ({ output }: any) {
-        await fsp.writeFile(resolve(output.publicDir, 'sw.js'), `self.importScripts('${joinURL(baseURL, '_server/index.mjs')}');`, 'utf8')
+      async 'nitro:compiled' (nitro: Nitro) {
+        await fsp.writeFile(resolve(nitro.options.output.publicDir, 'sw.js'), `self.importScripts('${joinURL(baseURL, '_server/index.mjs')}');`, 'utf8')
 
         // Temp fix
-        if (!existsSync(resolve(output.publicDir, 'index.html'))) {
-          await fsp.writeFile(resolve(output.publicDir, 'index.html'), html, 'utf8')
+        if (!existsSync(resolve(nitro.options.output.publicDir, 'index.html'))) {
+          await fsp.writeFile(resolve(nitro.options.publicDir, 'index.html'), html, 'utf8')
         }
-        if (!existsSync(resolve(output.publicDir, '200.html'))) {
-          await fsp.writeFile(resolve(output.publicDir, '200.html'), html, 'utf8')
+        if (!existsSync(resolve(nitro.options.publicDir, '200.html'))) {
+          await fsp.writeFile(resolve(nitro.options.publicDir, '200.html'), html, 'utf8')
         }
-        if (!existsSync(resolve(output.publicDir, '404.html'))) {
-          await fsp.writeFile(resolve(output.publicDir, '404.html'), html, 'utf8')
+        if (!existsSync(resolve(nitro.options.publicDir, '404.html'))) {
+          await fsp.writeFile(resolve(nitro.options.publicDir, '404.html'), html, 'utf8')
         }
-        consola.info('Ready to deploy to static hosting:', prettyPath(output.publicDir as string))
+        nitro.logger.info('Ready to deploy to static hosting:', prettyPath(nitro.options.publicDir as string))
       }
     }
   }

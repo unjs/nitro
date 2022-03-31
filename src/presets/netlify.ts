@@ -1,6 +1,5 @@
 import { existsSync, promises as fsp } from 'fs'
 import { join } from 'pathe'
-import consola from 'consola'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
@@ -17,10 +16,10 @@ export const netlify = defineNitroPreset({
       if (existsSync(redirectsPath)) {
         const currentRedirects = await fsp.readFile(redirectsPath, 'utf-8')
         if (currentRedirects.match(/^\/\* /m)) {
-          consola.info('Not adding Nitro fallback to `_redirects` (as an existing fallback was found).')
+          nitro.logger.info('Not adding Nitro fallback to `_redirects` (as an existing fallback was found).')
           return
         }
-        consola.info('Adding Nitro fallback to `_redirects` to handle all unmatched routes.')
+        nitro.logger.info('Adding Nitro fallback to `_redirects` to handle all unmatched routes.')
         contents = currentRedirects + '\n' + contents
       }
       await fsp.writeFile(redirectsPath, contents)

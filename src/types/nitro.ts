@@ -3,6 +3,7 @@ import type { Preset as UnenvPreset } from 'unenv'
 import type { Unimport, UnimportOptions } from 'unimport'
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
+import type { Consola, LogLevel } from 'consola'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { StorageOptions } from '../rollup/plugins/storage'
 import type { AssetOptions } from '../rollup/plugins/assets'
@@ -16,6 +17,7 @@ export interface Nitro {
   vfs: Record<string, string>
   hooks: Hookable<NitroHooks>
   unimport?: Unimport
+  logger: Consola
 }
 
 export interface NitroHooks {
@@ -57,6 +59,8 @@ export interface NitroOptions {
   routerBase: string
   publicPath: string
   staticAssets: any
+
+  logLevel: LogLevel
 
   routes: {
     [path: string]: NitroRouteRule

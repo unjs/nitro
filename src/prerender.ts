@@ -19,6 +19,7 @@ export async function prerender (nitro: Nitro) {
   nitro = await createNitro({
     ...nitro.options._config,
     rootDir: nitro.options.rootDir,
+    logLevel: 0,
     preset: 'prerender'
   })
   await build(nitro)

@@ -1,6 +1,7 @@
 import { resolve } from 'pathe'
 import { createHooks } from 'hookable'
 import { createUnimport } from 'unimport'
+import consola from 'consola'
 import type { NitroConfig, Nitro } from './types'
 import { resolvePath } from './utils'
 import { loadOptions } from './options'
@@ -14,7 +15,13 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     options,
     hooks: createHooks(),
     vfs: {},
+    logger: consola.withTag('nitro'),
     scannedHandlers: []
+  }
+
+  // Logger config
+  if (nitro.options.logLevel !== undefined) {
+    nitro.logger.level = nitro.options.logLevel
   }
 
   // Init hooks
