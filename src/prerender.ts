@@ -1,4 +1,4 @@
-import { resolve, join } from 'pathe'
+import { resolve, relative, join } from 'pathe'
 import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro } from './types'
@@ -16,16 +16,17 @@ export async function prerender (nitro: Nitro) {
     return
   }
   // Build with prerender preset
-  nitro = await createNitro({
+  nitro.logger.start('Preparing prerenderer...')
+  const nitroRenderer = await createNitro({
     ...nitro.options._config,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: 'prerender'
   })
-  await build(nitro)
+  await build(nitroRenderer)
 
   // Import renderer entry
-  const app = await import(resolve(nitro.options.output.serverDir, 'index.mjs'))
+  const app = await import(resolve(nitroRenderer.options.output.serverDir, 'index.mjs'))
 
   // Start prerendering
   const generatedRoutes = new Set()
@@ -36,7 +37,11 @@ export async function prerender (nitro: Nitro) {
     const additionalExtension = getExtension(route) ? '' : guessExt(res.headers.get('content-type'))
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     const fileName = routeWithIndex + additionalExtension
-    await writeFile(join(nitro.options.output.publicDir, fileName), contents, true)
+    const filePath = join(nitro.options.output.publicDir, fileName)
+    await writeFile(filePath, contents)
+
+    const rPath = relative(process.cwd(), filePath)
+    nitro.logger.log(` - [${res.status}] Prerendered \`${route}\` to \`${rPath}\``)
 
     // Crawl Links
     if (nitro.options.prerender.crawlLinks && fileName.endsWith('.html')) {
@@ -54,7 +59,9 @@ export async function prerender (nitro: Nitro) {
     const results = await Promise.all(Array.from(routes).map(async (route) => {
       if (generatedRoutes.has(route)) { return false }
       generatedRoutes.add(route)
-      await generateRoute(route).catch(console.error)
+      await generateRoute(route).catch((error) => {
+        nitro.logger.error(`Error while generating route ${route}`, error)
+      })
       return true
     }))
     return results.filter(Boolean).length // At least one route generated
