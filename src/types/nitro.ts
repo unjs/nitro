@@ -103,6 +103,7 @@ export interface NitroOptions {
   }
   externals: boolean | NodeExternalsOptions
   analyze: false | PluginVisualizerOptions
+  replace: Record<string, string | ((id: string) => string)>
 
   // Advanced
   hooks: NestedHooks<NitroHooks>

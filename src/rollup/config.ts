@@ -143,7 +143,8 @@ export const getRollupConfig = (nitro: Nitro) => {
       'process.env.ROUTER_BASE': JSON.stringify(nitro.options.routerBase),
       'process.env.PUBLIC_PATH': JSON.stringify(nitro.options.publicPath),
       'process.env.RUNTIME_CONFIG': devalue(nitro.options.runtimeConfig),
-      'process.env.DEBUG': JSON.stringify(nitro.options.dev)
+      'process.env.DEBUG': JSON.stringify(nitro.options.dev),
+      ...nitro.options.replace
     }
   }))
 
