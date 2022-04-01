@@ -1,13 +1,9 @@
-import { createError, defineEventHandler } from 'h3'
+import { defineEventHandler, createError } from 'h3'
 import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
 // @ts-ignore
-import { getAsset, readAsset } from '#static'
-import { buildAssetsDir } from '#paths'
+import { getAsset, readAsset, isPublicAssetURL } from '#public-assets'
 
 const METHODS = ['HEAD', 'GET']
-
-const TWO_DAYS = 2 * 60 * 60 * 24
-const STATIC_ASSETS_BASE = process.env.NUXT_STATIC_BASE + '/' + process.env.NUXT_STATIC_VERSION
 
 export default defineEventHandler(async (event) => {
   if (!METHODS.includes(event.req.method)) {
@@ -26,10 +22,8 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const isBuildAsset = id.startsWith(buildAssetsDir())
-
   if (!asset) {
-    if (isBuildAsset && !id.startsWith(STATIC_ASSETS_BASE)) {
+    if (isPublicAssetURL(id)) {
       throw createError({
         statusMessage: 'Cannot find static asset ' + id,
         statusCode: 404
@@ -66,9 +60,11 @@ export default defineEventHandler(async (event) => {
     event.res.setHeader('Last-Modified', asset.mtime)
   }
 
-  if (isBuildAsset) {
-    event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
-  }
+  // TODO: Asset dir cache control
+  // if (isBuildAsset) {
+  // const TWO_DAYS = 2 * 60 * 60 * 24
+  // event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
+  // }
 
   const contents = await readAsset(id)
   event.res.end(contents)

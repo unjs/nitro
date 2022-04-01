@@ -49,24 +49,20 @@ export async function writeFile (file: string, contents: string, log = false) {
   }
 }
 
-export function resolvePath (nitro: Nitro, path: string | ((nitro: Nitro) => string), resolveBase: string = ''): string {
-  if (typeof path === 'function') {
-    path = path(nitro)
-  }
-
+export function resolvePath (path: string, nitroOptions: Nitro['options'], base?: string): string {
   if (typeof path !== 'string') {
     throw new TypeError('Invalid path: ' + path)
   }
 
-  path = compileTemplate(path)(nitro.options)
-
-  for (const base in nitro.options.alias) {
+  // TODO: Skip if no template used
+  path = compileTemplate(path)(nitroOptions)
+  for (const base in nitroOptions.alias) {
     if (path.startsWith(base)) {
-      path = nitro.options.alias[base] + path.substr(base.length)
+      path = nitroOptions.alias[base] + path.substring(base.length)
     }
   }
 
-  return resolve(resolveBase, path)
+  return resolve(base || nitroOptions.srcDir, path)
 }
 
 export function replaceAll (input: string, from: string, to: string) {

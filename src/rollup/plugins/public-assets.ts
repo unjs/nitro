@@ -7,10 +7,14 @@ import { globbySync } from 'globby'
 import type { Plugin } from 'rollup'
 import type { Nitro } from '../../types'
 
-export function staticAssets (nitro: Nitro) {
+export function publicAssets (nitro: Nitro): Plugin {
   const assets: Record<string, { type: string, etag: string, mtime: string, path: string }> = {}
 
   const files = globbySync('**/*.*', { cwd: nitro.options.output.publicDir, absolute: false })
+
+  const publicAssetBases = nitro.options.publicAssets
+    .filter(dir => !dir.fallthrough && dir.baseURL !== '/')
+    .map(dir => dir.baseURL)
 
   for (const id of files) {
     // @ts-ignore
@@ -29,18 +33,26 @@ export function staticAssets (nitro: Nitro) {
   }
 
   return virtual({
-    '#static-assets': `export default ${JSON.stringify(assets, null, 2)};`,
-    '#static': `
+    '#public-assets-data': `export default ${JSON.stringify(assets, null, 2)};`,
+    '#public-assets': `
 import { promises } from 'fs'
 import { resolve } from 'pathe'
 import { dirname } from 'pathe'
 import { fileURLToPath } from 'url'
-import assets from '#static-assets'
+import assets from '#public-assets-data'
 
 const mainDir = dirname(fileURLToPath(globalThis.entryURL))
 
+export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
+export function isPublicAssetURL(id = '') {
+  for (const base of publicAssetBases) {
+    if (id.startsWith(base)) { return true }
+  }
+  return false
+}
+
 export function readAsset (id) {
-  return promises.readFile(resolve(mainDir, getAsset(id).path))
+  return promises.readFile(resolve(mainDir, getAsset(id).path)).catch(() => {})
 }
 
 export function getAsset (id) {
@@ -48,16 +60,4 @@ export function getAsset (id) {
 }
 `
   })
-}
-
-export function dirnames (): Plugin {
-  return {
-    name: 'dirnames',
-    renderChunk (code, chunk) {
-      return {
-        code: (chunk.isEntry ? 'globalThis.entryURL = import.meta.url;' : '') + code,
-        map: null
-      }
-    }
-  }
 }

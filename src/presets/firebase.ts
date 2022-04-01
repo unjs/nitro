@@ -29,7 +29,7 @@ async function writeRoutes (nitro: Nitro) {
       hosting: [
         {
           site: '<your_project_id>',
-          public: relative(nitro.options.rootDir, nitro.options.publicDir),
+          public: relative(nitro.options.rootDir, nitro.options.output.publicDir),
           cleanUrls: true,
           rewrites: [
             {

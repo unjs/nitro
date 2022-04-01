@@ -6,7 +6,6 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { StorageOptions } from '../rollup/plugins/storage'
-import type { AssetOptions } from '../rollup/plugins/assets'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import { NitroHandlerConfig } from './handler'
@@ -41,6 +40,18 @@ export interface NitroRouteRule {
   redirect?: string
 }
 
+export interface PublicAssetDir {
+  baseURL?: string
+  fallthrough?: boolean
+  maxAge: number
+  dir: string
+}
+
+export interface ServerAssetDir {
+  baseName: string
+  dir: string
+}
+
 export interface NitroOptions {
   // Internal
   _config: NitroConfig
@@ -49,33 +60,36 @@ export interface NitroOptions {
   dev: boolean
   preset: string
   logLevel: LogLevel
+
+  // App
   runtimeConfig: { public: any, private: any }
+  app: {
+    baseURL: string,
+    cdnURL: string,
+    buildAssetsDir: string
+  }
 
   // Dirs
   rootDir: string
   srcDir: string
   scanDirs: string[]
   buildDir: string
-  publicDir: string
   output: {
     dir: string
     serverDir: string
     publicDir: string
   }
 
-  // Paths
-  routerBase: string
-  publicPath: string
-
   // Features
   storage: StorageOptions
-  assets: AssetOptions
   timing: boolean
   renderer: string
   serveStatic: boolean
   experimental?: {
     wasm?: boolean
   }
+  serverAssets: ServerAssetDir[]
+  publicAssets: PublicAssetDir[]
 
   // Routing
   handlers: NitroHandlerConfig[]

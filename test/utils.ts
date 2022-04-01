@@ -2,22 +2,24 @@ import { resolve } from 'pathe'
 import { listen, Listener } from 'listhen'
 import destr from 'destr'
 import { fetch } from 'ohmyfetch'
-import { expect, it, beforeAll, afterAll } from 'vitest'
+import { expect, it, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
 import { joinURL } from 'ufo'
 import * as _nitro from '../src'
+import type { Nitro } from '../src'
 
-const { createNitro, build } = (_nitro as any as { default: typeof _nitro }).default || _nitro
+const { createNitro, build, prepare, copyPublicAssets, prerender } = (_nitro as any as { default: typeof _nitro }).default || _nitro
 
 interface Context {
   preset: string
+  nitro?: Nitro,
   rootDir: string
   outDir: string
   fetch: (url:string) => Promise<any>
   server?: Listener
 }
 
-export function setupTest (preset) {
+export async function setupTest (preset) {
   const fixtureDir = fileURLToPath(new URL('./fixture', import.meta.url).href)
 
   const ctx: Context = {
@@ -25,17 +27,18 @@ export function setupTest (preset) {
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, '.output', preset),
     fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)))
-      .then(async res => ({ status: res.status, data: destr(await res.text()) }))
   }
 
-  beforeAll(async () => {
-    const nitro = await createNitro({
-      preset: ctx.preset,
-      rootDir: ctx.rootDir,
-      output: { dir: ctx.outDir }
-    })
-    await build(nitro)
-  }, 60 * 1000)
+  const nitro = ctx.nitro = await createNitro({
+    preset: ctx.preset,
+    rootDir: ctx.rootDir,
+    serveStatic: preset !== 'cloudflare',
+    output: { dir: ctx.outDir }
+  })
+  await prepare(nitro)
+  await copyPublicAssets(nitro)
+  await build(nitro)
+  await prerender(nitro)
 
   afterAll(async () => {
     if (ctx.server) {
@@ -51,31 +54,67 @@ export async function startServer (ctx, handle) {
   console.log('>', ctx.server!.url)
 }
 
-export function testNitro (_ctx, getHandler) {
-  let handler
+type TestHandlerResult = { data: any, status: number, headers: Record<string, string>}
+type TestHandler = (options: any) => Promise<TestHandlerResult | Response>
+
+export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise<TestHandler>) {
+  let _handler
+
+  async function callHandler (options): Promise<TestHandlerResult> {
+    const result: Response = await _handler(options)
+    if (result.constructor.name !== 'Response') {
+      return result as unknown as TestHandlerResult
+    }
+    return {
+      data: destr(await result.text()),
+      status: result.status,
+      headers: Object.fromEntries(result.headers.entries())
+    }
+  }
 
   it('setup handler', async () => {
-    handler = await getHandler()
+    _handler = await getHandler()
   })
 
   it('API Works', async () => {
-    const { data: helloData } = await handler({ url: '/api/hello' })
-    const { data: heyData } = await handler({ url: '/api/hey' })
-    const { data: kebabData } = await handler({ url: '/api/kebab' })
+    const { data: helloData } = await callHandler({ url: '/api/hello' })
+    const { data: heyData } = await callHandler({ url: '/api/hey' })
+    const { data: kebabData } = await callHandler({ url: '/api/kebab' })
     expect(helloData).to.have.string('Hello API')
     expect(heyData).to.have.string('Hey API')
     expect(kebabData).to.have.string('hello-world')
   })
 
   it('handles errors', async () => {
-    const { status } = await handler({
+    const { status } = await callHandler({
       url: '/api/error',
       headers: {
         Accept: 'application/json'
       }
     })
     expect(status).toBe(503)
-    const { data: heyData } = await handler({ url: '/api/hey' })
+    const { data: heyData } = await callHandler({ url: '/api/hey' })
     expect(heyData).to.have.string('Hey API')
   })
+
+  if (ctx.nitro!.options.serveStatic) {
+    it('serve static asset /favicon.ico', async () => {
+      const { status, headers } = await callHandler({ url: '/favicon.ico' })
+      expect(status).toBe(200)
+      expect(headers.etag).toMatchInlineSnapshot('"\\"3c2e-dKdB0JNG9uHgD12RJtaVJk8vyiw\\""')
+      expect(headers['content-type']).toMatchInlineSnapshot('"image/vnd.microsoft.icon"')
+    })
+
+    it('serve static asset /build/test.txt', async () => {
+      const { status, headers } = await callHandler({ url: '/build/test.txt' })
+      expect(status).toBe(200)
+      expect(headers.etag).toMatchInlineSnapshot('"\\"7-vxGfAKTuGVGhpDZqQLqV60dnKPw\\""')
+      expect(headers['content-type']).toMatchInlineSnapshot('"text/plain; charset=utf-8"')
+    })
+
+    it('shows 404 for /build/non-file', async () => {
+      const { status } = await callHandler({ url: '/build/non-file' })
+      expect(status).toBe(404)
+    })
+  }
 }

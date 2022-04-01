@@ -63,15 +63,15 @@ if ('serviceWorker' in navigator) {
 
         // Temp fix
         if (!existsSync(resolve(nitro.options.output.publicDir, 'index.html'))) {
-          await fsp.writeFile(resolve(nitro.options.publicDir, 'index.html'), html, 'utf8')
+          await fsp.writeFile(resolve(nitro.options.output.publicDir, 'index.html'), html, 'utf8')
         }
-        if (!existsSync(resolve(nitro.options.publicDir, '200.html'))) {
-          await fsp.writeFile(resolve(nitro.options.publicDir, '200.html'), html, 'utf8')
+        if (!existsSync(resolve(nitro.options.output.publicDir, '200.html'))) {
+          await fsp.writeFile(resolve(nitro.options.output.publicDir, '200.html'), html, 'utf8')
         }
-        if (!existsSync(resolve(nitro.options.publicDir, '404.html'))) {
-          await fsp.writeFile(resolve(nitro.options.publicDir, '404.html'), html, 'utf8')
+        if (!existsSync(resolve(nitro.options.output.publicDir, '404.html'))) {
+          await fsp.writeFile(resolve(nitro.options.output.publicDir, '404.html'), html, 'utf8')
         }
-        nitro.logger.info('Ready to deploy to static hosting:', prettyPath(nitro.options.publicDir as string))
+        nitro.logger.info('Ready to deploy to static hosting:', prettyPath(nitro.options.output.publicDir as string))
       }
     }
   }

@@ -1,10 +1,12 @@
 import { resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
+import defu from 'defu'
+import { withLeadingSlash, withoutTrailingSlash } from 'ufo'
+import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
 import * as PRESETS from './presets'
-import { detectTarget } from './utils'
 
 const NitroDefaults: NitroConfig = {
   // General
@@ -12,18 +14,16 @@ const NitroDefaults: NitroConfig = {
   preset: undefined,
   logLevel: 3,
   runtimeConfig: {
-    public: {
-      app: {
-        baseURL: '/',
-        cdnURL: undefined,
-        buildAssetsDir: '_dist'
-      }
-    },
+    public: {},
     private: {}
+  },
+  app: {
+    baseURL: '/',
+    cdnURL: undefined,
+    buildAssetsDir: 'dist'
   },
 
   // Dirs
-  publicDir: 'public',
   scanDirs: [],
   buildDir: '.nitro',
   output: {
@@ -32,13 +32,11 @@ const NitroDefaults: NitroConfig = {
     publicDir: '{{ output.dir }}/public'
   },
 
-  // Paths
-  routerBase: '/',
-  publicPath: '/',
-
   // Featueres
   experimental: {},
   storage: { mounts: {} },
+  publicAssets: [],
+  serverAssets: [],
 
   // Routing
   handlers: [],
@@ -56,7 +54,6 @@ const NitroDefaults: NitroConfig = {
   analyze: false,
   moduleSideEffects: ['unenv/runtime/polyfill/'],
   replace: {},
-  assets: { dirs: { } },
 
   // Advanced
   nodeModulesDirs: [],
@@ -87,35 +84,38 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
       ]
     }
   })
-
-  // Normalize options
   const options = klona(config) as NitroOptions
   options._config = userConfig
+
   options.rootDir = resolve(options.rootDir || '.')
   options.srcDir = resolve(options.srcDir || options.rootDir)
   for (const key of ['srcDir', 'publicDir', 'buildDir']) {
     options[key] = resolve(options.rootDir, options[key])
   }
+
+  // Resolve possibly template paths
+  options.entry = resolvePath(options.entry, options)
+  options.output.dir = resolvePath(options.output.dir, options)
+  options.output.publicDir = resolvePath(options.output.publicDir, options)
+  options.output.serverDir = resolvePath(options.output.serverDir, options)
+
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
+  options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
+
   if (!options.scanDirs.length) {
     options.scanDirs = [options.srcDir]
   }
 
-  // Dev-only storage
-  if (options.dev) {
-    const fsMounts = {
-      root: resolve(options.rootDir),
-      src: resolve(options.srcDir),
-      build: resolve(options.buildDir),
-      cache: resolve(options.rootDir, '.cache')
+  options.runtimeConfig = defu(options.runtimeConfig, {
+    public: {
+      app: options.app
     }
-    for (const p in fsMounts) {
-      options.storage.mounts[p] = options.storage.mounts[p] || {
-        driver: 'fs',
-        driverOptions: { base: fsMounts[p] }
-      }
-    }
+  })
+
+  for (const asset of options.publicAssets) {
+    asset.dir = resolve(options.srcDir, asset.dir)
+    asset.baseURL = withLeadingSlash(withoutTrailingSlash(asset.baseURL || '/'))
   }
 
   return options

@@ -4,7 +4,7 @@ export const dev = defineNitroPreset({
   extends: 'node',
   entry: '#nitro/entries/dev',
   output: {
-    serverDir: '{{ buildDir }}/nitro-dev'
+    serverDir: '{{ buildDir }}/dev'
   },
   externals: { trace: false },
   inlineDynamicImports: true, // externals plugin limitation

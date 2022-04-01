@@ -33,7 +33,7 @@ export function storage (opts: StorageOptions) {
   return virtual({
     '#storage': `
 import { createStorage } from 'unstorage'
-import { assets } from '#assets'
+import { assets } from '#server-assets'
 
 ${driverImports.map(i => `import ${serializeImportName(i)} from '${i}'`).join('\n')}
 

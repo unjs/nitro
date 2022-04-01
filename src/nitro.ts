@@ -1,9 +1,9 @@
+import { existsSync } from 'fs'
 import { resolve } from 'pathe'
 import { createHooks } from 'hookable'
 import { createUnimport } from 'unimport'
 import consola from 'consola'
 import type { NitroConfig, Nitro } from './types'
-import { resolvePath } from './utils'
 import { loadOptions } from './options'
 
 export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
@@ -27,34 +27,47 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Init hooks
   nitro.hooks.addHooks(nitro.options.hooks)
 
-  // Resolve output dir
-  options.output.dir = resolvePath(nitro, nitro.options.output.dir)
-  options.output.publicDir = resolvePath(nitro, nitro.options.output.publicDir)
-  options.output.serverDir = resolvePath(nitro, nitro.options.output.serverDir)
+  // Public assets
+  for (const dir of options.scanDirs) {
+    const publicDir = resolve(dir, 'public')
+    consola.log(publicDir)
+    if (!existsSync(publicDir)) { continue }
+    if (options.publicAssets.find(asset => asset.dir === publicDir)) {
+      continue
+    }
+    options.publicAssets.push({ dir: publicDir } as any)
+  }
+  for (const asset of options.publicAssets) {
+    asset.baseURL = asset.baseURL || '/'
+    const isTopLevel = asset.baseURL === '/'
+    asset.fallthrough = asset.fallthrough ?? isTopLevel
+    asset.maxAge = asset.maxAge ?? (isTopLevel ? 0 : 60)
+  }
+
+  // Server assets
+  nitro.options.serverAssets.push({
+    baseName: 'server',
+    dir: resolve(nitro.options.srcDir, 'assets')
+  })
+
+  if (nitro.options.autoImport) {
+    nitro.unimport = createUnimport(nitro.options.autoImport)
+  }
 
   // Dev-only storage
-  if (nitro.options.dev) {
+  if (options.dev) {
     const fsMounts = {
-      root: resolve(nitro.options.rootDir),
-      src: resolve(nitro.options.srcDir),
-      build: resolve(nitro.options.buildDir),
-      cache: resolve(nitro.options.rootDir, 'node_modules/.nitro/cache')
+      root: resolve(options.rootDir),
+      src: resolve(options.srcDir),
+      build: resolve(options.buildDir),
+      cache: resolve(options.buildDir, 'cache')
     }
     for (const p in fsMounts) {
-      nitro.options.storage.mounts[p] = nitro.options.storage.mounts[p] || {
+      options.storage.mounts[p] = options.storage.mounts[p] || {
         driver: 'fs',
         driverOptions: { base: fsMounts[p] }
       }
     }
-  }
-
-  // Assets
-  nitro.options.assets.dirs.server = {
-    dir: resolve(nitro.options.srcDir, 'server/assets'), meta: true
-  }
-
-  if (nitro.options.autoImport) {
-    nitro.unimport = createUnimport(nitro.options.autoImport)
   }
 
   return nitro

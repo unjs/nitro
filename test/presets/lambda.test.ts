@@ -4,8 +4,8 @@ import destr from 'destr'
 import type { APIGatewayProxyEvent, APIGatewayProxyEventV2 } from 'aws-lambda'
 import { setupTest, testNitro } from '../utils'
 
-describe('nitro:preset:lambda', () => {
-  const ctx = setupTest('lambda')
+describe('nitro:preset:lambda', async () => {
+  const ctx = await setupTest('lambda')
   // Lambda v1 paylod
   testNitro(ctx, async () => {
     const { handler } = await import(resolve(ctx.outDir, 'server/index.mjs'))
@@ -24,7 +24,8 @@ describe('nitro:preset:lambda', () => {
       const res = await handler(event)
       return {
         data: destr(res.body),
-        status: res.statusCode
+        status: res.statusCode,
+        headers: res.headers
       }
     }
   })
@@ -53,7 +54,8 @@ describe('nitro:preset:lambda', () => {
       const res = await handler(event)
       return {
         data: destr(res.body),
-        status: res.statusCode
+        status: res.statusCode,
+        headers: res.headers
       }
     }
   })

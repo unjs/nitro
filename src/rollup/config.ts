@@ -18,14 +18,13 @@ import type { Preset } from 'unenv'
 import { sanitizeFilePath } from 'mlly'
 import unimportPlugin from 'unimport/unplugin'
 import type { Nitro } from '../types'
-import { resolveAliases, resolvePath } from '../utils'
+import { resolveAliases } from '../utils'
 import { runtimeDir } from '../dirs'
 import { dynamicRequire } from './plugins/dynamic-require'
 import { externals } from './plugins/externals'
 import { timing } from './plugins/timing'
-// import { autoMock } from './plugins/automock'
-import { staticAssets, dirnames } from './plugins/static'
-import { assets } from './plugins/assets'
+import { publicAssets } from './plugins/public-assets'
+import { serverAssets } from './plugins/server-assets'
 import { handlers } from './plugins/handlers'
 import { esbuild } from './plugins/esbuild'
 import { raw } from './plugins/raw'
@@ -57,7 +56,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   const runtimeAppDir = join(runtimeDir, 'app')
 
   const rollupConfig: RollupConfig = {
-    input: resolvePath(nitro, nitro.options.entry),
+    input: nitro.options.entry,
     output: {
       dir: nitro.options.output.serverDir,
       entryFileNames: 'index.mjs',
@@ -140,8 +139,6 @@ export const getRollupConfig = (nitro: Nitro) => {
       'process.server': 'true',
       'process.client': 'false',
       'process.dev': String(nitro.options.dev),
-      'process.env.ROUTER_BASE': JSON.stringify(nitro.options.routerBase),
-      'process.env.PUBLIC_PATH': JSON.stringify(nitro.options.publicPath),
       'process.env.RUNTIME_CONFIG': devalue(nitro.options.runtimeConfig),
       'process.env.DEBUG': JSON.stringify(nitro.options.dev),
       ...nitro.options.replace
@@ -168,14 +165,21 @@ export const getRollupConfig = (nitro: Nitro) => {
     ]
   }))
 
-  // Assets
-  rollupConfig.plugins.push(assets(nitro.options.assets))
+  // Server assets
+  rollupConfig.plugins.push(serverAssets(nitro))
 
-  // Static
-  // TODO: use assets plugin
+  // Public assets
   if (nitro.options.serveStatic) {
-    rollupConfig.plugins.push(dirnames())
-    rollupConfig.plugins.push(staticAssets(nitro))
+    rollupConfig.plugins.push({
+      name: 'dirnames',
+      renderChunk (code, chunk) {
+        return {
+          code: (chunk.isEntry ? 'globalThis.entryURL = import.meta.url;' : '') + code,
+          map: null
+        }
+      }
+    })
+    rollupConfig.plugins.push(publicAssets(nitro))
   }
 
   // Storage

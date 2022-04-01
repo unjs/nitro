@@ -4,9 +4,10 @@ import createEtag from 'etag'
 import mime from 'mime'
 import { resolve } from 'pathe'
 import { globby } from 'globby'
+import type { Nitro } from '../../types'
 import virtual from './virtual'
 
-export interface AssetOptions {
+export interface ServerAssetOptions {
   inline: Boolean
   dirs: {
     [assetdir: string]: {
@@ -16,7 +17,7 @@ export interface AssetOptions {
   }
 }
 
-interface Asset {
+interface ResolvedAsset {
   fsPath: string,
   meta: {
     type?: string,
@@ -25,33 +26,30 @@ interface Asset {
   }
 }
 
-export function assets (opts: AssetOptions): Plugin {
-  if (!opts.inline) {
-    // Development: Use filesystem
-    return virtual({ '#assets': getAssetsDev(opts.dirs) })
+export function serverAssets (nitro: Nitro): Plugin {
+  // Development: Use filesystem
+  if (nitro.options.dev) {
+    return virtual({ '#server-assets': getAssetsDev(nitro) })
   }
 
   // Production: Bundle assets
   return virtual({
-    '#assets': {
+    '#server-assets': {
       async load () {
         // Scan all assets
-        const assets: Record<string, Asset> = {}
-        for (const assetdir in opts.dirs) {
-          const dirOpts = opts.dirs[assetdir]
-          const files = await globby('**/*.*', { cwd: dirOpts.dir, absolute: false })
+        const assets: Record<string, ResolvedAsset> = {}
+        for (const asset of nitro.options.serverAssets) {
+          const files = await globby('**/*.*', { cwd: asset.dir, absolute: false })
           for (const _id of files) {
-            const fsPath = resolve(dirOpts.dir, _id)
-            const id = assetdir + '/' + _id
+            const fsPath = resolve(asset.dir, _id)
+            const id = asset.baseName + '/' + _id
             assets[id] = { fsPath, meta: {} }
-            if (dirOpts.meta) {
-              // @ts-ignore TODO: Use mime@2 types
-              let type = mime.getType(id) || 'text/plain'
-              if (type.startsWith('text')) { type += '; charset=utf-8' }
-              const etag = createEtag(await fsp.readFile(fsPath))
-              const mtime = await fsp.stat(fsPath).then(s => s.mtime.toJSON())
-              assets[id].meta = { type, etag, mtime }
-            }
+            // @ts-ignore TODO: Use mime@2 types
+            let type = mime.getType(id) || 'text/plain'
+            if (type.startsWith('text')) { type += '; charset=utf-8' }
+            const etag = createEtag(await fsp.readFile(fsPath))
+            const mtime = await fsp.stat(fsPath).then(s => s.mtime.toJSON())
+            assets[id].meta = { type, etag, mtime }
           }
         }
         return getAssetProd(assets)
@@ -60,26 +58,25 @@ export function assets (opts: AssetOptions): Plugin {
   })
 }
 
-function getAssetsDev (dirs) {
+function getAssetsDev (nitro: Nitro) {
   return `
 import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
 
-const dirs = ${JSON.stringify(dirs)}
+const serverAssets = ${JSON.stringify(nitro.options.serverAssets)}
 
 export const assets = createStorage()
 
-for (const [dirname, dirOpts] of Object.entries(dirs)) {
-  assets.mount(dirname, fsDriver({ base: dirOpts.dir }))
-}
-  `
+for (const asset of serverAssets) {
+  assets.mount(asset.base, fsDriver({ base: asset.dir }))
+}`
 }
 
 function normalizeKey (key) {
   return key.replace(/[/\\]/g, ':').replace(/^:|:$/g, '')
 }
 
-function getAssetProd (assets: Record<string, Asset>) {
+function getAssetProd (assets: Record<string, ResolvedAsset>) {
   return `
 const _assets = {\n${Object.entries(assets).map(([id, asset]) =>
   `  ['${normalizeKey(id)}']: {\n    import: () => import('${asset.fsPath}').then(r => r.default || r),\n    meta: ${JSON.stringify(asset.meta)}\n  }`

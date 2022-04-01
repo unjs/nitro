@@ -1,4 +1,4 @@
-import { defineNitroConfig } from '../..'
+import { defineNitroConfig } from '../../src'
 
 export default defineNitroConfig({
   autoImport: {
@@ -13,5 +13,11 @@ export default defineNitroConfig({
         ]
       }
     ]
-  }
+  },
+  publicAssets: [
+    {
+      baseURL: 'build',
+      dir: 'public/build'
+    }
+  ]
 })

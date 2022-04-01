@@ -22,21 +22,15 @@ export async function prepare (nitro: Nitro) {
 }
 
 async function cleanupDir (dir: string) {
-  // consola.info('Cleaning up', prettyPath(dir))
   await fse.emptyDir(dir)
 }
 
 export async function copyPublicAssets (nitro: Nitro) {
-  nitro.logger.start('Generating public...')
-
-  const clientDist = resolve(nitro.options.buildDir, 'dist/client')
-  if (await isDirectory(clientDist)) {
-    await fse.copy(clientDist, join(nitro.options.output.publicDir, nitro.options.publicPath))
+  for (const asset of nitro.options.publicAssets) {
+    if (await isDirectory(asset.dir)) {
+      await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL))
+    }
   }
-  if (await isDirectory(nitro.options.publicDir)) {
-    await fse.copy(nitro.options.publicDir, nitro.options.output.publicDir)
-  }
-
   nitro.logger.success('Generated public ' + prettyPath(nitro.options.output.publicDir))
 }
 
@@ -170,8 +164,7 @@ function startRollupWatcher (nitro: Nitro) {
 
       // Encountered an error while bundling
       case 'ERROR':
-        nitro.logger.error('Rollup error: ' + event.error)
-      // nitro.logger.error(event.error)
+        nitro.logger.error('Rollup error: ', event.error)
     }
   })
   return watcher

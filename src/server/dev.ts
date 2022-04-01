@@ -9,6 +9,7 @@ import { listen, Listener, ListenOptions } from 'listhen'
 import serveStatic from 'serve-static'
 import { resolve } from 'pathe'
 import connect from 'connect'
+import { joinURL } from 'ufo'
 import type { Nitro } from '../types'
 import { createVFSHandler } from './vfs'
 
@@ -88,9 +89,12 @@ export function createDevServer (nitro: Nitro) {
   // App
   const app = createApp()
 
-  // _nuxt and static
-  app.use(nitro.options.publicPath, serveStatic(resolve(nitro.options.buildDir, 'dist/client')))
-  app.use(nitro.options.routerBase, serveStatic(resolve(nitro.options.publicDir)))
+  // Serve asset dirs
+  for (const asset of nitro.options.publicAssets) {
+    app.use(joinURL(nitro.options.app.baseURL, asset.baseURL), serveStatic(asset.dir, {
+      fallthrough: asset.fallthrough
+    }))
+  }
 
   // debugging endpoint to view vfs
   app.use('/_vfs', createVFSHandler(nitro))
