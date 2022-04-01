@@ -125,7 +125,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(raw())
 
   // WASM import support
-  if (nitro.options.experiments.wasm) {
+  if (nitro.options.experimental.wasm) {
     rollupConfig.plugins.push(wasmPlugin())
   }
 
@@ -223,7 +223,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   if (nitro.options.externals) {
     rollupConfig.plugins.push(externals(defu(nitro.options.externals as any, {
       outDir: nitro.options.output.serverDir,
-      moduleDirectories: nitro.options.modulesDir,
+      moduleDirectories: nitro.options.nodeModulesDirs,
       external: [
         ...(nitro.options.dev ? [nitro.options.buildDir] : [])
       ],
@@ -259,7 +259,7 @@ export const getRollupConfig = (nitro: Nitro) => {
     extensions,
     preferBuiltins: true,
     rootDir: nitro.options.rootDir,
-    moduleDirectories: nitro.options.modulesDir,
+    moduleDirectories: nitro.options.nodeModulesDirs,
     // 'module' is intentionally not supported because of externals
     mainFields: ['main'],
     exportConditions: [

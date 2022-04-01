@@ -65,7 +65,7 @@ async function writeRoutes (nitro: Nitro) {
   } catch { }
 
   const getPackageVersion = async (id) => {
-    const pkg = await readPackageJSON(id, { url: nitro.options.modulesDir })
+    const pkg = await readPackageJSON(id, { url: nitro.options.nodeModulesDirs })
     return pkg.version
   }
 

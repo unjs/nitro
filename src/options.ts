@@ -7,40 +7,10 @@ import * as PRESETS from './presets'
 import { detectTarget } from './utils'
 
 const NitroDefaults: NitroConfig = {
-  alias: {
-    '#nitro': runtimeDir
-  },
-  unenv: {},
-  analyze: false,
-  experiments: {},
-  moduleSideEffects: ['unenv/runtime/polyfill/'],
-  scanDirs: [],
-  handlers: [],
-  modulesDir: [],
-  ignore: [],
-  hooks: {},
-  output: {
-    dir: '{{ rootDir }}/.output',
-    serverDir: '{{ output.dir }}/server',
-    publicDir: '{{ output.dir }}/public'
-  },
-  storage: { mounts: {} },
-  commands: {},
-  assets: {
-    // inline: !config.dev,
-    dirs: {}
-  },
-  routes: {},
-  prerender: {
-    crawlLinks: false,
-    routes: []
-  },
+  // General
+  dev: false,
+  preset: undefined,
   logLevel: 3,
-  publicDir: 'public',
-  buildDir: '.nitro',
-  generateDir: 'dist',
-  routerBase: '/',
-  publicPath: '/',
   runtimeConfig: {
     public: {
       app: {
@@ -50,7 +20,49 @@ const NitroDefaults: NitroConfig = {
       }
     },
     private: {}
-  }
+  },
+
+  // Dirs
+  publicDir: 'public',
+  scanDirs: [],
+  buildDir: '.nitro',
+  output: {
+    dir: '{{ rootDir }}/.output',
+    serverDir: '{{ output.dir }}/server',
+    publicDir: '{{ output.dir }}/public'
+  },
+
+  // Paths
+  routerBase: '/',
+  publicPath: '/',
+
+  // Featueres
+  experimental: {},
+  storage: { mounts: {} },
+
+  // Routing
+  handlers: [],
+  routes: {},
+  prerender: {
+    crawlLinks: false,
+    routes: []
+  },
+
+  // Rollup
+  alias: {
+    '#nitro': runtimeDir
+  },
+  unenv: {},
+  analyze: false,
+  moduleSideEffects: ['unenv/runtime/polyfill/'],
+  assets: {
+    dirs: {}
+  },
+
+  // Advanced
+  nodeModulesDirs: [],
+  hooks: {},
+  commands: {}
 }
 
 export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
@@ -82,11 +94,11 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options._config = userConfig
   options.rootDir = resolve(options.rootDir || '.')
   options.srcDir = resolve(options.srcDir || options.rootDir)
-  for (const key of ['srcDir', 'publicDir', 'generateDir', 'buildDir']) {
+  for (const key of ['srcDir', 'publicDir', 'buildDir']) {
     options[key] = resolve(options.rootDir, options[key])
   }
-  options.modulesDir.push(resolve(options.rootDir, 'node_modules'))
-  options.modulesDir.push(resolve(pkgDir, 'node_modules'))
+  options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
+  options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
   if (!options.scanDirs.length) {
     options.scanDirs = [options.srcDir]
   }

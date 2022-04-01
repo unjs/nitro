@@ -33,10 +33,8 @@ export async function copyPublicAssets (nitro: Nitro) {
   if (await isDirectory(clientDist)) {
     await fse.copy(clientDist, join(nitro.options.output.publicDir, nitro.options.publicPath))
   }
-
-  const publicDir = nitro.options.publicDir
-  if (await isDirectory(publicDir)) {
-    await fse.copy(publicDir, nitro.options.output.publicDir)
+  if (await isDirectory(nitro.options.publicDir)) {
+    await fse.copy(nitro.options.publicDir, nitro.options.output.publicDir)
   }
 
   nitro.logger.success('Generated public ' + prettyPath(nitro.options.output.publicDir))

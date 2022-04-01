@@ -42,78 +42,73 @@ export interface NitroRouteRule {
 }
 
 export interface NitroOptions {
+  // Internal
   _config: NitroConfig
 
+  // General
+  dev: boolean
   preset: string
-  unenv: UnenvPreset
+  logLevel: LogLevel
+  runtimeConfig: { public: any, private: any }
 
+  // Dirs
   rootDir: string
   srcDir: string
   scanDirs: string[]
   buildDir: string
-  generateDir: string
   publicDir: string
-  modulesDir: string[]
-  entry: string
-
-  routerBase: string
-  publicPath: string
-  staticAssets: any
-
-  logLevel: LogLevel
-
-  routes: {
-    [path: string]: NitroRouteRule
-  },
-
-  prerender: {
-    crawlLinks: boolean
-    routes: string[]
-  },
-
-  hooks: NestedHooks<NitroHooks>
-
-  handlers: NitroHandlerConfig[]
-
-  storage: StorageOptions,
-  assets: AssetOptions,
-
-  ignore: string[]
-  runtimeConfig: { public: any, private: any },
-  alias: Record<string, string>
-  renderer: string
-
-  timing: boolean
-  inlineDynamicImports: boolean
-  minify: boolean
-  sourceMap: boolean
-  node: boolean
-  dev: boolean
-  ssr: boolean
-  serveStatic: boolean
-  externals: boolean | NodeExternalsOptions
-  analyze: false | PluginVisualizerOptions
-
-  rollupConfig?: RollupConfig
-  moduleSideEffects: string[]
-  esbuild?: {
-    options?: EsbuildOptions
-  }
-
   output: {
     dir: string
     serverDir: string
     publicDir: string
-  },
+  }
 
-  experiments?: {
+  // Paths
+  routerBase: string
+  publicPath: string
+
+  // Features
+  storage: StorageOptions
+  assets: AssetOptions
+  timing: boolean
+  renderer: string
+  serveStatic: boolean
+  experimental?: {
     wasm?: boolean
   }
 
+  // Routing
+  handlers: NitroHandlerConfig[]
+  routes: {
+    [path: string]: NitroRouteRule
+  },
+  prerender: {
+    crawlLinks: boolean
+    routes: string[]
+  }
+
+  // Rollup
+  entry: string
+  unenv: UnenvPreset
+  alias: Record<string, string>
+  minify: boolean
+  inlineDynamicImports: boolean
+  sourceMap: boolean
+  node: boolean
+  rollupConfig?: RollupConfig
+  moduleSideEffects: string[]
+  autoImport: UnimportOptions
+  esbuild?: {
+    options?: EsbuildOptions
+  }
+  externals: boolean | NodeExternalsOptions
+  analyze: false | PluginVisualizerOptions
+
+  // Advanced
+  hooks: NestedHooks<NitroHooks>
+  nodeModulesDirs: string[]
   commands: {
     preview: string
     deploy: string
   }
-
-  autoImport: UnimportOptions
 }
