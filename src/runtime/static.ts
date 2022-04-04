@@ -5,7 +5,7 @@ import { getAsset, readAsset, isPublicAssetURL } from '#nitro/virtual/public-ass
 const METHODS = ['HEAD', 'GET']
 
 export default eventHandler(async (event) => {
-  if (!event.req.method || !METHODS.includes(event.req.method)) {
+  if (event.req.method && !METHODS.includes(event.req.method)) {
     return
   }
 

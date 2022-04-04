@@ -27,8 +27,8 @@ async function cleanupDir (dir: string) {
 
 export async function copyPublicAssets (nitro: Nitro) {
   for (const asset of nitro.options.publicAssets) {
-    if (asset.baseURL && await isDirectory(asset.dir)) {
-      await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL))
+    if (await isDirectory(asset.dir)) {
+      await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL!))
     }
   }
   nitro.logger.success('Generated public ' + prettyPath(nitro.options.output.publicDir))
