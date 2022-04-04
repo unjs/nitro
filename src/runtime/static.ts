@@ -6,7 +6,7 @@ import { getAsset, readAsset, isPublicAssetURL } from '#public-assets'
 const METHODS = ['HEAD', 'GET']
 
 export default eventHandler(async (event) => {
-  if (!METHODS.includes(event.req.method)) {
+  if (!event.req.method || !METHODS.includes(event.req.method)) {
     return
   }
 

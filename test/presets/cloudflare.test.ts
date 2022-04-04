@@ -14,7 +14,7 @@ describe('nitro:preset:cloudflare', async () => {
         method: method || 'GET',
         body
       })
-      return res
+      return res as unknown as Response
     }
   })
 })

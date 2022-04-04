@@ -129,7 +129,6 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
   rollupConfig.plugins.push(replace({
-    // @ts-ignore https://github.com/rollup/plugins/pull/810
     preventAssignment: true,
     values: {
       'process.env.NODE_ENV': nitro.options.dev ? '"development"' : '"production"',

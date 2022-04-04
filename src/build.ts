@@ -27,7 +27,7 @@ async function cleanupDir (dir: string) {
 
 export async function copyPublicAssets (nitro: Nitro) {
   for (const asset of nitro.options.publicAssets) {
-    if (await isDirectory(asset.dir)) {
+    if (asset.baseURL && await isDirectory(asset.dir)) {
       await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL))
     }
   }
@@ -60,7 +60,7 @@ export async function writeTypes (nitro: Nitro) {
   ]
 
   for (const mw of middleware) {
-    if (typeof mw.handler !== 'string') { continue }
+    if (typeof mw.handler !== 'string' || !mw.route) { continue }
     const relativePath = relative(join(nitro.options.buildDir, 'types'), mw.handler).replace(/\.[a-z]+$/, '')
     routeTypes[mw.route] = routeTypes[mw.route] || []
     routeTypes[mw.route].push(`Awaited<ReturnType<typeof import('${relativePath}').default>>`)

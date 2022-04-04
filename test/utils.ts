@@ -61,17 +61,17 @@ type TestHandlerResult = { data: any, status: number, headers: Record<string, st
 type TestHandler = (options: any) => Promise<TestHandlerResult | Response>
 
 export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise<TestHandler>) {
-  let _handler
+  let _handler: TestHandler
 
   async function callHandler (options): Promise<TestHandlerResult> {
-    const result: Response = await _handler(options)
+    const result = await _handler(options)
     if (result.constructor.name !== 'Response') {
-      return result as unknown as TestHandlerResult
+      return result as TestHandlerResult
     }
     return {
-      data: destr(await result.text()),
+      data: destr(await (result as Response).text()),
       status: result.status,
-      headers: Object.fromEntries(result.headers.entries())
+      headers: Object.fromEntries((result as Response).headers.entries())
     }
   }
 

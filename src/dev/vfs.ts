@@ -10,7 +10,7 @@ export function createVFSHandler (nitro: Nitro) {
         .join('\n')
       return `<!doctype html><html><body><ul>${items}</ul></body></html>`
     }
-    const param = decodeURIComponent(event.req.url.slice(1))
+    const param = decodeURIComponent(event.req.url?.slice(1) || '')
     if (param in nitro.vfs) {
       return editorTemplate({
         readOnly: true,
