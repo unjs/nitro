@@ -40,6 +40,7 @@ const NitroDefaults: NitroConfig = {
 
   // Routing
   handlers: [],
+  devHandlers: [],
   routes: {},
   prerender: {
     crawlLinks: false,
