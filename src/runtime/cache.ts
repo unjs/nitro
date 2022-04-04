@@ -1,6 +1,6 @@
 import hash from 'object-hash'
 import type { Handler } from 'h3'
-import { storage } from '#storage'
+import { storage } from '#nitro/virtual/storage'
 
 export interface CacheEntry {
   value?: any

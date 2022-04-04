@@ -26,6 +26,20 @@ npx nitropack build
 node .output/server/index.mjs
 ```
 
+## 📚 Type Support
+
+To add type support for any of nitropack's aliases within your project,
+you may add the following to your tsconfig.json:
+
+```json
+"compilerOptions": {
+  "paths": {
+    "#nitro": ["nitropack/dist/runtime/index"],
+    "#nitro/*": ["nitropack/dist/runtime/*.mjs"]
+  }
+}
+```
+
 ## 💻 Development
 
 - Clone repository

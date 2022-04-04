@@ -6,7 +6,9 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.mjs",
-    "./cli": "./dist/cli.mjs"
+    "./cli": "./dist/cli.mjs",
+    "./runtime/*": "./dist/runtime/*.mjs",
+    "./dist/runtime/*": "./dist/runtime/*.mjs"
   },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

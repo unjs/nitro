@@ -4,10 +4,8 @@ import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { timingMiddleware } from './timing'
-// @ts-ignore
-import handleError from '#nitro-error'
-// @ts-ignore
-import serverHandlers from '#server-handlers'
+import handleError from '#nitro/error'
+import serverHandlers from '#nitro/virtual/server-handlers'
 
 export const app = createApp({
   debug: destr(process.env.DEBUG),

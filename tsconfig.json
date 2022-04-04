@@ -9,8 +9,13 @@
     "strict": false,
     "allowJs": true,
     "resolveJsonModule": true,
-    "types": [
-      "node"
-    ]
+    "paths": {
+      "#nitro": [
+        "./src/runtime/index"
+      ],
+      "#nitro/*": [
+        "./src/runtime/*"
+      ],
+    },
   }
 }

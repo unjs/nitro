@@ -1,4 +1,4 @@
-import { cachifyHandle } from '#cache'
+import { cachifyHandle } from '#nitro/cache'
 
 const waitFor = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 

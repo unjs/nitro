@@ -3,7 +3,7 @@ import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
 import { localCall } from '..'
 import { requestHasBody, useRequestBody } from '../utils'
-import { buildAssetsURL, baseURL } from '#paths'
+import { buildAssetsURL, baseURL } from '#nitro/paths'
 
 addEventListener('fetch', (event: any) => {
   event.respondWith(handleEvent(event))

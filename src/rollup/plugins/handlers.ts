@@ -14,7 +14,7 @@ export function handlers (getHandlers: () => NitroEventHandler[]) {
   let lastDump = ''
 
   return virtual({
-    '#server-handlers': {
+    '#nitro/virtual/server-handlers': {
       load: () => {
         const handler = getHandlers()
 
