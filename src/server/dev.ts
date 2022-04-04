@@ -48,9 +48,11 @@ async function killWorker (worker?: NitroWorker) {
   if (!worker) {
     return
   }
-  worker.worker.removeAllListeners()
-  await worker.worker?.terminate()
-  worker.worker = null
+  if (worker.worker) {
+    worker.worker.removeAllListeners()
+    await worker.worker.terminate()
+    worker.worker = null
+  }
   if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
     await fsp.rm(worker.address.socketPath)
   }
