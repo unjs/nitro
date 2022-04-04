@@ -792,6 +792,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/etag@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "@types/etag@npm:1.8.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 93ae9d2eeeee484b9a9edc46581c6d9f32163b61f3f9a8c3df3a9ef903d1efc9c8e5b9146b10c19f3d1f23d40419426cb85eea20cf42cfaa1af3abda2d405cee
+  languageName: node
+  linkType: hard
+
 "@types/fs-extra@npm:^9.0.13":
   version: 9.0.13
   resolution: "@types/fs-extra@npm:9.0.13"
@@ -870,6 +879,13 @@ __metadata:
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
   checksum: e87bccbf11f95035c89a132b52b79ce69a1e3652fe55962363063c9c0dae0fe2477ebc585e03a9652adc6f381d24ba5589cc5e51849df4ced3d3e004a7d40ed5
+  languageName: node
+  linkType: hard
+
+"@types/object-hash@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "@types/object-hash@npm:2.2.1"
+  checksum: bbcbf076903e11fa6d61dd5cc365bce2b080b18502ef52672a427443262e465d7b46b8f2821e8cea0307de66aee2eb92ad6e2bed2346acd7c8de118d4123fe3a
   languageName: node
   linkType: hard
 
@@ -4988,10 +5004,12 @@ __metadata:
     "@rollup/plugin-wasm": ^5.1.2
     "@rollup/pluginutils": ^4.2.0
     "@types/aws-lambda": ^8.10.93
+    "@types/etag": ^1.8.1
     "@types/fs-extra": ^9.0.13
     "@types/http-proxy": ^1.17.8
     "@types/jsdom": ^16.2.14
     "@types/node-fetch": ^2.6.1
+    "@types/object-hash": ^2.2.1
     "@types/semver": ^7.3.9
     "@types/serve-static": ^1.13.10
     "@vercel/nft": ^0.17.5
