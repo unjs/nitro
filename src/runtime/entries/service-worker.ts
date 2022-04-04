@@ -3,12 +3,11 @@ import '#polyfill'
 import { localCall } from '..'
 import { requestHasBody, useRequestBody } from '../utils'
 
-const STATIC_ASSETS_BASE = process.env.NUXT_STATIC_BASE + '/' + process.env.NUXT_STATIC_VERSION
-
 addEventListener('fetch', (event: any) => {
   const url = new URL(event.request.url)
 
-  if (url.pathname.includes('.') && !url.pathname.startsWith(STATIC_ASSETS_BASE) && !url.pathname.startsWith('/api')) {
+  // TODO: Check for static assets base
+  if (url.pathname.includes('.') && !url.pathname.startsWith('/api')) {
     return
   }
 

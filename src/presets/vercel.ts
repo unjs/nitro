@@ -27,13 +27,16 @@ async function writeRoutes (nitro: Nitro) {
       },
       continue: true
     },
-    {
-      src: '/_nuxt/(.*)',
-      headers: {
-        'cache-control': 'public,max-age=31536000,immutable'
-      },
-      continue: true
-    },
+    ...nitro.options.publicAssets
+      .filter(asset => !asset.fallthrough)
+      .map(asset => asset.baseURL)
+      .map(baseURL => ({
+        src: baseURL + '(.*)',
+        headers: {
+          'cache-control': 'public,max-age=31536000,immutable'
+        },
+        continue: true
+      })),
     {
       handle: 'filesystem'
     },

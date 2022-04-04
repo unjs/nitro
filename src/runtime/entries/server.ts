@@ -10,8 +10,8 @@ const key = process.env.NITRO_SSL_KEY
 
 const server = cert && key ? new HttpsServer({ key, cert }, app.nodeHandler) : new HttpServer(app.nodeHandler)
 
-const port = (destr(process.env.NUXT_PORT || process.env.PORT) || 3000) as number
-const hostname = process.env.NUXT_HOST || process.env.HOST || 'localhost'
+const port = (destr(process.env.NITRO_PORT || process.env.PORT) || 3000) as number
+const hostname = process.env.NITRO_HOST || process.env.HOST || 'localhost'
 
 // @ts-ignore
 server.listen(port, hostname, (err) => {

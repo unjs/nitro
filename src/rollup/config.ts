@@ -69,7 +69,7 @@ export const getRollupConfig = (nitro: Nitro) => {
         } else if (lastModule.startsWith(runtimeAppDir)) {
           prefix = 'app'
         } else if (lastModule.startsWith(nitro.options.buildDir)) {
-          prefix = 'nuxt'
+          prefix = 'build'
         } else if (lastModule.startsWith(runtimeDir)) {
           prefix = 'nitro'
         } else if (nitro.options.handlers.find(m => lastModule.startsWith(m.handler as string))) {
@@ -94,7 +94,6 @@ export const getRollupConfig = (nitro: Nitro) => {
     },
     external: env.external,
     // https://github.com/rollup/rollup/pull/4021#issuecomment-809985618
-    // https://github.com/nuxt/framework/issues/160
     makeAbsoluteExternalsRelative: false,
     plugins: [],
     onwarn (warning, rollupWarn) {

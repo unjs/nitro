@@ -10,7 +10,6 @@ import { app } from '..'
 const server = new Server(app.nodeHandler)
 
 function getAddress () {
-  // https://github.com/nuxt/framework/issues/1636
   if (provider === 'stackblitz' || process.env.NITRO_NO_UNIX_SOCKET) {
     return '0'
   }
