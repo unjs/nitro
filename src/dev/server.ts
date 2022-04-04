@@ -4,7 +4,7 @@ import { debounce } from 'perfect-debounce'
 import { CompatibilityEvent, createApp, eventHandler } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
-// import servePlaceholder from 'serve-placeholder'
+import { servePlaceholder } from 'serve-placeholder'
 import serveStatic from 'serve-static'
 import { resolve } from 'pathe'
 import { joinURL } from 'ufo'
@@ -98,15 +98,18 @@ export function createDevServer (nitro: Nitro) {
 
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
-    app.use(joinURL(nitro.options.app.baseURL, asset.baseURL), serveStatic(asset.dir, {
-      fallthrough: asset.fallthrough
-    }))
+    const url = joinURL(nitro.options.app.baseURL, asset.baseURL)
+    app.use(url, serveStatic(asset.dir))
+    if (!asset.fallthrough) {
+      app.use(url, servePlaceholder())
+    }
   }
 
-  // serve placeholder 404 assets instead of hitting SSR
-  // app.use(nitro.options.publicPath, servePlaceholder())
+  // Serve placeholder 404 assets instead of hitting SSR
+  // TODO: Option to opt-out
+  app.use(nitro.options.app.baseURL, servePlaceholder({ skipUnknown: true }))
 
-  // SSR Proxy
+  // Worker proxy
   const proxy = httpProxy.createProxy()
   app.use(eventHandler(async (event) => {
     await reloadPromise
