@@ -27,11 +27,7 @@ export const netlify = defineNitroPreset({
     'nitro:rollup:before' (nitro: Nitro) {
       nitro.options.rollupConfig.output.entryFileNames = 'server.ts'
     }
-  },
-  ignore: [
-    'netlify.toml',
-    '_redirects'
-  ]
+  }
 })
 
 // eslint-disable-next-line

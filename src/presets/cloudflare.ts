@@ -6,9 +6,6 @@ import type { Nitro } from '../types'
 export const cloudflare = defineNitroPreset({
   extends: 'worker',
   entry: '#nitro/entries/cloudflare',
-  ignore: [
-    'wrangler.toml'
-  ],
   commands: {
     preview: 'npx miniflare ./server/index.mjs --site ./public',
     deploy: 'cd ./server && npx wrangler publish'

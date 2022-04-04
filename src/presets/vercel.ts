@@ -11,9 +11,6 @@ export const vercel = defineNitroPreset({
     serverDir: '{{ output.dir }}/functions/node/server',
     publicDir: '{{ output.dir }}/static'
   },
-  ignore: [
-    'vercel.json'
-  ],
   hooks: {
     async 'nitro:compiled' (nitro: Nitro) {
       await writeRoutes(nitro)
