@@ -5,7 +5,7 @@ import { resolve } from 'pathe'
 import { createNitro } from './nitro'
 import { build, prepare, copyPublicAssets } from './build'
 import { prerender } from './prerender'
-import { createDevServer } from './server/dev'
+import { createDevServer } from './dev/server'
 
 async function main () {
   const args = mri(process.argv.slice(2))

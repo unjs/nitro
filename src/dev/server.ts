@@ -1,6 +1,5 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
-import chokidar, { FSWatcher } from 'chokidar'
 import { debounce } from 'perfect-debounce'
 import { CompatibilityEvent, createApp, eventHandler } from 'h3'
 import httpProxy from 'http-proxy'
