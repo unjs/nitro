@@ -17,14 +17,16 @@ export interface Nitro {
   hooks: Hookable<NitroHooks>
   unimport?: Unimport
   logger: Consola
+  close: () => Promise<void>
 }
 
+type HookResult = void | Promise<void>
 export interface NitroHooks {
-  'nitro:document': (htmlTemplate: { src: string, contents: string, dst: string }) => void
-  'nitro:rollup:before': (nitro: Nitro) => void | Promise<void>
-  'nitro:compiled': (nitro: Nitro) => void
-  'nitro:dev:reload': () => void
-  'close': () => void
+  'nitro:document': (htmlTemplate: { src: string, contents: string, dst: string }) => HookResult
+  'nitro:rollup:before': (nitro: Nitro) => HookResult
+  'nitro:compiled': (nitro: Nitro) => HookResult
+  'nitro:dev:reload': () => HookResult
+  'close': () => HookResult
 }
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T

@@ -22,6 +22,7 @@ async function main () {
     await server.listen({})
     await prepare(nitro)
     await build(nitro)
+    await nitro.close()
     return
   }
 
@@ -34,6 +35,7 @@ async function main () {
     await copyPublicAssets(nitro)
     await build(nitro)
     await prerender(nitro)
+    await nitro.close()
     process.exit(0)
   }
 

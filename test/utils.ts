@@ -44,6 +44,9 @@ export async function setupTest (preset) {
     if (ctx.server) {
       await ctx.server.close()
     }
+    if (ctx.nitro) {
+      await ctx.nitro.close()
+    }
   })
 
   return ctx

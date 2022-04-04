@@ -16,7 +16,8 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     hooks: createHooks(),
     vfs: {},
     logger: consola.withTag('nitro'),
-    scannedHandlers: []
+    scannedHandlers: [],
+    close: () => nitro.hooks.callHook('close')
   }
 
   // Logger config
