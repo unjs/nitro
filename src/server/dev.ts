@@ -2,13 +2,12 @@ import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import chokidar, { FSWatcher } from 'chokidar'
 import { debounce } from 'perfect-debounce'
-import { CompatibilityEvent, createApp, defineEventHandler, Middleware } from 'h3'
+import { CompatibilityEvent, createApp, eventHandler } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 // import servePlaceholder from 'serve-placeholder'
 import serveStatic from 'serve-static'
 import { resolve } from 'pathe'
-import connect from 'connect'
 import { joinURL } from 'ufo'
 import type { Nitro } from '../types'
 import { createVFSHandler } from './vfs'
@@ -89,6 +88,13 @@ export function createDevServer (nitro: Nitro) {
   // App
   const app = createApp()
 
+  // Dev-only handlers
+  for (const handler of nitro.options.devHandlers) {
+    app.use(handler.route || '/', handler.handler)
+  }
+  // Debugging endpoint to view vfs
+  app.use('/_vfs', createVFSHandler(nitro))
+
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
     app.use(joinURL(nitro.options.app.baseURL, asset.baseURL), serveStatic(asset.dir, {
@@ -96,21 +102,12 @@ export function createDevServer (nitro: Nitro) {
     }))
   }
 
-  // debugging endpoint to view vfs
-  app.use('/_vfs', createVFSHandler(nitro))
-
-  // Dynamic Middleware
-  const legacyMiddleware = createDynamicMiddleware()
-  const devMiddleware = createDynamicMiddleware()
-  app.use(legacyMiddleware.middleware)
-  app.use(devMiddleware.middleware)
-
   // serve placeholder 404 assets instead of hitting SSR
   // app.use(nitro.options.publicPath, servePlaceholder())
 
   // SSR Proxy
   const proxy = httpProxy.createProxy()
-  app.use(defineEventHandler(async (event) => {
+  app.use(eventHandler(async (event) => {
     await reloadPromise
     const address = currentWorker?.address
     if (!address || (address.socketPath && !existsSync(address.socketPath))) {
@@ -168,15 +165,8 @@ export function createDevServer (nitro: Nitro) {
     listen: _listen,
     app,
     close,
-    watch,
-    setLegacyMiddleware: legacyMiddleware.set,
-    setDevMiddleware: devMiddleware.set
+    watch
   }
-}
-
-interface DynamicMiddleware {
-  set: (input: Middleware) => void
-  middleware: Middleware
 }
 
 function sendUnavailable (event: CompatibilityEvent, error?: Error) {
@@ -196,23 +186,4 @@ function sendUnavailable (event: CompatibilityEvent, error?: Error) {
   </body>
 </html>
 `)
-}
-
-function createDynamicMiddleware (): DynamicMiddleware {
-  let middleware: Middleware
-  return {
-    set: (input) => {
-      if (!Array.isArray(input)) {
-        middleware = input
-        return
-      }
-      const app = connect()
-      for (const m of input) {
-        app.use(m.path || m.route || '/', m.handler || m.handle!)
-      }
-      middleware = app
-    },
-    middleware: (req, res, next) =>
-      middleware ? middleware(req, res, next) : next()
-  }
 }

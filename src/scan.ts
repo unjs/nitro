@@ -1,7 +1,7 @@
 import { resolve, join } from 'pathe'
 import { globby } from 'globby'
 import { withBase } from 'ufo'
-import type { Nitro, NitroHandlerConfig } from './types'
+import type { Nitro, NitroEventHandler } from './types'
 
 export const GLOB_SCAN_PATTERN = '**/*.{ts,mjs,js,cjs}'
 type FileInfo = { dir: string, name: string, path: string }
@@ -25,10 +25,10 @@ export function scanAPI (nitro: Nitro) {
   return scanServerDir(nitro, 'api', file => ({ handler: file.path, route: withBase(file.name.replace(/\[([a-z]+)\]/g, ':$1'), '/api') }))
 }
 
-async function scanServerDir (nitro: Nitro, name: string, mapper: (file: FileInfo) => NitroHandlerConfig) {
+async function scanServerDir (nitro: Nitro, name: string, mapper: (file: FileInfo) => NitroEventHandler) {
   const dirs = nitro.options.scanDirs.map(dir => join(dir, name))
   const files = await scanDirs(dirs)
-  const handlers: NitroHandlerConfig[] = files.map(mapper)
+  const handlers: NitroEventHandler[] = files.map(mapper)
   return { dirs, files, handlers }
 }
 

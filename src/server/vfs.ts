@@ -1,8 +1,8 @@
-import { createError, defineEventHandler } from 'h3'
+import { createError, eventHandler } from 'h3'
 import type { Nitro } from '../types'
 
 export function createVFSHandler (nitro: Nitro) {
-  return defineEventHandler((event) => {
+  return eventHandler((event) => {
     if (event.req.url === '/') {
       const items = Object.keys(nitro.vfs)
         .filter(i => !i.startsWith('#'))

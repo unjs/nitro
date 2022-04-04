@@ -1,11 +1,11 @@
-import { defineEventHandler, createError } from 'h3'
+import { eventHandler, createError } from 'h3'
 import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
 // @ts-ignore
 import { getAsset, readAsset, isPublicAssetURL } from '#public-assets'
 
 const METHODS = ['HEAD', 'GET']
 
-export default defineEventHandler(async (event) => {
+export default eventHandler(async (event) => {
   if (!METHODS.includes(event.req.method)) {
     return
   }

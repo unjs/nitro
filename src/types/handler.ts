@@ -1,6 +1,6 @@
 import type { Handler } from 'h3'
 
-export interface NitroHandlerConfig {
+export interface NitroEventHandler {
   /**
    * Path prefix or route
    */
@@ -12,9 +12,21 @@ export interface NitroHandlerConfig {
   lazy?: boolean
 
   /**
-   * Handler
+   * Path to event handler
    *
-   * Note: Handler as function only works during development and will be removed from production bundle
    */
-  handler: string | Handler
+  handler: string
+}
+
+export interface NitroDevEventHandler {
+  /**
+   * Path prefix or route
+   */
+  route?: string
+
+  /**
+   * Event handler
+   *
+   */
+  handler: Handler
 }

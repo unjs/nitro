@@ -3598,15 +3598,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"h3@npm:^0.5.4":
-  version: 0.5.4
-  resolution: "h3@npm:0.5.4"
+"h3@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "h3@npm:0.5.5"
   dependencies:
     cookie-es: ^0.5.0
     destr: ^1.1.0
     radix3: ^0.1.1
     ufo: ^0.7.11
-  checksum: 226f1e87a8a8a5e3e15421dd34c0f2db771681a7a283a3b415160e2e5d1ce7ccf8d4874e5056c00711c88cf0baebc7afe30f4a01ee00155a06937a33e48083fc
+  checksum: 3f83b5a74b24a1782c788d27d9d5c60b737671e47261e631f4d6b6bd8b00bb96538cfb47c4f4d778b08dd8e1c5150c29b48460d804e60a6e9c8478c42eab76c9
   languageName: node
   linkType: hard
 
@@ -5005,7 +5005,7 @@ __metadata:
     fs-extra: ^10.0.1
     globby: ^13.1.1
     gzip-size: ^7.0.0
-    h3: ^0.5.4
+    h3: ^0.5.5
     hasha: ^5.2.2
     hookable: ^5.1.1
     http-proxy: ^1.18.1

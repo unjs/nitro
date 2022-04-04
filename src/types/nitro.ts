@@ -8,11 +8,11 @@ import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { StorageOptions } from '../rollup/plugins/storage'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
-import { NitroHandlerConfig } from './handler'
+import { NitroDevEventHandler, NitroEventHandler } from './handler'
 
 export interface Nitro {
   options: NitroOptions,
-  scannedHandlers: NitroHandlerConfig[],
+  scannedHandlers: NitroEventHandler[],
   vfs: Record<string, string>
   hooks: Hookable<NitroHooks>
   unimport?: Unimport
@@ -92,7 +92,8 @@ export interface NitroOptions {
   publicAssets: PublicAssetDir[]
 
   // Routing
-  handlers: NitroHandlerConfig[]
+  handlers: NitroEventHandler[]
+  devHandlers: NitroDevEventHandler[]
   routes: {
     [path: string]: NitroRouteRule
   },
