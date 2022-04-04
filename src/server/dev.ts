@@ -115,10 +115,6 @@ export function createDevServer (nitro: Nitro) {
     if (!address || (address.socketPath && !existsSync(address.socketPath))) {
       return sendUnavailable(event, lastError)
     }
-    // Workaround to pass legacy req.spa to proxy
-    if ((event.req as any).spa) {
-      event.req.headers['x-nuxt-no-ssr'] = 'true'
-    }
     return new Promise((resolve, reject) => {
       proxy.web(event.req, event.res, { target: address }, (error: any) => {
         lastError = error
@@ -138,24 +134,8 @@ export function createDevServer (nitro: Nitro) {
     return listener
   }
 
-  // Watch for dist and reload worker
-  // TODO: Remove?
-  const pattern = '**/*.{js,json,cjs,mjs}'
-  const events = ['add', 'change']
-  let watcher: FSWatcher
-  function watch () {
-    if (watcher) { return }
-    watcher = chokidar.watch([
-      resolve(nitro.options.output.serverDir, pattern),
-      resolve(nitro.options.buildDir, 'dist/server', pattern)
-    ]).on('all', event => events.includes(event) && reload())
-  }
-
   // Close handler
   async function close () {
-    if (watcher) {
-      await watcher.close()
-    }
     await killWorker(currentWorker)
     await Promise.all(listeners.map(l => l.close()))
     listeners = []
@@ -166,8 +146,7 @@ export function createDevServer (nitro: Nitro) {
     reload,
     listen: _listen,
     app,
-    close,
-    watch
+    close
   }
 }
 
