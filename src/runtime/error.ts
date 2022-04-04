@@ -18,7 +18,7 @@ export default function handleError (error: any, event: CompatibilityEvent) {
   const showDetails = isDev && statusCode !== 404
 
   const errorObject = {
-    url: event.req.url,
+    url: event.req.url || '',
     statusCode,
     statusMessage,
     message,

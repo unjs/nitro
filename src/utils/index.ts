@@ -18,11 +18,11 @@ export function prettyPath (p: string, highlight = true) {
 
 export function compileTemplate (contents: string) {
   return (params: Record<string, any>) => contents.replace(/{{ ?([\w.]+) ?}}/g, (_, match) => {
-    const val = getProperty(params, match)
+    const val = getProperty<Record<string, string>, string>(params, match)
     if (!val) {
       consola.warn(`cannot resolve template param '${match}' in ${contents.slice(0, 20)}`)
     }
-    return val as string || `${match}`
+    return val || `${match}`
   })
 }
 
@@ -125,7 +125,7 @@ export function readPackageJson (
   } catch (error) {
     if (error.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
       const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(_require.resolve(packageName))
-      for (const pkgModulePath of pkgModulePaths) {
+      for (const pkgModulePath of pkgModulePaths || []) {
         const path = resolve(pkgModulePath, packageName, 'package.json')
         if (fse.existsSync(path)) {
           return fse.readJSONSync(path)

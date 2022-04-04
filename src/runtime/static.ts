@@ -1,12 +1,11 @@
 import { eventHandler, createError } from 'h3'
 import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
-// @ts-ignore
-import { getAsset, readAsset, isPublicAssetURL } from '#public-assets'
+import { getAsset, readAsset, isPublicAssetURL } from '#nitro/virtual/public-assets'
 
 const METHODS = ['HEAD', 'GET']
 
 export default eventHandler(async (event) => {
-  if (!METHODS.includes(event.req.method)) {
+  if (event.req.method && !METHODS.includes(event.req.method)) {
     return
   }
 

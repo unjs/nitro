@@ -34,7 +34,7 @@ type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPar
 export type NitroPreset = NitroConfig | ((input: NitroConfig) => NitroConfig)
 
 export interface NitroConfig extends DeepPartial<NitroOptions> {
-  extends?: string | string[]
+  extends?: string | string[] | NitroPreset
 }
 
 export interface NitroRouteRule {

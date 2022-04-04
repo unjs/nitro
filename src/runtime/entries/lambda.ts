@@ -4,11 +4,15 @@ import { withQuery } from 'ufo'
 import type { HeadersObject } from 'unenv/runtime/_internal/types'
 import { localCall } from '..'
 
-export const handler = async function handler (event: APIGatewayProxyEvent | APIGatewayProxyEventV2, context: Context): Promise<APIGatewayProxyResult | APIGatewayProxyResultV2> {
-  const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, event.queryStringParameters)
+// Compatibility types that work with AWS v1, AWS v2 & Netlify
+type Event = Omit<APIGatewayProxyEvent, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'> | Omit<APIGatewayProxyEventV2, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'>
+type Result = Exclude<APIGatewayProxyResult | APIGatewayProxyResultV2, string> & { statusCode: number }
+
+export const handler = async function handler (event: Event, context: Context): Promise<Result> {
+  const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, event.queryStringParameters || {})
   const method = (event as APIGatewayProxyEvent).httpMethod || (event as APIGatewayProxyEventV2).requestContext?.http?.method || 'get'
 
-  if ('cookies' in event) {
+  if ('cookies' in event && event.cookies) {
     event.headers.cookie = event.cookies.join(',')
   }
 
@@ -30,9 +34,9 @@ export const handler = async function handler (event: APIGatewayProxyEvent | API
 }
 
 function normalizeIncomingHeaders (headers: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value]))
+  return Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value!]))
 }
 
 function normalizeOutgoingHeaders (headers: HeadersObject) {
-  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v]))
+  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
 }

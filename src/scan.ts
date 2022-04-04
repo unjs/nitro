@@ -6,7 +6,7 @@ import type { Nitro, NitroEventHandler } from './types'
 export const GLOB_SCAN_PATTERN = '**/*.{ts,mjs,js,cjs}'
 type FileInfo = { dir: string, name: string, path: string }
 
-export async function scanHandlers (nitro) {
+export async function scanHandlers (nitro: Nitro) {
   const handlers = await Promise.all([
     scanMiddleware(nitro),
     scanAPI(nitro)

@@ -6,7 +6,9 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.mjs",
-    "./cli": "./dist/cli.mjs"
+    "./cli": "./dist/cli.mjs",
+    "./runtime/*": "./dist/runtime/*.mjs",
+    "./dist/runtime/*": "./dist/runtime/*.mjs"
   },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -92,9 +94,11 @@
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^9.0.0",
     "@types/aws-lambda": "^8.10.93",
+    "@types/etag": "^1.8.1",
     "@types/fs-extra": "^9.0.13",
     "@types/http-proxy": "^1.17.8",
     "@types/node-fetch": "^2.6.1",
+    "@types/object-hash": "^2.2.1",
     "@types/semver": "^7.3.9",
     "@types/serve-static": "^1.13.10",
     "c8": "^7.11.0",

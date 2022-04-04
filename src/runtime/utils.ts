@@ -27,21 +27,22 @@ export async function useRequestBody (request: globalThis.Request): Promise<any>
   }
 }
 
-export function hasReqHeader (req, header, includes) {
-  return req.headers[header] && req.headers[header].toLowerCase().includes(includes)
+export function hasReqHeader (req: CompatibilityEvent['req'], header: string, includes: string) {
+  const value = req.headers[header]
+  return value && typeof value === 'string' && value.toLowerCase().includes(includes)
 }
 
 export function isJsonRequest (event: CompatibilityEvent) {
   return hasReqHeader(event.req, 'accept', 'application/json') ||
     hasReqHeader(event.req, 'user-agent', 'curl/') ||
     hasReqHeader(event.req, 'user-agent', 'httpie/') ||
-    event.req.url.endsWith('.json') ||
-    event.req.url.includes('/api/')
+    event.req.url?.endsWith('.json') ||
+    event.req.url?.includes('/api/')
 }
 
 export function normalizeError (error: any) {
   const cwd = process.cwd()
-  const stack = (error.stack || '')
+  const stack = (error.stack as string || '')
     .split('\n')
     .splice(1)
     .filter(line => line.includes('at '))

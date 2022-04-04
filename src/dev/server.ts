@@ -29,17 +29,17 @@ function initWorker (filename: string): Promise<NitroWorker> | null {
       err.message = '[worker init]' + err.message
       reject(err)
     })
-    const addressLitener = (event) => {
+    const addressListener = (event) => {
       if (!event || !event.address) {
         return
       }
-      worker.off('message', addressLitener)
+      worker.off('message', addressListener)
       resolve({
         worker,
         address: event.address
       } as NitroWorker)
     }
-    worker.on('message', addressLitener)
+    worker.on('message', addressListener)
   })
 }
 

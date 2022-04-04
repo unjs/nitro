@@ -129,7 +129,6 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
   rollupConfig.plugins.push(replace({
-    // @ts-ignore https://github.com/rollup/plugins/pull/810
     preventAssignment: true,
     values: {
       'process.env.NODE_ENV': nitro.options.dev ? '"development"' : '"production"',
@@ -208,11 +207,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
       '#nitro': runtimeDir,
-      '#config': resolve(runtimeDir, 'config'),
-      '#nitro-error': resolve(runtimeDir, 'error'),
       '#_config': resolve(runtimeDir, 'config'),
-      '#paths': resolve(runtimeDir, 'paths'),
-      '#cache': resolve(runtimeDir, 'cache'),
       // TODO: Fix windows issue
       '#build': nitro.options.buildDir,
       '~': nitro.options.srcDir,

@@ -33,13 +33,13 @@ export function publicAssets (nitro: Nitro): Plugin {
   }
 
   return virtual({
-    '#public-assets-data': `export default ${JSON.stringify(assets, null, 2)};`,
-    '#public-assets': `
+    '#nitro/virtual/public-assets-data': `export default ${JSON.stringify(assets, null, 2)};`,
+    '#nitro/virtual/public-assets': `
 import { promises } from 'fs'
 import { resolve } from 'pathe'
 import { dirname } from 'pathe'
 import { fileURLToPath } from 'url'
-import assets from '#public-assets-data'
+import assets from '#nitro/virtual/public-assets-data'
 
 const mainDir = dirname(fileURLToPath(globalThis.entryURL))
 

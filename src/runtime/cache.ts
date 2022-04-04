@@ -1,6 +1,6 @@
 import hash from 'object-hash'
 import type { Handler } from 'h3'
-import { storage } from '#storage'
+import { storage } from '#nitro/virtual/storage'
 
 export interface CacheEntry {
   value?: any
@@ -10,7 +10,7 @@ export interface CacheEntry {
 }
 
 export interface CachifyOptions {
-  name: string
+  name?: string
   getKey?: (...args: any[]) => string
   transform?: (entry: CacheEntry, ...args: any[]) => any
   group?: string
@@ -37,16 +37,17 @@ export function cachify (fn: ((...args) => any), opts: CachifyOptions) {
   const name = opts.name || fn.name || '_'
   const integrity = hash(opts.integrity || fn)
 
-  async function get (key: string, resolver) {
+  async function get (key: string, resolver: () => any) {
     const cacheKey = [opts.base, group, name, key].filter(Boolean).join(':')
-    const entry: CacheEntry = await storage.getItem(cacheKey) || {}
+    // TODO: improve unstorage types
+    const entry: CacheEntry = await storage.getItem(cacheKey) as any || {}
 
     const ttl = (opts.ttl ?? opts.ttl ?? 0) * 1000
     if (ttl) {
       entry.expires = Date.now() + ttl
     }
 
-    const expired = (entry.integrity !== integrity) || (ttl && (Date.now() - entry.mtime) > ttl)
+    const expired = (entry.integrity !== integrity) || (ttl && (Date.now() - (entry.mtime || 0)) > ttl)
 
     const _resolve = async () => {
       if (!pending[key]) {
@@ -82,7 +83,7 @@ export function cachify (fn: ((...args) => any), opts: CachifyOptions) {
   }
 }
 
-function getKey (...args) {
+function getKey (...args: string[]) {
   return args.length ? hash(args, {}) : ''
 }
 
