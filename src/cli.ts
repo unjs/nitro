@@ -22,7 +22,6 @@ async function main () {
     await server.listen({})
     await prepare(nitro)
     await build(nitro)
-    await nitro.close()
     return
   }
 
