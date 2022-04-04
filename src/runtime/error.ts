@@ -52,7 +52,7 @@ function renderHTMLError (error: ParsedError): string {
     <style> body { margin: 2em; } </style>
   </head>
   <body>
-    <h1>${statusCode} ${statusMessage}/h1>
+    <h1>${statusCode} ${statusMessage}</h1>
     <p>Error: ${error.message}</p>
     <ul>${'\n' + (error.stack || []).map(i => `      <li>${i}</li>`).join('\n')}
     </ul>
