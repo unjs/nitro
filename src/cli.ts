@@ -16,7 +16,7 @@ async function main () {
     const nitro = await createNitro({
       rootDir,
       dev: true,
-      preset: 'dev'
+      preset: 'nitro-dev'
     })
     const server = createDevServer(nitro)
     await server.listen({})

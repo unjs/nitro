@@ -1,6 +1,7 @@
 import { resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
+import { camelCase } from 'scule'
 import defu from 'defu'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { resolvePath, detectTarget } from './utils'
@@ -73,9 +74,10 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     cwd: userConfig.rootDir,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
-      if ((PRESETS as any as PT)[id]) {
+      const matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
+      if (matchedPreset) {
         return {
-          config: (PRESETS as any as PT)[id]
+          config: matchedPreset
         }
       }
       return null
@@ -83,7 +85,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     overrides: {
       ...userConfig,
       extends: [
-        userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'nodeServer'
+        userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'node-server'
       ]
     }
   })
@@ -98,7 +100,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
 
   // Resolve possibly template paths
   if (!options.entry) {
-    throw new Error('Nitro entry is missing! Is preset correct?')
+    throw new Error(`Nitro entry is missing! Is "${options.preset}" preset correct?`)
   }
   options.entry = resolvePath(options.entry, options)
   options.output.dir = resolvePath(options.output.dir, options)

@@ -1,6 +1,6 @@
 import { defineNitroPreset } from '../preset'
 
-export const worker = defineNitroPreset({
+export const baseWorker = defineNitroPreset({
   entry: null, // Abstract
   node: false,
   minify: true,

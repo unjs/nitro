@@ -4,7 +4,7 @@ import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
 export const netlify = defineNitroPreset({
-  extends: 'lambda',
+  extends: 'aws-lambda',
   output: {
     dir: '{{ options.rootDir }}/.netlify/functions-internal',
     publicDir: '{{ options.rootDir }}/dist'
@@ -31,7 +31,7 @@ export const netlify = defineNitroPreset({
 })
 
 // eslint-disable-next-line
-export const netlify_builder = defineNitroPreset({
-  extends: netlify,
-  entry: '#nitro/entries/netlify_builder'
+export const netlifyBuilder = defineNitroPreset({
+  extends: 'netlify',
+  entry: '#nitro/entries/netlify-builder'
 })

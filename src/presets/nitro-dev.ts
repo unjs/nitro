@@ -1,8 +1,8 @@
 import { defineNitroPreset } from '../preset'
 
-export const dev = defineNitroPreset({
+export const nitroDev = defineNitroPreset({
   extends: 'node',
-  entry: '#nitro/entries/dev',
+  entry: '#nitro/entries/nitro-dev',
   output: {
     serverDir: '{{ buildDir }}/dev'
   },
