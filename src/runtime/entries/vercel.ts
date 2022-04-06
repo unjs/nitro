@@ -1,4 +1,4 @@
 import '#polyfill'
-import { app } from '../app'
+import { nitroApp } from '../app'
 
-export default app.nodeHandler
+export default nitroApp.h3App.nodeHandler

@@ -1,7 +1,8 @@
 import '#polyfill'
+import * as nodeFetch from 'node-fetch'
+import { nitroApp } from '../app'
 
 // TODO: Workaround for rollup treeshaking polyfills
-import * as nodeFetch from 'node-fetch'
 // @ts-ignore
 globalThis.fetch = globalThis.fetch || nodeFetch.default || nodeFetch
 // @ts-ignore
@@ -10,4 +11,4 @@ globalThis.Request = globalThis.Request || nodeFetch.Request
 globalThis.Response = globalThis.Response || nodeFetch.Response
 globalThis.Headers = globalThis.Headers || nodeFetch.Headers
 
-export * from '../app'
+export const handler = nitroApp.h3App.nodeHandler

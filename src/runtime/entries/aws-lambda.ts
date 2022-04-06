@@ -2,7 +2,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyEventHeaders, APIGatewayProxy
 import '#polyfill'
 import { withQuery } from 'ufo'
 import type { HeadersObject } from 'unenv/runtime/_internal/types'
-import { localCall } from '../app'
+import { nitroApp } from '../app'
 
 // Compatibility types that work with AWS v1, AWS v2 & Netlify
 type Event = Omit<APIGatewayProxyEvent, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'> | Omit<APIGatewayProxyEventV2, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'>
@@ -16,7 +16,7 @@ export const handler = async function handler (event: Event, context: Context): 
     event.headers.cookie = event.cookies.join(',')
   }
 
-  const r = await localCall({
+  const r = await nitroApp.localCall({
     event,
     url,
     context,

@@ -1,6 +1,6 @@
 import '#polyfill'
 import { parseURL } from 'ufo'
-import { localCall } from '../app'
+import { nitroApp } from '../app'
 
 export async function handle (context, req) {
   let url: string
@@ -13,7 +13,7 @@ export async function handle (context, req) {
     url = '/api/' + (req.params.url || '')
   }
 
-  const { body, status, statusText, headers } = await localCall({
+  const { body, status, statusText, headers } = await nitroApp.localCall({
     url,
     headers: req.headers,
     method: req.method,
