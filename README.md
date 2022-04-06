@@ -80,16 +80,14 @@ node .output/server/index.mjs
 
 <hr>
 
-## Type Support
+## Typescript Support
 
-nitro uses the `#nitro` alias for runtime helpers. To add type support within your project,
-you may add the following to your `tsconfig.json` file:
+nitro uses the `#nitro` alias for runtime helpers and global imports. To add type support within your project,
+you should add the following to your `tsconfig.json` file:
 
 ```json
-"compilerOptions": {
-  "paths": {
-    "#nitro": ["nitropack/dist/runtime/index"]
-  }
+{
+  "extends": "./.nitro/types/tsconfig.json"
 }
 ```
 

@@ -4,11 +4,13 @@ import fse from 'fs-extra'
 import defu from 'defu'
 import { watch } from 'chokidar'
 import { debounce } from 'perfect-debounce'
+import type { TSConfig } from 'pkg-types'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig } from './rollup/config'
 import { prettyPath, writeFile, isDirectory, serializeTemplate } from './utils'
 import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
+import { runtimeDir } from './dirs'
 
 export async function prepare (nitro: Nitro) {
   await cleanupDir(nitro.options.output.dir)
@@ -91,6 +93,28 @@ export async function writeTypes (nitro: Nitro) {
   ]
 
   await writeFile(join(nitro.options.buildDir, 'types/nitro.d.ts'), lines.join('\n'))
+
+  const tsConfig: TSConfig = {
+    compilerOptions: {
+      target: 'ESNext',
+      module: 'ESNext',
+      moduleResolution: 'Node',
+      allowJs: true,
+      resolveJsonModule: true,
+      paths: {
+        '#nitro': [
+          join(runtimeDir, 'index')
+        ],
+        '#nitro/*': [
+          join(runtimeDir, '*')
+        ]
+      }
+    },
+    include: [
+      './nitro.d.ts'
+    ]
+  }
+  await writeFile(join(nitro.options.buildDir, 'types/tsconfig.json'), JSON.stringify(tsConfig, null, 2))
 }
 
 async function _build (nitro: Nitro) {
