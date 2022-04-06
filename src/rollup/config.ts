@@ -209,8 +209,6 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
       '#nitro': runtimeDir,
-      '#_config': resolve(runtimeDir, 'config'),
-      // TODO: Fix windows issue
       '#build': nitro.options.buildDir,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
