@@ -63,10 +63,7 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
       cache: resolve(options.buildDir, 'cache')
     }
     for (const p in fsMounts) {
-      options.storage.mounts[p] = options.storage.mounts[p] || {
-        driver: 'fs',
-        driverOptions: { base: fsMounts[p] }
-      }
+      options.storage[p] = options.storage[p] || { driver: 'fs', base: fsMounts[p] }
     }
   }
 

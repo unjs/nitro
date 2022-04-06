@@ -181,7 +181,9 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   // Storage
-  rollupConfig.plugins.push(storage(nitro.options.storage))
+  rollupConfig.plugins.push(storage({
+    mounts: nitro.options.storage
+  }))
 
   // Handlers
   rollupConfig.plugins.push(handlers(() => {

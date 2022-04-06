@@ -144,11 +144,9 @@ import { definenitroConfig } from 'nitropack'
 
 export default definenitroConfig({
   storage: {
-    mounts: {
-      '/redis': {
-        driver: 'redis',
-        driverOptions: { /* redis connector options */ }
-      }
+    '/redis': {
+      driver: 'redis',
+      /* redis connector options */
     }
   }
 })

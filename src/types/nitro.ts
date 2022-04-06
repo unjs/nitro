@@ -6,7 +6,7 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import { WatchOptions } from 'chokidar'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
-import type { StorageOptions } from '../rollup/plugins/storage'
+import type { StorageMounts } from '../rollup/plugins/storage'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import { NitroDevEventHandler, NitroEventHandler } from './handler'
@@ -91,7 +91,7 @@ export interface NitroOptions {
   }
 
   // Features
-  storage: StorageOptions
+  storage: StorageMounts
   timing: boolean
   renderer: string
   serveStatic: boolean

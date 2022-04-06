@@ -26,7 +26,7 @@ const NitroDefaults: NitroConfig = {
 
   // Featueres
   experimental: {},
-  storage: { mounts: {} },
+  storage: {},
   publicAssets: [],
   serverAssets: [],
   autoImport: {

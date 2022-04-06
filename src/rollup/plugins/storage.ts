@@ -1,19 +1,23 @@
 import virtual from '@rollup/plugin-virtual'
 import { serializeImportName } from '../../utils'
 
-export interface StorageOptions {
-  mounts: {
-    [path: string]: {
-      driver: 'fs' | 'http' | 'memory',
-      driverOptions?: Record<string, any>
-    }
+export interface StorageMounts {
+  [path: string]: {
+    driver: 'fs' | 'http' | 'memory' | 'redis' | 'cloudflare-kv',
+    [option: string]: any
   }
+}
+
+export interface StorageOptions {
+  mounts: StorageMounts
 }
 
 const drivers = {
   fs: 'unstorage/drivers/fs',
   http: 'unstorage/drivers/http',
-  memory: 'unstorage/drivers/memory'
+  memory: 'unstorage/drivers/memory',
+  redis: 'unstorage/drivers/redis',
+  'cloudflare-kv': 'unstorage/drivers/cloudflare-kv'
 }
 
 export function storage (opts: StorageOptions) {
@@ -24,7 +28,7 @@ export function storage (opts: StorageOptions) {
     mounts.push({
       path,
       driver: drivers[mount.driver] || mount.driver,
-      opts: mount.driverOptions || {}
+      opts: mount
     })
   }
 
