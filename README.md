@@ -1,15 +1,26 @@
 <h1 align="center">⚗️ nitro</h1>
 
-> The complete solution to build and deploy universal JavaScript servers. Nitro provides both build tooling and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem.
+> The complete solution to build and deploy universal JavaScript servers. nitro provides both build tooling and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem.
 
 <hr>
+
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+
+[![npm-edge version][npm-edge-version-src]][npm-edge-version-href]
+[![npm-edge downloads][npm-edge-downloads-src]][npm-edge-downloads-href]
+
+[![Github Actions][github-actions-src]][github-actions-href] [![Codecov][codecov-src]][codecov-href]
+
+<hr>
+
 <h3 align="center">🌱 nitro is young and under development 🌱</h3>
 
 🐛 Check [open issues](https://github.com/unjs/nitro/issues) for roadmap and known issues.
 
 🎁 [Contributions](#-contribution) are more than welcome to improve documentation.
 
-💡 [Tell us your ideas](https://github.com/unjs/nitro/discussions/new) too!
+💡 [Tell us your ideas](https://github.com/unjs/nitro/discussions/new)
 
 🏀 [Online playground](https://stackblitz.com/github/unjs/nitro/tree/main/examples/hello-world) on StackBlitz
 <hr>
@@ -42,7 +53,7 @@ cd nitro-app
 1️⃣ Create `api/hello.ts`:
 
 ```ts [api/hello.ts]
-export default () => 'Nitro is amazing!'
+export default () => 'nitro is amazing!'
 ```
 
 2️⃣ Start development server:
@@ -71,7 +82,7 @@ node .output/server/index.mjs
 
 ## Type Support
 
-Nitro uses the `#nitro` alias for runtime helpers. To add type support within your project,
+nitro uses the `#nitro` alias for runtime helpers. To add type support within your project,
 you may add the following to your `tsconfig.json` file:
 
 ```json
@@ -107,7 +118,7 @@ export default eventHandler(event => `Hello ${event.params.name}!`)
 
 ## Storage
 
-Nitro provides a built-in storage layer using [unjs/unstorage](https://github.com/unjs/unstorage) that can abstract filesystem access.
+nitro provides a built-in storage layer using [unjs/unstorage](https://github.com/unjs/unstorage) that can abstract filesystem access.
 
 ```js
 import { storage } from '#nitro'
@@ -131,9 +142,9 @@ You can add more mountpoints using `storage` option:
 
 ```js
 // nitro.config.ts
-import { defineNitroConfig } from 'nitropack'
+import { definenitroConfig } from 'nitropack'
 
-export default defineNitroConfig({
+export default definenitroConfig({
   storage: {
     mounts: {
       '/redis': {
@@ -147,7 +158,7 @@ export default defineNitroConfig({
 
 ## Cache API
 
-Nitro provides a powerful caching system built on top of storage layer.
+nitro provides a powerful caching system built on top of storage layer.
 
 ```js
 import { defineCachedFunction } from '#nitro'
@@ -183,9 +194,9 @@ const myFn = defineCachedFunction(async () => {
 
 ```js
 // nitro.config.ts
-import { defineNitroConfig } from 'nitropack'
+import { definenitroConfig } from 'nitropack'
 
-export default defineNitroConfig({
+export default definenitroConfig({
   routes: {
     '/blog/**': { swr: true }
   }
@@ -214,19 +225,19 @@ Currently supported presets:
 
 ## 📚  Options
 
-Nitro provides lots of options them to customize any part of its behavior. It is powerful enough that all deployment providers are built on the exact options API.
+nitro provides lots of options them to customize any part of its behavior. It is powerful enough that all deployment providers are built on the exact options API.
 
 Create a new `nitro.config.ts` file to provide options:
 
 ```js
 // nitro.config.ts
-import { defineNitroConfig } from 'nitropack'
+import { definenitroConfig } from 'nitropack'
 
-export default defineNitroConfig({
+export default definenitroConfig({
 })
 ```
 
-**🤓 [TIP]** Nitro handles configuration loading using [unjs/c12](https://github.com/unjs/c12). You have more advanced possibilities such as using `.env`. And `.nitrorc`.
+**🤓 [TIP]** nitro handles configuration loading using [unjs/c12](https://github.com/unjs/c12). You have more advanced possibilities such as using `.env`. And `.nitrorc`.
 
 ### General
 
@@ -272,7 +283,7 @@ List of directories to scan and auto-register files, such as API routes.
 
 - Default: `.nitro`
 
-Nitro's temporary working directory for generating build-related files.
+nitro's temporary working directory for generating build-related files.
 
 #### `output`
 
@@ -448,7 +459,7 @@ Additional `node_modules` to search when resolving a module. By default user dir
 
 #### `hooks`
 
-Nitro hooks. See [unjs/hookable](https://github.com/unjs/hookable) for more information.
+nitro hooks. See [unjs/hookable](https://github.com/unjs/hookable) for more information.
 
 #### `commands`
 
@@ -471,3 +482,22 @@ Preview and deploy command hints are usually filled by deployment presets.
 ## License
 
 Made with 💛 Published under [MIT](./LICENSE).
+
+<!-- Badges -->
+[npm-version-src]: https://img.shields.io/npm/v/nitropack?style=flat-square&label=stable%20version
+[npm-version-href]: https://npmjs.com/package/nitropack
+
+[npm-downloads-src]: https://img.shields.io/npm/dm/nitropack?style=flat-square&label=stable%20downloads
+[npm-downloads-href]: https://npmjs.com/package/nitropack
+
+[npm-edge-version-src]: https://img.shields.io/npm/v/nitropack-edge?style=flat-square&label=edge%20version
+[npm-edge-version-href]: https://npmjs.com/package/nitropack-edge
+
+[npm-edge-downloads-src]: https://img.shields.io/npm/dm/nitropack-edge?style=flat-square&label=edge%20downloads
+[npm-edge-downloads-href]: https://npmjs.com/package/nitropack-edge
+
+[github-actions-src]: https://img.shields.io/github/workflow/status/unjs/nitro/ci/main?style=flat-square
+[github-actions-href]: https://github.com/unjs/nitro/actions?query=workflow%3Aci
+
+[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/nitro/main?style=flat-square
+[codecov-href]: https://codecov.io/gh/unjs/nitro
