@@ -1,6 +1,7 @@
 import '#polyfill'
 import * as nodeFetch from 'node-fetch'
 import { nitroApp } from '../app'
+export { nitroApp } from '../app'
 
 // TODO: Workaround for rollup treeshaking polyfills
 // @ts-ignore

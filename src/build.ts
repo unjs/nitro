@@ -1,3 +1,4 @@
+import { promises as fsp } from 'fs'
 import { relative, resolve, join } from 'pathe'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
@@ -13,18 +14,13 @@ import type { Nitro } from './types'
 import { runtimeDir } from './dirs'
 
 export async function prepare (nitro: Nitro) {
-  await cleanupDir(nitro.options.output.dir)
-
-  if (!nitro.options.output.publicDir.startsWith(nitro.options.output.dir)) {
-    await cleanupDir(nitro.options.output.publicDir)
-  }
-
-  if (!nitro.options.output.serverDir.startsWith(nitro.options.output.dir)) {
-    await cleanupDir(nitro.options.output.serverDir)
-  }
+  await prepareDir(nitro.options.output.dir)
+  await prepareDir(nitro.options.output.publicDir)
+  await prepareDir(nitro.options.output.serverDir)
 }
 
-async function cleanupDir (dir: string) {
+async function prepareDir (dir: string) {
+  await fsp.mkdir(dir, { recursive: true })
   await fse.emptyDir(dir)
 }
 
@@ -42,7 +38,7 @@ export async function build (nitro: Nitro) {
   const htmlSrc = resolve(nitro.options.buildDir, 'views/app.template.html')
   const htmlTemplate = { src: htmlSrc, contents: '', dst: '' }
   htmlTemplate.dst = htmlTemplate.src.replace(/.html$/, '.mjs').replace('app.template.mjs', 'document.template.mjs')
-  htmlTemplate.contents = nitro.vfs[htmlTemplate.src] || await fse.readFile(htmlTemplate.src, 'utf-8').catch(() => '')
+  htmlTemplate.contents = nitro.vfs[htmlTemplate.src] || await fsp.readFile(htmlTemplate.src, 'utf-8').catch(() => '')
   if (htmlTemplate.contents) {
     await nitro.hooks.callHook('nitro:document', htmlTemplate)
     const compiled = 'export default ' + serializeTemplate(htmlTemplate.contents)
