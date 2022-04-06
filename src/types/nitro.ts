@@ -4,6 +4,7 @@ import type { Unimport, UnimportOptions } from 'unimport'
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
+import { WatchOptions } from 'chokidar'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { StorageOptions } from '../rollup/plugins/storage'
 import type { RollupConfig } from '../rollup/config'
@@ -54,12 +55,15 @@ export interface ServerAssetDir {
   dir: string
 }
 
+export interface DevServerOptions {
+  watch: string[]
+}
+
 export interface NitroOptions {
   // Internal
   _config: NitroConfig
 
   // General
-  dev: boolean
   preset: string
   logLevel: LogLevel
 
@@ -92,6 +96,11 @@ export interface NitroOptions {
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
+
+  // Dev
+  dev: boolean
+  devServer: DevServerOptions
+  watchOptions: WatchOptions
 
   // Routing
   handlers: NitroEventHandler[]

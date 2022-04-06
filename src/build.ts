@@ -1,6 +1,7 @@
 import { relative, resolve, join } from 'pathe'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
+import defu from 'defu'
 import { watch } from 'chokidar'
 import { debounce } from 'perfect-debounce'
 import { printFSTree } from './utils/tree'
@@ -141,7 +142,12 @@ async function _build (nitro: Nitro) {
 }
 
 function startRollupWatcher (nitro: Nitro) {
-  const watcher = rollup.watch(nitro.options.rollupConfig)
+  type OT = rollup.RollupWatchOptions
+  const watcher = rollup.watch(defu<OT, OT>(nitro.options.rollupConfig, {
+    watch: {
+      chokidar: nitro.options.watchOptions
+    }
+  }))
   let start: number
 
   watcher.on('event', (event) => {

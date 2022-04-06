@@ -10,7 +10,6 @@ import * as PRESETS from './presets'
 
 const NitroDefaults: NitroConfig = {
   // General
-  dev: false,
   preset: undefined,
   logLevel: 3,
   runtimeConfig: {
@@ -37,6 +36,11 @@ const NitroDefaults: NitroConfig = {
   storage: { mounts: {} },
   publicAssets: [],
   serverAssets: [],
+
+  // Dev
+  dev: false,
+  devServer: { watch: [] },
+  watchOptions: { ignoreInitial: true },
 
   // Routing
   handlers: [],

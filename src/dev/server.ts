@@ -1,19 +1,28 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
-import { CompatibilityEvent, createApp, eventHandler } from 'h3'
+import { App, CompatibilityEvent, createApp, eventHandler } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
 import serveStatic from 'serve-static'
 import { resolve } from 'pathe'
 import { joinURL } from 'ufo'
+import { FSWatcher, watch } from 'chokidar'
 import type { Nitro } from '../types'
 import { createVFSHandler } from './vfs'
 
 export interface NitroWorker {
   worker: Worker,
   address: { host: string, port: number, socketPath?: string }
+}
+
+export interface NitroDevServer {
+  reload: () => void,
+  listen: (port: ListenOptions['port'], opts?: Partial<ListenOptions>) => Promise<Listener>,
+  app: App,
+  close: () => Promise<void>,
+  watcher?: FSWatcher
 }
 
 function initWorker (filename: string): Promise<NitroWorker> | null {
@@ -57,7 +66,7 @@ async function killWorker (worker?: NitroWorker) {
   }
 }
 
-export function createDevServer (nitro: Nitro) {
+export function createDevServer (nitro: Nitro): NitroDevServer {
   // Worker
   const workerEntry = resolve(nitro.options.output.dir, nitro.options.output.serverDir, 'index.mjs')
 
@@ -130,14 +139,24 @@ export function createDevServer (nitro: Nitro) {
 
   // Listen
   let listeners: Listener[] = []
-  const _listen = async (port: ListenOptions['port'], opts?: Partial<ListenOptions>) => {
+  const _listen: NitroDevServer['listen'] = async (port, opts?) => {
     const listener = await listen(app, { port, ...opts })
     listeners.push(listener)
     return listener
   }
 
+  // Optional watcher
+  let watcher: FSWatcher = null
+  if (nitro.options.devServer.watch.length) {
+    watcher = watch(nitro.options.devServer.watch, nitro.options.watchOptions)
+    watcher
+      .on('add', reload)
+      .on('change', reload)
+  }
+
   // Close handler
   async function close () {
+    if (watcher) { await watcher.close() }
     await killWorker(currentWorker)
     await Promise.all(listeners.map(l => l.close()))
     listeners = []
@@ -148,7 +167,8 @@ export function createDevServer (nitro: Nitro) {
     reload,
     listen: _listen,
     app,
-    close
+    close,
+    watcher
   }
 }
 
