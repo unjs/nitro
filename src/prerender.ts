@@ -26,12 +26,12 @@ export async function prerender (nitro: Nitro) {
   await build(nitroRenderer)
 
   // Import renderer entry
-  const { nitroApp } = await import(resolve(nitroRenderer.options.output.serverDir, 'index.mjs'))
+  const { localFetch } = await import(resolve(nitroRenderer.options.output.serverDir, 'index.mjs'))
 
   // Start prerendering
   const generatedRoutes = new Set()
   const generateRoute = async (route: string) => {
-    const res = await nitroApp.localFetch(route)
+    const res = await localFetch(route)
     const contents = await res.text()
 
     const additionalExtension = getExtension(route) ? '' : guessExt(res.headers.get('content-type'))
