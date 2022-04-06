@@ -13,24 +13,22 @@
 <hr>
 <br>
 
- ❯ **Rapid development** experience with hot module reloading <br>
- ❯ **Multi-provider** deployments with a single codebase and zero-configuration changes <br>
- ❯ **Portable and compact** deployments without `node_modules` dependeny <br>
+ ❯ **Rapid development** experience with hot module replacement <br>
+ ❯ **Multi-provider** deployments with a single codebase and zero-configuration<br>
+ ❯ **Portable and compact** deployments without `node_modules` dependency <br>
  ❯ **Directory structure** aware to register API routes and more with zero configuration <br>
- ❯ **Minimal Design** aiming to fit into any solution with minimum overhead <br>
+ ❯ **Minimal Design** to fit into any solution with minimum overhead <br>
  ❯ **Code-splitting** and async chunk loading for fast server startup time <br>
  ❯ **TypeScript** fully supported <br>
  ❯ **Multi-driver storage** and caching layer <br>
- ❯ **Route caching** and static **prerendering** with built-in crawler <br>
- ❯ **Hackable** you can extend almost any part of nitro using options <br>
+ ❯ **Route caching** and static **pre-rendering** with built-in crawler <br>
+ ❯ **Hackable** to extend almost any part of nitro using options <br>
  ❯ **Auto imports** for lazy folks and a tidy minimal codebase <br>
  ❯ **Best-effort compatibility** for using legacy npm packages and mocking Node.js modules <br>
 
 <hr>
 
 ## ⚡️ Quick Start
-
-Reading docs is boring 😫 Let's get started with something working!
 
 0️⃣ Create an empty directory `nitro-app`
 
@@ -53,7 +51,7 @@ npx nitropack dev
 
 🪄 Your API is ready at http://localhost:3000/api/test
 
-**🤓 [TIP]** Check `.nitro/dev/index.mjs` if want to know what happened!
+**🤓 [TIP]** Check `.nitro/dev/index.mjs` if want to know what is happening
 
 3️⃣ You can now build your production-ready server:
 
@@ -101,19 +99,19 @@ export default eventHandler(() => 'Hello World!')
 // api/hello/[name].ts
 import { eventHandler } from 'h3'
 
-export default eventHandler((event) => `Hello ${event.params.name}!`)
+export default eventHandler(event => `Hello ${event.params.name}!`)
 ```
 
 
 ## Storage
 
-Nitro provides a built-in storage layer using [unjs/unstorage](https://github.com/unjs/unstorage) that can absteract filesystem access.
+Nitro provides a built-in storage layer using [unjs/unstorage](https://github.com/unjs/unstorage) that can abstract filesystem access.
 
 ```js
 import { storage } from '#nitro'
 ```
 
-See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
+ℹ️ See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
 
 **Example:** Simple operations
 
@@ -136,7 +134,10 @@ import { defineNitroConfig } from 'nitropack'
 export default defineNitroConfig({
   storage: {
     mounts: {
-      '/redis': { driver: 'redis', driverOptions: { /* redis connector options */ } }
+      '/redis': {
+        driver: 'redis',
+        driverOptions: { /* redis connector options */ }
+      }
     }
   }
 })
@@ -189,7 +190,6 @@ export default defineNitroConfig({
 })
 ```
 
-
 ## Public Assets
 
 All assets in `public/` directory will be automatically served.
@@ -212,8 +212,7 @@ Currently supported presets:
 
 ## 📚  Options
 
-Who doesn't want to have an option? Niro provides lots of them to customize any part of its behavior!
-It is powerful enough that all deployment providers are built on the exact options API!
+Nitro provides lots of options them to customize any part of its behavior. It is powerful enough that all deployment providers are built on the exact options API.
 
 Create a new `nitro.config.ts` file to provide options:
 
@@ -457,7 +456,7 @@ Preview and deploy command hints are usually filled by deployment presets.
 
 ## 🎁 Contribution
 
-**Before everything, please make sure there is an option issue either confirming issue/bug 🐛 or you have an explicit👍 to add an enhancement or new feature. Thanks in advance 🙏**
+**Before everything, please make sure there is an option issue either confirming issue/bug 🐛 or you have an explicit 👍 to add an enhancement or new feature. Thanks in advance 🙏**
 
 - Fork and clone this repository
 - Enable [corepack](https://github.com/nodejs/corepack) using `corepack enable` (use `npm i -g corepack` for Node.js < 16.10)
