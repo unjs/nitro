@@ -4,8 +4,8 @@ import destr from 'destr'
 import type { APIGatewayProxyEvent, APIGatewayProxyEventV2 } from 'aws-lambda'
 import { setupTest, testNitro } from '../utils'
 
-describe('nitro:preset:lambda', async () => {
-  const ctx = await setupTest('lambda')
+describe('nitro:preset:aws-lambda', async () => {
+  const ctx = await setupTest('aws-lambda')
   // Lambda v1 paylod
   testNitro(ctx, async () => {
     const { handler } = await import(resolve(ctx.outDir, 'server/index.mjs'))

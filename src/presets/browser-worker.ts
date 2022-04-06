@@ -5,7 +5,7 @@ import { prettyPath } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
-export const browser = defineNitroPreset((_input) => {
+export const browserWorker = defineNitroPreset((_input) => {
   // TODO
   const baseURL = '/'
 
@@ -49,7 +49,7 @@ if ('serviceWorker' in navigator) {
 </html>`
 
   return {
-    extends: 'worker',
+    extends: 'base-worker',
     entry: '#nitro/entries/service-worker',
     output: {
       serverDir: '{{ output.dir }}/public/_server'

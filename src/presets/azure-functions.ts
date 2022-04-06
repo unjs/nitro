@@ -6,9 +6,9 @@ import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
 // eslint-disable-next-line
-export const azure_functions = defineNitroPreset({
+export const azureFunctions = defineNitroPreset({
   serveStatic: true,
-  entry: '#nitro/entries/azure_functions',
+  entry: '#nitro/entries/azure-functions',
   externals: true,
   commands: {
     deploy: 'az functionapp deployment source config-zip -g <resource-group> -n <app-name> --src {{ output.dir }}/deploy.zip'

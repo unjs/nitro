@@ -1,6 +1,6 @@
 import { defineNitroPreset } from '../preset'
 
-export const prerender = defineNitroPreset({
+export const nitroPrerender = defineNitroPreset({
   extends: 'node',
   entry: '#nitro/entries/node',
   output: {

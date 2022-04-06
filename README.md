@@ -206,17 +206,21 @@ All assets in `public/` directory will be automatically served.
 ## Deployment Presets
 
 Currently supported presets:
-- `azure_functions`
-- `azure`
-- `browser`
+
+- `aws-lambda`
+- `azure`, `azure-functions`
+- `base-worker`
+- `browser-worker`
 - `cli`
 - `cloudflare`
 - `firebase`
-- `lambda`
-- `netlify`
-- `node`
-- `vercel`
 - `layer0`
+- `netlify`
+- `nitro-dev`, `nitro-prerender`
+- `node`, `node-server`, `node-cli`
+- `vercel`
+
+You can build nitro project against a specific preset using `NITRO_PRESET=name npx nitropack build`
 
 <hr>
 
@@ -242,7 +246,7 @@ export default definenitroConfig({
 
 Use `preset` option `NITRO_PRESET` environment variable for custom **production** preset.
 
-Preset for development mode is always `dev` and default `server` for production building a standalone Node.js server.
+Preset for development mode is always `nitro-dev` and default `node-server` for production building a standalone Node.js server.
 
 The preset will automatically be detected when the `preset` option is not set and running in known environments.
 
