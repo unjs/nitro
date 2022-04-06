@@ -1,5 +1,4 @@
 {
-  "extends": "./playground/.nitro/types/tsconfig.json",
   "compilerOptions": {
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
