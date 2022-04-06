@@ -2,7 +2,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyEventHeaders, APIGatewayProxy
 import '#polyfill'
 import { withQuery } from 'ufo'
 import type { HeadersObject } from 'unenv/runtime/_internal/types'
-import { localCall } from '..'
+import { localCall } from '../app'
 
 // Compatibility types that work with AWS v1, AWS v2 & Netlify
 type Event = Omit<APIGatewayProxyEvent, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'> | Omit<APIGatewayProxyEventV2, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'>

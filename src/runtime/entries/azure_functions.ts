@@ -1,5 +1,5 @@
 import '#polyfill'
-import { localCall } from '..'
+import { localCall } from '../app'
 
 export async function handle (context, req) {
   const url = '/' + (req.params.url || '')

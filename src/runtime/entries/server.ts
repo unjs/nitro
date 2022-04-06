@@ -2,7 +2,7 @@ import '#polyfill'
 import { Server as HttpServer } from 'http'
 import { Server as HttpsServer } from 'https'
 import destr from 'destr'
-import { app } from '..'
+import { app } from '../app'
 import { baseURL } from '#nitro/paths'
 
 const cert = process.env.NITRO_SSL_CERT

@@ -1,6 +1,6 @@
 import '#polyfill'
 import { parseURL } from 'ufo'
-import { localCall } from '..'
+import { localCall } from '../app'
 
 export async function handle (context, req) {
   let url: string

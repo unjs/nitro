@@ -1,5 +1,5 @@
 import '#polyfill'
-import { localCall } from '..'
+import { localCall } from '../app'
 
 async function cli () {
   const url = process.argv[2] || '/'

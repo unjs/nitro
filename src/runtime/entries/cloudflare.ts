@@ -1,7 +1,7 @@
 import '#polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
-import { localCall } from '..'
+import { localCall } from '../app'
 import { requestHasBody, useRequestBody } from '../utils'
 import { buildAssetsURL, baseURL } from '#nitro/paths'
 

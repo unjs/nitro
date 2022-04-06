@@ -10,4 +10,4 @@ globalThis.Request = globalThis.Request || nodeFetch.Request
 globalThis.Response = globalThis.Response || nodeFetch.Response
 globalThis.Headers = globalThis.Headers || nodeFetch.Headers
 
-export * from '..'
+export * from '../app'

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import '#polyfill'
-import { localCall } from '..'
+import { localCall } from '../app'
 import { requestHasBody, useRequestBody } from '../utils'
 
 addEventListener('fetch', (event: any) => {
