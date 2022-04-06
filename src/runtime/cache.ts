@@ -1,5 +1,5 @@
 import { hash } from 'ohash'
-import { H3Response, toEventHandler } from 'h3'
+import { H3Response, toEventHandler, handleCacheHeaders } from 'h3'
 import type { CompatibilityEventHandler, CompatibilityEvent } from 'h3'
 import { storage } from '#nitro'
 
@@ -16,7 +16,7 @@ export interface CachifyOptions<T=any> {
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any
   group?: string
   integrity?: any
-  ttl?: number
+  magAge?: number
   swr?: boolean
   base?: string
 }
@@ -25,7 +25,7 @@ const defaultCacheOptions = {
   name: '_',
   base: '/cache',
   swr: true,
-  ttl: 1
+  magAge: 1
 }
 
 export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CachifyOptions<T>) {
@@ -42,7 +42,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
     const cacheKey = [opts.base, group, name, key].filter(Boolean).join(':')
     const entry: CacheEntry<T> = await storage.getItem(cacheKey) as any || {}
 
-    const ttl = (opts.ttl ?? opts.ttl ?? 0) * 1000
+    const ttl = (opts.magAge ?? opts.magAge ?? 0) * 1000
     if (ttl) {
       entry.expires = Date.now() + ttl
     }
@@ -108,17 +108,25 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
         // Event already handled -_-
         return
       }
+      // Check for cache headers
+      if (handleCacheHeaders(event, {
+        modifiedTime: new Date(entry.mtime),
+        etag: `W/"${hash(entry.value)}"`,
+        maxAge: opts.magAge
+      })) {
+        return
+      }
       for (const header in entry.value.headers) {
         event.res.setHeader(header, entry.value.headers[header])
       }
       const cacheControl = []
       if (opts.swr) {
-        if (opts.ttl) {
-          cacheControl.push(`s-maxage=${opts.ttl / 1000}`)
+        if (opts.magAge) {
+          cacheControl.push(`s-maxage=${opts.magAge / 1000}`)
         }
         cacheControl.push('stale-while-revalidate')
-      } else if (opts.ttl) {
-        cacheControl.push(`max-age=${opts.ttl / 1000}`)
+      } else if (opts.magAge) {
+        cacheControl.push(`max-age=${opts.magAge / 1000}`)
       }
       if (cacheControl.length) {
         event.res.setHeader('Cache-Control', cacheControl.join(', '))
