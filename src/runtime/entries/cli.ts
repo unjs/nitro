@@ -1,10 +1,10 @@
 import '#polyfill'
-import { localCall } from '../app'
+import { nitroApp } from '../app'
 
 async function cli () {
   const url = process.argv[2] || '/'
   const debug = (label, ...args) => console.debug(`> ${label}:`, ...args)
-  const r = await localCall({ url })
+  const r = await nitroApp.localCall({ url })
 
   debug('URL', url)
   debug('StatusCode', r.status)

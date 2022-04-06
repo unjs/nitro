@@ -1,7 +1,7 @@
 // @ts-nocheck
 import '#polyfill'
-import { localCall } from '../app'
 import { requestHasBody, useRequestBody } from '../utils'
+import { nitroApp } from '../app'
 
 addEventListener('fetch', (event: any) => {
   const url = new URL(event.request.url)
@@ -20,7 +20,7 @@ async function handleEvent (url, event) {
     body = await useRequestBody(event.request)
   }
 
-  const r = await localCall({
+  const r = await nitroApp.localCall({
     event,
     url: url.pathname + url.search,
     host: url.hostname,

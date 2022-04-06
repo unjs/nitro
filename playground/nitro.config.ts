@@ -8,5 +8,8 @@ export default defineNitroConfig({
   // baseURL: '/app',
   routes: {
     '/api/swr': { swr: true }
-  }
+  },
+  plugins: [
+    '~/plugins/test'
+  ]
 })

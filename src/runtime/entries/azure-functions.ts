@@ -1,10 +1,10 @@
 import '#polyfill'
-import { localCall } from '../app'
+import { nitroApp } from '../app'
 
 export async function handle (context, req) {
   const url = '/' + (req.params.url || '')
 
-  const { body, status, statusText, headers } = await localCall({
+  const { body, status, statusText, headers } = await nitroApp.localCall({
     url,
     headers: req.headers,
     method: req.method,
