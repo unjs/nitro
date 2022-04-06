@@ -54,11 +54,7 @@ export async function build (nitro: Nitro) {
   return nitro.options.dev ? _watch(nitro) : _build(nitro)
 }
 
-export interface WriteTypesOptions {
-  tsConfig?: boolean
-}
-
-export async function writeTypes (nitro: Nitro, opts: WriteTypesOptions = {}) {
+export async function writeTypes (nitro: Nitro) {
   const routeTypes: Record<string, string[]> = {}
 
   const middleware = [
@@ -98,7 +94,7 @@ export async function writeTypes (nitro: Nitro, opts: WriteTypesOptions = {}) {
 
   await writeFile(join(nitro.options.buildDir, 'types/nitro.d.ts'), lines.join('\n'))
 
-  if (opts.tsConfig !== false) {
+  if (nitro.options.typescript.generateTsConfig) {
     const tsConfig: TSConfig = {
       compilerOptions: {
         target: 'ESNext',

@@ -58,6 +58,7 @@ const NitroDefaults: NitroConfig = {
   replace: {},
 
   // Advanced
+  typescript: { generateTsConfig: true },
   nodeModulesDirs: [],
   hooks: {},
   commands: {}
