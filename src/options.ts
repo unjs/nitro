@@ -7,6 +7,7 @@ import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
 import * as PRESETS from './presets'
+import { nitroImports } from './imports'
 
 const NitroDefaults: NitroConfig = {
   // General
@@ -28,6 +29,9 @@ const NitroDefaults: NitroConfig = {
   storage: { mounts: {} },
   publicAssets: [],
   serverAssets: [],
+  autoImport: {
+    presets: nitroImports
+  },
 
   // Dev
   dev: false,
