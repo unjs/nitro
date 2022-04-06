@@ -39,11 +39,9 @@ ${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).jo
 
 ${lazyImports.map(handler => `const ${getImportId(handler)} = () => import('${handler}');`).join('\n')}
 
-const handlers = [
+export const handlers = [
 ${handler.map(m => `  { route: '${m.route || '/'}', handler: ${getImportId(m.handler)}, lazy: ${m.lazy || true} }`).join(',\n')}
 ];
-
-export default handlers
   `.trim()
         // console.log(code)
         return code

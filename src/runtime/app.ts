@@ -1,11 +1,11 @@
 import './config'
-import { createApp } from 'h3'
+import { createApp, createRouter, lazyEventHandler } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { timingMiddleware } from './timing'
 import handleError from '#nitro/error'
-import serverHandlers from '#nitro/virtual/server-handlers'
+import { handlers } from '#nitro/virtual/server-handlers'
 
 export const app = createApp({
   debug: destr(process.env.DEBUG),
@@ -13,7 +13,19 @@ export const app = createApp({
 })
 
 app.use(timingMiddleware)
-app.use(serverHandlers)
+
+const router = createRouter()
+
+for (const h of handlers) {
+  const handler = h.lazy ? lazyEventHandler(h.handler as any) : h.handler
+  if (h.route === '/') {
+    app.use(handler)
+  } else {
+    router.use(h.route, handler)
+  }
+}
+
+app.use(router)
 
 export const localCall = createCall(app.nodeHandler as any)
 export const localFetch = createLocalFetch(localCall, globalThis.fetch)

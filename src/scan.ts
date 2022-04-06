@@ -18,11 +18,17 @@ export async function scanHandlers (nitro: Nitro) {
 }
 
 export function scanMiddleware (nitro: Nitro) {
-  return scanServerDir(nitro, 'middleware', file => ({ handler: file.path, route: '/' }))
+  return scanServerDir(nitro, 'middleware', file => ({
+    route: '/',
+    handler: file.path
+  }))
 }
 
 export function scanAPI (nitro: Nitro) {
-  return scanServerDir(nitro, 'api', file => ({ handler: file.path, route: withBase(file.name.replace(/\[([a-z]+)\]/g, ':$1'), '/api') }))
+  return scanServerDir(nitro, 'api', file => ({
+    handler: file.path,
+    route: withBase(file.name.replace(/\[([a-z]+)\]/g, ':$1'), '/api')
+  }))
 }
 
 async function scanServerDir (nitro: Nitro, name: string, mapper: (file: FileInfo) => NitroEventHandler) {

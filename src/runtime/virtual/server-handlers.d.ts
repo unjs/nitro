@@ -1,4 +1,9 @@
 import type { CompatibilityEventHandler } from 'h3'
 
-const _default: CompatibilityEventHandler[]
-export default _default
+interface HandlerDefinition {
+  route: string
+  lazy?: boolean
+  handler: CompatibilityEventHandler | (() => Promise<CompatibilityEventHandler>)
+}
+
+export const handlers: HandlerDefinition[]

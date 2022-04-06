@@ -1,6 +1,12 @@
 import { defineEventHandler } from 'h3'
 
 export default defineEventHandler(() => {
+  const links = [
+    '/api/hello/you',
+    '/api/test',
+    '/api/cache',
+    '/api/error'
+  ]
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -12,15 +18,7 @@ export default defineEventHandler(() => {
     <body>
       <h1>Welcome to Nitro playground!</h1>
       <ul>
-        <li>
-          <a href="/api/test">/api/test</a>
-        </li>
-        <li>
-          <a href="/api/cache">/api/cache</a>
-        </li>
-        <li>
-          <a href="/api/error">/api/error</a>
-        </li>
+${links.map(link => `        <li><a href="${link}">${link}</a></li>`).join('\n')}
       </ul>
     </body>
 
