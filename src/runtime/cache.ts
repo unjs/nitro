@@ -1,4 +1,4 @@
-import hash from 'object-hash'
+import { hash } from 'ohash'
 import type { Handler } from 'h3'
 import { storage } from '#nitro/virtual/storage'
 
