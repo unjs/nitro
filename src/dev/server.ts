@@ -107,7 +107,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
 
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
-    const url = joinURL(nitro.options.app.baseURL, asset.baseURL)
+    const url = joinURL(nitro.options.runtimeConfig.nitro.baseURL, asset.baseURL)
     app.use(url, serveStatic(asset.dir))
     if (!asset.fallthrough) {
       app.use(url, servePlaceholder())
@@ -116,7 +116,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
 
   // Serve placeholder 404 assets instead of hitting SSR
   // TODO: Option to opt-out
-  app.use(nitro.options.app.baseURL, servePlaceholder({ skipUnknown: true }))
+  app.use(nitro.options.runtimeConfig.nitro.baseURL, servePlaceholder({ skipUnknown: true }))
 
   // Worker proxy
   const proxy = httpProxy.createProxy()

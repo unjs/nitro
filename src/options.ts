@@ -13,13 +13,11 @@ const NitroDefaults: NitroConfig = {
   preset: undefined,
   logLevel: 3,
   runtimeConfig: {
-    public: {},
-    private: {}
-  },
-  app: {
-    baseURL: '/',
-    cdnURL: undefined,
-    buildAssetsDir: 'dist'
+    nitro: {
+      baseURL: '/',
+      cdnURL: undefined,
+      buildAssetsDir: 'dist'
+    }
   },
 
   // Dirs
@@ -112,10 +110,9 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
-  options.app.routes = options.routes
   options.runtimeConfig = defu(options.runtimeConfig, {
-    public: {
-      app: options.app
+    app: {
+      routes: options.routes
     }
   })
 

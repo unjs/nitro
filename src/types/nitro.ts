@@ -70,16 +70,14 @@ export interface NitroOptions {
   // General
   preset: string
   logLevel: LogLevel
-
-  // App
-  runtimeConfig: { public: any, private: any }
-  routes: NitroRoutesOptions
-  app: {
-    /** @deprecated Use top-level routes option! */
-    routes: NitroRoutesOptions
-    baseURL: string,
-    cdnURL: string,
-    buildAssetsDir: string
+  runtimeConfig: {
+    nitro: {
+      /** @deprecated Use top-level routes option! */
+      routes: NitroRoutesOptions
+      baseURL: string,
+      cdnURL: string,
+      buildAssetsDir: string
+    }
     [key: string]: any
   }
 
@@ -104,6 +102,7 @@ export interface NitroOptions {
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
+  autoImport: UnimportOptions
 
   // Dev
   dev: boolean
@@ -112,6 +111,7 @@ export interface NitroOptions {
 
   // Routing
   handlers: NitroEventHandler[]
+  routes: NitroRoutesOptions
   devHandlers: NitroDevEventHandler[]
   prerender: {
     crawlLinks: boolean
@@ -119,6 +119,7 @@ export interface NitroOptions {
   }
 
   // Rollup
+  rollupConfig?: RollupConfig
   entry: string
   unenv: UnenvPreset
   alias: Record<string, string>
@@ -126,9 +127,7 @@ export interface NitroOptions {
   inlineDynamicImports: boolean
   sourceMap: boolean
   node: boolean
-  rollupConfig?: RollupConfig
   moduleSideEffects: string[]
-  autoImport: UnimportOptions
   esbuild?: {
     options?: EsbuildOptions
   }

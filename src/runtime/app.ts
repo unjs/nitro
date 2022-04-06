@@ -18,7 +18,7 @@ app.use(timingMiddleware)
 
 const router = createRouter()
 
-const routerOptions = createMatcher({ routes: config.app.routes })
+const routerOptions = createMatcher({ routes: config.nitro.routes })
 
 for (const h of handlers) {
   let handler = h.lazy ? lazyEventHandler(h.handler as any) : h.handler

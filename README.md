@@ -139,20 +139,13 @@ Built-in presets: `azure_functions`, `azure`, `browser`, `cli`, `cloudflare`, `f
 
 Log verbosity level. See [unjs/consola#level](https://github.com/unjs/consola/#level) for more information.
 
-### App
-
 #### `runtimeConfig`
 
-- Default: `{}`
+- Default: `{ nitro: { ... }, ...yourOptions }`
 
 Server runtime configuration.
 
-#### `app`
-
-- Default: `{ baseURL: '/', cdnURL: undefined, buildAssetsDir: 'dist' }`
-
-Runtime app configuration.
-
+**Note:**: `nitro` namespace is reserved.
 
 ### Directories
 
