@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyEventHeaders, APIGatewayProxyEventV2, APIGatewayProxyResult, APIGatewayProxyResultV2, Context } from 'aws-lambda'
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { withQuery } from 'ufo'
 import type { HeadersObject } from 'unenv/runtime/_internal/types'
 import { nitroApp } from '../app'

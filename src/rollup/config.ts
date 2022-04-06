@@ -203,7 +203,7 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // Polyfill
   rollupConfig.plugins.push(virtual({
-    '#polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
+    '#nitro/virtual/polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
   }))
 
   // Plugins

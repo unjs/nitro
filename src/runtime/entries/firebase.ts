@@ -1,4 +1,4 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 // @ts-ignore
 import functions from 'firebase-functions'
 import { nitroApp } from '../app'

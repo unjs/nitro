@@ -1,4 +1,4 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { nitroApp } from '../app'
 
 export async function handle (context, req) {

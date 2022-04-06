@@ -1,4 +1,4 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
 import { requestHasBody, useRequestBody } from '../utils'

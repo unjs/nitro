@@ -1,9 +1,9 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import * as nodeFetch from 'node-fetch'
 import { nitroApp } from '../app'
 export { nitroApp } from '../app'
 
-// TODO: Workaround for rollup treeshaking polyfills
+// TODO: Workaround for rollup treeshaking polyfill
 // @ts-ignore
 globalThis.fetch = globalThis.fetch || nodeFetch.default || nodeFetch
 // @ts-ignore

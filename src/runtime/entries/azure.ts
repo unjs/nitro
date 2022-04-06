@@ -1,4 +1,4 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { parseURL } from 'ufo'
 import { nitroApp } from '../app'
 

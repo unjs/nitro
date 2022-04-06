@@ -1,4 +1,4 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { Server as HttpServer } from 'http'
 import { Server as HttpsServer } from 'https'
 import destr from 'destr'

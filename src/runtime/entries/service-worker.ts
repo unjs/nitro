@@ -1,5 +1,5 @@
 // @ts-nocheck
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
 
