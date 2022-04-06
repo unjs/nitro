@@ -119,7 +119,7 @@ export default eventHandler(event => `Hello ${event.params.name}!`)
 nitro provides a built-in storage layer using [unjs/unstorage](https://github.com/unjs/unstorage) that can abstract filesystem access.
 
 ```js
-import { storage } from '#nitro'
+import { useStorage } from '#nitro'
 ```
 
 ℹ️ See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
