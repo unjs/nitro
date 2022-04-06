@@ -54,7 +54,11 @@ export async function build (nitro: Nitro) {
   return nitro.options.dev ? _watch(nitro) : _build(nitro)
 }
 
-export async function writeTypes (nitro: Nitro) {
+export interface WriteTypesOptions {
+  tsConfig?: boolean
+}
+
+export async function writeTypes (nitro: Nitro, opts: WriteTypesOptions = {}) {
   const routeTypes: Record<string, string[]> = {}
 
   const middleware = [
@@ -94,27 +98,29 @@ export async function writeTypes (nitro: Nitro) {
 
   await writeFile(join(nitro.options.buildDir, 'types/nitro.d.ts'), lines.join('\n'))
 
-  const tsConfig: TSConfig = {
-    compilerOptions: {
-      target: 'ESNext',
-      module: 'ESNext',
-      moduleResolution: 'Node',
-      allowJs: true,
-      resolveJsonModule: true,
-      paths: {
-        '#nitro': [
-          join(runtimeDir, 'index')
-        ],
-        '#nitro/*': [
-          join(runtimeDir, '*')
-        ]
-      }
-    },
-    include: [
-      './nitro.d.ts'
-    ]
+  if (opts.tsConfig !== false) {
+    const tsConfig: TSConfig = {
+      compilerOptions: {
+        target: 'ESNext',
+        module: 'ESNext',
+        moduleResolution: 'Node',
+        allowJs: true,
+        resolveJsonModule: true,
+        paths: {
+          '#nitro': [
+            join(runtimeDir, 'index')
+          ],
+          '#nitro/*': [
+            join(runtimeDir, '*')
+          ]
+        }
+      },
+      include: [
+        './nitro.d.ts'
+      ]
+    }
+    await writeFile(join(nitro.options.buildDir, 'types/tsconfig.json'), JSON.stringify(tsConfig, null, 2))
   }
-  await writeFile(join(nitro.options.buildDir, 'types/tsconfig.json'), JSON.stringify(tsConfig, null, 2))
 }
 
 async function _build (nitro: Nitro) {
