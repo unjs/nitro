@@ -1,3 +1,3 @@
-import { eventHandler } from 'h3'
+import { defineEventHandler } from 'h3'
 
-export default eventHandler(event => `Hello ${event.params.name}!`)
+export default defineEventHandler(event => `Hello ${event.params.name}!`)
