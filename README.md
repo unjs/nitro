@@ -7,7 +7,7 @@
 
 🐛 Check [open issues](https://github.com/unjs/nitro/issues) for roadmap and known issues.
 
-🎁 [Contributions](nitro#-contribution) are more than welcome to improve documentation.
+🎁 [Contributions](#-contribution) are more than welcome to improve documentation.
 
 💡 [Tell us your ideas](https://github.com/unjs/nitro/discussions/new) too!
 <hr>
