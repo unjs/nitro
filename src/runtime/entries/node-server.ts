@@ -20,7 +20,7 @@ server.listen(port, hostname, (err) => {
     process.exit(1)
   }
   const protocol = cert && key ? 'https' : 'http'
-  console.log(`Listening on ${protocol}://${hostname}:${port}${useConfig().nitro.baseURL}`)
+  console.log(`Listening on ${protocol}://${hostname}:${port}${useConfig().app.baseURL}`)
 })
 
 export default {}

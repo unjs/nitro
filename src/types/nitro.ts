@@ -71,10 +71,12 @@ export interface NitroOptions {
   preset: string
   logLevel: LogLevel
   runtimeConfig: {
+    app: {
+      baseURL: string
+    },
     nitro: {
       /** @deprecated Use top-level routes option! */
       routes: NitroRoutesOptions
-      baseURL: string,
     }
     [key: string]: any
   }

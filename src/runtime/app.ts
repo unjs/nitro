@@ -28,7 +28,7 @@ function createNitroApp (): NitroApp {
     onError: handleError
   })
 
-  h3App.use(config.nitro.baseURL, timingMiddleware)
+  h3App.use(config.app.baseURL, timingMiddleware)
 
   const router = createRouter()
 
@@ -46,13 +46,13 @@ function createNitroApp (): NitroApp {
     }
 
     if (h.route === '/') {
-      h3App.use(config.nitro.baseURL, handler)
+      h3App.use(config.app.baseURL, handler)
     } else {
       router.use(h.route, handler)
     }
   }
 
-  h3App.use(config.nitro.baseURL, router)
+  h3App.use(config.app.baseURL, router)
 
   const localCall = createCall(h3App.nodeHandler as any)
   const localFetch = createLocalFetch(localCall, globalThis.fetch)

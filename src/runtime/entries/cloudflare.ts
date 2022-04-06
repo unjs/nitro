@@ -53,6 +53,6 @@ function assetsCacheControl (_request) {
 }
 
 const baseURLModifier = (request: Request) => {
-  const url = withoutBase(request.url, useConfig().nitro.baseURL)
+  const url = withoutBase(request.url, useConfig().app.baseURL)
   return mapRequestToAsset(new Request(url, request))
 }

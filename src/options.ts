@@ -14,7 +14,7 @@ const NitroDefaults: NitroConfig = {
   // General
   preset: undefined,
   logLevel: 3,
-  runtimeConfig: { nitro: {} },
+  runtimeConfig: { app: {}, nitro: {} },
 
   // Dirs
   scanDirs: [],
@@ -118,8 +118,10 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
+    app: {
+      baseURL: options.baseURL
+    },
     nitro: {
-      baseURL: options.baseURL,
       routes: options.routes
     }
   })
