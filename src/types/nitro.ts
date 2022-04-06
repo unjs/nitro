@@ -101,6 +101,7 @@ export interface NitroOptions {
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
   autoImport: UnimportOptions
+  plugins: string[]
 
   // Dev
   dev: boolean

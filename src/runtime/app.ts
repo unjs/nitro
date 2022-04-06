@@ -7,6 +7,7 @@ import { createHooks, Hookable } from 'hookable'
 import { useConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
+import { plugins } from '#nitro/virtual/plugins'
 import handleError from '#nitro/error'
 import { handlers } from '#nitro/virtual/server-handlers'
 
@@ -59,12 +60,18 @@ function createNitroApp (): NitroApp {
   const $fetch = createFetch({ fetch: localFetch, Headers })
   globalThis.$fetch = $fetch
 
-  return {
+  const app: NitroApp = {
     hooks,
     h3App,
     localCall,
     localFetch
   }
+
+  for (const plugin of plugins) {
+    plugin(app)
+  }
+
+  return app
 }
 
 export const nitroApp: NitroApp = createNitroApp()

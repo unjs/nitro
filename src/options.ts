@@ -30,6 +30,7 @@ const NitroDefaults: NitroConfig = {
   storage: {},
   publicAssets: [],
   serverAssets: [],
+  plugins: [],
   autoImport: {
     presets: nitroImports
   },

@@ -203,6 +203,34 @@ export default definenitroConfig({
 
 All assets in `public/` directory will be automatically served.
 
+## Nitro plugins
+
+In order to extend nitro's runtime behavior, we can register plugins.
+
+They will be synchronously on first nitro initialization given `nitroApp` context which can be used to hook into lifecycle events.
+
+**Example:** Simple plugin
+
+```js
+// plugins/test.ts
+import { defineNitroPlugin } from '#nitro'
+
+export default defineNitroPlugin((nitroApp) => {
+  console.log('Nitro plugin', nitroApp)
+})
+```
+
+```js
+// nitro.config.ts
+import { definenitroConfig } from 'nitropack'
+
+export default definenitroConfig({
+  plugins: [
+    '~/plugins/test'
+  ]
+})
+```
+
 ## Deployment Presets
 
 Currently supported presets:
@@ -352,6 +380,12 @@ Watch options for development mode. See [chokidar](https://github.com/paulmillr/
 #### `autoImport`
 
 Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for more information.
+
+#### `plugins`
+
+- Default: `[]`
+
+Array of paths to nitro plugins. They will be executed by order on first initialization.
 
 ### Routing
 

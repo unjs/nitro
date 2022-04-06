@@ -17,6 +17,7 @@ import * as unenv from 'unenv'
 import type { Preset } from 'unenv'
 import { sanitizeFilePath } from 'mlly'
 import unimportPlugin from 'unimport/unplugin'
+import { hash } from 'ohash'
 import type { Nitro } from '../types'
 import { resolveAliases } from '../utils'
 import { runtimeDir } from '../dirs'
@@ -203,6 +204,17 @@ export const getRollupConfig = (nitro: Nitro) => {
   // Polyfill
   rollupConfig.plugins.push(virtual({
     '#polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
+  }))
+
+  // Plugins
+  rollupConfig.plugins.push(virtual({
+    '#nitro/virtual/plugins': `
+${nitro.options.plugins.map(plugin => `import _${hash(plugin)} from '${plugin}';`).join('\n')}
+
+export const plugins = [
+  ${nitro.options.plugins.map(plugin => `_${hash(plugin)}`).join(',\n')}
+]
+    `
   }))
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
