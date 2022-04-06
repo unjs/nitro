@@ -27,7 +27,8 @@
     "lint": "eslint --ext .ts,.mjs,.cjs .",
     "nitro": "jiti ./src/cli.ts",
     "prepack": "yarn build",
-    "test": "vitest run --silent"
+    "release": "yarn test && yarn build && standard-version && npm run publish && git push --follow-tags",
+    "test": "yarn lint && vitest run --silent"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.2.0",
@@ -106,6 +107,7 @@
     "eslint": "^8.11.0",
     "execa": "^6.1.0",
     "miniflare": "^2.3.0",
+    "standard-version": "^9.3.2",
     "unbuild": "^0.7.0",
     "vitest": "^0.6.1"
   },
