@@ -1,33 +1,26 @@
 import destr from 'destr'
-import defu from 'defu'
 import { snakeCase } from 'scule'
 
 // Bundled runtime config (injected by nitro)
 const _runtimeConfig = process.env.RUNTIME_CONFIG as any
 
 // Allow override from process.env and deserialize
-for (const type of ['private', 'public']) {
-  for (const key in _runtimeConfig[type]) {
-    // baseURL can be overridden by BASE_URL
-    const envKey = snakeCase(key).toUpperCase()
-    _runtimeConfig[type][key] = destr(process.env[envKey] || _runtimeConfig[type][key])
-    if (_runtimeConfig[type][key] && typeof _runtimeConfig[type][key] === 'object') {
-      for (const subkey in _runtimeConfig[type][key]) {
-        // key: { subKey } can be overridden by KEY_SUB_KEY`
-        const envKeyName = `${envKey}_${snakeCase(subkey).toUpperCase()}`
-        _runtimeConfig[type][key][subkey] = destr(process.env[envKeyName]) || _runtimeConfig[type][key][subkey]
-      }
+for (const key in _runtimeConfig) {
+  // baseURL can be overridden by BASE_URL
+  const envKey = snakeCase(key).toUpperCase()
+  _runtimeConfig[key] = destr(process.env[envKey] || _runtimeConfig[key])
+  if (_runtimeConfig[key] && typeof _runtimeConfig[key] === 'object') {
+    for (const subkey in _runtimeConfig[key]) {
+      // key: { subKey } can be overridden by KEY_SUB_KEY`
+      const envKeyName = `${envKey}_${snakeCase(subkey).toUpperCase()}`
+      _runtimeConfig[key][subkey] = destr(process.env[envKeyName]) || _runtimeConfig[key][subkey]
     }
   }
 }
 
 // Named exports
-export const privateConfig = deepFreeze(defu(_runtimeConfig.private, _runtimeConfig.public))
-export const publicConfig = deepFreeze(_runtimeConfig.public)
-
-// Default export (usable for server)
-export const config = privateConfig
-export default privateConfig
+export const config = deepFreeze(_runtimeConfig)
+export default config
 
 // Utils
 function deepFreeze (object: Record<string, any>) {
