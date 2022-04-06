@@ -127,10 +127,10 @@ import { storage } from '#nitro'
 **Example:** Simple operations
 
 ```js
-import { storage } from '#nitro'
+import { useStorage } from '#nitro'
 
-await storage.setItem('test:foo', { hello: world })
-await storage.getItem('test:foo')
+await useStorage().setItem('test:foo', { hello: world })
+await useStorage().getItem('test:foo')
 ```
 
 

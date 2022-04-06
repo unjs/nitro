@@ -3,7 +3,7 @@ import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
 import { localCall } from '../app'
 import { requestHasBody, useRequestBody } from '../utils'
-import { config } from '#nitro'
+import { useConfig } from '#nitro'
 
 addEventListener('fetch', (event: any) => {
   event.respondWith(handleEvent(event))
@@ -53,6 +53,6 @@ function assetsCacheControl (_request) {
 }
 
 const baseURLModifier = (request: Request) => {
-  const url = withoutBase(request.url, config.nitro.baseURL)
+  const url = withoutBase(request.url, useConfig().nitro.baseURL)
   return mapRequestToAsset(new Request(url, request))
 }

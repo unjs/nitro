@@ -1,3 +1,3 @@
-export { storage } from '#nitro/virtual/storage'
-export { config } from './config'
+export { useStorage } from '#nitro/virtual/storage'
+export { useConfig } from './config'
 export { defineCachedFunction, defineCachedEventHandler } from './cache'

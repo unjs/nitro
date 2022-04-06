@@ -1,2 +1,3 @@
 import type { Storage } from 'unstorage'
-export const storage: Storage
+
+export const useStorage = () => Storage

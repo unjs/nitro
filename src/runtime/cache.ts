@@ -1,7 +1,7 @@
 import { hash } from 'ohash'
 import { H3Response, toEventHandler, handleCacheHeaders } from 'h3'
 import type { CompatibilityEventHandler, CompatibilityEvent } from 'h3'
-import { storage } from '#nitro'
+import { useStorage } from '#nitro'
 
 export interface CacheEntry<T=any> {
   value?: T
@@ -40,7 +40,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
 
   async function get (key: string, resolver: () => T | Promise<T>): Promise<CacheEntry<T>> {
     const cacheKey = [opts.base, group, name, key].filter(Boolean).join(':')
-    const entry: CacheEntry<T> = await storage.getItem(cacheKey) as any || {}
+    const entry: CacheEntry<T> = await useStorage().getItem(cacheKey) as any || {}
 
     const ttl = (opts.magAge ?? opts.magAge ?? 0) * 1000
     if (ttl) {
@@ -57,7 +57,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
       entry.mtime = Date.now()
       entry.integrity = integrity
       delete pending[key]
-      storage.setItem(cacheKey, entry).catch(error => console.error('[nitro] [cache]', error))
+      useStorage().setItem(cacheKey, entry).catch(error => console.error('[nitro] [cache]', error))
     }
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve()
@@ -88,13 +88,13 @@ function getKey (...args: string[]) {
   return args.length ? hash(args, {}) : ''
 }
 
-export function defineCachedEventHandler (handler: CompatibilityEventHandler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
-  interface ResponseCacheEntry {
-    body: H3Response
-    code: number
-    headers: Record<string, string | number | string[]>
-  }
+export interface ResponseCacheEntry {
+  body: H3Response
+  code: number
+  headers: Record<string, string | number | string[]>
+}
 
+export function defineCachedEventHandler (handler: CompatibilityEventHandler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
   const _opts: CachifyOptions<ResponseCacheEntry> = {
     ...opts,
     getKey: req => req.originalUrl || req.url,

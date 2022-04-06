@@ -19,7 +19,8 @@ for (const key in _runtimeConfig) {
 }
 
 // Named exports
-export const config = deepFreeze(_runtimeConfig)
+const config = deepFreeze(_runtimeConfig)
+export const useConfig = () => config
 export default config
 
 // Utils

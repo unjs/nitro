@@ -3,11 +3,13 @@ import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createRouter as createMatcher } from 'radix3'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
-import { config } from './config'
+import { useConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
 import handleError from '#nitro/error'
 import { handlers } from '#nitro/virtual/server-handlers'
+
+const config = useConfig()
 
 export const app = createApp({
   debug: destr(process.env.DEBUG),
