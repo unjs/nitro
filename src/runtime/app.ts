@@ -68,3 +68,5 @@ function createNitroApp (): NitroApp {
 }
 
 export const nitroApp: NitroApp = createNitroApp()
+
+export const useNitroApp = () => nitroApp

@@ -7,7 +7,8 @@ export const nitroImports: Preset[] = [
       'defineCachedFunction',
       'defineCachedEventHandler',
       'useConfig',
-      'useStorage'
+      'useStorage',
+      'useNitroApp'
     ]
   },
   {
