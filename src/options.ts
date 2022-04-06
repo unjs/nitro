@@ -83,7 +83,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     overrides: {
       ...userConfig,
       extends: [
-        userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'server'
+        userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'nodeServer'
       ]
     }
   })
@@ -97,6 +97,9 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   }
 
   // Resolve possibly template paths
+  if (!options.entry) {
+    throw new Error('Nitro entry is missing! Is preset correct?')
+  }
   options.entry = resolvePath(options.entry, options)
   options.output.dir = resolvePath(options.output.dir, options)
   options.output.publicDir = resolvePath(options.output.publicDir, options)

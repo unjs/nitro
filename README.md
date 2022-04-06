@@ -206,15 +206,14 @@ All assets in `public/` directory will be automatically served.
 ## Deployment Presets
 
 Currently supported presets:
-- `azure_functions`
-- `azure`
+- `azure` / `azure_functions`
 - `browser`
 - `cli`
 - `cloudflare`
 - `firebase`
 - `lambda`
 - `netlify`
-- `node`
+- `node` / `node-server`
 - `vercel`
 
 <hr>
@@ -241,7 +240,7 @@ export default definenitroConfig({
 
 Use `preset` option `NITRO_PRESET` environment variable for custom **production** preset.
 
-Preset for development mode is always `dev` and default `server` for production building a standalone Node.js server.
+Preset for development mode is always `dev` and default `nodeServer` for production building a standalone Node.js server.
 
 The preset will automatically be detected when the `preset` option is not set and running in known environments.
 
