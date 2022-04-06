@@ -104,6 +104,10 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
       handler
     ],
     transform (entry, event: CompatibilityEvent) {
+      if (event.res.headersSent) {
+        // Event already handled -_-
+        return
+      }
       for (const header in entry.value.headers) {
         event.res.setHeader(header, entry.value.headers[header])
       }

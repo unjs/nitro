@@ -1,10 +1,10 @@
-import { defineEventHandler } from 'h3'
+import { eventHandler } from 'h3'
 
-export default defineEventHandler(() => {
+export default eventHandler(() => {
   const links = [
     '/api/hello/you',
     '/api/test',
-    '/api/cache',
+    '/api/swr',
     '/api/error'
   ]
   return `<!DOCTYPE html>

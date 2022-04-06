@@ -112,6 +112,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
+  options.app.routes = options.routes
   options.runtimeConfig = defu(options.runtimeConfig, {
     public: {
       app: options.app

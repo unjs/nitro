@@ -38,9 +38,13 @@ export interface NitroConfig extends DeepPartial<NitroOptions> {
   extends?: string | string[] | NitroPreset
 }
 
-export interface NitroRouteRule {
-  swr?: number
+export interface NitroRouteOption {
+  swr?: boolean | number
   redirect?: string
+}
+
+export interface NitroRoutesOptions {
+  [path: string]: NitroRouteOption
 }
 
 export interface PublicAssetDir {
@@ -69,10 +73,14 @@ export interface NitroOptions {
 
   // App
   runtimeConfig: { public: any, private: any }
+  routes: NitroRoutesOptions
   app: {
+    /** @deprecated Use top-level routes option! */
+    routes: NitroRoutesOptions
     baseURL: string,
     cdnURL: string,
     buildAssetsDir: string
+    [key: string]: any
   }
 
   // Dirs
@@ -105,9 +113,6 @@ export interface NitroOptions {
   // Routing
   handlers: NitroEventHandler[]
   devHandlers: NitroDevEventHandler[]
-  routes: {
-    [path: string]: NitroRouteRule
-  },
   prerender: {
     crawlLinks: boolean
     routes: string[]

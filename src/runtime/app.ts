@@ -1,9 +1,11 @@
-import './config'
 import { createApp, createRouter, lazyEventHandler } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
+import { createRouter as createMatcher } from 'radix3'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
+import { config } from './config'
 import { timingMiddleware } from './timing'
+import { cachedEventHandler } from './cache'
 import handleError from '#nitro/error'
 import { handlers } from '#nitro/virtual/server-handlers'
 
@@ -16,8 +18,17 @@ app.use(timingMiddleware)
 
 const router = createRouter()
 
+const routerOptions = createMatcher({ routes: config.app.routes })
+
 for (const h of handlers) {
-  const handler = h.lazy ? lazyEventHandler(h.handler as any) : h.handler
+  let handler = h.lazy ? lazyEventHandler(h.handler as any) : h.handler
+
+  const referenceRoute = h.route.replaceAll(/:\w+|\*\*/g, '_')
+  const routeOptions = routerOptions.lookup(referenceRoute) || {}
+  if (routeOptions.swr) {
+    handler = cachedEventHandler(handler)
+  }
+
   if (h.route === '/') {
     app.use(handler)
   } else {
