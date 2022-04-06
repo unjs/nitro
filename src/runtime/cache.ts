@@ -34,7 +34,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
   const pending: { [key: string]: Promise<T> } = {}
 
   // Normalize cache params
-  const group = opts.group || ''
+  const group = opts.group || 'nitro'
   const name = opts.name || fn.name || '_'
   const integrity = hash([opts.integrity, fn, opts])
 
@@ -98,7 +98,7 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
   const _opts: CachifyOptions<ResponseCacheEntry> = {
     ...opts,
     getKey: req => req.originalUrl || req.url,
-    group: opts.group || 'handlers',
+    group: opts.group || 'nitro/handlers',
     integrity: [
       opts.integrity,
       handler

@@ -26,7 +26,9 @@ for (const h of handlers) {
   const referenceRoute = h.route.replaceAll(/:\w+|\*\*/g, '_')
   const routeOptions = routerOptions.lookup(referenceRoute) || {}
   if (routeOptions.swr) {
-    handler = cachedEventHandler(handler)
+    handler = cachedEventHandler(handler, {
+      group: 'nitro/routes'
+    })
   }
 
   if (h.route === '/') {
