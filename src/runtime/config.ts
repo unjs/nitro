@@ -5,12 +5,12 @@ import { snakeCase } from 'scule'
 const _runtimeConfig = process.env.RUNTIME_CONFIG as any
 
 const ENV_PREFIX = 'NITRO_'
-const ENV_PREFIX_ALT = _runtimeConfig.NITRO_ENV_PREFIX_ALT || process.env.NITRO_ENV_PREFIX_ALT || '_'
+const ENV_PREFIX_ALT = _runtimeConfig.NITRO_ENV_PREFIX_ALT ?? process.env.NITRO_ENV_PREFIX_ALT ?? '_'
 
 // Allow override from process.env and deserialize
-const getEnv = (key) => {
+const getEnv = (key: string) => {
   const envKey = snakeCase(key).toUpperCase()
-  return destr(process.env[ENV_PREFIX + envKey] ?? (ENV_PREFIX_ALT && process.env[ENV_PREFIX_ALT + envKey]))
+  return destr(process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey])
 }
 
 for (const key in _runtimeConfig) {
