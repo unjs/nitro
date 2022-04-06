@@ -2,7 +2,7 @@ import { resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import defu from 'defu'
-import { withLeadingSlash, withoutTrailingSlash } from 'ufo'
+import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -12,13 +12,7 @@ const NitroDefaults: NitroConfig = {
   // General
   preset: undefined,
   logLevel: 3,
-  runtimeConfig: {
-    nitro: {
-      baseURL: '/',
-      cdnURL: undefined,
-      buildAssetsDir: 'dist'
-    }
-  },
+  runtimeConfig: { nitro: {} },
 
   // Dirs
   scanDirs: [],
@@ -41,6 +35,7 @@ const NitroDefaults: NitroConfig = {
   watchOptions: { ignoreInitial: true },
 
   // Routing
+  baseURL: '/',
   handlers: [],
   devHandlers: [],
   routes: {},
@@ -110,8 +105,10 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
+  options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
-    app: {
+    nitro: {
+      baseURL: options.baseURL,
       routes: options.routes
     }
   })

@@ -75,8 +75,6 @@ export interface NitroOptions {
       /** @deprecated Use top-level routes option! */
       routes: NitroRoutesOptions
       baseURL: string,
-      cdnURL: string,
-      buildAssetsDir: string
     }
     [key: string]: any
   }
@@ -110,6 +108,7 @@ export interface NitroOptions {
   watchOptions: WatchOptions
 
   // Routing
+  baseURL: string,
   handlers: NitroEventHandler[]
   routes: NitroRoutesOptions
   devHandlers: NitroDevEventHandler[]

@@ -3,7 +3,7 @@ import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
 import { localCall } from '../app'
 import { requestHasBody, useRequestBody } from '../utils'
-import { buildAssetsURL, baseURL } from '#nitro/paths'
+import { config } from '#nitro'
 
 addEventListener('fetch', (event: any) => {
   event.respondWith(handleEvent(event))
@@ -41,17 +41,18 @@ async function handleEvent (event) {
   })
 }
 
-function assetsCacheControl (request) {
-  if (request.url.startsWith(buildAssetsURL())) {
-    return {
-      browserTTL: 31536000,
-      edgeTTL: 31536000
-    }
-  }
+function assetsCacheControl (_request) {
+  // TODO: Detect public asset bases
+  // if (request.url.startsWith(buildAssetsURL())) {
+  //   return {
+  //     browserTTL: 31536000,
+  //     edgeTTL: 31536000
+  //   }
+  // }
   return {}
 }
 
 const baseURLModifier = (request: Request) => {
-  const url = withoutBase(request.url, baseURL())
+  const url = withoutBase(request.url, config.nitro.baseURL)
   return mapRequestToAsset(new Request(url, request))
 }

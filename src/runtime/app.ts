@@ -14,7 +14,7 @@ export const app = createApp({
   onError: handleError
 })
 
-app.use(timingMiddleware)
+app.use(config.nitro.baseURL, timingMiddleware)
 
 const router = createRouter()
 
@@ -32,13 +32,13 @@ for (const h of handlers) {
   }
 
   if (h.route === '/') {
-    app.use(handler)
+    app.use(config.nitro.baseURL, handler)
   } else {
     router.use(h.route, handler)
   }
 }
 
-app.use(router)
+app.use(config.nitro.baseURL, router)
 
 export const localCall = createCall(app.nodeHandler as any)
 export const localFetch = createLocalFetch(localCall, globalThis.fetch)

@@ -239,6 +239,12 @@ Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for m
 
 ### Routing
 
+#### `baseURL`
+
+Default: `/`
+
+Server's main base URL.
+
 #### `handlers`
 
 Server handlers and routes.

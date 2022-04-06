@@ -5,6 +5,7 @@ export default defineNitroConfig({
   prerender: {
     crawlLinks: true
   },
+  // baseURL: '/app',
   routes: {
     '/api/swr': { swr: true }
   }
