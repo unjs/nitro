@@ -1,18 +1,19 @@
 import { hash } from 'ohash'
-import type { Handler } from 'h3'
-import { storage } from '#nitro/virtual/storage'
+import { H3Response, toEventHandler } from 'h3'
+import type { CompatibilityEventHandler, CompatibilityEvent } from 'h3'
+import { storage } from '#nitro'
 
-export interface CacheEntry {
-  value?: any
+export interface CacheEntry<T=any> {
+  value?: T
   expires?: number
   mtime?: number
   integrity?: string
 }
 
-export interface CachifyOptions {
+export interface CachifyOptions<T=any> {
   name?: string
   getKey?: (...args: any[]) => string
-  transform?: (entry: CacheEntry, ...args: any[]) => any
+  transform?: (entry: CacheEntry<T>, ...args: any[]) => any
   group?: string
   integrity?: any
   ttl?: number
@@ -27,20 +28,19 @@ const defaultCacheOptions = {
   ttl: 1
 }
 
-export function cachify (fn: ((...args) => any), opts: CachifyOptions) {
+export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CachifyOptions<T>) {
   opts = { ...defaultCacheOptions, ...opts }
 
-  const pending: { [key: string]: Promise<any> } = {}
+  const pending: { [key: string]: Promise<T> } = {}
 
   // Normalize cache params
   const group = opts.group || ''
   const name = opts.name || fn.name || '_'
-  const integrity = hash(opts.integrity || fn)
+  const integrity = hash([opts.integrity, fn, opts])
 
-  async function get (key: string, resolver: () => any) {
+  async function get (key: string, resolver: () => T | Promise<T>): Promise<CacheEntry<T>> {
     const cacheKey = [opts.base, group, name, key].filter(Boolean).join(':')
-    // TODO: improve unstorage types
-    const entry: CacheEntry = await storage.getItem(cacheKey) as any || {}
+    const entry: CacheEntry<T> = await storage.getItem(cacheKey) as any || {}
 
     const ttl = (opts.ttl ?? opts.ttl ?? 0) * 1000
     if (ttl) {
@@ -51,14 +51,13 @@ export function cachify (fn: ((...args) => any), opts: CachifyOptions) {
 
     const _resolve = async () => {
       if (!pending[key]) {
-        pending[key] = resolver()
+        pending[key] = Promise.resolve(resolver())
       }
       entry.value = await pending[key]
       entry.mtime = Date.now()
       entry.integrity = integrity
       delete pending[key]
-      // eslint-disable-next-line no-console
-      storage.setItem(cacheKey, entry).catch(console.error)
+      storage.setItem(cacheKey, entry).catch(error => console.error('[nitro] [cache]', error))
     }
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve()
@@ -83,16 +82,30 @@ export function cachify (fn: ((...args) => any), opts: CachifyOptions) {
   }
 }
 
+export const cachedFunction = defineCachedFunction
+
 function getKey (...args: string[]) {
   return args.length ? hash(args, {}) : ''
 }
 
-export function cachifyHandle (handler: Handler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
-  const _opts: CachifyOptions = {
+export function defineCachedEventHandler (handler: CompatibilityEventHandler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
+  interface ResponseCacheEntry {
+    body: H3Response
+    code: number
+    headers: Record<string, string | number | string[]>
+  }
+
+  const _opts: CachifyOptions<ResponseCacheEntry> = {
+    ...opts,
     getKey: req => req.originalUrl || req.url,
-    transform (entry, _req, res) {
+    group: opts.group || 'handlers',
+    integrity: [
+      opts.integrity,
+      handler
+    ],
+    transform (entry, event: CompatibilityEvent) {
       for (const header in entry.value.headers) {
-        res.setHeader(header, entry.value.headers[header])
+        event.res.setHeader(header, entry.value.headers[header])
       }
       const cacheControl = []
       if (opts.swr) {
@@ -104,16 +117,26 @@ export function cachifyHandle (handler: Handler, opts: Omit<CachifyOptions, 'get
         cacheControl.push(`max-age=${opts.ttl / 1000}`)
       }
       if (cacheControl.length) {
-        res.setHeader('Cache-Control', cacheControl.join(', '))
+        event.res.setHeader('Cache-Control', cacheControl.join(', '))
+      }
+      if (entry.value.code) {
+        event.res.statusCode = entry.value.code
       }
       return entry.value.body
-    },
-    ...opts
+    }
   }
 
-  return cachify(async (req, res) => {
-    const body = await handler(req, res)
-    const headers = res.getHeaders()
-    return { body, headers }
+  const _handler = toEventHandler(handler)
+  return cachedFunction<ResponseCacheEntry>(async (event: CompatibilityEvent) => {
+    const body = await _handler(event)
+    const headers = event.res.getHeaders()
+    const cacheEntry: ResponseCacheEntry = {
+      code: event.res.statusCode,
+      headers,
+      body
+    }
+    return cacheEntry
   }, _opts)
 }
+
+export const cachedEventHandler = defineCachedEventHandler

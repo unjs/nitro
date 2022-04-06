@@ -26,6 +26,7 @@ export const privateConfig = deepFreeze(defu(_runtimeConfig.private, _runtimeCon
 export const publicConfig = deepFreeze(_runtimeConfig.public)
 
 // Default export (usable for server)
+export const config = privateConfig
 export default privateConfig
 
 // Utils
