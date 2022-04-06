@@ -1,37 +1,36 @@
-# ⚗️Nitro
+<h1 align="center">⚗️ nitro</h1>
 
-> Complete solution to build and deploy universal JavaScript web servers. Providing both build tooling and a runtime framework.
+> The complete solution to build and deploy universal JavaScript servers. Nitro provides both build tooling and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem.
 
-👉 **Rapid development** experience with hot module reloading
+<hr>
+<h3 align="center">🌱 nitro is young and under development 🌱</h3>
 
-👉 **Multi provider** deployments with single codebase and zero configuration changes
+🐛 Check [open issues](https://github.com/unjs/nitro/issues) for roadmap and known issues.
 
-👉 **Portable and compact** deployments without `node_modules` dependeny
+🎁 [Contributions](nitro#-contribution) are more than welcome to improve documentation.
 
-👉 **Directory structure** aware to register api routes and more with zero configuration
+💡 [Tell us your ideas](https://github.com/unjs/nitro/discussions/new) too!
+<hr>
+<br>
 
-👉 **Minimal Design** aiming to fit into any solution with minimum overhead
+ ❯ **Rapid development** experience with hot module reloading <br>
+ ❯ **Multi-provider** deployments with a single codebase and zero-configuration changes <br>
+ ❯ **Portable and compact** deployments without `node_modules` dependeny <br>
+ ❯ **Directory structure** aware to register API routes and more with zero configuration <br>
+ ❯ **Minimal Design** aiming to fit into any solution with minimum overhead <br>
+ ❯ **Code-splitting** and async chunk loading for fast server startup time <br>
+ ❯ **TypeScript** fully supported <br>
+ ❯ **Multi-driver storage** and caching layer <br>
+ ❯ **Route caching** and static **prerendering** with built-in crawler <br>
+ ❯ **Hackable** you can extend almost any part of nitro using options <br>
+ ❯ **Auto imports** for lazy folks and a tidy minimal codebase <br>
+ ❯ **Best-effort compatibility** for using legacy npm packages and mocking Node.js modules <br>
 
-👉 **Code-splitting** and async chunk loading for fast server startup time
-
-👉 **TypeScript** fully supported
-
-👉 **Multi-driver storage** and caching layer
-
-👉 **Route caching** and static **prerendering** with built-in crawler
-
-👉 **Hackable** you can extend almost any part of nitro using options
-
-👉 **Auto imports** for lazy folks and a tidy minimal codebase
-
-👉 **Best-effort compatibility** for using legacy npm packages and mocking Node.js modules
-
-Aren't you convinced yet? 😁 Maybe it there is already an [open issue](https://github.com/unjs/nitro/issues) in roadmap. No? [tell your ideas](https://github.com/unjs/nitro/discussions/new) then!
-
+<hr>
 
 ## ⚡️ Quick Start
 
-Reading docs is boaring 😫 Let's get started with something working!
+Reading docs is boring 😫 Let's get started with something working!
 
 0️⃣ Create an empty directory `nitro-app`
 
@@ -56,21 +55,23 @@ npx nitropack dev
 
 **🤓 [TIP]** Check `.nitro/dev/index.mjs` if want to know what happened!
 
-3️⃣ You can now build your production ready server:
+3️⃣ You can now build your production-ready server:
 
 ```bash
 npx nitropack build
 ````
 
-4️⃣ Output is in `.output` directory and ready to be deployed on almost any VPS with no dependencies. You can locally try it too:
+4️⃣ Output is in the `.output` directory and ready to be deployed on almost any VPS with no dependencies. You can locally try it too:
 
 ```bash
 node .output/server/index.mjs
 ```
 
+<hr>
+
 ## Type Support
 
-Nitro uses an special `#nitro` alias for runtime helpers. To add type support within your project,
+Nitro uses the `#nitro` alias for runtime helpers. To add type support within your project,
 you may add the following to your `tsconfig.json` file:
 
 ```json
@@ -83,32 +84,138 @@ you may add the following to your `tsconfig.json` file:
 
 ## API Routes
 
-[ 🚧 TODO ]
+API files inside `api/` directory will be automatically mapped to API routes and served using [h3](https://github.com/unjs/h3) router.
 
-## Routes Config
+**Example:** Simple API route
 
-[ 🚧 TODO ]
+```js
+// api/test.ts
+import { eventHandler } from 'h3'
+
+export default eventHandler(() => 'Hello World!')
+```
+
+**Example:** API route with params
+
+```js
+// api/hello/[name].ts
+import { eventHandler } from 'h3'
+
+export default eventHandler((event) => `Hello ${event.params.name}!`)
+```
+
 
 ## Storage
 
-[ 🚧 TODO ]
+Nitro provides a built-in storage layer using [unjs/unstorage](https://github.com/unjs/unstorage) that can absteract filesystem access.
 
-## Caching
+```js
+import { storage } from '#nitro'
+```
+
+See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
+
+**Example:** Simple operations
+
+```js
+import { storage } from '#nitro'
+
+await storage.setItem('test:foo', { hello: world })
+await storage.getItem('test:foo')
+```
+
+
+By default storage is in-memory with mounted `cache:` prefix only for development.
+
+You can add more mountpoints using `storage` option:
+
+```js
+// nitro.config.ts
+import { defineNitroConfig } from 'nitropack'
+
+export default defineNitroConfig({
+  storage: {
+    mounts: {
+      '/redis': { driver: 'redis', driverOptions: { /* redis connector options */ } }
+    }
+  }
+})
+```
+
+## Cache API
+
+Nitro provides a powerful caching system built on top of storage layer.
+
+```js
+import { defineCachedFunction } from '#nitro'
+import { cachedEventHandler } from '#nitro'
+```
+
+**Example:** Cache an API handler
+
+```js
+// api/test.ts
+import { defineCachedFunction } from '#nitro'
+
+const myFn = cachedEventHandler(async () => {
+  new Promise(resolve => setTimeout(resolve, 1000))
+  return `Response generated at ${new Date().toISOString()})`
+}, { swr: true })
+```
+
+**Example:** Cache a utility function
+
+```js
+// utils/index.ts
+import { defineCachedFunction } from '#nitro'
+
+const myFn = defineCachedFunction(async () => {
+  new Promise(resolve => setTimeout(resolve, 1000))
+  return Math.random()
+}, { swr: true })
+```
+
+
+**Example:** Enable cache on group of routes
+
+```js
+// nitro.config.ts
+import { defineNitroConfig } from 'nitropack'
+
+export default defineNitroConfig({
+  routes: {
+    '/blog/**': { swr: true }
+  }
+})
+```
+
 
 ## Public Assets
 
-[ 🚧 TODO ]
+All assets in `public/` directory will be automatically served.
 
 ## Deployment Presets
 
-[ 🚧 TODO ]
+Currently supported presets:
+- `azure_functions`
+- `azure`
+- `browser`
+- `cli`
+- `cloudflare`
+- `firebase`
+- `lambda`
+- `netlify`
+- `node`
+- `vercel`
+
+<hr>
 
 ## 📚  Options
 
-Who doesn't want having an option? Niro provides lots of them to customize any part of it's behavior!
-In fact all deployment providers are built on the same options API!
+Who doesn't want to have an option? Niro provides lots of them to customize any part of its behavior!
+It is powerful enough that all deployment providers are built on the exact options API!
 
-Create a new `nitro.config.ts` file in order to provide options:
+Create a new `nitro.config.ts` file to provide options:
 
 ```js
 // nitro.config.ts
@@ -118,7 +225,7 @@ export default defineNitroConfig({
 })
 ```
 
-**🤓 [TIP]** Nitro handles configuration loading using [unjs/c12](https://github.com/unjs/c12). You have more advanced possibilities such as using `.env`. and `.nitrorc`.
+**🤓 [TIP]** Nitro handles configuration loading using [unjs/c12](https://github.com/unjs/c12). You have more advanced possibilities such as using `.env`. And `.nitrorc`.
 
 ### General
 
@@ -126,12 +233,9 @@ export default defineNitroConfig({
 
 Use `preset` option `NITRO_PRESET` environment variable for custom **production** preset.
 
-Preset for development mode is always `dev` and by default `server` for production building an standalone Node.js server.
+Preset for development mode is always `dev` and default `server` for production building a standalone Node.js server.
 
-When `preset` option is not set and running in known environments, preset will be automatically detected!
-
-Built-in presets: `azure_functions`, `azure`, `browser`, `cli`, `cloudflare`, `firebase`, `lambda`, `netlify`, `node`, `vercel`
-
+The preset will automatically be detected when the `preset` option is not set and running in known environments.
 
 #### `logLevel`
 
@@ -155,19 +259,19 @@ Project main directory
 
 #### `srcDir`
 
-Project source directory. Same as `rootDir` unless specified. Useful to move code into `src/`.
+Project source directory. Same as `rootDir` unless specified. Helpful to move code into `src/`.
 
 #### `scanDirs`
 
 - Default: (source directory when empty array)
 
-List of directories to scan and auto register files such as API routes.
+List of directories to scan and auto-register files, such as API routes.
 
 #### `buildDir`
 
 - Default: `.nitro`
 
-Nitro's temporary working directory for generating build related files.
+Nitro's temporary working directory for generating build-related files.
 
 #### `output`
 
@@ -181,7 +285,7 @@ Output directories for production bundle.
 
 - Default: `{}`
 
-Enable experimental features. Currently non are available!
+Enable experimental features. Currently, non are available!
 
 #### `storage`
 
@@ -205,13 +309,13 @@ Path to main render (file should export an event handler as default)
 
 Serve `public/` assets in production.
 
-**Note:** It is highly recommended that your edge CDN (nginx, apache, cloud) serves `public/` directory instead.
+**Note:** It is highly recommended that your edge CDN (nginx, apache, cloud) serves the `public/` directory instead.
 
 #### `publicAssets`
 
 Public asset directories to serve in development and bundle in production.
 
-If a `public/` directory is detected, will be added by default but you can add more by yourself too!
+If a `public/` directory is detected, it will be added by default, but you can add more by yourself too!
 
 #### `serverAssets`
 
@@ -227,7 +331,7 @@ You probably don't want to override it!
 
 - Default: `{ watch: [] }`
 
-Dev server options. You can use `watch` to make dev server reload if any file changes in specified paths.
+Dev server options. You can use `watch` to make the dev server reload if any file changes in specified paths.
 
 #### `watchOptions`
 
@@ -253,11 +357,11 @@ If `api/` and `middleware/` directories exist, they will be automatically added 
 
 #### `devHandlers`
 
-Normal handlers, each refer to the path of handler to be imported and transformed by rollup.
+Regular handlers refer to the path of handlers to be imported and transformed by rollup.
 
-There are situations that we directly want to provide a handler instance with programmatic usage.
+There are situations in that we directly want to provide a handler instance with programmatic usage.
 
-In this case we can use `devHandlers` but note that they are **only available in development mode** and **not in production build**.
+We can use `devHandlers` but note that they are **only available in development mode** and **not in production build**.
 
 #### `routes`
 
@@ -277,13 +381,13 @@ Example:
 
 Default: `{ crawlLinks: false, routes: [] }`
 
-Prerenderer options. Any route specified will be fetched during build and copied to `.output/public` directory as an static asset.
+Prerendered options. Any route specified will be fetched during the build and copied to the `.output/public` directory as a static asset.
 
 If `crawlLinks` option is set to `true`, nitro starts with `/` by default (or all routes in `routes` array) and for HTML pages extracts `<a href="">` tags and prerender them as well.
 
 ### Rollup
 
-**⚠️ Caution! Rollup options are considered advanced and things can go bad if misconfigured.** Nitro and presets provide best defaults.
+**⚠️ Caution! Rollup options are considered advanced, and things can go wrong if misconfigured.** nitro and presets provide the best defaults.
 
 #### `rollupConfig`
 
@@ -317,7 +421,7 @@ Enable source-map generation
 
 #### `node`
 
-Specify either build is used for Node.js or not. If set to `false`, Nitro tried to mock Node.js dependencies using [unjs/unenv](https://github.com/unjs/unenv) and adjust it's behavior.
+Specify whether the build is used for Node.js or not. If set to `false`, nitro tried to mock Node.js dependencies using [unjs/unenv](https://github.com/unjs/unenv) and adjust its behavior.
 
 #### `analyze`
 
@@ -327,7 +431,7 @@ If enabled, will analyze server bundle after build using [rollup-plugin-visualiz
 
 Default: `[unenv/runtime/polyfill/]`
 
-Rollup specific option. Specifis module imports that have side-effects
+Rollup specific option. Specifies module imports that have side-effects
 
 #### `replace`
 
@@ -335,7 +439,7 @@ Rollup specific option.
 
 ### Advanced
 
-**⚠️ Caution! These options are considered advanced and things can go bad if misconfigured.** Nitro and presets provide best defaults.
+**⚠️ Caution! These options are considered advanced, and things can go wrong if misconfigured.** nitro and presets provide the best defaults.
 
 #### `nodeModulesDirs`
 
@@ -347,18 +451,20 @@ Nitro hooks. See [unjs/hookable](https://github.com/unjs/hookable) for more info
 
 #### `commands`
 
-Preview and deploy command hints usually filled by deployment presets.
+Preview and deploy command hints are usually filled by deployment presets.
 
-## 💻 Contribution
+<hr>
 
-**Before everything, please make sure there is an option issue either confirming issue/bug 🐛 or you have an explicit👍 to go with adding an enhancenment or new feature. Thanks in advanced🙏**
+## 🎁 Contribution
+
+**Before everything, please make sure there is an option issue either confirming issue/bug 🐛 or you have an explicit👍 to add an enhancement or new feature. Thanks in advance 🙏**
 
 - Fork and clone this repository
 - Enable [corepack](https://github.com/nodejs/corepack) using `corepack enable` (use `npm i -g corepack` for Node.js < 16.10)
-- Install dependencies using `yarn install`
+- Install dependencies using `yarn install`.
 - Start playground with `yarn dev` and open http://localhost:3000
 - Make changes
-- Ensure all tests passing using `yarn test`
+- Ensure all tests pass using the `yarn test` command
 - Open that lovely PR!
 
 ## License
