@@ -297,7 +297,7 @@ Enable experimental features. Currently, non are available!
 
 #### `storage`
 
-- Default: `{ mounts: {} }`
+- Default: `{}`
 
 Storage configuration.
 
