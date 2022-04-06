@@ -216,6 +216,7 @@ Currently supported presets:
 - `netlify`
 - `node`
 - `vercel`
+- `layer0`
 
 <hr>
 
