@@ -10,6 +10,8 @@
 🎁 [Contributions](#-contribution) are more than welcome to improve documentation.
 
 💡 [Tell us your ideas](https://github.com/unjs/nitro/discussions/new) too!
+
+🏀 [Online playground](https://stackblitz.com/github/unjs/nitro/tree/main/examples/hello-world) on StackBlitz
 <hr>
 <br>
 
@@ -37,9 +39,9 @@ mkdir nitro-app
 cd nitro-app
 ```
 
-1️⃣ Create `api/test.ts`:
+1️⃣ Create `api/hello.ts`:
 
-```ts [api/test.ts]
+```ts [api/hello.ts]
 export default () => 'Nitro is amazing!'
 ```
 
@@ -49,7 +51,7 @@ export default () => 'Nitro is amazing!'
 npx nitropack dev
 ```
 
-🪄 Your API is ready at http://localhost:3000/api/test
+🪄 Your API is ready at http://localhost:3000/api/hello
 
 **🤓 [TIP]** Check `.nitro/dev/index.mjs` if want to know what is happening
 
