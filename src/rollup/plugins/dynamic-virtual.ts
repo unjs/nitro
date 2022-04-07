@@ -3,15 +3,15 @@ import type { Plugin } from 'rollup'
 
 // Based on https://github.com/rollup/plugins/blob/master/packages/virtual/src/index.ts
 
-type VirtualModule = string | { load: () => string | Promise<string> }
+export type VirtualModule = string | (() => string | Promise<string>)
 
 export interface RollupVirtualOptions {
-  [id: string]: VirtualModule;
+  [id: string]: VirtualModule
 }
 
 const PREFIX = '\0virtual:'
 
-export default function virtual (modules: RollupVirtualOptions): Plugin {
+export default function dynamicVirtual (modules: RollupVirtualOptions): Plugin {
   const _modules = new Map<string, VirtualModule>()
 
   for (const [id, mod] of Object.entries(modules)) {
@@ -20,7 +20,7 @@ export default function virtual (modules: RollupVirtualOptions): Plugin {
   }
 
   return {
-    name: 'virtual',
+    name: 'dynamic-virtual',
 
     resolveId (id, importer) {
       if (id in modules) { return PREFIX + id }
@@ -43,8 +43,8 @@ export default function virtual (modules: RollupVirtualOptions): Plugin {
       if (!_modules.has(idNoPrefix)) { return null }
 
       let m = _modules.get(idNoPrefix)
-      if (typeof m !== 'string' && typeof m.load === 'function') {
-        m = await m.load()
+      if (typeof m === 'function') {
+        m = await m()
       }
 
       // console.log('[virtual]', idNoPrefix, '\n', m)

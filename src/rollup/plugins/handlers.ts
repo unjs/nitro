@@ -4,7 +4,7 @@ import table from 'table'
 import isPrimitive from 'is-primitive'
 import { isDebug } from 'std-env'
 import type { NitroEventHandler } from '../../types'
-import virtual from './virtual'
+import virtual from './dynamic-virtual'
 
 const unique = (arr: any[]) => Array.from(new Set(arr))
 
@@ -14,27 +14,26 @@ export function handlers (getHandlers: () => NitroEventHandler[]) {
   let lastDump = ''
 
   return virtual({
-    '#nitro/virtual/server-handlers': {
-      load: () => {
-        const handlers = getHandlers()
+    '#nitro/virtual/server-handlers': () => {
+      const handlers = getHandlers()
 
-        if (isDebug) {
-          const dumped = dumpHandler(handlers)
-          if (dumped !== lastDump) {
-            lastDump = dumped
-            if (handlers.length) {
-              console.log(dumped)
-            }
+      if (isDebug) {
+        const dumped = dumpHandler(handlers)
+        if (dumped !== lastDump) {
+          lastDump = dumped
+          if (handlers.length) {
+            console.log(dumped)
           }
         }
+      }
 
-        // Imports take priority
-        const imports = unique(handlers.filter(h => h.lazy === false).map(h => h.handler))
+      // Imports take priority
+      const imports = unique(handlers.filter(h => h.lazy === false).map(h => h.handler))
 
-        // Lazy imports should fill in the gaps
-        const lazyImports = unique(handlers.filter(h => h.lazy !== false && !imports.includes(h.handler)).map(h => h.handler))
+      // Lazy imports should fill in the gaps
+      const lazyImports = unique(handlers.filter(h => h.lazy !== false && !imports.includes(h.handler)).map(h => h.handler))
 
-        const code = `
+      const code = `
 ${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).join('\n')}
 
 ${lazyImports.map(handler => `const ${getImportId(handler)} = () => import('${handler}');`).join('\n')}
@@ -44,8 +43,7 @@ ${handlers.map(h => `  { route: '${h.route || ''}', handler: ${getImportId(h.han
 ];
   `.trim()
         // console.log(code)
-        return code
-      }
+      return code
     }
   })
 }

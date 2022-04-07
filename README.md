@@ -388,6 +388,12 @@ Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for m
 
 An array of paths to nitro plugins. They will be executed by order on the first initialization.
 
+#### `virtual`
+
+- Default: `{}`
+
+A map from dynamic virtual import names to their contents or an (async) function that returns it.
+
 ### Routing
 
 #### `baseURL`

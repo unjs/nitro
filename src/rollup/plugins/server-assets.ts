@@ -5,7 +5,7 @@ import mime from 'mime'
 import { resolve } from 'pathe'
 import { globby } from 'globby'
 import type { Nitro } from '../../types'
-import virtual from './virtual'
+import virtual from './dynamic-virtual'
 
 export interface ServerAssetOptions {
   inline: Boolean
@@ -34,26 +34,24 @@ export function serverAssets (nitro: Nitro): Plugin {
 
   // Production: Bundle assets
   return virtual({
-    '#nitro/virtual/server-assets': {
-      async load () {
-        // Scan all assets
-        const assets: Record<string, ResolvedAsset> = {}
-        for (const asset of nitro.options.serverAssets) {
-          const files = await globby('**/*.*', { cwd: asset.dir, absolute: false })
-          for (const _id of files) {
-            const fsPath = resolve(asset.dir, _id)
-            const id = asset.baseName + '/' + _id
-            assets[id] = { fsPath, meta: {} }
-            // @ts-ignore TODO: Use mime@2 types
-            let type = mime.getType(id) || 'text/plain'
-            if (type.startsWith('text')) { type += '; charset=utf-8' }
-            const etag = createEtag(await fsp.readFile(fsPath))
-            const mtime = await fsp.stat(fsPath).then(s => s.mtime.toJSON())
-            assets[id].meta = { type, etag, mtime }
-          }
+    '#nitro/virtual/server-assets': async () => {
+      // Scan all assets
+      const assets: Record<string, ResolvedAsset> = {}
+      for (const asset of nitro.options.serverAssets) {
+        const files = await globby('**/*.*', { cwd: asset.dir, absolute: false })
+        for (const _id of files) {
+          const fsPath = resolve(asset.dir, _id)
+          const id = asset.baseName + '/' + _id
+          assets[id] = { fsPath, meta: {} }
+          // @ts-ignore TODO: Use mime@2 types
+          let type = mime.getType(id) || 'text/plain'
+          if (type.startsWith('text')) { type += '; charset=utf-8' }
+          const etag = createEtag(await fsp.readFile(fsPath))
+          const mtime = await fsp.stat(fsPath).then(s => s.mtime.toJSON())
+          assets[id].meta = { type, etag, mtime }
         }
-        return getAssetProd(assets)
       }
+      return getAssetProd(assets)
     }
   })
 }
