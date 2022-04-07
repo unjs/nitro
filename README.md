@@ -143,9 +143,9 @@ You can add more mountpoints using `storage` option:
 
 ```js
 // nitro.config.ts
-import { definenitroConfig } from 'nitropack'
+import { defineNitroConfig } from 'nitropack'
 
-export default definenitroConfig({
+export default defineNitroConfig({
   storage: {
     '/redis': {
       driver: 'redis',
@@ -189,9 +189,9 @@ const myFn = defineCachedFunction(async () => {
 
 ```js
 // nitro.config.ts
-import { definenitroConfig } from 'nitropack'
+import { defineNitroConfig } from 'nitropack'
 
-export default definenitroConfig({
+export default defineNitroConfig({
   routes: {
     '/blog/**': { swr: true }
   }
@@ -219,9 +219,9 @@ export default defineNitroPlugin((nitroApp) => {
 
 ```js
 // nitro.config.ts
-import { definenitroConfig } from 'nitropack'
+import { defineNitroConfig } from 'nitropack'
 
-export default definenitroConfig({
+export default defineNitroConfig({
   plugins: [
     '~/plugins/test'
   ]
@@ -260,9 +260,9 @@ Create a new `nitro.config.ts` file to provide options:
 
 ```js
 // nitro.config.ts
-import { definenitroConfig } from 'nitropack'
+import { defineNitroConfig } from 'nitropack'
 
-export default definenitroConfig({
+export default defineNitroConfig({
 })
 ```
 
