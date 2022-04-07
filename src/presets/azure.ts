@@ -32,7 +32,12 @@ async function writeRoutes (nitro) {
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }
-  } catch { }
+  } catch {
+    const currentNodeVersion = process.versions.node.slice(0, 2)
+    if (['16', '14'].includes(currentNodeVersion)) {
+      nodeVersion = currentNodeVersion
+    }
+  }
 
   const config = {
     platform: {
