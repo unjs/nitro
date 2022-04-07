@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/unjs/nitropack/compare/v0.1.1...v0.1.2) (2022-04-07)
+
+
+### Bug Fixes
+
+* update azure functions preset ([#41](https://github.com/unjs/nitropack/issues/41)) ([c552906](https://github.com/unjs/nitropack/commit/c552906b847bf1698ee6b9cb9d424aef7fc33832))
+
 ### [0.1.1](https://github.com/unjs/nitropack/compare/v0.1.0...v0.1.1) (2022-04-07)
 
 
