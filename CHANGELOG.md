@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/unjs/nitropack/compare/v0.2.0...v0.2.1) (2022-04-07)
+
+
+### Bug Fixes
+
+* use file:// for windows #build alias on dev ([077b511](https://github.com/unjs/nitropack/commit/077b5118742c822223fa110e0fd19f36b8616b02))
+
 ## [0.2.0](https://github.com/unjs/nitropack/compare/v0.1.4...v0.2.0) (2022-04-07)
 
 
