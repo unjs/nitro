@@ -45,8 +45,8 @@ async function writeRoutes (nitro: Nitro) {
 
   const _require = createRequire(import.meta.url)
 
-  const jsons = await globby(`${nitro.options.srcDir}/node_modules/**/package.json`)
-  const prefixLength = `${nitro.options.srcDir}/node_modules/`.length
+  const jsons = await globby(join(nitro.options.output.serverDir, 'node_modules/**/package.json'))
+  const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length
   const suffixLength = '/package.json'.length
   const dependencies = jsons.reduce((obj, packageJson) => {
     const dirname = packageJson.slice(prefixLength, -suffixLength)
