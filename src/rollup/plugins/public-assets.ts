@@ -44,10 +44,16 @@ import assets from '#nitro/virtual/public-assets-data'
 const mainDir = dirname(fileURLToPath(globalThis.entryURL))
 
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
+
 export function isPublicAssetURL(id = '') {
+  if (assets[id]) {
+    return
+  }
+
   for (const base of publicAssetBases) {
     if (id.startsWith(base)) { return true }
   }
+
   return false
 }
 
