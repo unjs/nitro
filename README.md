@@ -102,8 +102,6 @@ Handler files inside `routes/` and `api/` directory will be automatically mapped
 
 ```js
 // routes/test.ts
-import { eventHandler } from 'h3'
-
 export default eventHandler(() => 'Hello World!')
 ```
 
@@ -111,9 +109,14 @@ export default eventHandler(() => 'Hello World!')
 
 ```js
 // routes/hello/[name].ts
-import { eventHandler } from 'h3'
-
 export default eventHandler(event => `Hello ${event.context.params.name}!`)
+```
+
+**Example:** Catch all page
+
+```js
+// routes/[...].ts
+export default eventHandler(event => `Default page`)
 ```
 
 ## Storage
@@ -129,8 +132,6 @@ import { useStorage } from '#nitro'
 **Example:** Simple operations
 
 ```js
-import { useStorage } from '#nitro'
-
 await useStorage().setItem('test:foo', { hello: world })
 await useStorage().getItem('test:foo')
 ```
@@ -167,8 +168,6 @@ import { cachedEventHandler } from '#nitro'
 
 ```js
 // routes/cached.ts
-import { defineCachedFunction } from '#nitro'
-
 const myFn = cachedEventHandler(async () => {
   new Promise(resolve => setTimeout(resolve, 1000))
   return `Response generated at ${new Date().toISOString()})`
@@ -179,8 +178,6 @@ const myFn = cachedEventHandler(async () => {
 
 ```js
 // utils/index.ts
-import { defineCachedFunction } from '#nitro'
-
 const myFn = defineCachedFunction(async () => {
   new Promise(resolve => setTimeout(resolve, 1000))
   return Math.random()
@@ -215,8 +212,6 @@ They will be synchronously on first nitro initialization given `nitroApp` contex
 
 ```js
 // plugins/test.ts
-import { defineNitroPlugin } from '#nitro'
-
 export default defineNitroPlugin((nitroApp) => {
   console.log('Nitro plugin', nitroApp)
 })
