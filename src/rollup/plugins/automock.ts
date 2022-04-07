@@ -9,7 +9,7 @@ export function autoMock () {
       if (src && !internalRegex.test(src)) {
         consola.warn('Auto mock external ', src)
         return {
-          id: 'unenv/runtime/mock/proxy'
+          id: 'unenv/runtime/mock/proxy-cjs'
         }
       }
       return null
