@@ -1,7 +1,4 @@
 
-<style>
-td, th { border: none!important; }
-</style>
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![npm-edge version][npm-edge-version-src]][npm-edge-version-href]
@@ -10,8 +7,6 @@ td, th { border: none!important; }
 
 <h1 align="center">⚗️ Nitro</h1>
 <p align="center">Build and deploy universal JavaScript servers!</p>
-
-
 
 ## Why using Nitro?
 
@@ -34,29 +29,13 @@ Nitro provides a powerful toolchain and a runtime framework from the [UnJS](http
 
 [Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server engine.
 
+<br>
 <hr>
-
-<table align="center">
-<tbody>
-<tr>
-  <td>
-    <h2>
-      <a href="https://nitro.unjs.io">📖 Documentation</a>
-    </h2>
-  </td>
-  <td>
-    <h2>
-      <a href="https://github.com/unjs/nitro/blob/main/CHANGELOG.md">✍️ Changelog</a>
-    </h2>
-  </td>
-  <td>
-    <h2>
-      <a href="https://stackblitz.com/github/unjs/nitro/tree/main/examples/hello-world">🏀 Online playground</a>
-    </h2>
-  </td>
-</tr>
-</tbody>
-</table>
+<h3><a href="https://nitro.unjs.io">📖 Documentation</a></h3>
+<h3><a href="https://github.com/unjs/nitro/blob/main/CHANGELOG.md">✍️ Changelog</a></h3>
+<h3><a href="https://stackblitz.com/github/unjs/nitro/tree/main/examples/hello-world">🏀 Online playground</a></h3>
+<hr>
+<br>
 
 <h2 align="center">😺 Quick Start</h2>
 
