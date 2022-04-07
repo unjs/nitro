@@ -37,7 +37,7 @@ function createNitroApp (): NitroApp {
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler as any) : h.handler
 
-    const referenceRoute = h.route.replaceAll(/:\w+|\*\*/g, '_')
+    const referenceRoute = h.route.replace(/:\w+|\*\*/g, '_')
     const routeOptions = routerOptions.lookup(referenceRoute) || {}
     if (routeOptions.swr) {
       handler = cachedEventHandler(handler, {
