@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/unjs/nitropack/compare/v0.1.4...v0.2.0) (2022-04-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove `nitro:document` hook
+* remove `views/app.template.html` from `build` logic
+
+* remove `nitro:document` hook ([1feb644](https://github.com/unjs/nitropack/commit/1feb6444ccc9e90668a1adc13a48198891f98f2a))
+* remove `views/app.template.html` from `build` logic ([0939233](https://github.com/unjs/nitropack/commit/09392330a8f13a51e245c0346e7a4aa66dae1b85))
+
 ### [0.1.4](https://github.com/unjs/nitropack/compare/v0.1.3...v0.1.4) (2022-04-07)
 
 
