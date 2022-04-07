@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/unjs/nitropack/compare/v0.1.2...v0.1.3) (2022-04-07)
+
+
+### Features
+
+* allow user configured dynamic virtual imports ([046d090](https://github.com/unjs/nitropack/commit/046d0901903bb09e2e1e3812eb433e7cfa9c6141))
+* improve error pages ([209688f](https://github.com/unjs/nitropack/commit/209688f90c72948073fe5165f03b2ef81acf865e))
+
+
+### Bug Fixes
+
+* avoid replaceAll for node 14 compatibility ([#42](https://github.com/unjs/nitropack/issues/42)) ([e229115](https://github.com/unjs/nitropack/commit/e229115454ad29826f4e27f85edbc62d22574309))
+* **externals:** check for explicit externals ([b4ced48](https://github.com/unjs/nitropack/commit/b4ced481f3579141106f90c1f6c03bcad9a6f117))
+* **externals:** improve fallback error handling ([6b355ca](https://github.com/unjs/nitropack/commit/6b355ca6f767e9bce95ea018a84959cb2760db63))
+* update azure SWA preset and update node versions detection ([#43](https://github.com/unjs/nitropack/issues/43)) ([19c784b](https://github.com/unjs/nitropack/commit/19c784b297ef7b1a618ca2bac1656462802df144))
+* update firebase output for package.json ([#45](https://github.com/unjs/nitropack/issues/45)) ([7700500](https://github.com/unjs/nitropack/commit/7700500d04c333858b94be796b6385e08a4dce70))
+
 ### [0.1.2](https://github.com/unjs/nitropack/compare/v0.1.1...v0.1.2) (2022-04-07)
 
 
