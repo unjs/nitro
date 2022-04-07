@@ -24,7 +24,7 @@ async function writeRoutes (nitro: Nitro) {
   if (!fse.existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
-        source: relative(nitro.options.rootDir, nitro.options.srcDir)
+        source: relative(nitro.options.rootDir, nitro.options.output.serverDir)
       },
       hosting: [
         {
