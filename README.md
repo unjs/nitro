@@ -1,14 +1,38 @@
 
+<style>
+td, th { border: none!important; }
+</style>
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-<!-- [![npm-edge version][npm-edge-version-src]][npm-edge-version-href]
+[![npm-edge version][npm-edge-version-src]][npm-edge-version-href]
 [![npm-edge downloads][npm-edge-downloads-src]][npm-edge-downloads-href]
-[![GitHub Actions][github-actions-src]][github-actions-href] [![Codecov][codecov-src]][codecov-href] -->
+<!-- [![GitHub Actions][github-actions-src]][github-actions-href] [![Codecov][codecov-src]][codecov-href] -->
 
 <h1 align="center">⚗️ Nitro</h1>
 <p align="center">Build and deploy universal JavaScript servers!</p>
 
+
+
+## Why using Nitro?
+
 Nitro provides a powerful toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to build and deploy **any JavaScript server, anywhere!**
+
+ ❯ **Rapid development** experience with hot module replacement <br>
+ ❯ **Multi-provider** deployments with a single codebase and zero-configuration<br>
+ ❯ **Portable and compact** deployments without `node_modules` dependency <br>
+ ❯ **Directory structure** aware to register API routes and more with zero configuration <br>
+ ❯ **Minimal Design** to fit into any solution with minimum overhead <br>
+ ❯ **Code-splitting** and async chunk loading for fast server startup time <br>
+ ❯ **TypeScript** fully supported <br>
+ ❯ **Multi-driver storage** and caching layer <br>
+ ❯ **Route caching** and static **pre-rendering** with built-in crawler <br>
+ ❯ **Hackable** to extend almost any part of nitro using options <br>
+ ❯ **Auto imports** for lazy folks and a tidy minimal codebase <br>
+ ❯ **Best-effort compatibility** for using legacy npm packages and mocking Node.js modules <br>
+
+## Who is using Nitro?
+
+[Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server engine.
 
 <hr>
 
@@ -34,35 +58,7 @@ Nitro provides a powerful toolchain and a runtime framework from the [UnJS](http
 </tbody>
 </table>
 
-<hr>
-
-## Why using Nitro? 😺
-
- ❯ **Rapid development** experience with hot module replacement <br>
- ❯ **Multi-provider** deployments with a single codebase and zero-configuration<br>
- ❯ **Portable and compact** deployments without `node_modules` dependency <br>
- ❯ **Directory structure** aware to register API routes and more with zero configuration <br>
- ❯ **Minimal Design** to fit into any solution with minimum overhead <br>
- ❯ **Code-splitting** and async chunk loading for fast server startup time <br>
- ❯ **TypeScript** fully supported <br>
- ❯ **Multi-driver storage** and caching layer <br>
- ❯ **Route caching** and static **pre-rendering** with built-in crawler <br>
- ❯ **Hackable** to extend almost any part of nitro using options <br>
- ❯ **Auto imports** for lazy folks and a tidy minimal codebase <br>
- ❯ **Best-effort compatibility** for using legacy npm packages and mocking Node.js modules <br>
-
-## Who is using Nitro?
-
-[Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server engine.
-
-<hr>
-<h3 align="center">🌱 nitro is young and under development</h3>
-
-Check [🐛 open issues](https://github.com/unjs/nitro/issues)  for the known issues and roadmap and tell us [💡your ideas](https://github.com/unjs/nitro/discussions/new)!
-<hr>
-
-## ⚡️ Quick Start
-
+<h2 align="center">😺 Quick Start</h2>
 
 0️⃣ Create an empty directory `nitro-app`
 
@@ -99,7 +95,15 @@ npx nitropack build
 node .output/server/index.mjs
 ```
 
-Checkout [Documentation](https://nitro.unjs.io) to read more!
+That's it you got it! Read the [documentation](https://nitro.unjs.io) to learn more.
+
+
+
+<hr>
+<h3 align="center">🌱 nitro is young and under development</h3>
+
+Check [🐛 open issues](https://github.com/unjs/nitro/issues)  for the known issues and roadmap and tell us [💡your ideas](https://github.com/unjs/nitro/discussions/new)!
+<hr>
 
 
 ## License
