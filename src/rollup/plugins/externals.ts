@@ -55,6 +55,11 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         return null
       }
 
+      // Check for explicit externals
+      if (opts.external.find(i => (id.startsWith(i) || idWithoutNodeModules.startsWith(i)))) {
+        return { id, external: true }
+      }
+
       // Resolve id (rollup > esm)
       const resolved = await this.resolve(originalId, importer, { ...options, skipSelf: true }) || { id }
       if (!existsSync(resolved.id)) {
