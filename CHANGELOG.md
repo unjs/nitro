@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/unjs/nitropack/compare/v0.1.0...v0.1.1) (2022-04-07)
+
+
+### Features
+
+* `routes/` directory ([2f96340](https://github.com/unjs/nitropack/commit/2f963403b2bd39493c1dc918ec1ef0a534185c06))
+* method support for rotue handlers ([da35ab1](https://github.com/unjs/nitropack/commit/da35ab19aeaa33ea7f4ef52f9ee08bdec931fba5))
+* register `[...].ext` as catch-all ([2e2e283](https://github.com/unjs/nitropack/commit/2e2e28342375dd03c84020085b488af67406553d))
+
+
+### Bug Fixes
+
+* also check for assets paths for `isPublicAssetURL` ([4170f65](https://github.com/unjs/nitropack/commit/4170f65056590075424f4d5cd5e14f9d1ad3ceed))
+* always enable publicAssets plugin ([a78e1be](https://github.com/unjs/nitropack/commit/a78e1beb07009b59df437b80e9883db04d9d24f4))
+* **cli:** prerender before main build ([9388b7d](https://github.com/unjs/nitropack/commit/9388b7dea3af8c0ac34e1ed5315d63f7e191a4ba))
+* mock readAsset when serveStatic is disabled ([e95b9d9](https://github.com/unjs/nitropack/commit/e95b9d9e84b6e589a2db4a91b523eaad60654994))
+* **service-worker:** remove `_server` prefix ([60ae8ba](https://github.com/unjs/nitropack/commit/60ae8ba5383dcceae52bf4094e4a3cc6a541d634))
+* update unenv to fix proxy mock issues ([fefd2e9](https://github.com/unjs/nitropack/commit/fefd2e9216da0b0287ed082578c34045bb62c309))
+
 ## 0.1.0 (2022-04-07)
 
 
