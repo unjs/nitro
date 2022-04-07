@@ -5679,7 +5679,7 @@ __metadata:
     table: ^6.8.0
     ufo: ^0.7.11
     unbuild: ^0.7.0
-    unenv: ^0.4.3
+    unenv: ^0.4.4
     unimport: ^0.1.0
     unstorage: ^0.3.3
     vitest: ^0.6.1
@@ -7788,20 +7788,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unenv@npm:^0.4.3":
-  version: 0.4.3
-  resolution: "unenv@npm:0.4.3"
+"unenv@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "unenv@npm:0.4.4"
   dependencies:
     buffer: ^6.0.2
-    defu: ^5.0.0
+    defu: ^6.0.0
     events: ^3.2.0
     inherits: ^2.0.4
     mime: ^2.4.6
-    node-fetch: ^3.0.0
+    node-fetch: ^3.2.3
     process: ^0.11.10
     upath: ^2.0.1
     util: ^0.12.4
-  checksum: 6b2b3c397309eed855c3b4264000be5c7bc049087778a3e4228a669e77ab135adc8388a6dd8cd427eeb7f45f931ce588e668412db21eb988a675248975ecbb9e
+  checksum: b3ff5d06f8c1eccdd4e9d933689c2334eafa37881da15908008d4973bc9d3aee2dff051b3c42388e3f0442aeecf9f8a7e39efbfd8f15c06fb878f478b1dda98e
   languageName: node
   linkType: hard
 
