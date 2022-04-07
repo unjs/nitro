@@ -279,7 +279,7 @@ The preset will automatically be detected when the `preset` option is not set an
 
 #### `logLevel`
 
-- Default: `3`
+- Default: `3` (`1` when testing environment is detected)
 
 Log verbosity level. See [unjs/consola#level](https://github.com/unjs/consola/#level) for more information.
 

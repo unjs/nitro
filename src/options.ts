@@ -4,6 +4,7 @@ import { klona } from 'klona/full'
 import { camelCase } from 'scule'
 import defu from 'defu'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
+import { isTest } from 'std-env'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -13,7 +14,7 @@ import { nitroImports } from './imports'
 const NitroDefaults: NitroConfig = {
   // General
   preset: undefined,
-  logLevel: 3,
+  logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
 
   // Dirs
