@@ -395,7 +395,7 @@ Array of paths to nitro plugins. They will be executed by order on first initial
 
 #### `baseURL`
 
-Default: `/`
+Default: `/` (or `NITRO_APP_BASE_URL` environment variable if provided)
 
 Server's main base URL.
 

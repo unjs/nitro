@@ -42,7 +42,7 @@ const NitroDefaults: NitroConfig = {
   watchOptions: { ignoreInitial: true },
 
   // Routing
-  baseURL: '/',
+  baseURL: process.env.NITRO_APP_BASE_URL || '/',
   handlers: [],
   devHandlers: [],
   routes: {},
