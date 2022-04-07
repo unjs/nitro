@@ -19,7 +19,7 @@ const htmlTemplate = (baseURL = '/') => `<!DOCTYPE html>
 <head>
   <meta charset="utf-8">
   <link rel="prefetch" href="${joinURL(baseURL, 'sw.js')}">
-  <link rel="prefetch" href="${joinURL(baseURL, '_server/index.mjs')}">
+  <link rel="prefetch" href="${joinURL(baseURL, 'server/index.mjs')}">
   <script>
   async function register () {
     const registration = await navigator.serviceWorker.register('${joinURL(baseURL, 'sw.js')}')
@@ -48,7 +48,7 @@ export const serviceWorker = defineNitroPreset(() => {
     extends: 'base-worker',
     entry: '#nitro/entries/service-worker',
     output: {
-      serverDir: '{{ output.dir }}/public/_server'
+      serverDir: '{{ output.dir }}/public/server'
     },
     commands: {
       preview: 'npx serve ./public'
@@ -60,7 +60,7 @@ export const serviceWorker = defineNitroPreset(() => {
       },
       async 'nitro:compiled' (nitro: Nitro) {
         // Write sw.js file
-        await fsp.writeFile(resolve(nitro.options.output.publicDir, 'sw.js'), `self.importScripts('${joinURL(nitro.options.baseURL, '_server/index.mjs')}');`, 'utf8')
+        await fsp.writeFile(resolve(nitro.options.output.publicDir, 'sw.js'), `self.importScripts('${joinURL(nitro.options.baseURL, 'server/index.mjs')}');`, 'utf8')
 
         // Write fallback initializer files
         const html = htmlTemplate(nitro.options.baseURL)
