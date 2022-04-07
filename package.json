@@ -4,12 +4,6 @@
   "description": "Next Generation Web Tooling",
   "license": "MIT",
   "type": "module",
-  "workspaces": [
-    "./examples/**"
-  ],
-  "resolutions": {
-    "nitropack": "link:."
-  },
   "exports": {
     ".": "./dist/index.mjs",
     "./cli": "./dist/cli.mjs",
@@ -25,17 +19,24 @@
   "files": [
     "dist"
   ],
+  "workspaces": [
+    "./examples/*"
+  ],
   "scripts": {
     "build": "unbuild",
     "dev": "yarn nitro dev playground",
-    "example": "yarn workspace example-$0 dev",
     "dev:build": "yarn nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
+    "example": "yarn workspace example-$0 dev",
+    "example:build": "yarn workspace example-$0 dev",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
     "nitro": "jiti ./src/cli.ts",
     "prepack": "yarn build",
     "release": "yarn test && yarn build && standard-version && npm run publish && git push --follow-tags",
     "test": "yarn lint && vitest run --silent"
+  },
+  "resolutions": {
+    "nitropack": "link:."
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.2.0",
@@ -118,8 +119,8 @@
     "unbuild": "^0.7.0",
     "vitest": "^0.6.1"
   },
+  "packageManager": "yarn@3.1.1",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0"
-  },
-  "packageManager": "yarn@3.1.1"
+  }
 }
