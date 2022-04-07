@@ -168,15 +168,17 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(serverAssets(nitro))
 
   // Public assets
-  rollupConfig.plugins.push({
-    name: 'dirnames',
-    renderChunk (code, chunk) {
-      return {
-        code: (chunk.isEntry ? 'globalThis.entryURL = import.meta.url;' : '') + code,
-        map: null
+  if (nitro.options.serveStatic) {
+    rollupConfig.plugins.push({
+      name: 'dirnames',
+      renderChunk (code, chunk) {
+        return {
+          code: (chunk.isEntry ? 'globalThis.entryURL = import.meta.url;' : '') + code,
+          map: null
+        }
       }
-    }
-  })
+    })
+  }
   rollupConfig.plugins.push(publicAssets(nitro))
 
   // Storage
