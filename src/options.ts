@@ -35,6 +35,7 @@ const NitroDefaults: NitroConfig = {
   autoImport: {
     presets: nitroImports
   },
+  virtual: {},
 
   // Dev
   dev: false,

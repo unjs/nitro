@@ -104,6 +104,7 @@ export interface NitroOptions {
   publicAssets: PublicAssetDir[]
   autoImport: UnimportOptions
   plugins: string[]
+  virtual: Record<string, string | (() => string | Promise<string>)>
 
   // Dev
   dev: boolean

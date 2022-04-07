@@ -21,6 +21,7 @@ import { hash } from 'ohash'
 import type { Nitro } from '../types'
 import { resolveAliases } from '../utils'
 import { runtimeDir } from '../dirs'
+import dynamicVirtual from './plugins/dynamic-virtual'
 import { dynamicRequire } from './plugins/dynamic-require'
 import { externals } from './plugins/externals'
 import { timing } from './plugins/timing'
@@ -144,7 +145,7 @@ export const getRollupConfig = (nitro: Nitro) => {
     }
   }))
 
-  // ESBuild
+  // esbuild
   rollupConfig.plugins.push(esbuild({
     target: 'es2019',
     sourceMap: true,
@@ -205,6 +206,9 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(virtual({
     '#nitro/virtual/polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
   }))
+
+  // User virtuals
+  rollupConfig.plugins.push(dynamicVirtual(nitro.options.virtual))
 
   // Plugins
   rollupConfig.plugins.push(virtual({
