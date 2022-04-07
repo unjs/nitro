@@ -75,7 +75,7 @@ async function writeRoutes (nitro: Nitro) {
   }
 
   await writeFile(
-    resolve(nitro.options.srcDir, 'package.json'),
+    resolve(nitro.options.output.serverDir, 'package.json'),
     JSON.stringify(
       {
         private: true,
