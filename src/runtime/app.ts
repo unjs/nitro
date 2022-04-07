@@ -4,7 +4,7 @@ import destr from 'destr'
 import { createRouter as createMatcher } from 'radix3'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { createHooks, Hookable } from 'hookable'
-import { useConfig } from './config'
+import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
 import { plugins } from '#nitro/virtual/plugins'
@@ -19,7 +19,7 @@ export interface NitroApp {
 }
 
 function createNitroApp (): NitroApp {
-  const config = useConfig()
+  const config = useRuntimeConfig()
 
   const hooks = createHooks()
 

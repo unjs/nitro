@@ -3,7 +3,7 @@ import { Server as HttpServer } from 'http'
 import { Server as HttpsServer } from 'https'
 import destr from 'destr'
 import { nitroApp } from '../app'
-import { useConfig } from '#nitro'
+import { useRuntimeConfig } from '#nitro'
 
 const cert = process.env.NITRO_SSL_CERT
 const key = process.env.NITRO_SSL_KEY
@@ -20,7 +20,7 @@ server.listen(port, hostname, (err) => {
     process.exit(1)
   }
   const protocol = cert && key ? 'https' : 'http'
-  console.log(`Listening on ${protocol}://${hostname}:${port}${useConfig().app.baseURL}`)
+  console.log(`Listening on ${protocol}://${hostname}:${port}${useRuntimeConfig().app.baseURL}`)
 })
 
 export default {}
