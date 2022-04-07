@@ -251,9 +251,7 @@ export const plugins = [
         'virtual:',
         runtimeDir,
         nitro.options.srcDir,
-        ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string'),
-        // TODO: Move to Nuxt
-        ...(nitro.options.dev ? [] : ['vue', '@vue/', '@nuxt/'])
+        ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string')
       ],
       traceOptions: {
         base: '/',
