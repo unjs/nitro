@@ -20,7 +20,8 @@
     "dist"
   ],
   "workspaces": [
-    "./examples/*"
+    "./examples/*",
+    "./docs"
   ],
   "scripts": {
     "build": "unbuild",

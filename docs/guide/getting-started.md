@@ -6,7 +6,7 @@
 
 0️⃣ Create an empty directory `nitro-app`
 
-```sh
+```bash
 mkdir nitro-app
 cd nitro-app
 ```
@@ -19,11 +19,11 @@ export default () => 'nitro is amazing!'
 
 2️⃣ Start development server:
 
-```sh
+```bash
 npx nitropack dev
 ```
 
-🪄 Your API is ready at http://localhost:3000/
+🪄 Your API is ready at `http://localhost:3000/`
 
 **🤓 [TIP]** Check `.nitro/dev/index.mjs` if want to know what is happening
 
