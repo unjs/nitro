@@ -23,7 +23,6 @@ export interface Nitro {
 
 type HookResult = void | Promise<void>
 export interface NitroHooks {
-  'nitro:document': (htmlTemplate: { src: string, contents: string, dst: string }) => HookResult
   'nitro:rollup:before': (nitro: Nitro) => HookResult
   'nitro:compiled': (nitro: Nitro) => HookResult
   'nitro:dev:reload': () => HookResult

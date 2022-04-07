@@ -4,15 +4,16 @@ import { joinURL } from 'ufo'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
-const scriptTemplate = (baseURL = '/') => `
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('${joinURL(baseURL, 'sw.js')}');
-  });
-}
-</script>
-`
+// TODO
+// const scriptTemplate = (baseURL = '/') => `
+// <script>
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', function () {
+//     navigator.serviceWorker.register('${joinURL(baseURL, 'sw.js')}');
+//   });
+// }
+// </script>
+// `
 
 const htmlTemplate = (baseURL = '/') => `<!DOCTYPE html>
 <html>
@@ -54,10 +55,6 @@ export const serviceWorker = defineNitroPreset(() => {
       preview: 'npx serve ./public'
     },
     hooks: {
-      'nitro:document' (tmpl) {
-        // Try to inject initialize script
-        tmpl.contents = tmpl.contents.replace('</body>', scriptTemplate('/') + '</body>')
-      },
       async 'nitro:compiled' (nitro: Nitro) {
         // Write sw.js file
         await fsp.writeFile(resolve(nitro.options.output.publicDir, 'sw.js'), `self.importScripts('${joinURL(nitro.options.baseURL, 'server/index.mjs')}');`, 'utf8')
