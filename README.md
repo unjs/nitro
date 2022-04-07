@@ -1,20 +1,21 @@
+
 <h1 align="center">⚗️ nitro</h1>
-
-> The complete solution to build and deploy universal JavaScript servers. nitro provides both build tooling and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem.
-
-<hr>
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-
 [![npm-edge version][npm-edge-version-src]][npm-edge-version-href]
 [![npm-edge downloads][npm-edge-downloads-src]][npm-edge-downloads-href]
-
 [![Github Actions][github-actions-src]][github-actions-href] [![Codecov][codecov-src]][codecov-href]
+
+
+> Build and deploy universal javaScript servers
+
+nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any javaScript server, anywhere!
 
 <hr>
 
-<h3 align="center">🌱 nitro is young and under development 🌱</h3>
+
+<h3 align="center">🌱 nitro is young and under development</h3>
 
 🐛 Check [open issues](https://github.com/unjs/nitro/issues) for roadmap and known issues.
 
@@ -526,20 +527,20 @@ Preview and deploy command hints are usually filled by deployment presets.
 Made with 💛 Published under [MIT](./LICENSE).
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/nitropack?style=flat-square&label=stable%20version
+[npm-version-src]: https://flat.badgen.net/npm/v/nitropack?style=flat-square&label=stable
 [npm-version-href]: https://npmjs.com/package/nitropack
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/nitropack?style=flat-square&label=stable%20downloads
+[npm-downloads-src]: https://flat.badgen.net/npm/dm/nitropack?style=flat-square&label=stable
 [npm-downloads-href]: https://npmjs.com/package/nitropack
 
-[npm-edge-version-src]: https://img.shields.io/npm/v/nitropack-edge?style=flat-square&label=edge%20version
+[npm-edge-version-src]: https://flat.badgen.net/npm/v/nitropack-edge?style=flat-square&label=edge
 [npm-edge-version-href]: https://npmjs.com/package/nitropack-edge
 
-[npm-edge-downloads-src]: https://img.shields.io/npm/dm/nitropack-edge?style=flat-square&label=edge%20downloads
+[npm-edge-downloads-src]: https://flat.badgen.net/npm/dm/nitropack-edge?style=flat-square&label=edge
 [npm-edge-downloads-href]: https://npmjs.com/package/nitropack-edge
 
-[github-actions-src]: https://img.shields.io/github/workflow/status/unjs/nitro/ci/main?style=flat-square
+[github-actions-src]: https://flat.badgen.net/github/status/unjs/nitro?style=flat-square
 [github-actions-href]: https://github.com/unjs/nitro/actions?query=workflow%3Aci
 
-[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/nitro/main?style=flat-square
+[codecov-src]: https://flat.badgen.net/codecov/c/gh/unjs/nitro/main?style=flat-square
 [codecov-href]: https://codecov.io/gh/unjs/nitro
