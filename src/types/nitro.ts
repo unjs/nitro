@@ -32,7 +32,7 @@ export interface NitroHooks {
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T
 
-export type NitroPreset = NitroConfig | ((input: NitroConfig) => NitroConfig)
+export type NitroPreset = NitroConfig | (() => NitroConfig)
 
 export interface NitroConfig extends DeepPartial<NitroOptions> {
   extends?: string | string[] | NitroPreset

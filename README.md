@@ -238,13 +238,13 @@ Currently supported presets:
 - `aws-lambda`
 - `azure`, `azure-functions`
 - `base-worker`
-- `browser-worker`
 - `cli`
 - `cloudflare`
 - `firebase`
 - `netlify`
 - `nitro-dev`, `nitro-prerender`
 - `node`, `node-server`, `node-cli`
+- `service-worker`
 - `vercel`
 
 You can build nitro project against a specific preset using `NITRO_PRESET=name npx nitropack build`

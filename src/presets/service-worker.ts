@@ -1,24 +1,20 @@
 import { existsSync, promises as fsp } from 'fs'
 import { resolve } from 'pathe'
 import { joinURL } from 'ufo'
-import { prettyPath } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
-export const browserWorker = defineNitroPreset((_input) => {
-  // TODO
-  const baseURL = '/'
-
-  const script = `<script>
+const scriptTemplate = (baseURL = '/') => `
+<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('${joinURL(baseURL, 'sw.js')}');
   });
 }
-</script>`
+</script>
+`
 
-  // TEMP FIX
-  const html = `<!DOCTYPE html>
+const htmlTemplate = (baseURL = '/') => `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -43,25 +39,31 @@ if ('serviceWorker' in navigator) {
 </head>
 
 <body>
-  Loading...
+  Initializing nitro service worker...
 </body>
-
 </html>`
 
+export const serviceWorker = defineNitroPreset(() => {
   return {
     extends: 'base-worker',
-    entry: '#nitro/entries/service-worker',
+    entry: '#nitro/entries/browser-worker',
     output: {
       serverDir: '{{ output.dir }}/public/_server'
     },
+    commands: {
+      preview: 'npx serve ./public'
+    },
     hooks: {
       'nitro:document' (tmpl) {
-        tmpl.contents = tmpl.contents.replace('</body>', script + '</body>')
+        // Try to inject initialize script
+        tmpl.contents = tmpl.contents.replace('</body>', scriptTemplate('/') + '</body>')
       },
       async 'nitro:compiled' (nitro: Nitro) {
-        await fsp.writeFile(resolve(nitro.options.output.publicDir, 'sw.js'), `self.importScripts('${joinURL(baseURL, '_server/index.mjs')}');`, 'utf8')
+        // Write sw.js file
+        await fsp.writeFile(resolve(nitro.options.output.publicDir, 'sw.js'), `self.importScripts('${joinURL(nitro.options.baseURL, '_server/index.mjs')}');`, 'utf8')
 
-        // Temp fix
+        // Write fallback initializer files
+        const html = htmlTemplate(nitro.options.baseURL)
         if (!existsSync(resolve(nitro.options.output.publicDir, 'index.html'))) {
           await fsp.writeFile(resolve(nitro.options.output.publicDir, 'index.html'), html, 'utf8')
         }
@@ -71,7 +73,6 @@ if ('serviceWorker' in navigator) {
         if (!existsSync(resolve(nitro.options.output.publicDir, '404.html'))) {
           await fsp.writeFile(resolve(nitro.options.output.publicDir, '404.html'), html, 'utf8')
         }
-        nitro.logger.info('Ready to deploy to static hosting:', prettyPath(nitro.options.output.publicDir as string))
       }
     }
   }
