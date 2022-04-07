@@ -46,7 +46,7 @@ const htmlTemplate = (baseURL = '/') => `<!DOCTYPE html>
 export const serviceWorker = defineNitroPreset(() => {
   return {
     extends: 'base-worker',
-    entry: '#nitro/entries/browser-worker',
+    entry: '#nitro/entries/service-worker',
     output: {
       serverDir: '{{ output.dir }}/public/_server'
     },
