@@ -6,8 +6,8 @@ import type { Nitro } from '../types'
 export const netlify = defineNitroPreset({
   extends: 'aws-lambda',
   output: {
-    dir: '{{ options.rootDir }}/.netlify/functions-internal',
-    publicDir: '{{ options.rootDir }}/dist'
+    dir: '{{ rootDir }}/.netlify/functions-internal',
+    publicDir: '{{ rootDir }}/dist'
   },
   hooks: {
     async 'nitro:compiled' (nitro: Nitro) {
