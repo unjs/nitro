@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3'
 
 export default defineEventHandler((event) => {
-  console.log('Middleware:', event.req.url)
+  event.context.auth = { name: 'User ' + Math.round(Math.random() * 100) }
 })

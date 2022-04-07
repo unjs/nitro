@@ -37,8 +37,8 @@ export async function setupTest (preset) {
   })
   await prepare(nitro)
   await copyPublicAssets(nitro)
-  await build(nitro)
   await prerender(nitro)
+  await build(nitro)
 
   afterAll(async () => {
     if (ctx.server) {

@@ -45,7 +45,7 @@ function createNitroApp (): NitroApp {
       })
     }
 
-    if (h.route === '/') {
+    if (h.route === '') {
       h3App.use(config.app.baseURL, handler)
     } else {
       router.use(h.route, handler)

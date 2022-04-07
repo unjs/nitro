@@ -51,9 +51,9 @@ mkdir nitro-app
 cd nitro-app
 ```
 
-1️⃣ Create `api/hello.ts`:
+1️⃣ Create `routes/index.ts`:
 
-```ts [api/hello.ts]
+```ts [routes/index.ts]
 export default () => 'nitro is amazing!'
 ```
 
@@ -63,7 +63,7 @@ export default () => 'nitro is amazing!'
 npx nitropack dev
 ```
 
-🪄 Your API is ready at http://localhost:3000/api/hello
+🪄 Your API is ready at http://localhost:3000/
 
 **🤓 [TIP]** Check `.nitro/dev/index.mjs` if want to know what is happening
 
@@ -92,14 +92,16 @@ you should add the following to your `tsconfig.json` file:
 }
 ```
 
-## API Routes
+## Routes and API Routes
 
-API files inside `api/` directory will be automatically mapped to API routes and served using [h3](https://github.com/unjs/h3) router.
+Handler files inside `routes/` and `api/` directory will be automatically mapped to [unjs/h3](https://github.com/unjs/h3) routes.
+
+**Note:** `api/` is a shortcut for `routes/api` as a common prefix. However please note that some deployment providers use `app/` directory for their API format. In this case, you can simply use `routes/api` or `srcDir` option to move everything under `src/` or `server/` directory.
 
 **Example:** Simple API route
 
 ```js
-// api/test.ts
+// routes/test.ts
 import { eventHandler } from 'h3'
 
 export default eventHandler(() => 'Hello World!')
@@ -108,12 +110,11 @@ export default eventHandler(() => 'Hello World!')
 **Example:** API route with params
 
 ```js
-// api/hello/[name].ts
+// routes/hello/[name].ts
 import { eventHandler } from 'h3'
 
-export default eventHandler(event => `Hello ${event.params.name}!`)
+export default eventHandler(event => `Hello ${event.context.params.name}!`)
 ```
-
 
 ## Storage
 
@@ -165,7 +166,7 @@ import { cachedEventHandler } from '#nitro'
 **Example:** Cache an API handler
 
 ```js
-// api/test.ts
+// routes/cached.ts
 import { defineCachedFunction } from '#nitro'
 
 const myFn = cachedEventHandler(async () => {
@@ -187,7 +188,7 @@ const myFn = defineCachedFunction(async () => {
 ```
 
 
-**Example:** Enable cache on group of routes
+**Example:** Enable cache on group of routes (**🧪 Experimental!**)
 
 ```js
 // nitro.config.ts
@@ -404,7 +405,7 @@ Server's main base URL.
 
 Server handlers and routes.
 
-If `api/` and `middleware/` directories exist, they will be automatically added to the handlers array.
+If `routes/`, `api/` or `middleware/` directories exist, they will be automatically added to the handlers array.
 
 #### `devHandlers`
 
@@ -415,6 +416,8 @@ There are situations in that we directly want to provide a handler instance with
 We can use `devHandlers` but note that they are **only available in development mode** and **not in production build**.
 
 #### `routes`
+
+**🧪 Experimental!**
 
 Route options. It is a map from route pattern (following [unjs/radix3](https://github.com/unjs/radix3)) to options.
 

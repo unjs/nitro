@@ -193,7 +193,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       ...nitro.options.handlers
     ]
     if (nitro.options.serveStatic) {
-      handlers.unshift({ route: '/', handler: '#nitro/static' })
+      handlers.unshift({ route: '', handler: '#nitro/static' })
     }
     if (nitro.options.renderer) {
       handlers.push({ route: '/**', handler: nitro.options.renderer })
