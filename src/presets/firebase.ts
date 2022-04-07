@@ -81,11 +81,11 @@ async function writeRoutes (nitro: Nitro) {
         private: true,
         type: 'module',
         main: './index.mjs',
-        dependencies,
-        devDependencies: {
+        dependencies: {
           'firebase-functions-test': 'latest',
           'firebase-admin': await getPackageVersion('firebase-admin'),
-          'firebase-functions': await getPackageVersion('firebase-functions')
+          'firebase-functions': await getPackageVersion('firebase-functions'),
+          ...dependencies
         },
         engines: { node: nodeVersion }
       },
