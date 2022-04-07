@@ -3442,6 +3442,46 @@ __metadata:
   languageName: node
   linkType: hard
 
+"example-api-routes@workspace:examples/api-routes":
+  version: 0.0.0-use.local
+  resolution: "example-api-routes@workspace:examples/api-routes"
+  dependencies:
+    nitropack: latest
+  languageName: unknown
+  linkType: soft
+
+"example-cached-handler@workspace:examples/cached-handler":
+  version: 0.0.0-use.local
+  resolution: "example-cached-handler@workspace:examples/cached-handler"
+  dependencies:
+    nitropack: latest
+  languageName: unknown
+  linkType: soft
+
+"example-hello-world@workspace:examples/hello-world":
+  version: 0.0.0-use.local
+  resolution: "example-hello-world@workspace:examples/hello-world"
+  dependencies:
+    nitropack: latest
+  languageName: unknown
+  linkType: soft
+
+"example-middleware@workspace:examples/middleware":
+  version: 0.0.0-use.local
+  resolution: "example-middleware@workspace:examples/middleware"
+  dependencies:
+    nitropack: latest
+  languageName: unknown
+  linkType: soft
+
+"example-plugins@workspace:examples/plugins":
+  version: 0.0.0-use.local
+  resolution: "example-plugins@workspace:examples/plugins"
+  dependencies:
+    nitropack: latest
+  languageName: unknown
+  linkType: soft
+
 "execa@npm:^5.1.1":
   version: 5.1.1
   resolution: "execa@npm:5.1.1"
@@ -5601,6 +5641,12 @@ __metadata:
   checksum: deac9f8d00eda7b2e5cd1b2549e26e10a0faa70adaa6fdadca701cc55f49ee9018e427f424bac0c790b7c7e2d3068db97f3093f1093975f2acb8f8818b936ed9
   languageName: node
   linkType: hard
+
+"nitropack@link:.::locator=nitropack%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "nitropack@link:.::locator=nitropack%40workspace%3A."
+  languageName: node
+  linkType: soft
 
 "nitropack@workspace:.":
   version: 0.0.0-use.local

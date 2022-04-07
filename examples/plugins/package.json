@@ -1,5 +1,5 @@
 {
-  "name": "example-hello-world",
+  "name": "example-plugins",
   "private": true,
   "scripts": {
     "dev": "nitro dev",

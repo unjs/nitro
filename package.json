@@ -4,6 +4,12 @@
   "description": "Next Generation Web Tooling",
   "license": "MIT",
   "type": "module",
+  "workspaces": [
+    "./examples/**"
+  ],
+  "resolutions": {
+    "nitropack": "link:."
+  },
   "exports": {
     ".": "./dist/index.mjs",
     "./cli": "./dist/cli.mjs",
@@ -22,6 +28,7 @@
   "scripts": {
     "build": "unbuild",
     "dev": "yarn nitro dev playground",
+    "example": "yarn workspace example-$0 dev",
     "dev:build": "yarn nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
