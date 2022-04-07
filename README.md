@@ -8,9 +8,9 @@
 [![Github Actions][github-actions-src]][github-actions-href] [![Codecov][codecov-src]][codecov-href]
 
 
-> Build and deploy universal javaScript servers
+> Build and deploy universal JavaScript servers
 
-Nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any javaScript server, anywhere!
+Nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any JavaScript server, anywhere!
 
 <hr>
 
