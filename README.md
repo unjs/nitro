@@ -12,25 +12,23 @@ Nitro provides a powerful toolchain and a runtime framework from the [UnJS](http
 
 <hr>
 
-<table>
+<table align="center">
 <tbody>
 <tr>
   <td>
-    <h2>📖 Documentation</h2>
-    <p>
-      Read <a href="https://nitro.unjs.io">the documentation</a>
-    </p>
+    <h2>
+      <a href="https://nitro.unjs.io">📖 Documentation</a>
+    </h2>
   </td>
   <td>
-    <h2>✍️ Changelog</h2>
-    <p>
-       Release notes and <a href="https://github.com/unjs/nitro/blob/main/CHANGELOG.md">changelog</a>
-    </p>
+    <h2>
+      <a href="https://github.com/unjs/nitro/blob/main/CHANGELOG.md">✍️ Changelog</a>
+    </h2>
   </td>
   <td>
-    <h2>🏀 Online Playground</h2>
-    <p>
-    Play with <a href="https://stackblitz.com/github/unjs/nitro/tree/main/examples/hello-world">online playground</a>
+    <h2>
+      <a href="https://stackblitz.com/github/unjs/nitro/tree/main/examples/hello-world">🏀 Online playground</a>
+    </h2>
   </td>
 </tr>
 </tbody>
@@ -38,7 +36,7 @@ Nitro provides a powerful toolchain and a runtime framework from the [UnJS](http
 
 <hr>
 
-## Why using Nitro?
+## Why using Nitro? 😺
 
  ❯ **Rapid development** experience with hot module replacement <br>
  ❯ **Multi-provider** deployments with a single codebase and zero-configuration<br>
@@ -55,18 +53,54 @@ Nitro provides a powerful toolchain and a runtime framework from the [UnJS](http
 
 ## Who is using Nitro?
 
-[Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server and engine.
-
+[Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server engine.
 
 <hr>
-
 <h3 align="center">🌱 nitro is young and under development</h3>
 
 Check [🐛 open issues](https://github.com/unjs/nitro/issues)  for the known issues and roadmap and tell us [💡your ideas](https://github.com/unjs/nitro/discussions/new)!
-
-
-
 <hr>
+
+## ⚡️ Quick Start
+
+
+0️⃣ Create an empty directory `nitro-app`
+
+```bash
+mkdir nitro-app
+cd nitro-app
+```
+
+1️⃣ Create `routes/index.ts`:
+
+```ts [routes/index.ts]
+export default () => 'nitro is amazing!'
+```
+
+2️⃣ Start development server:
+
+```bash
+npx nitropack dev
+```
+
+🪄 Your API is ready at `http://localhost:3000/`
+
+**🤓 [TIP]** Check `.nitro/dev/index.mjs` if want to know what is happening
+
+3️⃣ You can now build your production-ready server:
+
+```bash
+npx nitropack build
+````
+
+4️⃣ Output is in the `.output` directory and ready to be deployed on almost any VPS with no dependencies. You can locally try it too:
+
+```bash
+node .output/server/index.mjs
+```
+
+Checkout [Documentation](https://nitro.unjs.io) to read more!
+
 
 ## License
 

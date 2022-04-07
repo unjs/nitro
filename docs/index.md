@@ -23,4 +23,4 @@ Nitro provides a powerful build toolchain and a runtime framework from the [UnJS
 
 ## Who is using Nitro?
 
-[Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server and engine.
+[Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server engine.
