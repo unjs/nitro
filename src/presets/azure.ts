@@ -26,7 +26,23 @@ async function writeRoutes (nitro) {
     version: '2.0'
   }
 
+  let nodeVersion = '16'
+  try {
+    const currentNodeVersion = fse.readJSONSync(join(nitro.options.rootDir, 'package.json')).engines.node
+    if (['16', '14'].includes(currentNodeVersion)) {
+      nodeVersion = currentNodeVersion
+    }
+  } catch {
+    const currentNodeVersion = process.versions.node.slice(0, 2)
+    if (['16', '14'].includes(currentNodeVersion)) {
+      nodeVersion = currentNodeVersion
+    }
+  }
+
   const config = {
+    platform: {
+      apiRuntime: `node:${nodeVersion}`
+    },
     routes: [],
     navigationFallback: {
       rewrite: '/api/server'
@@ -100,7 +116,9 @@ async function writeRoutes (nitro) {
 
   await writeFile(resolve(nitro.options.output.serverDir, 'function.json'), JSON.stringify(functionDefinition))
   await writeFile(resolve(nitro.options.output.serverDir, '../host.json'), JSON.stringify(host))
-  await writeFile(resolve(nitro.options.output.publicDir, 'staticwebapp.config.json'), JSON.stringify(config))
+  const stubPackageJson = resolve(nitro.options.output.serverDir, '../package.json')
+  await writeFile(stubPackageJson, JSON.stringify({ private: true }))
+  await writeFile(resolve(nitro.options.rootDir, 'staticwebapp.config.json'), JSON.stringify(config))
   if (!indexFileExists) {
     await writeFile(indexPath, '')
   }

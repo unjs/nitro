@@ -62,7 +62,12 @@ async function writeRoutes (nitro: Nitro) {
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }
-  } catch { }
+  } catch {
+    const currentNodeVersion = process.versions.node.slice(0, 2)
+    if (['16', '14'].includes(currentNodeVersion)) {
+      nodeVersion = currentNodeVersion
+    }
+  }
 
   const getPackageVersion = async (id) => {
     const pkg = await readPackageJSON(id, { url: nitro.options.nodeModulesDirs })
