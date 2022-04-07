@@ -10,14 +10,14 @@
 
 > Build and deploy universal javaScript servers
 
-nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any javaScript server, anywhere!
+Nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any javaScript server, anywhere!
 
 <hr>
 
 
 <h3 align="center">🌱 nitro is young and under development</h3>
 
-🐛 Check [open issues](https://github.com/unjs/nitro/issues) for roadmap and known issues.
+🐛 Check [open issues](https://github.com/unjs/nitro/issues) for the roadmap and known issues.
 
 🎁 [Contributions](#-contribution) are more than welcome to improve documentation.
 
@@ -83,7 +83,7 @@ node .output/server/index.mjs
 
 ## Typescript Support
 
-nitro uses the `#nitro` alias for runtime helpers and global imports. To add type support within your project,
+Nitro uses the `#nitro` alias for runtime helpers and global imports. To add type support within your project,
 you should add the following to your `tsconfig.json` file:
 
 ```json
@@ -96,7 +96,7 @@ you should add the following to your `tsconfig.json` file:
 
 Handler files inside `routes/` and `api/` directory will be automatically mapped to [unjs/h3](https://github.com/unjs/h3) routes.
 
-**Note:** `api/` is a shortcut for `routes/api` as a common prefix. However please note that some deployment providers use `app/` directory for their API format. In this case, you can simply use `routes/api` or `srcDir` option to move everything under `src/` or `server/` directory.
+**Note:** `api/` is a shortcut for `routes/api` as a common prefix. However, please note that some deployment providers use `app/` directory for their API format. You can simply use the `routes/api` or `srcDir` option to move everything under `src/` or `server/` directory.
 
 **Example:** Simple API route
 
@@ -121,7 +121,7 @@ export default eventHandler(event => `Default page`)
 
 ## Storage
 
-nitro provides a built-in storage layer using [unjs/unstorage](https://github.com/unjs/unstorage) that can abstract filesystem access.
+Nitro provides a built-in storage layer that can abstract filesystem access by using [unjs/unstorage](https://github.com/unjs/unstorage).
 
 ```js
 import { useStorage } from '#nitro'
@@ -157,7 +157,7 @@ export default definenitroConfig({
 
 ## Cache API
 
-nitro provides a powerful caching system built on top of storage layer.
+Nitro provides a powerful caching system built on top of the storage layer.
 
 ```js
 import { defineCachedFunction } from '#nitro'
@@ -185,7 +185,7 @@ const myFn = defineCachedFunction(async () => {
 ```
 
 
-**Example:** Enable cache on group of routes (**🧪 Experimental!**)
+**Example:** Enable Cache on a group of routes (**🧪 Experimental!**)
 
 ```js
 // nitro.config.ts
@@ -204,9 +204,9 @@ All assets in `public/` directory will be automatically served.
 
 ## Nitro plugins
 
-In order to extend nitro's runtime behavior, we can register plugins.
+To extend nitro's runtime behavior, we can register plugins.
 
-They will be synchronously on first nitro initialization given `nitroApp` context which can be used to hook into lifecycle events.
+They will be synchronously on the first nitro initialization given `nitroApp` context, which can be used to hook into lifecycle events.
 
 **Example:** Simple plugin
 
@@ -254,7 +254,7 @@ There is a demo repository for nitro deployments: https://github.com/unjs/nitro-
 
 ## 📚  Options
 
-nitro provides lots of options them to customize any part of its behavior. It is powerful enough that all deployment providers are built on the exact options API.
+Nitro provides lots of options to customize any part of its behavior. It is powerful enough that all deployment providers are built on the same options API.
 
 Create a new `nitro.config.ts` file to provide options:
 
@@ -280,7 +280,7 @@ The preset will automatically be detected when the `preset` option is not set an
 
 #### `logLevel`
 
-- Default: `3` (`1` when testing environment is detected)
+- Default: `3` (`1` when the testing environment is detected)
 
 Log verbosity level. See [unjs/consola#level](https://github.com/unjs/consola/#level) for more information.
 
@@ -386,7 +386,7 @@ Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for m
 
 - Default: `[]`
 
-Array of paths to nitro plugins. They will be executed by order on first initialization.
+An array of paths to nitro plugins. They will be executed by order on the first initialization.
 
 ### Routing
 
