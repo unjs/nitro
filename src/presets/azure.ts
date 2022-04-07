@@ -26,7 +26,18 @@ async function writeRoutes (nitro) {
     version: '2.0'
   }
 
+  let nodeVersion = '16'
+  try {
+    const currentNodeVersion = fse.readJSONSync(join(nitro.options.rootDir, 'package.json')).engines.node
+    if (['16', '14'].includes(currentNodeVersion)) {
+      nodeVersion = currentNodeVersion
+    }
+  } catch { }
+
   const config = {
+    platform: {
+      apiRuntime: `node:${nodeVersion}`
+    },
     routes: [],
     navigationFallback: {
       rewrite: '/api/server'
