@@ -111,7 +111,9 @@ async function writeRoutes (nitro) {
 
   await writeFile(resolve(nitro.options.output.serverDir, 'function.json'), JSON.stringify(functionDefinition))
   await writeFile(resolve(nitro.options.output.serverDir, '../host.json'), JSON.stringify(host))
-  await writeFile(resolve(nitro.options.output.publicDir, 'staticwebapp.config.json'), JSON.stringify(config))
+  const stubPackageJson = resolve(nitro.options.output.serverDir, '../package.json')
+  await writeFile(stubPackageJson, JSON.stringify({ private: true }))
+  await writeFile(resolve(nitro.options.rootDir, 'staticwebapp.config.json'), JSON.stringify(config))
   if (!indexFileExists) {
     await writeFile(indexPath, '')
   }
