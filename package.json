@@ -27,6 +27,9 @@
     "dev": "yarn nitro dev playground",
     "dev:build": "yarn nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
+    "docs": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
     "example": "yarn workspace example-$0 dev",
     "example:build": "yarn workspace example-$0 dev",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
@@ -118,6 +121,7 @@
     "miniflare": "^2.4.0",
     "standard-version": "^9.3.2",
     "unbuild": "^0.7.2",
+    "vitepress": "^0.22.3",
     "vitest": "^0.9.0"
   },
   "packageManager": "yarn@3.1.1",
