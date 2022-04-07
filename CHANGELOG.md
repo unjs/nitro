@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/unjs/nitropack/compare/v0.1.3...v0.1.4) (2022-04-07)
+
+
+### Bug Fixes
+
+* issues with firebase dependencies ([#48](https://github.com/unjs/nitropack/issues/48)) ([3498d7d](https://github.com/unjs/nitropack/commit/3498d7d369df206f04e946335e4798ad60bcf2e6))
+
 ### [0.1.3](https://github.com/unjs/nitropack/compare/v0.1.2...v0.1.3) (2022-04-07)
 
 
