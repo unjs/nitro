@@ -26,11 +26,6 @@ export function compileTemplate (contents: string) {
   })
 }
 
-export function serializeTemplate (contents: string) {
-  // eslint-disable-next-line no-template-curly-in-string
-  return `(params) => \`${contents.replace(/{{ (\w+) }}/g, '${params.$1}')}\``
-}
-
 export function jitiImport (dir: string, path: string) {
   return jiti(dir, { interopDefault: true })(path)
 }
