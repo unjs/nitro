@@ -32,7 +32,7 @@
     "lint": "eslint --ext .ts,.mjs,.cjs .",
     "nitro": "jiti ./src/cli.ts",
     "prepack": "yarn build",
-    "release": "yarn test && yarn build && standard-version && npm run publish && git push --follow-tags",
+    "release": "yarn test && yarn build && standard-version && npm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "yarn lint && vitest run --silent"
   },
