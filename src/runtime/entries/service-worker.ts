@@ -1,12 +1,11 @@
-// @ts-nocheck
 import '#nitro/virtual/polyfill'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
 import { isPublicAssetURL } from '#nitro/virtual/public-assets'
 
 addEventListener('fetch', (event: any) => {
-  const pathname = new URL(event.request.url).pathname
-  if (isPublicAssetURL(pathname) || pathname.includes('/_server/')) {
+  const url = new URL(event.request.url)
+  if (isPublicAssetURL(url.pathname) || url.pathname.includes('/_server/')) {
     return
   }
 
