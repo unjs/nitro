@@ -5,12 +5,12 @@
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![npm-edge version][npm-edge-version-src]][npm-edge-version-href]
 [![npm-edge downloads][npm-edge-downloads-src]][npm-edge-downloads-href]
-[![Github Actions][github-actions-src]][github-actions-href] [![Codecov][codecov-src]][codecov-href]
+[![GitHub Actions][github-actions-src]][github-actions-href] [![Codecov][codecov-src]][codecov-href]
 
 
-> Build and deploy universal javaScript servers
+> Build and deploy universal JavaScript servers
 
-Nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any javaScript server, anywhere!
+Nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any JavaScript server, anywhere!
 
 <hr>
 
@@ -81,7 +81,7 @@ node .output/server/index.mjs
 
 <hr>
 
-## Typescript Support
+## TypeScript Support
 
 Nitro uses the `#nitro` alias for runtime helpers and global imports. To add type support within your project,
 you should add the following to your `tsconfig.json` file:
