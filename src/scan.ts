@@ -1,10 +1,13 @@
 import { resolve, join } from 'pathe'
 import { globby } from 'globby'
+
 import { withBase, withLeadingSlash, withoutTrailingSlash } from 'ufo'
 import type { Nitro, NitroEventHandler } from './types'
 
 export const GLOB_SCAN_PATTERN = '**/*.{ts,mjs,js,cjs}'
 type FileInfo = { dir: string, path: string, fullPath: string }
+
+const httpMethodRegex = /\.(connect|delete|get|head|options|post|put|trace)/
 
 export async function scanHandlers (nitro: Nitro) {
   const handlers = await Promise.all([
@@ -28,15 +31,23 @@ export function scanMiddleware (nitro: Nitro) {
 export function scanRoutes (nitro: Nitro, dir: string, prefix: string = '/') {
   return scanServerDir(nitro, dir, (file) => {
     let route = file.path
-      .replace(/\.[a-z]+$/, '')
+      .replace(/\.[a-zA-Z]+$/, '')
       .replace(/index$/, '')
       .replace(/\[...\]/g, '**')
-      .replace(/\[([a-z]+)\]/g, ':$1')
+      .replace(/\[([a-zA-Z]+)\]/g, ':$1')
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)))
+
+    let method
+    const methodMatch = route.match(httpMethodRegex)
+    if (methodMatch) {
+      route = route.substring(0, methodMatch.index)
+      method = methodMatch[1]
+    }
 
     return {
       handler: file.fullPath,
-      route
+      route,
+      method
     }
   })
 }

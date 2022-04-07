@@ -16,23 +16,23 @@ export function handlers (getHandlers: () => NitroEventHandler[]) {
   return virtual({
     '#nitro/virtual/server-handlers': {
       load: () => {
-        const handler = getHandlers()
+        const handlers = getHandlers()
 
         if (isDebug) {
-          const dumped = dumpHandler(handler)
+          const dumped = dumpHandler(handlers)
           if (dumped !== lastDump) {
             lastDump = dumped
-            if (handler.length) {
+            if (handlers.length) {
               console.log(dumped)
             }
           }
         }
 
         // Imports take priority
-        const imports = unique(handler.filter(m => m.lazy === false).map(m => m.handler))
+        const imports = unique(handlers.filter(h => h.lazy === false).map(h => h.handler))
 
         // Lazy imports should fill in the gaps
-        const lazyImports = unique(handler.filter(m => m.lazy !== false && !imports.includes(m.handler)).map(m => m.handler))
+        const lazyImports = unique(handlers.filter(h => h.lazy !== false && !imports.includes(h.handler)).map(h => h.handler))
 
         const code = `
 ${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).join('\n')}
@@ -40,7 +40,7 @@ ${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).jo
 ${lazyImports.map(handler => `const ${getImportId(handler)} = () => import('${handler}');`).join('\n')}
 
 export const handlers = [
-${handler.map(m => `  { route: '${m.route || ''}', handler: ${getImportId(m.handler)}, lazy: ${m.lazy || true} }`).join(',\n')}
+${handlers.map(h => `  { route: '${h.route || ''}', handler: ${getImportId(h.handler)}, lazy: ${h.lazy || true}, method: ${JSON.stringify(h.method)} }`).join(',\n')}
 ];
   `.trim()
         // console.log(code)

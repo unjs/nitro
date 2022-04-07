@@ -48,7 +48,7 @@ function createNitroApp (): NitroApp {
     if (h.route === '') {
       h3App.use(config.app.baseURL, handler)
     } else {
-      router.use(h.route, handler)
+      router.use(h.route, handler, h.method)
     }
   }
 
@@ -58,6 +58,7 @@ function createNitroApp (): NitroApp {
   const localFetch = createLocalFetch(localCall, globalThis.fetch)
 
   const $fetch = createFetch({ fetch: localFetch, Headers })
+  // @ts-ignore
   globalThis.$fetch = $fetch
 
   const app: NitroApp = {

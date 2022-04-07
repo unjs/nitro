@@ -3,6 +3,8 @@ import type { Handler } from 'h3'
 export interface NitroEventHandler {
   /**
    * Path prefix or route
+   *
+   * If an empty string used, will be used as a middleware
    */
   route?: string
 
@@ -16,6 +18,11 @@ export interface NitroEventHandler {
    *
    */
   handler: string
+
+  /**
+   * Router method matcher
+   */
+  method?: string
 }
 
 export interface NitroDevEventHandler {
