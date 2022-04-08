@@ -13,6 +13,7 @@ Built-in presets:
 - `node`
 - `node-server` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/presets/server))
 - `node-cli`
+- `render`
 - `service-worker`
 - `vercel` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/vercel))
 
