@@ -53,9 +53,7 @@ const NitroDefaults: NitroConfig = {
   },
 
   // Rollup
-  alias: {
-    '#nitro': runtimeDir
-  },
+  alias: {},
   unenv: {},
   analyze: false,
   moduleSideEffects: ['unenv/runtime/polyfill/'],
@@ -95,6 +93,9 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
       ]
     }
   })
+  // ensure it's added last to the alias object
+  config.alias['#nitro'] = runtimeDir
+
   const options = klona(config) as NitroOptions
   options._config = userConfig
 
