@@ -32,8 +32,8 @@ async function main () {
     })
     await prepare(nitro)
     await copyPublicAssets(nitro)
-    await build(nitro)
     await prerender(nitro)
+    await build(nitro)
     await nitro.close()
     process.exit(0)
   }

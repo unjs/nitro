@@ -1,13 +1,11 @@
-// @ts-nocheck
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
+import { isPublicAssetURL } from '#nitro/virtual/public-assets'
 
 addEventListener('fetch', (event: any) => {
   const url = new URL(event.request.url)
-
-  // TODO: Check for static assets base
-  if (url.pathname.includes('.') && !url.pathname.startsWith('/api')) {
+  if (isPublicAssetURL(url.pathname) || url.pathname.includes('/_server/')) {
     return
   }
 

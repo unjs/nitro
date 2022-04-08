@@ -1,9 +1,9 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
-import { useConfig } from '#nitro'
+import { useRuntimeConfig } from '#nitro'
 
 addEventListener('fetch', (event: any) => {
   event.respondWith(handleEvent(event))
@@ -53,6 +53,6 @@ function assetsCacheControl (_request) {
 }
 
 const baseURLModifier = (request: Request) => {
-  const url = withoutBase(request.url, useConfig().nitro.baseURL)
+  const url = withoutBase(request.url, useRuntimeConfig().app.baseURL)
   return mapRequestToAsset(new Request(url, request))
 }

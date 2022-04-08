@@ -4,6 +4,7 @@ import { klona } from 'klona/full'
 import { camelCase } from 'scule'
 import defu from 'defu'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
+import { isTest } from 'std-env'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -13,8 +14,8 @@ import { nitroImports } from './imports'
 const NitroDefaults: NitroConfig = {
   // General
   preset: undefined,
-  logLevel: 3,
-  runtimeConfig: { nitro: {} },
+  logLevel: isTest ? 1 : 3,
+  runtimeConfig: { app: {}, nitro: {} },
 
   // Dirs
   scanDirs: [],
@@ -34,6 +35,7 @@ const NitroDefaults: NitroConfig = {
   autoImport: {
     presets: nitroImports
   },
+  virtual: {},
 
   // Dev
   dev: false,
@@ -41,7 +43,7 @@ const NitroDefaults: NitroConfig = {
   watchOptions: { ignoreInitial: true },
 
   // Routing
-  baseURL: '/',
+  baseURL: process.env.NITRO_APP_BASE_URL || '/',
   handlers: [],
   devHandlers: [],
   routes: {},
@@ -75,8 +77,11 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     cwd: userConfig.rootDir,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
-      const matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
+      let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
       if (matchedPreset) {
+        if (typeof matchedPreset === 'function') {
+          matchedPreset = matchedPreset()
+        }
         return {
           config: matchedPreset
         }
@@ -118,8 +123,10 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
+    app: {
+      baseURL: options.baseURL
+    },
     nitro: {
-      baseURL: options.baseURL,
       routes: options.routes
     }
   })

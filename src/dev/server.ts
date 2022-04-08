@@ -35,7 +35,7 @@ function initWorker (filename: string): Promise<NitroWorker> | null {
       reject(new Error(code ? '[worker] exited with code: ' + code : '[worker] exited'))
     })
     worker.once('error', (err) => {
-      err.message = '[worker init]' + err.message
+      err.message = '[worker init] ' + err.message
       reject(err)
     })
     const addressListener = (event) => {
@@ -107,7 +107,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
 
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
-    const url = joinURL(nitro.options.runtimeConfig.nitro.baseURL, asset.baseURL)
+    const url = joinURL(nitro.options.runtimeConfig.app.baseURL, asset.baseURL)
     app.use(url, serveStatic(asset.dir))
     if (!asset.fallthrough) {
       app.use(url, servePlaceholder())
@@ -116,7 +116,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
 
   // Serve placeholder 404 assets instead of hitting SSR
   // TODO: Option to opt-out
-  app.use(nitro.options.runtimeConfig.nitro.baseURL, servePlaceholder({ skipUnknown: true }))
+  app.use(nitro.options.runtimeConfig.app.baseURL, servePlaceholder({ skipUnknown: true }))
 
   // Worker proxy
   const proxy = httpProxy.createProxy()
@@ -175,17 +175,39 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
 function sendUnavailable (event: CompatibilityEvent, error?: Error) {
   event.res.setHeader('Content-Type', 'text/html; charset=UTF-8')
   event.res.statusCode = 503
-  event.res.statusMessage = 'Service Unavailable'
+  event.res.statusMessage = 'Server Unavailable'
+
+  let body
+  let title
+  if (error) {
+    title = `${event.res.statusCode} ${event.res.statusMessage}`
+    body = `<code><pre>${error.stack}</pre></code>`
+  } else {
+    title = 'Reloading server...'
+    body = '<progress></progress><script>document.querySelector(\'progress\').indeterminate=true</script>'
+  }
+
   event.res.end(`<!DOCTYPE html>
   <html lang="en">
   <head>
-    <title>Nitro dev server</title>
-    <style> body { margin: 2em; } </style>
-  </head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    ${error ? '' : '<meta http-equiv="refresh" content="2">'}
+    <title>${title}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico/css/pico.min.css">
   </head>
   <body>
-    <h1>Nitro worker is unavailable.</h1>
-    ${error ? `<pre>${error.stack}</pre>` : 'Please try again in a few seconds...'}
+    <main class="container">
+      <article>
+        <header>
+          <h2>${title}</h2>
+        </header>
+        ${body}
+        <footer>
+          Check console logs for more information.
+        </footer>
+      </article>
+  </main>
   </body>
 </html>
 `)

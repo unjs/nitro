@@ -24,7 +24,7 @@ async function writeRoutes (nitro: Nitro) {
   if (!fse.existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
-        source: relative(nitro.options.rootDir, nitro.options.srcDir)
+        source: relative(nitro.options.rootDir, nitro.options.output.serverDir)
       },
       hosting: [
         {
@@ -45,8 +45,8 @@ async function writeRoutes (nitro: Nitro) {
 
   const _require = createRequire(import.meta.url)
 
-  const jsons = await globby(`${nitro.options.srcDir}/node_modules/**/package.json`)
-  const prefixLength = `${nitro.options.srcDir}/node_modules/`.length
+  const jsons = await globby(join(nitro.options.output.serverDir, 'node_modules/**/package.json'))
+  const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length
   const suffixLength = '/package.json'.length
   const dependencies = jsons.reduce((obj, packageJson) => {
     const dirname = packageJson.slice(prefixLength, -suffixLength)
@@ -62,7 +62,12 @@ async function writeRoutes (nitro: Nitro) {
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }
-  } catch { }
+  } catch {
+    const currentNodeVersion = process.versions.node.slice(0, 2)
+    if (['16', '14'].includes(currentNodeVersion)) {
+      nodeVersion = currentNodeVersion
+    }
+  }
 
   const getPackageVersion = async (id) => {
     const pkg = await readPackageJSON(id, { url: nitro.options.nodeModulesDirs })
@@ -70,17 +75,17 @@ async function writeRoutes (nitro: Nitro) {
   }
 
   await writeFile(
-    resolve(nitro.options.srcDir, 'package.json'),
+    resolve(nitro.options.output.serverDir, 'package.json'),
     JSON.stringify(
       {
         private: true,
         type: 'module',
         main: './index.mjs',
-        dependencies,
-        devDependencies: {
+        dependencies: {
           'firebase-functions-test': 'latest',
           'firebase-admin': await getPackageVersion('firebase-admin'),
-          'firebase-functions': await getPackageVersion('firebase-functions')
+          'firebase-functions': await getPackageVersion('firebase-functions'),
+          ...dependencies
         },
         engines: { node: nodeVersion }
       },

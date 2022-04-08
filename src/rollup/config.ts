@@ -1,4 +1,4 @@
-// import { pathToFileURL } from 'url'
+import { pathToFileURL } from 'url'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
@@ -12,6 +12,7 @@ import replace from '@rollup/plugin-replace'
 import virtual from '@rollup/plugin-virtual'
 import wasmPlugin from '@rollup/plugin-wasm'
 import inject from '@rollup/plugin-inject'
+import { isWindows } from 'std-env'
 import { visualizer } from 'rollup-plugin-visualizer'
 import * as unenv from 'unenv'
 import type { Preset } from 'unenv'
@@ -21,6 +22,7 @@ import { hash } from 'ohash'
 import type { Nitro } from '../types'
 import { resolveAliases } from '../utils'
 import { runtimeDir } from '../dirs'
+import dynamicVirtual from './plugins/dynamic-virtual'
 import { dynamicRequire } from './plugins/dynamic-require'
 import { externals } from './plugins/externals'
 import { timing } from './plugins/timing'
@@ -144,7 +146,7 @@ export const getRollupConfig = (nitro: Nitro) => {
     }
   }))
 
-  // ESBuild
+  // esbuild
   rollupConfig.plugins.push(esbuild({
     target: 'es2019',
     sourceMap: true,
@@ -178,8 +180,8 @@ export const getRollupConfig = (nitro: Nitro) => {
         }
       }
     })
-    rollupConfig.plugins.push(publicAssets(nitro))
   }
+  rollupConfig.plugins.push(publicAssets(nitro))
 
   // Storage
   rollupConfig.plugins.push(storage({
@@ -193,7 +195,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       ...nitro.options.handlers
     ]
     if (nitro.options.serveStatic) {
-      handlers.unshift({ route: '/', handler: '#nitro/static' })
+      handlers.unshift({ route: '', handler: '#nitro/static' })
     }
     if (nitro.options.renderer) {
       handlers.push({ route: '/**', handler: nitro.options.renderer })
@@ -203,8 +205,11 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // Polyfill
   rollupConfig.plugins.push(virtual({
-    '#polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
+    '#nitro/virtual/polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
   }))
+
+  // User virtuals
+  rollupConfig.plugins.push(dynamicVirtual(nitro.options.virtual))
 
   // Plugins
   rollupConfig.plugins.push(virtual({
@@ -221,7 +226,10 @@ export const plugins = [
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
       '#nitro': runtimeDir,
-      '#build': nitro.options.buildDir,
+      // Windows dynamic imports should be file:// url
+      '#build': nitro.options.dev && isWindows
+        ? pathToFileURL(nitro.options.buildDir).href
+        : nitro.options.buildDir,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,
@@ -247,9 +255,7 @@ export const plugins = [
         'virtual:',
         runtimeDir,
         nitro.options.srcDir,
-        ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string'),
-        // TODO: Move to Nuxt
-        ...(nitro.options.dev ? [] : ['vue', '@vue/', '@nuxt/'])
+        ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string')
       ],
       traceOptions: {
         base: '/',

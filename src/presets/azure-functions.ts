@@ -68,7 +68,7 @@ async function writeRoutes (nitro: Nitro) {
     ]
   }
 
-  await writeFile(resolve(nitro.options.srcDir, 'function.json'), JSON.stringify(functionDefinition))
+  await writeFile(resolve(nitro.options.output.serverDir, 'function.json'), JSON.stringify(functionDefinition))
   await writeFile(resolve(nitro.options.output.dir, 'host.json'), JSON.stringify(host))
   await zipDirectory(nitro.options.output.dir, join(nitro.options.output.dir, 'deploy.zip'))
 }

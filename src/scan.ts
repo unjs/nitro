@@ -1,15 +1,19 @@
 import { resolve, join } from 'pathe'
 import { globby } from 'globby'
-import { withBase } from 'ufo'
+
+import { withBase, withLeadingSlash, withoutTrailingSlash } from 'ufo'
 import type { Nitro, NitroEventHandler } from './types'
 
 export const GLOB_SCAN_PATTERN = '**/*.{ts,mjs,js,cjs}'
-type FileInfo = { dir: string, name: string, path: string }
+type FileInfo = { dir: string, path: string, fullPath: string }
+
+const httpMethodRegex = /\.(connect|delete|get|head|options|post|put|trace)/
 
 export async function scanHandlers (nitro: Nitro) {
   const handlers = await Promise.all([
     scanMiddleware(nitro),
-    scanAPI(nitro)
+    scanRoutes(nitro, 'api', '/api'),
+    scanRoutes(nitro, 'routes', '/')
   ]).then(r => r.flat())
 
   nitro.scannedHandlers = handlers.flatMap(h => h.handlers)
@@ -19,16 +23,33 @@ export async function scanHandlers (nitro: Nitro) {
 
 export function scanMiddleware (nitro: Nitro) {
   return scanServerDir(nitro, 'middleware', file => ({
-    route: '/',
-    handler: file.path
+    route: '',
+    handler: file.fullPath
   }))
 }
 
-export function scanAPI (nitro: Nitro) {
-  return scanServerDir(nitro, 'api', file => ({
-    handler: file.path,
-    route: withBase(file.name.replace(/\[([a-z]+)\]/g, ':$1'), '/api')
-  }))
+export function scanRoutes (nitro: Nitro, dir: string, prefix: string = '/') {
+  return scanServerDir(nitro, dir, (file) => {
+    let route = file.path
+      .replace(/\.[a-zA-Z]+$/, '')
+      .replace(/index$/, '')
+      .replace(/\[...\]/g, '**')
+      .replace(/\[([a-zA-Z]+)\]/g, ':$1')
+    route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)))
+
+    let method
+    const methodMatch = route.match(httpMethodRegex)
+    if (methodMatch) {
+      route = route.substring(0, methodMatch.index)
+      method = methodMatch[1]
+    }
+
+    return {
+      handler: file.fullPath,
+      route,
+      method
+    }
+  })
 }
 
 async function scanServerDir (nitro: Nitro, name: string, mapper: (file: FileInfo) => NitroEventHandler) {
@@ -44,10 +65,8 @@ function scanDirs (dirs: string[]): Promise<FileInfo[]> {
     return fileNames.map((fileName) => {
       return {
         dir,
-        name: fileName
-          .replace(/\.[a-z]+$/, '')
-          .replace(/\/index$/, ''),
-        path: resolve(dir, fileName)
+        path: fileName,
+        fullPath: resolve(dir, fileName)
       }
     }).sort((a, b) => b.path.localeCompare(a.path))
   })).then(r => r.flat())

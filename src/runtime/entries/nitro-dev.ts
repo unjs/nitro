@@ -1,4 +1,4 @@
-import '#polyfill'
+import '#nitro/virtual/polyfill'
 import { Server } from 'http'
 import { tmpdir } from 'os'
 import { join } from 'path'

@@ -55,18 +55,22 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         return null
       }
 
-      // Resolve id (rollup > esm)
+      // Check for explicit externals
+      if (opts.external.find(i => (id.startsWith(i) || idWithoutNodeModules.startsWith(i)))) {
+        return { id, external: true }
+      }
+
+      // Resolve id using rollup resolver
       const resolved = await this.resolve(originalId, importer, { ...options, skipSelf: true }) || { id }
+
+      // Try resolving with mlly as fallback
       if (!existsSync(resolved.id)) {
-        resolved.id = await _resolve(resolved.id)
+        resolved.id = await _resolve(resolved.id).catch(() => resolved.id)
       }
 
       // Inline invalid node imports
-      if (!await isValidNodeImport(resolved.id)) {
-        return {
-          ...resolved,
-          external: false
-        }
+      if (!await isValidNodeImport(resolved.id).catch(() => false)) {
+        return null
       }
 
       // Externalize with full path if trace is disabled

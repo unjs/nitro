@@ -1,3 +1,4 @@
+import { promises as fsp } from 'fs'
 import { relative, resolve, join } from 'pathe'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
@@ -7,24 +8,19 @@ import { debounce } from 'perfect-debounce'
 import type { TSConfig } from 'pkg-types'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig } from './rollup/config'
-import { prettyPath, writeFile, isDirectory, serializeTemplate } from './utils'
+import { prettyPath, writeFile, isDirectory } from './utils'
 import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
 import { runtimeDir } from './dirs'
 
 export async function prepare (nitro: Nitro) {
-  await cleanupDir(nitro.options.output.dir)
-
-  if (!nitro.options.output.publicDir.startsWith(nitro.options.output.dir)) {
-    await cleanupDir(nitro.options.output.publicDir)
-  }
-
-  if (!nitro.options.output.serverDir.startsWith(nitro.options.output.dir)) {
-    await cleanupDir(nitro.options.output.serverDir)
-  }
+  await prepareDir(nitro.options.output.dir)
+  await prepareDir(nitro.options.output.publicDir)
+  await prepareDir(nitro.options.output.serverDir)
 }
 
-async function cleanupDir (dir: string) {
+async function prepareDir (dir: string) {
+  await fsp.mkdir(dir, { recursive: true })
   await fse.emptyDir(dir)
 }
 
@@ -38,17 +34,6 @@ export async function copyPublicAssets (nitro: Nitro) {
 }
 
 export async function build (nitro: Nitro) {
-  // Compile html template
-  const htmlSrc = resolve(nitro.options.buildDir, 'views/app.template.html')
-  const htmlTemplate = { src: htmlSrc, contents: '', dst: '' }
-  htmlTemplate.dst = htmlTemplate.src.replace(/.html$/, '.mjs').replace('app.template.mjs', 'document.template.mjs')
-  htmlTemplate.contents = nitro.vfs[htmlTemplate.src] || await fse.readFile(htmlTemplate.src, 'utf-8').catch(() => '')
-  if (htmlTemplate.contents) {
-    await nitro.hooks.callHook('nitro:document', htmlTemplate)
-    const compiled = 'export default ' + serializeTemplate(htmlTemplate.contents)
-    await writeFile(htmlTemplate.dst, compiled)
-  }
-
   nitro.options.rollupConfig = getRollupConfig(nitro)
   await nitro.hooks.callHook('nitro:rollup:before', nitro)
   return nitro.options.dev ? _watch(nitro) : _build(nitro)
@@ -153,7 +138,7 @@ async function _build (nitro: Nitro) {
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir)
   const rewriteRelativePaths = (input: string) => {
-    return input.replaceAll(/\s\.\/([^\s]+)/g, ` ${rOutput}/$1`)
+    return input.replace(/\s\.\/([^\s]+)/g, ` ${rOutput}/$1`)
   }
   if (buildInfo.commands.preview) {
     nitro.logger.info(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)

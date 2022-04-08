@@ -4,7 +4,7 @@ import destr from 'destr'
 import { createRouter as createMatcher } from 'radix3'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { createHooks, Hookable } from 'hookable'
-import { useConfig } from './config'
+import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
 import { plugins } from '#nitro/virtual/plugins'
@@ -19,7 +19,7 @@ export interface NitroApp {
 }
 
 function createNitroApp (): NitroApp {
-  const config = useConfig()
+  const config = useRuntimeConfig()
 
   const hooks = createHooks()
 
@@ -28,7 +28,7 @@ function createNitroApp (): NitroApp {
     onError: handleError
   })
 
-  h3App.use(config.nitro.baseURL, timingMiddleware)
+  h3App.use(config.app.baseURL, timingMiddleware)
 
   const router = createRouter()
 
@@ -37,7 +37,7 @@ function createNitroApp (): NitroApp {
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler as any) : h.handler
 
-    const referenceRoute = h.route.replaceAll(/:\w+|\*\*/g, '_')
+    const referenceRoute = h.route.replace(/:\w+|\*\*/g, '_')
     const routeOptions = routerOptions.lookup(referenceRoute) || {}
     if (routeOptions.swr) {
       handler = cachedEventHandler(handler, {
@@ -45,19 +45,20 @@ function createNitroApp (): NitroApp {
       })
     }
 
-    if (h.route === '/') {
-      h3App.use(config.nitro.baseURL, handler)
+    if (h.route === '') {
+      h3App.use(config.app.baseURL, handler)
     } else {
-      router.use(h.route, handler)
+      router.use(h.route, handler, h.method)
     }
   }
 
-  h3App.use(config.nitro.baseURL, router)
+  h3App.use(config.app.baseURL, router)
 
   const localCall = createCall(h3App.nodeHandler as any)
   const localFetch = createLocalFetch(localCall, globalThis.fetch)
 
   const $fetch = createFetch({ fetch: localFetch, Headers })
+  // @ts-ignore
   globalThis.$fetch = $fetch
 
   const app: NitroApp = {

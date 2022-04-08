@@ -23,7 +23,6 @@ export interface Nitro {
 
 type HookResult = void | Promise<void>
 export interface NitroHooks {
-  'nitro:document': (htmlTemplate: { src: string, contents: string, dst: string }) => HookResult
   'nitro:rollup:before': (nitro: Nitro) => HookResult
   'nitro:compiled': (nitro: Nitro) => HookResult
   'nitro:dev:reload': () => HookResult
@@ -32,7 +31,7 @@ export interface NitroHooks {
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T
 
-export type NitroPreset = NitroConfig | ((input: NitroConfig) => NitroConfig)
+export type NitroPreset = NitroConfig | (() => NitroConfig)
 
 export interface NitroConfig extends DeepPartial<NitroOptions> {
   extends?: string | string[] | NitroPreset
@@ -71,10 +70,12 @@ export interface NitroOptions {
   preset: string
   logLevel: LogLevel
   runtimeConfig: {
+    app: {
+      baseURL: string
+    },
     nitro: {
       /** @deprecated Use top-level routes option! */
       routes: NitroRoutesOptions
-      baseURL: string,
     }
     [key: string]: any
   }
@@ -102,6 +103,7 @@ export interface NitroOptions {
   publicAssets: PublicAssetDir[]
   autoImport: UnimportOptions
   plugins: string[]
+  virtual: Record<string, string | (() => string | Promise<string>)>
 
   // Dev
   dev: boolean
