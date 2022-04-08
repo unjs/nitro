@@ -68,7 +68,6 @@ const NitroDefaults: NitroConfig = {
   commands: {}
 }
 
-export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
   userConfig = klona(userConfig)
 
   const { config } = await loadConfig({
@@ -95,7 +94,6 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
       ]
     }
   })
-
   const options = klona(config) as NitroOptions
   options._config = userConfig
 
