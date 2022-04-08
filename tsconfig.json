@@ -16,6 +16,9 @@
       "#nitro/*": [
         "./src/runtime/*"
       ],
+      "#nitro-error": [
+        "./src/runtime/error"
+      ],
     },
   }
 }

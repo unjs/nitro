@@ -225,6 +225,7 @@ export const plugins = [
   // https://github.com/rollup/plugins/tree/master/packages/alias
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
+      '#nitro-error': join(runtimeDir, 'error'),
       // Windows dynamic imports should be file:// url
       '#build': nitro.options.dev && isWindows
         ? pathToFileURL(nitro.options.buildDir).href
