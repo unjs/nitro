@@ -1,5 +1,5 @@
 import { defineNitroPreset } from '../preset'
 
-export const render = defineNitroPreset({
+export const renderCom = defineNitroPreset({
   extends: 'node-server'
 })
