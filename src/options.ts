@@ -95,7 +95,6 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
       ]
     }
   })
-
   const options = klona(config) as NitroOptions
   options._config = userConfig
 
