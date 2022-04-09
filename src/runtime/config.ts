@@ -13,14 +13,19 @@ const getEnv = (key: string) => {
   return destr(process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey])
 }
 
-for (const key in _runtimeConfig) {
-  _runtimeConfig[key] = getEnv(key) ?? _runtimeConfig[key]
-  if (_runtimeConfig[key] && typeof _runtimeConfig[key] === 'object') {
-    for (const subkey in _runtimeConfig[key]) {
+function overrideConfig (key: string, obj: unknown) {
+  if (obj && typeof obj === 'object') {
+    for (const subkey in obj) {
       // key: { subKey } can be overridden by KEY_SUB_KEY`
-      _runtimeConfig[key][subkey] = getEnv(`${key}_${subkey}`) ?? _runtimeConfig[key][subkey]
+      obj[subkey] = getEnv(`${key}_${subkey}`) ?? obj[subkey]
+      overrideConfig(`${key}_${subkey}`, obj[subkey])
     }
   }
+}
+
+for (const key in _runtimeConfig) {
+  _runtimeConfig[key] = getEnv(key) ?? _runtimeConfig[key]
+  overrideConfig(key, _runtimeConfig[key])
 }
 
 // Named exports
