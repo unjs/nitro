@@ -22,7 +22,7 @@ jobs:
       - run: yarn lint
       - run: yarn build
       - run: yarn test --coverage
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
       - name: Release Edge
         if: |
           github.event_name == 'push' &&
