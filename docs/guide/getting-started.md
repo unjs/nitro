@@ -46,5 +46,8 @@ You can add `nitropack` using your package manager now:
 npm i -D nitropack
 
 # yarn
-yarn add nitropack
+yarn add -D nitropack
+
+# pnpm
+pnpm i -D nitropack
 ```
