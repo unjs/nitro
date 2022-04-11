@@ -1,5 +1,3 @@
-import { pathToFileURL } from 'url'
-import { isWindows } from 'std-env'
 import { defineNitroPreset } from '../preset'
 
 export const nitroDev = defineNitroPreset({
@@ -10,13 +8,5 @@ export const nitroDev = defineNitroPreset({
   },
   externals: { trace: false },
   inlineDynamicImports: true, // externals plugin limitation
-  sourceMap: true,
-  hooks: {
-    'nitro:rollup:before' (nitro) {
-      if (isWindows) {
-        // Windows dynamic imports should be file:// url
-        nitro.options.alias['#build'] = pathToFileURL(nitro.options.buildDir).href
-      }
-    }
-  }
+  sourceMap: true
 })

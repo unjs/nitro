@@ -1,3 +1,4 @@
+import { pathToFileURL } from 'url'
 import { dirname, join, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
@@ -11,6 +12,7 @@ import replace from '@rollup/plugin-replace'
 import virtual from '@rollup/plugin-virtual'
 import wasmPlugin from '@rollup/plugin-wasm'
 import inject from '@rollup/plugin-inject'
+import { isWindows } from 'std-env'
 import { visualizer } from 'rollup-plugin-visualizer'
 import * as unenv from 'unenv'
 import type { Preset } from 'unenv'
@@ -221,10 +223,15 @@ export const plugins = [
   }))
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
+  let buildDir = nitro.options.buildDir
+  // Windows (native) dynamic imports should be file:// urr
+  if (isWindows && (nitro.options.externals.trace === false)) {
+    buildDir = pathToFileURL(buildDir).href
+  }
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
       '#nitro': runtimeDir,
-      '#build': nitro.options.buildDir,
+      '#build': buildDir,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,
