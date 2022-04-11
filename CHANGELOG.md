@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/unjs/nitropack/compare/v0.2.2...v0.2.3) (2022-04-11)
+
+
+### Features
+
+* use `std-env` to detect provider ([#72](https://github.com/unjs/nitropack/issues/72)) ([e78f598](https://github.com/unjs/nitropack/commit/e78f5984dd9b308d86adba8410b6b30336d07945))
+
+
+### Bug Fixes
+
+* always apply `#build` windows fix when `externals.trace` is disabled ([1ec2ee4](https://github.com/unjs/nitropack/commit/1ec2ee4cf3dfd355a2b7d8d6d7aa5de6dcb51b7c))
+
 ### [0.2.2](https://github.com/unjs/nitropack/compare/v0.2.1...v0.2.2) (2022-04-11)
 
 
