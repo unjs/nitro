@@ -12,7 +12,7 @@ export const nitroPrerender = defineNitroPreset({
   hooks: {
     'nitro:rollup:before' (nitro) {
       if (isWindows) {
-      // Windows dynamic imports should be file:// url
+       // Windows dynamic imports should be file:// url
         nitro.options.alias['#build'] = pathToFileURL(nitro.options.buildDir).href
       }
     }
