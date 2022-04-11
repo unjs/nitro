@@ -16,7 +16,7 @@ export const layer0 = defineNitroPreset({
   extends: 'node',
   commands: {
     deploy: 'yarn layer0 deploy --skipFramework',
-    preview: 'yarn layer0 run -p'
+    preview: 'yarn layer0 build --skipFramework && yarn layer0 run -p'
   },
   hooks: {
     async 'nitro:compiled' (nitro) {
