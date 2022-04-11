@@ -15,8 +15,8 @@ module.exports = async function prod(port) {
 export const layer0 = defineNitroPreset({
   extends: 'node',
   commands: {
-    deploy: 'layer0 command?',
-    preview: 'node ./server/prod.cjs'
+    deploy: 'yarn layer0 deploy --skipFramework',
+    preview: 'yarn layer0 run -p'
   },
   hooks: {
     async 'nitro:compiled' (nitro) {
