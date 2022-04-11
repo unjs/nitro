@@ -65,12 +65,14 @@ export function replaceAll (input: string, from: string, to: string) {
   return input.replace(new RegExp(from, 'g'), to)
 }
 
-const autodetectableProviders = ['azure', 'netlify', 'vercel']
+const autodetectableProviders = {
+  azure_static: 'azure',
+  netlify: 'netlify',
+  vercel: 'vercel'
+}
 
 export function detectTarget () {
-  if (autodetectableProviders.includes(provider)) {
-    return provider
-  }
+  return autodetectableProviders[provider]
 }
 
 export async function isDirectory (path: string) {
