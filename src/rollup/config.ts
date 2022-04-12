@@ -230,7 +230,6 @@ export const plugins = [
   }
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
-      '#nitro-error': join(runtimeDir, 'error'),
       '#build': buildDir,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
