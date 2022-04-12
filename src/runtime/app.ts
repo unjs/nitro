@@ -8,7 +8,7 @@ import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
 import { plugins } from '#nitro/virtual/plugins'
-import handleError from '#nitro/error'
+import handleError from '#nitro-error'
 import { handlers } from '#nitro/virtual/server-handlers'
 
 export interface NitroApp {

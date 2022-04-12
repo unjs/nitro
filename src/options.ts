@@ -1,4 +1,4 @@
-import { resolve } from 'pathe'
+import { join, resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
@@ -54,7 +54,8 @@ const NitroDefaults: NitroConfig = {
 
   // Rollup
   alias: {
-    '#nitro': runtimeDir
+    '#nitro': runtimeDir,
+    '#nitro-error': join(runtimeDir, 'error')
   },
   unenv: {},
   analyze: false,
