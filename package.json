@@ -72,7 +72,7 @@
     "fs-extra": "^10.0.1",
     "globby": "^13.1.1",
     "gzip-size": "^7.0.0",
-    "h3": "^0.7.2",
+    "h3": "^0.7.3",
     "hasha": "^5.2.2",
     "hookable": "^5.1.1",
     "http-proxy": "^1.18.1",
@@ -121,7 +121,7 @@
     "execa": "^6.1.0",
     "miniflare": "^2.4.0",
     "standard-version": "^9.3.2",
-    "unbuild": "^0.7.2",
+    "unbuild": "^0.7.3",
     "vitepress": "^0.22.3",
     "vitest": "^0.9.3"
   },
