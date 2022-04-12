@@ -7,7 +7,6 @@ nitro.d.ts
 .nitro
 
 package-lock.json
-# */**/yarn.lock
 
 # Logs
 *.log
@@ -16,10 +15,6 @@ package-lock.json
 .temp
 .tmp
 .cache
-
-# Yarn
-**/.yarn/cache
-**/.yarn/*state*
 
 # Generated dirs
 dist
