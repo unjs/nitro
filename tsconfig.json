@@ -10,11 +10,17 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "paths": {
+      "nitropack": [
+        "./src/index"
+      ],
       "#nitro": [
         "./src/runtime/index"
       ],
       "#nitro/*": [
         "./src/runtime/*"
+      ],
+      "#nitro-error": [
+        "./src/runtime/error"
       ],
     },
   }

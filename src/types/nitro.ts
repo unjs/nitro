@@ -9,7 +9,7 @@ import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { StorageMounts } from '../rollup/plugins/storage'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
-import { NitroDevEventHandler, NitroEventHandler } from './handler'
+import { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
 
 export interface Nitro {
   options: NitroOptions,
@@ -115,6 +115,8 @@ export interface NitroOptions {
   handlers: NitroEventHandler[]
   routes: NitroRoutesOptions
   devHandlers: NitroDevEventHandler[]
+  errorHandler: string
+  devErrorHandler: NitroErrorHandler
   prerender: {
     crawlLinks: boolean
     routes: string[]
@@ -133,7 +135,8 @@ export interface NitroOptions {
   esbuild?: {
     options?: EsbuildOptions
   }
-  externals: boolean | NodeExternalsOptions
+  noExternals: boolean,
+  externals: NodeExternalsOptions
   analyze: false | PluginVisualizerOptions
   replace: Record<string, string | ((id: string) => string)>
 
