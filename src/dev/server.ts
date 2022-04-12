@@ -126,7 +126,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     if (!address || (address.socketPath && !existsSync(address.socketPath))) {
       return sendUnavailable(event, lastError)
     }
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       proxy.web(event.req, event.res, { target: address }, (error: any) => {
         lastError = error
         if (error.code !== 'ECONNRESET') {
