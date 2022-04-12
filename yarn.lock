@@ -4006,7 +4006,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-api-routes@workspace:examples/api-routes"
   dependencies:
-    nitropack: ^0.1.1
+    nitropack: latest
   languageName: unknown
   linkType: soft
 
@@ -4014,7 +4014,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-cached-handler@workspace:examples/cached-handler"
   dependencies:
-    nitropack: ^0.1.1
+    nitropack: latest
+  languageName: unknown
+  linkType: soft
+
+"example-error-handler@workspace:examples/error-handler":
+  version: 0.0.0-use.local
+  resolution: "example-error-handler@workspace:examples/error-handler"
+  dependencies:
+    nitropack: latest
   languageName: unknown
   linkType: soft
 
@@ -4022,7 +4030,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-hello-world@workspace:examples/hello-world"
   dependencies:
-    nitropack: ^0.1.1
+    nitropack: latest
   languageName: unknown
   linkType: soft
 
@@ -4030,7 +4038,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-middleware@workspace:examples/middleware"
   dependencies:
-    nitropack: ^0.1.1
+    nitropack: latest
   languageName: unknown
   linkType: soft
 
@@ -4038,7 +4046,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-plugins@workspace:examples/plugins"
   dependencies:
-    nitropack: ^0.1.1
+    nitropack: latest
   languageName: unknown
   linkType: soft
 

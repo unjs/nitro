@@ -54,9 +54,9 @@ const NitroDefaults: NitroConfig = {
 
   // Rollup
   alias: {
-    '#nitro': runtimeDir,
-    '#nitro-error': join(runtimeDir, 'error')
+    '#nitro': runtimeDir
   },
+  errorHandler: '#nitro/error',
   unenv: {},
   analyze: false,
   moduleSideEffects: ['unenv/runtime/polyfill/'],

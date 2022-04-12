@@ -8,7 +8,7 @@ import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
 import { plugins } from '#nitro/virtual/plugins'
-import handleError from '#nitro-error'
+import errorHandler from '#nitro/virtual/error-handler'
 import { handlers } from '#nitro/virtual/server-handlers'
 
 export interface NitroApp {
@@ -25,7 +25,7 @@ function createNitroApp (): NitroApp {
 
   const h3App = createApp({
     debug: destr(process.env.DEBUG),
-    onError: handleError
+    onError: errorHandler
   })
 
   h3App.use(config.app.baseURL, timingMiddleware)

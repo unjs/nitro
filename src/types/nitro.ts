@@ -123,6 +123,7 @@ export interface NitroOptions {
   // Rollup
   rollupConfig?: RollupConfig
   entry: string
+  errorHandler: string
   unenv: UnenvPreset
   alias: Record<string, string>
   minify: boolean
