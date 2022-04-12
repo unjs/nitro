@@ -1,26 +1,36 @@
-# What is Nitro?
+---
+home: true
+sidebar: false
+heroText: Nitro
+tagline: Any Javascript Server, Anywhere
+actionText: Get Started
+actionLink: /guide/
+features:
+  - title: Rapid Development
+    details: Zero config setup with hot module replacement
+  - title: Multi-Provider
+    details: Deploy same codebase to any provider without extra config
+  - title: Portable and Compact
+    details: Say goodby to node_modules
+  - title: Filesystem Routing
+    details: Automatically registers Server and API routes
+  - title: Minimal Design
+    details: Minimal design to fit into any solution with minimum overhead
+  - title: Code-Splitting
+    details: Async chunk loading for fast server startup time
+  - title: TypeScript
+    details: Typescript support out of the box with few more goodies
+  - title: Storage Layer
+    details: Multi driver and platform-agnostic storage system
+  - title: Cache API
+    details: Powerful built-in caching API
+  - title: Hackable
+    details: Built to be customized
+  - title: Auto Imports
+    details: Automatically import utilities for the lazy folks and a minimal codebase
+  - title: Backward compatible
+    details: Best-effort compatibility for using legacy npm packages, CommonJS and mocking Node.js modules for workers
 
-::: warning 🌱 nitro is young and under development
-Check [🐛 open issues](https://github.com/unjs/nitro/issues)  for the known issues and roadmap and tell us [💡your ideas](https://github.com/unjs/nitro/discussions/new)!
-:::
 
-Nitro provides a powerful build toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to develop and deploy any JavaScript server, anywhere!
-<br>
-
- ❯ **Rapid development** experience with hot module replacement <br>
- ❯ **Multi-provider** deployments with a single codebase and zero-configuration<br>
- ❯ **Portable and compact** deployments without `node_modules` dependency <br>
- ❯ **Directory structure** aware to register API routes and more with zero configuration <br>
- ❯ **Minimal Design** to fit into any solution with minimum overhead <br>
- ❯ **Code-splitting** and async chunk loading for fast server startup time <br>
- ❯ **TypeScript** fully supported <br>
- ❯ **Multi-driver storage** and caching layer <br>
- ❯ **Route caching** and static **pre-rendering** with built-in crawler <br>
- ❯ **Hackable** to extend almost any part of nitro using options <br>
- ❯ **Auto imports** for lazy folks and a tidy minimal codebase <br>
- ❯ **Best-effort compatibility** for using legacy npm packages and mocking Node.js modules <br>
-
-
-## Who is using Nitro?
-
-[Nuxt 3](https://v3.nuxtjs.org/guide/concepts/server-engine) is using Nitro as it's server engine.
+footer: MIT Licensed | Made by 💛 as part of the UnJS ecosystem
+---
