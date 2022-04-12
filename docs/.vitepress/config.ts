@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   lang: 'en-US',
-  title: 'UnJS/Nitro',
+  title: 'Nitro',
   description: 'Build and deploy universal JavaScript servers.',
   lastUpdated: true,
 
@@ -21,41 +21,26 @@ export default defineConfig({
     // },
 
     nav: [
-      { text: 'Guide', link: '/', activeMatch: '^/$|^/guide/' },
-      { text: 'Config Reference', link: '/config/general', activeMatch: '^/config/' },
+      { text: 'Guide', link: '/', activeMatch: '^/guide/' },
+      { text: 'Config Reference', link: '/config/', activeMatch: '^/config/' },
       { text: 'Changelog', link: 'https://github.com/unjs/nitro/blob/main/CHANGELOG.md' }
     ],
 
     sidebar: {
       '/guide/': getGuideSidebar(),
-      '/config/': getConfigSidebar(),
+      '/config/': 'auto',
       '/': getGuideSidebar(),
     }
   }
 })
 
-function getConfigSidebar() {
-return [
-  {
-    text: 'Config Reference',
-    children: [
-      ['/config/general', 'General'],
-      ['/config/features', 'Features'],
-      ['/config/routing', 'Routing'],
-      ['/config/directories', 'Directories'],
-      ['/config/advanced', 'Advanced'],
-      ['/config/rollup', 'Rollup'],
-    ].map(i => toItem(i))
-  }
-]
-}
 
 function getGuideSidebar() {
   return [
     {
       text: 'Introduction',
       children: [
-        ['/guide/getting-started', 'Getting Started'],
+        ['/guide/', 'Getting Started'],
         ['/guide/configuration', 'Configuration'],
         ['/guide/routing', 'Route Handling'],
         ['/guide/storage', 'Storage Layer'],
