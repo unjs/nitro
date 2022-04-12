@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/unjs/nitropack/compare/v0.2.3...v0.2.4) (2022-04-11)
+
+
+### Bug Fixes
+
+* **prerender:** use pathname from extracted links only ([#74](https://github.com/unjs/nitropack/issues/74)) ([b9271d7](https://github.com/unjs/nitropack/commit/b9271d72a182839eadc49e0c32d2beb64f1da37b))
+
+### [0.2.3](https://github.com/unjs/nitropack/compare/v0.2.2...v0.2.3) (2022-04-11)
+
+
+### Features
+
+* use `std-env` to detect provider ([#72](https://github.com/unjs/nitropack/issues/72)) ([e78f598](https://github.com/unjs/nitropack/commit/e78f5984dd9b308d86adba8410b6b30336d07945))
+
+
+### Bug Fixes
+
+* always apply `#build` windows fix when `externals.trace` is disabled ([1ec2ee4](https://github.com/unjs/nitropack/commit/1ec2ee4cf3dfd355a2b7d8d6d7aa5de6dcb51b7c))
+
+### [0.2.2](https://github.com/unjs/nitropack/compare/v0.2.1...v0.2.2) (2022-04-11)
+
+
+### Bug Fixes
+
+* disable externals with explicit flag ([2e5de6c](https://github.com/unjs/nitropack/commit/2e5de6cf37f4954cbd1492212f4537c44ab681e4)), closes [nuxt/framework#226](https://github.com/nuxt/framework/issues/226)
+* normalize `#build` windows path for dev and prerender presets ([#70](https://github.com/unjs/nitropack/issues/70)) ([ec5db11](https://github.com/unjs/nitropack/commit/ec5db11f7eef215d0337401b91c71e1946a30664))
+
 ### [0.2.1](https://github.com/unjs/nitropack/compare/v0.2.0...v0.2.1) (2022-04-07)
 
 

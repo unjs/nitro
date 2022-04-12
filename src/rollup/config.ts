@@ -223,13 +223,15 @@ export const plugins = [
   }))
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
+  let buildDir = nitro.options.buildDir
+  // Windows (native) dynamic imports should be file:// urr
+  if (isWindows && (nitro.options.externals.trace === false)) {
+    buildDir = pathToFileURL(buildDir).href
+  }
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
       '#nitro': runtimeDir,
-      // Windows dynamic imports should be file:// url
-      '#build': nitro.options.dev && isWindows
-        ? pathToFileURL(nitro.options.buildDir).href
-        : nitro.options.buildDir,
+      '#build': buildDir,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,
@@ -239,7 +241,7 @@ export const plugins = [
   }))
 
   // Externals Plugin
-  if (nitro.options.externals) {
+  if (!nitro.options.noExternals) {
     rollupConfig.plugins.push(externals(defu(nitro.options.externals as any, {
       outDir: nitro.options.output.serverDir,
       moduleDirectories: nitro.options.nodeModulesDirs,
