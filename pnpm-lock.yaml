@@ -28,18 +28,22 @@ specifiers:
   '@types/serve-static': ^1.13.10
   '@vercel/nft': ^0.18.1
   archiver: ^5.3.0
+  base64-js: ^1.5.1
+  buffer: ^6.0.3
   c12: ^0.2.5
   c8: ^7.11.0
   chalk: ^5.0.1
   chokidar: ^3.5.3
   connect: ^3.7.0
   consola: ^2.15.3
+  cookie-es: ^0.5.0
   defu: ^6.0.0
   destr: ^1.1.1
   dot-prop: ^7.2.0
   esbuild: ^0.14.36
   eslint: ^8.13.0
   etag: ^1.8.1
+  events: ^3.3.0
   execa: ^6.1.0
   fs-extra: ^10.0.1
   globby: ^13.1.1
@@ -48,6 +52,7 @@ specifiers:
   hasha: ^5.2.2
   hookable: ^5.1.1
   http-proxy: ^1.18.1
+  ieee754: ^1.2.1
   is-primitive: ^3.0.1
   jiti: ^1.13.0
   klona: ^2.0.5
@@ -64,6 +69,7 @@ specifiers:
   perfect-debounce: ^0.1.3
   pkg-types: ^0.3.2
   pretty-bytes: ^6.0.0
+  process: ^0.11.10
   radix3: ^0.1.1
   rollup: ^2.70.1
   rollup-plugin-terser: ^7.0.2
@@ -80,6 +86,7 @@ specifiers:
   unenv: ^0.4.6
   unimport: ^0.1.4
   unstorage: ^0.3.3
+  util: ^0.12.4
   vitepress: ^0.22.3
   vitest: ^0.9.3
 
@@ -99,16 +106,20 @@ dependencies:
   '@types/jsdom': 16.2.14
   '@vercel/nft': 0.18.1
   archiver: 5.3.0
+  base64-js: 1.5.1
+  buffer: 6.0.3
   c12: 0.2.5
   chalk: 5.0.1
   chokidar: 3.5.3
   connect: 3.7.0
   consola: 2.15.3
+  cookie-es: 0.5.0
   defu: 6.0.0
   destr: 1.1.1
   dot-prop: 7.2.0
   esbuild: 0.14.36
   etag: 1.8.1
+  events: 3.3.0
   fs-extra: 10.0.1
   globby: 13.1.1
   gzip-size: 7.0.0
@@ -116,6 +127,7 @@ dependencies:
   hasha: 5.2.2
   hookable: 5.1.1
   http-proxy: 1.18.1
+  ieee754: 1.2.1
   is-primitive: 3.0.1
   jiti: 1.13.0
   klona: 2.0.5
@@ -131,6 +143,7 @@ dependencies:
   perfect-debounce: 0.1.3
   pkg-types: 0.3.2
   pretty-bytes: 6.0.0
+  process: 0.11.10
   radix3: 0.1.1
   rollup: 2.70.1
   rollup-plugin-terser: 7.0.2_rollup@2.70.1
@@ -145,6 +158,7 @@ dependencies:
   unenv: 0.4.6
   unimport: 0.1.4_esbuild@0.14.36+rollup@2.70.1
   unstorage: 0.3.3
+  util: 0.12.4
 
 devDependencies:
   '@nuxtjs/eslint-config-typescript': 9.0.0_eslint@8.13.0
