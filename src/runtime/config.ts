@@ -19,7 +19,7 @@ const mergeWithEnvVariables = createDefu((obj: Record<string, any>, key: string,
   const override = getEnv(namespace ? `${namespace}.${key}` : key)
   if (override !== undefined) {
     obj[key] = override
-    // Do not return `true` to allow overrding both top level keys and sub-keys
+    return true
   }
 })
 
