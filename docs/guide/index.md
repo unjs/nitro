@@ -46,4 +46,7 @@ npm i -D nitropack
 
 # yarn
 yarn add nitropack
+
+# pnpm
+pnpm install nitropack
 ```

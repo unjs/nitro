@@ -14,14 +14,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - run: corepack enable
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-          cache: yarn
-      - run: yarn install
-      - run: yarn lint
-      - run: yarn build
-      - run: yarn test --coverage
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm test --coverage
       - uses: codecov/codecov-action@v3
       - name: Release Edge
         if: |
