@@ -1,6 +1,6 @@
-import { NitroErrorHandler } from '../../dist'
+import { NitroErrorHandler } from '../types'
 
-export default <NitroErrorHandler> function errorHandler (error, event) {
+function errorHandler (error, event) {
   event.res.setHeader('Content-Type', 'text/html; charset=UTF-8')
   event.res.statusCode = 503
   event.res.statusMessage = 'Server Unavailable'
@@ -40,3 +40,5 @@ export default <NitroErrorHandler> function errorHandler (error, event) {
 </html>
 `)
 }
+
+export default errorHandler as NitroErrorHandler
