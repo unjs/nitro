@@ -19,20 +19,14 @@
   "files": [
     "dist"
   ],
-  "workspaces": [
-    "./examples/*",
-    "./docs"
-  ],
   "scripts": {
     "build": "unbuild",
     "dev": "pnpm nitro dev playground",
     "dev:build": "pnpm nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
-    "docs": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
-    "example": "pnpm workspace example-$0 dev",
-    "example:build": "pnpm workspace example-$0 dev",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
     "nitro": "jiti ./src/cli.ts",
     "prepack": "pnpm build",
@@ -105,6 +99,7 @@
     "semver": "^7.3.7",
     "serve-placeholder": "^2.0.1",
     "serve-static": "^1.15.0",
+    "source-map-support": "^0.5.21",
     "std-env": "^3.0.1",
     "table": "^6.8.0",
     "ufo": "^0.8.3",
