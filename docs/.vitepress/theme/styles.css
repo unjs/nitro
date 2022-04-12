@@ -3,8 +3,8 @@ Styles shamelessly copied from vitest docs! https://github.com/vitest-dev/vitest
 */
 
 :root {
-  --c-brand: #ca931c;
-  --c-accent: #729B1B;
+  --c-brand: #F0DB4F;
+  --c-accent:  #323330;
   --font-family-base: "Readex Pro", ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont, sans-serif;
   --bg-gradient: 255,255,255;
   --cm-ttc-c-thumb: #eee;
@@ -50,9 +50,9 @@ main.home::before {
   inset: 0;
   position: absolute;
   z-index: -1;
-  background-image: url("/bg.png");
+  /* background-image: url("/bg.png");
   background-repeat: repeat;
-  background-size: 50%;
+  background-size: 50%; */
 }
 
 @media screen and (max-width: 768px) {
