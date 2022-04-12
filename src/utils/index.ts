@@ -5,6 +5,7 @@ import jiti from 'jiti'
 import consola from 'consola'
 import chalk from 'chalk'
 import { getProperty } from 'dot-prop'
+import { provider } from 'std-env'
 import { Nitro } from '../types'
 
 export function hl (str: string) {
@@ -64,18 +65,14 @@ export function replaceAll (input: string, from: string, to: string) {
   return input.replace(new RegExp(from, 'g'), to)
 }
 
+const autodetectableProviders = {
+  azure_static: 'azure',
+  netlify: 'netlify',
+  vercel: 'vercel'
+}
+
 export function detectTarget () {
-  if (process.env.NETLIFY || process.env.NETLIFY_LOCAL) {
-    return 'netlify'
-  }
-
-  if (process.env.NOW_BUILDER) {
-    return 'vercel'
-  }
-
-  if (process.env.INPUT_AZURE_STATIC_WEB_APPS_API_TOKEN) {
-    return 'azure'
-  }
+  return autodetectableProviders[provider]
 }
 
 export async function isDirectory (path: string) {
