@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](https://github.com/unjs/nitropack/compare/v0.2.6...v0.2.7) (2022-04-12)
+
+
+### Bug Fixes
+
+* **rollup:** also match moduleSideEffects with full path ([ce2e898](https://github.com/unjs/nitropack/commit/ce2e898beaaa32776d1dabe1d96a3debea2bbabf))
+
 ### [0.2.6](https://github.com/unjs/nitropack/compare/v0.2.5...v0.2.6) (2022-04-12)
 
 
