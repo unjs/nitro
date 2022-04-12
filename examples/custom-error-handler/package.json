@@ -1,5 +1,5 @@
 {
-  "name": "example-error-handler",
+  "name": "example-custom-error-handler",
   "private": true,
   "scripts": {
     "dev": "nitro dev",

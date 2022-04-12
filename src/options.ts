@@ -46,6 +46,7 @@ const NitroDefaults: NitroConfig = {
   baseURL: process.env.NITRO_APP_BASE_URL || '/',
   handlers: [],
   devHandlers: [],
+  errorHandler: '#nitro/error',
   routes: {},
   prerender: {
     crawlLinks: false,
@@ -56,7 +57,6 @@ const NitroDefaults: NitroConfig = {
   alias: {
     '#nitro': runtimeDir
   },
-  errorHandler: '#nitro/error',
   unenv: {},
   analyze: false,
   moduleSideEffects: ['unenv/runtime/polyfill/'],

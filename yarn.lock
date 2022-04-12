@@ -4018,9 +4018,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"example-error-handler@workspace:examples/error-handler":
+"example-custom-error-handler@workspace:examples/custom-error-handler":
   version: 0.0.0-use.local
-  resolution: "example-error-handler@workspace:examples/error-handler"
+  resolution: "example-custom-error-handler@workspace:examples/custom-error-handler"
   dependencies:
     nitropack: latest
   languageName: unknown

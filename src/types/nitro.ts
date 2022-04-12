@@ -115,6 +115,7 @@ export interface NitroOptions {
   handlers: NitroEventHandler[]
   routes: NitroRoutesOptions
   devHandlers: NitroDevEventHandler[]
+  errorHandler: string
   prerender: {
     crawlLinks: boolean
     routes: string[]
@@ -123,7 +124,6 @@ export interface NitroOptions {
   // Rollup
   rollupConfig?: RollupConfig
   entry: string
-  errorHandler: string
   unenv: UnenvPreset
   alias: Record<string, string>
   minify: boolean
