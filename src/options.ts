@@ -1,4 +1,4 @@
-import { resolve } from 'pathe'
+import { dirname, resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
@@ -117,6 +117,11 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
 
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
+
+  // TODO: Temporary workaround for pnpm
+  const unenvDir = resolve(await resovleModule('unenv', { url: import.meta.url }), '../../..')
+  options.nodeModulesDirs.push(unenvDir)
+
   options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
 
   if (!options.scanDirs.length) {
