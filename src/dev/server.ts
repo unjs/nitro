@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
-import { App, CompatibilityEvent, createApp, eventHandler } from 'h3'
+import { App, createApp, eventHandler } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
@@ -11,6 +11,7 @@ import { joinURL } from 'ufo'
 import { FSWatcher, watch } from 'chokidar'
 import type { Nitro } from '../types'
 import { createVFSHandler } from './vfs'
+import defaultErrorHandler from './error'
 
 export interface NitroWorker {
   worker: Worker,
@@ -70,6 +71,9 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // Worker
   const workerEntry = resolve(nitro.options.output.dir, nitro.options.output.serverDir, 'index.mjs')
 
+  // Error handler
+  const errorHandler = nitro.options.devErrorHandler || defaultErrorHandler
+
   let lastError: Error = null
   let reloadPromise: Promise<void> = null
 
@@ -124,7 +128,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     await reloadPromise
     const address = currentWorker?.address
     if (!address || (address.socketPath && !existsSync(address.socketPath))) {
-      return sendUnavailable(event, lastError)
+      return errorHandler(lastError, event)
     }
     return new Promise<void>((resolve, reject) => {
       proxy.web(event.req, event.res, { target: address }, (error: any) => {
@@ -170,45 +174,4 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     close,
     watcher
   }
-}
-
-function sendUnavailable (event: CompatibilityEvent, error?: Error) {
-  event.res.setHeader('Content-Type', 'text/html; charset=UTF-8')
-  event.res.statusCode = 503
-  event.res.statusMessage = 'Server Unavailable'
-
-  let body
-  let title
-  if (error) {
-    title = `${event.res.statusCode} ${event.res.statusMessage}`
-    body = `<code><pre>${error.stack}</pre></code>`
-  } else {
-    title = 'Reloading server...'
-    body = '<progress></progress><script>document.querySelector(\'progress\').indeterminate=true</script>'
-  }
-
-  event.res.end(`<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    ${error ? '' : '<meta http-equiv="refresh" content="2">'}
-    <title>${title}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico/css/pico.min.css">
-  </head>
-  <body>
-    <main class="container">
-      <article>
-        <header>
-          <h2>${title}</h2>
-        </header>
-        ${body}
-        <footer>
-          Check console logs for more information.
-        </footer>
-      </article>
-  </main>
-  </body>
-</html>
-`)
 }
