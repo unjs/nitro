@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.5](https://github.com/unjs/nitropack/compare/v0.2.4...v0.2.5) (2022-04-12)
+
+
+### Features
+
+* allow overriding nested runtime config ([#65](https://github.com/unjs/nitropack/issues/65)) ([27fb68b](https://github.com/unjs/nitropack/commit/27fb68b0411b967069e3eb60a762b12a7b979ea2))
+* support custom error and dev error handler ([#76](https://github.com/unjs/nitropack/issues/76)) ([cb6a84c](https://github.com/unjs/nitropack/commit/cb6a84c37fc1e4686b1e98a7320e44b1d7ed90d9))
+
+
+### Bug Fixes
+
+* allow overriding nested variables ([#75](https://github.com/unjs/nitropack/issues/75)) ([d7bfc96](https://github.com/unjs/nitropack/commit/d7bfc9660c8a9662b13cfb24342d3ccc9289d46a))
+* allow users to override nitro error ([#58](https://github.com/unjs/nitropack/issues/58)) ([aa660c7](https://github.com/unjs/nitropack/commit/aa660c7faf92ddceee7b003c89adf1df7068bf93))
+
 ### [0.2.4](https://github.com/unjs/nitropack/compare/v0.2.3...v0.2.4) (2022-04-11)
 
 
