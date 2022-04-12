@@ -1,5 +1,5 @@
 import { pathToFileURL } from 'url'
-import { dirname, join, relative, resolve } from 'pathe'
+import { dirname, join, normalize, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
 import devalue from '@nuxt/devalue'
@@ -109,7 +109,9 @@ export const getRollupConfig = (nitro: Nitro) => {
     },
     treeshake: {
       moduleSideEffects (id) {
-        return nitro.options.moduleSideEffects.some(match => id.startsWith(match))
+        const normalizedId = normalize(id)
+        const idWithoutNodeModules = normalizedId.split('node_modules/').pop()
+        return nitro.options.moduleSideEffects.some(m => normalizedId.startsWith(m) || idWithoutNodeModules.startsWith(m))
       }
     }
   }
