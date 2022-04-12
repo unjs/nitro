@@ -20,6 +20,28 @@ There are situations in that we directly want to provide a handler instance with
 
 We can use `devHandlers` but note that they are **only available in development mode** and **not in production build**.
 
+## `errorHandler`
+
+Path to a custom runtime error handler. Replacing nitro's built-in error page.
+
+**Example:**
+
+```js [nitro.config]
+import { defineNitroConfig } from 'nitropack'
+
+export default defineNitroConfig({
+  errorHandler: '~/error'
+})
+```
+
+```js [error.ts]
+import type { NitroErrorHandler } from 'nitropack'
+
+export default <NitroErrorHandler> function (error, event) {
+  event.res.end('[custom error handler] ' + error.stack)
+}
+```
+
 ## `routes`
 
 **🧪 Experimental!**

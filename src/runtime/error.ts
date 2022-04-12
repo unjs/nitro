@@ -1,5 +1,5 @@
 // import ansiHTML from 'ansi-html'
-import type { CompatibilityEvent } from 'h3'
+import type { NitroErrorHandler } from '../types'
 import { normalizeError, isJsonRequest } from './utils'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -12,7 +12,7 @@ interface ParsedError {
   stack?: string[]
 }
 
-export default function handleError (error: any, event: CompatibilityEvent) {
+export default <NitroErrorHandler> function (error, event) {
   const { stack, statusCode, statusMessage, message } = normalizeError(error)
 
   const showDetails = isDev && statusCode !== 404

@@ -231,6 +231,7 @@ export const plugins = [
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
       '#build': buildDir,
+      '#nitro/virtual/error-handler': nitro.options.errorHandler,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,

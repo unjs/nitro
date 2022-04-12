@@ -23,3 +23,7 @@ nitro hooks. See [unjs/hookable](https://github.com/unjs/hookable) for more info
 ## `commands`
 
 Preview and deploy command hints are usually filled by deployment presets.
+
+## `devErrorHandler`
+
+A custom error handler function for development errors.
