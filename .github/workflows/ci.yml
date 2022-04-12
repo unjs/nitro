@@ -22,7 +22,7 @@ jobs:
       - run: pnpm install
       - run: pnpm lint
       - run: pnpm build
-      - run: pnpm test --coverage
+      - run: pnpm vitest --coverage
       - uses: codecov/codecov-action@v3
       - name: Release Edge
         if: |

@@ -11,7 +11,7 @@ git restore -s@ -SW  -- .
 pnpm jiti ./scripts/bump-edge
 
 # Resolve lockfile
-YARN_ENABLE_IMMUTABLE_INSTALLS=false pnpm install
+pnpm install
 
 # Update token
 if [[ ! -z ${NODE_AUTH_TOKEN} ]] ; then
