@@ -1,4 +1,4 @@
-import { join, resolve } from 'pathe'
+import { resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
