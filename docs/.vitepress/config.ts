@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   lang: 'en-US',
-  title: 'UnJS/Nitro',
+  title: 'Nitro',
   description: 'Build and deploy universal JavaScript servers.',
   lastUpdated: true,
 
@@ -21,7 +21,7 @@ export default defineConfig({
     // },
 
     nav: [
-      { text: 'Guide', link: '/', activeMatch: '^/$|^/guide/' },
+      { text: 'Guide', link: '/', activeMatch: '^/guide/' },
       { text: 'Config Reference', link: '/config/general', activeMatch: '^/config/' },
       { text: 'Changelog', link: 'https://github.com/unjs/nitro/blob/main/CHANGELOG.md' }
     ],
@@ -55,7 +55,7 @@ function getGuideSidebar() {
     {
       text: 'Introduction',
       children: [
-        ['/guide/getting-started', 'Getting Started'],
+        ['/guide/', 'Getting Started'],
         ['/guide/configuration', 'Configuration'],
         ['/guide/routing', 'Route Handling'],
         ['/guide/storage', 'Storage Layer'],
