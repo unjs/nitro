@@ -114,6 +114,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.output.dir = resolvePath(options.output.dir, options)
   options.output.publicDir = resolvePath(options.output.publicDir, options)
   options.output.serverDir = resolvePath(options.output.serverDir, options)
+
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
   options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
