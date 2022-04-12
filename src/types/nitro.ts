@@ -133,7 +133,8 @@ export interface NitroOptions {
   esbuild?: {
     options?: EsbuildOptions
   }
-  externals: boolean | NodeExternalsOptions
+  noExternals: boolean,
+  externals: NodeExternalsOptions
   analyze: false | PluginVisualizerOptions
   replace: Record<string, string | ((id: string) => string)>
 

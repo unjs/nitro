@@ -1,4 +1,5 @@
 import { resolve, relative, join } from 'pathe'
+import { parseURL } from 'ufo'
 import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro } from './types'
@@ -79,7 +80,7 @@ const LINK_REGEX = /href=['"]?([^'" >]+)/g
 function extractLinks (html: string, _url: string) {
   const links: string[] = []
   for (const match of html.matchAll(LINK_REGEX)) {
-    links.push(match[1])
+    links.push(parseURL(match[1]).pathname)
   }
   return links
 }
