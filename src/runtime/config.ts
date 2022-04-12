@@ -14,7 +14,7 @@ const getEnv = (key: string) => {
   return destr(process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey])
 }
 
-const mergeWithEnvVariables = createDefu((obj: Record<string, any>, key: any, _value, namespace) => {
+const mergeWithEnvVariables = createDefu((obj: Record<string, any>, key: string, _value, namespace) => {
   // key: { subKey } can be overridden by KEY_SUB_KEY`
   const override = getEnv(namespace ? `${namespace}_${key}` : key)
   if (override !== undefined) {
