@@ -5,6 +5,7 @@ import { camelCase } from 'scule'
 import defu from 'defu'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
+import { resolvePath as resovleModule } from 'mlly'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -135,6 +136,12 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   for (const asset of options.publicAssets) {
     asset.dir = resolve(options.srcDir, asset.dir)
     asset.baseURL = withLeadingSlash(withoutTrailingSlash(asset.baseURL || '/'))
+  }
+
+  for (const pkg of ['defu', 'h3']) {
+    if (!options.alias[pkg]) {
+      options.alias[pkg] = await resovleModule(pkg, { url: import.meta.url })
+    }
   }
 
   return options
