@@ -25,20 +25,20 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "dev": "yarn nitro dev playground",
-    "dev:build": "yarn nitro build playground",
+    "dev": "pnpm nitro dev playground",
+    "dev:build": "pnpm nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
     "docs": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
-    "example": "yarn workspace example-$0 dev",
-    "example:build": "yarn workspace example-$0 dev",
+    "example": "pnpm workspace example-$0 dev",
+    "example:build": "pnpm workspace example-$0 dev",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
     "nitro": "jiti ./src/cli.ts",
-    "prepack": "yarn build",
-    "release": "yarn test && yarn build && standard-version && npm publish && git push --follow-tags",
+    "prepack": "pnpm build",
+    "release": "pnpm test && pnpm build && standard-version && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
-    "test": "yarn lint && vitest run --silent"
+    "test": "pnpm lint && vitest run --silent"
   },
   "resolutions": {
     "nitropack": "link:."
@@ -125,7 +125,7 @@
     "vitepress": "^0.22.3",
     "vitest": "^0.9.3"
   },
-  "packageManager": "yarn@3.2.0",
+  "packageManager": "pnpm@6.32.3",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0"
   }
