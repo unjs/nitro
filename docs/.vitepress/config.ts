@@ -22,33 +22,18 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/', activeMatch: '^/guide/' },
-      { text: 'Config Reference', link: '/config/general', activeMatch: '^/config/' },
+      { text: 'Config Reference', link: '/config/', activeMatch: '^/config/' },
       { text: 'Changelog', link: 'https://github.com/unjs/nitro/blob/main/CHANGELOG.md' }
     ],
 
     sidebar: {
       '/guide/': getGuideSidebar(),
-      '/config/': getConfigSidebar(),
+      '/config/': 'auto',
       '/': getGuideSidebar(),
     }
   }
 })
 
-function getConfigSidebar() {
-return [
-  {
-    text: 'Config Reference',
-    children: [
-      ['/config/general', 'General'],
-      ['/config/features', 'Features'],
-      ['/config/routing', 'Routing'],
-      ['/config/directories', 'Directories'],
-      ['/config/advanced', 'Advanced'],
-      ['/config/rollup', 'Rollup'],
-    ].map(i => toItem(i))
-  }
-]
-}
 
 function getGuideSidebar() {
   return [
