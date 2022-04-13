@@ -32,7 +32,7 @@ export function scanRoutes (nitro: Nitro, dir: string, prefix: string = '/') {
   return scanServerDir(nitro, dir, (file) => {
     let route = file.path
       .replace(/\.[a-zA-Z]+$/, '')
-      .replace(/\[...\]/g, '**')
+      .replace(/\[\.\.\.\]/g, '**')
       .replace(/\[([a-zA-Z]+)\]/g, ':$1')
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)))
 
