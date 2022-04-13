@@ -19,7 +19,7 @@ importers:
       '@rollup/plugin-replace': ^4.0.0
       '@rollup/plugin-virtual': ^2.1.0
       '@rollup/plugin-wasm': ^5.1.2
-      '@rollup/pluginutils': ^4.2.0
+      '@rollup/pluginutils': ^4.2.1
       '@types/aws-lambda': ^8.10.93
       '@types/etag': ^1.8.1
       '@types/fs-extra': ^9.0.13
@@ -29,7 +29,7 @@ importers:
       '@types/object-hash': ^2.2.1
       '@types/semver': ^7.3.9
       '@types/serve-static': ^1.13.10
-      '@vercel/nft': ^0.18.1
+      '@vercel/nft': ^0.18.2
       archiver: ^5.3.0
       base64-js: ^1.5.1
       buffer: ^6.0.3
@@ -62,7 +62,7 @@ importers:
       listhen: ^0.2.8
       mime: ^3.0.0
       miniflare: ^2.4.0
-      mlly: ^0.5.1
+      mlly: ^0.5.2
       mri: ^1.2.0
       node-fetch: ^3.2.3
       ohash: ^0.1.0
@@ -86,7 +86,7 @@ importers:
       std-env: ^3.0.1
       table: ^6.8.0
       ufo: ^0.8.3
-      unbuild: ^0.7.3
+      unbuild: ^0.7.4
       unenv: ^0.4.6
       unimport: ^0.1.5
       unstorage: ^0.3.3
@@ -105,9 +105,9 @@ importers:
       '@rollup/plugin-replace': 4.0.0_rollup@2.70.1
       '@rollup/plugin-virtual': 2.1.0_rollup@2.70.1
       '@rollup/plugin-wasm': 5.1.2_rollup@2.70.1
-      '@rollup/pluginutils': 4.2.0
+      '@rollup/pluginutils': 4.2.1
       '@types/jsdom': 16.2.14
-      '@vercel/nft': 0.18.1
+      '@vercel/nft': 0.18.2
       archiver: 5.3.0
       base64-js: 1.5.1
       buffer: 6.0.3
@@ -136,7 +136,7 @@ importers:
       klona: 2.0.5
       listhen: 0.2.8
       mime: 3.0.0
-      mlly: 0.5.1
+      mlly: 0.5.2
       mri: 1.2.0
       node-fetch: 3.2.3
       ohash: 0.1.0
@@ -178,7 +178,7 @@ importers:
       execa: 6.1.0
       miniflare: 2.4.0
       standard-version: 9.3.2
-      unbuild: 0.7.3
+      unbuild: 0.7.4
       vitepress: 0.22.3
       vitest: 0.9.3_c8@7.11.0
 
@@ -955,8 +955,8 @@ packages:
       picomatch: 2.3.1
       rollup: 2.70.1
 
-  /@rollup/pluginutils/4.2.0:
-    resolution: {integrity: sha512-2WUyJNRkyH5p487pGnn4tWAsxhEFKN/pT8CMgHshd5H+IXkOnKvKZwsz5ZWz+YCXkleZRAU5kwbfgF8CPfDRqA==}
+  /@rollup/pluginutils/4.2.1:
+    resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
     engines: {node: '>= 8.0.0'}
     dependencies:
       estree-walker: 2.0.2
@@ -1196,8 +1196,8 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vercel/nft/0.18.1:
-    resolution: {integrity: sha512-i2zmXs8ueqCe/dmQ0fzQk9MmXoqdqxR1ZsxPN8poHZfc3NQES1WTEsXkEoaL+RV5BKZi04lNpkoGwtqcxERAOQ==}
+  /@vercel/nft/0.18.2:
+    resolution: {integrity: sha512-Oxy4y5JDh7CMbaxEGjKKzHcnQ1gRQqtfp+x3xvOmZYixXHwaD2RMJDTzaPz0b2B3pgVbbPOHY87wffJPFDaoFg==}
     hasBin: true
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.9
@@ -1633,7 +1633,7 @@ packages:
       dotenv: 16.0.0
       gittar: 0.1.1
       jiti: 1.13.0
-      mlly: 0.5.1
+      mlly: 0.5.2
       pathe: 0.2.0
       rc9: 1.2.2
     dev: false
@@ -4400,8 +4400,8 @@ packages:
   /mlly/0.3.19:
     resolution: {integrity: sha512-zMq5n3cOf4fOzA4WoeulxagbAgMChdev3MgP6K51k7M0u2whTXxupfIY4VVzws4vxkiWhwH1rVQcsw7zDGfRhA==}
 
-  /mlly/0.5.1:
-    resolution: {integrity: sha512-0axKqxbYyQvaAfi6BNqDluCJqg6RkjdsdFxSDoiP6l5HplSTr3ie5Vkxvw9U9ogdj65x56amTnAn+xSoP727Rg==}
+  /mlly/0.5.2:
+    resolution: {integrity: sha512-4GTELSSErv6ZZJYU98fZNuIBJcXSz+ktHdRrCYEqU1m6ZlebOCG0jwZ+IEd9vOrbpYsVBBMC5OTrEyLnKRcauQ==}
     dependencies:
       pathe: 0.2.0
       pkg-types: 0.3.2
@@ -5173,7 +5173,7 @@ packages:
       esbuild: '>=0.10.1'
       rollup: ^1.20.0 || ^2.0.0
     dependencies:
-      '@rollup/pluginutils': 4.2.0
+      '@rollup/pluginutils': 4.2.1
       debug: 4.3.4
       es-module-lexer: 0.9.3
       esbuild: 0.14.36
@@ -5809,8 +5809,8 @@ packages:
       has-symbols: 1.0.3
       which-boxed-primitive: 1.0.2
 
-  /unbuild/0.7.3:
-    resolution: {integrity: sha512-P3w2ZBhQ9bBOBbIEJx1n9I9lhe+WMfqHk6nIqd0D71kW8Vua+Rpn4IhWCsLYIxwP5sgy90ZRXUKa2Fbox/KITw==}
+  /unbuild/0.7.4:
+    resolution: {integrity: sha512-gJvfMw4h5Q7xieMCeW/d3wtNKZDpFyDR9651s8kL+AGp95sMNhAFRLxy24AUKC3b5EQbB74vaDoU5R+XwsZC6A==}
     hasBin: true
     dependencies:
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
@@ -5818,7 +5818,7 @@ packages:
       '@rollup/plugin-json': 4.1.0_rollup@2.70.1
       '@rollup/plugin-node-resolve': 13.2.0_rollup@2.70.1
       '@rollup/plugin-replace': 4.0.0_rollup@2.70.1
-      '@rollup/pluginutils': 4.2.0
+      '@rollup/pluginutils': 4.2.1
       chalk: 5.0.1
       consola: 2.15.3
       defu: 6.0.0
@@ -5828,7 +5828,7 @@ packages:
       magic-string: 0.26.1
       mkdirp: 1.0.4
       mkdist: 0.3.10_typescript@4.6.3
-      mlly: 0.5.1
+      mlly: 0.5.2
       mri: 1.2.0
       pathe: 0.2.0
       pkg-types: 0.3.2
@@ -5871,12 +5871,12 @@ packages:
   /unimport/0.1.5_esbuild@0.14.36+rollup@2.70.1:
     resolution: {integrity: sha512-Wv+CFdDJXkyiHD6yXeHdYMmD5LisII43o6q2ttw1s5mAhwfcBtZPRbZcqPvSkgHX4ZzMPTUIstMhVfC+tHrh6A==}
     dependencies:
-      '@rollup/pluginutils': 4.2.0
+      '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
       globby: 13.1.1
       local-pkg: 0.4.1
       magic-string: 0.26.1
-      mlly: 0.5.1
+      mlly: 0.5.2
       pathe: 0.2.0
       scule: 0.2.1
       unplugin: 0.6.1_esbuild@0.14.36+rollup@2.70.1
