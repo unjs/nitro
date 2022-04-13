@@ -6,7 +6,9 @@ Built-in presets:
 - `azure`, `azure-functions` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/azure))
 - `cli`
 - `cloudflare` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/cloudflare))
+- `digital-ocean`
 - `firebase` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/firebase))
+- `heroku`
 - `netlify` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/netlify))
 - `nitro-dev`
 - `nitro-prerender`
