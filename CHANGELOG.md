@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.8](https://github.com/unjs/nitropack/compare/v0.2.7...v0.2.8) (2022-04-13)
+
+
+### Features
+
+* add render, digital-ocean and heroku presets ([#55](https://github.com/unjs/nitropack/issues/55)) ([b77ef27](https://github.com/unjs/nitropack/commit/b77ef277679e50565c1f9c47d0fd849cf0e1940c))
+
+
+### Bug Fixes
+
+* **dev:** remove global serve-placeholder ([7b4f340](https://github.com/unjs/nitropack/commit/7b4f340492ba452c9c2f9261e86925acf00dbd21)), closes [#94](https://github.com/unjs/nitropack/issues/94)
+* **dev:** watch routes changes to full reload ([9d1ff93](https://github.com/unjs/nitropack/commit/9d1ff9307b32062fff786a80d0e6545f890cdc8e))
+* escape regex for wild-card route matcher ([41e27b4](https://github.com/unjs/nitropack/commit/41e27b466ec29bdba0ecda4961be146c4a630333)), closes [nuxt/framework#4313](https://github.com/nuxt/framework/issues/4313)
+* remove `/index` from generated routes at last ([09cad09](https://github.com/unjs/nitropack/commit/09cad098cbed3591f3cede0ac65b38a5397ff9c4)), closes [nuxt/framework#4314](https://github.com/nuxt/framework/issues/4314)
+* **server-assets:** assets behavior ([#105](https://github.com/unjs/nitropack/issues/105)) ([e21134c](https://github.com/unjs/nitropack/commit/e21134c172961026e62b4840fd9005bbe03c5077))
+
 ### [0.2.7](https://github.com/unjs/nitropack/compare/v0.2.6...v0.2.7) (2022-04-12)
 
 
