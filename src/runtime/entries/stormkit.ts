@@ -1,4 +1,3 @@
-
 import type { ALBHandler } from 'aws-lambda'
 import '#nitro/virtual/polyfill'
 import { withQuery } from 'ufo'
