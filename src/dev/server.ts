@@ -118,10 +118,6 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     }
   }
 
-  // Serve placeholder 404 assets instead of hitting SSR
-  // TODO: Option to opt-out
-  app.use(nitro.options.runtimeConfig.app.baseURL, servePlaceholder({ skipUnknown: true }))
-
   // Worker proxy
   const proxy = httpProxy.createProxy()
   app.use(eventHandler(async (event) => {
