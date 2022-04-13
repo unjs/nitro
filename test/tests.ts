@@ -81,11 +81,16 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
 
   it('API Works', async () => {
     const { data: helloData } = await callHandler({ url: '/api/hello' })
-    const { data: heyData } = await callHandler({ url: '/api/hey' })
-    const { data: kebabData } = await callHandler({ url: '/api/kebab' })
     expect(helloData).to.have.string('Hello API')
+
+    const { data: heyData } = await callHandler({ url: '/api/hey' })
     expect(heyData).to.have.string('Hey API')
+
+    const { data: kebabData } = await callHandler({ url: '/api/kebab' })
     expect(kebabData).to.have.string('hello-world')
+
+    const { data: paramsData } = await callHandler({ url: '/api/param/test_param' })
+    expect(paramsData).to.have.string('test_param')
   })
 
   it('handles errors', async () => {

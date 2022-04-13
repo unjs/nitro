@@ -1,6 +1,6 @@
 import { resolve } from 'pathe'
 import { describe } from 'vitest'
-import { startServer, setupTest, testNitro } from '../utils'
+import { startServer, setupTest, testNitro } from '../tests'
 
 describe('nitro:preset:node', async () => {
   const ctx = await setupTest('node')

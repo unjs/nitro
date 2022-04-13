@@ -1,6 +1,6 @@
 import { resolve } from 'pathe'
 import { describe } from 'vitest'
-import { setupTest, startServer, testNitro } from '../utils'
+import { setupTest, startServer, testNitro } from '../tests'
 
 describe('nitro:preset:vercel', async () => {
   const ctx = await setupTest('vercel')

@@ -2,7 +2,7 @@ import { resolve } from 'pathe'
 import { Miniflare } from 'miniflare'
 import { describe } from 'vitest'
 
-import { setupTest, testNitro } from '../utils'
+import { setupTest, testNitro } from '../tests'
 
 describe('nitro:preset:cloudflare', async () => {
   const ctx = await setupTest('cloudflare')
