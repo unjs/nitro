@@ -199,6 +199,7 @@ async function _watch (nitro: Nitro) {
 
   const watchPatterns = nitro.options.scanDirs.flatMap(dir => [
     join(dir, 'api'),
+    join(dir, 'routes'),
     join(dir, 'middleware', GLOB_SCAN_PATTERN)
   ])
 
