@@ -84,19 +84,19 @@ ${normalizeKey.toString()}
 
 export const assets = {
   getKeys() {
-    return Object.keys(_assets)
+    return Promise.resolve(Object.keys(_assets))
   },
   hasItem (id) {
     id = normalizeKey(id)
-    return id in _assets
+    return Promise.resolve(id in _assets)
   },
   getItem (id) {
     id = normalizeKey(id)
-    return _assets[id] ? _assets[id].import() : null
+    return Promise.resolve(_assets[id] ? _assets[id].import() : null)
   },
   getMeta (id) {
     id = normalizeKey(id)
-    return _assets[id] ? _assets[id].meta : {}
+    return Promise.resolve(_assets[id] ? _assets[id].meta : {})
   }
 }
 `
