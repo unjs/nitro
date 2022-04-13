@@ -66,7 +66,7 @@ const serverAssets = ${JSON.stringify(nitro.options.serverAssets)}
 export const assets = createStorage()
 
 for (const asset of serverAssets) {
-  assets.mount(asset.base, fsDriver({ base: asset.dir }))
+  assets.mount(asset.baseName, fsDriver({ base: asset.dir }))
 }`
 }
 
