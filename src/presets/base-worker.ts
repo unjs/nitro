@@ -4,6 +4,6 @@ export const baseWorker = defineNitroPreset({
   entry: null, // Abstract
   node: false,
   minify: true,
-  externals: false,
+  noExternals: true,
   inlineDynamicImports: true // iffe does not support code-splitting
 })

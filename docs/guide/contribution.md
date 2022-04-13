@@ -4,10 +4,10 @@
 
 - Fork and clone this repository
 - Enable [corepack](https://github.com/nodejs/corepack) using `corepack enable` (use `npm i -g corepack` for Node.js < 16.10)
-- Install dependencies using `yarn install`
-- Activate passive watcher using `yarn stub`
-- Start playground with `yarn dev` and open `http://localhost:3000`
-  - You can also try [`examples/`](https://github.com/unjs/nitro/tree/main/examples) using `yarn example <name>` and `yarn example:build <name>`
+- Install dependencies using `pnpm install`
+- Activate passive watcher using `pnpm stub`
+- Start playground with `pnpm dev` and open `http://localhost:3000`
+  - You can also try [`examples/`](https://github.com/unjs/nitro/tree/main/examples) using `pnpm nitro dev examples/<name>` and `pnpm nitro build examples/<name>`
 - Make changes
-- Ensure all tests pass using the `yarn test` command
+- Ensure all tests pass using the `pnpm test` command
 - Open a Pull-Request
