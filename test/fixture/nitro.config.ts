@@ -19,5 +19,11 @@ export default defineNitroConfig({
       baseURL: 'build',
       dir: 'public/build'
     }
-  ]
+  ],
+  prerender: {
+    crawlLinks: true,
+    routes: [
+      '/prerender'
+    ]
+  }
 })
