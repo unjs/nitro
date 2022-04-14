@@ -1,7 +1,8 @@
 export default defineEventHandler(() => {
   const links = [
     'https://about.google/products/',
-    '/api/hello'
+    '/api/hello',
+    '../api/hey'
   ]
   return `
     <ul>

@@ -1,5 +1,5 @@
 import { resolve, relative, join } from 'pathe'
-import { parseURL } from 'ufo'
+import { hasProtocol } from 'ufo'
 import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro } from './types'
@@ -80,9 +80,15 @@ const LINK_REGEX = /href=['"]?([^'" >]+)/g
 function extractLinks (html: string, _url: string) {
   const links: string[] = []
   for (const match of html.matchAll(LINK_REGEX)) {
-    const url = parseURL(match[1])
-    // Extract only non-external links
-    !url.host && links.push(url.pathname)
+    const url = match[1]
+    if (!url || hasProtocol(url)) {
+      continue
+    }
+    if (!url.startsWith('/')) {
+      // TODO: Handle relative urls with _url
+      continue
+    }
+    links.push(url)
   }
   return links
 }
