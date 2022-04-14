@@ -80,7 +80,9 @@ const LINK_REGEX = /href=['"]?([^'" >]+)/g
 function extractLinks (html: string, _url: string) {
   const links: string[] = []
   for (const match of html.matchAll(LINK_REGEX)) {
-    links.push(parseURL(match[1]).pathname)
+    const url = parseURL(match[1])
+    // Extract only relative links
+    !url.host && links.push(url.pathname)
   }
   return links
 }
