@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.10](https://github.com/unjs/nitropack/compare/v0.2.9...v0.2.10) (2022-04-14)
+
+
+### Features
+
+* **cache:** rewrite `defineCachedEventHandler` ([d7512be](https://github.com/unjs/nitropack/commit/d7512befd26880232c767d5fc135b4db86091853))
+* improve prerenderer ([5457a01](https://github.com/unjs/nitropack/commit/5457a010c188f412bed0914c44db27cbe02a664b))
+
 ### [0.2.9](https://github.com/unjs/nitropack/compare/v0.2.8...v0.2.9) (2022-04-14)
 
 
