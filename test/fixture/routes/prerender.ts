@@ -2,6 +2,8 @@ export default defineEventHandler(() => {
   const links = [
     'https://about.google/products/',
     '/api/hello',
+    '/api/hello',
+    '/prerender',
     '../api/hey'
   ]
   return `
