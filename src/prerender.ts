@@ -81,7 +81,7 @@ function extractLinks (html: string, _url: string) {
   const links: string[] = []
   for (const match of html.matchAll(LINK_REGEX)) {
     const url = parseURL(match[1])
-    // Extract only relative links
+    // Extract only non-external links
     !url.host && links.push(url.pathname)
   }
   return links
