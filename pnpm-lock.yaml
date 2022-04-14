@@ -51,7 +51,7 @@ importers:
       fs-extra: ^10.0.1
       globby: ^13.1.1
       gzip-size: ^7.0.0
-      h3: ^0.7.3
+      h3: ^0.7.4
       hasha: ^5.2.2
       hookable: ^5.1.1
       http-proxy: ^1.18.1
@@ -126,7 +126,7 @@ importers:
       fs-extra: 10.0.1
       globby: 13.1.1
       gzip-size: 7.0.0
-      h3: 0.7.3
+      h3: 0.7.4
       hasha: 5.2.2
       hookable: 5.1.1
       http-proxy: 1.18.1
@@ -3496,13 +3496,13 @@ packages:
     resolution: {integrity: sha512-C9MbuWVQ88mGb3lmqtp/iqXdALBo34oyjrVT1hx+FYRgcQReNXiKWvzXM6eQdpp4MWQkMGNnp4tlRBT7wsgmmg==}
     dev: false
 
-  /h3/0.7.3:
-    resolution: {integrity: sha512-4Gz3vukxfZC53pMDfmzUI7mSb3HUqId6tmnrDGck9HuXQzG09tDWOOigfnIFODZrYmySaCUg7OnNnplrsoogKw==}
+  /h3/0.7.4:
+    resolution: {integrity: sha512-hB/O4f0rPZ9356YBNu5LfQuk/cw78Fuh6vCGt3skysnvjLrprNLYWWrR6gLyB6JaY1NPvbHEWEBslWqT435lGw==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.1.1
       radix3: 0.1.1
-      ufo: 0.7.11
+      ufo: 0.8.3
     dev: false
 
   /handlebars/4.7.7:
