@@ -10,15 +10,16 @@ export interface CacheEntry<T=any> {
   integrity?: string
 }
 
-export interface CachifyOptions<T=any> {
-  name?: string
-  getKey?: (...args: any[]) => string
-  transform?: (entry: CacheEntry<T>, ...args: any[]) => any
-  group?: string
-  integrity?: any
-  magAge?: number
-  swr?: boolean
-  base?: string
+export interface CachifyOptions<T = any> {
+  name?: string;
+  getKey?: (...args: any[]) => string;
+  transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
+  group?: string;
+  integrity?: any;
+  magAge?: number;
+  swr?: boolean;
+  staleMaxAge?: number;
+  base?: string;
 }
 
 const defaultCacheOptions = {
@@ -135,7 +136,11 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
       if (opts.magAge) {
         cacheControl.push(`s-maxage=${opts.magAge}`)
       }
-      cacheControl.push('stale-while-revalidate')
+	  if (opts.staleMaxAge) {
+		  cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`)
+	  } else {
+		  cacheControl.push('stale-while-revalidate')
+	  }
     } else if (opts.magAge) {
       cacheControl.push(`max-age=${opts.magAge}`)
     }
