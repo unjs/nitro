@@ -39,13 +39,15 @@ export async function prerender (nitro: Nitro) {
     }
 
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
-    const filePath = join(nitro.options.output.publicDir, routeWithIndex)
+    const isImplicitHTML = (res.headers.get('content-type') || '').includes('html')
+    const fileName = isImplicitHTML ? routeWithIndex + '.html' : routeWithIndex
+    const filePath = join(nitro.options.output.publicDir, fileName)
     await writeFile(filePath, contents)
 
     // Crawl Links
     if (
       nitro.options.prerender.crawlLinks &&
-       (res.headers.get('content-type') || '').includes('html')
+      isImplicitHTML
     ) {
       return new Set(extractLinks(contents, route))
     }
