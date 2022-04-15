@@ -1,7 +1,6 @@
 import type { ALBHandler } from 'aws-lambda'
 import '#nitro/virtual/polyfill'
 import { withQuery } from 'ufo'
-import type { HeadersObject } from 'unenv/runtime/_internal/types'
 import { nitroApp } from '../app'
 
 export const handler: ALBHandler = async function handler (event, context) {
@@ -25,6 +24,6 @@ export const handler: ALBHandler = async function handler (event, context) {
   }
 }
 
-function normalizeOutgoingHeaders (headers: HeadersObject) {
+function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
   return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
 }
