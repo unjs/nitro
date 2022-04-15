@@ -83,7 +83,7 @@ importers:
       serve-static: ^1.15.0
       source-map-support: ^0.5.21
       standard-version: ^9.3.2
-      std-env: ^3.0.1
+      std-env: ^3.1.0
       table: ^6.8.0
       ufo: ^0.8.3
       unbuild: ^0.7.3
@@ -156,7 +156,7 @@ importers:
       serve-placeholder: 2.0.1
       serve-static: 1.15.0
       source-map-support: 0.5.21
-      std-env: 3.0.1
+      std-env: 3.1.0
       table: 6.8.0
       ufo: 0.8.3
       unenv: 0.4.6
@@ -5473,8 +5473,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /std-env/3.0.1:
-    resolution: {integrity: sha512-mC1Ps9l77/97qeOZc+HrOL7TIaOboHqMZ24dGVQrlxFcpPpfCHpH+qfUT7Dz+6mlG8+JPA1KfBQo19iC/+Ngcw==}
+  /std-env/3.1.0:
+    resolution: {integrity: sha512-UuqVLejQtP5JmguTsZpi3wE/+n62T+FAY7LyPMUMfcwzaLziMI5WXo0eeeGxblnh71oXQfIA5I2u9a4/XtoUWw==}
     dev: false
 
   /streamsearch/0.1.2:
