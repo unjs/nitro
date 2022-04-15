@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.11](https://github.com/unjs/nitropack/compare/v0.2.10...v0.2.11) (2022-04-15)
+
+
+### Bug Fixes
+
+* **prerender:** add `.html` for implicit html routes ([1b7bc8c](https://github.com/unjs/nitropack/commit/1b7bc8c999004b64d2c063c8944928d9c6337e07))
+
 ### [0.2.10](https://github.com/unjs/nitropack/compare/v0.2.9...v0.2.10) (2022-04-14)
 
 
