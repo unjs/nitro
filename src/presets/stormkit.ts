@@ -1,8 +1,3 @@
-//
-/**
- * load balancer, receives all requests
- */
-
 import { defineNitroPreset } from '../preset'
 
 export const stormkit = defineNitroPreset({
