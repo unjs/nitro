@@ -17,6 +17,7 @@ Built-in presets:
 - `node-cli`
 - `render-com`
 - `service-worker`
+- `stormkit`
 - `vercel` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/vercel))
 
 You can build nitro project against a specific preset using `NITRO_PRESET=name npx nitropack build`
