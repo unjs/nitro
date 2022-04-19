@@ -55,7 +55,7 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     // Support for importing from '#imports'
     nitro.options.virtual['#imports'] = () => nitro.unimport.toExports()
     // Backward compatibility
-    nitro.options.alias['#nitro'] = nitro.options.alias['#nitro'] || '#imports'
+    nitro.options.virtual['#nitro'] = 'export * from "#imports"'
   }
 
   // Dev-only storage
