@@ -30,10 +30,14 @@ export async function prerender (nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set()
-  const isGenerated = (route: string) => generatedRoutes.has(route)
+  const canPrerender = (route: string = '/') => {
+    if (generatedRoutes.has(route)) { return false }
+    if (route.length > 250) { return false }
+    return true
+  }
 
   const generateRoute = async (route: string) => {
-    if (isGenerated(route)) { return }
+    if (!canPrerender(route)) { return }
     generatedRoutes.add(route)
     routes.delete(route)
     const res = await (localFetch(route) as ReturnType<typeof fetch>)
@@ -53,7 +57,7 @@ export async function prerender (nitro: Nitro) {
     ) {
       const crawledRoutes = extractLinks(contents, route)
       for (const crawledRoute of crawledRoutes) {
-        if (!isGenerated(crawledRoute)) {
+        if (canPrerender(crawledRoute)) {
           routes.add(crawledRoute)
         }
       }
