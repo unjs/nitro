@@ -1,5 +1,5 @@
 import { resolve, join } from 'pathe'
-import { hasProtocol } from 'ufo'
+import { parseURL } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
@@ -80,14 +80,14 @@ function extractLinks (html: string, _url: string) {
   const links: string[] = []
   for (const match of html.matchAll(LINK_REGEX)) {
     const url = match[1]
-    if (!url || hasProtocol(url) || getExtension(url)) {
-      continue
-    }
-    if (!url.startsWith('/')) {
+    if (!url) { continue }
+    const { pathname, protocol } = parseURL(url)
+    if (protocol || getExtension(pathname)) { continue }
+    if (!pathname.startsWith('/')) {
       // TODO: Handle relative urls with _url
       continue
     }
-    links.push(url)
+    links.push(pathname)
   }
   return links
 }
