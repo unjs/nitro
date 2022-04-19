@@ -1,6 +1,6 @@
 # Cloudflare
 
-**Preset Name:** `cloudflare`
+**Preset:** `cloudflare` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
 
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
 

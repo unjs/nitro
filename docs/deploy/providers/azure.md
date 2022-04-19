@@ -2,7 +2,11 @@
 
 ## Azure Static Web Apps
 
-**Preset Name:** `azure`
+**Preset:** `azure` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
+
+::: info Zero Config Provider
+Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+:::
 
 Azure Static Web Apps are designed to be deployed continuously in a [GitHub Actions workflow](https://docs.microsoft.com/en-us/azure/static-web-apps/github-actions-workflow). By default, Nitro will detect this deployment environment and enable the `azure` preset.
 
@@ -51,7 +55,7 @@ That's it! Now Azure Static Web Apps will automatically deploy your Nitro-powere
 
 ## Azure Functions
 
-**Preset Name:** `azure-functions`
+**Preset:** `azure-functions`
 
 **Note:** If you encounter any issues, please ensure you're using a Node.js 14+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#setting-the-node-version).
 

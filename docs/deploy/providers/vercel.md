@@ -1,6 +1,10 @@
 # Vercel
 
-**Preset Name:** `vercel`
+**Preset:** `vercel` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
+
+::: info Zero Config Provider
+Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+:::
 
 ## Deploy using Git
 
@@ -12,17 +16,4 @@
 After your project has been imported and deployed, all subsequent pushes to branches will generate [Preview Deployments](https://vercel.com/docs/concepts/deployments/environments#preview), and all changes made to the Production Branch (commonly “main”) will result in a [Production Deployment](https://vercel.com/docs/concepts/deployments/environments#production).
 
 Learn more about Vercel’s [Git Integration](https://vercel.com/docs/concepts/git).
-
-
-## Deploy using CLI
-
-1. Install the [Vercel CLI](https://vercel.com/cli).
-2. Vercel will detect that you are using Nitro and will enable the correct settings for your deployment.
-3. Your application is deployed!
-
-```bash
-npm i -g vercel
-npx nuxi init -t v3-vercel
-vercel
-```
 

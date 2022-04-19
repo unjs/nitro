@@ -84,7 +84,7 @@ function getGuideSidebar() {
       text: 'Advanced',
       children: [
         ['/guide/plugins', 'Plugins'],
-        ['/guide/presets', 'Deployment Presets'],
+        ['/guide/custom-presets', 'Custom Presets'],
       ].map(toItem)
     }
   ]

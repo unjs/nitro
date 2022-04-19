@@ -7,11 +7,22 @@ a {
   color: var(--c-text) !important;
 }
 
+p a {
+ text-decoration: underline;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --c-bg: rgb(20,20,20) !important;
-    --c-text: rgb(255,255,255,87%) !important;
-    --c-text-light:  rgb(255,255,255,87%) !important;
+    --c-text: rgb(255,255,255,87%);
+    --c-text-light:  rgb(255,255,255,87%);
+  }
+  .custom-block {
+    color: var(--c-text) !important;
+    background-color: var(--c-bg) !important;
+  }
+  tr:nth-child(2n) {
+    background-color: inherit !important;
   }
   .action > a {
     color: var(--c-bg) !important;

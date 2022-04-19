@@ -1,6 +1,6 @@
 # AWS Lmabda
 
-**Preset Name:** `aws-lambda`
+**Preset:** `aws-lambda` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
 
 Nitro provides a built-in preset to generate output format compatible with [AWS Lambda](https://aws.amazon.com/lambda/).
 

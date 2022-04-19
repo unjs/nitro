@@ -1,5 +1,7 @@
 # DigitalOcean
 
-**Preset Name:** `digitalocean`
+**Preset:** `digitalocean` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
 
-[TODO]
+::: warning Work in Progress
+Documentation for this section is not yet complete.
+:::
