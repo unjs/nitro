@@ -57,7 +57,7 @@ function createNitroApp (): NitroApp {
   const localCall = createCall(h3App.nodeHandler as any)
   const localFetch = createLocalFetch(localCall, globalThis.fetch)
 
-  const $fetch = createFetch({ fetch: localFetch, Headers })
+  const $fetch = createFetch({ fetch: localFetch, Headers, defaults: { baseURL: config.app.baseURL } })
   // @ts-ignore
   globalThis.$fetch = $fetch
 
