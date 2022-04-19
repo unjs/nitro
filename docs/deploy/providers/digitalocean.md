@@ -17,4 +17,16 @@ Nitro supports deploying on the [Digital Ocean App Platform](https://docs.digita
 
    [More information](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/).
 
+1. Finally, you will need to ensure you set an `engines.node` field in your app's `package.json` to ensure Digital Ocean uses Node 14+:
+
+   ```json
+   {
+      "engines": {
+         "node": "14.x"
+      }
+   }
+   ```
+
+   [See more information](https://docs.digitalocean.com/products/app-platform/languages-frameworks/nodejs/#node-version).
+
 You can now follow [the rest of the Digital Ocean deployment guide](https://docs.digitalocean.com/products/app-platform/how-to/manage-deployments/).
