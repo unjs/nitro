@@ -67,7 +67,7 @@
     "esbuild": "^0.14.36",
     "etag": "^1.8.1",
     "events": "^3.3.0",
-    "fs-extra": "^10.0.1",
+    "fs-extra": "^10.1.0",
     "globby": "^13.1.1",
     "gzip-size": "^7.0.0",
     "h3": "^0.7.4",
@@ -78,7 +78,7 @@
     "is-primitive": "^3.0.1",
     "jiti": "^1.13.0",
     "klona": "^2.0.5",
-    "listhen": "^0.2.9",
+    "listhen": "^0.2.10",
     "listr": "^0.14.3",
     "mime": "^3.0.0",
     "mlly": "^0.5.2",
@@ -128,7 +128,7 @@
     "vitepress": "^0.22.3",
     "vitest": "^0.9.3"
   },
-  "packageManager": "pnpm@6.32.7",
+  "packageManager": "pnpm@6.32.8",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0"
   }
