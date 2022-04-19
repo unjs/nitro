@@ -121,7 +121,6 @@
     "eslint": "^8.13.0",
     "execa": "^6.1.0",
     "miniflare": "^2.4.0",
-    "ora": "^6.1.0",
     "standard-version": "^9.3.2",
     "unbuild": "^0.7.4",
     "vitepress": "^0.22.3",
