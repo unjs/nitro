@@ -55,7 +55,7 @@ function getDeploymentSidebar() {
         ['/deploy/providers/firebase', 'Firebase'],
         ['/deploy/providers/heroku', 'Heroku'],
         ['/deploy/providers/layer0', 'Layer0'],
-        ['/deploy/providers/netlify', 'Netliy'],
+        ['/deploy/providers/netlify', 'Netlify'],
         ['/deploy/providers/render', 'Render.com'],
         ['/deploy/providers/stormkit', 'Stormkit'],
         ['/deploy/providers/vercel', 'Vercel'],

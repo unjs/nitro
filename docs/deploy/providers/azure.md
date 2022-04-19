@@ -2,7 +2,7 @@
 
 ## Azure Static Web Apps
 
-**Preset:** `azure` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `azure` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::: info Zero Config Provider
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
