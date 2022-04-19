@@ -3,7 +3,7 @@ import { Server as HttpServer } from 'http'
 import { Server as HttpsServer } from 'https'
 import destr from 'destr'
 import { nitroApp } from '../app'
-import { useRuntimeConfig } from '#inernal/nitro'
+import { useRuntimeConfig } from '#internal/nitro'
 
 const cert = process.env.NITRO_SSL_CERT
 const key = process.env.NITRO_SSL_KEY
