@@ -5,7 +5,7 @@ import type { Nitro } from '../types'
 
 export const vercel = defineNitroPreset({
   extends: 'node',
-  entry: '#nitro/entries/vercel',
+  entry: '#internal/nitro/entries/vercel',
   output: {
     dir: '{{ rootDir }}/.vercel_build_output',
     serverDir: '{{ output.dir }}/functions/node/server',

@@ -33,20 +33,20 @@ export function publicAssets (nitro: Nitro): Plugin {
   }
 
   return virtual({
-    '#nitro/virtual/public-assets-data': `export default ${JSON.stringify(assets, null, 2)};`,
-    '#nitro/virtual/public-assets-node': `
+    '#internal/nitro/virtual/public-assets-data': `export default ${JSON.stringify(assets, null, 2)};`,
+    '#internal/nitro/virtual/public-assets-node': `
 import { promises as fsp } from 'fs'
 import { resolve } from 'pathe'
 import { dirname } from 'pathe'
 import { fileURLToPath } from 'url'
-import assets from '#nitro/virtual/public-assets-data'
+import assets from '#internal/nitro/virtual/public-assets-data'
 const mainDir = dirname(fileURLToPath(globalThis.entryURL))
 export function readAsset (id) {
   return fsp.readFile(resolve(mainDir, assets[id].path)).catch(() => {})
 }`,
-    '#nitro/virtual/public-assets': `
-import assets from '#nitro/virtual/public-assets-data'
-${nitro.options.serveStatic ? 'export * from "#nitro/virtual/public-assets-node"' : 'export const readAsset = () => Promise(null)'}
+    '#internal/nitro/virtual/public-assets': `
+import assets from '#internal/nitro/virtual/public-assets-data'
+${nitro.options.serveStatic ? 'export * from "#internal/nitro/virtual/public-assets-node"' : 'export const readAsset = () => Promise(null)'}
 
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 

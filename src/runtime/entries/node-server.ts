@@ -1,9 +1,9 @@
-import '#nitro/virtual/polyfill'
+import '#internal/nitro/virtual/polyfill'
 import { Server as HttpServer } from 'http'
 import { Server as HttpsServer } from 'https'
 import destr from 'destr'
 import { nitroApp } from '../app'
-import { useRuntimeConfig } from '#nitro'
+import { useRuntimeConfig } from '#inernal/nitro'
 
 const cert = process.env.NITRO_SSL_CERT
 const key = process.env.NITRO_SSL_KEY

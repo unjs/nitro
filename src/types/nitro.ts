@@ -141,7 +141,10 @@ export interface NitroOptions {
   replace: Record<string, string | ((id: string) => string)>
 
   // Advanced
-  typescript: { generateTsConfig?: boolean }
+  typescript: {
+    internalPaths?: boolean
+    generateTsConfig?: boolean
+  }
   hooks: NestedHooks<NitroHooks>
   nodeModulesDirs: string[]
   commands: {

@@ -2,11 +2,6 @@
 
 Nitro provides a powerful caching system built on top of the storage layer.
 
-```js
-import { defineCachedFunction } from '#nitro'
-import { cachedEventHandler } from '#nitro'
-```
-
 **Example:** Cache an API handler
 
 ```js

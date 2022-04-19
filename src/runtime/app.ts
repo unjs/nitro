@@ -7,9 +7,9 @@ import { createHooks, Hookable } from 'hookable'
 import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
-import { plugins } from '#nitro/virtual/plugins'
-import errorHandler from '#nitro/virtual/error-handler'
-import { handlers } from '#nitro/virtual/server-handlers'
+import { plugins } from '#internal/nitro/virtual/plugins'
+import errorHandler from '#internal/nitro/virtual/error-handler'
+import { handlers } from '#internal/nitro/virtual/server-handlers'
 
 export interface NitroApp {
   h3App: H3App

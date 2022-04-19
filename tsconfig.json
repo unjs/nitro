@@ -13,15 +13,17 @@
       "nitropack": [
         "./src/index"
       ],
-      "#nitro": [
+      "#internal/nitro": [
         "./src/runtime/index"
       ],
-      "#nitro/*": [
+      "#internal/nitro/*": [
         "./src/runtime/*"
-      ],
-      "#nitro-error": [
-        "./src/runtime/error"
-      ],
+      ]
     },
-  }
+  },
+  "include": [
+    "src",
+    "test",
+    "examples"
+  ]
 }

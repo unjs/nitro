@@ -1,7 +1,7 @@
 import { hash } from 'ohash'
 import { H3Response, toEventHandler, handleCacheHeaders, defineEventHandler, createEvent } from 'h3'
 import type { CompatibilityEventHandler, CompatibilityEvent } from 'h3'
-import { useStorage } from '#nitro'
+import { useStorage } from '#internal/nitro'
 
 export interface CacheEntry<T=any> {
   value?: T

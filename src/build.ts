@@ -87,14 +87,16 @@ export async function writeTypes (nitro: Nitro) {
         moduleResolution: 'Node',
         allowJs: true,
         resolveJsonModule: true,
-        paths: {
-          '#nitro': [
-            join(runtimeDir, 'index')
-          ],
-          '#nitro/*': [
-            join(runtimeDir, '*')
-          ]
-        }
+        paths: nitro.options.typescript.internalPaths
+          ? {
+              '#internal/nitro': [
+                join(runtimeDir, 'index')
+              ],
+              '#internal/nitro/*': [
+                join(runtimeDir, '*')
+              ]
+            }
+          : {}
       },
       include: [
         './nitro.d.ts'

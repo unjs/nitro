@@ -1,6 +1,6 @@
 import { defineNitroPreset } from '../preset'
 
 export const node = defineNitroPreset({
-  entry: '#nitro/entries/node',
+  entry: '#internal/nitro/entries/node',
   externals: true
 })

@@ -35,9 +35,9 @@ export function storage (opts: StorageOptions) {
   const driverImports = Array.from(new Set(mounts.map(m => m.driver)))
 
   return virtual({
-    '#nitro/virtual/storage': `
+    '#internal/nitro/virtual/storage': `
 import { createStorage } from 'unstorage'
-import { assets } from '#nitro/virtual/server-assets'
+import { assets } from '#internal/nitro/virtual/server-assets'
 
 ${driverImports.map(i => `import ${serializeImportName(i)} from '${i}'`).join('\n')}
 

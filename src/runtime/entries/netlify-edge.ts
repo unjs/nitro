@@ -1,4 +1,4 @@
-import '#nitro/virtual/polyfill'
+import '#internal/nitro/virtual/polyfill'
 import { nitroApp } from '../app'
 import { requestHasBody, useRequestBody } from '../utils'
 

@@ -1,5 +1,5 @@
 import { existsSync, promises as fsp } from 'fs'
-import { join, dirname, resolve } from 'pathe'
+import { join, dirname } from 'pathe'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
@@ -34,13 +34,13 @@ export const netlify = defineNitroPreset({
 // Netlify builder
 export const netlifyBuilder = defineNitroPreset({
   extends: 'netlify',
-  entry: '#nitro/entries/netlify-builder'
+  entry: '#internal/nitro/entries/netlify-builder'
 })
 
 // Netlify edge
 export const netlifyEdge = defineNitroPreset({
   extends: 'base-worker',
-  entry: '#nitro/entries/netlify-edge',
+  entry: '#internal/nitro/entries/netlify-edge',
   output: {
     serverDir: '{{ rootDir }}/.netlify/edge-functions',
     publicDir: '{{ rootDir }}/dist'

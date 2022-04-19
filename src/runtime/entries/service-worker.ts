@@ -1,7 +1,7 @@
-import '#nitro/virtual/polyfill'
+import '#internal/nitro/virtual/polyfill'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
-import { isPublicAssetURL } from '#nitro/virtual/public-assets'
+import { isPublicAssetURL } from '#internal/nitro/virtual/public-assets'
 
 addEventListener('fetch', (event: any) => {
   const url = new URL(event.request.url)

@@ -2,11 +2,7 @@
 
 Nitro provides a built-in storage layer that can abstract filesystem access by using [unjs/unstorage](https://github.com/unjs/unstorage).
 
-```js
-import { useStorage } from '#nitro'
-```
-
-ℹ️ See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
+See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
 
 **Example:** Simple operations
 

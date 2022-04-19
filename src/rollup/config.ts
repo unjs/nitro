@@ -197,7 +197,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       ...nitro.options.handlers
     ]
     if (nitro.options.serveStatic) {
-      handlers.unshift({ route: '', handler: '#nitro/static' })
+      handlers.unshift({ route: '', handler: '#internal/nitro/static' })
     }
     if (nitro.options.renderer) {
       handlers.push({ route: '/**', handler: nitro.options.renderer })
@@ -207,7 +207,7 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // Polyfill
   rollupConfig.plugins.push(virtual({
-    '#nitro/virtual/polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
+    '#internal/nitro/virtual/polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
   }))
 
   // User virtuals
@@ -215,7 +215,7 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // Plugins
   rollupConfig.plugins.push(virtual({
-    '#nitro/virtual/plugins': `
+    '#internal/nitro/virtual/plugins': `
 ${nitro.options.plugins.map(plugin => `import _${hash(plugin)} from '${plugin}';`).join('\n')}
 
 export const plugins = [
@@ -233,7 +233,7 @@ export const plugins = [
   rollupConfig.plugins.push(alias({
     entries: resolveAliases({
       '#build': buildDir,
-      '#nitro/virtual/error-handler': nitro.options.errorHandler,
+      '#internal/nitro/virtual/error-handler': nitro.options.errorHandler,
       '~': nitro.options.srcDir,
       '@/': nitro.options.srcDir,
       '~~': nitro.options.rootDir,

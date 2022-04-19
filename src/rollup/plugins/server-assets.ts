@@ -29,12 +29,12 @@ interface ResolvedAsset {
 export function serverAssets (nitro: Nitro): Plugin {
   // Development: Use filesystem
   if (nitro.options.dev) {
-    return virtual({ '#nitro/virtual/server-assets': getAssetsDev(nitro) })
+    return virtual({ '#internal/nitro/virtual/server-assets': getAssetsDev(nitro) })
   }
 
   // Production: Bundle assets
   return virtual({
-    '#nitro/virtual/server-assets': async () => {
+    '#internal/nitro/virtual/server-assets': async () => {
       // Scan all assets
       const assets: Record<string, ResolvedAsset> = {}
       for (const asset of nitro.options.serverAssets) {

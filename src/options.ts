@@ -47,7 +47,7 @@ const NitroDefaults: NitroConfig = {
   baseURL: process.env.NITRO_APP_BASE_URL || '/',
   handlers: [],
   devHandlers: [],
-  errorHandler: '#nitro/error',
+  errorHandler: '#internal/nitro/error',
   routes: {},
   prerender: {
     crawlLinks: false,
@@ -56,7 +56,7 @@ const NitroDefaults: NitroConfig = {
 
   // Rollup
   alias: {
-    '#nitro': runtimeDir
+    '#internal/nitro': runtimeDir
   },
   unenv: {},
   analyze: false,
@@ -64,7 +64,10 @@ const NitroDefaults: NitroConfig = {
   replace: {},
 
   // Advanced
-  typescript: { generateTsConfig: true },
+  typescript: {
+    generateTsConfig: true,
+    internalPaths: false
+  },
   nodeModulesDirs: [],
   hooks: {},
   commands: {}

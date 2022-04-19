@@ -1,6 +1,6 @@
 import { eventHandler, createError } from 'h3'
 import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
-import { getAsset, readAsset, isPublicAssetURL } from '#nitro/virtual/public-assets'
+import { getAsset, readAsset, isPublicAssetURL } from '#internal/nitro/virtual/public-assets'
 
 const METHODS = ['HEAD', 'GET']
 
