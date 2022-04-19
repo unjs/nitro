@@ -136,11 +136,11 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
       if (opts.magAge) {
         cacheControl.push(`s-maxage=${opts.magAge}`)
       }
-	  if (opts.staleMaxAge) {
-		  cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`)
-	  } else {
-		  cacheControl.push('stale-while-revalidate')
-	  }
+      if (opts.staleMaxAge) {
+        cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`)
+      } else {
+        cacheControl.push('stale-while-revalidate')
+      }
     } else if (opts.magAge) {
       cacheControl.push(`max-age=${opts.magAge}`)
     }
