@@ -1,8 +1,9 @@
 import { existsSync, promises as fsp } from 'fs'
-import { join } from 'pathe'
+import { join, dirname, resolve } from 'pathe'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
+// Netlify functions
 export const netlify = defineNitroPreset({
   extends: 'aws-lambda',
   output: {
@@ -30,8 +31,37 @@ export const netlify = defineNitroPreset({
   }
 })
 
-// eslint-disable-next-line
+// Netlify builder
 export const netlifyBuilder = defineNitroPreset({
   extends: 'netlify',
   entry: '#nitro/entries/netlify-builder'
+})
+
+// Netlify edge
+export const netlifyEdge = defineNitroPreset({
+  extends: 'base-worker',
+  entry: '#nitro/entries/netlify-edge',
+  output: {
+    serverDir: '{{ rootDir }}/.netlify/edge-functions',
+    publicDir: '{{ rootDir }}/dist'
+  },
+  hooks: {
+    async 'compiled' (nitro: Nitro) {
+      const manifest = {
+        version: 1,
+        functions: [
+          {
+            function: 'server',
+            pattern: '/*'
+          }
+        ]
+      }
+      const manifestPath = join(nitro.options.rootDir, '.netlify/edge-functions/manifest.json')
+      await fsp.mkdir(dirname(manifestPath), { recursive: true })
+      await fsp.writeFile(manifestPath, JSON.stringify(manifest, null, 2))
+    },
+    'rollup:before' (nitro: Nitro) {
+      nitro.options.rollupConfig.output.entryFileNames = 'server.js'
+    }
+  }
 })
