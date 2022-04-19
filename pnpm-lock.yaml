@@ -84,7 +84,7 @@ importers:
       serve-static: ^1.15.0
       source-map-support: ^0.5.21
       standard-version: ^9.3.2
-      std-env: ^3.1.0
+      std-env: ^3.1.1
       table: ^6.8.0
       ufo: ^0.8.3
       unbuild: ^0.7.4
@@ -158,7 +158,7 @@ importers:
       serve-placeholder: 2.0.1
       serve-static: 1.15.0
       source-map-support: 0.5.21
-      std-env: 3.1.0
+      std-env: 3.1.1
       table: 6.8.0
       ufo: 0.8.3
       unenv: 0.4.6
@@ -5686,8 +5686,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /std-env/3.1.0:
-    resolution: {integrity: sha512-UuqVLejQtP5JmguTsZpi3wE/+n62T+FAY7LyPMUMfcwzaLziMI5WXo0eeeGxblnh71oXQfIA5I2u9a4/XtoUWw==}
+  /std-env/3.1.1:
+    resolution: {integrity: sha512-/c645XdExBypL01TpFKiG/3RAa/Qmu+zRi0MwAmrdEkwHNuN0ebo8ccAXBBDa5Z0QOJgBskUIbuCK91x0sCVEw==}
     dev: false
 
   /streamsearch/0.1.2:
@@ -6120,7 +6120,7 @@ packages:
       mlly: 0.5.2
       pathe: 0.2.0
       scule: 0.2.1
-      unplugin: 0.6.1_esbuild@0.14.36+rollup@2.70.2
+      unplugin: 0.6.2_esbuild@0.14.36+rollup@2.70.2
     transitivePeerDependencies:
       - esbuild
       - rollup
@@ -6137,8 +6137,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /unplugin/0.6.1_esbuild@0.14.36+rollup@2.70.2:
-    resolution: {integrity: sha512-cQqRCgQ2v/Q4fPIWNVZ6sNIDdl5v8JXOnlsUOsGzT4fblTONoPWaytiYSpu5qJ9lvSDZYAQN6BRVo3XQoZMfUQ==}
+  /unplugin/0.6.2_esbuild@0.14.36+rollup@2.70.2:
+    resolution: {integrity: sha512-+QONc2uBFQbeo4x5mlJHjTKjR6pmuchMpGVrWhwdGFFMb4ttFZ4E9KqhOOrNcm3Q8NNyB1vJ4s5e36IZC7UWYw==}
     peerDependencies:
       esbuild: '>=0.13'
       rollup: ^2.50.0
