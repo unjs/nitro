@@ -71,8 +71,14 @@ const NitroDefaults: NitroConfig = {
 }
 
 export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
-  userConfig = klona(userConfig)
+  // Detect preset
+  let preset = userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'node-server'
+  if (userConfig.dev) {
+    preset = 'nitro-dev'
+  }
 
+  // Load configuration and preset
+  userConfig = klona(userConfig)
   const { config } = await loadConfig({
     name: 'nitro',
     defaults: NitroDefaults,
@@ -92,9 +98,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     },
     overrides: {
       ...userConfig,
-      extends: [
-        userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'node-server'
-      ]
+      extends: [preset]
     }
   })
   const options = klona(config) as NitroOptions

@@ -35,7 +35,7 @@ export async function copyPublicAssets (nitro: Nitro) {
 
 export async function build (nitro: Nitro) {
   nitro.options.rollupConfig = getRollupConfig(nitro)
-  await nitro.hooks.callHook('nitro:rollup:before', nitro)
+  await nitro.hooks.callHook('rollup:before', nitro)
   return nitro.options.dev ? _watch(nitro) : _build(nitro)
 }
 
@@ -133,12 +133,12 @@ async function _build (nitro: Nitro) {
   if (nitro.options.logLevel > 1) {
     await printFSTree(nitro.options.output.serverDir)
   }
-  await nitro.hooks.callHook('nitro:compiled', nitro)
+  await nitro.hooks.callHook('compiled', nitro)
 
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir)
   const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/([^\s]+)/g, ` ${rOutput}/$1`)
+    return input.replace(/\s\.\/([^\s]*)/g, ` ${rOutput}/$1`)
   }
   if (buildInfo.commands.preview) {
     nitro.logger.info(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
@@ -174,9 +174,9 @@ function startRollupWatcher (nitro: Nitro) {
 
       // Finished building all bundles
       case 'END':
-        nitro.hooks.callHook('nitro:compiled', nitro)
+        nitro.hooks.callHook('compiled', nitro)
         nitro.logger.success('Nitro built', start ? `in ${Date.now() - start} ms` : '')
-        nitro.hooks.callHook('nitro:dev:reload')
+        nitro.hooks.callHook('dev:reload')
         return
 
       // Encountered an error while bundling

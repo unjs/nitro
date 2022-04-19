@@ -9,6 +9,7 @@ Built-in presets:
 - `digital-ocean`
 - `firebase` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/firebase))
 - `heroku`
+- `layer0`
 - `netlify` ([deployment guide](https://v3.nuxtjs.org/guide/deployment/netlify))
 - `nitro-dev`
 - `nitro-prerender`

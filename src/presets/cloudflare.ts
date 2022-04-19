@@ -11,7 +11,7 @@ export const cloudflare = defineNitroPreset({
     deploy: 'cd ./server && npx wrangler publish'
   },
   hooks: {
-    async 'nitro:compiled' (nitro: Nitro) {
+    async 'compiled' (nitro: Nitro) {
       await writeFile(resolve(nitro.options.output.dir, 'package.json'), JSON.stringify({ private: true, main: './server/index.mjs' }, null, 2))
       await writeFile(resolve(nitro.options.output.dir, 'package-lock.json'), JSON.stringify({ lockfileVersion: 1 }, null, 2))
     }

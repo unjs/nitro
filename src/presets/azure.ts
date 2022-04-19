@@ -15,7 +15,7 @@ export const azure = defineNitroPreset({
     preview: 'npx @azure/static-web-apps-cli start ./public --api-location ./server'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: Nitro) {
+    async 'compiled' (ctx: Nitro) {
       await writeRoutes(ctx)
     }
   }

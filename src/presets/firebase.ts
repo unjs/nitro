@@ -14,7 +14,7 @@ export const firebase = defineNitroPreset({
     deploy: 'npx firebase deploy'
   },
   hooks: {
-    async 'nitro:compiled' (ctx) {
+    async 'compiled' (ctx) {
       await writeRoutes(ctx)
     }
   }
