@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.3](https://github.com/unjs/nitropack/compare/v0.3.2...v0.3.3) (2022-04-19)
+
+
+### Bug Fixes
+
+* provide compatibility `#nitro` as a virtual module ([6a798c6](https://github.com/unjs/nitropack/commit/6a798c6a1ac77c5c53f33838047f3ab5c7560787))
+
 ### [0.3.2](https://github.com/unjs/nitropack/compare/v0.3.1...v0.3.2) (2022-04-19)
 
 
