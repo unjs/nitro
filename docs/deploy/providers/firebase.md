@@ -1,6 +1,6 @@
 # Firebase
 
-**Preset:** `firebase` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `firebase` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with Cloud Functions out of the box.
 

@@ -1,6 +1,6 @@
 # Layer0
 
-**Preset:** `layer0` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `layer0` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::: warning Work in Progress
 Documentation for this section is not yet complete.

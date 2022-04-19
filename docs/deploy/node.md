@@ -2,7 +2,7 @@
 
 ## Node.js Server
 
-**Preset:** `node-server` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `node-server` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::: info Note
 This is the default nitro output preset for production builds.
@@ -35,7 +35,7 @@ You can customize server behavior using following environment variables:
 
 ## Handler (advanced)
 
-**Preset:** `node` ([swtich to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `node` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 Nitro also has a more low-level preset that directly exports a function with `(req, res) => {}` signuture usable for middleware and custom servers.
 

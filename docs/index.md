@@ -2,7 +2,7 @@
 home: true
 sidebar: false
 heroText: Nitro
-tagline: Any Javascript Server, Anywhere
+tagline: Any JavaScript Server, Anywhere
 actionText: Get Started
 actionLink: /guide/
 features:
@@ -19,7 +19,7 @@ features:
   - title: Code-Splitting
     details: Async chunk loading for fast server startup time
   - title: TypeScript
-    details: Typescript support out of the box with few more goodies
+    details: TypeScript support out of the box with few more goodies
   - title: Storage Layer
     details: Multi driver and platform-agnostic storage system
   - title: Cache API
