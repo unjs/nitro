@@ -138,7 +138,7 @@ async function _build (nitro: Nitro) {
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir)
   const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/([^\s]+)/g, ` ${rOutput}/$1`)
+    return input.replace(/\s\.\/([^\s]*)/g, ` ${rOutput}/$1`)
   }
   if (buildInfo.commands.preview) {
     nitro.logger.info(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
