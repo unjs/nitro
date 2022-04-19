@@ -20,7 +20,7 @@ importers:
       '@rollup/plugin-virtual': ^2.1.0
       '@rollup/plugin-wasm': ^5.1.2
       '@rollup/pluginutils': ^4.2.1
-      '@types/aws-lambda': ^8.10.93
+      '@types/aws-lambda': ^8.10.94
       '@types/etag': ^1.8.1
       '@types/fs-extra': ^9.0.13
       '@types/http-proxy': ^1.17.8
@@ -164,7 +164,7 @@ importers:
       util: 0.12.4
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 9.0.0_eslint@8.13.0
-      '@types/aws-lambda': 8.10.93
+      '@types/aws-lambda': 8.10.94
       '@types/etag': 1.8.1
       '@types/fs-extra': 9.0.13
       '@types/http-proxy': 1.17.8
@@ -962,8 +962,8 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
 
-  /@types/aws-lambda/8.10.93:
-    resolution: {integrity: sha512-Vsyi9ogDAY3REZDjYnXMRJJa62SDvxHXxJI5nGDQdZW058dDE+av/anynN2rLKbCKXDRNw3D/sQmqxVflZFi4A==}
+  /@types/aws-lambda/8.10.94:
+    resolution: {integrity: sha512-Y7Iih+LxURTJ8WTFqLWi2eF0G2oWz/tCkp0EQf0E1ikip1yfNtXOfgeXK3OaKA+/i6fAxvm9L1KPuTj8KBUB0A==}
     dev: true
 
   /@types/chai-subset/1.3.3:
