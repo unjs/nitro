@@ -1,6 +1,6 @@
 import { resolve, join } from 'pathe'
 import { hasProtocol } from 'ufo'
-import Listr from 'listr'
+import ora from 'ora'
 import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro } from './types'
@@ -16,62 +16,64 @@ export async function prerender (nitro: Nitro) {
     return
   }
   // Build with prerender preset
-  nitro.logger.info('Prerendering routes')
+  const spinner = ora('Initializing prerender').start()
   const nitroRenderer = await createNitro({
     ...nitro.options._config,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: 'nitro-prerender'
   })
+  spinner.start('Building prerenderer')
   await build(nitroRenderer)
 
   // Import renderer entry
+  spinner.start('Starting prerenderer')
   const { localFetch } = await import(resolve(nitroRenderer.options.output.serverDir, 'index.mjs'))
+  spinner.succeed('Prerenderer initialized')
 
   // Start prerendering
   const generatedRoutes = new Set()
+  const isGenerated = (route: string) => generatedRoutes.has(route)
 
   const generateRoute = async (route: string) => {
+    if (isGenerated(route)) { return }
+    generatedRoutes.add(route)
+    routes.delete(route)
     const res = await (localFetch(route) as ReturnType<typeof fetch>)
     const contents = await res.text()
     if (res.status !== 200) {
       throw new Error('[HTTP] ' + res.status + ' ' + res.statusText)
     }
-
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     const isImplicitHTML = (res.headers.get('content-type') || '').includes('html')
     const fileName = isImplicitHTML ? routeWithIndex + '.html' : routeWithIndex
     const filePath = join(nitro.options.output.publicDir, fileName)
     await writeFile(filePath, contents)
-
     // Crawl Links
     if (
       nitro.options.prerender.crawlLinks &&
       isImplicitHTML
     ) {
-      return new Set(extractLinks(contents, route))
+      const crawledRoutes = extractLinks(contents, route)
+      for (const crawledRoute of crawledRoutes) {
+        if (!isGenerated(crawledRoute)) {
+          routes.add(crawledRoute)
+        }
+      }
     }
   }
 
-  function createTasks (routes: Set<string>) {
-    const tasks = new Listr([], { concurrent: 1, exitOnError: false, collapse: false })
-    for (const route of routes) {
-      tasks.add({
-        title: `Generating ${route}`,
-        skip: () => generatedRoutes.has(route),
-        task: async () => {
-          generatedRoutes.add(route)
-          const newRoutes = await generateRoute(route)
-          if (newRoutes && newRoutes.size) {
-            return createTasks(newRoutes)
-          }
-        }
-      })
+  for (let i = 0; i < 100 && routes.size; i++) {
+    for (const route of Array.from(routes)) {
+      spinner.start('Prerendering ' + route)
+      const error = await generateRoute(route).catch(err => err)
+      if (error) {
+        spinner.warn('Prerendered ' + route + ': ' + error.message)
+      } else {
+        spinner.succeed('Prerendered ' + route)
+      }
     }
-    return tasks
   }
-  const tasks = createTasks(routes)
-  await tasks.run().catch(() => {})
 }
 
 const LINK_REGEX = /href=['"]?([^'" >]+)/g
