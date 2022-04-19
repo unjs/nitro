@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/unjs/nitropack/compare/v0.2.11...v0.3.0) (2022-04-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename `#nitro` to `#internal/nitro`
+* remove `nitro:` prefix from hook names
+
+### Features
+
+* add layer0 preset ([b748da3](https://github.com/unjs/nitropack/commit/b748da36a1deb4b4550c865d64a1f97a4fb50211))
+* **cache:** add `staleMaxAge` option for caching header ([#116](https://github.com/unjs/nitropack/issues/116)) ([8ff6836](https://github.com/unjs/nitropack/commit/8ff6836805842a7649d12f4a450d142cf329fa08))
+* netlify edge function preset ([feebf8f](https://github.com/unjs/nitropack/commit/feebf8f6fda08873452c826e89327db380a495c7))
+* stormkit preset ([#103](https://github.com/unjs/nitropack/issues/103)) ([7316385](https://github.com/unjs/nitropack/commit/7316385ea921fd33f89e4743cf3058898537f454))
+
+
+### Bug Fixes
+
+* default fetch baseURL to runtime nitro base ([#122](https://github.com/unjs/nitropack/issues/122)) ([00a15c1](https://github.com/unjs/nitropack/commit/00a15c159b2f3601d7fc3c53cc7ee423f910cf8c))
+* **externals:** normalize output paths to flat strcture ([a7f451f](https://github.com/unjs/nitropack/commit/a7f451fddf6bf7031b24eed14e707430271deda9)), closes [#106](https://github.com/unjs/nitropack/issues/106)
+* force preset to `nitro-dev` when `dev` flag used ([94fc531](https://github.com/unjs/nitropack/commit/94fc53118e411bc538d61dacac70d1d1183b5004)), closes [#121](https://github.com/unjs/nitropack/issues/121)
+
+
+* remove `nitro:` prefix from hook names ([ac2f0aa](https://github.com/unjs/nitropack/commit/ac2f0aa30ff1a584a2144f879d0d8caacece0add))
+* rename `#nitro` to `#internal/nitro` ([944a348](https://github.com/unjs/nitropack/commit/944a34822c8eb4a4f6e31f285f8a64694372d657))
+
 ### [0.2.11](https://github.com/unjs/nitropack/compare/v0.2.10...v0.2.11) (2022-04-15)
 
 
