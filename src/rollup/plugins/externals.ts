@@ -199,7 +199,8 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       const writeFile = async (file) => {
         if (!await isFile(file)) { return }
         const src = resolve(opts.traceOptions.base, file)
-        const dst = resolve(opts.outDir, 'node_modules', file.replace(/^.*?node_modules[\\/](.*)$/, '$1'))
+        const { pkgName, subpath } = parseNodeModulePath(file)
+        const dst = resolve(opts.outDir, `node_modules/${pkgName}/${subpath}`)
         await fsp.mkdir(dirname(dst), { recursive: true })
         await fsp.copyFile(src, dst)
       }
