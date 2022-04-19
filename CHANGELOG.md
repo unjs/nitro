@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/unjs/nitropack/compare/v0.3.1...v0.3.2) (2022-04-19)
+
+
+### Features
+
+* provide `#imports` alias and `#nitro` for backward compatibility ([ef2f216](https://github.com/unjs/nitropack/commit/ef2f216e48c54404c335c7995efcec85f7759c66))
+
 ### [0.3.1](https://github.com/unjs/nitropack/compare/v0.3.0...v0.3.1) (2022-04-19)
 
 
