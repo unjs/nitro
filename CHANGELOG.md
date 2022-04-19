@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/unjs/nitropack/compare/v0.3.0...v0.3.1) (2022-04-19)
+
+
+### Bug Fixes
+
+* **node-server:** fix typo in import ([b5bd30b](https://github.com/unjs/nitropack/commit/b5bd30b4c0484f862dc9f78403248c686a6fb445))
+* **prerenderer:** switch back to simple queue ([b7a65eb](https://github.com/unjs/nitropack/commit/b7a65eb0765e5b5a5e0644f61cf654f46565b410))
+
 ## [0.3.0](https://github.com/unjs/nitropack/compare/v0.2.11...v0.3.0) (2022-04-19)
 
 
