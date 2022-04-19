@@ -97,7 +97,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     })
     return reloadPromise
   })
-  nitro.hooks.hook('nitro:dev:reload', reload)
+  nitro.hooks.hook('dev:reload', reload)
 
   // App
   const app = createApp()

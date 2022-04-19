@@ -14,7 +14,7 @@ export const azureFunctions = defineNitroPreset({
     deploy: 'az functionapp deployment source config-zip -g <resource-group> -n <app-name> --src {{ output.dir }}/deploy.zip'
   },
   hooks: {
-    async 'nitro:compiled' (ctx: Nitro) {
+    async 'compiled' (ctx: Nitro) {
       await writeRoutes(ctx)
     }
   }

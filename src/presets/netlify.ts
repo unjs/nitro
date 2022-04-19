@@ -10,7 +10,7 @@ export const netlify = defineNitroPreset({
     publicDir: '{{ rootDir }}/dist'
   },
   hooks: {
-    async 'nitro:compiled' (nitro: Nitro) {
+    async 'compiled' (nitro: Nitro) {
       const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
       let contents = '/* /.netlify/functions/server 200'
       if (existsSync(redirectsPath)) {
@@ -24,7 +24,7 @@ export const netlify = defineNitroPreset({
       }
       await fsp.writeFile(redirectsPath, contents)
     },
-    'nitro:rollup:before' (nitro: Nitro) {
+    'rollup:before' (nitro: Nitro) {
       nitro.options.rollupConfig.output.entryFileNames = 'server.ts'
     }
   }

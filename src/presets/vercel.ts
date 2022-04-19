@@ -12,7 +12,7 @@ export const vercel = defineNitroPreset({
     publicDir: '{{ output.dir }}/static'
   },
   hooks: {
-    async 'nitro:compiled' (nitro: Nitro) {
+    async 'compiled' (nitro: Nitro) {
       await writeRoutes(nitro)
     }
   }
