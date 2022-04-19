@@ -22,6 +22,7 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/', activeMatch: '^/guide/' },
+      { text: 'Deployment', link: '/deploy/', activeMatch: '^/deploy/' },
       { text: 'Config Reference', link: '/config/', activeMatch: '^/config/' },
       { text: 'Changelog', link: 'https://github.com/unjs/nitro/blob/main/CHANGELOG.md' }
     ],
@@ -29,10 +30,39 @@ export default defineConfig({
     sidebar: {
       '/guide/': getGuideSidebar(),
       '/config/': 'auto',
+      '/deploy/': getDeploymentSidebar(),
       '/': getGuideSidebar(),
     }
   }
 })
+
+function getDeploymentSidebar() {
+  return [
+    {
+      text: 'General',
+      children: [
+        ['/deploy/', 'Overview'],
+        ['/deploy/node', 'Node.js'],
+      ].map(toItem)
+    },
+    {
+      text: 'Providers',
+      children: [
+        ['/deploy/providers/aws', 'AWS'],
+        ['/deploy/providers/azure', 'Azure'],
+        ['/deploy/providers/cloudflare', 'Cloudflare'],
+        ['/deploy/providers/digitalocean', 'DigitalOcean'],
+        ['/deploy/providers/firebase', 'Firebase'],
+        ['/deploy/providers/heroku', 'Heroku'],
+        ['/deploy/providers/layer0', 'Layer0'],
+        ['/deploy/providers/netlify', 'Netliy'],
+        ['/deploy/providers/render', 'Render.com'],
+        ['/deploy/providers/stormkit', 'Stormkit'],
+        ['/deploy/providers/vercel', 'Vercel'],
+      ].map(toItem)
+    }
+  ]
+}
 
 
 function getGuideSidebar() {
