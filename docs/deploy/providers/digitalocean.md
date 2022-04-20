@@ -11,7 +11,6 @@ Nitro supports deploying on the [Digital Ocean App Platform](https://docs.digita
 1. Next, you'll need to configure environment variables. In your app settings, ensure the following app-level environment variables are set:
 
    ```bash
-   HOST=0.0.0.0
    NITRO_PRESET=digital-ocean
    ```
 
