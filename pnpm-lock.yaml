@@ -33,8 +33,8 @@ importers:
       archiver: ^5.3.1
       base64-js: ^1.5.1
       buffer: ^6.0.3
-      c12: ^0.2.5
-      c8: ^7.11.0
+      c12: ^0.2.7
+      c8: ^7.11.2
       chalk: ^5.0.1
       chokidar: ^3.5.3
       connect: ^3.7.0
@@ -110,7 +110,7 @@ importers:
       archiver: 5.3.1
       base64-js: 1.5.1
       buffer: 6.0.3
-      c12: 0.2.5
+      c12: 0.2.7
       chalk: 5.0.1
       chokidar: 3.5.3
       connect: 3.7.0
@@ -171,14 +171,14 @@ importers:
       '@types/object-hash': 2.2.1
       '@types/semver': 7.3.9
       '@types/serve-static': 1.13.10
-      c8: 7.11.0
+      c8: 7.11.2
       eslint: 8.13.0
       execa: 6.1.0
       miniflare: 2.4.0
       standard-version: 9.3.2
       unbuild: 0.7.4
       vitepress: 0.22.3
-      vitest: 0.9.3_c8@7.11.0
+      vitest: 0.9.3_c8@7.11.2
 
   docs:
     specifiers: {}
@@ -335,7 +335,7 @@ packages:
     resolution: {integrity: sha512-hoyByceqwKirw7w3Z7gnIIZC3Wx3J484Y3L/cMpXFbr7d9ZQj2mODrirNzcJa+SM3UlpWXYvKV4RlRpFXlWgXg==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.4
+      '@jridgewell/trace-mapping': 0.3.8
     dev: true
 
   /@babel/code-frame/7.16.7:
@@ -623,8 +623,8 @@ packages:
     resolution: {integrity: sha512-Fg32GrJo61m+VqYSdRSjRXMjQ06j8YIYfcTqndLYVAaHmroZHLJZCydsWBOTDqXS2v+mjxohBWEMfg97GXmYQg==}
     dev: true
 
-  /@jridgewell/trace-mapping/0.3.4:
-    resolution: {integrity: sha512-vFv9ttIedivx0ux3QSjhgtCVjPZd5l46ZOMDSCwnH1yUO2e964gO8LZGyv2QkqcgR6TnBU1v+1IFqmeoG+0UJQ==}
+  /@jridgewell/trace-mapping/0.3.8:
+    resolution: {integrity: sha512-zdpaWDz5IEyHlu1EO+B+qRHmJkSxMVV6SXngDry9n1ZqslLXFH9Dw6lRqDidm/sOJAWdRltJsmZ1SK28/uZKsw==}
     dependencies:
       '@jridgewell/resolve-uri': 3.0.5
       '@jridgewell/sourcemap-codec': 1.4.11
@@ -1611,8 +1611,8 @@ packages:
       dicer: 0.3.0
     dev: true
 
-  /c12/0.2.5:
-    resolution: {integrity: sha512-45/GsCYd63XHFgg7xq59eeR8hAbCDoj6w+kQWal9Vb8oGzMRDrHqpZexVNIL4DgeUduvCnBB+7smHiRHVAwBkQ==}
+  /c12/0.2.7:
+    resolution: {integrity: sha512-ih1nuHbZ6Ltf8Wss96JH6YvKIW5+9+uLAA08LUQAoDrFPGSyvPvQv/QBIRE+dCBWOK4PcwH0ylRkSa9huI1Acw==}
     dependencies:
       defu: 6.0.0
       dotenv: 16.0.0
@@ -1623,8 +1623,8 @@ packages:
       rc9: 1.2.2
     dev: false
 
-  /c8/7.11.0:
-    resolution: {integrity: sha512-XqPyj1uvlHMr+Y1IeRndC2X5P7iJzJlEJwBpCdBbq2JocXOgJfr+JVfJkyNMGROke5LfKrhSFXGFXnwnRJAUJw==}
+  /c8/7.11.2:
+    resolution: {integrity: sha512-6ahJSrhS6TqSghHm+HnWt/8Y2+z0hM/FQyB1ybKhAR30+NYL9CTQ1uwHxuWw6U7BHlHv6wvhgOrH81I+lfCkxg==}
     engines: {node: '>=10.12.0'}
     hasBin: true
     dependencies:
@@ -1637,7 +1637,7 @@ packages:
       istanbul-reports: 3.1.4
       rimraf: 3.0.2
       test-exclude: 6.0.0
-      v8-to-istanbul: 8.1.1
+      v8-to-istanbul: 9.0.0
       yargs: 16.2.0
       yargs-parser: 20.2.9
     dev: true
@@ -5311,6 +5311,7 @@ packages:
   /source-map/0.7.3:
     resolution: {integrity: sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==}
     engines: {node: '>= 8'}
+    dev: false
 
   /sourcemap-codec/1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
@@ -5896,13 +5897,13 @@ packages:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
     dev: true
 
-  /v8-to-istanbul/8.1.1:
-    resolution: {integrity: sha512-FGtKtv3xIpR6BYhvgH8MI/y78oT7d8Au3ww4QIxymrCtZEh5b8gCw2siywE+puhEmuWKDtmfrvF5UlB298ut3w==}
+  /v8-to-istanbul/9.0.0:
+    resolution: {integrity: sha512-HcvgY/xaRm7isYmyx+lFKA4uQmfUbN0J4M0nNItvzTvH/iQ9kW5j/t4YSR+Ge323/lrgDAWJoF46tzGQHwBHFw==}
     engines: {node: '>=10.12.0'}
     dependencies:
+      '@jridgewell/trace-mapping': 0.3.8
       '@types/istanbul-lib-coverage': 2.0.4
       convert-source-map: 1.8.0
-      source-map: 0.7.3
     dev: true
 
   /validate-npm-package-license/3.0.4:
@@ -5957,7 +5958,7 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.9.3_c8@7.11.0:
+  /vitest/0.9.3_c8@7.11.2:
     resolution: {integrity: sha512-hKjqdBI732cV5giNLERyAsaJBebstrX5mvTbZr+jUDYUHnX1O4DpAJcHtqBOutuBi7lVIGQ5IF8eWvHHqbCHBA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -5978,7 +5979,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.0
       '@types/chai-subset': 1.3.3
-      c8: 7.11.0
+      c8: 7.11.2
       chai: 4.3.6
       local-pkg: 0.4.1
       tinypool: 0.1.2
