@@ -1,3 +1,4 @@
+import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
 import { parseURL } from 'ufo'
 import chalk from 'chalk'
@@ -26,7 +27,8 @@ export async function prerender (nitro: Nitro) {
   await build(nitroRenderer)
 
   // Import renderer entry
-  const { localFetch } = await import(resolve(nitroRenderer.options.output.serverDir, 'index.mjs'))
+  const serverEntrypoint = resolve(nitroRenderer.options.output.serverDir, 'index.mjs')
+  const { localFetch } = await import(pathToFileURL(serverEntrypoint).href)
 
   // Start prerendering
   const generatedRoutes = new Set()
