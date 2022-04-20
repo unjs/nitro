@@ -143,10 +143,10 @@ async function _build (nitro: Nitro) {
     return input.replace(/\s\.\/([^\s]*)/g, ` ${rOutput}/$1`)
   }
   if (buildInfo.commands.preview) {
-    nitro.logger.info(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
+    nitro.logger.success(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
   }
   if (buildInfo.commands.deploy) {
-    nitro.logger.info(`You can deploy this build using \`${rewriteRelativePaths(buildInfo.commands.deploy)}\``)
+    nitro.logger.success(`You can deploy this build using \`${rewriteRelativePaths(buildInfo.commands.deploy)}\``)
   }
 
   return {
