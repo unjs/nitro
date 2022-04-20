@@ -11,7 +11,7 @@ const key = process.env.NITRO_SSL_KEY
 const server = cert && key ? new HttpsServer({ key, cert }, nitroApp.h3App.nodeHandler) : new HttpServer(nitroApp.h3App.nodeHandler)
 
 const port = (destr(process.env.NITRO_PORT || process.env.PORT) || 3000) as number
-const hostname = process.env.NITRO_HOST || process.env.HOST || 'localhost'
+const hostname = process.env.NITRO_HOST || process.env.HOST || '0.0.0.0'
 
 // @ts-ignore
 server.listen(port, hostname, (err) => {
