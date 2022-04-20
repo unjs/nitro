@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.5](https://github.com/unjs/nitropack/compare/v0.3.4...v0.3.5) (2022-04-20)
+
+
+### Bug Fixes
+
+* **node-server:** default production host to `0.0.0.0` ([b7c7193](https://github.com/unjs/nitropack/commit/b7c719349a0ee399a525937abb5905e50b0351f2))
+
 ### [0.3.4](https://github.com/unjs/nitropack/compare/v0.3.3...v0.3.4) (2022-04-19)
 
 
