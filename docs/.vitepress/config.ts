@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   lang: 'en-US',
-  title: 'Nitro',
-  description: 'Build and deploy universal JavaScript servers.',
+  title: '⚗️ Nitro',
+  description: 'Build and Deploy Universal JavaScript Servers',
   lastUpdated: true,
 
   themeConfig: {
@@ -36,6 +36,40 @@ export default defineConfig({
   }
 })
 
+function getGuideSidebar() {
+  return [
+    {
+      text: 'Introduction',
+      children: [
+        ['/guide/', 'Getting Started'],
+        ['/guide/configuration', 'Configuration'],
+        ['/guide/auto-imports', 'Auto Imports'],
+        ['/guide/routing', 'Route Handling'],
+        ['/guide/storage', 'Storage Layer'],
+        ['/guide/cache', 'Cache API'],
+        ['/guide/assets', 'Assets Handling'],
+        ['/guide/typescript', 'Typescript Support'],
+      ].map(i => toItem(i))
+    },
+    {
+      text: 'Advanced',
+      children: [
+        ['/guide/plugins', 'Plugins'],
+        ['/guide/custom-presets', 'Custom Presets'],
+      ].map(toItem)
+    },
+    {
+      text: 'Community',
+      children: [
+        ['/guide/contribution', 'Contribution'],
+      ].map(i => toItem(i))
+    }
+  ]
+}
+
+
+
+
 function getDeploymentSidebar() {
   return [
     {
@@ -64,31 +98,6 @@ function getDeploymentSidebar() {
   ]
 }
 
-
-function getGuideSidebar() {
-  return [
-    {
-      text: 'Introduction',
-      children: [
-        ['/guide/', 'Getting Started'],
-        ['/guide/configuration', 'Configuration'],
-        ['/guide/routing', 'Route Handling'],
-        ['/guide/storage', 'Storage Layer'],
-        ['/guide/cache', 'Cache API'],
-        ['/guide/assets', 'Assets Handling'],
-        ['/guide/typescript', 'Typescript Support'],
-        ['/guide/contribution', 'Contribution'],
-      ].map(i => toItem(i))
-    },
-    {
-      text: 'Advanced',
-      children: [
-        ['/guide/plugins', 'Plugins'],
-        ['/guide/custom-presets', 'Custom Presets'],
-      ].map(toItem)
-    }
-  ]
-}
 
 function toItem (args: string[])  {
   return { link: args[0], text: args[1] }

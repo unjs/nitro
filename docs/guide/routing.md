@@ -4,6 +4,12 @@ Handler files inside `routes/` and `api/` directory will be automatically mapped
 
 **Note:** `api/` is a shortcut for `routes/api` as a common prefix. However, please note that some deployment providers use `app/` directory for their API format. You can simply use the `routes/api` or `srcDir` option to move everything under `src/` or `server/` directory.
 
+## Usage
+
+Check out [h3 JSDocs](https://www.jsdocs.io/package/h3#package-index-functions) for all available utilities.
+
+## Examples
+
 **Example:** Simple API route
 
 ```js

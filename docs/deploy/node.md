@@ -4,7 +4,7 @@
 
 **Preset:** `node-server` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-::: info Note
+::: info Default Preset
 This is the default nitro output preset for production builds.
 :::
 

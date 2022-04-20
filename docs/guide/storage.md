@@ -11,7 +11,6 @@ await useStorage().setItem('test:foo', { hello: world })
 await useStorage().getItem('test:foo')
 ```
 
-
 By default storage is in-memory with mounted `cache:` prefix only for development.
 
 You can add more mountpoints using `storage` option:
