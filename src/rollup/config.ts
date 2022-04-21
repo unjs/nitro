@@ -151,7 +151,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   // esbuild
   rollupConfig.plugins.push(esbuild({
     target: 'es2019',
-    sourceMap: true,
+    sourceMap: nitro.options.sourceMap !== false,
     ...nitro.options.esbuild?.options
   }))
 
