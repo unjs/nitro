@@ -1,4 +1,5 @@
-import { resolve } from 'pathe'
+import { existsSync } from 'fs'
+import { dirname, join, resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
@@ -122,7 +123,15 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.output.publicDir = resolvePath(options.output.publicDir, options)
   options.output.serverDir = resolvePath(options.output.serverDir, options)
 
-  options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
+  // add parent node_modules directory
+  let currentDir = resolve(options.rootDir)
+  while (currentDir && currentDir !== dirname(currentDir)) {
+    const nodeModule = join(currentDir, 'node_modules')
+    if (existsSync(nodeModule)) {
+      options.nodeModulesDirs.push(nodeModule)
+    }
+    currentDir = dirname(currentDir)
+  }
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
   options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
 
