@@ -21,6 +21,12 @@ const mergeWithEnvVariables = createDefu((obj: Record<string, any>, key: string,
     obj[key] = override
     return true
   }
+
+  // Avoid duplicating arrays content (default defu behavior)
+  if (Array.isArray(obj[key])) {
+    obj[key] = _value
+    return true
+  }
 })
 
 // Named exports
