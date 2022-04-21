@@ -123,7 +123,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.output.publicDir = resolvePath(options.output.publicDir, options)
   options.output.serverDir = resolvePath(options.output.serverDir, options)
 
-  // add parent node_modules directory
+  // Scan and add parent node_modules directory
   let currentDir = resolve(options.rootDir)
   while (currentDir && currentDir !== dirname(currentDir)) {
     const nodeModule = join(currentDir, 'node_modules')
