@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.6](https://github.com/unjs/nitropack/compare/v0.3.5...v0.3.6) (2022-04-22)
+
+
+### Bug Fixes
+
+* manually merge runtime config with env ([#143](https://github.com/unjs/nitropack/issues/143)) ([1be5ac2](https://github.com/unjs/nitropack/commit/1be5ac2e89035ce98f50edaa8e7c79ba4e974adf))
+* respect `sourceMap` option ([#141](https://github.com/unjs/nitropack/issues/141)) ([e5ab741](https://github.com/unjs/nitropack/commit/e5ab741a1b96f91b62da4341ab3ceffd304e0f90))
+* wrap dynamic import in prerender to fix windows build failure ([#134](https://github.com/unjs/nitropack/issues/134)) ([2be8aaf](https://github.com/unjs/nitropack/commit/2be8aafd04c180de861010b263d551cdb049e7b6))
+
 ### [0.3.5](https://github.com/unjs/nitropack/compare/v0.3.4...v0.3.5) (2022-04-20)
 
 
