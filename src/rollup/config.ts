@@ -227,7 +227,7 @@ export const plugins = [
   // https://github.com/rollup/plugins/tree/master/packages/alias
   let buildDir = nitro.options.buildDir
   // Windows (native) dynamic imports should be file:// urr
-  if (isWindows && (nitro.options.externals.trace === false)) {
+  if (isWindows && (nitro.options.externals?.trace === false)) {
     buildDir = pathToFileURL(buildDir).href
   }
   rollupConfig.plugins.push(alias({
