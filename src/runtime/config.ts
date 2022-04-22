@@ -1,6 +1,5 @@
 import destr from 'destr'
 import { snakeCase } from 'scule'
-import { createDefu } from 'defu'
 
 // Bundled runtime config (injected by nitro)
 const _runtimeConfig = process.env.RUNTIME_CONFIG as any
@@ -13,18 +12,27 @@ const getEnv = (key: string) => {
   const envKey = snakeCase(key).toUpperCase()
   return destr(process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey])
 }
-
-const mergeWithEnvVariables = createDefu((obj: Record<string, any>, key: string, _value, namespace) => {
-  // key: { subKey } can be overridden by KEY_SUB_KEY`
-  const override = getEnv(namespace ? `${namespace}.${key}` : key)
-  if (override !== undefined) {
-    obj[key] = override
-    return true
+function isObject (input: unknown) {
+  return typeof input === 'object' && !Array.isArray(input)
+}
+function overrideConfig (obj: object, parentKey: string = '') {
+  for (const key in obj) {
+    const subKey = parentKey ? `${parentKey}_${key}` : key
+    const envValue = getEnv(subKey)
+    if (isObject(obj[key])) {
+      if (isObject(envValue)) {
+        obj[key] = { ...obj[key], ...envValue }
+      }
+      overrideConfig(obj[key], subKey)
+    } else {
+      obj[key] = envValue ?? obj[key]
+    }
   }
-})
+}
+overrideConfig(_runtimeConfig)
 
 // Named exports
-const config = deepFreeze(mergeWithEnvVariables(_runtimeConfig, _runtimeConfig))
+const config = deepFreeze(_runtimeConfig)
 export const useRuntimeConfig = () => config
 export default config
 
