@@ -12,21 +12,24 @@ const getEnv = (key: string) => {
   const envKey = snakeCase(key).toUpperCase()
   return destr(process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey])
 }
-
-function overrideConfig (key: string, obj: unknown) {
-  if (obj && typeof obj === 'object') {
-    for (const subkey in obj) {
-      // key: { subKey } can be overridden by KEY_SUB_KEY`
-      obj[subkey] = getEnv(`${key}_${subkey}`) ?? obj[subkey]
-      overrideConfig(`${key}_${subkey}`, obj[subkey])
+function isObject (input: unknown) {
+  return typeof input === 'object' && !Array.isArray(input)
+}
+function overrideConfig (obj: object, parentKey: string = '') {
+  for (const key in obj) {
+    const subKey = parentKey ? `${parentKey}_${key}` : key
+    const envValue = getEnv(subKey)
+    if (isObject(obj[key])) {
+      if (isObject(envValue)) {
+        obj[key] = { ...obj[key], ...envValue }
+      }
+      overrideConfig(obj[key], subKey)
+    } else {
+      obj[key] = envValue ?? obj[key]
     }
   }
 }
-
-for (const key in _runtimeConfig) {
-  _runtimeConfig[key] = getEnv(key) ?? _runtimeConfig[key]
-  overrideConfig(key, _runtimeConfig[key])
-}
+overrideConfig(_runtimeConfig)
 
 // Named exports
 const config = deepFreeze(_runtimeConfig)
