@@ -1,4 +1,4 @@
-# AWS Lmabda
+# AWS Lambda
 
 **Preset:** `aws-lambda` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
