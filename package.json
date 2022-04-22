@@ -64,7 +64,7 @@
     "defu": "^6.0.0",
     "destr": "^1.1.1",
     "dot-prop": "^7.2.0",
-    "esbuild": "^0.14.36",
+    "esbuild": "^0.14.38",
     "etag": "^1.8.1",
     "events": "^3.3.0",
     "fs-extra": "^10.1.0",
@@ -109,7 +109,7 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^9.0.0",
-    "@types/aws-lambda": "^8.10.94",
+    "@types/aws-lambda": "^8.10.95",
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^9.0.13",
     "@types/http-proxy": "^1.17.8",
@@ -124,7 +124,7 @@
     "standard-version": "^9.3.2",
     "unbuild": "^0.7.4",
     "vitepress": "^0.22.3",
-    "vitest": "^0.9.3"
+    "vitest": "^0.9.4"
   },
   "packageManager": "pnpm@6.32.9",
   "engines": {
