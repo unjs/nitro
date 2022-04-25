@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.7](https://github.com/unjs/nitropack/compare/v0.3.6...v0.3.7) (2022-04-25)
+
+
+### Bug Fixes
+
+* **rollup:** prepend `node_modules` to `moduleDirectories` ([458ff57](https://github.com/unjs/nitropack/commit/458ff5793a6d088c5813a05173a35675f453267d)), closes [#136](https://github.com/unjs/nitropack/issues/136)
+
 ### [0.3.6](https://github.com/unjs/nitropack/compare/v0.3.5...v0.3.6) (2022-04-22)
 
 
