@@ -16,7 +16,7 @@ export interface CachifyOptions<T = any> {
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   group?: string;
   integrity?: any;
-  magAge?: number;
+  maxAge?: number;
   swr?: boolean;
   staleMaxAge?: number;
   base?: string;
@@ -26,7 +26,7 @@ const defaultCacheOptions = {
   name: '_',
   base: '/cache',
   swr: true,
-  magAge: 1
+  maxAge: 1
 }
 
 export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CachifyOptions<T>) {
@@ -43,7 +43,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
     const cacheKey = [opts.base, group, name, key].filter(Boolean).join(':').replace(/:\/$/, ':index')
     const entry: CacheEntry<T> = await useStorage().getItem(cacheKey) as any || {}
 
-    const ttl = (opts.magAge ?? opts.magAge ?? 0) * 1000
+    const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000
     if (ttl) {
       entry.expires = Date.now() + ttl
     }
@@ -133,16 +133,16 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
     headers['Last-Modified'] = new Date().toUTCString()
     const cacheControl = []
     if (opts.swr) {
-      if (opts.magAge) {
-        cacheControl.push(`s-maxage=${opts.magAge}`)
+      if (opts.maxAge) {
+        cacheControl.push(`s-maxage=${opts.maxAge}`)
       }
       if (opts.staleMaxAge) {
         cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`)
       } else {
         cacheControl.push('stale-while-revalidate')
       }
-    } else if (opts.magAge) {
-      cacheControl.push(`max-age=${opts.magAge}`)
+    } else if (opts.maxAge) {
+      cacheControl.push(`max-age=${opts.maxAge}`)
     }
     if (cacheControl.length) {
       headers['Cache-Control'] = cacheControl.join(', ')
@@ -171,7 +171,7 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
     if (handleCacheHeaders(event, {
       modifiedTime: new Date(response.headers['Last-Modified'] as string),
       etag: response.headers.etag as string,
-      maxAge: opts.magAge
+      maxAge: opts.maxAge
     })) {
       return
     }
