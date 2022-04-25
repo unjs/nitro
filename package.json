@@ -124,7 +124,7 @@
     "standard-version": "^9.3.2",
     "unbuild": "^0.7.4",
     "vitepress": "^0.22.3",
-    "vitest": "^0.9.4"
+    "vitest": "^0.10.0"
   },
   "packageManager": "pnpm@6.32.10",
   "engines": {

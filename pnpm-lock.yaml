@@ -91,7 +91,7 @@ importers:
       unstorage: ^0.3.3
       util: ^0.12.4
       vitepress: ^0.22.3
-      vitest: ^0.9.4
+      vitest: ^0.10.0
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.0.0
@@ -178,7 +178,7 @@ importers:
       standard-version: 9.3.2
       unbuild: 0.7.4
       vitepress: 0.22.3
-      vitest: 0.9.4_c8@7.11.2
+      vitest: 0.10.0_c8@7.11.2
 
   docs:
     specifiers: {}
@@ -5999,8 +5999,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.9.4_c8@7.11.2:
-    resolution: {integrity: sha512-Em+EJb3keCr3GjyqnkxHuY7zMerEgLsN+m2nqsUcCzO7C4+Y0E7O7LXSNaODh3Gc/An3dqnoaAe/uLBrAJXUdQ==}
+  /vitest/0.10.0_c8@7.11.2:
+    resolution: {integrity: sha512-8UXemUg9CA4QYppDTsDV76nH0e1p6C8lV9q+o9i0qMSK9AQ7vA2sjoxtkDP0M+pwNmc3ZGYetBXgSJx0M1D/gg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
