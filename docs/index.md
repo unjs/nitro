@@ -11,7 +11,7 @@ features:
   - title: 😌 Multi-Provider
     details: Deploy same codebase to any provider without extra config
   - title: 💼 Portable and Compact
-    details: Say goodby to node_modules
+    details: Say goodbye to node_modules
   - title: 📁 Filesystem Routing
     details: Automatically registers Server and API routes
   - title: 🤏 Minimal Design
