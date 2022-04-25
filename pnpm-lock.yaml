@@ -12,7 +12,7 @@ importers:
       '@nuxt/devalue': ^2.0.0
       '@nuxtjs/eslint-config-typescript': ^9.0.0
       '@rollup/plugin-alias': ^3.1.9
-      '@rollup/plugin-commonjs': ^21.1.0
+      '@rollup/plugin-commonjs': ^22.0.0
       '@rollup/plugin-inject': ^4.0.4
       '@rollup/plugin-json': ^4.1.0
       '@rollup/plugin-node-resolve': ^13.2.1
@@ -97,7 +97,7 @@ importers:
       '@netlify/functions': 1.0.0
       '@nuxt/devalue': 2.0.0
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.2
-      '@rollup/plugin-commonjs': 21.1.0_rollup@2.70.2
+      '@rollup/plugin-commonjs': 22.0.0_rollup@2.70.2
       '@rollup/plugin-inject': 4.0.4_rollup@2.70.2
       '@rollup/plugin-json': 4.1.0_rollup@2.70.2
       '@rollup/plugin-node-resolve': 13.2.1_rollup@2.70.2
@@ -881,6 +881,23 @@ packages:
       magic-string: 0.25.9
       resolve: 1.22.0
       rollup: 2.70.2
+    dev: true
+
+  /@rollup/plugin-commonjs/22.0.0_rollup@2.70.2:
+    resolution: {integrity: sha512-Ktvf2j+bAO+30awhbYoCaXpBcyPmJbaEUYClQns/+6SNCYFURbvBiNbWgHITEsIgDDWCDUclWRKEuf8cwZCFoQ==}
+    engines: {node: '>= 12.0.0'}
+    peerDependencies:
+      rollup: ^2.68.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.70.2
+      commondir: 1.0.1
+      estree-walker: 2.0.2
+      glob: 7.2.0
+      is-reference: 1.2.1
+      magic-string: 0.25.9
+      resolve: 1.22.0
+      rollup: 2.70.2
+    dev: false
 
   /@rollup/plugin-inject/4.0.4_rollup@2.70.2:
     resolution: {integrity: sha512-4pbcU4J/nS+zuHk+c+OL3WtmEQhqxlZ9uqfjQMQDOHOPld7PsCd8k5LWs8h5wjwJN7MgnAn768F2sDxEP4eNFQ==}
