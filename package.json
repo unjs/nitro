@@ -118,7 +118,7 @@
     "@types/semver": "^7.3.9",
     "@types/serve-static": "^1.13.10",
     "c8": "^7.11.2",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
     "execa": "^6.1.0",
     "miniflare": "^2.4.0",
     "standard-version": "^9.3.2",
