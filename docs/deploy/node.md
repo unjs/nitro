@@ -37,7 +37,7 @@ You can customize server behavior using following environment variables:
 
 **Preset:** `node` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-Nitro also has a more low-level preset that directly exports a function with `(req, res) => {}` signuture usable for middleware and custom servers.
+Nitro also has a more low-level preset that directly exports a function with `(req, res) => {}` signature usable for middleware and custom servers.
 
 When running `nitro build` with the Node preset, the result will be an entry point exporting a function with the `(req, res) => {}` signature.
 
