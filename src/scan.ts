@@ -7,7 +7,7 @@ import type { Nitro, NitroEventHandler } from './types'
 export const GLOB_SCAN_PATTERN = '**/*.{ts,mjs,js,cjs}'
 type FileInfo = { dir: string, path: string, fullPath: string }
 
-const httpMethodRegex = /\.(connect|delete|get|head|options|post|put|trace)/
+const httpMethodRegex = /\.(connect|delete|get|head|options|patch|post|put|trace)/
 
 export async function scanHandlers (nitro: Nitro) {
   const handlers = await Promise.all([

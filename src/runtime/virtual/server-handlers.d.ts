@@ -1,10 +1,10 @@
-import type { CompatibilityEventHandler } from 'h3'
+import type { CompatibilityEventHandler, RouterMethod } from 'h3'
 
 interface HandlerDefinition {
   route: string
   lazy?: boolean
   handler: CompatibilityEventHandler | (() => Promise<CompatibilityEventHandler>)
-  method?: 'connect'| 'delete'| 'get'| 'head'| 'options'| 'post'| 'put'| 'trace'
+  method?: RouterMethod
 }
 
 export const handlers: HandlerDefinition[]
