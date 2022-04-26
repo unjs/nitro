@@ -87,7 +87,7 @@ importers:
       ufo: ^0.8.3
       unbuild: ^0.7.4
       unenv: ^0.4.6
-      unimport: ^0.1.6
+      unimport: ^0.1.7
       unstorage: ^0.3.3
       util: ^0.12.4
       vitepress: ^0.22.3
@@ -158,7 +158,7 @@ importers:
       table: 6.8.0
       ufo: 0.8.3
       unenv: 0.4.6
-      unimport: 0.1.6_esbuild@0.14.38+rollup@2.70.2
+      unimport: 0.1.7_esbuild@0.14.38+rollup@2.70.2
       unstorage: 0.3.3
       util: 0.12.4
     devDependencies:
@@ -5799,8 +5799,8 @@ packages:
       util: 0.12.4
     dev: false
 
-  /unimport/0.1.6_esbuild@0.14.38+rollup@2.70.2:
-    resolution: {integrity: sha512-KxKQF0De2v+vPkz6D/hGHNvzBti+Im95NctEa8Kdb45m0YSQSH7kJjmHwruxKLNQrOw6N18NwKkiaNFiH0DbnA==}
+  /unimport/0.1.7_esbuild@0.14.38+rollup@2.70.2:
+    resolution: {integrity: sha512-MzKi/WVU5bvk+dM/4lAFna6eoz//r3ptmLQDTKLDke/BADSkh7pQKblo4iq55vX/js4n+9+0lsWpTytawm2vXA==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
