@@ -138,7 +138,7 @@ export const getRollupConfig = (nitro: Nitro) => {
     values: {
       'process.env.NODE_ENV': nitro.options.dev ? '"development"' : '"production"',
       'typeof window': '"undefined"',
-      'global.': 'globalThis.',
+      ...Object.fromEntries([';', '(', '{', '}', ' ', '\t', '\n'].map(d => [`${d}global.`, `${d}globalThis.`])),
       'process.server': 'true',
       'process.client': 'false',
       'process.dev': String(nitro.options.dev),
