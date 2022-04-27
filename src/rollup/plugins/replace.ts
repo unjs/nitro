@@ -8,7 +8,7 @@ export function replace (options: RollupReplaceOptions): Plugin {
   return {
     ..._plugin,
     // https://github.com/rollup/plugins/blob/master/packages/replace/src/index.js#L94
-    renderChunk(code, chunk, options) {
+    renderChunk (code, chunk, options) {
       if (!NO_REPLACE_RE.test(code)) {
         return _plugin.renderChunk.call(this, code, chunk, options)
       }
