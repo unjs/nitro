@@ -29,7 +29,7 @@ export function raw (opts: RawOptions = {}): Plugin {
         return null
       }
       return {
-        code: `export default ${JSON.stringify(code)}`,
+        code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
         map: null
       }
     }
