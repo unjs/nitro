@@ -12,7 +12,7 @@ export function raw (opts: RawOptions = {}): Plugin {
 
   return {
     name: 'raw',
-    async resolveId (id, importer, options) {
+    resolveId (id) {
       if (id[0] === '\0') {
         return
       }
