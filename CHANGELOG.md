@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.8](https://github.com/unjs/nitropack/compare/v0.3.7...v0.3.8) (2022-04-27)
+
+
+### Features
+
+* improve raw asset handling ([#158](https://github.com/unjs/nitropack/issues/158)) ([a68d3d2](https://github.com/unjs/nitropack/commit/a68d3d25da90c1a131ff4de85b9d3160067baa90))
+
+
+### Bug Fixes
+
+* **cache:** replace magage typo by maxage ([#150](https://github.com/unjs/nitropack/issues/150)) ([07d8ced](https://github.com/unjs/nitropack/commit/07d8cedbf9d9d2105929f753d12e76254b31b204))
+* replace `global.` in fewer instances ([#155](https://github.com/unjs/nitropack/issues/155)) ([73db5c9](https://github.com/unjs/nitropack/commit/73db5c9e0de1baffec93a47bee85c88a33c8d609))
+* support patch method auto-scanning ([#153](https://github.com/unjs/nitropack/issues/153)) ([01801c2](https://github.com/unjs/nitropack/commit/01801c2e7a17effce8ff84d2cc6c5a488cce61a6))
+
 ### [0.3.7](https://github.com/unjs/nitropack/compare/v0.3.6...v0.3.7) (2022-04-25)
 
 
