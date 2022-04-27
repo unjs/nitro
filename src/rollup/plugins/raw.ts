@@ -1,3 +1,4 @@
+import { promises as fsp } from 'fs'
 import { extname } from 'pathe'
 import type { Plugin } from 'rollup'
 
@@ -11,10 +12,33 @@ export function raw (opts: RawOptions = {}): Plugin {
 
   return {
     name: 'raw',
+    resolveId (id) {
+      if (id[0] === '\0') {
+        return
+      }
+
+      let isRawId = id.startsWith('raw:')
+      if (isRawId) {
+        id = id.substring(4)
+      } else if (extensions.has(extname(id))) {
+        isRawId = true
+      }
+
+      // TODO: Support reasolving. Blocker is CommonJS custom resolver!
+      if (isRawId) {
+        return { id: '\0raw:' + id }
+      }
+    },
+    load (id) {
+      if (id.startsWith('\0raw:')) {
+        // this.addWatchFile(id.substring(5))
+        return fsp.readFile(id.substring(5), 'utf8')
+      }
+    },
     transform (code, id) {
-      if (id[0] !== '\0' && extensions.has(extname(id))) {
+      if (id.startsWith('\0raw:')) {
         return {
-          code: `// ${id}\nexport default ${JSON.stringify(code)}`,
+          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
           map: null
         }
       }

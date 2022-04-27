@@ -8,7 +8,6 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
 import json from '@rollup/plugin-json'
-import replace from '@rollup/plugin-replace'
 import virtual from '@rollup/plugin-virtual'
 import wasmPlugin from '@rollup/plugin-wasm'
 import inject from '@rollup/plugin-inject'
@@ -22,6 +21,7 @@ import { hash } from 'ohash'
 import type { Nitro } from '../types'
 import { resolveAliases } from '../utils'
 import { runtimeDir } from '../dirs'
+import { replace } from './plugins/replace'
 import dynamicVirtual from './plugins/dynamic-virtual'
 import { dynamicRequire } from './plugins/dynamic-require'
 import { externals } from './plugins/externals'
@@ -77,8 +77,10 @@ export const getRollupConfig = (nitro: Nitro) => {
           prefix = 'nitro'
         } else if (nitro.options.handlers.find(m => lastModule.startsWith(m.handler as string))) {
           prefix = 'handlers'
-        } else if (lastModule.includes('assets')) {
-          prefix = 'assets'
+        } else if (lastModule.includes('assets') || lastModule.startsWith('\0raw:')) {
+          prefix = 'raw'
+        } else if (lastModule.startsWith('\0')) {
+          prefix = 'rollup'
         }
         return join('chunks', prefix, '[name].mjs')
       },
