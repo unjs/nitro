@@ -58,17 +58,15 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     nitro.options.virtual['#nitro'] = 'export * from "#imports"'
   }
 
-  // Dev-only storage
-  if (options.dev) {
-    const fsMounts = {
-      root: resolve(options.rootDir),
-      src: resolve(options.srcDir),
-      build: resolve(options.buildDir),
-      cache: resolve(options.buildDir, 'cache')
-    }
-    for (const p in fsMounts) {
-      options.storage[p] = options.storage[p] || { driver: 'fs', base: fsMounts[p] }
-    }
+  // Build-only storage
+  const fsMounts = {
+    root: resolve(options.rootDir),
+    src: resolve(options.srcDir),
+    build: resolve(options.buildDir),
+    cache: resolve(options.buildDir, 'cache')
+  }
+  for (const p in fsMounts) {
+    options.devStorage[p] = options.devStorage[p] || { driver: 'fs', base: fsMounts[p] }
   }
 
   return nitro

@@ -1,5 +1,5 @@
 import { promises as fsp } from 'fs'
-import { relative, resolve, join } from 'pathe'
+import { relative, resolve, join, dirname } from 'pathe'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import defu from 'defu'
@@ -12,6 +12,7 @@ import { prettyPath, writeFile, isDirectory } from './utils'
 import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
 import { runtimeDir } from './dirs'
+import { snapshotStorage } from './storage'
 
 export async function prepare (nitro: Nitro) {
   await prepareDir(nitro.options.output.dir)
@@ -106,9 +107,31 @@ export async function writeTypes (nitro: Nitro) {
   }
 }
 
+async function _snapshot (nitro: Nitro) {
+  if (!nitro.options.bundledStorage.length ||
+    nitro.options.preset === 'nitro-prerender'
+  ) {
+    return
+  }
+  // TODO: Use virtual storage for server assets
+  const storageDir = resolve(nitro.options.buildDir, 'snapshot')
+  nitro.options.serverAssets.push({
+    baseName: 'nitro:snapshot',
+    dir: storageDir
+  })
+
+  const data = await snapshotStorage(nitro)
+  await Promise.all(Object.entries(data).map(async ([path, contents]) => {
+    const fsPath = join(storageDir, path.replace(/:/g, '/'))
+    await fsp.mkdir(dirname(fsPath), { recursive: true })
+    await fsp.writeFile(fsPath, contents, 'utf8')
+  }))
+}
+
 async function _build (nitro: Nitro) {
   await scanHandlers(nitro)
   await writeTypes(nitro)
+  await _snapshot(nitro)
 
   nitro.logger.start('Building server...')
   const build = await rollup.rollup(nitro.options.rollupConfig).catch((error) => {

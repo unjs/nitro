@@ -6,7 +6,6 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import { WatchOptions } from 'chokidar'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
-import type { StorageMounts } from '../rollup/plugins/storage'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
@@ -27,6 +26,13 @@ export interface NitroHooks {
   'compiled': (nitro: Nitro) => HookResult
   'dev:reload': () => HookResult
   'close': () => HookResult
+}
+
+export interface StorageMounts {
+  [path: string]: {
+    driver: 'fs' | 'http' | 'memory' | 'redis' | 'cloudflare-kv',
+    [option: string]: any
+  }
 }
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T
@@ -93,6 +99,8 @@ export interface NitroOptions {
 
   // Features
   storage: StorageMounts
+  devStorage: StorageMounts
+  bundledStorage: string[]
   timing: boolean
   renderer: string
   serveStatic: boolean
