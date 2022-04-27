@@ -12,25 +12,35 @@ export function raw (opts: RawOptions = {}): Plugin {
 
   return {
     name: 'raw',
-    resolveId (id) {
-      if (id.startsWith('raw:')) {
-        return '\0' + id
+    async resolveId (id, importer, options) {
+      if (id[0] === '\0') {
+        return
+      }
+
+      let isRawId = id.startsWith('raw:')
+      if (isRawId) {
+        id = id.substring(4)
+      } else if (extensions.has(extname(id))) {
+        isRawId = true
+      }
+
+      // TODO: Support reasolving. Blocker is CommonJS custom resolver!
+      if (isRawId) {
+        return { id: '\0raw:' + id }
       }
     },
     load (id) {
       if (id.startsWith('\0raw:')) {
+        // this.addWatchFile(id.substring(5))
         return fsp.readFile(id.substring(5), 'utf8')
       }
     },
     transform (code, id) {
       if (id.startsWith('\0raw:')) {
-        id = id.substring(5)
-      } else if (id[0] === '\0' || !extensions.has(extname(id))) {
-        return null
-      }
-      return {
-        code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
-        map: null
+        return {
+          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
+          map: null
+        }
       }
     }
   }
