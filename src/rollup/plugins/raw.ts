@@ -1,3 +1,4 @@
+import { promises as fsp } from 'fs'
 import { extname } from 'pathe'
 import type { Plugin } from 'rollup'
 
@@ -11,12 +12,25 @@ export function raw (opts: RawOptions = {}): Plugin {
 
   return {
     name: 'raw',
+    resolveId (id) {
+      if (id.startsWith('raw:')) {
+        return '\0' + id
+      }
+    },
+    load (id) {
+      if (id.startsWith('\0raw:')) {
+        return fsp.readFile(id.substring(5), 'utf8')
+      }
+    },
     transform (code, id) {
-      if (id[0] !== '\0' && extensions.has(extname(id))) {
-        return {
-          code: `// ${id}\nexport default ${JSON.stringify(code)}`,
-          map: null
-        }
+      if (id.startsWith('\0raw:')) {
+        id = id.substring(5)
+      } else if (id[0] === '\0' || !extensions.has(extname(id))) {
+        return null
+      }
+      return {
+        code: `export default ${JSON.stringify(code)}`,
+        map: null
       }
     }
   }
