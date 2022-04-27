@@ -77,8 +77,10 @@ export const getRollupConfig = (nitro: Nitro) => {
           prefix = 'nitro'
         } else if (nitro.options.handlers.find(m => lastModule.startsWith(m.handler as string))) {
           prefix = 'handlers'
-        } else if (lastModule.includes('assets')) {
-          prefix = 'assets'
+        } else if (lastModule.includes('assets') || lastModule.startsWith('\0raw:')) {
+          prefix = 'raw'
+        } else if (lastModule.startsWith('\0')) {
+          prefix = 'rollup'
         }
         return join('chunks', prefix, '[name].mjs')
       },
