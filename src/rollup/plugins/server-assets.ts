@@ -28,7 +28,7 @@ interface ResolvedAsset {
 
 export function serverAssets (nitro: Nitro): Plugin {
   // Development: Use filesystem
-  if (nitro.options.dev) {
+  if (nitro.options.dev || nitro.options.preset === 'nitro-prerender') {
     return virtual({ '#internal/nitro/virtual/server-assets': getAssetsDev(nitro) })
   }
 

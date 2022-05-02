@@ -30,6 +30,8 @@ const NitroDefaults: NitroConfig = {
   // Featueres
   experimental: {},
   storage: {},
+  devStorage: {},
+  bundledStorage: [],
   publicAssets: [],
   serverAssets: [],
   plugins: [],
@@ -107,6 +109,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   })
   const options = klona(config) as NitroOptions
   options._config = userConfig
+  options.preset = preset
 
   options.rootDir = resolve(options.rootDir || '.')
   options.srcDir = resolve(options.srcDir || options.rootDir)
