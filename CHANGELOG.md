@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.12](https://github.com/unjs/nitropack/compare/v0.3.11...v0.3.12) (2022-05-02)
+
+
+### Bug Fixes
+
+* add missing `prefixStorage` import for bundled storage ([defa4de](https://github.com/unjs/nitropack/commit/defa4defeae038a01464821969986240b9288088))
+* **storage:** skip bundled storage for dev and prerender ([31a3957](https://github.com/unjs/nitropack/commit/31a3957757614c4db61c271ecdb7c9c8f4e22d4a))
+
 ### [0.3.11](https://github.com/unjs/nitropack/compare/v0.3.10...v0.3.11) (2022-05-02)
 
 
