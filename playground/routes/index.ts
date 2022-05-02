@@ -1,3 +1,8 @@
 import { eventHandler } from 'h3'
 
-export default eventHandler(() => '<h1>Hello Nitro!</h1>')
+export default eventHandler(async () => {
+  const keys = await useStorage().getKeys()
+  return {
+    keys
+  }
+})
