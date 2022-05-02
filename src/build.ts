@@ -122,6 +122,7 @@ async function _snapshot (nitro: Nitro) {
 
   const data = await snapshotStorage(nitro)
   await Promise.all(Object.entries(data).map(async ([path, contents]) => {
+    if (typeof contents !== 'string') { contents = JSON.stringify(contents) }
     const fsPath = join(storageDir, path.replace(/:/g, '/'))
     await fsp.mkdir(dirname(fsPath), { recursive: true })
     await fsp.writeFile(fsPath, contents, 'utf8')
