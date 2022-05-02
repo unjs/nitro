@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.11](https://github.com/unjs/nitropack/compare/v0.3.10...v0.3.11) (2022-05-02)
+
+
+### Bug Fixes
+
+* **storage:** remove unused `prefixStorage` import ([7376c6d](https://github.com/unjs/nitropack/commit/7376c6dbc31cf277828160c7e22b4213fe142780))
+* **storage:** use `devStorage` for dev and prerender ([93c4d85](https://github.com/unjs/nitropack/commit/93c4d851fd08b6b2fe9952f1ea833ed36899273a))
+
 ### [0.3.10](https://github.com/unjs/nitropack/compare/v0.3.9...v0.3.10) (2022-05-02)
 
 

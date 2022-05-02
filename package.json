@@ -1,6 +1,6 @@
 {
   "name": "nitropack",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "Build and Deploy Universal JavaScript Servers",
   "license": "MIT",
   "type": "module",
