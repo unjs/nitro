@@ -92,7 +92,7 @@ importers:
       unstorage: ^0.4.0
       util: ^0.12.4
       vitepress: ^0.22.3
-      vitest: ^0.10.0
+      vitest: ^0.10.1
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.0.0
@@ -180,7 +180,7 @@ importers:
       typescript: 4.6.4
       unbuild: 0.7.4
       vitepress: 0.22.3
-      vitest: 0.10.0_c8@7.11.2
+      vitest: 0.10.1_c8@7.11.2
 
   docs:
     specifiers: {}
@@ -5670,8 +5670,8 @@ packages:
       readable-stream: 3.6.0
     dev: true
 
-  /tinypool/0.1.2:
-    resolution: {integrity: sha512-fvtYGXoui2RpeMILfkvGIgOVkzJEGediv8UJt7TxdAOY8pnvUkFg/fkvqTfXG9Acc9S17Cnn1S4osDc2164guA==}
+  /tinypool/0.1.3:
+    resolution: {integrity: sha512-2IfcQh7CP46XGWGGbdyO4pjcKqsmVqFAPcXfPxcPXmOWt9cYkTP9HcDmGgsfijYoAEc4z9qcpM/BaBz46Y9/CQ==}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -6053,8 +6053,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.10.0_c8@7.11.2:
-    resolution: {integrity: sha512-8UXemUg9CA4QYppDTsDV76nH0e1p6C8lV9q+o9i0qMSK9AQ7vA2sjoxtkDP0M+pwNmc3ZGYetBXgSJx0M1D/gg==}
+  /vitest/0.10.1_c8@7.11.2:
+    resolution: {integrity: sha512-jFNObjJ48WnfJzxpopJOrd7ZnRCE3OGgE2KSQ1AGmKxNPTgadMCLx81GBrIcxIjuz2E/8qmGBPtC5VH01ihl7A==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -6077,7 +6077,7 @@ packages:
       c8: 7.11.2
       chai: 4.3.6
       local-pkg: 0.4.1
-      tinypool: 0.1.2
+      tinypool: 0.1.3
       tinyspy: 0.3.2
       vite: 2.9.5
     transitivePeerDependencies:
