@@ -6,13 +6,10 @@ import type { Nitro } from '../../types'
 export function storage (nitro: Nitro) {
   const mounts: { path: string, driver: string, opts: object }[] = []
 
-  let storageMounts = nitro.options.storage
-  if (nitro.options.dev || nitro.options.preset === 'nitro-prerender') {
-    storageMounts = {
-      ...storageMounts,
-      ...nitro.options.devStorage
-    }
-  }
+  const isDevOrPrerender = nitro.options.dev || nitro.options.preset === 'nitro-prerender'
+  const storageMounts = isDevOrPrerender
+    ? { ...nitro.options.storage, ...nitro.options.devStorage }
+    : nitro.options.storage
 
   for (const path in storageMounts) {
     const mount = storageMounts[path]
@@ -57,7 +54,7 @@ storage.mount('/assets', assets)
 
 ${mounts.map(m => `storage.mount('${m.path}', ${serializeImportName(m.driver)}(${JSON.stringify(m.opts)}))`).join('\n')}
 
-${nitro.options.bundledStorage.length ? bundledStorageCode : ''}
+${(!isDevOrPrerender && nitro.options.bundledStorage.length) ? bundledStorageCode : ''}
 `
   })
 }
