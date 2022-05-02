@@ -24,8 +24,8 @@
     "dev": "pnpm nitro dev playground",
     "dev:build": "pnpm nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
-    "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
+    "docs:dev": "vitepress dev docs",
     "docs:serve": "vitepress serve docs",
     "lint": "eslint --ext .ts,.mjs,.cjs .",
     "nitro": "jiti ./src/cli.ts",
@@ -122,12 +122,23 @@
     "execa": "^6.1.0",
     "miniflare": "^2.4.0",
     "standard-version": "^9.3.2",
+    "typescript": "^4.6.4",
     "unbuild": "^0.7.4",
     "vitepress": "^0.22.3",
     "vitest": "^0.10.0"
   },
-  "packageManager": "pnpm@6.32.11",
+  "packageManager": "pnpm@7.0.0",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0 || ^18.0.0"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "react",
+        "@types/react",
+        "react-dom",
+        "@algolia/client-search"
+      ]
+    }
   }
 }
