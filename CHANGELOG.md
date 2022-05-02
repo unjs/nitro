@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.9](https://github.com/unjs/nitropack/compare/v0.3.8...v0.3.9) (2022-05-02)
+
+
+### Bug Fixes
+
+* add cached shortcuts to the imports ([#162](https://github.com/unjs/nitropack/issues/162)) ([bf6d208](https://github.com/unjs/nitropack/commit/bf6d208866946b4251f7b5922128c03e6117bacd))
+* **cloudflare:** normalize incoming & outgoing headers ([#171](https://github.com/unjs/nitropack/issues/171)) ([abda66b](https://github.com/unjs/nitropack/commit/abda66b65bca708aee731cc4b9f1ba493fc356f2))
+
 ### [0.3.8](https://github.com/unjs/nitropack/compare/v0.3.7...v0.3.8) (2022-04-27)
 
 
