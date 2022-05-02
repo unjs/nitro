@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.10](https://github.com/unjs/nitropack/compare/v0.3.9...v0.3.10) (2022-05-02)
+
+
+### Features
+
+* experimental bundled storage ([#160](https://github.com/unjs/nitropack/issues/160)) ([308e7c7](https://github.com/unjs/nitropack/commit/308e7c7d869345565747f9d986a6e77e9789cc1d))
+
+
+### Bug Fixes
+
+* **deps:** pin `@rollup/plugin-node-resolve` due to cloudflare issue ([3ecb813](https://github.com/unjs/nitropack/commit/3ecb813e72007ad4a8bb14f1b0892cee9761c66f))
+
 ### [0.3.9](https://github.com/unjs/nitropack/compare/v0.3.8...v0.3.9) (2022-05-02)
 
 
