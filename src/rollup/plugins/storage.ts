@@ -1,17 +1,21 @@
 import virtual from '@rollup/plugin-virtual'
 import { serializeImportName } from '../../utils'
 import { builtinDrivers } from '../../storage'
-import type { Nitro, StorageMounts } from '../../types'
-
-export interface StorageOptions {
-  mounts: StorageMounts
-}
+import type { Nitro } from '../../types'
 
 export function storage (nitro: Nitro) {
   const mounts: { path: string, driver: string, opts: object }[] = []
 
-  for (const path in nitro.options.storage) {
-    const mount = nitro.options.storage[path]
+  let storageMounts = nitro.options.storage
+  if (nitro.options.dev || nitro.options.preset === 'nitro-prerender') {
+    storageMounts = {
+      ...storageMounts,
+      ...nitro.options.devStorage
+    }
+  }
+
+  for (const path in storageMounts) {
+    const mount = storageMounts[path]
     mounts.push({
       path,
       driver: builtinDrivers[mount.driver] || mount.driver,
