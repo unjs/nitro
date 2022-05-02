@@ -29,10 +29,10 @@ const bundledStorage = ${JSON.stringify(nitro.options.bundledStorage)}
 for (const base of bundledStorage) {
   storage.mount(base, overlay({
     layers: [
-      // TODO
       memory(),
+      // TODO
       // prefixStorage(storage, base),
-      prefixStorage(storage, '/assets/nitro/snapshot' + base)
+      prefixStorage(storage, '/assets/nitro/bundled' + base)
     ]
   }))
 }`

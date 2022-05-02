@@ -116,7 +116,7 @@ async function _snapshot (nitro: Nitro) {
   // TODO: Use virtual storage for server assets
   const storageDir = resolve(nitro.options.buildDir, 'snapshot')
   nitro.options.serverAssets.push({
-    baseName: 'nitro:snapshot',
+    baseName: 'nitro:bundled',
     dir: storageDir
   })
 
