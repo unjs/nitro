@@ -71,7 +71,7 @@ for (const asset of serverAssets) {
 }
 
 function normalizeKey (key) {
-  return key.replace(/[/\\]/g, ':').replace(/^:|:$/g, '')
+  return key.replace(/[/\\]/g, ':').replace(/:+/g, ':').replace(/^:|:$/g, '')
 }
 
 function getAssetProd (assets: Record<string, ResolvedAsset>) {
