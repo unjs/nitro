@@ -45,7 +45,7 @@
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-inject": "^4.0.4",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-virtual": "^2.1.0",
     "@rollup/plugin-wasm": "^5.2.0",
@@ -104,7 +104,7 @@
     "ufo": "^0.8.3",
     "unenv": "^0.4.6",
     "unimport": "^0.1.8",
-    "unstorage": "^0.3.3",
+    "unstorage": "^0.4.0",
     "util": "^0.12.4"
   },
   "devDependencies": {
