@@ -26,6 +26,7 @@ export function storage (nitro: Nitro) {
   const driverImports = Array.from(new Set(mounts.map(m => m.driver)))
 
   const bundledStorageCode = `
+import { prefixStorage } from 'unstorage'
 import overlay from 'unstorage/drivers/overlay'
 import memory from 'unstorage/drivers/memory'
 
