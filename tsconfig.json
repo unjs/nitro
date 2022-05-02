@@ -3,6 +3,9 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
+    "lib": [
+      "WebWorker"
+    ],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",

@@ -34,7 +34,7 @@ const myFn = cachedEventHandler(async () => {
 
 ```js
 // utils/index.ts
-const myFn = defineCachedFunction(async () => {
+const myFn = cachedFunction(async () => {
   new Promise(resolve => setTimeout(resolve, 1000))
   return Math.random()
 }, { swr: true })
