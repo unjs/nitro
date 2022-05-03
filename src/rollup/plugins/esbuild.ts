@@ -80,7 +80,7 @@ export function esbuild (options: Options = {}): Plugin {
         return null
       }
 
-      target = options.target || 'node14'
+      target = options.target || 'node14.16.0'
 
       const result = await transform(code, {
         loader,
