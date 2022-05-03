@@ -37,8 +37,6 @@ export type Options = {
 }
 
 export function esbuild (options: Options = {}): Plugin {
-  let target: string | string[]
-
   const loaders = {
     ...defaultLoaders
   }
@@ -80,11 +78,9 @@ export function esbuild (options: Options = {}): Plugin {
         return null
       }
 
-      target = options.target || 'node14.16.0'
-
       const result = await transform(code, {
         loader,
-        target,
+        target: options.target,
         define: options.define,
         sourcemap: options.sourceMap,
         sourcefile: id
@@ -105,7 +101,7 @@ export function esbuild (options: Options = {}): Plugin {
         const result = await transform(code, {
           loader: 'js',
           minify: true,
-          target
+          target: options.target
         })
         if (result.code) {
           return {
