@@ -297,3 +297,6 @@ Rollup specific option. Specifies module imports that have side-effects
 
 Rollup specific option.
 
+### `commonJS`
+
+Rollup specific option. Specifies additionnal configuration for the rollup commonJS plugin.
