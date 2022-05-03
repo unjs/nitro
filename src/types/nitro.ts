@@ -141,7 +141,7 @@ export interface NitroOptions {
   node: boolean
   moduleSideEffects: string[]
   esbuild?: {
-    options?: EsbuildOptions
+    options?: Partial<EsbuildOptions>
   }
   noExternals: boolean,
   externals: NodeExternalsOptions

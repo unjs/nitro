@@ -16,7 +16,7 @@ export type Options = {
   exclude?: FilterPattern
   sourceMap?: boolean
   minify?: boolean
-  target?: string | string[]
+  target: string | string[]
   jsxFactory?: string
   jsxFragment?: string
   define?: {
@@ -36,7 +36,7 @@ export type Options = {
   }
 }
 
-export function esbuild (options: Options = {}): Plugin {
+export function esbuild (options: Options): Plugin {
   const loaders = {
     ...defaultLoaders
   }
