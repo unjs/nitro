@@ -140,7 +140,7 @@ export interface NitroOptions {
   externals: NodeExternalsOptions
   analyze: false | PluginVisualizerOptions
   replace: Record<string, string | ((id: string) => string)>
-  commonJs?: RollupCommonJSOptions
+  commonJS?: RollupCommonJSOptions
 
   // Advanced
   typescript: {

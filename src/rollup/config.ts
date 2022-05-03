@@ -300,7 +300,7 @@ export const plugins = [
   rollupConfig.plugins.push(commonjs({
     esmExternals: id => !id.startsWith('unenv/'),
     requireReturnsDefault: 'auto',
-    ...nitro.options.commonJs
+    ...nitro.options.commonJS
   }))
 
   // https://github.com/rollup/plugins/tree/master/packages/json
