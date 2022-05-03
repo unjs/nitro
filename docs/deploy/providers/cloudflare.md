@@ -19,8 +19,10 @@ bucket = ".output/public"
 entry-point = ".output"
 
 [build]
-command = "true"
-upload.format = "service-worker"
+command = "yarn build"
+
+[build.upload]
+format = "service-worker"
 ```
 
 ## Testing locally
