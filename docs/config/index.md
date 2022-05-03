@@ -299,4 +299,4 @@ Rollup specific option.
 
 ### `commonJS`
 
-Rollup specific option. Specifies additionnal configuration for the rollup commonJS plugin.
+Rollup specific option. Specifies additional configuration for the rollup CommonJS plugin.
