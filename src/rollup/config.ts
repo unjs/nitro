@@ -118,7 +118,7 @@ export const getRollupConfig = (nitro: Nitro) => {
     }
   }
 
-  if (nitro.options.timing) {
+  if (nitro.options.timing || process.env.NITRO_TIMING) {
     rollupConfig.plugins.push(timing())
   }
 

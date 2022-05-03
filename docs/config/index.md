@@ -56,7 +56,7 @@ Storage configuration.
 
 - Default: `false`
 
-Enable timing information.
+Enable timing information. Can also be enable by setting `NITRO_TIMING=1` environment variable.
 
 ### `renderer`
 
