@@ -5,12 +5,12 @@ import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import { WatchOptions } from 'chokidar'
+import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { StorageMounts } from '../rollup/plugins/storage'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
-import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
 
 export interface Nitro {
   options: NitroOptions,
