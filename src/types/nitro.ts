@@ -10,6 +10,7 @@ import type { StorageMounts } from '../rollup/plugins/storage'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
+import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
 
 export interface Nitro {
   options: NitroOptions,
@@ -139,6 +140,7 @@ export interface NitroOptions {
   externals: NodeExternalsOptions
   analyze: false | PluginVisualizerOptions
   replace: Record<string, string | ((id: string) => string)>
+  commonJs?: RollupCommonJSOptions
 
   // Advanced
   typescript: {
