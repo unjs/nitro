@@ -290,7 +290,7 @@ export const plugins = [
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve
   rollupConfig.plugins.push(nodeResolve({
     extensions,
-    preferBuiltins: true,
+    preferBuiltins: !!nitro.options.node,
     rootDir: nitro.options.rootDir,
     moduleDirectories: ['node_modules'].concat(nitro.options.nodeModulesDirs),
     // 'module' is intentionally not supported because of externals
