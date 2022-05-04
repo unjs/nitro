@@ -4,12 +4,13 @@ import type { Unimport, UnimportOptions } from 'unimport'
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
-import { WatchOptions } from 'chokidar'
+import type { WatchOptions } from 'chokidar'
 import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
+import type { Storage } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
-import { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
+import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
 
 export interface Nitro {
   options: NitroOptions,
@@ -18,6 +19,7 @@ export interface Nitro {
   hooks: Hookable<NitroHooks>
   unimport?: Unimport
   logger: Consola
+  storage: Storage
   close: () => Promise<void>
 }
 

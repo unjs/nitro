@@ -5,6 +5,7 @@ import { createUnimport } from 'unimport'
 import consola from 'consola'
 import type { NitroConfig, Nitro } from './types'
 import { loadOptions } from './options'
+import { createStorage } from './storage'
 
 export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Resolve options
@@ -17,8 +18,13 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     vfs: {},
     logger: consola.withTag('nitro'),
     scannedHandlers: [],
-    close: () => nitro.hooks.callHook('close')
+    close: () => nitro.hooks.callHook('close'),
+    storage: undefined
   }
+
+  // Storage
+  nitro.storage = await createStorage(nitro)
+  nitro.hooks.hook('close', async () => { await nitro.storage.dispose() })
 
   // Logger config
   if (nitro.options.logLevel !== undefined) {

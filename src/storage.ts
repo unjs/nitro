@@ -27,18 +27,15 @@ export async function createStorage (nitro: Nitro) {
 }
 
 export async function snapshotStorage (nitro: Nitro) {
-  const storage = await createStorage(nitro)
   const data: Record<string, any> = {}
 
   const allKeys = Array.from(new Set(await Promise.all(
-    nitro.options.bundledStorage.map(base => storage.getKeys(base))
+    nitro.options.bundledStorage.map(base => nitro.storage.getKeys(base))
   ).then(r => r.flat())))
 
   await Promise.all(allKeys.map(async (key) => {
-    data[key] = await storage.getItem(key)
+    data[key] = await nitro.storage.getItem(key)
   }))
-
-  await storage.dispose()
 
   return data
 }
