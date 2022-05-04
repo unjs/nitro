@@ -2,10 +2,10 @@ import { readFileSync, statSync } from 'fs'
 import createEtag from 'etag'
 import mime from 'mime'
 import { relative, resolve } from 'pathe'
-import virtual from '@rollup/plugin-virtual'
 import { globbySync } from 'globby'
 import type { Plugin } from 'rollup'
 import type { Nitro } from '../../types'
+import { virtual } from './virtual'
 
 export function publicAssets (nitro: Nitro): Plugin {
   const assets: Record<string, { type: string, etag: string, mtime: string, path: string }> = {}

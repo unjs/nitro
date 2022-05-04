@@ -1,7 +1,7 @@
-import virtual from '@rollup/plugin-virtual'
 import { serializeImportName } from '../../utils'
 import { builtinDrivers } from '../../storage'
 import type { Nitro } from '../../types'
+import { virtual } from './virtual'
 
 export function storage (nitro: Nitro) {
   const mounts: { path: string, driver: string, opts: object }[] = []

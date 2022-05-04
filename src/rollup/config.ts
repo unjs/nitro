@@ -8,7 +8,6 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
 import json from '@rollup/plugin-json'
-import virtual from '@rollup/plugin-virtual'
 import wasmPlugin from '@rollup/plugin-wasm'
 import inject from '@rollup/plugin-inject'
 import { isWindows } from 'std-env'
@@ -22,7 +21,7 @@ import type { Nitro } from '../types'
 import { resolveAliases } from '../utils'
 import { runtimeDir } from '../dirs'
 import { replace } from './plugins/replace'
-import dynamicVirtual from './plugins/dynamic-virtual'
+import { virtual } from './plugins/virtual'
 import { dynamicRequire } from './plugins/dynamic-require'
 import { externals } from './plugins/externals'
 import { timing } from './plugins/timing'
@@ -213,7 +212,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   }))
 
   // User virtuals
-  rollupConfig.plugins.push(dynamicVirtual(nitro.options.virtual))
+  rollupConfig.plugins.push(virtual(nitro.options.virtual))
 
   // Plugins
   rollupConfig.plugins.push(virtual({

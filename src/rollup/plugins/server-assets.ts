@@ -6,7 +6,7 @@ import { resolve } from 'pathe'
 import { normalizeKey } from 'unstorage'
 import { globby } from 'globby'
 import type { Nitro } from '../../types'
-import virtual from './dynamic-virtual'
+import { virtual } from './virtual'
 
 export interface ServerAssetOptions {
   inline: Boolean

@@ -11,7 +11,7 @@ export interface RollupVirtualOptions {
 
 const PREFIX = '\0virtual:'
 
-export default function dynamicVirtual (modules: RollupVirtualOptions): Plugin {
+export function virtual (modules: RollupVirtualOptions): Plugin {
   const _modules = new Map<string, VirtualModule>()
 
   for (const [id, mod] of Object.entries(modules)) {
@@ -20,7 +20,7 @@ export default function dynamicVirtual (modules: RollupVirtualOptions): Plugin {
   }
 
   return {
-    name: 'dynamic-virtual',
+    name: 'virtual',
 
     resolveId (id, importer) {
       if (id in modules) { return PREFIX + id }

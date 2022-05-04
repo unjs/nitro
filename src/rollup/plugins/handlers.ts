@@ -4,7 +4,7 @@ import table from 'table'
 import isPrimitive from 'is-primitive'
 import { isDebug } from 'std-env'
 import type { NitroEventHandler } from '../../types'
-import virtual from './dynamic-virtual'
+import { virtual } from './virtual'
 
 const unique = (arr: any[]) => Array.from(new Set(arr))
 
