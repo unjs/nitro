@@ -89,7 +89,7 @@ function extractLinks (html: string, _url: string) {
     const url = match[1]
     if (!url) { continue }
     const { pathname, protocol } = parseURL(url)
-    if (protocol || getExtension(pathname)) { continue }
+    if (protocol) { continue }
     if (!pathname.startsWith('/')) {
       // TODO: Handle relative urls with _url
       continue
@@ -99,7 +99,7 @@ function extractLinks (html: string, _url: string) {
   return links
 }
 
-const EXT_REGEX = /\.[a-z0-9]+$/
-function getExtension (path: string): string {
-  return (path.match(EXT_REGEX) || [])[0] || ''
-}
+// const EXT_REGEX = /\.[a-z0-9]+$/
+// function getExtension (path: string): string {
+//   return (path.match(EXT_REGEX) || [])[0] || ''
+// }
