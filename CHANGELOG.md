@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.12](https://github.com/unjs/nitropack/compare/v0.3.11...v0.3.12) (2022-05-02)
+
+
+### Bug Fixes
+
+* add missing `prefixStorage` import for bundled storage ([defa4de](https://github.com/unjs/nitropack/commit/defa4defeae038a01464821969986240b9288088))
+* **storage:** skip bundled storage for dev and prerender ([31a3957](https://github.com/unjs/nitropack/commit/31a3957757614c4db61c271ecdb7c9c8f4e22d4a))
+
+### [0.3.11](https://github.com/unjs/nitropack/compare/v0.3.10...v0.3.11) (2022-05-02)
+
+
+### Bug Fixes
+
+* **storage:** remove unused `prefixStorage` import ([7376c6d](https://github.com/unjs/nitropack/commit/7376c6dbc31cf277828160c7e22b4213fe142780))
+* **storage:** use `devStorage` for dev and prerender ([93c4d85](https://github.com/unjs/nitropack/commit/93c4d851fd08b6b2fe9952f1ea833ed36899273a))
+
+### [0.3.10](https://github.com/unjs/nitropack/compare/v0.3.9...v0.3.10) (2022-05-02)
+
+
+### Features
+
+* experimental bundled storage ([#160](https://github.com/unjs/nitropack/issues/160)) ([308e7c7](https://github.com/unjs/nitropack/commit/308e7c7d869345565747f9d986a6e77e9789cc1d))
+
+
+### Bug Fixes
+
+* **deps:** pin `@rollup/plugin-node-resolve` due to cloudflare issue ([3ecb813](https://github.com/unjs/nitropack/commit/3ecb813e72007ad4a8bb14f1b0892cee9761c66f))
+
+### [0.3.9](https://github.com/unjs/nitropack/compare/v0.3.8...v0.3.9) (2022-05-02)
+
+
+### Bug Fixes
+
+* add cached shortcuts to the imports ([#162](https://github.com/unjs/nitropack/issues/162)) ([bf6d208](https://github.com/unjs/nitropack/commit/bf6d208866946b4251f7b5922128c03e6117bacd))
+* **cloudflare:** normalize incoming & outgoing headers ([#171](https://github.com/unjs/nitropack/issues/171)) ([abda66b](https://github.com/unjs/nitropack/commit/abda66b65bca708aee731cc4b9f1ba493fc356f2))
+
 ### [0.3.8](https://github.com/unjs/nitropack/compare/v0.3.7...v0.3.8) (2022-04-27)
 
 

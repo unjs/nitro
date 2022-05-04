@@ -1,38 +1,43 @@
 import virtual from '@rollup/plugin-virtual'
 import { serializeImportName } from '../../utils'
+import { builtinDrivers } from '../../storage'
+import type { Nitro } from '../../types'
 
-export interface StorageMounts {
-  [path: string]: {
-    driver: 'fs' | 'http' | 'memory' | 'redis' | 'cloudflare-kv',
-    [option: string]: any
-  }
-}
-
-export interface StorageOptions {
-  mounts: StorageMounts
-}
-
-const drivers = {
-  fs: 'unstorage/drivers/fs',
-  http: 'unstorage/drivers/http',
-  memory: 'unstorage/drivers/memory',
-  redis: 'unstorage/drivers/redis',
-  'cloudflare-kv': 'unstorage/drivers/cloudflare-kv'
-}
-
-export function storage (opts: StorageOptions) {
+export function storage (nitro: Nitro) {
   const mounts: { path: string, driver: string, opts: object }[] = []
 
-  for (const path in opts.mounts) {
-    const mount = opts.mounts[path]
+  const isDevOrPrerender = nitro.options.dev || nitro.options.preset === 'nitro-prerender'
+  const storageMounts = isDevOrPrerender
+    ? { ...nitro.options.storage, ...nitro.options.devStorage }
+    : nitro.options.storage
+
+  for (const path in storageMounts) {
+    const mount = storageMounts[path]
     mounts.push({
       path,
-      driver: drivers[mount.driver] || mount.driver,
+      driver: builtinDrivers[mount.driver] || mount.driver,
       opts: mount
     })
   }
 
   const driverImports = Array.from(new Set(mounts.map(m => m.driver)))
+
+  const bundledStorageCode = `
+import { prefixStorage } from 'unstorage'
+import overlay from 'unstorage/drivers/overlay'
+import memory from 'unstorage/drivers/memory'
+
+const bundledStorage = ${JSON.stringify(nitro.options.bundledStorage)}
+for (const base of bundledStorage) {
+  storage.mount(base, overlay({
+    layers: [
+      memory(),
+      // TODO
+      // prefixStorage(storage, base),
+      prefixStorage(storage, '/assets/nitro/bundled' + base)
+    ]
+  }))
+}`
 
   return virtual({
     '#internal/nitro/virtual/storage': `
@@ -48,6 +53,8 @@ export const useStorage = () => storage
 storage.mount('/assets', assets)
 
 ${mounts.map(m => `storage.mount('${m.path}', ${serializeImportName(m.driver)}(${JSON.stringify(m.opts)}))`).join('\n')}
+
+${(!isDevOrPrerender && nitro.options.bundledStorage.length) ? bundledStorageCode : ''}
 `
   })
 }

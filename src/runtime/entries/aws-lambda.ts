@@ -1,7 +1,6 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyEventHeaders, APIGatewayProxyEventV2, APIGatewayProxyResult, APIGatewayProxyResultV2, Context } from 'aws-lambda'
 import '#internal/nitro/virtual/polyfill'
 import { withQuery } from 'ufo'
-import type { HeadersObject } from 'unenv/runtime/_internal/types'
 import { nitroApp } from '../app'
 
 // Compatibility types that work with AWS v1, AWS v2 & Netlify
@@ -37,6 +36,6 @@ function normalizeIncomingHeaders (headers: APIGatewayProxyEventHeaders) {
   return Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value!]))
 }
 
-function normalizeOutgoingHeaders (headers: HeadersObject) {
+function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
   return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
 }

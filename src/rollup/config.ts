@@ -135,10 +135,12 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
+  let NODE_ENV: string = nitro.options.dev ? 'development' : 'production'
+  if (nitro.options.preset === 'nitro-prerender') { NODE_ENV = 'prerender' }
   rollupConfig.plugins.push(replace({
     preventAssignment: true,
     values: {
-      'process.env.NODE_ENV': nitro.options.dev ? '"development"' : '"production"',
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'typeof window': '"undefined"',
       ...Object.fromEntries([';', '(', '{', '}', ' ', '\t', '\n'].map(d => [`${d}global.`, `${d}globalThis.`])),
       'process.server': 'true',
@@ -188,9 +190,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(publicAssets(nitro))
 
   // Storage
-  rollupConfig.plugins.push(storage({
-    mounts: nitro.options.storage
-  }))
+  rollupConfig.plugins.push(storage(nitro))
 
   // Handlers
   rollupConfig.plugins.push(handlers(() => {
