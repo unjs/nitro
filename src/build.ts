@@ -7,7 +7,7 @@ import { watch } from 'chokidar'
 import { debounce } from 'perfect-debounce'
 import type { TSConfig } from 'pkg-types'
 import { printFSTree } from './utils/tree'
-import { getRollupConfig } from './rollup/config'
+import { getRollupConfig, RollupConfig } from './rollup/config'
 import { prettyPath, writeFile, isDirectory } from './utils'
 import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
@@ -35,9 +35,9 @@ export async function copyPublicAssets (nitro: Nitro) {
 }
 
 export async function build (nitro: Nitro) {
-  nitro.options.rollupConfig = getRollupConfig(nitro)
+  const rollupConfig = getRollupConfig(nitro)
   await nitro.hooks.callHook('rollup:before', nitro)
-  return nitro.options.dev ? _watch(nitro) : _build(nitro)
+  return nitro.options.dev ? _watch(nitro, rollupConfig) : _build(nitro, rollupConfig)
 }
 
 export async function writeTypes (nitro: Nitro) {
@@ -129,19 +129,19 @@ async function _snapshot (nitro: Nitro) {
   }))
 }
 
-async function _build (nitro: Nitro) {
+async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
   await scanHandlers(nitro)
   await writeTypes(nitro)
   await _snapshot(nitro)
 
   nitro.logger.start('Building server...')
-  const build = await rollup.rollup(nitro.options.rollupConfig).catch((error) => {
+  const build = await rollup.rollup(rollupConfig).catch((error) => {
     nitro.logger.error('Rollup error: ' + error.message)
     throw error
   })
 
   nitro.logger.start('Writing server bundle...')
-  await build.write(nitro.options.rollupConfig.output)
+  await build.write(rollupConfig.output)
 
   // Write build info
   const nitroConfigPath = resolve(nitro.options.output.dir, 'nitro.json')
@@ -172,15 +172,11 @@ async function _build (nitro: Nitro) {
   if (buildInfo.commands.deploy) {
     nitro.logger.success(`You can deploy this build using \`${rewriteRelativePaths(buildInfo.commands.deploy)}\``)
   }
-
-  return {
-    entry: resolve(nitro.options.rollupConfig.output.dir, nitro.options.rollupConfig.output.entryFileNames as string)
-  }
 }
 
-function startRollupWatcher (nitro: Nitro) {
+function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
   type OT = rollup.RollupWatchOptions
-  const watcher = rollup.watch(defu<OT, OT>(nitro.options.rollupConfig, {
+  const watcher = rollup.watch(defu<OT, OT>(rollupConfig, {
     watch: {
       chokidar: nitro.options.watchOptions
     }
@@ -213,13 +209,13 @@ function startRollupWatcher (nitro: Nitro) {
   return watcher
 }
 
-async function _watch (nitro: Nitro) {
+async function _watch (nitro: Nitro, rollupConfig: RollupConfig) {
   let rollupWatcher: rollup.RollupWatcher
 
   const reload = debounce(async () => {
     if (rollupWatcher) { await rollupWatcher.close() }
     await scanHandlers(nitro)
-    rollupWatcher = startRollupWatcher(nitro)
+    rollupWatcher = startRollupWatcher(nitro, rollupConfig)
     await writeTypes(nitro)
   })
 

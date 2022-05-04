@@ -10,6 +10,11 @@ export const netlify = defineNitroPreset({
     dir: '{{ rootDir }}/.netlify/functions-internal',
     publicDir: '{{ rootDir }}/dist'
   },
+  rollupConfig: {
+    output: {
+      entryFileNames: 'server.ts'
+    }
+  },
   hooks: {
     async 'compiled' (nitro: Nitro) {
       const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
@@ -24,9 +29,6 @@ export const netlify = defineNitroPreset({
         contents = currentRedirects + '\n' + contents
       }
       await fsp.writeFile(redirectsPath, contents)
-    },
-    'rollup:before' (nitro: Nitro) {
-      nitro.options.rollupConfig.output.entryFileNames = 'server.ts'
     }
   }
 })
@@ -45,6 +47,11 @@ export const netlifyEdge = defineNitroPreset({
     serverDir: '{{ rootDir }}/.netlify/edge-functions',
     publicDir: '{{ rootDir }}/dist'
   },
+  rollupConfig: {
+    output: {
+      entryFileNames: 'server.js'
+    }
+  },
   hooks: {
     async 'compiled' (nitro: Nitro) {
       const manifest = {
@@ -59,9 +66,6 @@ export const netlifyEdge = defineNitroPreset({
       const manifestPath = join(nitro.options.rootDir, '.netlify/edge-functions/manifest.json')
       await fsp.mkdir(dirname(manifestPath), { recursive: true })
       await fsp.writeFile(manifestPath, JSON.stringify(manifest, null, 2))
-    },
-    'rollup:before' (nitro: Nitro) {
-      nitro.options.rollupConfig.output.entryFileNames = 'server.js'
     }
   }
 })
