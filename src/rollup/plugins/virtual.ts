@@ -11,10 +11,11 @@ export interface RollupVirtualOptions {
 
 const PREFIX = '\0virtual:'
 
-export function virtual (modules: RollupVirtualOptions): Plugin {
+export function virtual (modules: RollupVirtualOptions, cache: Record<string, VirtualModule> = {}): Plugin {
   const _modules = new Map<string, VirtualModule>()
 
   for (const [id, mod] of Object.entries(modules)) {
+    cache[id] = mod
     _modules.set(id, mod)
     _modules.set(resolve(id), mod)
   }
@@ -47,7 +48,7 @@ export function virtual (modules: RollupVirtualOptions): Plugin {
         m = await m()
       }
 
-      // console.log('[virtual]', idNoPrefix, '\n', m)
+      cache[id.replace(PREFIX, '')] = m
 
       return {
         code: m as string,

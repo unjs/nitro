@@ -192,27 +192,15 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(storage(nitro))
 
   // Handlers
-  rollupConfig.plugins.push(handlers(() => {
-    const handlers = [
-      ...nitro.scannedHandlers,
-      ...nitro.options.handlers
-    ]
-    if (nitro.options.serveStatic) {
-      handlers.unshift({ route: '', handler: '#internal/nitro/static' })
-    }
-    if (nitro.options.renderer) {
-      handlers.push({ route: '/**', handler: nitro.options.renderer })
-    }
-    return handlers
-  }))
+  rollupConfig.plugins.push(handlers(nitro))
 
   // Polyfill
   rollupConfig.plugins.push(virtual({
     '#internal/nitro/virtual/polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
-  }))
+  }, nitro.vfs))
 
   // User virtuals
-  rollupConfig.plugins.push(virtual(nitro.options.virtual))
+  rollupConfig.plugins.push(virtual(nitro.options.virtual, nitro.vfs))
 
   // Plugins
   rollupConfig.plugins.push(virtual({
@@ -223,7 +211,7 @@ export const plugins = [
   ${nitro.options.plugins.map(plugin => `_${hash(plugin)}`).join(',\n')}
 ]
     `
-  }))
+  }, nitro.vfs))
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
   let buildDir = nitro.options.buildDir

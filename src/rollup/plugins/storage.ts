@@ -56,5 +56,5 @@ ${mounts.map(m => `storage.mount('${m.path}', ${serializeImportName(m.driver)}($
 
 ${(!isDevOrPrerender && nitro.options.bundledStorage.length) ? bundledStorageCode : ''}
 `
-  })
+  }, nitro.vfs)
 }

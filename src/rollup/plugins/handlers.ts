@@ -3,19 +3,28 @@ import { relative } from 'pathe'
 import table from 'table'
 import isPrimitive from 'is-primitive'
 import { isDebug } from 'std-env'
-import type { NitroEventHandler } from '../../types'
+import type { Nitro, NitroEventHandler } from '../../types'
 import { virtual } from './virtual'
 
 const unique = (arr: any[]) => Array.from(new Set(arr))
 
-export function handlers (getHandlers: () => NitroEventHandler[]) {
+export function handlers (nitro: Nitro) {
   const getImportId = p => '_' + hasha(p).slice(0, 6)
 
   let lastDump = ''
 
   return virtual({
     '#internal/nitro/virtual/server-handlers': () => {
-      const handlers = getHandlers()
+      const handlers = [
+        ...nitro.scannedHandlers,
+        ...nitro.options.handlers
+      ]
+      if (nitro.options.serveStatic) {
+        handlers.unshift({ route: '', handler: '#internal/nitro/static' })
+      }
+      if (nitro.options.renderer) {
+        handlers.push({ route: '/**', handler: nitro.options.renderer })
+      }
 
       if (isDebug) {
         const dumped = dumpHandler(handlers)
@@ -45,7 +54,7 @@ ${handlers.map(h => `  { route: '${h.route || ''}', handler: ${getImportId(h.han
         // console.log(code)
       return code
     }
-  })
+  }, nitro.vfs)
 }
 
 function dumpHandler (handler: NitroEventHandler[]) {

@@ -64,5 +64,5 @@ export function getAsset (id) {
   return assets[id]
 }
 `
-  })
+  }, nitro.vfs)
 }
