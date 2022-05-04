@@ -275,6 +275,16 @@ export const plugins = [
         'import'
       ]
     })))
+  } else {
+    rollupConfig.plugins.push({
+      name: 'no-externals',
+      async resolveId (id, from, options) {
+        const resolved = await this.resolve(id, from, { ...options, skipSelf: true })
+        if (!resolved || resolved.external) {
+          throw new Error(`Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(from)} and externals are not allowed!`)
+        }
+      }
+    })
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve
