@@ -34,7 +34,7 @@ for (const base of bundledStorage) {
       memory(),
       // TODO
       // prefixStorage(storage, base),
-      prefixStorage(storage, '/assets/nitro/bundled' + base)
+      prefixStorage(storage, 'assets:nitro:bundled:' + base)
     ]
   }))
 }`
