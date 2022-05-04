@@ -81,7 +81,7 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
 
   it('API Works', async () => {
     const { data: helloData } = await callHandler({ url: '/api/hello' })
-    expect(helloData).to.have.string('Hello API')
+    expect(helloData).to.toMatchObject({ message: 'Hello API' })
 
     const { data: heyData } = await callHandler({ url: '/api/hey' })
     expect(heyData).to.have.string('Hey API')

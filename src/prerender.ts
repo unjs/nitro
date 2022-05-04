@@ -47,9 +47,10 @@ export async function prerender (nitro: Nitro) {
     if (res.status !== 200) {
       throw new Error(`[${res.status}] ${res.statusText}`)
     }
+
+    const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
-    const isImplicitHTML = (res.headers.get('content-type') || '').includes('html')
-    const fileName = isImplicitHTML ? routeWithIndex + '.html' : routeWithIndex
+    const fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
     const filePath = join(nitro.options.output.publicDir, fileName)
     await writeFile(filePath, contents)
     // Crawl Links
