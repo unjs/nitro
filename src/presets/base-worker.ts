@@ -5,5 +5,10 @@ export const baseWorker = defineNitroPreset({
   node: false,
   minify: true,
   noExternals: true,
+  rollupConfig: {
+    output: {
+      format: 'iife'
+    }
+  },
   inlineDynamicImports: true // iffe does not support code-splitting
 })
