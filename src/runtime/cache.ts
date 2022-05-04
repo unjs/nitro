@@ -125,6 +125,7 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
 
     // Call handler
     const event = createEvent(reqProxy, resProxy)
+    event.context = incomingEvent.context
     const body = await _handler(event)
 
     // Collect cachable headers
