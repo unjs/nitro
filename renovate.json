@@ -1,8 +1,5 @@
 {
   "extends": [
     "@nuxtjs"
-  ],
-  "ignoreDeps": [
-    "@rollup/plugin-node-resolve"
   ]
 }
