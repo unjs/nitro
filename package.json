@@ -104,7 +104,7 @@
     "ufo": "^0.8.3",
     "unenv": "^0.4.6",
     "unimport": "^0.1.8",
-    "unstorage": "^0.4.0",
+    "unstorage": "^0.4.1",
     "util": "^0.12.4"
   },
   "devDependencies": {

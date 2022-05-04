@@ -3,6 +3,7 @@ import type { Plugin } from 'rollup'
 import createEtag from 'etag'
 import mime from 'mime'
 import { resolve } from 'pathe'
+import { normalizeKey } from 'unstorage'
 import { globby } from 'globby'
 import type { Nitro } from '../../types'
 import virtual from './dynamic-virtual'
@@ -68,10 +69,6 @@ export const assets = createStorage()
 for (const asset of serverAssets) {
   assets.mount(asset.baseName, fsDriver({ base: asset.dir }))
 }`
-}
-
-function normalizeKey (key) {
-  return key.replace(/[/\\]/g, ':').replace(/:+/g, ':').replace(/^:|:$/g, '')
 }
 
 function getAssetProd (assets: Record<string, ResolvedAsset>) {

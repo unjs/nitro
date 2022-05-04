@@ -89,7 +89,7 @@ importers:
       unbuild: ^0.7.4
       unenv: ^0.4.6
       unimport: ^0.1.8
-      unstorage: ^0.4.0
+      unstorage: ^0.4.1
       util: ^0.12.4
       vitepress: ^0.22.3
       vitest: ^0.10.1
@@ -160,7 +160,7 @@ importers:
       ufo: 0.8.3
       unenv: 0.4.6
       unimport: 0.1.8_lq7i7lniz7dbjsssi7edpdfmuu
-      unstorage: 0.4.0
+      unstorage: 0.4.1
       util: 0.12.4
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_t725usgvqspm5woeqpaxbfp2qu
@@ -5905,8 +5905,8 @@ packages:
       webpack-virtual-modules: 0.4.3
     dev: false
 
-  /unstorage/0.4.0:
-    resolution: {integrity: sha512-hbc4bKfeeYHlW3PrfJozSp1TQ2XFIm9NOxYzW3iFe5vs4bT1atYOfFgeD84IvParXiIWAr1qaR3Sf9QcGOxWHw==}
+  /unstorage/0.4.1:
+    resolution: {integrity: sha512-nK2XsRV2lfB6aNCuoatsQUhRVMnDDP5pm3D4UrgRMxP3D57Rn5+dx3aNaLCi5rcq6QAdOmhjyBvKcW8d3PY+Sw==}
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3
