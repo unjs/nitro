@@ -23,7 +23,7 @@ importers:
       '@types/aws-lambda': ^8.10.95
       '@types/etag': ^1.8.1
       '@types/fs-extra': ^9.0.13
-      '@types/http-proxy': ^1.17.8
+      '@types/http-proxy': ^1.17.9
       '@types/jsdom': ^16.2.14
       '@types/node-fetch': ^2.6.1
       '@types/object-hash': ^2.2.1
@@ -92,7 +92,7 @@ importers:
       unstorage: ^0.4.1
       util: ^0.12.4
       vitepress: ^0.22.3
-      vitest: ^0.10.1
+      vitest: ^0.10.2
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.0.0
@@ -167,7 +167,7 @@ importers:
       '@types/aws-lambda': 8.10.95
       '@types/etag': 1.8.1
       '@types/fs-extra': 9.0.13
-      '@types/http-proxy': 1.17.8
+      '@types/http-proxy': 1.17.9
       '@types/node-fetch': 2.6.1
       '@types/object-hash': 2.2.1
       '@types/semver': 7.3.9
@@ -180,7 +180,7 @@ importers:
       typescript: 4.6.4
       unbuild: 0.7.4
       vitepress: 0.22.3
-      vitest: 0.10.1_c8@7.11.2
+      vitest: 0.10.2_c8@7.11.2
 
   docs:
     specifiers: {}
@@ -726,7 +726,7 @@ packages:
       kleur: 4.1.4
       selfsigned: 2.0.1
       undici: 4.13.0
-      ws: 8.5.0
+      ws: 8.6.0
       youch: 2.2.2
     transitivePeerDependencies:
       - bufferutil
@@ -802,7 +802,7 @@ packages:
       '@miniflare/core': 2.4.0
       '@miniflare/shared': 2.4.0
       undici: 4.13.0
-      ws: 8.5.0
+      ws: 8.6.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -1037,8 +1037,8 @@ packages:
       '@types/node': 17.0.23
     dev: true
 
-  /@types/http-proxy/1.17.8:
-    resolution: {integrity: sha512-5kPLG5BKpWYkw/LVOGWpiq3nEVqxiN32rTgI53Sk12/xHFQ2rG3ehI9IO+O3W2QoKeyB92dJkoka8SUm6BX1pA==}
+  /@types/http-proxy/1.17.9:
+    resolution: {integrity: sha512-QsbSjA/fSk7xB+UXlCT3wHBy5ai9wOcNDWwZAtud+jXhwOM3l+EYZh8Lng4+/6n8uar0J7xILzqftJdJ/Wdfkw==}
     dependencies:
       '@types/node': 17.0.23
     dev: true
@@ -6053,8 +6053,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.10.1_c8@7.11.2:
-    resolution: {integrity: sha512-jFNObjJ48WnfJzxpopJOrd7ZnRCE3OGgE2KSQ1AGmKxNPTgadMCLx81GBrIcxIjuz2E/8qmGBPtC5VH01ihl7A==}
+  /vitest/0.10.2_c8@7.11.2:
+    resolution: {integrity: sha512-41D+nhswCco5vy1NXmpAjZX11Aj+HMnyhjWQD12piwHibf4bvdTGtni56UcFWcvONVoIForgDuLrKSohHJjwQA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -6193,19 +6193,6 @@ packages:
   /wrappy/1.0.2:
     resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
 
-  /ws/8.5.0:
-    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: true
-
   /ws/8.6.0:
     resolution: {integrity: sha512-AzmM3aH3gk0aX7/rZLYvjdvZooofDu3fFOzGqcSnQ1tOcTWwhM/o+q++E8mAyVVIyUdajrkzWUGftaVSDLn1bw==}
     engines: {node: '>=10.0.0'}
@@ -6217,7 +6204,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: false
 
   /xtend/4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

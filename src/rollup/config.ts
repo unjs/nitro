@@ -135,10 +135,12 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
+  let NODE_ENV: string = nitro.options.dev ? 'development' : 'production'
+  if (nitro.options.preset === 'nitro-prerender') { NODE_ENV = 'prerender' }
   rollupConfig.plugins.push(replace({
     preventAssignment: true,
     values: {
-      'process.env.NODE_ENV': nitro.options.dev ? '"development"' : '"production"',
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'typeof window': '"undefined"',
       ...Object.fromEntries([';', '(', '{', '}', ' ', '\t', '\n'].map(d => [`${d}global.`, `${d}globalThis.`])),
       'process.server': 'true',
@@ -297,7 +299,8 @@ export const plugins = [
   // https://github.com/rollup/plugins/tree/master/packages/commonjs
   rollupConfig.plugins.push(commonjs({
     esmExternals: id => !id.startsWith('unenv/'),
-    requireReturnsDefault: 'auto'
+    requireReturnsDefault: 'auto',
+    ...nitro.options.commonJS
   }))
 
   // https://github.com/rollup/plugins/tree/master/packages/json
