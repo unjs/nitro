@@ -13,13 +13,14 @@ account_id = "<the account_id you obtained>"
 workers_dev = true
 route = ""
 zone_id = ""
+compatibility_date = "2022-04-07"
 
 [site]
 bucket = ".output/public"
 entry-point = ".output"
 
 [build]
-command = "true"
+command = ""
 upload.format = "service-worker"
 ```
 
