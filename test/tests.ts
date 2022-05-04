@@ -90,7 +90,10 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     expect(kebabData).to.have.string('hello-world')
 
     const { data: paramsData } = await callHandler({ url: '/api/param/test_param' })
-    expect(paramsData).to.have.string('test_param')
+    expect(paramsData).toBe('test_param')
+
+    const { data: paramsData2 } = await callHandler({ url: '/api/wildcard/foo/bar/baz' })
+    expect(paramsData2).toBe('foo/bar/baz')
   })
 
   it('handles errors', async () => {
