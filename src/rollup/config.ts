@@ -2,7 +2,6 @@ import { pathToFileURL } from 'url'
 import { dirname, join, normalize, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
-import devalue from '@nuxt/devalue'
 import { terser } from 'rollup-plugin-terser'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
@@ -133,20 +132,42 @@ export const getRollupConfig = (nitro: Nitro) => {
     rollupConfig.plugins.push(wasmPlugin())
   }
 
+  // Build-time environment variables
+  const buildEnvVars = {
+    NODE_ENV: nitro.options.dev ? 'development' : (nitro.options.preset === 'nitro-prerender' ? 'prerender' : 'production'),
+    server: true,
+    client: false,
+    dev: String(nitro.options.dev),
+    RUNTIME_CONFIG: nitro.options.runtimeConfig,
+    DEBUG: nitro.options.dev
+  }
+
+  // Universal import.meta
+  rollupConfig.plugins.push({
+    name: 'import-meta',
+    renderChunk (code, chunk) {
+      if (!chunk.isEntry) {
+        return
+      }
+      const url = nitro.options.node ? '_import_meta_url_' : '"file://_entry.js"'
+      const env = nitro.options.node ? 'process.env' : '{}'
+      return {
+        code: `globalThis._importMeta_={url:${url},env:${env}};` + code,
+        map: null
+      }
+    }
+  })
+
   // https://github.com/rollup/plugins/tree/master/packages/replace
-  let NODE_ENV: string = nitro.options.dev ? 'development' : 'production'
-  if (nitro.options.preset === 'nitro-prerender') { NODE_ENV = 'prerender' }
   rollupConfig.plugins.push(replace({
     preventAssignment: true,
     values: {
-      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'typeof window': '"undefined"',
+      _import_meta_url_: 'import.meta.url',
+      ...Object.fromEntries(['.', ';', ')', '[', ']', '}', ' '].map(d => [`import.meta${d}`, `globalThis._importMeta_${d}`])),
       ...Object.fromEntries([';', '(', '{', '}', ' ', '\t', '\n'].map(d => [`${d}global.`, `${d}globalThis.`])),
-      'process.server': 'true',
-      'process.client': 'false',
-      'process.dev': String(nitro.options.dev),
-      'process.env.RUNTIME_CONFIG': devalue(nitro.options.runtimeConfig),
-      'process.env.DEBUG': JSON.stringify(nitro.options.dev),
+      ...Object.fromEntries(Object.entries(buildEnvVars).map(([key, val]) => ([`process.env.${key}`, JSON.stringify(val)]))),
+      ...Object.fromEntries(Object.entries(buildEnvVars).map(([key, val]) => ([`import.meta.env.${key}`, JSON.stringify(val)]))),
       ...nitro.options.replace
     }
   }))
@@ -175,17 +196,6 @@ export const getRollupConfig = (nitro: Nitro) => {
   rollupConfig.plugins.push(serverAssets(nitro))
 
   // Public assets
-  if (nitro.options.serveStatic) {
-    rollupConfig.plugins.push({
-      name: 'dirnames',
-      renderChunk (code, chunk) {
-        return {
-          code: (chunk.isEntry ? 'globalThis.entryURL = import.meta.url;' : '') + code,
-          map: null
-        }
-      }
-    })
-  }
   rollupConfig.plugins.push(publicAssets(nitro))
 
   // Storage

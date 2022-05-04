@@ -64,6 +64,7 @@ const NitroDefaults: NitroConfig = {
   analyze: false,
   moduleSideEffects: ['unenv/runtime/polyfill/'],
   replace: {},
+  node: true,
   sourceMap: true,
 
   // Advanced

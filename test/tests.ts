@@ -105,6 +105,13 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     expect(heyData).to.have.string('Hey API')
   })
 
+  it('universal import.meta', async () => {
+    const { status, data } = await callHandler({ url: '/api/import-meta' })
+    expect(status).toBe(200)
+    expect(data.testFile).toMatch(/\/test.txt$/)
+    expect(data.hasEnv).toBe(true)
+  })
+
   if (ctx.nitro!.options.serveStatic) {
     it('serve static asset /favicon.ico', async () => {
       const { status, headers } = await callHandler({ url: '/favicon.ico' })
