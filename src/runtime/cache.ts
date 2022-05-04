@@ -1,6 +1,6 @@
 import { hash } from 'ohash'
-import { H3Response, toEventHandler, handleCacheHeaders, defineEventHandler, createEvent } from 'h3'
-import type { CompatibilityEventHandler, CompatibilityEvent } from 'h3'
+import { handleCacheHeaders, defineEventHandler, createEvent, EventHandler } from 'h3'
+import type { H3Event } from 'h3'
 import { useStorage } from '#internal/nitro'
 
 export interface CacheEntry<T=any> {
@@ -89,14 +89,17 @@ function getKey (...args: string[]) {
   return args.length ? hash(args, {}) : ''
 }
 
-export interface ResponseCacheEntry {
-  body: H3Response
+export interface ResponseCacheEntry<T=any> {
+  body: T
   code: number
   headers: Record<string, string | number | string[]>
 }
 
-export function defineCachedEventHandler (handler: CompatibilityEventHandler, opts: Omit<CachifyOptions, 'getKey'> = defaultCacheOptions) {
-  const _opts: CachifyOptions<ResponseCacheEntry> = {
+export function defineCachedEventHandler <T=any> (
+  handler: EventHandler<T>,
+  opts: Omit<CachifyOptions<ResponseCacheEntry<T>>, 'getKey'> = defaultCacheOptions
+): EventHandler<T> {
+  const _opts: CachifyOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: (event) => {
       return event.req.originalUrl || event.req.url
@@ -108,8 +111,7 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
     ]
   }
 
-  const _handler = toEventHandler(handler)
-  const _cachedHandler = cachedFunction<ResponseCacheEntry>(async (incomingEvent: CompatibilityEvent) => {
+  const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(async (incomingEvent: H3Event) => {
     // Create proxies to avoid sharing state with user request
     const reqProxy = cloneWithProxy(incomingEvent.req, { headers: {} })
     const resHeaders: Record<string, number | string | string[]> = {}
@@ -126,7 +128,7 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
     // Call handler
     const event = createEvent(reqProxy, resProxy)
     event.context = incomingEvent.context
-    const body = await _handler(event)
+    const body = await handler(event)
 
     // Collect cachable headers
     const headers = event.res.getHeaders()
@@ -150,7 +152,7 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
     }
 
     // Create cache entry for response
-    const cacheEntry: ResponseCacheEntry = {
+    const cacheEntry: ResponseCacheEntry<T> = {
       code: event.res.statusCode,
       headers,
       body
@@ -159,7 +161,7 @@ export function defineCachedEventHandler (handler: CompatibilityEventHandler, op
     return cacheEntry
   }, _opts)
 
-  return defineEventHandler(async (event) => {
+  return defineEventHandler<T>(async (event) => {
     // Call with cache
     const response = await _cachedHandler(event)
 
