@@ -83,16 +83,17 @@ export async function prerender (nitro: Nitro) {
 
 const LINK_REGEX = /href=['"]?([^'" >]+)/g
 
-function extractLinks (html: string, _url: string) {
+function extractLinks (html: string, from: string) {
   const links: string[] = []
   for (const match of html.matchAll(LINK_REGEX)) {
     const url = match[1]
     if (!url) { continue }
-    const { pathname, protocol } = parseURL(url)
-    if (protocol) { continue }
+    const parsed = parseURL(url)
+    if (parsed.protocol) { continue }
+    let { pathname } = parsed
     if (!pathname.startsWith('/')) {
-      // TODO: Handle relative urls with _url
-      continue
+      const fromURL = new URL(from, 'http://localhost')
+      pathname = new URL(pathname, fromURL).pathname
     }
     links.push(pathname)
   }
