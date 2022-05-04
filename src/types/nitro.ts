@@ -5,6 +5,7 @@ import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import { WatchOptions } from 'chokidar'
+import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
@@ -147,6 +148,7 @@ export interface NitroOptions {
   externals: NodeExternalsOptions
   analyze: false | PluginVisualizerOptions
   replace: Record<string, string | ((id: string) => string)>
+  commonJS?: RollupCommonJSOptions
 
   // Advanced
   typescript: {
