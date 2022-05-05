@@ -20,7 +20,7 @@ export function handlers (nitro: Nitro) {
         ...nitro.options.handlers
       ]
       if (nitro.options.serveStatic) {
-        handlers.unshift({ route: '', handler: '#internal/nitro/static' })
+        handlers.unshift({ middleware: true, handler: '#internal/nitro/static' })
       }
       if (nitro.options.renderer) {
         handlers.push({ route: '/**', handler: nitro.options.renderer })
@@ -37,10 +37,10 @@ export function handlers (nitro: Nitro) {
       }
 
       // Imports take priority
-      const imports = unique(handlers.filter(h => h.lazy === false).map(h => h.handler))
+      const imports = unique(handlers.filter(h => !h.lazy).map(h => h.handler))
 
       // Lazy imports should fill in the gaps
-      const lazyImports = unique(handlers.filter(h => h.lazy !== false && !imports.includes(h.handler)).map(h => h.handler))
+      const lazyImports = unique(handlers.filter(h => h.lazy && !imports.includes(h.handler)).map(h => h.handler))
 
       const code = `
 ${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).join('\n')}
