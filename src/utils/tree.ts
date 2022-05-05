@@ -11,7 +11,7 @@ export async function printFSTree (dir: string) {
     return
   }
 
-  const files = await globby('**/*.*', { cwd: dir })
+  const files = await globby('**/*.*', { cwd: dir, ignore: ['*.map'] })
 
   const items = (await Promise.all(files.map(async (file) => {
     const path = resolve(dir, file)
