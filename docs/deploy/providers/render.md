@@ -14,4 +14,8 @@ Nitro supports deploying on [Render](https://render.com/) with minimal configura
 
 1. Update the start command to `node .output/server/index.mjs`
 
+1. Click 'Advanced' and add an environment variable with `NITRO_PRESET` set to `render-com`.
+
+1. Click 'Create Web Service'.
+
 You should be good to go!
