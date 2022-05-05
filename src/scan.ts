@@ -48,6 +48,7 @@ export function scanRoutes (nitro: Nitro, dir: string, prefix: string = '/') {
 
     return {
       handler: file.fullPath,
+      lazy: true,
       route,
       method
     }
