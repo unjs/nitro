@@ -11,7 +11,6 @@ export default defineBuildConfig({
     '@cloudflare/kv-asset-handler',
     '@netlify/functions',
     '@nuxt/devalue',
-    'connect',
     'destr',
     'ohmyfetch',
     'ora'
