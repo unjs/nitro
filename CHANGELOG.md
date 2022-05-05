@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/unjs/nitropack/compare/v0.3.12...v0.4.0) (2022-05-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cache:** only accept event handler for `defineCachedEventHandler`
+* **prerender:** write html files to subfolder (resolves #166)
+
+### Features
+
+* `nitro.storage` ([e1c234e](https://github.com/unjs/nitropack/commit/e1c234eaa59db02bbc76d5b0272b153bb2a238ae))
+* add `X-Nitro-Prerender` header to detect prerendering ([11e732b](https://github.com/unjs/nitropack/commit/11e732b6d3c53ca2d8b7e09be9f0da4550eb5d0c))
+* allow explicit middleware handlers ([23d8cde](https://github.com/unjs/nitropack/commit/23d8cde6942c051872aa4286b49ee7ee88ee9254))
+* **cache:** only accept event handler for `defineCachedEventHandler` ([7e72b8f](https://github.com/unjs/nitropack/commit/7e72b8f327fb0141bce32d2b0b50e357ec6a7a07))
+* expose all assets to `nitro.vfs` and `/_vfs` endpoint (resolves [#173](https://github.com/unjs/nitropack/issues/173)) ([9bf2d71](https://github.com/unjs/nitropack/commit/9bf2d710583d5b6297a1afed1c3d33b8c8826e50))
+* extend prerender links from `X-Nitro-Prerender` (resolves [#115](https://github.com/unjs/nitropack/issues/115)) ([9423524](https://github.com/unjs/nitropack/commit/94235246d155c13f886a26a24162d6fd6e9c67d5))
+* named wildcard params ([233e024](https://github.com/unjs/nitropack/commit/233e024c75940c26c9113b374bbd7e35a8e0a31f))
+* **prerender:** write html files to subfolder (resolves [#166](https://github.com/unjs/nitropack/issues/166)) ([cdcd35a](https://github.com/unjs/nitropack/commit/cdcd35adf3e4f1d3902605f97559c0dcf6d0febf))
+* **rollup:** allow edit of commonJs plugin options ([#187](https://github.com/unjs/nitropack/issues/187)) ([c7759e9](https://github.com/unjs/nitropack/commit/c7759e90a67987ef20e5fadacc354f9934ef9cc3))
+* **rollup:** fail build when externals are not allowed and cannot resolve id ([ff2dd44](https://github.com/unjs/nitropack/commit/ff2dd443641ad2b72b1e22c2075a20099222e2c6))
+* universal `import.meta` (resolves [#181](https://github.com/unjs/nitropack/issues/181)) ([929322b](https://github.com/unjs/nitropack/commit/929322b5c6e3afd9f631613f07dcdd4e81a88dab))
+* update unenv ([04e2f26](https://github.com/unjs/nitropack/commit/04e2f2605b899e20a151efb62a6f81ccf1cfbc4e))
+
+
+### Bug Fixes
+
+* **cache:** preserve event context (resolves [#189](https://github.com/unjs/nitropack/issues/189)) ([6cdbc4a](https://github.com/unjs/nitropack/commit/6cdbc4ac72dbec999d19eb3750ce392a462610a6))
+* enable lazy only when explicitly set (enable for api and rotues by default) ([247cfca](https://github.com/unjs/nitropack/commit/247cfca88e2f9aea529d23fc42af4e833f7c7cc2))
+* **handlers:** respect default value for lazy ([89da30a](https://github.com/unjs/nitropack/commit/89da30a7740398fe5531f223f15357dcc9ddb807))
+* improve bundled storage ([#179](https://github.com/unjs/nitropack/issues/179)) ([d4cb863](https://github.com/unjs/nitropack/commit/d4cb863c46047564d170bb183444e5bcdcb619c9))
+* **prerender:** allow all extensions (resolves [#190](https://github.com/unjs/nitropack/issues/190)) ([4b15520](https://github.com/unjs/nitropack/commit/4b15520f18f62108e9260fbc9a2881f838710fda))
+* **prerender:** support relative urls ([970286d](https://github.com/unjs/nitropack/commit/970286dacfcf8336f9c4d46c3f774d32bd0dfbca))
+* **rollup:** enable `preferBuiltins` only for node targets ([32f598a](https://github.com/unjs/nitropack/commit/32f598afaec65014e499980baa18cd7bb331b6ce))
+* **rollup:** respect `rollupConfig` options to override default config ([43b1d02](https://github.com/unjs/nitropack/commit/43b1d023117060a216c290888c71297c3b3376f3))
+* **rollup:** set `NODE_ENV` to `prerender` when prerendering ([2b7209a](https://github.com/unjs/nitropack/commit/2b7209aab8667d0470949b636ff383d85057a08d))
+* **worker:** use `iife` format by default ([6c8cae7](https://github.com/unjs/nitropack/commit/6c8cae7e25c4a24e5d85e8e322248e2beebedef3))
+
 ### [0.3.12](https://github.com/unjs/nitropack/compare/v0.3.11...v0.3.12) (2022-05-02)
 
 
