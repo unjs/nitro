@@ -9,6 +9,12 @@ export interface NitroEventHandler {
   route?: string
 
   /**
+   * Specifies this is a middleware handler.
+   * Middleware are called on every route and should normally return nothing to pass to the next handlers
+   */
+  middleware?: boolean
+
+  /**
    * Use lazy loading to import handler
    */
   lazy?: boolean

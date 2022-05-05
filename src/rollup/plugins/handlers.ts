@@ -48,10 +48,9 @@ ${imports.map(handler => `import ${getImportId(handler)} from '${handler}';`).jo
 ${lazyImports.map(handler => `const ${getImportId(handler)} = () => import('${handler}');`).join('\n')}
 
 export const handlers = [
-${handlers.map(h => `  { route: '${h.route || ''}', handler: ${getImportId(h.handler)}, lazy: ${h.lazy || true}, method: ${JSON.stringify(h.method)} }`).join(',\n')}
+${handlers.map(h => `  { route: '${h.route || ''}', handler: ${getImportId(h.handler)}, lazy: ${h.lazy || true}, middleware: ${!!h.middleware}, method: ${JSON.stringify(h.method)} }`).join(',\n')}
 ];
   `.trim()
-        // console.log(code)
       return code
     }
   }, nitro.vfs)

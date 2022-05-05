@@ -23,7 +23,7 @@ export async function scanHandlers (nitro: Nitro) {
 
 export function scanMiddleware (nitro: Nitro) {
   return scanServerDir(nitro, 'middleware', file => ({
-    route: '',
+    middleware: true,
     handler: file.fullPath
   }))
 }

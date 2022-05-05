@@ -45,8 +45,9 @@ function createNitroApp (): NitroApp {
       })
     }
 
-    if (h.route === '') {
-      h3App.use(config.app.baseURL, handler)
+    if (h.middleware || !h.route) {
+      const middlewareBase = (config.app.baseURL + (h.route || '/')).replace(/\/+/g, '/')
+      h3App.use(middlewareBase, handler)
     } else {
       router.use(h.route, handler, h.method)
     }
