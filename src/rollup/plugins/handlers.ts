@@ -1,4 +1,4 @@
-import hasha from 'hasha'
+import { hash } from 'ohash'
 import { relative } from 'pathe'
 import table from 'table'
 import isPrimitive from 'is-primitive'
@@ -9,7 +9,7 @@ import { virtual } from './virtual'
 const unique = (arr: any[]) => Array.from(new Set(arr))
 
 export function handlers (nitro: Nitro) {
-  const getImportId = (p: string, lazy?: boolean) => (lazy ? '_lazy_' : '_') + hasha(p).slice(0, 6)
+  const getImportId = (p: string, lazy?: boolean) => (lazy ? '_lazy_' : '_') + hash(p).slice(0, 6)
 
   let lastDump = ''
 
