@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.1](https://github.com/unjs/nitropack/compare/v0.4.0...v0.4.1) (2022-05-06)
+
+
+### Bug Fixes
+
+* support fallback for `import.meta` per chunk ([5a83ec6](https://github.com/unjs/nitropack/commit/5a83ec62c4db52b11c88a18baa5c16bca3f71b4f))
+* use distinct prefix for lazy handler imports ([0cc7be1](https://github.com/unjs/nitropack/commit/0cc7be13a1ec125d888bc40f00be280bdc81c8fe))
+
 ## [0.4.0](https://github.com/unjs/nitropack/compare/v0.3.12...v0.4.0) (2022-05-05)
 
 
