@@ -40,9 +40,9 @@ import { resolve } from 'pathe'
 import { dirname } from 'pathe'
 import { fileURLToPath } from 'url'
 import assets from '#internal/nitro/virtual/public-assets-data'
-const mainDir = dirname(fileURLToPath(import.meta.url))
 export function readAsset (id) {
-  return fsp.readFile(resolve(mainDir, assets[id].path)).catch(() => {})
+  const serverDir = dirname(fileURLToPath(import.meta.url))
+  return fsp.readFile(resolve(serverDir, assets[id].path))
 }`,
     '#internal/nitro/virtual/public-assets': `
 import assets from '#internal/nitro/virtual/public-assets-data'

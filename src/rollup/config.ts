@@ -30,6 +30,7 @@ import { handlers } from './plugins/handlers'
 import { esbuild } from './plugins/esbuild'
 import { raw } from './plugins/raw'
 import { storage } from './plugins/storage'
+import { importMeta } from './plugins/import-meta'
 
 export type RollupConfig = InputOptions & { output: OutputOptions }
 
@@ -143,20 +144,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   // Universal import.meta
-  rollupConfig.plugins.push({
-    name: 'import-meta',
-    renderChunk (code, chunk) {
-      if (!chunk.isEntry) {
-        return
-      }
-      const url = nitro.options.node ? '_import_meta_url_' : '"file://_entry.js"'
-      const env = nitro.options.node ? 'process.env' : '{}'
-      return {
-        code: `globalThis._importMeta_={url:${url},env:${env}};` + code,
-        map: null
-      }
-    }
-  })
+  rollupConfig.plugins.push(importMeta(nitro))
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
   rollupConfig.plugins.push(replace({
