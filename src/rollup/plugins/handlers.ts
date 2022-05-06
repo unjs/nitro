@@ -23,7 +23,7 @@ export function handlers (nitro: Nitro) {
         handlers.unshift({ middleware: true, handler: '#internal/nitro/static' })
       }
       if (nitro.options.renderer) {
-        handlers.push({ route: '/**', handler: nitro.options.renderer })
+        handlers.push({ route: '/**', lazy: true, handler: nitro.options.renderer })
       }
 
       if (isDebug) {
