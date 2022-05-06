@@ -100,7 +100,8 @@ export async function writeTypes (nitro: Nitro) {
           : {}
       },
       include: [
-        './nitro.d.ts'
+        './nitro.d.ts',
+        '../../**/*'
       ]
     }
     await writeFile(join(nitro.options.buildDir, 'types/tsconfig.json'), JSON.stringify(tsConfig, null, 2))
