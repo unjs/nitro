@@ -76,7 +76,7 @@ importers:
       std-env: ^3.1.1
       table: ^6.8.0
       typescript: ^4.6.4
-      ufo: ^0.8.3
+      ufo: ^0.8.4
       unbuild: ^0.7.4
       unenv: ^0.5.1
       unimport: ^0.1.8
@@ -138,7 +138,7 @@ importers:
       source-map-support: 0.5.21
       std-env: 3.1.1
       table: 6.8.0
-      ufo: 0.8.3
+      ufo: 0.8.4
       unenv: 0.5.1
       unimport: 0.1.8_zdwxx76xd73ibjgz5r322rbegy
       unstorage: 0.4.1
@@ -3475,7 +3475,7 @@ packages:
       cookie-es: 0.5.0
       destr: 1.1.1
       radix3: 0.1.2
-      ufo: 0.8.3
+      ufo: 0.8.4
     dev: false
 
   /handlebars/4.7.7:
@@ -4592,7 +4592,7 @@ packages:
     dependencies:
       destr: 1.1.1
       node-fetch: 3.2.4
-      ufo: 0.8.3
+      ufo: 0.8.4
       undici: 5.1.1
     dev: false
 
@@ -5702,8 +5702,8 @@ packages:
     hasBin: true
     dev: true
 
-  /ufo/0.8.3:
-    resolution: {integrity: sha512-AIkk06G21y/P+NCatfU+1qldCmI0XCszZLn8AkuKotffF3eqCvlce0KuwM7ZemLE/my0GSYADOAeM5zDYWMB+A==}
+  /ufo/0.8.4:
+    resolution: {integrity: sha512-/+BmBDe8GvlB2nIflWasLLAInjYG0bC9HRnfEpNi4sw77J2AJNnEVnTDReVrehoh825+Q/evF3THXTAweyam2g==}
     dev: false
 
   /uglify-js/3.15.4:
@@ -5836,7 +5836,7 @@ packages:
       listhen: 0.2.11
       mri: 1.2.0
       ohmyfetch: 0.4.16
-      ufo: 0.8.3
+      ufo: 0.8.4
       ws: 8.6.0
     transitivePeerDependencies:
       - bufferutil
