@@ -81,8 +81,8 @@ importers:
       unenv: ^0.5.1
       unimport: ^0.1.8
       unstorage: ^0.4.1
-      vitepress: ^0.22.3
-      vitest: ^0.10.4
+      vitepress: ^0.22.4
+      vitest: ^0.10.5
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.0.0
@@ -159,8 +159,8 @@ importers:
       standard-version: 9.3.2
       typescript: 4.6.4
       unbuild: 0.7.4
-      vitepress: 0.22.3
-      vitest: 0.10.4_c8@7.11.2
+      vitepress: 0.22.4
+      vitest: 0.10.5_c8@7.11.2
 
   docs:
     specifiers: {}
@@ -1228,8 +1228,8 @@ packages:
       - supports-color
     dev: false
 
-  /@vitejs/plugin-vue/2.3.1_vite@2.9.7+vue@3.2.33:
-    resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
+  /@vitejs/plugin-vue/2.3.2_vite@2.9.7+vue@3.2.33:
+    resolution: {integrity: sha512-umyypfSHS4kQLdYAnJHhaASq7FRzNCdvcRoQ3uYGNk1/M4a+hXUd7ysN7BLhCrWH6uBokyCkFeUAaFDzSaaSrQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
@@ -5907,14 +5907,14 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitepress/0.22.3:
-    resolution: {integrity: sha512-Yfvu/rent2vp/TXIDZMutS6ft2TJPn4xngS48PYFWDEbuFI2ccUAXM481lF1qVVnCKxfh4g8e/KPvevSJdg1Bw==}
+  /vitepress/0.22.4:
+    resolution: {integrity: sha512-oZUnLO/SpYdThaBKefDeOiVlr0Rie4Ppx3FzMnMyLtJnI5GlBMNjqYqMy/4+umm/iC+ZDJfI+IlDKxv5fZnYzA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
       '@docsearch/css': 3.0.0
       '@docsearch/js': 3.0.0
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.33
+      '@vitejs/plugin-vue': 2.3.2_vite@2.9.7+vue@3.2.33
       prismjs: 1.28.0
       vite: 2.9.7
       vue: 3.2.33
@@ -5928,8 +5928,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.10.4_c8@7.11.2:
-    resolution: {integrity: sha512-FJ2av2PVozmyz9nqHRoC3H8j2z0OQXj8P8jS5oyMY9mfPWB06GS5k/1Ot++TkVBLQRHZCcVzjbK4BO7zqAJZGQ==}
+  /vitest/0.10.5_c8@7.11.2:
+    resolution: {integrity: sha512-4qXdNbHwAd9YcsztJoVMWUQGcMATVlY9Xd95I3KQ2JJwDLTL97f/jgfGRotqptvNxdlmme5TBY0Gv+l6+JSYvA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
