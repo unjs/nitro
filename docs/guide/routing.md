@@ -24,6 +24,13 @@ export default eventHandler(() => 'Hello World!')
 export default eventHandler(event => `Hello ${event.context.params.name}!`)
 ```
 
+**Example:** API route with a specific HTTP request method (get, post, put, delete, options and so on)
+
+```js
+// routes/upload/[name].post.ts
+export default eventHandler(event => `Upload something to ${event.context.params.name}!`)
+```
+
 **Example:** Catch all page
 
 ```js
