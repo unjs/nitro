@@ -3,6 +3,11 @@ import type { FetchRequest, FetchOptions, FetchResponse } from 'ohmyfetch'
 // An interface to extend in a local project
 export interface InternalApi { }
 
+export type NitroFetchRequest =
+Exclude<keyof InternalApi, '/__nuxt_error'>
+| (`${string}${'/'|'.'}${string}` & {})
+| Exclude<FetchRequest, string>
+
 export type ValueOf<C> = C extends Record<any, any> ? C[keyof C] : never
 
 export type MatchedRoutes<Route extends string> = ValueOf<{
@@ -23,9 +28,9 @@ export type TypedInternalResponse<Route, Default> =
         : MiddlewareOf<Route>
       : Default
 
-export interface $Fetch<DefaultT = unknown, DefaultR extends FetchRequest = FetchRequest> {
-  <T = DefaultT, R extends FetchRequest = DefaultR> (request: R, opts?: FetchOptions): Promise<TypedInternalResponse<R, T>>
-  raw<T = DefaultT, R extends FetchRequest = DefaultR> (request: R, opts?: FetchOptions): Promise<FetchResponse<TypedInternalResponse<R, T>>>
+export interface $Fetch<DefaultT = unknown, DefaultR extends NitroFetchRequest = NitroFetchRequest> {
+  <T = DefaultT, R extends NitroFetchRequest = DefaultR> (request: R, opts?: FetchOptions): Promise<TypedInternalResponse<R, T>>
+  raw<T = DefaultT, R extends NitroFetchRequest = DefaultR> (request: R, opts?: FetchOptions): Promise<FetchResponse<TypedInternalResponse<R, T>>>
 }
 
 declare global {
