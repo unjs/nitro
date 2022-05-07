@@ -7,6 +7,8 @@ import { build } from './build'
 import type { Nitro } from './types'
 import { writeFile } from './utils'
 
+const allowedExtensions = new Set(['', '.json'])
+
 export async function prerender (nitro: Nitro) {
   // Skip if no prerender routes specified
   const routes = new Set(nitro.options.prerender.routes)
@@ -98,6 +100,7 @@ function extractLinks (html: string, from: string, res: Response) {
     const parsed = parseURL(link)
     if (parsed.protocol) { continue }
     let { pathname } = parsed
+    if (!allowedExtensions.has(getExtension(pathname))) { continue }
     if (!pathname.startsWith('/')) {
       const fromURL = new URL(from, 'http://localhost')
       pathname = new URL(pathname, fromURL).pathname
@@ -107,7 +110,8 @@ function extractLinks (html: string, from: string, res: Response) {
   return links
 }
 
-// const EXT_REGEX = /\.[a-z0-9]+$/
-// function getExtension (path: string): string {
-//   return (path.match(EXT_REGEX) || [])[0] || ''
-// }
+const EXT_REGEX = /\.[a-z0-9]+$/
+
+function getExtension (path: string): string {
+  return (path.match(EXT_REGEX) || [])[0] || ''
+}

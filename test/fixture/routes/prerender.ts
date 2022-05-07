@@ -6,7 +6,9 @@ export default defineEventHandler((event) => {
     '/api/hello',
     '/api/hello?bar=baz',
     '/prerender#foo',
-    '../api/hey'
+    '../api/hey/',
+    '/api/param/foo.json',
+    '/api/param/foo.css'
   ]
 
   appendHeader(event, 'X-Nitro-Prerender', '/api/param/prerender1, /api/param/prerender2')
