@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.2](https://github.com/unjs/nitropack/compare/v0.4.1...v0.4.2) (2022-05-07)
+
+
+### Bug Fixes
+
+* **node, preereender:** add handler for `unhandledRejection` ([3319912](https://github.com/unjs/nitropack/commit/3319912635320a8da1022045042b2c041fa6f6c2))
+* **prerender:** only crawl known extensions (non or `.json`) ([2dbc8b9](https://github.com/unjs/nitropack/commit/2dbc8b9b0d9122a797009e31b1303b3fc625d0ac))
+
 ### [0.4.1](https://github.com/unjs/nitropack/compare/v0.4.0...v0.4.1) (2022-05-06)
 
 
