@@ -34,5 +34,5 @@ server.listen(listenAddress, () => {
   })
 })
 
-process.on('unhandledRejection', err => console.error('[nitro] [dev] [unhandledRejection] ' + err))
-process.on('uncaughtException', err => console.error('[nitro] [dev] [uncaughtException] ' + err))
+process.on('unhandledRejection', err => console.error('[nitro] [dev] [unhandledRejection]', err))
+process.on('uncaughtException', err => console.error('[nitro] [dev] [uncaughtException]', err))
