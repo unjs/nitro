@@ -67,6 +67,8 @@ export async function prerender (nitro: Nitro) {
         }
       }
     }
+
+    return { route, contents, filePath }
   }
 
   nitro.logger.info(nitro.options.prerender.crawlLinks
@@ -76,9 +78,16 @@ export async function prerender (nitro: Nitro) {
   for (let i = 0; i < 100 && routes.size; i++) {
     for (const route of Array.from(routes)) {
       const start = Date.now()
-      const error = await generateRoute(route).catch(err => err)
-      const end = Date.now()
-      nitro.logger.log(chalk.gray(`  ├─ ${route} (${end - start}ms) ${error ? `(${error})` : ''}`))
+      let end: number | null = null
+
+      try {
+        const { contents, filePath } = await generateRoute(route)
+        end = Date.now()
+        nitro.logger.log(chalk.gray(`  ├─ ${route} (${end - start}ms)`))
+        nitro.hooks.callHook('prerender:route', { route, contents, filePath })
+      } catch (error) {
+        nitro.logger.log(chalk.gray(`  ├─ ${route} (${end - start}ms) ${error ? `(${error})` : ''}`))
+      }
     }
   }
 }
