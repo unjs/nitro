@@ -84,9 +84,10 @@ export async function prerender (nitro: Nitro) {
         const { contents, filePath } = await generateRoute(route)
         end = Date.now()
         nitro.logger.log(chalk.gray(`  ├─ ${route} (${end - start}ms)`))
-        nitro.hooks.callHook('prerender:route', { route, contents, filePath })
+        await nitro.hooks.callHook('prerender:route', { route, contents, filePath })
       } catch (error) {
         nitro.logger.log(chalk.gray(`  ├─ ${route} (${end - start}ms) ${error ? `(${error})` : ''}`))
+        await nitro.hooks.callHook('prerender:route', error)
       }
     }
   }

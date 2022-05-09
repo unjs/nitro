@@ -30,7 +30,7 @@ export interface NitroHooks {
   'dev:reload': () => HookResult
   'close': () => HookResult
   /* Hook called when a route has been generated. */
-  'prerender:route': (options: { route: string; contents: string; filePath: string }) => HookResult
+  'prerender:route': (value: { route: string; contents: string; filePath: string } | Error) => HookResult
 }
 
 export interface StorageMounts {
