@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.3](https://github.com/unjs/nitropack/compare/v0.4.2...v0.4.3) (2022-05-10)
+
+
+### Features
+
+* add `NitroFetchRequest` type and enhance $fetch's request type ([#209](https://github.com/unjs/nitropack/issues/209)) ([57b9ed0](https://github.com/unjs/nitropack/commit/57b9ed0bc4ef15dc36a58ae60810feaedd367c15))
+* add `prerender:route` hook ([#213](https://github.com/unjs/nitropack/issues/213)) ([9c9fb34](https://github.com/unjs/nitropack/commit/9c9fb3401246e534374588c681cb77871b0efaaa))
+* **prerender:** add preview command ([#217](https://github.com/unjs/nitropack/issues/217)) ([08614c5](https://github.com/unjs/nitropack/commit/08614c50f0365c6d68cf2b18841ac13a3c62cdaa))
+* show stack-trace of unhandled errors with `DEBUG` env ([#212](https://github.com/unjs/nitropack/issues/212)) ([b366f3f](https://github.com/unjs/nitropack/commit/b366f3fae0605af75b2eb86839c5a94804a52ffb))
+
+
+### Bug Fixes
+
+* add missing include path `../../**/*` in generated tsconfig.json ([#205](https://github.com/unjs/nitropack/issues/205)) ([8978404](https://github.com/unjs/nitropack/commit/89784044de3c5d7b518225488684f0b391a372be))
+* respect baseURL in prerendering ([#219](https://github.com/unjs/nitropack/issues/219)) ([3e8eddb](https://github.com/unjs/nitropack/commit/3e8eddb20a609c1405d1e531dba2fba3a39384db))
+* set built-in storage mounts before nitro init ([d1c6c64](https://github.com/unjs/nitropack/commit/d1c6c64384afdee7424eebc51a4c42978f4dc1c5))
+
 ### [0.4.2](https://github.com/unjs/nitropack/compare/v0.4.1...v0.4.2) (2022-05-07)
 
 
