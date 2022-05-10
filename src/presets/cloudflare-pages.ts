@@ -17,7 +17,7 @@ export const cloudflarePages = defineNitroPreset({
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
-      await writeFile(resolve(nitro.options.output.dir, 'package.json'), JSON.stringify({ private: true, main: './functions/[[path]].js' }, null, 2))
+      await writeFile(resolve(nitro.options.output.dir, 'package.json'), JSON.stringify({ private: true, main: './functions/[[path]].mjs' }, null, 2))
       await writeFile(resolve(nitro.options.output.dir, 'package-lock.json'), JSON.stringify({ lockfileVersion: 1 }, null, 2))
       await move(resolve(nitro.options.output.serverDir, 'index.mjs'), resolve(nitro.options.output.serverDir, '[[path]].mjs'))
       await move(resolve(nitro.options.output.serverDir, 'index.mjs.map'), resolve(nitro.options.output.serverDir, '[[path]].mjs.map'))
