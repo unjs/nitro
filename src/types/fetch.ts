@@ -3,10 +3,7 @@ import type { FetchRequest, FetchOptions, FetchResponse } from 'ohmyfetch'
 // An interface to extend in a local project
 export interface InternalApi { }
 
-export type NitroFetchRequest =
-Exclude<keyof InternalApi, '/__nuxt_error'>
-| (`${string}${'/'|'.'}${string}` & {})
-| Exclude<FetchRequest, string>
+export type NitroFetchRequest = keyof InternalApi | (`${string}${'/'|'.'}${string}` & {}) | Exclude<FetchRequest, string>
 
 export type ValueOf<C> = C extends Record<any, any> ? C[keyof C] : never
 
