@@ -1,4 +1,5 @@
 import type { FetchRequest, FetchOptions, FetchResponse } from 'ohmyfetch'
+import { CovertRouteToMatcher, NumberOfRouteSegments } from './utils'
 
 // An interface to extend in a local project
 export interface InternalApi { }
@@ -9,7 +10,11 @@ export type ValueOf<C> = C extends Record<any, any> ? C[keyof C] : never
 
 export type MatchedRoutes<Route extends string> = ValueOf<{
   // exact match, prefix match or root middleware
-  [key in keyof InternalApi]: Route extends key | `${key}/${string}` | '/' ? key : never
+  [key in keyof InternalApi]: Route extends CovertRouteToMatcher<key>
+      ? NumberOfRouteSegments<Route> extends NumberOfRouteSegments<CovertRouteToMatcher<key>>
+          ? key
+          : never
+      : Route extends key | `${key}/${string}` | '/' ? key : never
 }>
 
 export type MiddlewareOf<Route extends string> = Exclude<InternalApi[MatchedRoutes<Route>], Error | void>
