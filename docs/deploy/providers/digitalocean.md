@@ -1,6 +1,6 @@
 # DigitalOcean
 
-**Preset:** `digitalocean` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `digital-ocean` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 Nitro supports deploying on the [Digital Ocean App Platform](https://docs.digitalocean.com/products/app-platform/) with minimal configuration.
 
