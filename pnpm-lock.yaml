@@ -79,7 +79,7 @@ importers:
       ufo: ^0.8.4
       unbuild: ^0.7.4
       unenv: ^0.5.1
-      unimport: ^0.2.0
+      unimport: ^0.2.1
       unstorage: ^0.4.1
       vitepress: ^0.22.4
       vitest: ^0.12.3
@@ -140,7 +140,7 @@ importers:
       table: 6.8.0
       ufo: 0.8.4
       unenv: 0.5.1
-      unimport: 0.2.0_pnyrwy4zazm4ltxxkdqkpc4vuy
+      unimport: 0.2.1_pnyrwy4zazm4ltxxkdqkpc4vuy
       unstorage: 0.4.1
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_hcfsmds2fshutdssjqluwm76uu
@@ -5832,8 +5832,8 @@ packages:
       pathe: 0.3.0
     dev: false
 
-  /unimport/0.2.0_pnyrwy4zazm4ltxxkdqkpc4vuy:
-    resolution: {integrity: sha512-9p31wj89AndLR57lSiRdRG2mwqIjaLGdXwrwoR0WSUdULPZpcPvxGt4VoNHZVRw1TJSqGAMzs2arM/T6BsXJSA==}
+  /unimport/0.2.1_pnyrwy4zazm4ltxxkdqkpc4vuy:
+    resolution: {integrity: sha512-6u1uY6GFIi9WslI7fPun0I0ZrIGJ0yAn92n/9rQv4MAEEnxg8zMO+Tj7q/6Z/7XxTn8qFCJIqEM/3Io81Zwmmw==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
