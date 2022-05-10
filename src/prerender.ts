@@ -4,7 +4,7 @@ import { joinURL, parseURL } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
-import type { Nitro } from './types'
+import type { Nitro, PrerenderRoute } from './types'
 import { writeFile } from './utils'
 
 const allowedExtensions = new Set(['', '.json'])
@@ -41,32 +41,48 @@ export async function prerender (nitro: Nitro) {
   }
 
   const generateRoute = async (route: string) => {
+    const start = Date.now()
+
+    // Check if we should render routee
     if (!canPrerender(route)) { return }
     generatedRoutes.add(route)
     routes.delete(route)
+
+    // Create result object
+    const _route: PrerenderRoute = { route }
+
+    // Fetch the route
     const res = await (localFetch(joinURL(nitro.options.baseURL, route), { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
-    const contents = await res.text()
+    _route.contents = await res.text()
     if (res.status !== 200) {
-      throw new Error(`[${res.status}] ${res.statusText}`)
+      _route.error = new Error(`[${res.status}] ${res.statusText}`) as any
+      _route.error.statusCode = res.status
+      _route.error.statusMessage = res.statusText
     }
 
+    // Write to the file
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
-    const fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
-    const filePath = join(nitro.options.output.publicDir, fileName)
-    await writeFile(filePath, contents)
-    // Crawl Links
+    _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+    const filePath = join(nitro.options.output.publicDir, _route.fileName)
+    await writeFile(filePath, _route.contents)
+
+    // Crawl route links
     if (
+      !_route.error &&
       nitro.options.prerender.crawlLinks &&
       isImplicitHTML
     ) {
-      const crawledRoutes = extractLinks(contents, route, res)
+      const crawledRoutes = extractLinks(_route.contents, route, res)
       for (const crawledRoute of crawledRoutes) {
         if (canPrerender(crawledRoute)) {
           routes.add(crawledRoute)
         }
       }
     }
+
+    _route.generateTimeMS = Date.now() - start
+    return _route
   }
 
   nitro.logger.info(nitro.options.prerender.crawlLinks
@@ -75,10 +91,13 @@ export async function prerender (nitro: Nitro) {
   )
   for (let i = 0; i < 100 && routes.size; i++) {
     for (const route of Array.from(routes)) {
-      const start = Date.now()
-      const error = await generateRoute(route).catch(err => err)
-      const end = Date.now()
-      nitro.logger.log(chalk.gray(`  ├─ ${route} (${end - start}ms) ${error ? `(${error})` : ''}`))
+      const _route = await generateRoute(route).catch(error => ({ route, error } as PrerenderRoute))
+
+      // Skipped (not allowed or duplicate)
+      if (!_route) { continue }
+
+      await nitro.hooks.callHook('prerender:route', _route)
+      nitro.logger.log(chalk[_route.error ? 'yellow' : 'gray'](`  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${_route.error ? `(${_route.error})` : ''}`))
     }
   }
 }

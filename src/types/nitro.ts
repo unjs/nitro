@@ -23,12 +23,21 @@ export interface Nitro {
   close: () => Promise<void>
 }
 
+export interface PrerenderRoute {
+  route: string
+  contents?: string
+  fileName?: string
+  error?: Error & { statusCode: number, statusMessage: string }
+  generateTimeMS?: number
+}
+
 type HookResult = void | Promise<void>
 export interface NitroHooks {
   'rollup:before': (nitro: Nitro) => HookResult
   'compiled': (nitro: Nitro) => HookResult
   'dev:reload': () => HookResult
   'close': () => HookResult
+  'prerender:route': (route: PrerenderRoute) => HookResult
 }
 
 export interface StorageMounts {
