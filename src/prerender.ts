@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
-import { parseURL } from 'ufo'
+import { joinURL, parseURL } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
@@ -52,7 +52,7 @@ export async function prerender (nitro: Nitro) {
     const _route: PrerenderRoute = { route }
 
     // Fetch the route
-    const res = await (localFetch(route, { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
+    const res = await (localFetch(joinURL(nitro.options.baseURL, route), { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
     _route.contents = await res.text()
     if (res.status !== 200) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any
