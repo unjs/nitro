@@ -56,7 +56,7 @@ importers:
       miniflare: ^2.4.0
       mlly: ^0.5.2
       mri: ^1.2.0
-      node-fetch: ^3.2.4
+      node-fetch-native: ^0.1.2
       ohash: ^0.1.0
       ohmyfetch: ^0.4.16
       pathe: ^0.3.0
@@ -78,7 +78,7 @@ importers:
       typescript: ^4.6.4
       ufo: ^0.8.4
       unbuild: ^0.7.4
-      unenv: ^0.5.1
+      unenv: ^0.5.2
       unimport: ^0.2.1
       unstorage: ^0.4.1
       vitepress: ^0.22.4
@@ -120,7 +120,7 @@ importers:
       mime: 3.0.0
       mlly: 0.5.2
       mri: 1.2.0
-      node-fetch: 3.2.4
+      node-fetch-native: 0.1.2
       ohash: 0.1.0
       ohmyfetch: 0.4.16
       pathe: 0.3.0
@@ -139,7 +139,7 @@ importers:
       std-env: 3.1.1
       table: 6.8.0
       ufo: 0.8.4
-      unenv: 0.5.1
+      unenv: 0.5.2
       unimport: 0.2.1_pnyrwy4zazm4ltxxkdqkpc4vuy
       unstorage: 0.4.1
     devDependencies:
@@ -1338,13 +1338,6 @@ packages:
 
   /abbrev/1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
-    dev: false
-
-  /abort-controller/3.0.0:
-    resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
-    engines: {node: '>=6.5'}
-    dependencies:
-      event-target-shim: 5.0.1
     dev: false
 
   /acorn-jsx/5.3.2_acorn@8.7.1:
@@ -3090,11 +3083,6 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /event-target-shim/5.0.1:
-    resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
-    engines: {node: '>=6'}
-    dev: false
-
   /eventemitter3/4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
     dev: false
@@ -4439,6 +4427,10 @@ packages:
   /node-domexception/1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    dev: false
+
+  /node-fetch-native/0.1.2:
+    resolution: {integrity: sha512-/um3ReGIuZpZk8b0t34BQv2apExfz1D07F9xmtLnqyUIH7OuWjjfPWnYm2NvVTEhZjZRJQN2l6CKNNRBeUPYow==}
     dev: false
 
   /node-fetch/2.6.7:
@@ -5822,13 +5814,12 @@ packages:
     engines: {node: '>=12.18'}
     dev: false
 
-  /unenv/0.5.1:
-    resolution: {integrity: sha512-XhbcrRYCUIAnMIcJHLYKsO0R3zn5qlF2w8JBDq6e1N1Q1ipXLs7awoM3cX+n3gAbCHJH9txldFT9/Q0/+rm4Qw==}
+  /unenv/0.5.2:
+    resolution: {integrity: sha512-dojYcCqOFEWZosvqWs/AEaEfM/tLJexMKBW0ebkn6JKfEnYR5fKxbYJB8QV9kAPXV/ENseeWQkv6uJ3KCXz+1g==}
     dependencies:
-      abort-controller: 3.0.0
       defu: 6.0.0
       mime: 3.0.0
-      node-fetch: 3.2.4
+      node-fetch-native: 0.1.2
       pathe: 0.3.0
     dev: false
 
