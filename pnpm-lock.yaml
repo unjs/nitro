@@ -82,7 +82,7 @@ importers:
       unimport: ^0.2.1
       unstorage: ^0.4.1
       vitepress: ^0.22.4
-      vitest: ^0.12.3
+      vitest: ^0.12.4
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.0.0
@@ -160,7 +160,7 @@ importers:
       typescript: 4.6.4
       unbuild: 0.7.4
       vitepress: 0.22.4
-      vitest: 0.12.3_c8@7.11.2
+      vitest: 0.12.4_c8@7.11.2
 
   docs:
     specifiers: {}
@@ -6006,8 +6006,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.12.3_c8@7.11.2:
-    resolution: {integrity: sha512-Dc4uJAcnUampdJ6+C8IasrmL+Px+oDhS9gxeHlL9uwUzoM0ae2WydAK9UF2THxHszfZogLGT37atQwOkj1Lqvg==}
+  /vitest/0.12.4_c8@7.11.2:
+    resolution: {integrity: sha512-EDxdhlAt6vcu6y4VouAI60z78iCAVFnfBL4VlSQVQnGmOk5altOtIKvp3xfZ+cfo4iVHgqq1QNyf5qOFiL4leg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
