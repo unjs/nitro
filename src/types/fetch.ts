@@ -4,7 +4,7 @@ import { CovertRouteToMatcher, NumberOfRouteSegments } from './utils'
 // An interface to extend in a local project
 export interface InternalApi { }
 
-export type NitroFetchRequest = keyof InternalApi | (`${string}${'/'}${string}` & {}) | Exclude<FetchRequest, string>
+export type NitroFetchRequest = keyof InternalApi | Exclude<FetchRequest, string> | string & {}
 
 export type ValueOf<C> = C extends Record<any, any> ? C[keyof C] : never
 
