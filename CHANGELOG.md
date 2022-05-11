@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.4](https://github.com/unjs/nitropack/compare/v0.4.3...v0.4.4) (2022-05-11)
+
+
+### Bug Fixes
+
+* update `NitroFetchRequest` type to support `string` type ([#226](https://github.com/unjs/nitropack/issues/226)) ([3542b61](https://github.com/unjs/nitropack/commit/3542b6148a4068e4c2dc74c617fa6e225739bf12))
+* update unenv and add `node-fetch-native/polyfill` to `moduleSideEffects` ([e70a9f0](https://github.com/unjs/nitropack/commit/e70a9f0b4333ab4804a4afc31e7c666e4ca77e59))
+
 ### [0.4.3](https://github.com/unjs/nitropack/compare/v0.4.2...v0.4.3) (2022-05-10)
 
 
