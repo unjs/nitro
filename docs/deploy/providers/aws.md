@@ -88,7 +88,7 @@ export class NitroLambdaEdgeStack extends Stack {
 }
 ```
 
-::: Specify Region
+::: warning Specify Region
 Note that the region must be specified when using the code above.
 :::
 
