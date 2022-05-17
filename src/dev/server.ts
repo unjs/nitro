@@ -120,6 +120,11 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
 
   // Worker proxy
   const proxy = httpProxy.createProxy()
+  proxy.on('proxyReq', function(proxyReq, req, res, options) {
+    proxyReq.setHeader('x-forwarded-for', req.socket.remoteAddress);
+    proxyReq.setHeader('x-forwarded-port', req.socket.remotePort);
+    proxyReq.setHeader('x-forwarded-proto', req.socket.remoteFamily);
+  });
   app.use(eventHandler(async (event) => {
     await reloadPromise
     const address = currentWorker?.address
