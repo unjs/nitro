@@ -17,7 +17,15 @@ export function handlers (nitro: Nitro) {
     '#internal/nitro/virtual/server-handlers': () => {
       const handlers = [
         ...nitro.scannedHandlers,
-        ...nitro.options.handlers
+        ...nitro.options.handlers.map((handler) => {
+          if (handler.method) { return handler }
+          // if there is a method suffix, use it as the method
+          const [, method = undefined] = handler.handler.match(/\.(get|head|patch|post|put|delete|connect|options|trace)(\.\w+)*$/) || []
+          return {
+            ...handler,
+            method
+          }
+        })
       ]
       if (nitro.options.serveStatic) {
         handlers.unshift({ middleware: true, handler: '#internal/nitro/static' })

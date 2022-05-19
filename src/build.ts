@@ -45,7 +45,15 @@ export async function writeTypes (nitro: Nitro) {
 
   const middleware = [
     ...nitro.scannedHandlers,
-    ...nitro.options.handlers
+    ...nitro.options.handlers.map((handler) => {
+      if (handler.method) { return handler }
+      // if there is a method suffix, use it as the method
+      const [, method = undefined] = handler.handler.match(/\.(get|head|patch|post|put|delete|connect|options|trace)(\.\w+)*$/) || []
+      return {
+        ...handler,
+        method
+      }
+    })
   ]
 
   for (const mw of middleware) {
