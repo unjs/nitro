@@ -172,4 +172,5 @@ export interface NitroOptions {
     preview: string
     deploy: string
   }
+  presets: { [key: string]: NitroPreset }
 }
