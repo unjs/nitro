@@ -1,7 +1,7 @@
-export type CovertRouteToMatcher<Route extends string, Acc extends string = ''> =
+export type ConvertRouteToMatcher<Route extends string, Acc extends string = ''> =
 Route extends `${infer Segment}:${infer Rest}`
     ? Rest extends `${string}:${string}`
-        ? CovertRouteToMatcher<Rest extends `${string}/${infer NextSeg}`
+        ? ConvertRouteToMatcher<Rest extends `${string}/${infer NextSeg}`
             ? NextSeg
             : never,
           `${Segment}${string}/`>
