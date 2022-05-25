@@ -289,7 +289,7 @@ If enabled, will analyze server bundle after build using [rollup-plugin-visualiz
 
 ### `moduleSideEffects`
 
-Default: `[unenv/runtime/polyfill/]`
+Default: `['unenv/runtime/polyfill/', 'node-fetch-native/polyfill']`
 
 Rollup specific option. Specifies module imports that have side-effects
 

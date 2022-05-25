@@ -21,7 +21,7 @@ export default defineConfig({
     // },
 
     nav: [
-      { text: 'Guide', link: '/', activeMatch: '^/guide/' },
+      { text: 'Guide', link: '/guide/', activeMatch: '^/guide/' },
       { text: 'Deployment', link: '/deploy/', activeMatch: '^/deploy/' },
       { text: 'Config Reference', link: '/config/', activeMatch: '^/config/' },
       { text: 'Changelog', link: 'https://github.com/unjs/nitro/blob/main/CHANGELOG.md' }
