@@ -5,7 +5,9 @@ Route extends `${infer Segment}:${infer Rest}`
             ? NextSeg
             : never,
           `${Segment}${string}/`>
-        : `${Acc}${Segment}${string}`
+        : Rest extends `${string}/${infer NextSeg}`
+            ? `${Acc}${Segment}${string}/${NextSeg}`
+            : `${Acc}${Segment}${string}`
     : never
 
 export type NumberOfRouteSegments<Route extends string, Count extends string[] = []> =
