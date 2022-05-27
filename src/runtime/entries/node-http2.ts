@@ -1,5 +1,5 @@
 import '#internal/nitro/virtual/polyfill'
-import {createSecureServer, createServer, Http2ServerRequest, Http2ServerResponse} from 'http2'
+import { createSecureServer } from 'http2'
 import destr from 'destr'
 import { nitroApp } from '../app'
 import { useRuntimeConfig } from '#internal/nitro'
