@@ -8,7 +8,7 @@ const cert = process.env.NITRO_SSL_CERT
 const key = process.env.NITRO_SSL_KEY
 
 // @ts-ignore
-const server = createSecureServer({ key, cert }, nitroApp.h3App.nodeHandler)
+const server = createSecureServer({ key, cert, allowHTTP1: true }, nitroApp.h3App.nodeHandler)
 
 const port = (destr(process.env.NITRO_PORT || process.env.PORT) || 3000) as number
 const hostname = process.env.NITRO_HOST || process.env.HOST || '0.0.0.0'
