@@ -1,4 +1,4 @@
-import type { InternalApi } from 'nitropack'
+import type { InternalApi } from './fetch'
 
 type MatchResult<Key extends string, Exact extends boolean = false, Score extends any[] = []> = {
         [k in Key]: { key: k, exact: Exact, score: Score }
