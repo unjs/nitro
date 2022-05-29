@@ -1,0 +1,19 @@
+{
+  "extends": "./.nitro/types/tsconfig.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "nitropack": [
+        "../../src/index"
+      ],
+      "#internal/nitro": [
+        "../../src/runtime/index"
+      ],
+      "#internal/nitro/*": [
+        "../../src/runtime/*"
+      ]
+    }
+  }
+}

@@ -32,7 +32,8 @@
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && standard-version && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
-    "test": "pnpm lint && vitest run --silent"
+    "test": "pnpm lint && vitest run --silent",
+    "test:types": "jiti ./test/scripts/prepareTypes.ts && cd test/fixture && tsc --noEmit"
   },
   "resolutions": {
     "nitropack": "link:."
@@ -110,6 +111,7 @@
     "c8": "^7.11.2",
     "eslint": "^8.15.0",
     "execa": "^6.1.0",
+    "expect-type": "^0.13.0",
     "miniflare": "^2.4.0",
     "standard-version": "^9.3.2",
     "typescript": "^4.6.4",
