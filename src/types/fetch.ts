@@ -1,21 +1,10 @@
 import type { FetchRequest, FetchOptions, FetchResponse } from 'ohmyfetch'
-import { ConvertRouteToMatcher, NumberOfRouteSegments } from './utils'
+import { MatchedRoutes } from './utils'
 
 // An interface to extend in a local project
 export interface InternalApi { }
 
 export type NitroFetchRequest = Exclude<keyof InternalApi, `/_${string}`|`/api/_${string}`> | Exclude<FetchRequest, string> | string & {}
-
-export type ValueOf<C> = C extends Record<any, any> ? C[keyof C] : never
-
-export type MatchedRoutes<Route extends string> = ValueOf<{
-  // exact match, prefix match or root middleware
-  [key in keyof InternalApi]: Route extends ConvertRouteToMatcher<key>
-      ? NumberOfRouteSegments<Route> extends NumberOfRouteSegments<ConvertRouteToMatcher<key>>
-          ? key
-          : never
-      : Route extends key | `${key}/${string}` | '/' ? key : never
-}>
 
 export type MiddlewareOf<Route extends string> = Exclude<InternalApi[MatchedRoutes<Route>], Error | void>
 
