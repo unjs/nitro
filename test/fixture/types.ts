@@ -26,9 +26,9 @@ describe('API routes', () => {
     expectTypeOf($fetch('/api/user/{someUserId}/post/{somePostId}')).toMatchTypeOf<Promise<{ internalApiKey: '/api/user/:userId/post/:postId' }>>()
   })
 
-  it('generates types for routes (w/o dynamic template literal) with param and exact matches', () => {
+  it('generates types for routes (w/o dynamic template literal) and with param and exact matches', () => {
     expectTypeOf($fetch('/api/user/john/post/{somePostId}')).toMatchTypeOf<Promise<{ internalApiKey: '/api/user/john/post/:postId' }>>()
-    expectTypeOf($fetch('/api/user/{someUserId}/post/firstPost')).toMatchTypeOf<Promise<{ internalApiKey: '/api/user/:userId/post/firstPost' }>>()
+    expectTypeOf($fetch(`/api/user/${dynamicString}/post/firstPost`)).toMatchTypeOf<Promise<{ internalApiKey: '/api/user/:userId/post/firstPost' }>>()
     expectTypeOf($fetch(`/api/user/${dynamicString}`)).toMatchTypeOf<Promise<
       | { internalApiKey: '/api/user/john' }
       | { internalApiKey: '/api/user/:userId' }
@@ -49,7 +49,7 @@ describe('API routes', () => {
       >>()
   })
 
-  it('generates types for routes with {matchedRoute}/** glob', () => {
+  it('generates types for routes matching prefix', () => {
     expectTypeOf($fetch('/api/hey/**')).toMatchTypeOf<Promise<string>>()
     expectTypeOf($fetch('/api/param/{id}/**')).toMatchTypeOf<Promise<any>>()
     expectTypeOf($fetch('/api/user/{someUserId}/post/{somePostId}/**')).toMatchTypeOf<Promise<{ internalApiKey: '/api/user/:userId/post/:postId' }>>()
@@ -59,6 +59,31 @@ describe('API routes', () => {
     | { internalApiKey: '/api/user/john/post/:postId' }
     | { internalApiKey: '/api/user/:userId/post/:postId' }
     | { internalApiKey: '/api/user/:userId/post/firstPost' }
+    >>()
+  })
+
+  it('generates types for routes matching Api keys with /** globs', () => {
+    expectTypeOf($fetch('/api/wildcard/foo/bar')).toMatchTypeOf<Promise<any>>()
+    expectTypeOf($fetch('/api/todos/parent/child')).toMatchTypeOf<Promise<
+       { internalApiKey: '/api/todos/**' }
+    >>()
+    expectTypeOf($fetch(`/api/todos/${dynamicString}/child`)).toMatchTypeOf<Promise<
+     | { internalApiKey: '/api/todos/**' }
+    >>()
+    expectTypeOf($fetch(`/api/todos/some/deeply/nest/${dynamicString}/path`)).toMatchTypeOf<Promise<
+     | { internalApiKey: '/api/todos/**' }
+    >>()
+    expectTypeOf($fetch('/api/todos/firstTodo/comments/foo')).toMatchTypeOf<Promise<
+    | { internalApiKey: '/api/todos/**' }
+    | { internalApiKey: '/api/todos/:todoId/comments/**:commentId' }
+   >>()
+    expectTypeOf($fetch(`/api/todos/firstTodo/comments/${dynamicString}`)).toMatchTypeOf<Promise<
+     | { internalApiKey: '/api/todos/**' }
+     | { internalApiKey: '/api/todos/:todoId/comments/**:commentId' }
+    >>()
+    expectTypeOf($fetch(`/api/todos/${dynamicString}/comments/foo/bar/baz`)).toMatchTypeOf<Promise<
+     | { internalApiKey: '/api/todos/**' }
+     | { internalApiKey: '/api/todos/:todoId/comments/**:commentId' }
     >>()
   })
 })
