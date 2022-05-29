@@ -81,7 +81,7 @@ describe('API routes', () => {
      | { internalApiKey: '/api/todos/**' }
      | { internalApiKey: '/api/todos/:todoId/comments/**:commentId' }
     >>()
-    expectTypeOf($fetch(`/api/todos/${dynamicString}/comments/foo/bar/baz`)).toMatchTypeOf<Promise<
+    expectTypeOf($fetch(`/api/todos/${dynamicString}/${dynamicString}/foo/bar/baz`)).toMatchTypeOf<Promise<
      | { internalApiKey: '/api/todos/**' }
      | { internalApiKey: '/api/todos/:todoId/comments/**:commentId' }
     >>()
