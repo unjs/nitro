@@ -21,9 +21,9 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm lint
+      - run: pnpm test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
-      - run: pnpm test:types
       - uses: codecov/codecov-action@v3
       - name: Release Edge
         if: |

@@ -3,6 +3,10 @@ import { describe, it } from 'vitest'
 
 interface TestResponse { message: string }
 
+import { $Fetch } from '../..'
+
+const $fetch = {} as $Fetch
+
 describe('API routes', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dynamicString: string = ''
