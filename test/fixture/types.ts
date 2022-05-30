@@ -1,9 +1,8 @@
 import { expectTypeOf } from 'expect-type'
 import { describe, it } from 'vitest'
+import { $Fetch } from '../..'
 
 interface TestResponse { message: string }
-
-import { $Fetch } from '../..'
 
 const $fetch = {} as $Fetch
 
