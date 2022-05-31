@@ -1,29 +1,53 @@
-import type { ALBHandler } from 'aws-lambda'
-import '#internal/nitro/virtual/polyfill'
-import { withQuery } from 'ufo'
-import { nitroApp } from '../app'
+import type { Handler } from "aws-lambda";
+import "#internal/nitro/virtual/polyfill";
+import { nitroApp } from "../app";
 
-export const handler: ALBHandler = async function handler (event, context) {
-  const url = withQuery(event.path, event.queryStringParameters || {})
-  const method = event.httpMethod || 'get'
+interface StormkitEvent {
+  url: string; // e.g. /my/path, /my/path?with=query
+  path: string;
+  method: string;
+  body?: string;
+  query?: Record<string, Array<string>>;
+  headers?: Record<string, string>;
+  rawHeaders?: Array<string>;
+}
+
+export interface StormkitResult {
+  statusCode: number;
+  headers?: { [header: string]: boolean | number | string } | undefined;
+  body?: string | undefined;
+}
+
+export const handler: Handler<StormkitEvent, StormkitResult> = async function (
+  event,
+  context
+) {
+  const method = event.method || "get";
 
   const r = await nitroApp.localCall({
     event,
-    url,
+    url: event.url,
     context,
     headers: event.headers,
     method,
-    query: event.queryStringParameters,
-    body: event.body
-  })
+    query: event.query,
+    body: event.body,
+  });
 
   return {
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
-    body: r.body.toString()
-  }
-}
+    body: r.body.toString(),
+  };
+};
 
-function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
+function normalizeOutgoingHeaders(
+  headers: Record<string, string | string[] | undefined>
+) {
+  return Object.fromEntries(
+    Object.entries(headers).map(([k, v]) => [
+      k,
+      Array.isArray(v) ? v.join(",") : v!,
+    ])
+  );
 }
