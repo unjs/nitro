@@ -2,7 +2,7 @@ import { defineNitroPreset } from '../preset'
 
 export const stormkit = defineNitroPreset({
   entry: '#internal/nitro/entries/stormkit',
-  externals: true,
+  externals: {},
   output: {
     dir: '{{ rootDir }}/.stormkit'
   }

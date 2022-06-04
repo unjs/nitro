@@ -1,3 +1,1 @@
-import type { Storage } from 'unstorage'
-
-export const useStorage = () => Storage
+export const useStorage = () => S as import('unstorage').Storage

@@ -2,7 +2,7 @@ import '#internal/nitro/virtual/polyfill'
 import { nitroApp } from '../app'
 import { requestHasBody, useRequestBody } from '../utils'
 
-export default async function (request: Request, _context) {
+export default async function (request: Request & { headers: Record<string, string> }, _context) {
   const url = new URL(request.url)
   let body
   if (requestHasBody(request)) {
@@ -20,7 +20,7 @@ export default async function (request: Request, _context) {
   })
 
   return new Response(r.body, {
-    headers: r.headers,
+    headers: r.headers as HeadersInit,
     status: r.status,
     statusText: r.statusText
   })

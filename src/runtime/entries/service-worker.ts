@@ -30,11 +30,13 @@ async function handleEvent (url, event) {
   })
 
   return new Response(r.body, {
-    headers: r.headers,
+    headers: r.headers as HeadersInit,
     status: r.status,
     statusText: r.statusText
   })
 }
+
+declare const self: ServiceWorkerGlobalScope
 
 self.addEventListener('install', () => {
   self.skipWaiting()
