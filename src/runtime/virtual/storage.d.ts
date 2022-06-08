@@ -1,1 +1,3 @@
-export const useStorage = () => S as import('unstorage').Storage
+import type { Storage } from 'unstorage'
+
+export declare const useStorage: () => Storage
