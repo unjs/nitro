@@ -32,7 +32,8 @@
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && standard-version && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
-    "test": "pnpm lint && vitest run --silent"
+    "test": "pnpm lint && vitest run --silent",
+    "test:types": "tsc --noEmit"
   },
   "resolutions": {
     "nitropack": "link:."

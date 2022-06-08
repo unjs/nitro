@@ -21,7 +21,7 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm lint
-      - run: pnpx tsc --noEmit
+      - run: pnpx test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
       - uses: codecov/codecov-action@v3
