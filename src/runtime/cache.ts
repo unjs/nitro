@@ -52,6 +52,8 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
 
     const _resolve = async () => {
       if (!pending[key]) {
+        // Remove cached value for preventing using expired cache on concurrent requests
+        delete entry.value
         pending[key] = Promise.resolve(resolver())
       }
       entry.value = await pending[key]
