@@ -45,7 +45,7 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.1
       gzip-size: ^7.0.0
-      h3: ^0.7.8
+      h3: ^0.7.9
       hookable: ^5.1.1
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -110,7 +110,7 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.1
       gzip-size: 7.0.0
-      h3: 0.7.8
+      h3: 0.7.9
       hookable: 5.1.1
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -3477,8 +3477,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/0.7.8:
-    resolution: {integrity: sha512-E5hqrzQvQEYVE4h579pLb9gipHagQVZIMP2v83vSKxa40b7ctG1zNylXtW57BT3BGNVeQTccl6vIwyVK1L6lLw==}
+  /h3/0.7.9:
+    resolution: {integrity: sha512-1AWtXxgKNOKhvwKlvx69X+dfAn6tFDmXQU6Vk4kLRvHr1vJZCxhRPWPC/NjYc+I/QG5bxTDM/NuP5r1SjpWHvQ==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.1.1
@@ -5850,7 +5850,7 @@ packages:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
-      h3: 0.7.8
+      h3: 0.7.9
       ioredis: 5.0.4
       listhen: 0.2.11
       mri: 1.2.0
