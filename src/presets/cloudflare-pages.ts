@@ -9,8 +9,7 @@ export const cloudflarePages = defineNitroPreset({
   entry: '#internal/nitro/entries/cloudflare-pages',
   commands: {
     preview: 'npx wrangler pages dev',
-    // deployment is currently automatically done via GitHub/GitLab app
-    deploy: 'git push'
+    deploy: 'npx wrangler pages publish .output/public'
   },
   output: {
     serverDir: '{{ rootDir }}/functions'
