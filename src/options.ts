@@ -135,6 +135,8 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
+  options.autoImport.include = defu(Array.isArray(options.autoImport.include) ? options.autoImport.include : [options.autoImport.include], options.scanDirs)
+
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
     app: {
