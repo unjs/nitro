@@ -3,6 +3,7 @@ import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
 import defu from 'defu'
+import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
 import { resolvePath as resovleModule } from 'mlly'
@@ -135,7 +136,12 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
-  options.autoImport.include = defu(Array.isArray(options.autoImport.include) ? options.autoImport.include : [options.autoImport.include], options.scanDirs)
+  options.autoImport.include = [
+    ...Array.isArray(options.autoImport.include) ? options.autoImport.include : [options.autoImport.include],
+    ...options.scanDirs
+      .filter(i => i.includes('node_modules'))
+      .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
+  ]
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
