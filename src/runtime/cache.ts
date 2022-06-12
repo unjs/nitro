@@ -1,6 +1,7 @@
 import { hash } from 'ohash'
 import { handleCacheHeaders, defineEventHandler, createEvent, EventHandler } from 'h3'
 import type { H3Event } from 'h3'
+import { parseURL } from 'ufo'
 import { useStorage } from '#internal/nitro'
 
 export interface CacheEntry<T=any> {
@@ -108,7 +109,7 @@ export function defineCachedEventHandler <T=any> (
   const _opts: CachifyOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: (event) => {
-      return event.req.originalUrl || event.req.url
+      return decodeURI(parseURL(event.req.originalUrl || event.req.url).pathname).replace(/\/$/, '/index')
     },
     group: opts.group || 'nitro/handlers',
     integrity: [
