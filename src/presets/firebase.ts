@@ -9,7 +9,6 @@ import type { Nitro } from '../types'
 
 export const firebase = defineNitroPreset({
   entry: '#internal/nitro/entries/firebase',
-  externals: {},
   commands: {
     deploy: 'npx firebase deploy'
   },

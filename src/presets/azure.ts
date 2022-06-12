@@ -6,8 +6,7 @@ import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
 export const azure = defineNitroPreset({
-  entry: '#internal/nitro/entries/azure',
-  externals: {},
+  entry: '#internal/nitro/entries/azure'
   output: {
     serverDir: '{{ output.dir }}/server/functions'
   },
