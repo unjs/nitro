@@ -11,7 +11,7 @@ export interface CacheEntry<T=any> {
   integrity?: string
 }
 
-export interface CachifyOptions<T = any> {
+export interface CacheOptions<T = any> {
   name?: string;
   getKey?: (...args: any[]) => string;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
@@ -30,7 +30,7 @@ const defaultCacheOptions = {
   maxAge: 1
 }
 
-export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CachifyOptions<T>) {
+export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CacheOptions<T>) {
   opts = { ...defaultCacheOptions, ...opts }
 
   const pending: { [key: string]: Promise<T> } = {}
@@ -104,9 +104,9 @@ export interface ResponseCacheEntry<T=any> {
 
 export function defineCachedEventHandler <T=any> (
   handler: EventHandler<T>,
-  opts: Omit<CachifyOptions<ResponseCacheEntry<T>>, 'getKey'> = defaultCacheOptions
+  opts: Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey'> = defaultCacheOptions
 ): EventHandler<T> {
-  const _opts: CachifyOptions<ResponseCacheEntry<T>> = {
+  const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: (event) => {
       return decodeURI(parseURL(event.req.originalUrl || event.req.url).pathname).replace(/\/$/, '/index')
