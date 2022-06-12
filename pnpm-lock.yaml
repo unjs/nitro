@@ -39,6 +39,7 @@ importers:
       destr: ^1.1.1
       dot-prop: ^7.2.0
       esbuild: ^0.14.43
+      escape-string-regexp: ^5.0.0
       eslint: ^8.17.0
       etag: ^1.8.1
       execa: ^6.1.0
@@ -106,6 +107,7 @@ importers:
       destr: 1.1.1
       dot-prop: 7.2.0
       esbuild: 0.14.43
+      escape-string-regexp: 5.0.0
       etag: 1.8.1
       fs-extra: 10.1.0
       globby: 13.1.2

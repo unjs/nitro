@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 import type { Preset as UnenvPreset } from 'unenv'
-import type { Unimport, UnimportOptions } from 'unimport'
+import type { Unimport } from 'unimport'
+import type { UnimportPluginOptions } from 'unimport/unplugin'
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
@@ -121,7 +122,7 @@ export interface NitroOptions {
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
-  autoImport: UnimportOptions
+  autoImport: UnimportPluginOptions
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
 
