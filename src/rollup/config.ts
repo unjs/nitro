@@ -231,7 +231,7 @@ export const plugins = [
 
   // Externals Plugin
   if (!nitro.options.noExternals) {
-    rollupConfig.plugins.push(externals(defu(nitro.options.externals as any, {
+    rollupConfig.plugins.push(externals(defu(nitro.options.externals, {
       outDir: nitro.options.output.serverDir,
       moduleDirectories: nitro.options.nodeModulesDirs,
       external: [

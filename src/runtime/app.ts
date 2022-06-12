@@ -35,7 +35,7 @@ function createNitroApp (): NitroApp {
   const routerOptions = createMatcher({ routes: config.nitro.routes })
 
   for (const h of handlers) {
-    let handler = h.lazy ? lazyEventHandler(h.handler as any) : h.handler
+    let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler
 
     const referenceRoute = h.route.replace(/:\w+|\*\*/g, '_')
     const routeOptions = routerOptions.lookup(referenceRoute) || {}
