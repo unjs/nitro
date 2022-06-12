@@ -24,6 +24,24 @@ export default eventHandler(() => 'Hello World!')
 export default eventHandler(event => `Hello ${event.context.params.name}!`)
 ```
 
+**Example:** API route with a specific HTTP request method (get, post, put, delete, options and so on)
+
+```js
+// routes/user.get.ts
+export default eventHandler(async event => {
+  return `User profile!`
+})
+```
+
+```js
+// routes/user.post.ts
+export default eventHandler(async event => {
+  const body = await useBody()
+  // TODO: Handle body and update user
+  return `User updated!`
+})
+```
+
 **Example:** Catch all page
 
 ```js

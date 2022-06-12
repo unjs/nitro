@@ -44,7 +44,7 @@ export function scanRoutes (nitro: Nitro, dir: string, prefix: string = '/') {
       method = methodMatch[1]
     }
 
-    route = route.replace(/\/index$/, '')
+    route = route.replace(/\/index$/, '') || '/'
 
     return {
       handler: file.fullPath,
