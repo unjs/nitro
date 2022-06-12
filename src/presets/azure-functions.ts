@@ -9,7 +9,6 @@ import type { Nitro } from '../types'
 export const azureFunctions = defineNitroPreset({
   serveStatic: true,
   entry: '#internal/nitro/entries/azure-functions',
-  externals: true,
   commands: {
     deploy: 'az functionapp deployment source config-zip -g <resource-group> -n <app-name> --src {{ output.dir }}/deploy.zip'
   },
