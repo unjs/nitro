@@ -40,7 +40,8 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
   const integrity = hash([opts.integrity, fn, opts])
 
   async function get (key: string, resolver: () => T | Promise<T>): Promise<CacheEntry<T>> {
-    const cacheKey = [opts.base, group, name, key].filter(Boolean).join(':').replace(/:\/$/, ':index')
+    // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
+    const cacheKey = [opts.base, group, name, key + '.json'].filter(Boolean).join(':').replace(/:\/$/, ':index')
     const entry: CacheEntry<T> = await useStorage().getItem(cacheKey) as any || {}
 
     const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000
