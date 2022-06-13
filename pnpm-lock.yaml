@@ -81,7 +81,7 @@ importers:
       unbuild: ^0.7.4
       unenv: ^0.5.2
       unimport: ^0.2.7
-      unstorage: ^0.4.1
+      unstorage: ^0.5.0
       vitepress: ^0.22.4
       vitest: ^0.14.2
     dependencies:
@@ -143,7 +143,7 @@ importers:
       ufo: 0.8.4
       unenv: 0.5.2
       unimport: 0.2.7_2uefy6dldbldonrghlgjus4ieu
-      unstorage: 0.4.1
+      unstorage: 0.5.0
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_ud6rd4xtew5bv4yhvkvu24pzm4
       '@types/aws-lambda': 8.10.100
@@ -3679,8 +3679,8 @@ packages:
       side-channel: 1.0.4
     dev: true
 
-  /ioredis/5.0.4:
-    resolution: {integrity: sha512-qFJw3MnPNsJF1lcIOP3vztbsasOXK3nDdNAgjQj7t7/Bn/w10PGchTOpqylQNxjzPbLoYDu34LjeJtSWiKBntQ==}
+  /ioredis/5.0.6:
+    resolution: {integrity: sha512-KUm7wPzIet9QrFMoMm09/4bkfVKBUD9KXwBitP3hrNkZ+A6NBndweXGwYIB/7szHcTZgfo7Kvx88SxljJV4D9A==}
     engines: {node: '>=12.22.0'}
     dependencies:
       '@ioredis/commands': 1.1.1
@@ -4088,7 +4088,7 @@ packages:
     dev: false
 
   /lodash.isarguments/3.1.0:
-    resolution: {integrity: sha1-L1c9hcaiQon/AGY7SRwdM4/zRYo=}
+    resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
     dev: false
 
   /lodash.ismatch/4.4.0:
@@ -5007,12 +5007,12 @@ packages:
     dev: true
 
   /redis-errors/1.2.0:
-    resolution: {integrity: sha1-62LSrbFeTq9GEMBK/hUpOEJQq60=}
+    resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
     engines: {node: '>=4'}
     dev: false
 
   /redis-parser/3.0.0:
-    resolution: {integrity: sha1-tm2CjNyv5rS4pCin3vTGvKwxyLQ=}
+    resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
     engines: {node: '>=4'}
     dependencies:
       redis-errors: 1.2.0
@@ -5847,19 +5847,19 @@ packages:
       webpack-virtual-modules: 0.4.3
     dev: false
 
-  /unstorage/0.4.1:
-    resolution: {integrity: sha512-nK2XsRV2lfB6aNCuoatsQUhRVMnDDP5pm3D4UrgRMxP3D57Rn5+dx3aNaLCi5rcq6QAdOmhjyBvKcW8d3PY+Sw==}
+  /unstorage/0.5.0:
+    resolution: {integrity: sha512-DFLe2rwY6T3G/dUAvcsBMQu+L+j2aKNiE+D2b3giHVwQAqp3KZHVMoswhX+SDc9GK1+yoWZaC0MxpZFhrINawA==}
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
       h3: 0.7.9
-      ioredis: 5.0.4
+      ioredis: 5.0.6
       listhen: 0.2.11
       mri: 1.2.0
       ohmyfetch: 0.4.18
       ufo: 0.8.4
-      ws: 8.6.0
+      ws: 8.8.0
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -6127,6 +6127,20 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: true
+
+  /ws/8.8.0:
+    resolution: {integrity: sha512-JDAgSYQ1ksuwqfChJusw1LSJ8BizJ2e/vVu5Lxjq3YvNJNlROv1ui4i+c/kUUrPheBvQl4c5UbERhTwKa6QBJQ==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
 
   /xtend/4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
