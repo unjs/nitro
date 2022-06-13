@@ -4,7 +4,8 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "lib": [
-      "WebWorker"
+      "WebWorker",
+      "DOM.Iterable"
     ],
     "target": "ESNext",
     "module": "ESNext",
@@ -27,6 +28,8 @@
   "include": [
     "src",
     "test",
-    "examples"
+  ],
+  "exclude": [
+    "test/fixture"
   ]
 }

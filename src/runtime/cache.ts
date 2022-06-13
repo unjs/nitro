@@ -1,6 +1,7 @@
 import { hash } from 'ohash'
 import { handleCacheHeaders, defineEventHandler, createEvent, EventHandler } from 'h3'
 import type { H3Event } from 'h3'
+import { parseURL } from 'ufo'
 import { useStorage } from '#internal/nitro'
 
 export interface CacheEntry<T=any> {
@@ -10,7 +11,7 @@ export interface CacheEntry<T=any> {
   integrity?: string
 }
 
-export interface CachifyOptions<T = any> {
+export interface CacheOptions<T = any> {
   name?: string;
   getKey?: (...args: any[]) => string;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
@@ -29,7 +30,7 @@ const defaultCacheOptions = {
   maxAge: 1
 }
 
-export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CachifyOptions<T>) {
+export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CacheOptions<T>) {
   opts = { ...defaultCacheOptions, ...opts }
 
   const pending: { [key: string]: Promise<T> } = {}
@@ -40,7 +41,8 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
   const integrity = hash([opts.integrity, fn, opts])
 
   async function get (key: string, resolver: () => T | Promise<T>): Promise<CacheEntry<T>> {
-    const cacheKey = [opts.base, group, name, key].filter(Boolean).join(':').replace(/:\/$/, ':index')
+    // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
+    const cacheKey = [opts.base, group, name, key + '.json'].filter(Boolean).join(':').replace(/:\/$/, ':index')
     const entry: CacheEntry<T> = await useStorage().getItem(cacheKey) as any || {}
 
     const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000
@@ -52,6 +54,11 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
 
     const _resolve = async () => {
       if (!pending[key]) {
+        // Remove cached entry to prevent using expired cache on concurrent requests
+        entry.value = undefined
+        entry.integrity = undefined
+        entry.mtime = undefined
+        entry.expires = undefined
         pending[key] = Promise.resolve(resolver())
       }
       entry.value = await pending[key]
@@ -97,12 +104,12 @@ export interface ResponseCacheEntry<T=any> {
 
 export function defineCachedEventHandler <T=any> (
   handler: EventHandler<T>,
-  opts: Omit<CachifyOptions<ResponseCacheEntry<T>>, 'getKey'> = defaultCacheOptions
+  opts: Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey'> = defaultCacheOptions
 ): EventHandler<T> {
-  const _opts: CachifyOptions<ResponseCacheEntry<T>> = {
+  const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: (event) => {
-      return event.req.originalUrl || event.req.url
+      return decodeURI(parseURL(event.req.originalUrl || event.req.url).pathname).replace(/\/$/, '/index')
     },
     group: opts.group || 'nitro/handlers',
     integrity: [
