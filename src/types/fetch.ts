@@ -1,5 +1,5 @@
 import type { FetchRequest, FetchOptions, FetchResponse } from 'ohmyfetch'
-import { MatchedRoutes } from './utils'
+import type { MatchedRoutes } from './utils'
 
 // An interface to extend in a local project
 export interface InternalApi { }
