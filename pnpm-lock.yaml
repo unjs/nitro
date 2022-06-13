@@ -52,7 +52,7 @@ importers:
       is-primitive: ^3.0.1
       jiti: ^1.13.0
       klona: ^2.0.5
-      listhen: ^0.2.11
+      listhen: ^0.2.12
       mime: ^3.0.0
       miniflare: ^2.5.0
       mlly: ^0.5.2
@@ -80,7 +80,7 @@ importers:
       ufo: ^0.8.4
       unbuild: ^0.7.4
       unenv: ^0.5.2
-      unimport: ^0.2.7
+      unimport: ^0.2.8
       unstorage: ^0.5.0
       vitepress: ^0.22.4
       vitest: ^0.14.2
@@ -118,7 +118,7 @@ importers:
       is-primitive: 3.0.1
       jiti: 1.13.0
       klona: 2.0.5
-      listhen: 0.2.11
+      listhen: 0.2.12
       mime: 3.0.0
       mlly: 0.5.2
       mri: 1.2.0
@@ -142,7 +142,7 @@ importers:
       table: 6.8.0
       ufo: 0.8.4
       unenv: 0.5.2
-      unimport: 0.2.7_2uefy6dldbldonrghlgjus4ieu
+      unimport: 0.2.8_2uefy6dldbldonrghlgjus4ieu
       unstorage: 0.5.0
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_ud6rd4xtew5bv4yhvkvu24pzm4
@@ -4020,8 +4020,8 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: true
 
-  /listhen/0.2.11:
-    resolution: {integrity: sha512-AJPi6PByg78TEvmB9XWB15Cgv00MXDT0BWF+8LVFozbF9qLbOPjXXfwxkYIAmGjPOAAsPzBMEYytj7RSBhkaeg==}
+  /listhen/0.2.12:
+    resolution: {integrity: sha512-v2PibKV55Zn+BUkOB3twdStGfDlZTP+28A+WY+8KPjQXYLTstXeXGY/K9sExIVwf5YlElnp7np1S7M7XXz6ZdQ==}
     dependencies:
       clipboardy: 3.0.0
       colorette: 2.0.16
@@ -4029,6 +4029,7 @@ packages:
       get-port-please: 2.5.0
       http-shutdown: 1.2.2
       selfsigned: 2.0.1
+      ufo: 0.8.4
     dev: false
 
   /load-json-file/4.0.0:
@@ -5798,8 +5799,8 @@ packages:
       pathe: 0.3.0
     dev: false
 
-  /unimport/0.2.7_2uefy6dldbldonrghlgjus4ieu:
-    resolution: {integrity: sha512-lnClmDG8f4ZfLrAXSbHoHXdmYPREW+W0Z99+E/aomHNbvwSBsQVTH6dSChHAdyjp3LNicj/jQgq5DQN8Ho8huA==}
+  /unimport/0.2.8_2uefy6dldbldonrghlgjus4ieu:
+    resolution: {integrity: sha512-p/p8vFjYaazasl5BuMfZg78HZq9luG3q5aeAq0Of6CB2aaNSYHn49ESM8QCJe9LqAyEnvYuFFq4XX5+Qt3rnVA==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
@@ -5855,7 +5856,7 @@ packages:
       destr: 1.1.1
       h3: 0.7.9
       ioredis: 5.0.6
-      listhen: 0.2.11
+      listhen: 0.2.12
       mri: 1.2.0
       ohmyfetch: 0.4.18
       ufo: 0.8.4
