@@ -11,7 +11,11 @@ describe('API routes', () => {
   const dynamicString: string = ''
 
   it('generates types for middleware, unknown and manual typed routes', () => {
-    expectTypeOf($fetch('/')).toMatchTypeOf<Promise<any>>() // middleware
+    expectTypeOf($fetch('/')).toMatchTypeOf<Promise<
+      | string | number | TestResponse 
+      | { testFile: string,  hasEnv: boolean } 
+      | { internalApiKey: string } 
+      >>() // middleware
     expectTypeOf($fetch('/api/unknown')).toMatchTypeOf<Promise<unknown>>()
     expectTypeOf($fetch<TestResponse>('/test')).toMatchTypeOf<Promise<TestResponse>>()
   })
