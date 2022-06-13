@@ -57,4 +57,4 @@ export type MatchedRoutes<
     ? keyof InternalApi // root middleware
     : Extract<Matches, { exact: true }> extends never
       ? Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key'] // partial match and glob match
-      : Extract<Matches, { exact: true }>['key'] // exact 
+      : Extract<Matches, { exact: true }>['key'] // exact
