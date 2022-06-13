@@ -1,43 +1,40 @@
 import type { InternalApi } from './fetch'
 
 type MatchResult<Key extends string, ExactOrGlob extends boolean = false, Score extends any[] = []> = {
-        [k in Key]: { key: k, exactOrGlob: ExactOrGlob, score: Score }
-    }[Key]
+  [k in Key]: { key: k, exactOrGlob: ExactOrGlob, score: Score }
+}[Key]
 
 type Subtract<Minuend extends any[] = [], Subtrahend extends any[] = []> =
-    Minuend extends [...Subtrahend, ...infer Remainder] ? Remainder : never
+  Minuend extends [...Subtrahend, ...infer Remainder] ? Remainder : never
 
 type TupleIfDiff<First extends string, Second extends string, Tuple extends any[] = []> =
-    First extends `${Second}${infer Diff}` ? Diff extends '' ? [] : Tuple : []
+  First extends `${Second}${infer Diff}` ? Diff extends '' ? [] : Tuple : []
 
 type MaxTuple<N extends any[] = [], T extends any[] = []> = {
-         current: T, result: MaxTuple<N, ['', ...T]>
-    }[[N['length']] extends [Partial<T>['length']] ? 'current' : 'result']
+  current: T, result: MaxTuple<N, ['', ...T]>
+}[[N['length']] extends [Partial<T>['length']] ? 'current' : 'result']
 
 type CalcMatchScore<
-    Key extends string,
-    Route extends string,
-    Score extends any[] = [],
-    Init extends boolean = false,
-    FirstKeySegMatcher extends string = Init extends true ? ':Invalid:' : '',
+  Key extends string,
+  Route extends string,
+  Score extends any[] = [],
+  Init extends boolean = false,
+  FirstKeySegMatcher extends string = Init extends true ? ':Invalid:' : '',
 > = `${Key}/` extends `${infer KeySeg}/${infer KeyRest}`
-      ? KeySeg extends FirstKeySegMatcher // return score if `KeySeg` is empty string (except first pass)
-        ? Subtract<
-          [...Score, ...TupleIfDiff<Route, Key, ['', '']>]
-          , TupleIfDiff<Key, Route, ['', '']>
-        >
-        : `${Route}/` extends `${infer RouteSeg}/${infer RouteRest}`
-          ? RouteSeg extends KeySeg
-            ? CalcMatchScore<KeyRest, RouteRest, [...Score, '', '']> // exact match
-            : KeySeg extends `:${string}`
-                ? RouteSeg extends ''
-                    ? never
-                    : CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // param match
-                : KeySeg extends RouteSeg
-                    ? CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // match by ${string}
-                    : never
-          : never
-      :never
+  ? KeySeg extends FirstKeySegMatcher // return score if `KeySeg` is empty string (except first pass)
+    ? Subtract<[...Score, ...TupleIfDiff<Route, Key, ['', '']>], TupleIfDiff<Key, Route, ['', '']>>
+    : `${Route}/` extends `${infer RouteSeg}/${infer RouteRest}`
+      ? RouteSeg extends KeySeg
+        ? CalcMatchScore<KeyRest, RouteRest, [...Score, '', '']> // exact match
+        : KeySeg extends `:${string}`
+          ? RouteSeg extends ''
+            ? never
+            : CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // param match
+          : KeySeg extends RouteSeg
+            ? CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // match by ${string}
+            : never
+      : never
+  : never
 
 type _MatchedRoutes<
   Route extends string,
@@ -59,7 +56,7 @@ export type MatchedRoutes<
   MatchedKeysResult extends MatchResult<string> = MatchResult<keyof InternalApi>,
   Matches extends MatchResult<string> = _MatchedRoutes<Route, MatchedKeysResult>
  > = Route extends '/'
-      ? keyof InternalApi // root middleware
-      : Extract<Matches, { exactOrGlob: true }> extends never
-              ? Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key'] // partial match
-              : Extract<Matches, { exactOrGlob: true }>['key'] // exact and globs match
+    ? keyof InternalApi // root middleware
+    : Extract<Matches, { exactOrGlob: true }> extends never
+      ? Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key'] // partial match
+      : Extract<Matches, { exactOrGlob: true }>['key'] // exact and globs match
