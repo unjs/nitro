@@ -8,7 +8,7 @@ export type NitroFetchRequest = Exclude<keyof InternalApi, `/_${string}`|`/api/_
 
 export type MiddlewareOf<Route extends string> = Exclude<InternalApi[MatchedRoutes<Route>], Error | void>
 
-export type TypedInternalResponse<Route, Default> =
+export type TypedInternalResponse<Route, Default = unknown> =
   Default extends string | boolean | number | null | void | object
     // Allow user overrides
     ? Default
