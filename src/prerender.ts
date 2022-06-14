@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
-import { joinURL, parseURL } from 'ufo'
+import { joinURL, parseURL, withoutBase } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
@@ -75,8 +75,9 @@ export async function prerender (nitro: Nitro) {
     ) {
       const crawledRoutes = extractLinks(_route.contents, route, res)
       for (const crawledRoute of crawledRoutes) {
-        if (canPrerender(crawledRoute)) {
-          routes.add(crawledRoute)
+        const href = withoutBase(crawledRoute, nitro.options.baseURL)
+        if (canPrerender(href)) {
+          routes.add(href)
         }
       }
     }
