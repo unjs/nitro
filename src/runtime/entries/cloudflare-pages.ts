@@ -15,7 +15,7 @@ export async function onRequest (context) {
 
   try {
     // const asset = await env.ASSETS.fetch(request, { cacheControl: assetsCacheControl })
-    const asset = await next
+    const asset = await next()
     if (asset.status !== 404) {
       return asset
     }
