@@ -1,13 +1,5 @@
-import { createStorage as _createStorage } from 'unstorage'
+import { createStorage as _createStorage, builtinDrivers } from 'unstorage'
 import type { Nitro } from './types'
-
-export const builtinDrivers = {
-  fs: 'unstorage/drivers/fs',
-  http: 'unstorage/drivers/http',
-  memory: 'unstorage/drivers/memory',
-  redis: 'unstorage/drivers/redis',
-  'cloudflare-kv': 'unstorage/drivers/cloudflare-kv'
-}
 
 export async function createStorage (nitro: Nitro) {
   const storage = _createStorage()

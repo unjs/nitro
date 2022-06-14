@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.7](https://github.com/unjs/nitropack/compare/v0.4.6...v0.4.7) (2022-06-14)
+
+
+### Bug Fixes
+
+* check if socket address/port/family are set ([#287](https://github.com/unjs/nitropack/issues/287)) ([8fb3ad9](https://github.com/unjs/nitropack/commit/8fb3ad93b9c2d0da9a95183818cf228c1b16b99b))
+* don't use file url when building prerenderer ([#286](https://github.com/unjs/nitropack/issues/286)) ([2e7c548](https://github.com/unjs/nitropack/commit/2e7c5482c736d8c749d9151bc2f588ebb69a4a83))
+
+### [0.4.6](https://github.com/unjs/nitropack/compare/v0.4.5...v0.4.6) (2022-06-13)
+
+
+### Features
+
+* update unstorage to 0.5.x ([c5cabbf](https://github.com/unjs/nitropack/commit/c5cabbf6453fe7da46f52a899d2c79fdb56d5b2c))
+
+### [0.4.5](https://github.com/unjs/nitropack/compare/v0.4.4...v0.4.5) (2022-06-12)
+
+
+### Features
+
+* **dev:** add `x-forwarded` headers ([#247](https://github.com/unjs/nitropack/issues/247)) ([2d50312](https://github.com/unjs/nitropack/commit/2d50312c6f84f4a5ea152556ecd143a0944f9fc1))
+
+
+### Bug Fixes
+
+* add `scanDirs` to auto-import include ([#277](https://github.com/unjs/nitropack/issues/277)) ([3f8a08e](https://github.com/unjs/nitropack/commit/3f8a08ec6e8421c7311fad8c306fe28586ee83f8))
+* append .cache to the key of cached routes/functions ([#249](https://github.com/unjs/nitropack/issues/249)) ([1d4328c](https://github.com/unjs/nitropack/commit/1d4328cceb4245ef01ce789ba6b85a7d4956e22c))
+* avoid empty scaned route (resolves [#283](https://github.com/unjs/nitropack/issues/283)) ([a087673](https://github.com/unjs/nitropack/commit/a0876732acadfda2e2c2699a947ea08e6af28d0d))
+* **cache:** expose all cache aliases and types ([361d12f](https://github.com/unjs/nitropack/commit/361d12f61a102caac7c9c32ab25d3e662cec80a9))
+* **cache:** invalidate entry before calling resolver ([#271](https://github.com/unjs/nitropack/issues/271)) ([7358d5b](https://github.com/unjs/nitropack/commit/7358d5bdc8131f98d1d29aff23dceb4bb702b879))
+* **cache:** normalize path keys for `defineCachedEventHandler` ([97625ec](https://github.com/unjs/nitropack/commit/97625ec7fc4d44529fe7e2be16bbeaa3e4f38b98))
+* **cloudflare:** use `@cloudflare/wrangler` until we support wrangler 2 ([#265](https://github.com/unjs/nitropack/issues/265)) ([d7fa6ce](https://github.com/unjs/nitropack/commit/d7fa6ce00a97f0573c5524fb0ee4080b2aa58542))
+* exclude internal `/_*`, `/api/_*` routes from NitroFetchReqeust type ([#232](https://github.com/unjs/nitropack/issues/232)) ([00aa131](https://github.com/unjs/nitropack/commit/00aa13161f3c8da451614925daf4cd897a838aa3))
+* **stormkit:** update request signature ([#264](https://github.com/unjs/nitropack/issues/264)) ([78bf46a](https://github.com/unjs/nitropack/commit/78bf46a324b304516574c538b9b59f50b1f21ed0))
+
+### [0.4.4](https://github.com/unjs/nitropack/compare/v0.4.3...v0.4.4) (2022-05-11)
+
+
+### Bug Fixes
+
+* update `NitroFetchRequest` type to support `string` type ([#226](https://github.com/unjs/nitropack/issues/226)) ([3542b61](https://github.com/unjs/nitropack/commit/3542b6148a4068e4c2dc74c617fa6e225739bf12))
+* update unenv and add `node-fetch-native/polyfill` to `moduleSideEffects` ([e70a9f0](https://github.com/unjs/nitropack/commit/e70a9f0b4333ab4804a4afc31e7c666e4ca77e59))
+
+### [0.4.3](https://github.com/unjs/nitropack/compare/v0.4.2...v0.4.3) (2022-05-10)
+
+
+### Features
+
+* add `NitroFetchRequest` type and enhance $fetch's request type ([#209](https://github.com/unjs/nitropack/issues/209)) ([57b9ed0](https://github.com/unjs/nitropack/commit/57b9ed0bc4ef15dc36a58ae60810feaedd367c15))
+* add `prerender:route` hook ([#213](https://github.com/unjs/nitropack/issues/213)) ([9c9fb34](https://github.com/unjs/nitropack/commit/9c9fb3401246e534374588c681cb77871b0efaaa))
+* **prerender:** add preview command ([#217](https://github.com/unjs/nitropack/issues/217)) ([08614c5](https://github.com/unjs/nitropack/commit/08614c50f0365c6d68cf2b18841ac13a3c62cdaa))
+* show stack-trace of unhandled errors with `DEBUG` env ([#212](https://github.com/unjs/nitropack/issues/212)) ([b366f3f](https://github.com/unjs/nitropack/commit/b366f3fae0605af75b2eb86839c5a94804a52ffb))
+
+
+### Bug Fixes
+
+* add missing include path `../../**/*` in generated tsconfig.json ([#205](https://github.com/unjs/nitropack/issues/205)) ([8978404](https://github.com/unjs/nitropack/commit/89784044de3c5d7b518225488684f0b391a372be))
+* respect baseURL in prerendering ([#219](https://github.com/unjs/nitropack/issues/219)) ([3e8eddb](https://github.com/unjs/nitropack/commit/3e8eddb20a609c1405d1e531dba2fba3a39384db))
+* set built-in storage mounts before nitro init ([d1c6c64](https://github.com/unjs/nitropack/commit/d1c6c64384afdee7424eebc51a4c42978f4dc1c5))
+
 ### [0.4.2](https://github.com/unjs/nitropack/compare/v0.4.1...v0.4.2) (2022-05-07)
 
 

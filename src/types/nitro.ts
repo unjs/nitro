@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 import type { Preset as UnenvPreset } from 'unenv'
-import type { Unimport, UnimportOptions } from 'unimport'
+import type { Unimport } from 'unimport'
+import type { UnimportPluginOptions } from 'unimport/unplugin'
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
@@ -23,12 +24,21 @@ export interface Nitro {
   close: () => Promise<void>
 }
 
+export interface PrerenderRoute {
+  route: string
+  contents?: string
+  fileName?: string
+  error?: Error & { statusCode: number, statusMessage: string }
+  generateTimeMS?: number
+}
+
 type HookResult = void | Promise<void>
 export interface NitroHooks {
   'rollup:before': (nitro: Nitro) => HookResult
   'compiled': (nitro: Nitro) => HookResult
   'dev:reload': () => HookResult
   'close': () => HookResult
+  'prerender:route': (route: PrerenderRoute) => HookResult
 }
 
 export interface StorageMounts {
@@ -112,7 +122,7 @@ export interface NitroOptions {
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
-  autoImport: UnimportOptions
+  autoImport: UnimportPluginOptions
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
 

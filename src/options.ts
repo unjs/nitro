@@ -3,6 +3,7 @@ import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
 import defu from 'defu'
+import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
 import { resolvePath as resovleModule } from 'mlly'
@@ -62,7 +63,7 @@ const NitroDefaults: NitroConfig = {
   },
   unenv: {},
   analyze: false,
-  moduleSideEffects: ['unenv/runtime/polyfill/'],
+  moduleSideEffects: ['unenv/runtime/polyfill/', 'node-fetch-native/polyfill'],
   replace: {},
   node: true,
   sourceMap: true,
@@ -135,6 +136,15 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
+  options.autoImport.include = [
+    ...Array.isArray(options.autoImport.include)
+      ? options.autoImport.include
+      : [options.autoImport.include].filter(Boolean),
+    ...options.scanDirs
+      .filter(i => i.includes('node_modules'))
+      .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
+  ]
+
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
     app: {
@@ -154,6 +164,17 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     if (!options.alias[pkg]) {
       options.alias[pkg] = await resovleModule(pkg, { url: import.meta.url })
     }
+  }
+
+  // Build-only storage
+  const fsMounts = {
+    root: resolve(options.rootDir),
+    src: resolve(options.srcDir),
+    build: resolve(options.buildDir),
+    cache: resolve(options.buildDir, 'cache')
+  }
+  for (const p in fsMounts) {
+    options.devStorage[p] = options.devStorage[p] || { driver: 'fs', base: fsMounts[p] }
   }
 
   return options
