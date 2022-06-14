@@ -14,6 +14,11 @@ export const cloudflarePages = defineNitroPreset({
   output: {
     serverDir: '{{ rootDir }}/functions'
   },
+  rollupConfig: {
+    output: {
+      format: 'esm'
+    }
+  },
   hooks: {
     async 'compiled' (nitro: Nitro) {
       await writeFile(resolve(nitro.options.output.dir, 'package.json'), JSON.stringify({ private: true, main: './functions/[[path]].js' }, null, 2))
