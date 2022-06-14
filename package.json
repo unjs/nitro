@@ -72,7 +72,7 @@
     "is-primitive": "^3.0.1",
     "jiti": "^1.13.0",
     "klona": "^2.0.5",
-    "listhen": "^0.2.11",
+    "listhen": "^0.2.12",
     "mime": "^3.0.0",
     "mlly": "^0.5.2",
     "mri": "^1.2.0",
@@ -96,7 +96,7 @@
     "table": "^6.8.0",
     "ufo": "^0.8.4",
     "unenv": "^0.5.2",
-    "unimport": "^0.2.7",
+    "unimport": "^0.2.8",
     "unstorage": "^0.5.0"
   },
   "devDependencies": {
