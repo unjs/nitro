@@ -28,7 +28,7 @@ const NitroDefaults: NitroConfig = {
     publicDir: '{{ output.dir }}/public'
   },
 
-  // Featueres
+  // Features
   experimental: {},
   storage: {},
   devStorage: {},
@@ -136,14 +136,19 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
-  options.autoImport.include = [
-    ...Array.isArray(options.autoImport.include)
-      ? options.autoImport.include
-      : [options.autoImport.include].filter(Boolean),
-    ...options.scanDirs
-      .filter(i => i.includes('node_modules'))
-      .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
-  ]
+  if (options.autoImport) {
+    options.autoImport.include = [
+      ...Array.isArray(options.autoImport.include)
+        ? options.autoImport.include
+        : [options.autoImport.include].filter(Boolean),
+      ...options.scanDirs
+        .filter(i => i.includes('node_modules'))
+        .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
+    ]
+    options.autoImport.exclude = [
+      options.entry
+    ]
+  }
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
