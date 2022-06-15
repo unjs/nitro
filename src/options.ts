@@ -146,6 +146,9 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
         .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
     ]
     options.autoImport.exclude = [
+      ...Array.isArray(options.autoImport.exclude)
+      ? options.autoImport.exclude
+      : [options.autoImport.exclude].filter(Boolean),
       options.entry
     ]
   }
