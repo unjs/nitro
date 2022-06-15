@@ -136,7 +136,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
-  options.autoImport.include = [
+  const include = [
     ...Array.isArray(options.autoImport.include)
       ? options.autoImport.include
       : [options.autoImport.include].filter(Boolean),
@@ -144,6 +144,10 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
       .filter(i => i.includes('node_modules'))
       .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
   ]
+
+  if (include.length) {
+    options.autoImport.include = include
+  }
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
