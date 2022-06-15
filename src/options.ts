@@ -147,8 +147,8 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     ]
     options.autoImport.exclude = [
       ...Array.isArray(options.autoImport.exclude)
-      ? options.autoImport.exclude
-      : [options.autoImport.exclude].filter(Boolean),
+        ? options.autoImport.exclude
+        : [options.autoImport.exclude].filter(Boolean),
       options.entry
     ]
   }
