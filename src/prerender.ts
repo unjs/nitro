@@ -64,6 +64,9 @@ export async function prerender (nitro: Nitro) {
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+
+    await nitro.hooks.callHook('prerender:route', _route)
+
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
     await writeFile(filePath, _route.contents)
 
@@ -96,7 +99,6 @@ export async function prerender (nitro: Nitro) {
       // Skipped (not allowed or duplicate)
       if (!_route) { continue }
 
-      await nitro.hooks.callHook('prerender:route', _route)
       nitro.logger.log(chalk[_route.error ? 'yellow' : 'gray'](`  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${_route.error ? `(${_route.error})` : ''}`))
     }
   }
