@@ -81,7 +81,7 @@
     "ohmyfetch": "^0.4.18",
     "pathe": "^0.3.0",
     "perfect-debounce": "^0.1.3",
-    "pkg-types": "^0.3.2",
+    "pkg-types": "^0.3.3",
     "pretty-bytes": "^6.0.0",
     "radix3": "^0.1.2",
     "rollup": "^2.75.7",
