@@ -50,7 +50,7 @@ export const serviceWorker = defineNitroPreset(() => {
     },
     hooks: {
       'prerender:route' (route) {
-        // TODO: use baseURL fron nitro options
+        // TODO: use baseURL from nitro options
         const baseURL = '/'
         route.contents = route.contents.replace('</head>', `${scriptTemplate(baseURL)}\n</head>`)
       },
