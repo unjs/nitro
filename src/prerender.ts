@@ -4,7 +4,7 @@ import { parseURL, withBase } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
-import type { Nitro, PrerenderRoute } from './types'
+import type { Nitro, PrerenderGenerateRoute, PrerenderRoute } from './types'
 import { writeFile } from './utils'
 
 const allowedExtensions = new Set(['', '.json'])
@@ -43,13 +43,13 @@ export async function prerender (nitro: Nitro) {
   const generateRoute = async (route: string) => {
     const start = Date.now()
 
-    // Check if we should render routee
+    // Check if we should render route
     if (!canPrerender(route)) { return }
     generatedRoutes.add(route)
     routes.delete(route)
 
     // Create result object
-    const _route: PrerenderRoute = { route }
+    const _route: PrerenderGenerateRoute = { route }
 
     // Fetch the route
     const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
@@ -65,10 +65,7 @@ export async function prerender (nitro: Nitro) {
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
 
-    await nitro.hooks.callHook('prerender:route', _route)
-
-    const filePath = join(nitro.options.output.publicDir, _route.fileName)
-    await writeFile(filePath, _route.contents)
+    await nitro.hooks.callHook('prerender:generate', _route)
 
     // Crawl route links
     if (
@@ -83,6 +80,12 @@ export async function prerender (nitro: Nitro) {
         }
       }
     }
+
+    // Skip route
+    if (_route.skip) { return }
+
+    const filePath = join(nitro.options.output.publicDir, _route.fileName)
+    await writeFile(filePath, _route.contents)
 
     _route.generateTimeMS = Date.now() - start
     return _route
@@ -99,6 +102,7 @@ export async function prerender (nitro: Nitro) {
       // Skipped (not allowed or duplicate)
       if (!_route) { continue }
 
+      await nitro.hooks.callHook('prerender:route', _route)
       nitro.logger.log(chalk[_route.error ? 'yellow' : 'gray'](`  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${_route.error ? `(${_route.error})` : ''}`))
     }
   }

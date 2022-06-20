@@ -32,6 +32,10 @@ export interface PrerenderRoute {
   generateTimeMS?: number
 }
 
+export interface PrerenderGenerateRoute extends PrerenderRoute {
+  skip?: boolean
+}
+
 type HookResult = void | Promise<void>
 export interface NitroHooks {
   'rollup:before': (nitro: Nitro) => HookResult
@@ -39,6 +43,7 @@ export interface NitroHooks {
   'dev:reload': () => HookResult
   'close': () => HookResult
   'prerender:route': (route: PrerenderRoute) => HookResult
+  'prerender:generate': (route: PrerenderGenerateRoute) => HookResult
 }
 
 export interface StorageMounts {
