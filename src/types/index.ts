@@ -1,3 +1,6 @@
 export * from './fetch'
 export * from './nitro'
 export * from './handler'
+export type { NitroApp } from '../runtime/app'
+export type { CacheEntry, CacheOptions, ResponseCacheEntry } from '../runtime/cache'
+export type { NitroAppPlugin } from '../runtime/plugin'
