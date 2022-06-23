@@ -43,7 +43,7 @@ export interface NitroHooks {
   'dev:reload': () => HookResult
   'close': () => HookResult
   'prerender:route': (route: PrerenderRoute) => HookResult
-  'prerender:generate': (route: PrerenderGenerateRoute) => HookResult
+  'prerender:generate': (route: PrerenderGenerateRoute, nitro: Nitro) => HookResult
 }
 
 export interface StorageMounts {

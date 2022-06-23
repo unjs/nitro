@@ -65,7 +65,7 @@ export async function prerender (nitro: Nitro) {
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
 
-    await nitro.hooks.callHook('prerender:generate', _route)
+    await nitro.hooks.callHook('prerender:generate', _route, nitro)
 
     // Crawl route links
     if (

@@ -49,10 +49,9 @@ export const serviceWorker = defineNitroPreset(() => {
       preview: 'npx serve ./public'
     },
     hooks: {
-      'prerender:route' (route) {
-        // TODO: use baseURL from nitro options
-        const baseURL = '/'
-        route.contents = route.contents.replace('</head>', `${scriptTemplate(baseURL)}\n</head>`)
+      'prerender:generate' (route, nitro) {
+        const script = scriptTemplate(nitro.options.baseURL)
+        route.contents = route.contents.replace('</head>', `${script}\n</head>`)
       },
       async 'compiled' (nitro: Nitro) {
         // Write sw.js file
