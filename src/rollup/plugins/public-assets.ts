@@ -52,7 +52,7 @@ export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 
 export function isPublicAssetURL(id = '') {
   if (assets[id]) {
-    return
+    return true
   }
   for (const base of publicAssetBases) {
     if (id.startsWith(base)) { return true }
