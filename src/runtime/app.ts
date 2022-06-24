@@ -1,4 +1,4 @@
-import { App as H3App, createApp, createRouter, lazyEventHandler } from 'h3'
+import { App as H3App, createApp, createRouter, lazyEventHandler, Router } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createRouter as createMatcher } from 'radix3'
@@ -13,7 +13,8 @@ import { handlers } from '#internal/nitro/virtual/server-handlers'
 
 export interface NitroApp {
   h3App: H3App
-  hooks: Hookable,
+  router: Router
+  hooks: Hookable
   localCall: ReturnType<typeof createCall>
   localFetch: ReturnType<typeof createLocalFetch>
 }
@@ -65,6 +66,7 @@ function createNitroApp (): NitroApp {
   const app: NitroApp = {
     hooks,
     h3App,
+    router,
     localCall,
     localFetch
   }
