@@ -67,6 +67,12 @@ export async function prerender (nitro: Nitro) {
 
     await nitro.hooks.callHook('prerender:generate', _route, nitro)
 
+    // Skip route
+    if (_route.skip) { return }
+
+    const filePath = join(nitro.options.output.publicDir, _route.fileName)
+    await writeFile(filePath, _route.contents)
+
     // Crawl route links
     if (
       !_route.error &&
@@ -80,12 +86,6 @@ export async function prerender (nitro: Nitro) {
         }
       }
     }
-
-    // Skip route
-    if (_route.skip) { return }
-
-    const filePath = join(nitro.options.output.publicDir, _route.fileName)
-    await writeFile(filePath, _route.contents)
 
     _route.generateTimeMS = Date.now() - start
     return _route
