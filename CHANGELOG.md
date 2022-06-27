@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.8](https://github.com/unjs/nitropack/compare/v0.4.7...v0.4.8) (2022-06-15)
+
+
+### Bug Fixes
+
+* disable auto import include for scanDirs ([4c057cd](https://github.com/unjs/nitropack/commit/4c057cdd939485c4f416f33d776dadaeb498ed3e)), closes [#277](https://github.com/unjs/nitropack/issues/277)
+
+### [0.4.7](https://github.com/unjs/nitropack/compare/v0.4.6...v0.4.7) (2022-06-14)
+
+
+### Bug Fixes
+
+* check if socket address/port/family are set ([#287](https://github.com/unjs/nitropack/issues/287)) ([8fb3ad9](https://github.com/unjs/nitropack/commit/8fb3ad93b9c2d0da9a95183818cf228c1b16b99b))
+* don't use file url when building prerenderer ([#286](https://github.com/unjs/nitropack/issues/286)) ([2e7c548](https://github.com/unjs/nitropack/commit/2e7c5482c736d8c749d9151bc2f588ebb69a4a83))
+
+### [0.4.6](https://github.com/unjs/nitropack/compare/v0.4.5...v0.4.6) (2022-06-13)
+
+
+### Features
+
+* update unstorage to 0.5.x ([c5cabbf](https://github.com/unjs/nitropack/commit/c5cabbf6453fe7da46f52a899d2c79fdb56d5b2c))
+
 ### [0.4.5](https://github.com/unjs/nitropack/compare/v0.4.4...v0.4.5) (2022-06-12)
 
 

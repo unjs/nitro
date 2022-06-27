@@ -1,5 +1,5 @@
+import { builtinDrivers } from 'unstorage'
 import { serializeImportName } from '../../utils'
-import { builtinDrivers } from '../../storage'
 import type { Nitro } from '../../types'
 import { virtual } from './virtual'
 
