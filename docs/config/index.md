@@ -170,7 +170,7 @@ Example:
 }
 ```
 
-### `prerenderer`
+### `prerender`
 
 Default: `{ crawlLinks: false, routes: [] }`
 
