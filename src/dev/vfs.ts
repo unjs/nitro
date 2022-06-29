@@ -14,7 +14,12 @@ export function createVFSHandler (nitro: Nitro) {
         return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(key)}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(nitro.options.rootDir, '')}</a></li>`
       })
       .join('\n')
-    const files = `<ul class="flex flex-col">${items}</ul>`
+    const files = `
+      <div>
+        <p class="bg-gray-700 text-white text-bold border-b border-gray-500 text-center">virtual files</p>
+        <ul class="flex flex-col">${items}</ul>
+      </div>
+      `
 
     const id = decodeURIComponent(event.req.url?.slice(1) || '')
 
@@ -34,6 +39,12 @@ export function createVFSHandler (nitro: Nitro) {
       })
     } else if (id) {
       throw createError({ message: 'File not found', statusCode: 404 })
+    } else {
+      file = `
+        <div class="m-2">
+          <h1 class="text-white">Select a virtual file to inspect</h1>
+        </div>
+      `
     }
     return `
 <!doctype html>
