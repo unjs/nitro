@@ -81,7 +81,7 @@ importers:
       unbuild: ^0.7.4
       unenv: ^0.5.2
       unimport: ^0.4.0
-      unstorage: ^0.5.3
+      unstorage: ^0.5.4
       vitepress: ^0.22.4
       vitest: ^0.16.0
     dependencies:
@@ -143,7 +143,7 @@ importers:
       ufo: 0.8.4
       unenv: 0.5.2
       unimport: 0.4.0_qrpxjnto46iodaa4efitqiw3he
-      unstorage: 0.5.3
+      unstorage: 0.5.4
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_b5e7v2qnwxfo6hmiq56u52mz3e
       '@types/aws-lambda': 8.10.101
@@ -5647,8 +5647,8 @@ packages:
       webpack-virtual-modules: 0.4.3
     dev: false
 
-  /unstorage/0.5.3:
-    resolution: {integrity: sha512-NbdbNgZ6Sq6isG+E0bP29YnwkJBJflwR3SUkcizPRiVS5dgc7nUxKaWa/Mp3oEEq6Pjxzj0HxKjjnRvfALKzeA==}
+  /unstorage/0.5.4:
+    resolution: {integrity: sha512-yihAdJiYzkmwJGBO9IV7XIlc9NpCBHlT9ZJxlMmPj+8uqkYvCkwwBO/c98+JCDLkmmdUPS0hnstl+q5bALsS+Q==}
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3

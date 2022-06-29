@@ -97,7 +97,7 @@
     "ufo": "^0.8.4",
     "unenv": "^0.5.2",
     "unimport": "^0.4.0",
-    "unstorage": "^0.5.3"
+    "unstorage": "^0.5.4"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^10.0.0",
