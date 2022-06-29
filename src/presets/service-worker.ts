@@ -4,16 +4,26 @@ import { joinURL } from 'ufo'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
-// TODO
-// const scriptTemplate = (baseURL = '/') => `
-// <script>
-// if ('serviceWorker' in navigator) {
-//   window.addEventListener('load', function () {
-//     navigator.serviceWorker.register('${joinURL(baseURL, 'sw.js')}');
-//   });
-// }
-// </script>
-// `
+const scriptTemplate = (baseURL = '/') => `
+<script>
+async function register () {
+  const registration = await navigator.serviceWorker.register('${joinURL(baseURL, 'sw.js')}')
+  await navigator.serviceWorker.ready
+  registration.active.addEventListener('statechange', (event) => {
+    if (event.target.state === 'activated') {
+      window.location.reload()
+    }
+  })
+}
+if ('serviceWorker' in navigator) {
+  if (location.hostname !== 'localhost' && location.protocol === 'http:') {
+    location.replace(location.href.replace('http://', 'https://'))
+  } else {
+    register()
+  }
+}
+</script>
+`
 
 const htmlTemplate = (baseURL = '/') => `<!DOCTYPE html>
 <html>
@@ -21,24 +31,8 @@ const htmlTemplate = (baseURL = '/') => `<!DOCTYPE html>
   <meta charset="utf-8">
   <link rel="prefetch" href="${joinURL(baseURL, 'sw.js')}">
   <link rel="prefetch" href="${joinURL(baseURL, 'server/index.mjs')}">
-  <script>
-  async function register () {
-    const registration = await navigator.serviceWorker.register('${joinURL(baseURL, 'sw.js')}')
-    await navigator.serviceWorker.ready
-    registration.active.addEventListener('statechange', (event) => {
-      if (event.target.state === 'activated') {
-        window.location.reload()
-      }
-    })
-  }
-  if (location.hostname !== 'localhost' && location.protocol === 'http:') {
-    location.replace(location.href.replace('http://', 'https://'))
-  } else {
-    register()
-  }
-  </script>
+  ${scriptTemplate(baseURL)}
 </head>
-
 <body>
   Initializing nitro service worker...
 </body>
@@ -55,6 +49,10 @@ export const serviceWorker = defineNitroPreset(() => {
       preview: 'npx serve ./public'
     },
     hooks: {
+      'prerender:generate' (route, nitro) {
+        const script = scriptTemplate(nitro.options.baseURL)
+        route.contents = route.contents.replace('</head>', `${script}\n</head>`)
+      },
       async 'compiled' (nitro: Nitro) {
         // Write sw.js file
         await fsp.writeFile(resolve(nitro.options.output.publicDir, 'sw.js'), `self.importScripts('${joinURL(nitro.options.baseURL, 'server/index.mjs')}');`, 'utf8')

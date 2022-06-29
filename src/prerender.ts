@@ -4,7 +4,7 @@ import { parseURL, withBase } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
-import type { Nitro, PrerenderRoute } from './types'
+import type { Nitro, PrerenderGenerateRoute, PrerenderRoute } from './types'
 import { writeFile } from './utils'
 
 const allowedExtensions = new Set(['', '.json'])
@@ -43,13 +43,13 @@ export async function prerender (nitro: Nitro) {
   const generateRoute = async (route: string) => {
     const start = Date.now()
 
-    // Check if we should render routee
+    // Check if we should render route
     if (!canPrerender(route)) { return }
     generatedRoutes.add(route)
     routes.delete(route)
 
     // Create result object
-    const _route: PrerenderRoute = { route }
+    const _route: PrerenderGenerateRoute = { route }
 
     // Fetch the route
     const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
@@ -64,6 +64,12 @@ export async function prerender (nitro: Nitro) {
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+
+    await nitro.hooks.callHook('prerender:generate', _route, nitro)
+
+    // Check if route skipped by hook
+    if (_route.skip) { return }
+
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
     await writeFile(filePath, _route.contents)
 
