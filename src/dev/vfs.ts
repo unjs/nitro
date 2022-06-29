@@ -8,20 +8,28 @@ export function createVFSHandler (nitro: Nitro) {
       ...nitro.options.virtual
     }
 
-    if (event.req.url === '/') {
-      const items = Object.keys(vfsEntries)
-        .map(key => `<li><a href="/_vfs/${encodeURIComponent(key)}">${key.replace(nitro.options.rootDir, '')}</a></li>`)
-        .join('\n')
-      return `<!doctype html><html><body><ul>${items}</ul></body></html>`
-    }
+    const items = Object.keys(vfsEntries)
+      .map((key) => {
+        const linkClass = event.req.url === `/${encodeURIComponent(key)}` ? 'bg-gray-700 text-white' : 'hover:bg-gray-800 text-gray-200'
+        return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(key)}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(nitro.options.rootDir, '')}</a></li>`
+      })
+      .join('\n')
+    const files = `
+      <div>
+        <p class="bg-gray-700 text-white text-bold border-b border-gray-500 text-center">virtual files</p>
+        <ul class="flex flex-col">${items}</ul>
+      </div>
+      `
+
     const id = decodeURIComponent(event.req.url?.slice(1) || '')
 
+    let file = ''
     if (id in vfsEntries) {
       let contents = vfsEntries[id]
       if (typeof contents === 'function') {
         contents = await contents()
       }
-      return editorTemplate({
+      file = editorTemplate({
         readOnly: true,
         language: id.endsWith('html') ? 'html' : 'javascript',
         theme: 'vs-dark',
@@ -29,8 +37,30 @@ export function createVFSHandler (nitro: Nitro) {
         wordWrap: 'wordWrapColumn',
         wordWrapColumn: 80
       })
+    } else if (id) {
+      throw createError({ message: 'File not found', statusCode: 404 })
+    } else {
+      file = `
+        <div class="m-2">
+          <h1 class="text-white">Select a virtual file to inspect</h1>
+        </div>
+      `
     }
-    throw createError({ message: 'File not found', statusCode: 404 })
+    return `
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css" />
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="${vsUrl}/editor/editor.main.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+</head>
+<body class="bg-[#1E1E1E]">
+  <div class="flex">
+    ${files}
+    ${file}
+  </div>
+</body>
+</html>`
   })
 }
 
@@ -39,13 +69,7 @@ const monacoUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${monaco
 const vsUrl = `${monacoUrl}/vs`
 
 const editorTemplate = (options: Record<string, any>) => `
-<!doctype html>
-<html>
-<head>
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="${vsUrl}/editor/editor.main.min.css">
-</head>
-<body style="margin: 0">
-<div id="editor" style="height:100vh"></div>
+<div id="editor" class="min-h-screen flex-1"></div>
 <script src="${vsUrl}/loader.min.js"></script>
 <script>
   require.config({ paths: { vs: '${vsUrl}' } })
@@ -60,6 +84,4 @@ const editorTemplate = (options: Record<string, any>) => `
     monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(options)})
   })
 </script>
-</body>
-</html>
 `
