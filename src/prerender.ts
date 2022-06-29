@@ -5,7 +5,7 @@ import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro, PrerenderRoute } from './types'
-import { writeFile } from './utils'
+import { isBinaryContentType, writeFile } from './utils'
 
 const allowedExtensions = new Set(['', '.json'])
 
@@ -65,7 +65,8 @@ export async function prerender (nitro: Nitro) {
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
-    await writeFile(filePath, _route.contents)
+    const isBinary = isBinaryContentType(res.headers.get('content-type'))
+    await writeFile(filePath, _route.contents, false, isBinary ? 'binary' : 'utf-8')
 
     // Crawl route links
     if (
