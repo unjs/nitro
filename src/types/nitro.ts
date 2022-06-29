@@ -7,7 +7,7 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import type { WatchOptions } from 'chokidar'
 import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
-import type { Storage } from 'unstorage'
+import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
@@ -41,11 +41,10 @@ export interface NitroHooks {
   'prerender:route': (route: PrerenderRoute) => HookResult
 }
 
+type CustomDriverName = string & { _custom?: any }
+
 export interface StorageMounts {
-  [path: string]: {
-    driver: 'fs' | 'http' | 'memory' | 'redis' | 'cloudflare-kv',
-    [option: string]: any
-  }
+  [path: string]: { driver: BuiltinDriverName | CustomDriverName, [option: string]: any }
 }
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T

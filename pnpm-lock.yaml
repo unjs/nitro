@@ -81,7 +81,7 @@ importers:
       unbuild: ^0.7.4
       unenv: ^0.5.2
       unimport: ^0.4.0
-      unstorage: ^0.5.2
+      unstorage: ^0.5.3
       vitepress: ^0.22.4
       vitest: ^0.16.0
     dependencies:
@@ -143,7 +143,7 @@ importers:
       ufo: 0.8.4
       unenv: 0.5.2
       unimport: 0.4.0_qrpxjnto46iodaa4efitqiw3he
-      unstorage: 0.5.2
+      unstorage: 0.5.3
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_b5e7v2qnwxfo6hmiq56u52mz3e
       '@types/aws-lambda': 8.10.101
@@ -3622,8 +3622,8 @@ packages:
       side-channel: 1.0.4
     dev: true
 
-  /ioredis/5.0.6:
-    resolution: {integrity: sha512-KUm7wPzIet9QrFMoMm09/4bkfVKBUD9KXwBitP3hrNkZ+A6NBndweXGwYIB/7szHcTZgfo7Kvx88SxljJV4D9A==}
+  /ioredis/5.1.0:
+    resolution: {integrity: sha512-HYHnvwxFwefeUBj0hZFejLvd8Q/YNAfnZlZG/hSRxkRhXMs1H8soMEVccHd1WlLrKkynorXBsAtqDGskOdAfVQ==}
     engines: {node: '>=12.22.0'}
     dependencies:
       '@ioredis/commands': 1.1.1
@@ -5647,14 +5647,14 @@ packages:
       webpack-virtual-modules: 0.4.3
     dev: false
 
-  /unstorage/0.5.2:
-    resolution: {integrity: sha512-TgSkgTsHNWkXfFHA6zKmjSqHPn8uvpTj0SOgpLKyR15SWakCqnMUo3Yl3lQ5NBP61chJtCKAHwTB/27YvsZCjw==}
+  /unstorage/0.5.3:
+    resolution: {integrity: sha512-NbdbNgZ6Sq6isG+E0bP29YnwkJBJflwR3SUkcizPRiVS5dgc7nUxKaWa/Mp3oEEq6Pjxzj0HxKjjnRvfALKzeA==}
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
       h3: 0.7.10
-      ioredis: 5.0.6
+      ioredis: 5.1.0
       listhen: 0.2.13
       mri: 1.2.0
       ohmyfetch: 0.4.18
