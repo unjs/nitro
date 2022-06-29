@@ -9,11 +9,11 @@ export function createVFSHandler (nitro: Nitro) {
     }
 
     const items = Object.keys(vfsEntries)
-      .map(key => {
+      .map((key) => {
         const linkClass = event.req.url === `/${encodeURIComponent(key)}` ? 'bg-gray-700 text-white' : 'hover:bg-gray-800 text-gray-200'
         return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(key)}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(nitro.options.rootDir, '')}</a></li>`
       })
-    .join('\n')
+      .join('\n')
     const files = `<ul class="flex flex-col">${items}</ul>`
 
     const id = decodeURIComponent(event.req.url?.slice(1) || '')
