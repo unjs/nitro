@@ -37,9 +37,9 @@ export function tryImport (dir: string, path: string) {
   } catch (_err) { }
 }
 
-export async function writeFile (file: string, contents: string, log = false, format = 'utf-8') {
+export async function writeFile (file: string, contents: Buffer | string, log = false) {
   await fse.mkdirp(dirname(file))
-  await fse.writeFile(file, contents, format)
+  await fse.writeFile(file, contents, typeof contents === 'string' ? 'utf-8' : undefined)
   if (log) {
     consola.info('Generated', prettyPath(file))
   }
@@ -145,7 +145,3 @@ export function resolveAliases (aliases: Record<string, string>) {
   }
   return aliases
 }
-
-const BINARY_CONTENT_TYPE_RE = /^(audio|font|video|image\/(?!svg)|application\/(?!json))/
-export const isBinaryContentType = (contentType = '') =>
-  BINARY_CONTENT_TYPE_RE.test(contentType)
