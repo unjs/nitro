@@ -5,7 +5,7 @@ import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro, PrerenderRoute } from './types'
-import { isBinaryContentType, writeFile } from './utils'
+import { writeFile } from './utils'
 
 const allowedExtensions = new Set(['', '.json'])
 
