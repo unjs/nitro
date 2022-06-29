@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.9](https://github.com/unjs/nitro/compare/v0.4.8...v0.4.9) (2022-06-29)
+
+
+### Features
+
+* expose router in NitroApp ([#302](https://github.com/unjs/nitro/issues/302)) ([ef5e7f1](https://github.com/unjs/nitro/commit/ef5e7f19cd9d332b4fdb97477d05f6d319b6d2c5))
+* **service-worker:** inject registration script to all pages ([#299](https://github.com/unjs/nitro/issues/299)) ([486f236](https://github.com/unjs/nitro/commit/486f236c1e96134c0ee8021ff5d04e93fe819e75))
+
+
+### Bug Fixes
+
+*  get storage mounts type from unstorage ([134f89f](https://github.com/unjs/nitro/commit/134f89f5d0c3045e3435b27c56f89171379c4c81))
+* **azure:** pass query params to local call ([#318](https://github.com/unjs/nitro/issues/318)) ([f1fe6cd](https://github.com/unjs/nitro/commit/f1fe6cd9ad9621546eb66a9b8484d1870ae86110))
+* export runtime types directly from `nitropack` ([#301](https://github.com/unjs/nitro/issues/301)) ([34b8c4d](https://github.com/unjs/nitro/commit/34b8c4d921b2c6dc708ad6c11cb765935b66b3c0))
+* **isPublicAssetURL:** assets should treat as public ([#312](https://github.com/unjs/nitro/issues/312)) ([e165b3b](https://github.com/unjs/nitro/commit/e165b3bdabf8a0082387060df89a1726a3056e0a))
+* **prerender:** avoid adding duplicate `baseURL` for local fetch ([#289](https://github.com/unjs/nitro/issues/289)) ([cbc7ba3](https://github.com/unjs/nitro/commit/cbc7ba3835df539116ca6560a85365615af55fbb))
+* **types:** allow `autoImport` option to be false ([#296](https://github.com/unjs/nitro/issues/296)) ([3aa3bcf](https://github.com/unjs/nitro/commit/3aa3bcfef4b98528db6b31d620177a57a69afdf4))
+
 ### [0.4.8](https://github.com/unjs/nitropack/compare/v0.4.7...v0.4.8) (2022-06-15)
 
 
