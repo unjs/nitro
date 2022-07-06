@@ -217,16 +217,17 @@ export const plugins = [
   if (isWindows && (nitro.options.externals?.trace === false) && nitro.options.dev) {
     buildDir = pathToFileURL(buildDir).href
   }
+  const aliases = {
+    '#internal/nitro/virtual/error-handler': nitro.options.errorHandler,
+    '~': nitro.options.srcDir,
+    '@/': nitro.options.srcDir,
+    '~~': nitro.options.rootDir,
+    '@@/': nitro.options.rootDir,
+    ...env.alias
+  }
+  aliases['#build'] = aliases['#build'] || buildDir
   rollupConfig.plugins.push(alias({
-    entries: resolveAliases({
-      '#internal/nitro/virtual/error-handler': nitro.options.errorHandler,
-      '~': nitro.options.srcDir,
-      '@/': nitro.options.srcDir,
-      '~~': nitro.options.rootDir,
-      '@@/': nitro.options.rootDir,
-      ...env.alias,
-      '#build': buildDir
-    })
+    entries: resolveAliases(aliases)
   }))
 
   // Externals Plugin
