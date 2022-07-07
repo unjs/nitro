@@ -173,7 +173,6 @@ export class NitroStaticAsset implements ISource {
   public readonly files: string[];
   private readonly source: ISource;
   constructor(publicDir: string) {
-    this.source = Source.asset(publicDir);
     const objects = fs.readdirSync(publicDir);
     this.directories = objects.filter((obj) =>
       fs.statSync(path.join(publicDir, obj)).isDirectory()
@@ -181,6 +180,10 @@ export class NitroStaticAsset implements ISource {
     this.files = objects.filter((obj) =>
       fs.statSync(path.join(publicDir, obj)).isFile()
     );
+    if (!objects.length) {
+      fs.writeFileSync(path.join(publicDir, "dotfile"), "");
+    }
+    this.source = Source.asset(publicDir);
   }
 
   bind(
