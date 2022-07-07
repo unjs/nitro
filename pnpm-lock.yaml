@@ -77,7 +77,7 @@ importers:
       std-env: ^3.1.1
       table: ^6.8.0
       typescript: ^4.7.4
-      ufo: ^0.8.4
+      ufo: ^0.8.5
       unbuild: ^0.7.4
       unenv: ^0.5.2
       unimport: ^0.4.3
@@ -140,7 +140,7 @@ importers:
       source-map-support: 0.5.21
       std-env: 3.1.1
       table: 6.8.0
-      ufo: 0.8.4
+      ufo: 0.8.5
       unenv: 0.5.2
       unimport: 0.4.3_zqo64ogfzzycugxswskc4gmbhu
       unstorage: 0.5.4
@@ -3440,7 +3440,7 @@ packages:
       cookie-es: 0.5.0
       destr: 1.1.1
       radix3: 0.1.2
-      ufo: 0.8.4
+      ufo: 0.8.5
     dev: false
 
   /handlebars/4.7.7:
@@ -3965,7 +3965,7 @@ packages:
       get-port-please: 2.5.0
       http-shutdown: 1.2.2
       selfsigned: 2.0.1
-      ufo: 0.8.4
+      ufo: 0.8.5
     dev: false
 
   /load-json-file/4.0.0:
@@ -4466,7 +4466,7 @@ packages:
     dependencies:
       destr: 1.1.1
       node-fetch-native: 0.1.4
-      ufo: 0.8.4
+      ufo: 0.8.5
       undici: 5.4.0
     dev: false
 
@@ -5524,8 +5524,8 @@ packages:
     hasBin: true
     dev: true
 
-  /ufo/0.8.4:
-    resolution: {integrity: sha512-/+BmBDe8GvlB2nIflWasLLAInjYG0bC9HRnfEpNi4sw77J2AJNnEVnTDReVrehoh825+Q/evF3THXTAweyam2g==}
+  /ufo/0.8.5:
+    resolution: {integrity: sha512-e4+UtA5IRO+ha6hYklwj6r7BjiGMxS0O+UaSg9HbaTefg4kMkzj4tXzEBajRR+wkxf+golgAWKzLbytCUDMJAA==}
     dev: false
 
   /uglify-js/3.15.4:
@@ -5659,7 +5659,7 @@ packages:
       listhen: 0.2.13
       mri: 1.2.0
       ohmyfetch: 0.4.18
-      ufo: 0.8.4
+      ufo: 0.8.5
       ws: 8.8.0
     transitivePeerDependencies:
       - bufferutil
