@@ -153,6 +153,10 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
     commands: {
       preview: nitro.options.commands.preview,
       deploy: nitro.options.commands.deploy
+    },
+    output: {
+      serverDir: relative(nitro.options.output.dir, nitro.options.output.serverDir),
+      publicDir: relative(nitro.options.output.dir, nitro.options.output.publicDir)
     }
   }
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2))
