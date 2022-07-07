@@ -66,9 +66,8 @@ jobs:
   deploy:
     env:
       APP_ID: <your-app-id>
-      REGION: <your-aws-region>
     runs-on: ubuntu-latest
-    name: Deploy per pull request
+    name: Deploy to AWS
     permissions:
       id-token: write
       contents: read
@@ -81,7 +80,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN_TO_ASSUME }}
-          aws-region: ${ REGION }
+          aws-region: <your-aws-region>
 
       - name: Install Dependencies
         run: yarn
