@@ -39,7 +39,7 @@ APP_ID=<app-name> npm run deploy
 # REGION=<your region> APP_ID=<app-name> npm run deploy
 ```
 
-::: warning Specify Region
+::: warning Bootstrap
 If you are using CDK for the first time on a region-by-region basis, you will need to run the following commands
 ```sh
 npx cdk bootstrap
