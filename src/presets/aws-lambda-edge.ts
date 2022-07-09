@@ -21,7 +21,6 @@ async function generateCdkApp (nitro: Nitro) {
   const cdkDir = resolve(nitro.options.output.dir, 'cdk')
   await fsp.mkdir(resolve(nitro.options.output.dir, 'cdk'))
   await writeFile(resolve(cdkDir, 'bin/nitro-lambda-edge.ts'), entryTemplate())
-  await writeFile(resolve(cdkDir, 'lib/nitro-asset.ts'), nitroAssetTemplate())
   await writeFile(resolve(cdkDir, 'lib/nitro-lambda-edge-stack.ts'), nitroLambdaEdgeStackTemplate())
   await writeFile(resolve(cdkDir, 'package.json'), JSON.stringify({
     private: true,
@@ -37,6 +36,7 @@ async function generateCdkApp (nitro: Nitro) {
     dependencies: {
       'aws-cdk-lib': '^2',
       constructs: '^10.0.0',
+      'nitro-aws-cdk-lib': 'latest',
       'source-map-support': '^0.5.21'
     }
   }))
@@ -97,7 +97,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deployment from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
-import { NitroAsset } from "./nitro-asset";
+import { NitroAsset } from "nitro-aws-cdk-lib";
 
 export class NitroLambdaEdgeStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -145,111 +145,6 @@ export class NitroLambdaEdgeStack extends Stack {
     new CfnOutput(this, "URL", {
       value: \`https://\${distribution.distributionDomainName}\`,
     });
-  }
-}
-`.trim()
-}
-
-function nitroAssetTemplate () {
-  return `
-import { AssetCode, Code } from "aws-cdk-lib/aws-lambda";
-import { Asset, AssetProps } from "aws-cdk-lib/aws-s3-assets";
-import {
-  DeploymentSourceContext,
-  ISource,
-  Source,
-  SourceConfig,
-} from "aws-cdk-lib/aws-s3-deployment";
-import { Construct } from "constructs";
-import * as path from "path";
-import * as fs from "fs";
-import { BehaviorOptions } from "aws-cdk-lib/aws-cloudfront";
-
-export interface CloudFrontBehaviorResolver {
-  resolve: (key: string) => BehaviorOptions;
-}
-
-export class NitroStaticAsset implements ISource {
-  public readonly directories: string[];
-  public readonly files: string[];
-  private readonly source: ISource;
-  constructor(publicDir: string) {
-    const objects = fs.readdirSync(publicDir);
-    this.directories = objects.filter((obj) =>
-      fs.statSync(path.join(publicDir, obj)).isDirectory()
-    );
-    this.files = objects.filter((obj) =>
-      fs.statSync(path.join(publicDir, obj)).isFile()
-    );
-    if (!objects.length) {
-      fs.writeFileSync(path.join(publicDir, "dotfile"), "");
-    }
-    this.source = Source.asset(publicDir);
-  }
-
-  bind(
-    scope: Construct,
-    context?: DeploymentSourceContext | undefined
-  ): SourceConfig {
-    return this.source.bind(scope, context);
-  }
-
-  resolveCloudFrontBehaviors(
-    resolver: CloudFrontBehaviorResolver
-  ): Record<string, BehaviorOptions> {
-    return {
-      ...this.directories.reduce<Record<string, BehaviorOptions>>(
-        (acc, obj) => ({
-          ...acc,
-          [\`\${obj}/*\`]: resolver.resolve(obj),
-        }),
-        {}
-      ),
-      ...this.files.reduce<Record<string, BehaviorOptions>>(
-        (acc, obj) => ({
-          ...acc,
-          [obj]: resolver.resolve(obj),
-        }),
-        {}
-      ),
-    };
-  }
-}
-
-interface NitroJSON {
-  date: string;
-  preset: string;
-  commands: {
-    preview?: string;
-    deploy?: string;
-  };
-  output: {
-    serverDir: string;
-    publicDir: string;
-  };
-}
-
-export class NitroAsset extends Construct {
-  readonly serverHandler: AssetCode;
-  readonly staticAsset: NitroStaticAsset;
-
-  constructor(scope: Construct, id: string, props: AssetProps) {
-    super(scope, id);
-    const nitroOutput = new Asset(this, "NitroOutput", props);
-    const nitroJSON = JSON.parse(
-      fs
-        .readFileSync(
-          path.join("cdk.out", nitroOutput.assetPath, ".output/nitro.json")
-        )
-        .toString()
-    ) as NitroJSON;
-
-    this.serverHandler = Code.fromAsset(
-      path.join("cdk.out", nitroOutput.assetPath, ".output", nitroJSON.output.serverDir)
-    );
-    this.staticAsset = new NitroStaticAsset(
-      path.join("cdk.out", nitroOutput.assetPath, ".output", nitroJSON.output.publicDir)
-    );
   }
 }
 `.trim()

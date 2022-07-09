@@ -116,7 +116,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deployment from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
-import { NitroAsset } from "./nitro-asset";
+import { NitroAsset } from "nitro-aws-cdk-lib";
 
 export class NitroLambdaEdgeStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -124,7 +124,6 @@ export class NitroLambdaEdgeStack extends Stack {
 
     const nitro = new NitroAsset(this, "NitroAsset", {
       path: "<path-to-your-nitro-app-project>",
-      exclude: ["cdk"],
       // uncomment this code to building nitro app in CDK app
       // bundling: {
       //   workingDirectory: "<path-to-your-nitro-app-project>",
