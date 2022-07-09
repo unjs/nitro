@@ -29,20 +29,22 @@ The output entrypoint in `.output/server/index.mjs` is compatible with [AWS Lamb
 
 ### Deploy using AWS CDK
 
-To deploy, run the following command:
+To deploy, run the following commands.
 
 ```sh
 NITRO_PRESET=aws-lambda-edge npm run build
 cd .output/cdk
-APP_ID=<app-name> npm run deploy
+APP_ID=<app-id> npm run deploy
 # To using specific region
-# REGION=<your region> APP_ID=<app-name> npm run deploy
+# REGION=<your-aws-region> APP_ID=<app-id> npm run deploy --all
 ```
 
 ::: warning Bootstrap
-If you are using CDK for the first time on a region-by-region basis, you will need to run the following commands
+If you are using CDK for the first time on a region-by-region basis, you will need to run the following commands.
 ```sh
-npx cdk bootstrap
+APP_ID=<app-id> npm run bootstrap
+# or 
+REGION=<your-aws-region> APP_ID=<app-id> npm run bootstrap
 ```
 :::
 
@@ -65,7 +67,7 @@ on:
 jobs:
   deploy:
     env:
-      APP_ID: <your-app-id>
+      APP_ID: <app-id>
     runs-on: ubuntu-latest
     name: Deploy to AWS
     permissions:
@@ -96,7 +98,7 @@ jobs:
 
       - name: Deploy to AWS Lambda@Edge
         working-directory: .output/cdk
-        run: yarn cdk deploy --require-approval never
+        run: yarn cdk deploy --require-approval never --all
 ```
 
 ### Customize CDK App
@@ -105,23 +107,57 @@ jobs:
 <summary>Please check the example code.</summary>
 <div>
 
-The following code is an example of deploying a Nuxt3 project to CloudFront and Lambda@Edge with [AWS CDK](https://github.com/aws/aws-cdk). Using this stack, paths under `_nuxt/` (static assets) will get their data from the S3 origin, and all other paths will be resolved by Lambda@Edge.
+To customize it, you must create your own AWS CDK application.
+Create your AWS CDK application with the following command.
+
+```sh
+mkdir nitro-lambda-edge && cd nitro-lambda-edge
+npx cdk init app --language typescript
+npm i nitro-aws-cdk-lib
+```
+
+The following code is an example of deploying a Nuxt3 project using custom domain to CloudFront and Lambda@Edge with [AWS CDK](https://github.com/aws/aws-cdk). Using this stack, paths under `_nuxt/` (static assets) will get their data from the S3 origin, and all other paths will be resolved by Lambda@Edge.
 
 ```ts
-import { spawnSync } from "child_process";
-import { CfnOutput, DockerImage, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+// nitro-lambda-edge/lib/nitro-lambda-edge-stack.ts
+import {
+  CfnOutput,
+  DockerImage,
+  RemovalPolicy,
+  Stack,
+  StackProps,
+} from "aws-cdk-lib";
+import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as route53 from "aws-cdk-lib/aws-route53";
+import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deployment from "aws-cdk-lib/aws-s3-deployment";
+import { spawnSync } from "child_process";
 import { Construct } from "constructs";
 import { NitroAsset } from "nitro-aws-cdk-lib";
 
+export interface NitroLambdaEdgeStackProps extends StackProps {
+  /**
+   * Your site domain name.
+   * @example example.com
+   */
+  readonly domainName: string;
+  /**
+   * Your site subdomain.
+   * @example www
+   * @default - Use domainName as it is.
+   */
+  readonly subdomain?: string;
+}
+
 export class NitroLambdaEdgeStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: NitroLambdaEdgeStackProps) {
     super(scope, id, props);
 
+    // Resolve nitro server and public assets
     const nitro = new NitroAsset(this, "NitroAsset", {
       path: "<path-to-your-nitro-app-project>",
       // uncomment this code to building nitro app in CDK app
@@ -142,6 +178,8 @@ export class NitroLambdaEdgeStack extends Stack {
       //   }
       // }
     });
+
+    // Lambda@Edge with working Nitro server code
     const edgeFunction = new cloudfront.experimental.EdgeFunction(
       this,
       "EdgeFunction",
@@ -151,12 +189,35 @@ export class NitroLambdaEdgeStack extends Stack {
         code: nitro.serverHandler,
       }
     );
+
+    // Static assets bucket
     const bucket = new s3.Bucket(this, "Bucket", {
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
+
+    const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
+      domainName: props.domainName,
+    });
+    const siteDomain = [props.subdomain, props.domainName]
+      .filter((v) => !!v)
+      .join(".");
+    new CfnOutput(this, "URL", {
+      value: `https://${siteDomain}`,
+    });
+
+    // TLS certificate
+    const certificate = new acm.DnsValidatedCertificate(this, "Certificate", {
+      domainName: siteDomain,
+      hostedZone,
+      region: "us-east-1", // always must be set us-east-1
+    });
+
+    // CloudFront distribution
     const s3Origin = new origins.S3Origin(bucket);
     const distribution = new cloudfront.Distribution(this, "Distribution", {
+      certificate,
+      domainNames: [siteDomain],
       defaultBehavior: {
         origin: s3Origin,
         edgeLambdas: [
@@ -172,27 +233,38 @@ export class NitroLambdaEdgeStack extends Stack {
         }),
       }),
     });
+    new route53.ARecord(this, "AliasRecord", {
+      recordName: siteDomain,
+      target: route53.RecordTarget.fromAlias(
+        new targets.CloudFrontTarget(distribution)
+      ),
+      zone: hostedZone,
+    });
+
+    // Deploy static assets to S3 bucket
     new s3deployment.BucketDeployment(this, "Deployment", {
       sources: [nitro.staticAsset],
       destinationBucket: bucket,
       distribution,
     });
-    new CfnOutput(this, "URL", {
-      value: `https://${distribution.distributionDomainName}`,
-    });
   }
 }
 ```
 
-::: warning Specify Region
-Note that the region must be specified when using the code above.
-:::
-
 ```ts
+// nitro-lambda-edge/bin/nitro-lambda-edge.ts
+#!/usr/bin/env node
+import "source-map-support/register";
+import * as cdk from "aws-cdk-lib";
+import { NitroLambdaEdgeStack } from "../lib/nitro-lambda-edge-stack";
+
 const app = new cdk.App();
 new NitroLambdaEdgeStack(app, "NitroLambdaEdgeStack", {
+  domainName: "your-site.com",
+  subdomain: "www",
   env: {
-    region: "your AWS region", // need this line
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
   },
 });
 ```

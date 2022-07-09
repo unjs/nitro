@@ -25,6 +25,8 @@ async function generateCdkApp (nitro: Nitro) {
   await writeFile(resolve(cdkDir, 'package.json'), JSON.stringify({
     private: true,
     scripts: {
+      cdk: 'cdk',
+      bootstrap: 'npm install && cdk bootstrap',
       deploy: 'npm install && cdk deploy'
     },
     devDependencies: {
