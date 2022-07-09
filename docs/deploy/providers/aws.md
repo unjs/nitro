@@ -1,4 +1,6 @@
-# AWS Lambda
+# AWS
+
+## AWS Lambda
 
 **Preset:** `aws-lambda` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -15,7 +17,7 @@ import { handler } from './.output/server'
 const { statusCode, headers, body } = handler({ rawPath: '/' })
 ```
 
-# AWS Lambda@Edge
+## AWS Lambda@Edge
 
 **Preset:** `aws-lambda-edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -31,7 +33,7 @@ The output entrypoint in `.output/server/index.mjs` is compatible with [AWS Lamb
 
 To deploy, run the following commands.
 
-```sh
+```bash
 NITRO_PRESET=aws-lambda-edge npm run build
 cd .output/cdk
 APP_ID=<app-id> npm run deploy
@@ -41,7 +43,7 @@ APP_ID=<app-id> npm run deploy
 
 ::: warning Bootstrap
 If you are using CDK for the first time on a region-by-region basis, you will need to run the following commands.
-```sh
+```bash
 APP_ID=<app-id> npm run bootstrap
 # or 
 REGION=<your-aws-region> APP_ID=<app-id> npm run bootstrap
@@ -104,13 +106,13 @@ jobs:
 ### Customize CDK App
 
 <details>
-<summary>Please check the example code.</summary>
+<summary>Expand here to see</summary>
 <div>
 
 To customize it, you must create your own AWS CDK application.
 Create your AWS CDK application with the following command.
 
-```sh
+```bash
 mkdir nitro-lambda-edge && cd nitro-lambda-edge
 npx cdk init app --language typescript
 npm i nitro-aws-cdk-lib
@@ -160,7 +162,10 @@ export class NitroLambdaEdgeStack extends Stack {
     // Resolve nitro server and public assets
     const nitro = new NitroAsset(this, "NitroAsset", {
       path: "<path-to-your-nitro-app-project>",
-      // uncomment this code to building nitro app in CDK app
+      // Uncomment this option if you are creating a CDK app inside a nitro project.
+      // exclude: ["nitro-lambda-edge"],
+
+      // Uncomment this option if you want to build nitro app from CDK app.
       // bundling: {
       //   workingDirectory: "<path-to-your-nitro-app-project>",
       //   image: DockerImage.fromRegistry('node:lts'),
