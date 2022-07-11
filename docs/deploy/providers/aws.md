@@ -29,7 +29,16 @@ Nitro provides a built-in preset to generate output format compatible with [AWS 
 
 The output entrypoint in `.output/server/index.mjs` is compatible with [AWS Lambda@Edge format](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html).
 
-### Deploy using AWS CDK
+::: warning Bootstrap
+Nitro uses [AWS CDK](https://github.com/aws/aws-cdk) for deploying Lambda@Edge.
+If you are using AWS CDK for the first time on a region-by-region basis, you will need to run the following commands. 
+```bash
+npx cdk bootstrap aws://<aws-account-id>/us-east-1 aws://<aws-account-id>/<aws-region>
+```
+Lambda@Edge uses us-east-1, so be sure to include it in your bootstrap, even when deploying to a different region.
+:::
+
+### Deploy from your local machine
 
 To deploy, run the following commands.
 
@@ -38,13 +47,6 @@ NITRO_PRESET=aws-lambda-edge npm run build
 cd .output/cdk
 APP_ID=<app-id> npm run deploy --all
 ```
-
-::: warning Bootstrap
-If you are using CDK for the first time on a region-by-region basis, you will need to run the following commands.
-```bash
-APP_ID=<app-id> npm run bootstrap
-```
-:::
 
 ### Deploy from CI/CD via GitHub Actions
 
@@ -114,7 +116,7 @@ npx cdk init app --language typescript
 npm i nitro-aws-cdk-lib
 ```
 
-The following code is an example of deploying a Nuxt3 project using custom domain to CloudFront and Lambda@Edge with [AWS CDK](https://github.com/aws/aws-cdk). Using this stack, paths under `_nuxt/` (static assets) will get their data from the S3 origin, and all other paths will be resolved by Lambda@Edge.
+The following code is an example of deploying a Nuxt3 project using custom domain to CloudFront and Lambda@Edge with AWS CDK. Using this stack, paths under `_nuxt/` (static assets) will get their data from the S3 origin, and all other paths will be resolved by Lambda@Edge.
 
 ```ts
 // nitro-lambda-edge/lib/nitro-lambda-edge-stack.ts
