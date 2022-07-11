@@ -1,4 +1,3 @@
-import { promises as fsp } from 'fs'
 import { resolve } from 'pathe'
 import { defineNitroPreset } from '../preset'
 import { Nitro } from '../types'
@@ -19,7 +18,6 @@ export const awsLambdaEdge = defineNitroPreset({
 
 async function generateCdkApp (nitro: Nitro) {
   const cdkDir = resolve(nitro.options.output.dir, 'cdk')
-  await fsp.mkdir(resolve(nitro.options.output.dir, 'cdk'))
   await writeFile(resolve(cdkDir, 'bin/nitro-lambda-edge.ts'), entryTemplate())
   await writeFile(resolve(cdkDir, 'lib/nitro-lambda-edge-stack.ts'), nitroLambdaEdgeStackTemplate())
   await writeFile(resolve(cdkDir, 'package.json'), JSON.stringify({
