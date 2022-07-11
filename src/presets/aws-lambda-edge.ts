@@ -24,7 +24,6 @@ async function generateCdkApp (nitro: Nitro) {
     private: true,
     scripts: {
       cdk: 'cdk',
-      bootstrap: 'npm install && cdk bootstrap',
       deploy: 'npm install && cdk deploy'
     },
     devDependencies: {
