@@ -33,7 +33,9 @@ The output entrypoint in `.output/server/index.mjs` is compatible with [AWS Lamb
 Nitro uses [AWS CDK](https://github.com/aws/aws-cdk) for deploying Lambda@Edge.
 If you are using AWS CDK for the first time on a region-by-region basis, you will need to run the following commands. 
 ```bash
-npx cdk bootstrap aws://<aws-account-id>/us-east-1 aws://<aws-account-id>/<aws-region>
+npx cdk bootstrap \
+  aws://<aws-account-id>/us-east-1 \
+  aws://<aws-account-id>/<aws-region>
 ```
 Lambda@Edge uses us-east-1, so be sure to include it in your bootstrap, even when deploying to a different region.
 :::
