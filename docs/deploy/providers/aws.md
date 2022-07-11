@@ -36,17 +36,13 @@ To deploy, run the following commands.
 ```bash
 NITRO_PRESET=aws-lambda-edge npm run build
 cd .output/cdk
-APP_ID=<app-id> npm run deploy
-# To using specific region
-# REGION=<your-aws-region> APP_ID=<app-id> npm run deploy --all
+APP_ID=<app-id> npm run deploy --all
 ```
 
 ::: warning Bootstrap
 If you are using CDK for the first time on a region-by-region basis, you will need to run the following commands.
 ```bash
 APP_ID=<app-id> npm run bootstrap
-# or 
-REGION=<your-aws-region> APP_ID=<app-id> npm run bootstrap
 ```
 :::
 

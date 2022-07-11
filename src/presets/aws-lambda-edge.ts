@@ -84,7 +84,8 @@ if (!process.env.APP_ID) {
 const app = new cdk.App();
 new NitroLambdaEdgeStack(app, process.env.APP_ID, {
   env: {
-    region: process.env.REGION ?? "us-east-1",
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
   },
 });
 `.trim()
