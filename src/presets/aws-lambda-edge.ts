@@ -8,7 +8,7 @@ export const awsLambdaEdge = defineNitroPreset({
   entry: '#internal/nitro/entries/aws-lambda-edge',
   externals: true,
   commands: {
-    deploy: 'cd ./cdk && APP_ID=<your app id> npm run deploy'
+    deploy: 'cd ./cdk && APP_ID=<your app id> npm run deploy --all'
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
@@ -78,7 +78,7 @@ import * as cdk from "aws-cdk-lib";
 import { NitroLambdaEdgeStack } from "../lib/nitro-lambda-edge-stack";
 
 if (!process.env.APP_ID) {
-  throw new Error("$APP_ID is not set. Please rerun after set that.");
+  throw new Error("$APP_ID is not set. Please rerun after set it.");
 }
 
 const app = new cdk.App();
