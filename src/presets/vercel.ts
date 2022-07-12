@@ -52,3 +52,49 @@ export const vercel = defineNitroPreset({
     }
   }
 })
+
+export const vercelEdge = defineNitroPreset({
+  extends: 'base-worker',
+  entry: '#internal/nitro/entries/vercel-edge',
+  output: {
+    dir: '{{ rootDir }}/.vercel/output',
+    serverDir: '{{ output.dir }}/functions/index.func',
+    publicDir: '{{ output.dir }}/static'
+  },
+  commands: {
+    deploy: '',
+    preview: 'npx edge-runtime ./functions/index.func/index.mjs --listen'
+  },
+  hooks: {
+    async 'compiled' (nitro: Nitro) {
+      const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
+      const buildConfig = {
+        version: '3',
+        routes: [
+          ...nitro.options.publicAssets
+            .filter(asset => !asset.fallthrough)
+            .map(asset => asset.baseURL)
+            .map(baseURL => ({
+              src: baseURL + '(.*)',
+              headers: {
+                'cache-control': 'public,max-age=31536000,immutable'
+              },
+              continue: true
+            })),
+          {
+            src: '/(.*)',
+            dest: '/'
+          }
+        ]
+      }
+      await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
+
+      const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
+      const functionConfig = {
+        runtime: 'edge',
+        entrypoint: 'index.mjs'
+      }
+      await writeFile(functionConfigPath, JSON.stringify(functionConfig, null, 2))
+    }
+  }
+})
