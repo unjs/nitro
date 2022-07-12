@@ -34,6 +34,9 @@ export const vercel = defineNitroPreset({
               continue: true
             })),
           {
+            handle: 'filesystem'
+          },
+          {
             src: '/(.*)',
             dest: '/'
           }
@@ -81,6 +84,9 @@ export const vercelEdge = defineNitroPreset({
               },
               continue: true
             })),
+          {
+            handle: 'filesystem'
+          },
           {
             src: '/(.*)',
             dest: '/'
