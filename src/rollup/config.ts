@@ -1,7 +1,7 @@
 import { pathToFileURL } from 'url'
 import { dirname, join, normalize, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
-import defu from 'defu'
+import { defu } from 'defu'
 import { terser } from 'rollup-plugin-terser'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
