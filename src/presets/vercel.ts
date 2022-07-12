@@ -13,38 +13,36 @@ export const vercel = defineNitroPreset({
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
-      await writeRoutes(nitro)
+      const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
+      const buildConfig = {
+        version: '3',
+        routes: [
+          ...nitro.options.publicAssets
+            .filter(asset => !asset.fallthrough)
+            .map(asset => asset.baseURL)
+            .map(baseURL => ({
+              src: baseURL + '(.*)',
+              headers: {
+                'cache-control': 'public,max-age=31536000,immutable'
+              },
+              continue: true
+            })),
+          {
+            src: '/(.*)',
+            dest: '/'
+          }
+        ]
+      }
+      await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
+
+      const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
+      const functionConfig = {
+        runtime: 'nodejs16.x',
+        handler: 'index.mjs',
+        launcherType: 'Nodejs',
+        shouldAddHelpers: false
+      }
+      await writeFile(functionConfigPath, JSON.stringify(functionConfig, null, 2))
     }
   }
 })
-
-async function writeRoutes (nitro: Nitro) {
-  const routes = [
-    {
-      src: '/sw.js',
-      headers: {
-        'cache-control': 'public, max-age=0, must-revalidate'
-      },
-      continue: true
-    },
-    ...nitro.options.publicAssets
-      .filter(asset => !asset.fallthrough)
-      .map(asset => asset.baseURL)
-      .map(baseURL => ({
-        src: baseURL + '(.*)',
-        headers: {
-          'cache-control': 'public,max-age=31536000,immutable'
-        },
-        continue: true
-      })),
-    {
-      handle: 'filesystem'
-    },
-    {
-      src: '(.*)',
-      dest: '/.vercel/functions/server/index'
-    }
-  ]
-
-  await writeFile(resolve(nitro.options.output.dir, 'config/routes.json'), JSON.stringify(routes, null, 2))
-}
