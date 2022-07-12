@@ -1,8 +1,8 @@
+import { promises as fsp } from 'fs'
 import { resolve } from 'pathe'
 import { describe } from 'vitest'
-import { setupTest, startServer, testNitro } from '../tests'
 import { EdgeRuntime } from 'edge-runtime'
-import { promises as fsp } from 'fs'
+import { setupTest, startServer, testNitro } from '../tests'
 
 describe('nitro:preset:vercel', async () => {
   const ctx = await setupTest('vercel')
