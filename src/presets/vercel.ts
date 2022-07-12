@@ -3,13 +3,19 @@ import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
 
+// https://vercel.com/docs/build-output-api/v3
+
 export const vercel = defineNitroPreset({
   extends: 'node',
   entry: '#internal/nitro/entries/vercel',
   output: {
-    dir: '{{ rootDir }}/.vercel_build_output',
-    serverDir: '{{ output.dir }}/functions/node/server',
+    dir: '{{ rootDir }}/.vercel/output',
+    serverDir: '{{ output.dir }}/functions/index.func',
     publicDir: '{{ output.dir }}/static'
+  },
+  commands: {
+    deploy: '',
+    preview: ''
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
