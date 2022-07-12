@@ -32,7 +32,7 @@ export async function setupTest (preset) {
   const nitro = ctx.nitro = await createNitro({
     preset: ctx.preset,
     rootDir: ctx.rootDir,
-    serveStatic: preset !== 'cloudflare',
+    serveStatic: preset !== 'cloudflare' && preset !== 'vercel-edge',
     output: { dir: ctx.outDir }
   })
   await prepare(nitro)

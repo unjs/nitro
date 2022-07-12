@@ -110,6 +110,7 @@
     "@types/semver": "^7.3.10",
     "@types/serve-static": "^1.13.10",
     "c8": "^7.11.3",
+    "edge-runtime": "1.1.0-beta.11",
     "eslint": "^8.19.0",
     "execa": "^6.1.0",
     "miniflare": "^2.6.0",
