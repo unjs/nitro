@@ -2,15 +2,11 @@ import '#internal/nitro/virtual/polyfill'
 import { requestHasBody, useRequestBody } from '#internal/nitro/utils'
 import { nitroApp } from '#internal/nitro/app'
 
-addEventListener('fetch', (event: any) => {
-  event.respondWith(handleEvent(event))
-})
-
-async function handleEvent (event) {
-  const url = new URL(event.request.url)
+export default async function handleEvent (request, event) {
+  const url = new URL(request.url)
   let body
-  if (requestHasBody(event.request)) {
-    body = await useRequestBody(event.request)
+  if (requestHasBody(request)) {
+    body = await useRequestBody(request)
   }
 
   const r = await nitroApp.localCall({
@@ -18,9 +14,8 @@ async function handleEvent (event) {
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
-    headers: Object.fromEntries(event.request.headers.entries()),
-    method: event.request.method,
-    redirect: event.request.redirect,
+    headers: Object.fromEntries(request.headers.entries()),
+    method: request.method,
     body
   })
 

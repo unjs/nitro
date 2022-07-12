@@ -98,7 +98,12 @@ export const vercelEdge = defineNitroPreset({
       const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
       const functionConfig = {
         runtime: 'edge',
-        entrypoint: 'index.mjs'
+        entrypoint: 'index.mjs',
+        rollupConfig: {
+          output: {
+            format: 'module'
+          }
+        }
       }
       await writeFile(functionConfigPath, JSON.stringify(functionConfig, null, 2))
     }
