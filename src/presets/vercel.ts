@@ -21,7 +21,7 @@ export const vercel = defineNitroPreset({
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
       const buildConfig = {
-        version: '3',
+        version: 3,
         routes: [
           ...nitro.options.publicAssets
             .filter(asset => !asset.fallthrough)
