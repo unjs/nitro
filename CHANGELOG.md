@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.11](https://github.com/unjs/nitro/compare/v0.4.10...v0.4.11) (2022-07-13)
+
+
+### Bug Fixes
+
+* **vercel-edge:** properly set rollup options ([ad5b735](https://github.com/unjs/nitro/commit/ad5b7355d0a4463c0bebd1386ebf2049360bc3e1))
+
 ### [0.4.10](https://github.com/unjs/nitro/compare/v0.4.9...v0.4.10) (2022-07-13)
 
 
