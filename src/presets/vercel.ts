@@ -66,7 +66,12 @@ export const vercelEdge = defineNitroPreset({
   },
   commands: {
     deploy: '',
-    preview: 'npx edge-runtime ./functions/index.func/index.mjs --listen'
+    preview: ''
+  },
+  rollupConfig: {
+    output: {
+      format: 'module'
+    }
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
@@ -98,12 +103,7 @@ export const vercelEdge = defineNitroPreset({
       const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
       const functionConfig = {
         runtime: 'edge',
-        entrypoint: 'index.mjs',
-        rollupConfig: {
-          output: {
-            format: 'module'
-          }
-        }
+        entrypoint: 'index.mjs'
       }
       await writeFile(functionConfigPath, JSON.stringify(functionConfig, null, 2))
     }
