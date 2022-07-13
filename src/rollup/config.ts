@@ -255,6 +255,7 @@ export const plugins = [
       },
       exportConditions: [
         'default',
+        nitro.options.dev ? 'development' : 'production',
         'module',
         'node',
         'import'
@@ -282,6 +283,7 @@ export const plugins = [
     mainFields: ['main'],
     exportConditions: [
       'default',
+      nitro.options.dev ? 'development' : 'production',
       'module',
       'node',
       'import'
