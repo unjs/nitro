@@ -91,6 +91,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     name: 'nitro',
     defaults: NitroDefaults,
     cwd: userConfig.rootDir,
+    dotenv: userConfig.dev,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
