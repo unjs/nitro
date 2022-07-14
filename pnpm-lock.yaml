@@ -59,7 +59,7 @@ importers:
       mlly: ^0.5.4
       mri: ^1.2.0
       node-fetch-native: ^0.1.4
-      ohash: ^0.1.0
+      ohash: ^0.1.4
       ohmyfetch: ^0.4.18
       pathe: ^0.3.2
       perfect-debounce: ^0.1.3
@@ -68,7 +68,7 @@ importers:
       radix3: ^0.1.2
       rollup: ^2.76.0
       rollup-plugin-terser: ^7.0.2
-      rollup-plugin-visualizer: ^5.6.0
+      rollup-plugin-visualizer: ^5.7.0
       scule: ^0.2.1
       semver: ^7.3.7
       serve-placeholder: ^2.0.1
@@ -81,7 +81,7 @@ importers:
       ufo: ^0.8.5
       unbuild: ^0.7.4
       unenv: ^0.5.2
-      unimport: ^0.4.4
+      unimport: ^0.4.5
       unstorage: ^0.5.4
       vitepress: ^0.22.4
       vitest: ^0.18.0
@@ -124,7 +124,7 @@ importers:
       mlly: 0.5.4
       mri: 1.2.0
       node-fetch-native: 0.1.4
-      ohash: 0.1.0
+      ohash: 0.1.4
       ohmyfetch: 0.4.18
       pathe: 0.3.2
       perfect-debounce: 0.1.3
@@ -133,7 +133,7 @@ importers:
       radix3: 0.1.2
       rollup: 2.76.0
       rollup-plugin-terser: 7.0.2_rollup@2.76.0
-      rollup-plugin-visualizer: 5.6.0_rollup@2.76.0
+      rollup-plugin-visualizer: 5.7.0_rollup@2.76.0
       scule: 0.2.1
       semver: 7.3.7
       serve-placeholder: 2.0.1
@@ -143,7 +143,7 @@ importers:
       table: 6.8.0
       ufo: 0.8.5
       unenv: 0.5.2
-      unimport: 0.4.4_5yu4n7km4rpkzsnyi4ysdr3swq
+      unimport: 0.4.5_5yu4n7km4rpkzsnyi4ysdr3swq
       unstorage: 0.5.4
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_4x5o4skxv6sl53vpwefgt23khm
@@ -4035,6 +4035,12 @@ packages:
   /local-pkg/0.4.1:
     resolution: {integrity: sha512-lL87ytIGP2FU5PWwNDo0w3WhIo2gopIAxPg9RxDYF7m4rr5ahuZxP22xnJHIvaLTe4Z9P6uKKY2UHiwyB4pcrw==}
     engines: {node: '>=14'}
+    dev: true
+
+  /local-pkg/0.4.2:
+    resolution: {integrity: sha512-mlERgSPrbxU3BP4qBqAvvwlgW4MTg78iwJdGGnv7kibKjWcJksrG3t6LB5lXI93wXRDvG4NpUgJFmTG4T6rdrg==}
+    engines: {node: '>=14'}
+    dev: false
 
   /locate-path/2.0.0:
     resolution: {integrity: sha512-NCI2kiDkyR7VeEKm27Kda/iQHyKJe1Bu0FlTbYp3CqJu+9IFe9bLyAjMxf5ZDDbEg+iMPzB5zYyUTSm8wVTKmA==}
@@ -4512,8 +4518,8 @@ packages:
       es-abstract: 1.19.5
     dev: true
 
-  /ohash/0.1.0:
-    resolution: {integrity: sha512-KvclyhWseX6F2UTEEp9Qzybb0LTGorTSVufAToV5tR2B6Q64rVhKhkcU/o+mBaiqGa5+PdobtfSVelp8VOCR6A==}
+  /ohash/0.1.4:
+    resolution: {integrity: sha512-imsZ/lYOvZldyO6clK9uu6t2PIMr3bxCPAi6jJyPezKLU5/42UwMfGIlZML6GlpUxmSHxRoDo7VMWqI8VGllQQ==}
     dev: false
 
   /ohmyfetch/0.4.18:
@@ -4937,7 +4943,7 @@ packages:
     dev: true
 
   /require-directory/2.1.1:
-    resolution: {integrity: sha1-jGStX9MNqxyXbiNE/+f3kqam30I=}
+    resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
 
   /require-from-string/2.0.2:
@@ -5021,9 +5027,9 @@ packages:
       terser: 5.13.1
     dev: false
 
-  /rollup-plugin-visualizer/5.6.0_rollup@2.76.0:
-    resolution: {integrity: sha512-CKcc8GTUZjC+LsMytU8ocRr/cGZIfMR7+mdy4YnlyetlmIl/dM8BMnOEpD4JPIGt+ZVW7Db9ZtSsbgyeBH3uTA==}
-    engines: {node: '>=12'}
+  /rollup-plugin-visualizer/5.7.0_rollup@2.76.0:
+    resolution: {integrity: sha512-RuWH9BeWl63+awX4RE3c79KWVlHIcR59WqAS+vu0FB+/HQkQKBkKlkago5f+USrfV6j2cQ3eWRpKTwd5VHHIyg==}
+    engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
       rollup: ^2.0.0
@@ -5032,7 +5038,7 @@ packages:
       open: 8.4.0
       rollup: 2.76.0
       source-map: 0.7.3
-      yargs: 17.4.1
+      yargs: 17.5.1
     dev: false
 
   /rollup-pluginutils/2.8.2:
@@ -5678,19 +5684,19 @@ packages:
       pathe: 0.3.2
     dev: false
 
-  /unimport/0.4.4_5yu4n7km4rpkzsnyi4ysdr3swq:
-    resolution: {integrity: sha512-gYWGl4LUIasAbV7PXCaByuB6NcerrHRIRICooXtAFI7JCGY74CYGVq080P/yg7C4AYs+RYuJQdYsaRAJvG7bsQ==}
+  /unimport/0.4.5_5yu4n7km4rpkzsnyi4ysdr3swq:
+    resolution: {integrity: sha512-DnmiSt/HQIfhdcxOy4CGqwZDBh3WHg33euX1ge4X8hvquKBmw2PFvhoAJaBKxscOz0oYosoPoPT4tkDZWHhV0Q==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
       fast-glob: 3.2.11
-      local-pkg: 0.4.1
+      local-pkg: 0.4.2
       magic-string: 0.26.2
       mlly: 0.5.4
       pathe: 0.3.2
       scule: 0.2.1
       strip-literal: 0.4.0
-      unplugin: 0.7.1_5yu4n7km4rpkzsnyi4ysdr3swq
+      unplugin: 0.7.2_5yu4n7km4rpkzsnyi4ysdr3swq
     transitivePeerDependencies:
       - esbuild
       - rollup
@@ -5702,8 +5708,8 @@ packages:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
     engines: {node: '>= 10.0.0'}
 
-  /unplugin/0.7.1_5yu4n7km4rpkzsnyi4ysdr3swq:
-    resolution: {integrity: sha512-Z6hNDXDNh9aimMkPU1mEjtk+2ova8gh0y7rJeJdGH1vWZOHwF2lLQiQ/R97rv9ymmzEQXsR2fyMet72T8jy6ew==}
+  /unplugin/0.7.2_5yu4n7km4rpkzsnyi4ysdr3swq:
+    resolution: {integrity: sha512-m7thX4jP8l5sETpLdUASoDOGOcHaOVtgNyrYlToyQUvILUtEzEnngRBrHnAX3IKqooJVmXpoa/CwQ/QqzvGaHQ==}
     peerDependencies:
       esbuild: '>=0.13'
       rollup: ^2.50.0
@@ -6051,8 +6057,8 @@ packages:
       yargs-parser: 20.2.9
     dev: true
 
-  /yargs/17.4.1:
-    resolution: {integrity: sha512-WSZD9jgobAg3ZKuCQZSa3g9QOJeCCqLoLAykiWgmXnDo9EPnn4RPf5qVTtzgOx66o6/oqhcA5tHtJXpG8pMt3g==}
+  /yargs/17.5.1:
+    resolution: {integrity: sha512-t6YAJcxDkNX7NFYiVtKvWUz8l+PaKTLiL63mJYWR2GnHq2gjEWISzsLp9wg3aY36dY1j+gfIEL3pIF+XlJJfbA==}
     engines: {node: '>=12'}
     dependencies:
       cliui: 7.0.4
