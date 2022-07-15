@@ -12,7 +12,7 @@ await useStorage().getItem('test:foo')
 ```
 
 
-## Defining mountpoints : 
+## Defining Mountpoints
 
 By default storage is in-memory with mounted `cache:` prefix only for development.
 
