@@ -48,7 +48,7 @@ function getGuideSidebar() {
         ['/guide/storage', 'Storage Layer'],
         ['/guide/cache', 'Cache API'],
         ['/guide/assets', 'Assets Handling'],
-        ['/guide/typescript', 'Typescript Support'],
+        ['/guide/typescript', 'TypeScript Support'],
       ].map(i => toItem(i))
     },
     {
