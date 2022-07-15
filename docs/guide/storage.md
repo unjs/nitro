@@ -11,7 +11,6 @@ await useStorage().setItem('test:foo', { hello: world })
 await useStorage().getItem('test:foo')
 ```
 
-
 ## Defining Mountpoints
 
 By default storage is in-memory with mounted `cache:` prefix only for development.
@@ -40,13 +39,15 @@ export default defineNitroConfig({
   }
 })
 ```
+
+Usage:
+
 ```js
 await useStorage().setItem('redis:foo', { hello: world })
 await useStorage().getItem('redis:foo')
 ```
 
 You can find the list of drivers [on the unstorage repository](https://github.com/unjs/unstorage#drivers).
-
 
 ## DevStorage 
 
