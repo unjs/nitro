@@ -1,6 +1,6 @@
 # Storage Layer
 
-Nitro provides a built-in storage layer that can abstract filesystem or database access by using [unjs/unstorage](https://github.com/unjs/unstorage).
+Nitro provides a built-in storage layer that can abstract filesystem or database or any other data source access by using [unjs/unstorage](https://github.com/unjs/unstorage).
 
 See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
 
