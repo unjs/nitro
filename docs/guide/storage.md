@@ -4,7 +4,7 @@ Nitro provides a built-in storage layer that can abstract filesystem or database
 
 See [unjs/unstorage](https://github.com/unjs/unstorage) for more usage information.
 
-**Example:** Simple operations
+**Example:** Simple (in memory) operations
 
 ```js
 await useStorage().setItem('test:foo', { hello: world })
