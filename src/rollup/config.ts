@@ -14,7 +14,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import * as unenv from 'unenv'
 import type { Preset } from 'unenv'
 import { sanitizeFilePath } from 'mlly'
-import unimportPlugin from 'unimport/unplugin'
+import unimportPlugin, { defaultExcludes } from 'unimport/unplugin'
 import { hash } from 'ohash'
 import type { Nitro } from '../types'
 import { resolveAliases } from '../utils'
@@ -122,6 +122,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   if (nitro.options.autoImport) {
+    nitro.options.autoImport.exclude = defaultExcludes.concat(/[\\/]\.nuxt[\\/]/)
     rollupConfig.plugins.push(unimportPlugin.rollup(nitro.options.autoImport))
   }
 
