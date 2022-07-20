@@ -148,9 +148,9 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   // ]
 
   if (options.autoImport) {
-    options.autoImport.exclude = options.autoImport.exclude || [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/]
+    options.autoImport.exclude = options.autoImport.exclude || []
     if (Array.isArray(options.autoImport.exclude)) {
-      options.autoImport.exclude.push(options.buildDir)
+      options.autoImport.exclude.push(options.buildDir, /[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/)
     }
   }
 
