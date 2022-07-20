@@ -9,7 +9,7 @@ export const baseWorker = defineNitroPreset({
     output: {
       format: 'iife',
       generatedCode: {
-        symbols: true,
+        symbols: true
       }
     }
   },
