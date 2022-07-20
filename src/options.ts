@@ -37,6 +37,7 @@ const NitroDefaults: NitroConfig = {
   serverAssets: [],
   plugins: [],
   autoImport: {
+    exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/],
     presets: nitroImports
   },
   virtual: {},
@@ -147,11 +148,8 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
   // ]
 
-  if (options.autoImport) {
-    options.autoImport.exclude = options.autoImport.exclude || []
-    if (Array.isArray(options.autoImport.exclude)) {
-      options.autoImport.exclude.push(options.buildDir, /[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/)
-    }
+  if (options.autoImport && Array.isArray(options.autoImport?.exclude)) {
+    options.autoImport.exclude.push(options.buildDir)
   }
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
