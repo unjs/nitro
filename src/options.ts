@@ -148,7 +148,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
   // ]
 
-  if (options.autoImport && Array.isArray(options.autoImport?.exclude)) {
+  if (options.autoImport && Array.isArray(options.autoImport.exclude)) {
     options.autoImport.exclude.push(options.buildDir)
   }
 
