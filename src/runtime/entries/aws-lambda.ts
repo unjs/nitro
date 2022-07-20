@@ -25,7 +25,11 @@ export const handler = async function handler (event: Event, context: Context): 
     body: event.body // TODO: handle event.isBase64Encoded
   })
 
+  const outgoingCookies = r.headers['set-cookie']
+  const cookies = Array.isArray(outgoingCookies) ? outgoingCookies : outgoingCookies?.split(',') || []
+
   return {
+    cookies,
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
     body: r.body.toString()
@@ -37,5 +41,7 @@ function normalizeIncomingHeaders (headers: APIGatewayProxyEventHeaders) {
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
+  return Object.fromEntries(Object.entries(headers)
+    .filter(([key]) => !['set-cookie'].includes(key))
+    .map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
 }
