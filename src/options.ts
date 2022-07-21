@@ -59,9 +59,7 @@ const NitroDefaults: NitroConfig = {
   },
 
   // Rollup
-  alias: {
-    '#internal/nitro': runtimeDir
-  },
+  alias: {},
   unenv: {},
   analyze: false,
   moduleSideEffects: ['unenv/runtime/polyfill/', 'node-fetch-native/polyfill'],
@@ -76,7 +74,8 @@ const NitroDefaults: NitroConfig = {
   },
   nodeModulesDirs: [],
   hooks: {},
-  commands: {}
+  commands: {},
+  presets: {}
 }
 
 export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
@@ -84,6 +83,14 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   let preset = userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'node-server'
   if (userConfig.dev) {
     preset = 'nitro-dev'
+  }
+
+  if (!userConfig.alias) {
+    userConfig.alias = {
+      '#internal/nitro': runtimeDir
+    }
+  } else {
+    userConfig.alias['#internal/nitro'] = runtimeDir
   }
 
   // Load configuration and preset
@@ -95,7 +102,15 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     dotenv: userConfig.dev,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
+
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
+      if (userConfig.presets && Object.keys(userConfig.presets).length > 0) {
+        const userPreset = userConfig.presets[id] || userConfig.presets[camelCase(id)]
+        if (userPreset) {
+          matchedPreset = userPreset
+        }
+      }
+
       if (matchedPreset) {
         if (typeof matchedPreset === 'function') {
           matchedPreset = matchedPreset()
