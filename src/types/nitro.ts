@@ -27,6 +27,7 @@ export interface Nitro {
 export interface PrerenderRoute {
   route: string
   contents?: string
+  data?: ArrayBuffer
   fileName?: string
   error?: Error & { statusCode: number, statusMessage: string }
   generateTimeMS?: number
