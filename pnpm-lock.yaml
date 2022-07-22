@@ -38,7 +38,7 @@ importers:
       defu: ^6.0.0
       destr: ^1.1.1
       dot-prop: ^7.2.0
-      edge-runtime: 1.1.0-beta.16
+      edge-runtime: 1.1.0-beta.17
       esbuild: ^0.14.49
       escape-string-regexp: ^5.0.0
       eslint: ^8.20.0
@@ -47,7 +47,7 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
-      h3: ^0.7.10
+      h3: ^0.7.12
       hookable: ^5.1.1
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -81,7 +81,7 @@ importers:
       ufo: ^0.8.5
       unbuild: ^0.7.6
       unenv: ^0.5.2
-      unimport: ^0.6.0
+      unimport: ^0.6.2
       unstorage: ^0.5.5
       vitepress: ^0.22.4
       vitest: ^0.18.1
@@ -113,7 +113,7 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
-      h3: 0.7.10
+      h3: 0.7.12
       hookable: 5.1.1
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -143,7 +143,7 @@ importers:
       table: 6.8.0
       ufo: 0.8.5
       unenv: 0.5.2
-      unimport: 0.6.0_d4h73tn7q5hdnxjna52dvt6s3u
+      unimport: 0.6.2_d4h73tn7q5hdnxjna52dvt6s3u
       unstorage: 0.5.5
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_he2ccbldppg44uulnyq4rwocfa
@@ -156,7 +156,7 @@ importers:
       '@types/semver': 7.3.10
       '@types/serve-static': 1.13.10
       c8: 7.12.0
-      edge-runtime: 1.1.0-beta.16
+      edge-runtime: 1.1.0-beta.17
       eslint: 8.20.0
       execa: 6.1.0
       miniflare: 2.6.0
@@ -567,18 +567,18 @@ packages:
       - '@algolia/client-search'
     dev: true
 
-  /@edge-runtime/format/1.1.0-beta.16:
-    resolution: {integrity: sha512-GyelXeFkjbOd2GxsgyehOP84yjiU8z/LoVd6Q5bjThcJ5OSrC3Xhb08IlpzXeP4JVx/zNBQ3KOh6n/VAOPlVfw==}
+  /@edge-runtime/format/1.1.0-beta.17:
+    resolution: {integrity: sha512-H2vw3oA3ifica6QZ7fsc7vRD248KKPpiQC5v0cDZobGZdzGh4GU006QNp0Tvh0Nzr1fSVmidy+iPqa7YbeILgQ==}
     dev: true
 
-  /@edge-runtime/primitives/1.1.0-beta.16:
-    resolution: {integrity: sha512-C5e+qUPvR2PlrTe7xnzKFzXkEqltMrXe3PkzHClm37kOEsc1Gz89z5g3oCCrpdAe0XSepSuqKyPkZPw87eJOJA==}
+  /@edge-runtime/primitives/1.1.0-beta.17:
+    resolution: {integrity: sha512-9Gs+u6wIdZqRcYsYKXWcJWJ7xi1vp2nBiQ1kQUhdc2SqbV0npb/ye+k85E2vF7Rfof0jBVyvU6sYp+cbmwCSFw==}
     dev: true
 
-  /@edge-runtime/vm/1.1.0-beta.16:
-    resolution: {integrity: sha512-ns/V2YAAMMKmWPnbB0guwsoEVE6Z07rgOSsyj7dUo+ivIozPaGXM7a+ZQTUO54rNp37haRIKu0gWLtWKRSDZ/w==}
+  /@edge-runtime/vm/1.1.0-beta.17:
+    resolution: {integrity: sha512-HZSY3NUVTMDraQjZsvv78ZwAqQhns2Y9SmiYH6WCz5hSWOh4CkFQZJg/SxLdMeo+rtraZvLcPf1eP6AqwR6wlg==}
     dependencies:
-      '@edge-runtime/primitives': 1.1.0-beta.16
+      '@edge-runtime/primitives': 1.1.0-beta.17
     dev: true
 
   /@eslint/eslintrc/1.3.0:
@@ -2266,12 +2266,12 @@ packages:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
     dev: false
 
-  /edge-runtime/1.1.0-beta.16:
-    resolution: {integrity: sha512-KOboZLPt48Uk3SoEftSp6Esbm6zFu/TFnDyRqsnTAwmh/9a8BtXBvwtBcLjSydZB9n5YfqepUve26lE3r064ag==}
+  /edge-runtime/1.1.0-beta.17:
+    resolution: {integrity: sha512-66Re96SHxwLEYsydRtaDVPqiWKrwBBVedcxUFuBgzWuqTKJdcL079DCx5k0cmphHLmBlDDI/H6raxakLwTkHmw==}
     hasBin: true
     dependencies:
-      '@edge-runtime/format': 1.1.0-beta.16
-      '@edge-runtime/vm': 1.1.0-beta.16
+      '@edge-runtime/format': 1.1.0-beta.17
+      '@edge-runtime/vm': 1.1.0-beta.17
       exit-hook: 2.2.1
       http-status: 1.5.2
       mri: 1.2.0
@@ -3307,8 +3307,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/0.7.10:
-    resolution: {integrity: sha512-HcUQxlOocG2uf6PQLu3Bxk0KSXcTuxSF6kRclFBDO7y74Ml0wCwTvmoN5zmrzoxbNHecDNUrcGr8qSNGcOqAHQ==}
+  /h3/0.7.12:
+    resolution: {integrity: sha512-RLil5Hr4lzK52eQL3zEG6rE7OqYC8SwmPkcc1AoLIgJAqGRRgfrtkb/NYUWui0/DMeErzhGjaO0pjEuXyILzOw==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.1.1
@@ -5495,8 +5495,8 @@ packages:
       pathe: 0.3.2
     dev: false
 
-  /unimport/0.6.0_d4h73tn7q5hdnxjna52dvt6s3u:
-    resolution: {integrity: sha512-J0yHDIPuPNxRjGN3WUoniYwCgzzibnMHR3jFG/zbQ6uIbmFNIrtYlU+fk9nnM1Sp0VdWZbVtNpZxLRzlES8Y0g==}
+  /unimport/0.6.2_d4h73tn7q5hdnxjna52dvt6s3u:
+    resolution: {integrity: sha512-dttI/EFWqIqc27Gdh6ptGZDBYPoPXVrj+cW1BVzccePSqSFONIL6yA1WmjG40yJlHX7HeFEZ7ZXF2/Yo+KoSHA==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
@@ -5550,7 +5550,7 @@ packages:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
-      h3: 0.7.10
+      h3: 0.7.12
       ioredis: 5.2.1
       listhen: 0.2.13
       mri: 1.2.0
