@@ -1,16 +1,7 @@
 ---
-title: "Design System made easy"
-description: "ully-typed design tokens integration for making and maintaining a design system."
+title: Home
 navigation: false
 layout: fluid
-
-actionText: ⚽ Get Started
-actionLink: /guide/
-features:
-
-
-
-footer: MIT Licensed | Made by 💛 as part of the UnJS ecosystem
 ---
 
 
@@ -18,7 +9,7 @@ footer: MIT Licensed | Made by 💛 as part of the UnJS ecosystem
 ---
 cta:
   - Get Started
-  - /guide/introduction
+  - /guide/introduction/getting-started
 secondary:
   - Star on GitHub
   - https://github.com/unjs/nitro
