@@ -69,7 +69,7 @@ importers:
       rollup: ^2.77.2
       rollup-plugin-terser: ^7.0.2
       rollup-plugin-visualizer: ^5.7.1
-      scule: ^0.2.1
+      scule: ^0.3.1
       semver: ^7.3.7
       serve-placeholder: ^2.0.1
       serve-static: ^1.15.0
@@ -134,7 +134,7 @@ importers:
       rollup: 2.77.2
       rollup-plugin-terser: 7.0.2_rollup@2.77.2
       rollup-plugin-visualizer: 5.7.1_rollup@2.77.2
-      scule: 0.2.1
+      scule: 0.3.1
       semver: 7.3.7
       serve-placeholder: 2.0.1
       serve-static: 1.15.0
@@ -4891,6 +4891,10 @@ packages:
 
   /scule/0.2.1:
     resolution: {integrity: sha512-M9gnWtn3J0W+UhJOHmBxBTwv8mZCan5i1Himp60t6vvZcor0wr+IM0URKmIglsWJ7bRujNAVVN77fp+uZaWoKg==}
+
+  /scule/0.3.1:
+    resolution: {integrity: sha512-uvBcWLeHvU+r/Jf7FKulndKqxWLTJkqSNRrcFFjyu8ZtvmW0XvXJTRodZYm+yLAQkHTDoLIjXW0GgAXKgS9HLA==}
+    dev: false
 
   /selfsigned/2.0.1:
     resolution: {integrity: sha512-LmME957M1zOsUhG+67rAjKfiWFox3SBxE/yymatMZsAx+oMrJ0YQ8AToOnyCm7xbeg2ep37IHLxdu0o2MavQOQ==}
