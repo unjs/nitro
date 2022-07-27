@@ -7,7 +7,10 @@ export const baseWorker = defineNitroPreset({
   noExternals: true,
   rollupConfig: {
     output: {
-      format: 'iife'
+      format: 'iife',
+      generatedCode: {
+        symbols: true
+      }
     }
   },
   inlineDynamicImports: true // iffe does not support code-splitting
