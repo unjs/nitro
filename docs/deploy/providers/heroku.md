@@ -30,11 +30,6 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
    heroku config:set NITRO_PRESET=heroku
    ```
    
-1. Configure your app.
-
-   ```bash
-   heroku config:set HOST=0.0.0.0
-   ```
 
 ## Update your config
 
