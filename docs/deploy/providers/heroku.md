@@ -28,6 +28,7 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
 
    ```
    "scripts": {
+     "build": "nitro build", // or `nuxt build` if using nuxt
      "start": "node .output/server/index.mjs"
    }
    ```
