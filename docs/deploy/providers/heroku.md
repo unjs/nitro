@@ -23,18 +23,6 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
    ```bash
    heroku config:set NITRO_PRESET=heroku
    ```
-1. Add to `nuxt.config.ts` file the `nitro` preset.
-
-   ```
-   import { defineNuxtConfig } from 'nuxt';
-
-   // https://v3.nuxtjs.org/api/configuration/nuxt.config
-   export default defineNuxtConfig({
-     nitro: {
-       preset: 'node-server',
-     },
-   });
-   ```
 1. Add `start` and `heroku-postbuild` commands to `package.json` file.
 
    ```
