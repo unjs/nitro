@@ -27,7 +27,6 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
 
    ```
    "scripts": {
-      "heroku-postbuild": "npm run build",
       "start": "node .output/server/index.mjs"
    }
    ```
