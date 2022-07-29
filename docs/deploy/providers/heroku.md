@@ -23,18 +23,6 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
    ```bash
    heroku config:set NITRO_PRESET=heroku
    ```
-   
-1. Configure your app.
-
-   ```bash
-   heroku config:set NITRO_PRESET=heroku
-   ```
-   
-
-## Update your config
-
-In order to run Nuxt 3 on Heroku, you need to update the following packages.
-
 1. Add to `nuxt.config.ts` file the `nitro` preset.
 
    ```
