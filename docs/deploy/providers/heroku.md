@@ -31,10 +31,3 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
       "start": "node .output/server/index.mjs"
    }
    ```
-1. Move the `nuxt` package from `devDependencies` to `dependencies` or Heroku won't be able to run command `npm start` because it runs under the `PRODUCTION` environment.
-
-   ```
-   "dependencies": {
-      "nuxt": "3.0.0-rc.6"
-   }
-   ```
