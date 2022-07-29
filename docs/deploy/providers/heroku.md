@@ -52,7 +52,7 @@ In order to run Nuxt 3 on Heroku, you need to update the following packages.
    ```
    "scripts": {
       "heroku-postbuild": "npm run build",
-      "start": "nuxt preview"
+      "start": "node .output/server/index.mjs"
    }
    ```
 1. Move the `nuxt` package from `devDependencies` to `dependencies` or Heroku won't be able to run command `npm start` because it runs under the `PRODUCTION` environment.
