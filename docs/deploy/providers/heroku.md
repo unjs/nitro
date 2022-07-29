@@ -23,10 +23,11 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
    ```bash
    heroku config:set NITRO_PRESET=heroku
    ```
-1. Add `start` and `heroku-postbuild` commands to `package.json` file.
+
+1. Ensure you have `start` and `build` commands in your `package.json` file.
 
    ```
    "scripts": {
-      "start": "node .output/server/index.mjs"
+     "start": "node .output/server/index.mjs"
    }
    ```
