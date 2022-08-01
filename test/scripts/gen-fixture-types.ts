@@ -10,7 +10,7 @@ const prepare = async () => {
   const nitro = await createNitro({
     rootDir: fixtureDir,
     serveStatic: true,
-    output: { dir: resolve(fixtureDir, '.output', 'node') }
+    output: { dir: resolve(fixtureDir, '.output', 'types') }
   })
 
   await scanHandlers(nitro)

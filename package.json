@@ -34,7 +34,8 @@
     "release": "pnpm test && pnpm build && standard-version && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "pnpm lint && vitest run --silent",
-    "test:types": "pnpm stub && jiti ./test/scripts/prepareTypes.ts && cd test/fixture && tsc --noEmit"
+    "test:types": "tsc --noEmit && pnpm test:fixture:types",
+    "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit"
   },
   "resolutions": {
     "nitropack": "link:."
