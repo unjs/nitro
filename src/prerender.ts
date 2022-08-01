@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
-import { parseURL, withBase } from 'ufo'
+import { parseURL, withBase, withoutBase } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
@@ -64,6 +64,7 @@ export async function prerender (nitro: Nitro) {
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+    _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL)
 
     await nitro.hooks.callHook('prerender:generate', _route, nitro)
 
