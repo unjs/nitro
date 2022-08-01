@@ -61,7 +61,7 @@
     "defu": "^6.0.0",
     "destr": "^1.1.1",
     "dot-prop": "^7.2.0",
-    "esbuild": "^0.14.50",
+    "esbuild": "^0.14.51",
     "escape-string-regexp": "^5.0.0",
     "etag": "^1.8.1",
     "fs-extra": "^10.1.0",
@@ -97,7 +97,7 @@
     "table": "^6.8.0",
     "ufo": "^0.8.5",
     "unenv": "^0.5.2",
-    "unimport": "^0.6.3",
+    "unimport": "^0.6.4",
     "unstorage": "^0.5.6"
   },
   "devDependencies": {
@@ -109,19 +109,19 @@
     "@types/node-fetch": "^2.6.2",
     "@types/object-hash": "^2.2.1",
     "@types/semver": "^7.3.10",
-    "@types/serve-static": "^1.13.10",
+    "@types/serve-static": "^1.15.0",
     "c8": "^7.12.0",
-    "edge-runtime": "1.1.0-beta.22",
-    "eslint": "^8.20.0",
+    "edge-runtime": "1.1.0-beta.23",
+    "eslint": "^8.21.0",
     "execa": "^6.1.0",
     "miniflare": "^2.6.0",
     "standard-version": "^9.3.2",
     "typescript": "^4.7.4",
     "unbuild": "^0.7.6",
     "vitepress": "^0.22.4",
-    "vitest": "^0.19.1"
+    "vitest": "^0.20.2"
   },
-  "packageManager": "pnpm@7.6.0",
+  "packageManager": "pnpm@7.8.0",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0 || ^18.0.0"
   },
