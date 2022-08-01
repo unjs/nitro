@@ -64,6 +64,7 @@ export async function prerender (nitro: Nitro) {
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+    _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL)
 
     await nitro.hooks.callHook('prerender:generate', _route, nitro)
 
@@ -82,7 +83,7 @@ export async function prerender (nitro: Nitro) {
       const crawledRoutes = extractLinks(_route.contents, route, res)
       for (const crawledRoute of crawledRoutes) {
         if (canPrerender(crawledRoute)) {
-          routes.add(withoutBase(crawledRoute, nitro.options.baseURL))
+          routes.add(crawledRoute)
         }
       }
     }
