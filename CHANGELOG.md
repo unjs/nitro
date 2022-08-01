@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.12](https://github.com/unjs/nitro/compare/v0.4.11...v0.4.12) (2022-07-13)
+
+
+### Bug Fixes
+
+* **vercel, vercel-edge:** set version as number ([f476cfc](https://github.com/unjs/nitro/commit/f476cfc3e33d0b759e604ff6c0c61ea272e1379a))
+
+### [0.4.11](https://github.com/unjs/nitro/compare/v0.4.10...v0.4.11) (2022-07-13)
+
+
+### Bug Fixes
+
+* **vercel-edge:** properly set rollup options ([ad5b735](https://github.com/unjs/nitro/commit/ad5b7355d0a4463c0bebd1386ebf2049360bc3e1))
+
+### [0.4.10](https://github.com/unjs/nitro/compare/v0.4.9...v0.4.10) (2022-07-13)
+
+
+### Features
+
+* `vercel-edge` provider ([#337](https://github.com/unjs/nitro/issues/337)) ([ad2b976](https://github.com/unjs/nitro/commit/ad2b976536c80a423b48facda455efce6b0be365))
+* **rollup:** support `development` and `production` export conditions ([f60e6eb](https://github.com/unjs/nitro/commit/f60e6eba50e4db4dc48c5d4f860d61f1cc55613b))
+* **vercel:** update to the v3 output api ([#336](https://github.com/unjs/nitro/issues/336)) ([9ac4be2](https://github.com/unjs/nitro/commit/9ac4be267d380851c469a299c9834e9200836d3a))
+
+
+### Bug Fixes
+
+* call `rollup:before` before generating rollup config ([#335](https://github.com/unjs/nitro/issues/335)) ([292b495](https://github.com/unjs/nitro/commit/292b495e8c1eb620202cd3f1639c59f0a3ce203f))
+* **vercel-edge:** use esm default export ([7d251f5](https://github.com/unjs/nitro/commit/7d251f5ff0041cccc308ae7f144dcf2a0017559b))
+* **vercel:** add back filesystem route handlers ([bba4064](https://github.com/unjs/nitro/commit/bba4064356bf8340ed8e9eaca0d7deadbcc904fb))
+* **vercel:** update output config ([daecb91](https://github.com/unjs/nitro/commit/daecb91ae27e8f77ea0aa7e61a6dc383707a0c49)), closes [#336](https://github.com/unjs/nitro/issues/336)
+
+### [0.4.9](https://github.com/unjs/nitro/compare/v0.4.8...v0.4.9) (2022-06-29)
+
+
+### Features
+
+* expose router in NitroApp ([#302](https://github.com/unjs/nitro/issues/302)) ([ef5e7f1](https://github.com/unjs/nitro/commit/ef5e7f19cd9d332b4fdb97477d05f6d319b6d2c5))
+* **service-worker:** inject registration script to all pages ([#299](https://github.com/unjs/nitro/issues/299)) ([486f236](https://github.com/unjs/nitro/commit/486f236c1e96134c0ee8021ff5d04e93fe819e75))
+
+
+### Bug Fixes
+
+*  get storage mounts type from unstorage ([134f89f](https://github.com/unjs/nitro/commit/134f89f5d0c3045e3435b27c56f89171379c4c81))
+* **azure:** pass query params to local call ([#318](https://github.com/unjs/nitro/issues/318)) ([f1fe6cd](https://github.com/unjs/nitro/commit/f1fe6cd9ad9621546eb66a9b8484d1870ae86110))
+* export runtime types directly from `nitropack` ([#301](https://github.com/unjs/nitro/issues/301)) ([34b8c4d](https://github.com/unjs/nitro/commit/34b8c4d921b2c6dc708ad6c11cb765935b66b3c0))
+* **isPublicAssetURL:** assets should treat as public ([#312](https://github.com/unjs/nitro/issues/312)) ([e165b3b](https://github.com/unjs/nitro/commit/e165b3bdabf8a0082387060df89a1726a3056e0a))
+* **prerender:** avoid adding duplicate `baseURL` for local fetch ([#289](https://github.com/unjs/nitro/issues/289)) ([cbc7ba3](https://github.com/unjs/nitro/commit/cbc7ba3835df539116ca6560a85365615af55fbb))
+* **types:** allow `autoImport` option to be false ([#296](https://github.com/unjs/nitro/issues/296)) ([3aa3bcf](https://github.com/unjs/nitro/commit/3aa3bcfef4b98528db6b31d620177a57a69afdf4))
+
 ### [0.4.8](https://github.com/unjs/nitropack/compare/v0.4.7...v0.4.8) (2022-06-15)
 
 

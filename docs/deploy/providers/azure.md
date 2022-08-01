@@ -53,6 +53,8 @@ git add -f .output/server/.gitkeep
 
 That's it! Now Azure Static Web Apps will automatically deploy your Nitro-powered application on push.
 
+If you are using runtimeConfig, you will likely want to configure the corresponding [environment variables on Azure](https://docs.microsoft.com/en-us/azure/static-web-apps/application-settings).
+
 ## Azure Functions
 
 **Preset:** `azure-functions`

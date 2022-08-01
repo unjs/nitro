@@ -2,7 +2,7 @@ import { resolve } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
-import defu from 'defu'
+import { defu } from 'defu'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
@@ -37,6 +37,7 @@ const NitroDefaults: NitroConfig = {
   serverAssets: [],
   plugins: [],
   autoImport: {
+    exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/],
     presets: nitroImports
   },
   virtual: {},
@@ -91,6 +92,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     name: 'nitro',
     defaults: NitroDefaults,
     cwd: userConfig.rootDir,
+    dotenv: userConfig.dev,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
@@ -145,6 +147,10 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   //     .filter(i => i.includes('node_modules'))
   //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
   // ]
+
+  if (options.autoImport && Array.isArray(options.autoImport.exclude)) {
+    options.autoImport.exclude.push(options.buildDir)
+  }
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
