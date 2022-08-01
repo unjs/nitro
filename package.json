@@ -34,7 +34,8 @@
     "release": "pnpm test && pnpm build && standard-version && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "pnpm lint && vitest run --silent",
-    "test:types": "tsc --noEmit"
+    "test:types": "tsc --noEmit && pnpm test:fixture:types",
+    "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit"
   },
   "resolutions": {
     "nitropack": "link:."
@@ -114,6 +115,7 @@
     "edge-runtime": "1.1.0-beta.23",
     "eslint": "^8.21.0",
     "execa": "^6.1.0",
+    "expect-type": "^0.13.0",
     "miniflare": "^2.6.0",
     "standard-version": "^9.3.2",
     "typescript": "^4.7.4",
