@@ -64,3 +64,4 @@ Temporary Items
 .build-*
 .env
 .netlify
+.vercel
