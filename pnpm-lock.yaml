@@ -47,7 +47,7 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
-      h3: ^0.7.12
+      h3: ^0.7.13
       hookable: ^5.1.1
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -61,7 +61,7 @@ importers:
       node-fetch-native: ^0.1.4
       ohash: ^0.1.4
       ohmyfetch: ^0.4.18
-      pathe: ^0.3.2
+      pathe: ^0.3.3
       perfect-debounce: ^0.1.3
       pkg-types: ^0.3.3
       pretty-bytes: ^6.0.0
@@ -113,7 +113,7 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
-      h3: 0.7.12
+      h3: 0.7.13
       hookable: 5.1.1
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -126,7 +126,7 @@ importers:
       node-fetch-native: 0.1.4
       ohash: 0.1.4
       ohmyfetch: 0.4.18
-      pathe: 0.3.2
+      pathe: 0.3.3
       perfect-debounce: 0.1.3
       pkg-types: 0.3.3
       pretty-bytes: 6.0.0
@@ -1641,7 +1641,7 @@ packages:
       gittar: 0.1.1
       jiti: 1.14.0
       mlly: 0.5.5
-      pathe: 0.3.2
+      pathe: 0.3.3
       rc9: 1.2.2
     dev: false
 
@@ -3326,8 +3326,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/0.7.12:
-    resolution: {integrity: sha512-RLil5Hr4lzK52eQL3zEG6rE7OqYC8SwmPkcc1AoLIgJAqGRRgfrtkb/NYUWui0/DMeErzhGjaO0pjEuXyILzOw==}
+  /h3/0.7.13:
+    resolution: {integrity: sha512-3rs+iokAwin4GnToWc+4JeASAYPujojMWicaTgv5WMucED94cFVVGctlk7N6iJfQ7SZ2N5CtmQ2C3L2aDFpd2w==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.1.1
@@ -4181,7 +4181,7 @@ packages:
   /mlly/0.5.5:
     resolution: {integrity: sha512-2R4JT/SxRDPexomw4rmHYY/gWAGmL9Kkq1OR76Ua6w+P340a1aBDTWzKo2kAlxzrG82OdXs5VB9Lmcmyit0Obg==}
     dependencies:
-      pathe: 0.3.2
+      pathe: 0.3.3
       pkg-types: 0.3.3
 
   /modify-values/1.0.1:
@@ -4549,8 +4549,8 @@ packages:
     resolution: {integrity: sha512-sTitTPYnn23esFR3RlqYBWn4c45WGeLcsKzQiUpXJAyfcWkolvlYpV8FLo7JishK946oQwMFUCHXQ9AjGPKExw==}
     dev: true
 
-  /pathe/0.3.2:
-    resolution: {integrity: sha512-qhnmX0TOqlCvdWWTkoM83wh5J8fZ2yhbDEc9MlsnAEtEc+JCwxUKEwmd6pkY9hRe6JR1Uecbc14VcAKX2yFSTA==}
+  /pathe/0.3.3:
+    resolution: {integrity: sha512-x3nrPvG0HDSDzUiJ0WqtzhN4MD+h5B+dFJ3/qyxVuARlr4Y3aJv8gri2cZzp9Z8sGs2a+aG9gNbKngh3gme57A==}
 
   /pathval/1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
@@ -4583,7 +4583,7 @@ packages:
     dependencies:
       jsonc-parser: 3.0.0
       mlly: 0.5.5
-      pathe: 0.3.2
+      pathe: 0.3.3
 
   /pluralize/8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
@@ -5492,7 +5492,7 @@ packages:
       mkdist: 0.3.13_typescript@4.7.4
       mlly: 0.5.5
       mri: 1.2.0
-      pathe: 0.3.2
+      pathe: 0.3.3
       pkg-types: 0.3.3
       pretty-bytes: 6.0.0
       rimraf: 3.0.2
@@ -5522,7 +5522,7 @@ packages:
       defu: 6.0.0
       mime: 3.0.0
       node-fetch-native: 0.1.4
-      pathe: 0.3.2
+      pathe: 0.3.3
     dev: false
 
   /unimport/0.6.4_ecpsl2p7zl5puhr4xxlpah6uzm:
@@ -5534,7 +5534,7 @@ packages:
       local-pkg: 0.4.2
       magic-string: 0.26.2
       mlly: 0.5.5
-      pathe: 0.3.2
+      pathe: 0.3.3
       scule: 0.3.2
       strip-literal: 0.4.0
       unplugin: 0.8.0_ecpsl2p7zl5puhr4xxlpah6uzm
@@ -5580,7 +5580,7 @@ packages:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
-      h3: 0.7.12
+      h3: 0.7.13
       ioredis: 5.2.2
       listhen: 0.2.13
       mri: 1.2.0
