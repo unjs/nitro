@@ -27,7 +27,7 @@
   },
   "include": [
     "src",
-    "test", "scripts/prepareTypes.ts",
+    "test",
   ],
   "exclude": [
     "test/fixture"
