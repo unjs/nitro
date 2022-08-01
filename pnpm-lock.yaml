@@ -82,7 +82,7 @@ importers:
       unbuild: ^0.7.6
       unenv: ^0.5.2
       unimport: ^0.6.3
-      unstorage: ^0.5.5
+      unstorage: ^0.5.6
       vitepress: ^0.22.4
       vitest: ^0.19.1
     dependencies:
@@ -144,7 +144,7 @@ importers:
       ufo: 0.8.5
       unenv: 0.5.2
       unimport: 0.6.3_z4wjf5stc47okcxkgg4qwbc5si
-      unstorage: 0.5.5
+      unstorage: 0.5.6
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_he2ccbldppg44uulnyq4rwocfa
       '@types/aws-lambda': 8.10.101
@@ -3501,8 +3501,8 @@ packages:
       side-channel: 1.0.4
     dev: true
 
-  /ioredis/5.2.1:
-    resolution: {integrity: sha512-+rgPUIawiT+L3am9FbUcwjI7R7KtLDUSJNYWF82NZmlUXCZELws7iJkVDuECQoNUHqZTf/EGn3uw9IA+PlBiyg==}
+  /ioredis/5.2.2:
+    resolution: {integrity: sha512-wryKc1ur8PcCmNwfcGkw5evouzpbDXxxkMkzPK8wl4xQfQf7lHe11Jotell5ikMVAtikXJEu/OJVaoV51BggRQ==}
     engines: {node: '>=12.22.0'}
     dependencies:
       '@ioredis/commands': 1.1.1
@@ -5555,19 +5555,19 @@ packages:
       webpack-virtual-modules: 0.4.4
     dev: false
 
-  /unstorage/0.5.5:
-    resolution: {integrity: sha512-hiaJUOCWrgBp8cc7bnVYe2vAMkd6gRJ3iRLFRZuwL7LjTnPJ3o/r5F55N4t7CdRq4WThTZCRNDKZ4qzZGF7TIA==}
+  /unstorage/0.5.6:
+    resolution: {integrity: sha512-TUm1ZyLkVamRfM+uWmWtavlzri3XS0ajYXKhlrAZ8aCChMwH29lufOfAP0bsMaBHuciIVfycaGgNhHeyLONpdA==}
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
       h3: 0.7.12
-      ioredis: 5.2.1
+      ioredis: 5.2.2
       listhen: 0.2.13
       mri: 1.2.0
       ohmyfetch: 0.4.18
       ufo: 0.8.5
-      ws: 8.8.0
+      ws: 8.8.1
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -5842,6 +5842,20 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: true
+
+  /ws/8.8.1:
+    resolution: {integrity: sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
 
   /xtend/4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
