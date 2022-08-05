@@ -132,7 +132,12 @@ export function readPackageJson (
   }
 }
 
-export function resolveAliases (aliases: Record<string, string>) {
+export function resolveAliases (_aliases: Record<string, string>) {
+  // Sort aliases from specific to general (ie. fs/promises before fs)
+  const aliases = Object.fromEntries(Object.entries(_aliases).sort(([a], [b]) => {
+    return b.split('/').length - a.split('/').length
+  }))
+  // Resolve alias values in relation to each other
   for (const key in aliases) {
     for (const alias in aliases) {
       if (!['~', '@', '#'].includes(alias[0])) { continue }
