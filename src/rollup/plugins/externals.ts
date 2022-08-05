@@ -4,6 +4,7 @@ import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport, normalizeid } from 'mlly'
 import semver from 'semver'
+import { parseURL } from 'ufo'
 
 export interface NodeExternalsOptions {
   inline?: string[]
@@ -39,9 +40,11 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         return null
       }
 
-      // Skip relative paths
-      if (originalId.startsWith('.')) {
-        return null
+      if (importer && IS_RELATIVE_RE.test(originalId)) {
+        if (!isAbsolute(importer)) { return null }
+
+        const { pathname, search } = parseURL(importer)
+        originalId = join(pathname, '..', originalId) + search
       }
 
       // Normalize path (windows)
@@ -243,3 +246,5 @@ async function isFile (file: string) {
     throw err
   }
 }
+
+const IS_RELATIVE_RE = /^\.\.?\//
