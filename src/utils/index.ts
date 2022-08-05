@@ -135,7 +135,7 @@ export function readPackageJson (
 export function resolveAliases (_aliases: Record<string, string>) {
   // Sort aliases from specific to general (ie. fs/promises before fs)
   const aliases = Object.fromEntries(Object.entries(_aliases).sort(([a], [b]) =>
-    scoreAlias(b) - scoreAlias(a)
+    (b.split('/').length - a.split('/').length) || (b.length - a.length)
   ))
   // Resolve alias values in relation to each other
   for (const key in aliases) {
@@ -149,9 +149,4 @@ export function resolveAliases (_aliases: Record<string, string>) {
     }
   }
   return aliases
-}
-
-const scoreAlias = (alias: string) => {
-  const segments = alias.split('/')
-  return segments.length + (segments[segments.length - 1].length / 1000)
 }
