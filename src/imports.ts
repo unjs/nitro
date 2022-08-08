@@ -15,29 +15,5 @@ export const nitroImports: Preset[] = [
       'nitroPlugin',
       'defineRenderHandler'
     ]
-  },
-  {
-    from: 'h3',
-    imports: [
-      'defineEventHandler',
-      'defineLazyEventHandler',
-      'eventHandler',
-      'lazyEventHandler',
-      'dynamicEventHandler',
-      'appendHeader',
-      'assertMethod',
-      'createError',
-      'handleCacheHeaders',
-      'isMethod',
-      'sendRedirect',
-      'useCookies',
-      'useCookie',
-      'deleteCookie',
-      'setCookie',
-      'useBody',
-      'useMethod',
-      'useQuery',
-      'useRawBody'
-    ]
   }
 ]
