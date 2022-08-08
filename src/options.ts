@@ -1,4 +1,4 @@
-import { resolve } from 'pathe'
+import { resolve, join } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
@@ -121,6 +121,15 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options[key] = resolve(options.rootDir, options[key])
   }
 
+  // Add aliases
+  options.alias = {
+    ...options.alias,
+    '~/': join(options.srcDir, '/'),
+    '@/': join(options.srcDir, '/'),
+    '~~/': join(options.rootDir, '/'),
+    '@@/': join(options.rootDir, '/')
+  }
+
   // Resolve possibly template paths
   if (!options.entry) {
     throw new Error(`Nitro entry is missing! Is "${options.preset}" preset correct?`)
@@ -192,6 +201,9 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   for (const p in fsMounts) {
     options.devStorage[p] = options.devStorage[p] || { driver: 'fs', base: fsMounts[p] }
   }
+
+  // Resolve plugin paths
+  options.plugins = options.plugins.map(p => resolvePath(p, options))
 
   return options
 }
