@@ -48,13 +48,13 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
-      h3: ^0.7.13
+      h3: ^0.7.14
       hookable: ^5.1.1
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
       jiti: ^1.14.0
       klona: ^2.0.5
-      listhen: ^0.2.13
+      listhen: ^0.2.14
       mime: ^3.0.0
       miniflare: ^2.6.0
       mlly: ^0.5.7
@@ -114,13 +114,13 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
-      h3: 0.7.13
+      h3: 0.7.14
       hookable: 5.1.1
       http-proxy: 1.18.1
       is-primitive: 3.0.1
       jiti: 1.14.0
       klona: 2.0.5
-      listhen: 0.2.13
+      listhen: 0.2.14
       mime: 3.0.0
       mlly: 0.5.7
       mri: 1.2.0
@@ -1819,8 +1819,8 @@ packages:
     hasBin: true
     dev: false
 
-  /colorette/2.0.16:
-    resolution: {integrity: sha512-hUewv7oMjCp+wkBv5Rm0v87eJhq4woh5rSR+42YSQJKecCqgIqNkZ6lAlQms/BwHPJA5NKMRlpxPRv0n8HQW6g==}
+  /colorette/2.0.19:
+    resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
     dev: false
 
   /combined-stream/1.0.8:
@@ -3208,8 +3208,8 @@ packages:
       yargs: 16.2.0
     dev: true
 
-  /get-port-please/2.5.0:
-    resolution: {integrity: sha512-NblPebBznYARC1R2r1qmusbJAAgBr954gWhEZgwTerzR8r3ud6U5PI1SG4Lue43r87aikPPjObs85VieIDK99A==}
+  /get-port-please/2.6.0:
+    resolution: {integrity: sha512-YYUtEV6TGpbtjda8sMUSFsUYEtUPti3BBfuBBBCmYcF+unt0sutupFCDGVnageV2TVhPhhQJpJewvPBO3R5+tg==}
     dependencies:
       fs-memo: 1.2.0
     dev: false
@@ -3341,8 +3341,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/0.7.13:
-    resolution: {integrity: sha512-3rs+iokAwin4GnToWc+4JeASAYPujojMWicaTgv5WMucED94cFVVGctlk7N6iJfQ7SZ2N5CtmQ2C3L2aDFpd2w==}
+  /h3/0.7.14:
+    resolution: {integrity: sha512-qF49Le5rhn9L+Kg7Dbd5JPdxr/JldWCLDMvFi46D/Pvqdzp6WQJyje2zm/ShfO8Ni+MFwA3efn1ldEAhznkAJQ==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.1.1
@@ -3868,13 +3868,13 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: true
 
-  /listhen/0.2.13:
-    resolution: {integrity: sha512-axfyPgsrypKohOglPjzMVj+6nSQuDfdDzq92tYEg4HO+YkvvMGz0bGeoGA+pdEC7a8gbIgLduf/62Pkk1a9jMQ==}
+  /listhen/0.2.14:
+    resolution: {integrity: sha512-f85nLz5J7gL+Sj3nviLIcs+GJR8Xew2C8lJg/X5d6sGAirWPTF2zbCIWNS4NeiKRPCymYfWnVn0fXwMrI00qoQ==}
     dependencies:
       clipboardy: 3.0.0
-      colorette: 2.0.16
+      colorette: 2.0.19
       defu: 6.0.0
-      get-port-please: 2.5.0
+      get-port-please: 2.6.0
       http-shutdown: 1.2.2
       selfsigned: 2.0.1
       ufo: 0.8.5
@@ -5596,9 +5596,9 @@ packages:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
-      h3: 0.7.13
+      h3: 0.7.14
       ioredis: 5.2.2
-      listhen: 0.2.13
+      listhen: 0.2.14
       mri: 1.2.0
       ohmyfetch: 0.4.18
       ufo: 0.8.5
