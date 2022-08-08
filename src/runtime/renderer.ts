@@ -1,4 +1,5 @@
 import { CompatibilityEvent, eventHandler } from 'h3'
+import { useNitroApp } from './app'
 
 export interface RenderResponse {
   body: string,
@@ -19,6 +20,10 @@ export function defineRenderHandler (handler: RenderHandler) {
     }
 
     const response = await handler(event)
+
+    // Allow hooking and modifying response
+    const nitroApp = useNitroApp()
+    await nitroApp.hooks.callHook('render:response', response, { event })
 
     // TODO: Warn if response is already handled
 
