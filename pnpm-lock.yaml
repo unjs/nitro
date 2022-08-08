@@ -54,7 +54,7 @@ importers:
       is-primitive: ^3.0.1
       jiti: ^1.14.0
       klona: ^2.0.5
-      listhen: ^0.2.14
+      listhen: ^0.2.15
       mime: ^3.0.0
       miniflare: ^2.6.0
       mlly: ^0.5.7
@@ -120,7 +120,7 @@ importers:
       is-primitive: 3.0.1
       jiti: 1.14.0
       klona: 2.0.5
-      listhen: 0.2.14
+      listhen: 0.2.15
       mime: 3.0.0
       mlly: 0.5.7
       mri: 1.2.0
@@ -3208,8 +3208,8 @@ packages:
       yargs: 16.2.0
     dev: true
 
-  /get-port-please/2.6.0:
-    resolution: {integrity: sha512-YYUtEV6TGpbtjda8sMUSFsUYEtUPti3BBfuBBBCmYcF+unt0sutupFCDGVnageV2TVhPhhQJpJewvPBO3R5+tg==}
+  /get-port-please/2.6.1:
+    resolution: {integrity: sha512-4PDSrL6+cuMM1xs6w36ZIkaKzzE0xzfVBCfebHIJ3FE8iB9oic/ECwPw3iNiD4h1AoJ5XLLBhEviFAVrZsDC5A==}
     dependencies:
       fs-memo: 1.2.0
     dev: false
@@ -3868,13 +3868,13 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: true
 
-  /listhen/0.2.14:
-    resolution: {integrity: sha512-f85nLz5J7gL+Sj3nviLIcs+GJR8Xew2C8lJg/X5d6sGAirWPTF2zbCIWNS4NeiKRPCymYfWnVn0fXwMrI00qoQ==}
+  /listhen/0.2.15:
+    resolution: {integrity: sha512-F/IWj/aJLeokHAIVY+l3JoWRUnbRaf2F0cr+Ybc1YyozMA/yP0C2nf3c0Oi7vAbFvtfiwfWWfP7bIrQc/u5L1A==}
     dependencies:
       clipboardy: 3.0.0
       colorette: 2.0.19
       defu: 6.0.0
-      get-port-please: 2.6.0
+      get-port-please: 2.6.1
       http-shutdown: 1.2.2
       selfsigned: 2.0.1
       ufo: 0.8.5
@@ -5598,7 +5598,7 @@ packages:
       destr: 1.1.1
       h3: 0.7.14
       ioredis: 5.2.2
-      listhen: 0.2.14
+      listhen: 0.2.15
       mri: 1.2.0
       ohmyfetch: 0.4.18
       ufo: 0.8.5
