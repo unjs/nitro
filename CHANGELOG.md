@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.13](https://github.com/unjs/nitro/compare/v0.4.12...v0.4.13) (2022-08-08)
+
+
+### Features
+
+* `defineRenderHandler` ([#395](https://github.com/unjs/nitro/issues/395)) ([758b046](https://github.com/unjs/nitro/commit/758b0463f19764ea799502795b52d6a547b37f81))
+* add h3 auto imports preset ([#397](https://github.com/unjs/nitro/issues/397)) ([fbadeb7](https://github.com/unjs/nitro/commit/fbadeb77b867869a6a9268115531fe4d06cb677f))
+* auto scan plugins ([0d1cd4d](https://github.com/unjs/nitro/commit/0d1cd4d7638797c7c5ec7fc21c28eca0f81edf01))
+* enable response type infer for API routes with params ([#222](https://github.com/unjs/nitro/issues/222)) ([082d58f](https://github.com/unjs/nitro/commit/082d58fd6dc736047d69d41510d63111c7b16cc6))
+
+
+### Bug Fixes
+
+* **cache:** generate hashed path keys ([6104c54](https://github.com/unjs/nitro/commit/6104c54b946b616d475f970d02b7605fd69211a9))
+* **config:** enable dotenv in development ([#347](https://github.com/unjs/nitro/issues/347)) ([ec086c6](https://github.com/unjs/nitro/commit/ec086c6a33f84ace17d2a40b8703d3e1ca97d7ae))
+* include dotfiles in public assets ([#361](https://github.com/unjs/nitro/issues/361)) ([8a744fb](https://github.com/unjs/nitro/commit/8a744fbb38bc9b3c6a01d6bbce08c4aa64e7734a))
+* **options:** add default aliases and resolve plugins ([f04560b](https://github.com/unjs/nitro/commit/f04560b6b92317a45ed384f61b5c74e9aa1f825d))
+* **options:** exclude `buildDir` for auto-imports ([#355](https://github.com/unjs/nitro/issues/355)) ([5219c53](https://github.com/unjs/nitro/commit/5219c53d5c5dd1aacc5a9647831a5131a85078d5))
+* **prerender:** remove `baseURL` from generated file paths ([#329](https://github.com/unjs/nitro/issues/329)) ([26c15ca](https://github.com/unjs/nitro/commit/26c15ca02e332643e06949fa4f1dbf7bee8a479d))
+* **server-assets:** escape asset file names ([7aaab6d](https://github.com/unjs/nitro/commit/7aaab6d0262ceb6cd8487fc046eb4f866394cfe9))
+* sort aliases to ensure priority is given to more specific aliases ([#388](https://github.com/unjs/nitro/issues/388)) ([2a36b1e](https://github.com/unjs/nitro/commit/2a36b1e7390681092d10f0d2c308f7e651fa4e9a))
+* update scule to handle runtime config with numbers ([64b740e](https://github.com/unjs/nitro/commit/64b740eea43be93ed5c56da30cd0eaf28305c352)), closes [nuxt/framework#6172](https://github.com/nuxt/framework/issues/6172)
+* update unstorage to prevent path traverse ([d5d802f](https://github.com/unjs/nitro/commit/d5d802f3e18257b4dab4c2f8bcc27d455543fe22))
+* **worker:** preserve esmodule symbol for dynamic imports ([#354](https://github.com/unjs/nitro/issues/354)) ([0cd5121](https://github.com/unjs/nitro/commit/0cd51217d857b8f7090989d92fe3f1d99f41b0f6))
+
 ### [0.4.12](https://github.com/unjs/nitro/compare/v0.4.11...v0.4.12) (2022-07-13)
 
 
