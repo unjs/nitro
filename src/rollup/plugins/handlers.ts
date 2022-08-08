@@ -1,5 +1,5 @@
 import { hash } from 'ohash'
-import type { Nitro, NitroEventHandler } from '../../types'
+import type { Nitro } from '../../types'
 import { virtual } from './virtual'
 
 const unique = (arr: any[]) => Array.from(new Set(arr))
