@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.14](https://github.com/unjs/nitro/compare/v0.4.13...v0.4.14) (2022-08-08)
+
+
+### Features
+
+* call `render:response` hook for `defineRenderHandler` ([8238f38](https://github.com/unjs/nitro/commit/8238f3801aa959f8707c48e2d5777b54a6a7f74d))
+
+
+### Bug Fixes
+
+* expose `RenderResponse` and `RenderHandler` types ([e0ec2b2](https://github.com/unjs/nitro/commit/e0ec2b21c706e3882e57f70f0054c84a0e18186a))
+
 ### [0.4.13](https://github.com/unjs/nitro/compare/v0.4.12...v0.4.13) (2022-08-08)
 
 
