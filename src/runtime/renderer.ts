@@ -24,7 +24,7 @@ export function defineRenderHandler (handler: RenderHandler) {
 
     // TODO: Caching support
 
-    // Sent headers
+    // Send headers
     if (!event.res.headersSent && response.headers) {
       for (const header in response.headers) {
         event.res.setHeader(header, response.headers[header])
