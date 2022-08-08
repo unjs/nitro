@@ -5,6 +5,7 @@ import { createUnimport } from 'unimport'
 import consola from 'consola'
 import type { NitroConfig, Nitro } from './types'
 import { loadOptions } from './options'
+import { scanPlugins } from './scan'
 import { createStorage } from './storage'
 
 export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
@@ -55,6 +56,14 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     baseName: 'server',
     dir: resolve(nitro.options.srcDir, 'assets')
   })
+
+  // Plugins
+  const scannedPlugins = await scanPlugins(nitro)
+  for (const plugin of scannedPlugins) {
+    if (!nitro.options.plugins.find(p => p === plugin)) {
+      nitro.options.plugins.push(plugin)
+    }
+  }
 
   if (nitro.options.autoImport) {
     nitro.unimport = createUnimport(nitro.options.autoImport)
