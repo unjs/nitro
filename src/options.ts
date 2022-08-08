@@ -3,10 +3,10 @@ import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
 import { defu } from 'defu'
+import { resolveModuleExportNames, resolvePath as resovleModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
-import { resolvePath as resovleModule } from 'mlly'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -150,6 +150,15 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
 
   if (options.autoImport && Array.isArray(options.autoImport.exclude)) {
     options.autoImport.exclude.push(options.buildDir)
+  }
+
+  // Add h3 auto imports preset
+  if (options.autoImport) {
+    const h3Exports = await resolveModuleExportNames('h3', { url: import.meta.url })
+    options.autoImport.presets.push({
+      from: 'h3',
+      imports: h3Exports.filter(n => !n.match(/^[A-Z]/) && n !== 'use')
+    })
   }
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
