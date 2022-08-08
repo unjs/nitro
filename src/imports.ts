@@ -12,7 +12,8 @@ export const nitroImports: Preset[] = [
       'useStorage',
       'useNitroApp',
       'defineNitroPlugin',
-      'nitroPlugin'
+      'nitroPlugin',
+      'defineRenderHandler'
     ]
   },
   {
