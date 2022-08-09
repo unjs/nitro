@@ -52,7 +52,7 @@ export async function prerender (nitro: Nitro) {
     const _route: PrerenderGenerateRoute = { route }
 
     // Fetch the route
-    const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
+    const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'x-nitro-prerender': route } }) as ReturnType<typeof fetch>)
     _route.contents = await res.text()
     if (res.status !== 200) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any
@@ -118,7 +118,7 @@ function extractLinks (html: string, from: string, res: Response) {
   // Extract from any <TAG href="">
   _links.push(...Array.from(html.matchAll(LINK_REGEX)).map(m => m[1]))
 
-  // Extract from X-Nitro-Prerender headers
+  // Extract from x-nitro-prerender headers
   const header = res.headers.get('x-nitro-prerender') || ''
   _links.push(...header.split(',').map(i => i.trim()))
 
