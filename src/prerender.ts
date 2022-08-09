@@ -116,7 +116,11 @@ function extractLinks (html: string, from: string, res: Response) {
   const _links: string[] = []
 
   // Extract from any <TAG href="">
-  _links.push(...Array.from(html.matchAll(LINK_REGEX)).map(m => m[1]))
+  _links.push(
+    ...Array.from(html.matchAll(LINK_REGEX))
+      .map(m => m[1])
+      .filter(link => allowedExtensions.has(getExtension(link)))
+  )
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get('x-nitro-prerender') || ''
@@ -126,7 +130,6 @@ function extractLinks (html: string, from: string, res: Response) {
     const parsed = parseURL(link)
     if (parsed.protocol) { continue }
     let { pathname } = parsed
-    if (!allowedExtensions.has(getExtension(pathname))) { continue }
     if (!pathname.startsWith('/')) {
       const fromURL = new URL(from, 'http://localhost')
       pathname = new URL(pathname, fromURL).pathname
