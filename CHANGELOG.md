@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.17](https://github.com/unjs/nitro/compare/v0.4.16...v0.4.17) (2022-08-09)
+
+
+### Features
+
+* **netlify:** emit `server.js` to leverage native esm ([#401](https://github.com/unjs/nitro/issues/401)) ([8304ae2](https://github.com/unjs/nitro/commit/8304ae24b5397c1a9dd64d1a5eb25d62069da900))
+
 ### [0.4.16](https://github.com/unjs/nitro/compare/v0.4.15...v0.4.16) (2022-08-09)
 
 
