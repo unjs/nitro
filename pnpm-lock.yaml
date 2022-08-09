@@ -80,11 +80,11 @@ importers:
       typescript: ^4.7.4
       ufo: ^0.8.5
       unbuild: ^0.7.6
-      unenv: ^0.5.2
+      unenv: ^0.5.3
       unimport: ^0.6.5
       unstorage: ^0.5.6
       vitepress: ^0.22.4
-      vitest: ^0.21.0
+      vitest: ^0.21.1
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.0.0
@@ -141,7 +141,7 @@ importers:
       source-map-support: 0.5.21
       std-env: 3.1.1
       ufo: 0.8.5
-      unenv: 0.5.2
+      unenv: 0.5.3
       unimport: 0.6.5_axviaedfcx2tizy6rzan5phlym
       unstorage: 0.5.6
     devDependencies:
@@ -164,7 +164,7 @@ importers:
       typescript: 4.7.4
       unbuild: 0.7.6
       vitepress: 0.22.4
-      vitest: 0.21.0_c8@7.12.0
+      vitest: 0.21.1_c8@7.12.0
 
   docs:
     specifiers: {}
@@ -1005,11 +1005,11 @@ packages:
   /@types/chai-subset/1.3.3:
     resolution: {integrity: sha512-frBecisrNGz+F4T6bcc+NLeolfiojh5FxW2klu669+8BARtyQv2C/GkNW6FUodVe4BroGMP/wER/YDGc7rEllw==}
     dependencies:
-      '@types/chai': 4.3.1
+      '@types/chai': 4.3.3
     dev: true
 
-  /@types/chai/4.3.1:
-    resolution: {integrity: sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==}
+  /@types/chai/4.3.3:
+    resolution: {integrity: sha512-hC7OMnszpxhZPduX+m+nrx+uFoLkWOMiR4oa/AZF3MuSETYTZmFfJAHqZEM8MVlvfG7BEUcgvtwoCTxBp6hm3g==}
     dev: true
 
   /@types/estree/0.0.39:
@@ -5484,8 +5484,8 @@ packages:
     engines: {node: '>=12.18'}
     dev: true
 
-  /unenv/0.5.2:
-    resolution: {integrity: sha512-dojYcCqOFEWZosvqWs/AEaEfM/tLJexMKBW0ebkn6JKfEnYR5fKxbYJB8QV9kAPXV/ENseeWQkv6uJ3KCXz+1g==}
+  /unenv/0.5.3:
+    resolution: {integrity: sha512-cux5XhVyN2Vul2NlA0eKCazBAZXHhtMs5D04GKdER7aBRTr2BDiqkZQEdwJcpEwIevwxBiuMG7BAlHW6AqNA7g==}
     dependencies:
       defu: 6.0.0
       mime: 3.0.0
@@ -5674,8 +5674,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.21.0_c8@7.12.0:
-    resolution: {integrity: sha512-+BQB2swk4wQdw5loOoL8esIYh/1ifAliuwj2HWHNE2F8SAl/jF7/aoCJBoXGSf/Ws19k3pH4NrWeVtcSwM0j2w==}
+  /vitest/0.21.1_c8@7.12.0:
+    resolution: {integrity: sha512-WBIxuFmIDPuK47GO6Lu9eNeRMqHj/FWL3dk73OHH3eyPPWPiu+UB3QHLkLK2PEggCqJW4FaWoWg8R68S7p9+9Q==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -5699,7 +5699,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/chai': 4.3.1
+      '@types/chai': 4.3.3
       '@types/chai-subset': 1.3.3
       '@types/node': 17.0.31
       c8: 7.12.0
