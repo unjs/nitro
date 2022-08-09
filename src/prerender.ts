@@ -78,15 +78,11 @@ export async function prerender (nitro: Nitro) {
     await writeFile(filePath, _route.contents)
 
     // Crawl route links
-    if (
-      !_route.error &&
-      nitro.options.prerender.crawlLinks &&
-      isImplicitHTML
-    ) {
-      const crawledRoutes = extractLinks(_route.contents, route, res)
-      for (const crawledRoute of crawledRoutes) {
-        if (canPrerender(crawledRoute)) {
-          routes.add(crawledRoute)
+    if (!_route.error && isImplicitHTML) {
+      const extractedLinks = extractLinks(_route.contents, route, res, nitro.options.prerender.crawlLinks)
+      for (const _link of extractedLinks) {
+        if (canPrerender(_link)) {
+          routes.add(_link)
         }
       }
     }
@@ -114,16 +110,18 @@ export async function prerender (nitro: Nitro) {
 
 const LINK_REGEX = /href=['"]?([^'" >]+)/g
 
-function extractLinks (html: string, from: string, res: Response) {
+function extractLinks (html: string, from: string, res: Response, crawlLinks: boolean) {
   const links: string[] = []
   const _links: string[] = []
 
-  // Extract from any <TAG href="">
-  _links.push(
-    ...Array.from(html.matchAll(LINK_REGEX))
-      .map(m => m[1])
-      .filter(link => allowedExtensions.has(getExtension(link)))
-  )
+  // Extract from any <TAG href=""> to crawl
+  if (crawlLinks) {
+    _links.push(
+      ...Array.from(html.matchAll(LINK_REGEX))
+        .map(m => m[1])
+        .filter(link => allowedExtensions.has(getExtension(link)))
+    )
+  }
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get('x-nitro-prerender') || ''
