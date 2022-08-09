@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.15](https://github.com/unjs/nitro/compare/v0.4.14...v0.4.15) (2022-08-09)
+
+
+### Features
+
+* **prerender:** basic ignore support ([a6cbbbe](https://github.com/unjs/nitro/commit/a6cbbbe482243a3d8dc4c3917ec406b74fdb2a8f))
+
+
+### Bug Fixes
+
+* **prerender:** apply extension filter only to parsed links ([541b0b0](https://github.com/unjs/nitro/commit/541b0b0662017ee8d1f5448a985d27c70a9e6303))
+* set `x-nitro-prerender` header as lower-case ([9cee698](https://github.com/unjs/nitro/commit/9cee698c4c12b10cd588efc3234b69acdedb252d))
+
 ### [0.4.14](https://github.com/unjs/nitro/compare/v0.4.13...v0.4.14) (2022-08-08)
 
 
