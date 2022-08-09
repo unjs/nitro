@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.16](https://github.com/unjs/nitro/compare/v0.4.15...v0.4.16) (2022-08-09)
+
+
+### Bug Fixes
+
+* **prerender:** prerender `x-nitro` links without crawlLinks option ([46b445f](https://github.com/unjs/nitro/commit/46b445f8b21409540a66973be8fb693cce7812dc))
+
 ### [0.4.15](https://github.com/unjs/nitro/compare/v0.4.14...v0.4.15) (2022-08-09)
 
 
