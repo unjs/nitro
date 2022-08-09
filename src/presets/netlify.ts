@@ -12,7 +12,7 @@ export const netlify = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      entryFileNames: 'server.ts'
+      entryFileNames: 'server.mjs'
     }
   },
   hooks: {
