@@ -29,6 +29,18 @@ export const netlify = defineNitroPreset({
         contents = currentRedirects + '\n' + contents
       }
       await fsp.writeFile(redirectsPath, contents)
+
+      const serverCJSPath = join(nitro.options.output.serverDir, 'server.js')
+      const serverJSCode = `
+let _handler
+exports.handler = async function handler (event, context) {
+  if (!_handler) {
+    _handler = await import('./server.mjs').then(r => r.handler)
+  }
+  return _handler(event, context)
+}
+      `.trim()
+      await fsp.writeFile(serverCJSPath, serverJSCode)
     }
   }
 })
