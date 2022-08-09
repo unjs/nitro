@@ -55,6 +55,7 @@ const NitroDefaults: NitroConfig = {
   routes: {},
   prerender: {
     crawlLinks: false,
+    ignore: [],
     routes: []
   },
 

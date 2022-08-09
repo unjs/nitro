@@ -144,6 +144,7 @@ export interface NitroOptions {
   devErrorHandler: NitroErrorHandler
   prerender: {
     crawlLinks: boolean
+    ignore: string[]
     routes: string[]
   }
 

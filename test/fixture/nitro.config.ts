@@ -22,6 +22,9 @@ export default defineNitroConfig({
   ],
   prerender: {
     crawlLinks: true,
+    ignore: [
+      // '/api/param/'
+    ],
     routes: [
       '/prerender',
       '/404'

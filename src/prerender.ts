@@ -37,6 +37,9 @@ export async function prerender (nitro: Nitro) {
   const canPrerender = (route: string = '/') => {
     if (generatedRoutes.has(route)) { return false }
     if (route.length > 250) { return false }
+    for (const ignore of nitro.options.prerender.ignore) {
+      if (route.startsWith(ignore)) { return false }
+    }
     return true
   }
 
