@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.18](https://github.com/unjs/nitro/compare/v0.4.17...v0.4.18) (2022-08-09)
+
+
+### Bug Fixes
+
+* **netlify:** update rollup output file ([8965bd5](https://github.com/unjs/nitro/commit/8965bd5b72c2599e20e1592175ef154449613358))
+
 ### [0.4.17](https://github.com/unjs/nitro/compare/v0.4.16...v0.4.17) (2022-08-09)
 
 
