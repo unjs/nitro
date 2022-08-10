@@ -27,7 +27,13 @@ export default <NitroErrorHandler> function (error, event) {
 
   // Console output
   if (error.unhandled || error.fatal) {
-    console.error('[nitro] [request error]', error.message + '\n' + stack.map(l => '  ' + l.text).join('  \n'))
+    const tags = [
+      '[nitro]',
+      '[request error]',
+      error.unhandled && '[unhandled]',
+      error.fatal && '[fatal]'
+    ].filter(Boolean).join(' ')
+    console.error(tags, error.message + '\n' + stack.map(l => '  ' + l.text).join('  \n'))
   }
 
   event.res.statusCode = statusCode
