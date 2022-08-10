@@ -138,7 +138,8 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
 
   nitro.logger.start('Building server...')
   const build = await rollup.rollup(rollupConfig).catch((error) => {
-    nitro.logger.error('Rollup error: ' + error.message)
+    const location = `${relative(process.cwd(), error.id)}:${error.loc.line}:${error.loc.column}`
+    nitro.logger.error(`Rollup error while parsing \`${location}\`` + '\n' + '\n' + error.frame)
     throw error
   })
 
