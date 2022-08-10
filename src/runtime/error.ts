@@ -26,7 +26,7 @@ export default <NitroErrorHandler> function (error, event) {
   }
 
   // Console output
-  if (statusCode !== 404) {
+  if (error.unhandled || error.fatal) {
     console.error('[nitro] [request error]', error.message + '\n' + stack.map(l => '  ' + l.text).join('  \n'))
   }
 
