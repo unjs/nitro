@@ -1,5 +1,5 @@
 import { promises as fsp } from 'fs'
-import { relative, resolve, join, dirname } from 'pathe'
+import { relative, resolve, join, dirname, isAbsolute } from 'pathe'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import { defu } from 'defu'
@@ -137,10 +137,19 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
   await _snapshot(nitro)
 
   nitro.logger.start('Building server...')
-  const build = await rollup.rollup(rollupConfig).catch((error) => {
-    const location = `${relative(process.cwd(), error.id)}:${error.loc.line}:${error.loc.column}`
-    nitro.logger.error(`Rollup error while processing \`${location}\`` + '\n' + '\n' + error.frame)
-    throw error
+  const build = await rollup.rollup(rollupConfig).catch((_error) => {
+    try {
+      for (const error of ('errors' in _error ? _error.errors : [_error])) {
+        const id = error.id || _error.id
+        let path = isAbsolute(id) ? relative(process.cwd(), id) : id
+        const location = error.loc || error.location
+        if (location) {
+          path += `:${location.line}:${location.column}`
+        }
+        nitro.logger.error(`Rollup error while processing \`${path}\`` + '\n' + '\n' + (error.text || error.frame))
+      }
+    } catch {}
+    throw _error
   })
 
   nitro.logger.start('Writing server bundle...')
