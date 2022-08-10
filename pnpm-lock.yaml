@@ -18,7 +18,7 @@ importers:
       '@rollup/plugin-replace': ^4.0.0
       '@rollup/plugin-wasm': ^5.2.0
       '@rollup/pluginutils': ^4.2.1
-      '@types/aws-lambda': ^8.10.101
+      '@types/aws-lambda': ^8.10.102
       '@types/etag': ^1.8.1
       '@types/fs-extra': ^9.0.13
       '@types/http-proxy': ^1.17.9
@@ -81,7 +81,7 @@ importers:
       ufo: ^0.8.5
       unbuild: ^0.7.6
       unenv: ^0.5.3
-      unimport: ^0.6.5
+      unimport: ^0.6.7
       unstorage: ^0.5.6
       vitepress: ^0.22.4
       vitest: ^0.21.1
@@ -142,11 +142,11 @@ importers:
       std-env: 3.1.1
       ufo: 0.8.5
       unenv: 0.5.3
-      unimport: 0.6.5_iqbcpcj4ibf7kfl5wz2zv6tlvq
+      unimport: 0.6.7_iqbcpcj4ibf7kfl5wz2zv6tlvq
       unstorage: 0.5.6
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 10.0.0_qugx7qdu5zevzvxaiqyxfiwquq
-      '@types/aws-lambda': 8.10.101
+      '@types/aws-lambda': 8.10.102
       '@types/etag': 1.8.1
       '@types/fs-extra': 9.0.13
       '@types/http-proxy': 1.17.9
@@ -1008,8 +1008,8 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
 
-  /@types/aws-lambda/8.10.101:
-    resolution: {integrity: sha512-84geGyVc0H9P9aGbcg/vkDh5akJq0bEf3tizHNR2d1gcm0wsp9IZ/SW6rPxvgjJFi3OeVxDc8WTKCAjoZbogzg==}
+  /@types/aws-lambda/8.10.102:
+    resolution: {integrity: sha512-BT05v46n9KtSHa9SgGuOvm49eSruJ9utD8iNXpdpuUVYk8wOcqmm1LEzpNRkrXxD0CULc38sdLpk6q3Wa2WOwg==}
     dev: true
 
   /@types/chai-subset/1.3.3:
@@ -5733,8 +5733,8 @@ packages:
       pathe: 0.3.3
     dev: false
 
-  /unimport/0.6.5_iqbcpcj4ibf7kfl5wz2zv6tlvq:
-    resolution: {integrity: sha512-B8x6+GiYUzDphN6Iaoshu99mUo8n7QCq13QTY2Z8saj1QBmGKXf+vJJlptfL3MdOmzxpve2Ikx91UZ4Qoz4dVQ==}
+  /unimport/0.6.7_iqbcpcj4ibf7kfl5wz2zv6tlvq:
+    resolution: {integrity: sha512-EMoVqDjswHkU+nD098QYHXH7Mkw7KwGDQAyeRF2lgairJnuO+wpkhIcmCqrD1OPJmsjkTbJ2tW6Ap8St0PuWZA==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
@@ -5745,7 +5745,7 @@ packages:
       pathe: 0.3.3
       scule: 0.3.2
       strip-literal: 0.4.0
-      unplugin: 0.8.1_iqbcpcj4ibf7kfl5wz2zv6tlvq
+      unplugin: 0.9.0_iqbcpcj4ibf7kfl5wz2zv6tlvq
     transitivePeerDependencies:
       - esbuild
       - rollup
@@ -5757,8 +5757,8 @@ packages:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
     engines: {node: '>= 10.0.0'}
 
-  /unplugin/0.8.1_iqbcpcj4ibf7kfl5wz2zv6tlvq:
-    resolution: {integrity: sha512-o7rUZoPLG1fH4LKinWgb77gDtTE6mw/iry0Pq0Z5UPvZ9+HZ1/4+7fic7t58s8/CGkPrDpGq+RltO+DmswcR4g==}
+  /unplugin/0.9.0_iqbcpcj4ibf7kfl5wz2zv6tlvq:
+    resolution: {integrity: sha512-6o7q8Y9yxdPi5yCPmRuFfeNnVzGumRNZSK6hIkvZ6hd0cfigVdm0qBx/GgQ/NEjs54eUV1qTjvMYKRs9yh3rzw==}
     peerDependencies:
       esbuild: '>=0.13'
       rollup: ^2.50.0
