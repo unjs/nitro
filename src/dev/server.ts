@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
-import { App, createApp, eventHandler } from 'h3'
+import { App, createApp, eventHandler, H3Error } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
@@ -74,7 +74,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // Error handler
   const errorHandler = nitro.options.devErrorHandler || defaultErrorHandler
 
-  let lastError: Error = null
+  let lastError: H3Error = null
   let reloadPromise: Promise<void> = null
 
   let currentWorker: NitroWorker = null
