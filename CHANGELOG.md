@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.22](https://github.com/unjs/nitro/compare/v0.4.21...v0.4.22) (2022-08-11)
+
+
+### Bug Fixes
+
+* fix dist dir check regex ([6cad682](https://github.com/unjs/nitro/commit/6cad6821039328e099b4b1a6cba5f73eba42a111))
+
 ### [0.4.21](https://github.com/unjs/nitro/compare/v0.4.20...v0.4.21) (2022-08-11)
 
 
