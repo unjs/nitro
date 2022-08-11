@@ -57,7 +57,7 @@ importers:
       listhen: ^0.2.15
       mime: ^3.0.0
       miniflare: ^2.6.0
-      mlly: ^0.5.9
+      mlly: ^0.5.10
       mri: ^1.2.0
       node-fetch-native: ^0.1.4
       ohash: ^0.1.5
@@ -79,7 +79,7 @@ importers:
       std-env: ^3.1.1
       typescript: ^4.7.4
       ufo: ^0.8.5
-      unbuild: ^0.8.7
+      unbuild: ^0.8.8
       unenv: ^0.5.3
       unimport: ^0.6.7
       unstorage: ^0.5.6
@@ -121,7 +121,7 @@ importers:
       klona: 2.0.5
       listhen: 0.2.15
       mime: 3.0.0
-      mlly: 0.5.9
+      mlly: 0.5.10
       mri: 1.2.0
       node-fetch-native: 0.1.4
       ohash: 0.1.5
@@ -162,7 +162,7 @@ importers:
       miniflare: 2.6.0
       standard-version: 9.5.0
       typescript: 4.7.4
-      unbuild: 0.8.7
+      unbuild: 0.8.8
       vitepress: 0.22.4
       vitest: 0.21.1_c8@7.12.0
 
@@ -1679,7 +1679,7 @@ packages:
       dotenv: 16.0.1
       gittar: 0.1.1
       jiti: 1.14.0
-      mlly: 0.5.9
+      mlly: 0.5.10
       pathe: 0.3.4
       rc9: 1.2.2
     dev: false
@@ -4416,8 +4416,8 @@ packages:
       typescript: 4.7.4
     dev: true
 
-  /mlly/0.5.9:
-    resolution: {integrity: sha512-OsbZUJVn5Z79gEEALFpSKjk99AZdXaNG8zaJvpKFtMXcjYASIQX34yVJwIXMwOYM8yVOqhL4tPgtKaHI8s5tLA==}
+  /mlly/0.5.10:
+    resolution: {integrity: sha512-mY6i+bwcgn0XAdZTiiBt6kyoUjLsm3Cuv0T4CchQJcq/UCSUcGPapSxc4g7whtIsUfcsJ2kGqZAdmqCF/VNC/Q==}
     dependencies:
       acorn: 8.8.0
       pathe: 0.3.4
@@ -4817,7 +4817,7 @@ packages:
     resolution: {integrity: sha512-6AJcCMnjUQPQv/Wk960w0TOmjhdjbeaQJoSKWRQv9N3rgkessCu6J0Ydsog/nw1MbpnxHuPzYbfOn2KmlZO1FA==}
     dependencies:
       jsonc-parser: 3.0.0
-      mlly: 0.5.9
+      mlly: 0.5.10
       pathe: 0.3.4
 
   /pluralize/8.0.0:
@@ -5673,8 +5673,8 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: true
 
-  /unbuild/0.8.7:
-    resolution: {integrity: sha512-zfmMCqaDW3IekoiqDxrMjNkaiU1kC89jX3nZki2l5jr5xWaptF0FGxswKINcuM4YRd3oNTNRkAHPuIBabJPCcw==}
+  /unbuild/0.8.8:
+    resolution: {integrity: sha512-BGDDh3BmM+B0Mc1sVSeUDXKykH3h73V7LcGLM2D3v4Tv5Pr3vgxEwxCkxNw1mZlW71sQX/yxMAoBIxnpmr55Tg==}
     hasBin: true
     dependencies:
       '@rollup/plugin-alias': 3.1.9_rollup@2.77.3
@@ -5693,7 +5693,7 @@ packages:
       magic-string: 0.26.2
       mkdirp: 1.0.4
       mkdist: 0.3.13_typescript@4.7.4
-      mlly: 0.5.9
+      mlly: 0.5.10
       mri: 1.2.0
       pathe: 0.3.4
       pkg-types: 0.3.3
@@ -5736,7 +5736,7 @@ packages:
       fast-glob: 3.2.11
       local-pkg: 0.4.2
       magic-string: 0.26.2
-      mlly: 0.5.9
+      mlly: 0.5.10
       pathe: 0.3.4
       scule: 0.3.2
       strip-literal: 0.4.0
