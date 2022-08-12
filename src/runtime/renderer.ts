@@ -19,7 +19,17 @@ export function defineRenderHandler (handler: RenderHandler) {
       return
     }
 
-    const response = await handler(event)
+    const response = await Promise.resolve(handler(event)).catch(async (err) => {
+      const defaultErrorHandler = await import('./error').then(r => r.default)
+      await defaultErrorHandler(err, event)
+    })
+    if (!response) {
+      if (!event.res.writableEnded) {
+        event.res.statusCode = event.res.statusCode === 200 ? 500 : event.res.statusCode
+        event.res.end('No response returned from render handler: ' + event.req.url)
+      }
+      return
+    }
 
     // Allow hooking and modifying response
     const nitroApp = useNitroApp()
