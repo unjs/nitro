@@ -57,7 +57,7 @@ importers:
       listhen: ^0.2.15
       mime: ^3.0.0
       miniflare: ^2.6.0
-      mlly: ^0.5.11
+      mlly: ^0.5.12
       mri: ^1.2.0
       node-fetch-native: ^0.1.4
       ohash: ^0.1.5
@@ -121,7 +121,7 @@ importers:
       klona: 2.0.5
       listhen: 0.2.15
       mime: 3.0.0
-      mlly: 0.5.11
+      mlly: 0.5.12
       mri: 1.2.0
       node-fetch-native: 0.1.4
       ohash: 0.1.5
@@ -1679,7 +1679,7 @@ packages:
       dotenv: 16.0.1
       gittar: 0.1.1
       jiti: 1.14.0
-      mlly: 0.5.11
+      mlly: 0.5.12
       pathe: 0.3.4
       rc9: 1.2.2
     dev: false
@@ -4416,8 +4416,8 @@ packages:
       typescript: 4.7.4
     dev: true
 
-  /mlly/0.5.11:
-    resolution: {integrity: sha512-sfiyMZPbHG0y4I4t2Zj8FI5k89oNmwpEgKkbi9d4V2iNIvNAHQHgQxOeMyW3bS3c5hGEfovXHVbOAG5eVITzOQ==}
+  /mlly/0.5.12:
+    resolution: {integrity: sha512-8moXGh6Hfy2Nmys3DDEm4CuxDBk5Y7Lk1jQ4JcwW0djO9b+SCKTpw0enIQeZIuEnPljdxHSGmcbXU9hpIIEYeQ==}
     dependencies:
       acorn: 8.8.0
       pathe: 0.3.4
@@ -4817,7 +4817,7 @@ packages:
     resolution: {integrity: sha512-6AJcCMnjUQPQv/Wk960w0TOmjhdjbeaQJoSKWRQv9N3rgkessCu6J0Ydsog/nw1MbpnxHuPzYbfOn2KmlZO1FA==}
     dependencies:
       jsonc-parser: 3.0.0
-      mlly: 0.5.11
+      mlly: 0.5.12
       pathe: 0.3.4
 
   /pluralize/8.0.0:
@@ -5693,7 +5693,7 @@ packages:
       magic-string: 0.26.2
       mkdirp: 1.0.4
       mkdist: 0.3.13_typescript@4.7.4
-      mlly: 0.5.11
+      mlly: 0.5.12
       mri: 1.2.0
       pathe: 0.3.4
       pkg-types: 0.3.3
@@ -5736,7 +5736,7 @@ packages:
       fast-glob: 3.2.11
       local-pkg: 0.4.2
       magic-string: 0.26.2
-      mlly: 0.5.11
+      mlly: 0.5.12
       pathe: 0.3.4
       scule: 0.3.2
       strip-literal: 0.4.0
