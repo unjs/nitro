@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.24](https://github.com/unjs/nitro/compare/v0.4.23...v0.4.24) (2022-08-12)
+
+
+### Bug Fixes
+
+* **renderer:** do not use default error fallback ([80081b0](https://github.com/unjs/nitro/commit/80081b0b70d845c29ec24d98573c2179590fafc8))
+
 ### [0.4.23](https://github.com/unjs/nitro/compare/v0.4.22...v0.4.23) (2022-08-12)
 
 
