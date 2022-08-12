@@ -36,7 +36,7 @@ export default eventHandler(async event => {
 ```js
 // routes/user.post.ts
 export default eventHandler(async event => {
-  const body = await useBody()
+  const body = await useBody(event)
   // TODO: Handle body and update user
   return `User updated!`
 })
