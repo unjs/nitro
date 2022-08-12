@@ -19,10 +19,7 @@ export function defineRenderHandler (handler: RenderHandler) {
       return
     }
 
-    const response = await Promise.resolve(handler(event)).catch(async (err) => {
-      const defaultErrorHandler = await import('./error').then(r => r.default)
-      await defaultErrorHandler(err, event)
-    })
+    const response = await handler(event)
     if (!response) {
       if (!event.res.writableEnded) {
         event.res.statusCode = event.res.statusCode === 200 ? 500 : event.res.statusCode
