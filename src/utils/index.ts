@@ -67,6 +67,7 @@ export function replaceAll (input: string, from: string, to: string) {
 
 const autodetectableProviders = {
   azure_static: 'azure',
+  cloudflare_pages: 'cloudflare_pages',
   netlify: 'netlify',
   stormkit: 'stormkit',
   vercel: 'vercel'
