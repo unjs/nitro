@@ -1,5 +1,7 @@
 # Cloudflare
 
+## Cloudflare Workers (service workers syntax)
+
 **Preset:** `cloudflare` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
@@ -24,7 +26,7 @@ command = ""
 upload.format = "service-worker"
 ```
 
-## Testing locally
+### Testing locally
 
 You can use [miniflare](https://miniflare.dev/), a local Cloudflare Workers development server, to test your app locally:
 
@@ -33,7 +35,7 @@ NITRO_PRESET=cloudflare yarn build
 npx miniflare .output/server/index.mjs --site .output/public
 ```
 
-## Deploy from your local machine using wrangler
+### Deploy from your local machine using wrangler
 
 Install [wrangler](https://github.com/cloudflare/wrangler) and login to your Cloudflare account:
 
@@ -60,7 +62,7 @@ Publish:
 wrangler publish
 ```
 
-## Deploy within CI/CD using GitHub Actions
+### Deploy within CI/CD using GitHub Actions
 
 Create a token according to [the wrangler action docs](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler#authentication) and set `CF_API_TOKEN` in your repository config on GitHub.
 
@@ -116,3 +118,39 @@ jobs:
 ```
 
 
+## Cloudflare Pages
+
+**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+::: info Zero Config Provider
+Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+:::
+
+### Git integration
+
+If you use the GitHub/GitLab [integration](https://developers.cloudflare.com/pages/get-started/#connect-your-git-provider-to-pages) with Pages, Nitro does not require any configuration. When you push to the repository, Pages will automatically build your project, and Nitro will detect the environment.
+
+### Direct Upload
+
+Alternatively, you can use [wrangler](https://github.com/cloudflare/wrangler2) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
+
+### Deploy from your local machine using wrangler
+
+Install [wrangler](https://github.com/cloudflare/wrangler) and login to your Cloudflare account:
+
+```bash
+npm i wrangler -g
+wrangler login
+```
+
+Create project:
+
+```bash
+wrangler pages project create <project-name>
+```
+
+Publish:
+
+```bash
+wrangler pages publish
+```
