@@ -28,6 +28,7 @@ importers:
       '@types/semver': ^7.3.12
       '@types/serve-static': ^1.15.0
       '@vercel/nft': ^0.21.0
+      '@vitest/coverage-c8': ^0.22.0
       archiver: ^5.3.1
       c12: ^0.2.9
       c8: ^7.12.0
@@ -154,6 +155,7 @@ importers:
       '@types/object-hash': 2.2.1
       '@types/semver': 7.3.12
       '@types/serve-static': 1.15.0
+      '@vitest/coverage-c8': 0.22.0
       c8: 7.12.0
       edge-runtime: 1.1.0-beta.26
       eslint: 8.22.0
@@ -1307,6 +1309,23 @@ packages:
     dependencies:
       vite: 2.9.7
       vue: 3.2.33
+    dev: true
+
+  /@vitest/coverage-c8/0.22.0:
+    resolution: {integrity: sha512-jwW6b8U+h9nbzQfKoRmpf2xjDg+mcAjLIdVUrZGhjTnIdekGfvoqFoeiXzsLv2HwYBeFi4943lYUftuj8qD1FQ==}
+    dependencies:
+      c8: 7.12.0
+      vitest: 0.22.0
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - happy-dom
+      - jsdom
+      - less
+      - sass
+      - stylus
+      - supports-color
     dev: true
 
   /@vue/compiler-core/3.2.33:
