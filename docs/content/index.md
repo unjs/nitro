@@ -1,7 +1,7 @@
 ---
 title: Home
 navigation: false
-layout: fluid
+layout: page
 ---
 
 

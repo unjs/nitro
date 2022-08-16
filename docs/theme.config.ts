@@ -7,7 +7,7 @@ export default defineTheme({
     logo: false
   },
   description: 'Build and Deploy Universal JavaScript Servers.',
-  url: 'https://nitro.unjs.org',
+  url: 'https://nitro.unjs.io',
   socials: {
     twitter: null,
     github: 'unjs/nitro'
@@ -15,7 +15,7 @@ export default defineTheme({
   github: {
     root: 'docs/content',
     edit: true,
-    releases: true
+    releases: false
   },
   aside: {
     level: 1
