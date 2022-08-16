@@ -12,7 +12,7 @@ export const netlify = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      entryFileNames: 'server.ts'
+      entryFileNames: 'server.mjs'
     }
   },
   hooks: {
@@ -29,6 +29,21 @@ export const netlify = defineNitroPreset({
         contents = currentRedirects + '\n' + contents
       }
       await fsp.writeFile(redirectsPath, contents)
+
+      const serverCJSPath = join(nitro.options.output.serverDir, 'server.js')
+      const serverJSCode = `
+let _handler
+exports.handler = function handler (event, context) {
+  if (_handler) {
+    return _handler(event, context)
+  }
+  return import('./server.mjs').then(m => {
+    _handler = m.handler
+    return _handler(event, context)
+  })
+}
+`.trim()
+      await fsp.writeFile(serverCJSPath, serverJSCode)
     }
   }
 })

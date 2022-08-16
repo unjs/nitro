@@ -74,7 +74,7 @@ for (const asset of serverAssets) {
 function getAssetProd (assets: Record<string, ResolvedAsset>) {
   return `
 const _assets = {\n${Object.entries(assets).map(([id, asset]) =>
-  `  ['${normalizeKey(id)}']: {\n    import: () => import('raw:${asset.fsPath}').then(r => r.default || r),\n    meta: ${JSON.stringify(asset.meta)}\n  }`
+  `  [${JSON.stringify(normalizeKey(id))}]: {\n    import: () => import(${JSON.stringify('raw:' + asset.fsPath)}).then(r => r.default || r),\n    meta: ${JSON.stringify(asset.meta)}\n  }`
 ).join(',\n')}\n}
 
 ${normalizeKey.toString()}

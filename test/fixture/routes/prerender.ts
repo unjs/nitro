@@ -11,8 +11,8 @@ export default defineEventHandler((event) => {
     '/api/param/foo.css'
   ]
 
-  appendHeader(event, 'X-Nitro-Prerender', '/api/param/prerender1, /api/param/prerender2')
-  appendHeader(event, 'X-Nitro-Prerender', '/api/param/prerender3')
+  appendHeader(event, 'x-nitro-prerender', '/api/param/prerender1, /api/param/prerender2')
+  appendHeader(event, 'x-nitro-prerender', '/api/param/prerender3')
 
   return `
     <ul>
