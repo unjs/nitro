@@ -9,7 +9,7 @@ export default defineTheme({
   description: 'Build and Deploy Universal JavaScript Servers.',
   url: 'https://nitro.unjs.io',
   socials: {
-    twitter: '',
+    twitter: 'unjsio',
     github: 'unjs/nitro'
   },
   github: {
