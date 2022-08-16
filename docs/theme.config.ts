@@ -3,13 +3,13 @@ import { defineTheme } from '@nuxt-themes/config'
 export default defineTheme({
   title: '⚗️ Nitro',
   header: {
-    title: true,
-    logo: false
+    title: false,
+    logo: true
   },
   description: 'Build and Deploy Universal JavaScript Servers.',
   url: 'https://nitro.unjs.io',
   socials: {
-    twitter: null,
+    twitter: '',
     github: 'unjs/nitro'
   },
   github: {
@@ -27,8 +27,8 @@ export default defineTheme({
   footer: {
     credits: {
       icon: '',
-      text: 'MIT Licensed | Made by 💛 as part of the UnJS ecosystem',
-      href: 'https://docus.com'
+      text: 'Made by 💛',
+      href: 'https://github.com/unjs/nitro'
     },
     icons: []
   }

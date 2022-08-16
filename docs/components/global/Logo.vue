@@ -1,3 +1,5 @@
 <template>
-  <div>⚗️ Nitro</div>
+  <span style="overflow: hidden;">
+    ⚗️ Nitro
+  </span>
 </template>

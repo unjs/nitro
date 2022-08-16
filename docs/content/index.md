@@ -13,7 +13,7 @@ cta:
 secondary:
   - Star on GitHub
   - https://github.com/unjs/nitro
-snippet: 'mkdir nitro-app'
+snippet: "-"
 ---
 
 #top
