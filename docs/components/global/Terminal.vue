@@ -2,19 +2,17 @@
 import { useClipboard } from '@vueuse/core'
 import { ref } from '#imports'
 
-const props = defineProps({
-  content: {
-    type: String,
-    required: true
-  }
-})
+const code = [
+  'npx tiged unjs/nitro#starter',
+  'npx nitropack dev'
+]
 
 const { copy: copyToClipboard } = useClipboard()
 
 const state = ref('init')
 
 const copy = (e: MouseEvent) => {
-  copyToClipboard(props.content)
+  copyToClipboard(code.join('\n'))
     .then(() => {
       state.value = 'copied'
 
@@ -49,10 +47,7 @@ const copy = (e: MouseEvent) => {
     <div class="flex flex-1 p-4 font-mono">
       <span class="mr-2 inline-block select-none font-bold" />
       <span class="inline-block text-gray-200">
-        <pre>
-npx tiged unjs/nitro#starter server
-npx nitropack dev server
-        </pre>
+        <pre v-text="code.map(l => ' $ ' + l).join('\n')"></pre>
       </span>
     </div>
     <div v-if="state !== 'copied'" class="py-2 text-center font-semibold opacity-0 transition-opacity group-hover:opacity-100">
