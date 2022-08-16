@@ -168,9 +168,6 @@ importers:
       vitepress: 0.22.4
       vitest: 0.22.0
 
-  docs:
-    specifiers: {}
-
   examples/api-routes:
     specifiers:
       nitropack: link:../..

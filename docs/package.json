@@ -3,7 +3,6 @@
   "private": true,
   "scripts": {
     "dev": "nuxi dev",
-    "generate": "nuxi generate",
     "build": "nuxi build"
   },
   "devDependencies": {
