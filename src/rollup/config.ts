@@ -57,7 +57,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   const buildServerDir = join(nitro.options.buildDir, 'dist/server')
   const runtimeAppDir = join(runtimeDir, 'app')
 
-  const rollupConfig: RollupConfig = defu<RollupConfig, RollupConfig>(nitro.options.rollupConfig, {
+  const rollupConfig = defu(nitro.options.rollupConfig, <RollupConfig> {
     input: nitro.options.entry,
     output: {
       dir: nitro.options.output.serverDir,

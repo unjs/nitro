@@ -177,8 +177,7 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
 }
 
 function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
-  type OT = rollup.RollupWatchOptions
-  const watcher = rollup.watch(defu<OT, OT>(rollupConfig, {
+  const watcher = rollup.watch(defu(rollupConfig, {
     watch: {
       chokidar: nitro.options.watchOptions
     }
