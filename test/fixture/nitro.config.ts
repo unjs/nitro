@@ -1,7 +1,7 @@
 import { defineNitroConfig } from '../../src'
 
 export default defineNitroConfig({
-  autoImports: {
+  imports: {
     presets: [
       {
         // TODO: move this to built-in preset

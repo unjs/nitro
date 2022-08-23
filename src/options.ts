@@ -36,7 +36,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
-  autoImports: {
+  imports: {
     exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/],
     presets: nitroImports
   },
@@ -149,24 +149,24 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   }
 
   // TODO: https://github.com/unjs/nitro/issues/294
-  // autoImportsOptions.include = [
-  //   ...Array.isArray(autoImportsOptions.include)
-  //     ? autoImportsOptions.include
-  //     : [autoImportsOptions.include].filter(Boolean),
+  // importsOptions.include = [
+  //   ...Array.isArray(importsOptions.include)
+  //     ? importsOptions.include
+  //     : [importsOptions.include].filter(Boolean),
   //   ...options.scanDirs
   //     .filter(i => i.includes('node_modules'))
   //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
   // ]
 
-  const autoImportsOptions = options.autoImports || options.autoImport
-  if (autoImportsOptions && Array.isArray(autoImportsOptions.exclude)) {
-    autoImportsOptions.exclude.push(options.buildDir)
+  const importsOptions = options.imports || options.autoImport
+  if (importsOptions && Array.isArray(importsOptions.exclude)) {
+    importsOptions.exclude.push(options.buildDir)
   }
 
   // Add h3 auto imports preset
-  if (autoImportsOptions) {
+  if (importsOptions) {
     const h3Exports = await resolveModuleExportNames('h3', { url: import.meta.url })
-    autoImportsOptions.presets.push({
+    importsOptions.presets.push({
       from: 'h3',
       imports: h3Exports.filter(n => !n.match(/^[A-Z]/) && n !== 'use')
     })

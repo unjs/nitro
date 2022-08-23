@@ -127,10 +127,10 @@ export interface NitroOptions {
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
   /**
-   * @deprecated renamed to `autoImports`
+   * @deprecated renamed to `imports`
    */
   autoImport: UnimportPluginOptions | false
-  autoImports: UnimportPluginOptions | false
+  imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
 
