@@ -65,7 +65,11 @@ const NitroDefaults: NitroConfig = {
   },
   unenv: {},
   analyze: false,
-  moduleSideEffects: ['unenv/runtime/polyfill/', 'node-fetch-native/polyfill'],
+  moduleSideEffects: [
+    'unenv/runtime/polyfill/',
+    'node-fetch-native/polyfill',
+    'node-fetch-native/dist/polyfill'
+  ],
   replace: {},
   node: true,
   sourceMap: true,
