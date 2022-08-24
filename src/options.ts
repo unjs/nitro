@@ -158,15 +158,22 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
   // ]
 
-  const importsOptions = options.imports || options.autoImport
-  if (importsOptions && Array.isArray(importsOptions.exclude)) {
-    importsOptions.exclude.push(options.buildDir)
+  // Backward compatibility for options.autoImports
+  // TODO: Remove in major release
+  if (options.autoImport === false) {
+    options.imports = false
+  } else if (options.imports !== false) {
+    options.imports = options.autoImport = defu(options.imports, options.autoImport)
+  }
+
+  if (options.imports && Array.isArray(options.imports.exclude)) {
+    options.imports.exclude.push(options.buildDir)
   }
 
   // Add h3 auto imports preset
-  if (importsOptions) {
+  if (options.imports) {
     const h3Exports = await resolveModuleExportNames('h3', { url: import.meta.url })
-    importsOptions.presets.push({
+    options.imports.presets.push({
       from: 'h3',
       imports: h3Exports.filter(n => !n.match(/^[A-Z]/) && n !== 'use')
     })

@@ -121,9 +121,8 @@ export const getRollupConfig = (nitro: Nitro) => {
     rollupConfig.plugins.push(timing())
   }
 
-  const importsOptions = nitro.options.imports || nitro.options.autoImport
-  if (importsOptions) {
-    rollupConfig.plugins.push(unimportPlugin.rollup(importsOptions))
+  if (nitro.options.imports) {
+    rollupConfig.plugins.push(unimportPlugin.rollup(nitro.options.imports))
   }
 
   // Raw asset loader
