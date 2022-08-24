@@ -8,7 +8,8 @@ type Event = Omit<APIGatewayProxyEvent, 'pathParameters' | 'stageVariables' | 'r
 type Result = Exclude<APIGatewayProxyResult | APIGatewayProxyResultV2, string> & { statusCode: number }
 
 export const handler = async function handler (event: Event, context: Context): Promise<Result> {
-  const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, event.queryStringParameters || {})
+  const query = { ...event.queryStringParameters, ...(event as APIGatewayProxyEvent).multiValueQueryStringParameters }
+  const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, query)
   const method = (event as APIGatewayProxyEvent).httpMethod || (event as APIGatewayProxyEventV2).requestContext?.http?.method || 'get'
 
   if ('cookies' in event && event.cookies) {
@@ -21,7 +22,7 @@ export const handler = async function handler (event: Event, context: Context): 
     context,
     headers: normalizeIncomingHeaders(event.headers),
     method,
-    query: event.queryStringParameters,
+    query,
     body: event.body // TODO: handle event.isBase64Encoded
   })
 
