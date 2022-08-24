@@ -148,16 +148,6 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
-  // TODO: https://github.com/unjs/nitro/issues/294
-  // importsOptions.include = [
-  //   ...Array.isArray(importsOptions.include)
-  //     ? importsOptions.include
-  //     : [importsOptions.include].filter(Boolean),
-  //   ...options.scanDirs
-  //     .filter(i => i.includes('node_modules'))
-  //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
-  // ]
-
   // Backward compatibility for options.autoImports
   // TODO: Remove in major release
   if (options.autoImport === false) {
