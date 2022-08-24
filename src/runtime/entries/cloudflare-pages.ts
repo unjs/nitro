@@ -2,20 +2,26 @@ import '#internal/nitro/virtual/polyfill'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
 
-export async function onRequest (context) {
-  // Contents of context object
-  const {
-    request, // same as existing Worker API
-    env, // same as existing Worker API
-    // params, // if filename includes [id] or [[path]]
-    // waitUntil, // same as ctx.waitUntil in existing Worker API
-    next // used for middleware or to fetch assets
-    // data, // arbitrary space for passing data between middlewares
-  } = context
+/** @see https://developers.cloudflare.com/pages/platform/functions/#writing-your-first-function */
+interface CFRequestContext {
+  /** same as existing Worker API */
+  request: any
+  /** same as existing Worker API */
+  env: any
+  /** if filename includes [id] or [[path]] **/
+  params: any
+  /** Same as ctx.waitUntil in existing Worker API */
+  waitUntil: any
+  /** Used for middleware or to fetch assets */
+  next: any
+  /** Arbitrary space for passing data between middlewares */
+  data: any
+}
 
+export async function onRequest (ctx: CFRequestContext) {
   try {
     // const asset = await env.ASSETS.fetch(request, { cacheControl: assetsCacheControl })
-    const asset = await next()
+    const asset = await ctx.next()
     if (asset.status !== 404) {
       return asset
     }
@@ -23,23 +29,25 @@ export async function onRequest (context) {
     // Ignore
   }
 
-  const url = new URL(request.url)
+  const url = new URL(ctx.request.url)
   let body
-  if (requestHasBody(request)) {
-    body = await useRequestBody(request)
+  if (requestHasBody(ctx.request)) {
+    body = await useRequestBody(ctx.request)
   }
 
   const r = await nitroApp.localCall({
-    env,
-    context,
     url: url.pathname + url.search,
+    method: ctx.request.method,
+    headers: ctx.request.headers,
     host: url.hostname,
     protocol: url.protocol,
-    headers: request.headers,
-    method: request.method,
-    redirect: request.redirect,
     body
+    // TODO: Allow passing custom context
+    // cf: ctx,
+    // TODO: Handle redirects?
+    // redirect: ctx.request.redirect
   })
+
   return new Response(r.body, {
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
