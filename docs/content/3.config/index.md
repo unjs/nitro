@@ -95,7 +95,7 @@ Dev server options. You can use `watch` to make the dev server reload if any fil
 
 Watch options for development mode. See [chokidar](https://github.com/paulmillr/chokidar) for more information.
 
-## `autoImport`
+## `imports`
 
 Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for more information.
 
