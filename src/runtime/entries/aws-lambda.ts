@@ -32,8 +32,8 @@ export const handler = async function handler (event: Event, context: Context): 
   }
 }
 
-function normalizeIncomingHeaders (headers: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value!]))
+function normalizeIncomingHeaders (headers?: APIGatewayProxyEventHeaders) {
+  return Object.fromEntries(Object.entries(headers || {}).map(([key, value]) => [key.toLowerCase(), value!]))
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
