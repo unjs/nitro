@@ -3,9 +3,14 @@ title: Cloudflare
 description: 'Discover Cloudflare preset for Nitro!'
 ---
 
-## Cloudflare Workers (service workers syntax)
+## Cloudflare Workers
 
 **Preset:** `cloudflare` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+
+::alert{type="info"}
+**Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
+::
 
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
 
@@ -125,9 +130,15 @@ jobs:
 
 **Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-::: info Zero Config Provider
+::alert{type="warning"}
+**Note:** This is an experimental preset.
+::
+
+::alert
+**Zero Config Provider**
+:br
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
-:::
+::
 
 ### Git integration
 
