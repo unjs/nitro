@@ -10,7 +10,7 @@ import { virtual } from './virtual'
 export function publicAssets (nitro: Nitro): Plugin {
   const assets: Record<string, { type: string, etag: string, mtime: string, path: string }> = {}
 
-  const files = globbySync('**/*.*', { cwd: nitro.options.output.publicDir, absolute: false })
+  const files = globbySync('**/*.*', { cwd: nitro.options.output.publicDir, absolute: false, dot: true })
 
   const publicAssetBases = nitro.options.publicAssets
     .filter(dir => !dir.fallthrough && dir.baseURL !== '/')
@@ -52,7 +52,7 @@ export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 
 export function isPublicAssetURL(id = '') {
   if (assets[id]) {
-    return
+    return true
   }
   for (const base of publicAssetBases) {
     if (id.startsWith(base)) { return true }

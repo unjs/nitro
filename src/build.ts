@@ -2,7 +2,7 @@ import { promises as fsp } from 'fs'
 import { relative, resolve, join, dirname } from 'pathe'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
-import defu from 'defu'
+import { defu } from 'defu'
 import { watch } from 'chokidar'
 import { debounce } from 'perfect-debounce'
 import type { TSConfig } from 'pkg-types'
@@ -60,7 +60,7 @@ export async function writeTypes (nitro: Nitro) {
   if (nitro.unimport) {
     autoImportedTypes = [
       nitro.unimport
-        .generateTypeDecarations({ exportHelper: false })
+        .generateTypeDeclarations({ exportHelper: false })
         .trim()
     ]
   }
@@ -177,8 +177,7 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
 }
 
 function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
-  type OT = rollup.RollupWatchOptions
-  const watcher = rollup.watch(defu<OT, OT>(rollupConfig, {
+  const watcher = rollup.watch(defu(rollupConfig, {
     watch: {
       chokidar: nitro.options.watchOptions
     }

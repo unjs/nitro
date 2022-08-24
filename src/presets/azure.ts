@@ -81,7 +81,7 @@ async function writeRoutes (nitro) {
     if (file.endsWith('index.html')) {
       return
     }
-    const route = file.slice(prefix, '.html'.length)
+    const route = file.slice(prefix, -'.html'.length)
     const existingRouteIndex = config.routes.findIndex(_route => _route.route === route)
     if (existingRouteIndex > -1) {
       config.routes.splice(existingRouteIndex, 1)

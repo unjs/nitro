@@ -62,6 +62,16 @@ async function scanServerDir (nitro: Nitro, name: string, mapper: (file: FileInf
   return { dirs, files, handlers }
 }
 
+export async function scanPlugins (nitro: Nitro) {
+  const plugins = []
+  for (const dir of nitro.options.scanDirs) {
+    const pluginDir = join(dir, 'plugins')
+    const pluginFiles = await globby(GLOB_SCAN_PATTERN, { cwd: pluginDir, absolute: true })
+    plugins.push(...pluginFiles.sort())
+  }
+  return plugins
+}
+
 function scanDirs (dirs: string[]): Promise<FileInfo[]> {
   return Promise.all(dirs.map(async (dir) => {
     const fileNames = await globby(GLOB_SCAN_PATTERN, { cwd: dir, dot: true })
