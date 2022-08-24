@@ -12,7 +12,7 @@ export const handler = async function handler (event: Event, context: Context): 
   const method = (event as APIGatewayProxyEvent).httpMethod || (event as APIGatewayProxyEventV2).requestContext?.http?.method || 'get'
 
   if ('cookies' in event && event.cookies) {
-    event.headers.cookie = event.cookies.join(',')
+    event.headers.cookie = event.cookies.join(';')
   }
 
   const r = await nitroApp.localCall({
