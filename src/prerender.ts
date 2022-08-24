@@ -59,10 +59,10 @@ export async function prerender (nitro: Nitro) {
     _route.data = await res.arrayBuffer()
     Object.defineProperty(_route, 'contents', {
       get: () => {
-        if (!_route._contents) {
-          _route._contents = new TextDecoder('utf-8').decode(new Uint8Array(_route.data))
+        if (!(_route as any)._contents) {
+          (_route as any)._contents = new TextDecoder('utf-8').decode(new Uint8Array(_route.data))
         }
-        return _route._contents
+        return (_route as any)._contents
       }
     })
     if (res.status !== 200) {
