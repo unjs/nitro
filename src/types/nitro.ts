@@ -127,7 +127,7 @@ export interface NitroOptions {
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
   /**
-   * @deprecated renamed to `imports`
+   * @deprecated Please use `imports` option
    */
   autoImport: UnimportPluginOptions | false
   imports: UnimportPluginOptions | false
