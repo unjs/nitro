@@ -56,7 +56,15 @@ export async function prerender (nitro: Nitro) {
 
     // Fetch the route
     const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'x-nitro-prerender': route } }) as ReturnType<typeof fetch>)
-    _route.contents = await res.text()
+    _route.data = await res.arrayBuffer()
+    Object.defineProperty(_route, 'contents', {
+      get: () => {
+        if (!(_route as any)._contents) {
+          (_route as any)._contents = new TextDecoder('utf-8').decode(new Uint8Array(_route.data))
+        }
+        return (_route as any)._contents
+      }
+    })
     if (res.status !== 200) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any
       _route.error.statusCode = res.status
@@ -75,7 +83,7 @@ export async function prerender (nitro: Nitro) {
     if (_route.skip) { return }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
-    await writeFile(filePath, _route.contents)
+    await writeFile(filePath, Buffer.from(_route.data))
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
