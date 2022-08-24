@@ -7,7 +7,7 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import type { WatchOptions } from 'chokidar'
 import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
-import type { Storage } from 'unstorage'
+import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
@@ -33,6 +33,10 @@ export interface PrerenderRoute {
   generateTimeMS?: number
 }
 
+export interface PrerenderGenerateRoute extends PrerenderRoute {
+  skip?: boolean
+}
+
 type HookResult = void | Promise<void>
 export interface NitroHooks {
   'rollup:before': (nitro: Nitro) => HookResult
@@ -40,13 +44,13 @@ export interface NitroHooks {
   'dev:reload': () => HookResult
   'close': () => HookResult
   'prerender:route': (route: PrerenderRoute) => HookResult
+  'prerender:generate': (route: PrerenderGenerateRoute, nitro: Nitro) => HookResult
 }
 
+type CustomDriverName = string & { _custom?: any }
+
 export interface StorageMounts {
-  [path: string]: {
-    driver: 'fs' | 'http' | 'memory' | 'redis' | 'cloudflare-kv',
-    [option: string]: any
-  }
+  [path: string]: { driver: BuiltinDriverName | CustomDriverName, [option: string]: any }
 }
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T
@@ -123,7 +127,11 @@ export interface NitroOptions {
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
-  autoImport: UnimportPluginOptions
+  /**
+   * @deprecated Please use `imports` option
+   */
+  autoImport: UnimportPluginOptions | false
+  imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
 
@@ -141,6 +149,7 @@ export interface NitroOptions {
   devErrorHandler: NitroErrorHandler
   prerender: {
     crawlLinks: boolean
+    ignore: string[]
     routes: string[]
   }
 

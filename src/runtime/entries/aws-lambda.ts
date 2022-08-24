@@ -8,11 +8,12 @@ type Event = Omit<APIGatewayProxyEvent, 'pathParameters' | 'stageVariables' | 'r
 type Result = Exclude<APIGatewayProxyResult | APIGatewayProxyResultV2, string> & { statusCode: number }
 
 export const handler = async function handler (event: Event, context: Context): Promise<Result> {
-  const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, event.queryStringParameters || {})
+  const query = { ...event.queryStringParameters, ...(event as APIGatewayProxyEvent).multiValueQueryStringParameters }
+  const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, query)
   const method = (event as APIGatewayProxyEvent).httpMethod || (event as APIGatewayProxyEventV2).requestContext?.http?.method || 'get'
 
   if ('cookies' in event && event.cookies) {
-    event.headers.cookie = event.cookies.join(',')
+    event.headers.cookie = event.cookies.join(';')
   }
 
   const r = await nitroApp.localCall({
@@ -21,21 +22,27 @@ export const handler = async function handler (event: Event, context: Context): 
     context,
     headers: normalizeIncomingHeaders(event.headers),
     method,
-    query: event.queryStringParameters,
+    query,
     body: event.body // TODO: handle event.isBase64Encoded
   })
 
+  const outgoingCookies = r.headers['set-cookie']
+  const cookies = Array.isArray(outgoingCookies) ? outgoingCookies : outgoingCookies?.split(',') || []
+
   return {
+    cookies,
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
     body: r.body.toString()
   }
 }
 
-function normalizeIncomingHeaders (headers: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value!]))
+function normalizeIncomingHeaders (headers?: APIGatewayProxyEventHeaders) {
+  return Object.fromEntries(Object.entries(headers || {}).map(([key, value]) => [key.toLowerCase(), value!]))
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
+  return Object.fromEntries(Object.entries(headers)
+    .filter(([key]) => !['set-cookie'].includes(key))
+    .map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
 }

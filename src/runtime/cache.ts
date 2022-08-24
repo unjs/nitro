@@ -109,7 +109,10 @@ export function defineCachedEventHandler <T=any> (
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: (event) => {
-      return decodeURI(parseURL(event.req.originalUrl || event.req.url).pathname).replace(/\/$/, '/index')
+      const url = event.req.originalUrl || event.req.url
+      const friendlyName = decodeURI(parseURL(url).pathname).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16)
+      const urlHash = hash(url)
+      return `${friendlyName}.${urlHash}`
     },
     group: opts.group || 'nitro/handlers',
     integrity: [
