@@ -36,7 +36,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
-  autoImport: {
+  imports: {
     exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/],
     presets: nitroImports
   },
@@ -65,7 +65,11 @@ const NitroDefaults: NitroConfig = {
   },
   unenv: {},
   analyze: false,
-  moduleSideEffects: ['unenv/runtime/polyfill/', 'node-fetch-native/polyfill'],
+  moduleSideEffects: [
+    'unenv/runtime/polyfill/',
+    'node-fetch-native/polyfill',
+    'node-fetch-native/dist/polyfill'
+  ],
   replace: {},
   node: true,
   sourceMap: true,
@@ -148,24 +152,22 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
-  // TODO: https://github.com/unjs/nitro/issues/294
-  // options.autoImport.include = [
-  //   ...Array.isArray(options.autoImport.include)
-  //     ? options.autoImport.include
-  //     : [options.autoImport.include].filter(Boolean),
-  //   ...options.scanDirs
-  //     .filter(i => i.includes('node_modules'))
-  //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
-  // ]
+  // Backward compatibility for options.autoImports
+  // TODO: Remove in major release
+  if (options.autoImport === false) {
+    options.imports = false
+  } else if (options.imports !== false) {
+    options.imports = options.autoImport = defu(options.imports, options.autoImport)
+  }
 
-  if (options.autoImport && Array.isArray(options.autoImport.exclude)) {
-    options.autoImport.exclude.push(options.buildDir)
+  if (options.imports && Array.isArray(options.imports.exclude)) {
+    options.imports.exclude.push(options.buildDir)
   }
 
   // Add h3 auto imports preset
-  if (options.autoImport) {
+  if (options.imports) {
     const h3Exports = await resolveModuleExportNames('h3', { url: import.meta.url })
-    options.autoImport.presets.push({
+    options.imports.presets.push({
       from: 'h3',
       imports: h3Exports.filter(n => !n.match(/^[A-Z]/) && n !== 'use')
     })

@@ -1,7 +1,7 @@
 import { defineNitroConfig } from '../../src'
 
 export default defineNitroConfig({
-  autoImport: {
+  imports: {
     presets: [
       {
         // TODO: move this to built-in preset
@@ -27,6 +27,7 @@ export default defineNitroConfig({
     ],
     routes: [
       '/prerender',
+      '/icon.png',
       '/404'
     ]
   }

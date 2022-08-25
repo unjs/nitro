@@ -2,8 +2,8 @@ import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'pathe'
 
 let distDir = dirname(fileURLToPath(import.meta.url))
-if (distDir.endsWith('chunks')) {
+if (/(chunks|shared)$/.test(distDir)) {
   distDir = dirname(distDir)
 }
-export const pkgDir = resolve(distDir, distDir.endsWith('/chunks') ? '../..' : '..')
+export const pkgDir = resolve(distDir, '..')
 export const runtimeDir = resolve(distDir, 'runtime')

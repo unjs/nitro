@@ -1,4 +1,12 @@
 {
   "name": "docs",
-  "private": true
+  "private": true,
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build"
+  },
+  "devDependencies": {
+    "@nuxt-themes/docus": "npm:@nuxt-themes/docus-edge@latest",
+    "nuxt": "npm:nuxt3@latest"
+  }
 }

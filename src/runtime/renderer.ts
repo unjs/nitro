@@ -20,6 +20,13 @@ export function defineRenderHandler (handler: RenderHandler) {
     }
 
     const response = await handler(event)
+    if (!response) {
+      if (!event.res.writableEnded) {
+        event.res.statusCode = event.res.statusCode === 200 ? 500 : event.res.statusCode
+        event.res.end('No response returned from render handler: ' + event.req.url)
+      }
+      return
+    }
 
     // Allow hooking and modifying response
     const nitroApp = useNitroApp()

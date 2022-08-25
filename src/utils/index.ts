@@ -37,9 +37,9 @@ export function tryImport (dir: string, path: string) {
   } catch (_err) { }
 }
 
-export async function writeFile (file: string, contents: string, log = false) {
+export async function writeFile (file: string, contents: Buffer | string, log = false) {
   await fse.mkdirp(dirname(file))
-  await fse.writeFile(file, contents, 'utf-8')
+  await fse.writeFile(file, contents, typeof contents === 'string' ? 'utf-8' : undefined)
   if (log) {
     consola.info('Generated', prettyPath(file))
   }
@@ -67,6 +67,7 @@ export function replaceAll (input: string, from: string, to: string) {
 
 const autodetectableProviders = {
   azure_static: 'azure',
+  cloudflare_pages: 'cloudflare_pages',
   netlify: 'netlify',
   stormkit: 'stormkit',
   vercel: 'vercel'

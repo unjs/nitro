@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.24](https://github.com/unjs/nitro/compare/v0.4.23...v0.4.24) (2022-08-12)
+
+
+### Bug Fixes
+
+* **renderer:** do not use default error fallback ([80081b0](https://github.com/unjs/nitro/commit/80081b0b70d845c29ec24d98573c2179590fafc8))
+
+### [0.4.23](https://github.com/unjs/nitro/compare/v0.4.22...v0.4.23) (2022-08-12)
+
+
+### Bug Fixes
+
+* **renderer:** handle unhandled errors ([319b277](https://github.com/unjs/nitro/commit/319b27789d5c5a7bb154bd264408dc0689104732))
+
+### [0.4.22](https://github.com/unjs/nitro/compare/v0.4.21...v0.4.22) (2022-08-11)
+
+
+### Bug Fixes
+
+* fix dist dir check regex ([6cad682](https://github.com/unjs/nitro/commit/6cad6821039328e099b4b1a6cba5f73eba42a111))
+
+### [0.4.21](https://github.com/unjs/nitro/compare/v0.4.20...v0.4.21) (2022-08-11)
+
+
+### Bug Fixes
+
+* properly resolve dist dir ([d7c65e6](https://github.com/unjs/nitro/commit/d7c65e6c4c2257e044c8c6e0f46b0b1739af1a4d))
+
+### [0.4.20](https://github.com/unjs/nitro/compare/v0.4.19...v0.4.20) (2022-08-11)
+
+### [0.4.19](https://github.com/unjs/nitro/compare/v0.4.18...v0.4.19) (2022-08-11)
+
+
+### Bug Fixes
+
+* only log unhandled and fatal errors ([#407](https://github.com/unjs/nitro/issues/407)) ([2d5b039](https://github.com/unjs/nitro/commit/2d5b039499f30ed9fbef19495503f95225a59159))
+
 ### [0.4.18](https://github.com/unjs/nitro/compare/v0.4.17...v0.4.18) (2022-08-09)
 
 
