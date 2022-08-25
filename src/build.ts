@@ -139,9 +139,9 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
   await _snapshot(nitro)
 
   nitro.logger.start('Building server...')
-  const build = await rollup.rollup(rollupConfig).catch((_error) => {
-    nitro.logger.error(formatRollupError(_error))
-    throw _error
+  const build = await rollup.rollup(rollupConfig).catch((error) => {
+    nitro.logger.error(formatRollupError(error))
+    throw error
   })
 
   nitro.logger.start('Writing server bundle...')
