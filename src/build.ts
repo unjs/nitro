@@ -92,13 +92,13 @@ export async function writeTypes (nitro: Nitro) {
         resolveJsonModule: true,
         paths: nitro.options.typescript.internalPaths
           ? {
-              '#internal/nitro': [
-                join(runtimeDir, 'index')
-              ],
-              '#internal/nitro/*': [
-                join(runtimeDir, '*')
-              ]
-            }
+            '#internal/nitro': [
+              join(runtimeDir, 'index')
+            ],
+            '#internal/nitro/*': [
+              join(runtimeDir, '*')
+            ]
+          }
           : {}
       },
       include: [
@@ -245,6 +245,7 @@ async function _watch (nitro: Nitro, rollupConfig: RollupConfig) {
 
 function formatRollupError (_error: RollupError | OnResolveResult) {
   try {
+    let logs: string[] = []
     for (const error of ('errors' in _error ? _error.errors : [_error as RollupError])) {
       const id = error.id || (_error as RollupError).id
       let path = isAbsolute(id) ? relative(process.cwd(), id) : id
@@ -252,8 +253,9 @@ function formatRollupError (_error: RollupError | OnResolveResult) {
       if (location) {
         path += `:${location.line}:${location.column}`
       }
-      return `Rollup error while processing \`${path}\`` + '\n' + '\n' + ((error as PartialMessage).text || (error as RollupError).frame)
+      logs.push(`Rollup error while processing \`${path}\`` + '\n\n' + ((error as PartialMessage).text || (error as RollupError).frame))
     }
+    return logs.join('\n\n')
   } catch {
     return _error?.toString()
   }
