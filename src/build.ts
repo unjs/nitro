@@ -6,6 +6,8 @@ import { defu } from 'defu'
 import { watch } from 'chokidar'
 import { debounce } from 'perfect-debounce'
 import type { TSConfig } from 'pkg-types'
+import type { RollupError } from 'rollup'
+import type { OnResolveResult, PartialMessage } from 'esbuild'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig, RollupConfig } from './rollup/config'
 import { prettyPath, writeFile, isDirectory } from './utils'
@@ -138,17 +140,7 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
 
   nitro.logger.start('Building server...')
   const build = await rollup.rollup(rollupConfig).catch((_error) => {
-    try {
-      for (const error of ('errors' in _error ? _error.errors : [_error])) {
-        const id = error.id || _error.id
-        let path = isAbsolute(id) ? relative(process.cwd(), id) : id
-        const location = error.loc || error.location
-        if (location) {
-          path += `:${location.line}:${location.column}`
-        }
-        nitro.logger.error(`Rollup error while processing \`${path}\`` + '\n' + '\n' + (error.text || error.frame))
-      }
-    } catch {}
+    nitro.logger.error(formatRollupError(_error))
     throw _error
   })
 
@@ -215,7 +207,7 @@ function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
 
       // Encountered an error while bundling
       case 'ERROR':
-        nitro.logger.error('Rollup error: ', event.error)
+        nitro.logger.error(formatRollupError(event.error))
     }
   })
   return watcher
@@ -250,4 +242,20 @@ async function _watch (nitro: Nitro, rollupConfig: RollupConfig) {
   })
 
   await reload()
+}
+
+function formatRollupError (_error: RollupError | OnResolveResult) {
+  try {
+    for (const error of ('errors' in _error ? _error.errors : [_error as RollupError])) {
+      const id = error.id || (_error as RollupError).id
+      let path = isAbsolute(id) ? relative(process.cwd(), id) : id
+      const location = (error as RollupError).loc || (error as PartialMessage).location
+      if (location) {
+        path += `:${location.line}:${location.column}`
+      }
+      return `Rollup error while processing \`${path}\`` + '\n' + '\n' + ((error as PartialMessage).text || (error as RollupError).frame)
+    }
+  } catch {
+    return _error?.toString()
+  }
 }
