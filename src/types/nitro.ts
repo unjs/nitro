@@ -12,6 +12,8 @@ import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
+import type { CacheOptions } from '../runtime/cache'
+import type { ResponseCacheEntry } from '../runtime/cache'
 
 export interface Nitro {
   options: NitroOptions,
@@ -61,10 +63,7 @@ export interface NitroConfig extends DeepPartial<NitroOptions> {
   extends?: string | string[] | NitroPreset
 }
 
-export interface NitroRouteOption {
-  swr?: boolean | number
-  redirect?: string
-}
+export type NitroRouteOption = Omit<CacheOptions<ResponseCacheEntry<unknown>>, 'getKey'>
 
 export interface NitroRoutesOptions {
   [path: string]: NitroRouteOption

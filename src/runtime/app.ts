@@ -43,7 +43,8 @@ function createNitroApp (): NitroApp {
     const routeOptions = routerOptions.lookup(referenceRoute) || {}
     if (routeOptions.swr) {
       handler = cachedEventHandler(handler, {
-        group: 'nitro/routes'
+        group: 'nitro/routes',
+        ...routeOptions
       })
     }
 
