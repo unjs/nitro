@@ -63,7 +63,10 @@ export interface NitroConfig extends DeepPartial<NitroOptions> {
   extends?: string | string[] | NitroPreset
 }
 
-export type NitroRouteOption = Omit<CacheOptions<ResponseCacheEntry<unknown>>, 'getKey'>
+export interface NitroRouteOption {
+  cache?: Omit<CacheOptions<ResponseCacheEntry<unknown>>, 'getKey'>
+  redirect?: string
+}
 
 export interface NitroRoutesOptions {
   [path: string]: NitroRouteOption

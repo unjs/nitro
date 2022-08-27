@@ -41,10 +41,10 @@ function createNitroApp (): NitroApp {
 
     const referenceRoute = h.route.replace(/:\w+|\*\*/g, '_')
     const routeOptions = routerOptions.lookup(referenceRoute) || {}
-    if (routeOptions.swr) {
+    if (routeOptions.cache) {
       handler = cachedEventHandler(handler, {
         group: 'nitro/routes',
-        ...routeOptions
+        ...routeOptions.cache
       })
     }
 
