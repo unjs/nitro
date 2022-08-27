@@ -161,14 +161,19 @@ export default <NitroErrorHandler> function (error, event) {
 
 **🧪 Experimental!**
 
-Route options (see [Cache API](/guide/introduction/cache) for all available options). It is a map from route pattern (following [unjs/radix3](https://github.com/unjs/radix3)) to options.
+Route options. It is a map from route pattern (following [unjs/radix3](https://github.com/unjs/radix3)) to options (see [Cache API](/guide/introduction/cache) for all available cache options).
 
 Example:
 
 ```js
 {
   routes: {
-    '/blog/**': { swr: true }
+    '/blog/**': { 
+      cache: {
+        swr: true
+        maxAge: 3600
+      }
+    }
   }
 }
 ```
