@@ -38,7 +38,7 @@ export function publicAssets (nitro: Nitro): Plugin {
           path: relative(nitro.options.output.serverDir, fullPath)
         }
 
-        if (nitro.options.compressPublicAssets) {
+        if (nitro.options.compressPublicAssets && assetData.length > 1024) {
           for (const method of ['gz', 'br']) {
             const suffix = '.' + method
             const compressedPath = fullPath + suffix
