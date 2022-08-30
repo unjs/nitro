@@ -4,6 +4,8 @@ import { getAsset, readAsset, isPublicAssetURL } from '#internal/nitro/virtual/p
 
 const METHODS = ['HEAD', 'GET']
 
+const EncodingMap = { gzip: '.gz', br: '.br' }
+
 export default eventHandler(async (event) => {
   if (event.req.method && !METHODS.includes(event.req.method)) {
     return
@@ -12,12 +14,23 @@ export default eventHandler(async (event) => {
   let id = decodeURIComponent(withLeadingSlash(withoutTrailingSlash(parseURL(event.req.url).pathname)))
   let asset
 
-  for (const _id of [id, id + '/index.html']) {
-    const _asset = getAsset(_id)
-    if (_asset) {
-      asset = _asset
-      id = _id
-      break
+  const encodingHeader = String(event.req.headers['accept-encoding'] || '')
+  const encodings = encodingHeader.split(',')
+    .map(e => EncodingMap[e.trim()])
+    .filter(Boolean)
+    .concat([''])
+  if (encodings.length > 1) {
+    event.res.setHeader('Vary', 'Accept-Encoding')
+  }
+
+  for (const encoding of encodings) {
+    for (const _id of [id + encoding, id + '/index.html' + encoding]) {
+      const _asset = getAsset(_id)
+      if (_asset) {
+        asset = _asset
+        id = _id
+        break
+      }
     }
   }
 
@@ -57,6 +70,14 @@ export default eventHandler(async (event) => {
 
   if (asset.mtime) {
     event.res.setHeader('Last-Modified', asset.mtime)
+  }
+
+  if (asset.encoding) {
+    event.res.setHeader('Content-Encoding', asset.encoding)
+  }
+
+  if (asset.size) {
+    event.res.setHeader('Content-Length', asset.size)
   }
 
   // TODO: Asset dir cache control
