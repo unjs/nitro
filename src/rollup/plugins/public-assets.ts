@@ -39,18 +39,18 @@ export function publicAssets (nitro: Nitro): Plugin {
         }
 
         if (nitro.options.compressPublicAssets && assetData.length > 1024) {
-          for (const method of ['gz', 'br']) {
-            const suffix = '.' + method
+          for (const encoding of ['gzip', 'br']) {
+            const suffix = '.' + (encoding === 'gzip' ? 'gz' : 'br')
             const compressedPath = fullPath + suffix
             const compressedBuff: Buffer = await new Promise((resolve, reject) => {
-              zlib[method === 'gz' ? 'gzip' : 'brotliCompress'](assetData,
+              zlib[encoding === 'gzip' ? 'gzip' : 'brotliCompress'](assetData,
                 (error, result) => error ? reject(error) : resolve(result)
               )
             })
             await fsp.writeFile(compressedPath, compressedBuff)
             assets[assetId + suffix] = {
               ...assets[assetId],
-              encoding: method === 'gz' ? 'gzip' : 'br',
+              encoding,
               size: compressedBuff.length,
               path: assets[assetId].path + suffix
             }
