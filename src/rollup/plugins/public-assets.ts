@@ -20,7 +20,12 @@ export function publicAssets (nitro: Nitro): Plugin {
         size: number,
         encoding?: string
       }> = {}
-      const files = await globby('**', { cwd: nitro.options.output.publicDir, absolute: false, dot: true })
+      const files = await globby('**', {
+        cwd: nitro.options.output.publicDir,
+        absolute: false,
+        dot: true,
+        ignore: ['*.gz', '*.br']
+      })
       for (const id of files) {
         let type = mime.getType(id) || 'text/plain'
         if (type.startsWith('text')) { type += '; charset=utf-8' }
@@ -38,7 +43,7 @@ export function publicAssets (nitro: Nitro): Plugin {
           path: relative(nitro.options.output.serverDir, fullPath)
         }
 
-        if (nitro.options.compressPublicAssets && assetData.length > 1024) {
+        if (nitro.options.compressPublicAssets && assetData.length > 1024 && !assetId.endsWith('.map')) {
           for (const encoding of ['gzip', 'br']) {
             const suffix = '.' + (encoding === 'gzip' ? 'gz' : 'br')
             const compressedPath = fullPath + suffix
