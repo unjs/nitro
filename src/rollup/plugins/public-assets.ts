@@ -53,6 +53,7 @@ export function publicAssets (nitro: Nitro): Plugin {
             assets[assetId + suffix] = {
               ...assets[assetId],
               encoding: method,
+              size: compressedBuff.length,
               path: assets[assetId].path + suffix
             }
           }

@@ -75,6 +75,10 @@ export default eventHandler(async (event) => {
     event.res.setHeader('Content-Encoding', asset.encoding)
   }
 
+  if (asset.size) {
+    event.res.setHeader('Content-Length', asset.size)
+  }
+
   // TODO: Asset dir cache control
   // if (isBuildAsset) {
   // const TWO_DAYS = 2 * 60 * 60 * 24
