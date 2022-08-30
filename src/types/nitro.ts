@@ -134,6 +134,7 @@ export interface NitroOptions {
   imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
+  compressPublicAssets: boolean
 
   // Dev
   dev: boolean

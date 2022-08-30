@@ -12,12 +12,24 @@ export default eventHandler(async (event) => {
   let id = decodeURIComponent(withLeadingSlash(withoutTrailingSlash(parseURL(event.req.url).pathname)))
   let asset
 
-  for (const _id of [id, id + '/index.html']) {
-    const _asset = getAsset(_id)
-    if (_asset) {
-      asset = _asset
-      id = _id
-      break
+  const encodingHeader = String(event.req.headers['accept-encoding'] || '')
+  const encodings = encodingHeader.split(',')
+    .map(x => x.trim())
+    .filter(enc => enc === 'br' || enc === 'gzip')
+    .map(enc => '.' + enc)
+    .concat([''])
+  if (encodings.length > 1) {
+    event.res.setHeader('Vary', 'Accept-Encoding')
+  }
+
+  for (const encoding of encodings) {
+    for (const _id of [id + encoding, id + '/index.html' + encoding]) {
+      const _asset = getAsset(_id)
+      if (_asset) {
+        asset = _asset
+        id = _id
+        break
+      }
     }
   }
 
@@ -57,6 +69,10 @@ export default eventHandler(async (event) => {
 
   if (asset.mtime) {
     event.res.setHeader('Last-Modified', asset.mtime)
+  }
+
+  if (asset.encoding) {
+    event.res.setHeader('Content-Encoding', asset.encoding)
   }
 
   // TODO: Asset dir cache control

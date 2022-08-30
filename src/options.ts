@@ -41,6 +41,7 @@ const NitroDefaults: NitroConfig = {
     presets: nitroImports
   },
   virtual: {},
+  compressPublicAssets: false,
 
   // Dev
   dev: false,
