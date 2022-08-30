@@ -20,9 +20,7 @@ export function publicAssets (nitro: Nitro): Plugin {
         size: number,
         encoding?: string
       }> = {}
-
       const files = await globby('**', { cwd: nitro.options.output.publicDir, absolute: false, dot: true })
-      console.log(files)
       for (const id of files) {
         let type = mime.getType(id) || 'text/plain'
         if (type.startsWith('text')) { type += '; charset=utf-8' }
@@ -41,18 +39,18 @@ export function publicAssets (nitro: Nitro): Plugin {
         }
 
         if (nitro.options.compressPublicAssets) {
-          for (const method of ['gzip', 'br']) {
+          for (const method of ['gz', 'br']) {
             const suffix = '.' + method
             const compressedPath = fullPath + suffix
             const compressedBuff: Buffer = await new Promise((resolve, reject) => {
-              zlib[method === 'gzip' ? 'gzip' : 'brotliCompress'](assetData,
+              zlib[method === 'gz' ? 'gzip' : 'brotliCompress'](assetData,
                 (error, result) => error ? reject(error) : resolve(result)
               )
             })
             await fsp.writeFile(compressedPath, compressedBuff)
             assets[assetId + suffix] = {
               ...assets[assetId],
-              encoding: method,
+              encoding: method === 'gz' ? 'gzip' : 'br',
               size: compressedBuff.length,
               path: assets[assetId].path + suffix
             }

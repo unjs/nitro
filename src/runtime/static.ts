@@ -4,6 +4,8 @@ import { getAsset, readAsset, isPublicAssetURL } from '#internal/nitro/virtual/p
 
 const METHODS = ['HEAD', 'GET']
 
+const EncodingMap = { gzip: '.gz', br: '.br' }
+
 export default eventHandler(async (event) => {
   if (event.req.method && !METHODS.includes(event.req.method)) {
     return
@@ -14,9 +16,8 @@ export default eventHandler(async (event) => {
 
   const encodingHeader = String(event.req.headers['accept-encoding'] || '')
   const encodings = encodingHeader.split(',')
-    .map(x => x.trim())
-    .filter(enc => enc === 'br' || enc === 'gzip')
-    .map(enc => '.' + enc)
+    .map(e => EncodingMap[e.trim()])
+    .filter(Boolean)
     .concat([''])
   if (encodings.length > 1) {
     event.res.setHeader('Vary', 'Accept-Encoding')
