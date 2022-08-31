@@ -130,7 +130,8 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // WASM import support
   if (nitro.options.experimental.wasm) {
-    rollupConfig.plugins.push(wasmPlugin())
+    const options = typeof nitro.options.experimental.wasm === 'object' ? nitro.options.experimental.wasm : {}
+    rollupConfig.plugins.push(wasmPlugin(options))
   }
 
   // Build-time environment variables
