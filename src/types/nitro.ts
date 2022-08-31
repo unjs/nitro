@@ -7,6 +7,7 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import type { WatchOptions } from 'chokidar'
 import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
+import type { RollupWasmOptions } from '@rollup/plugin-wasm'
 import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
@@ -123,7 +124,7 @@ export interface NitroOptions {
   renderer: string
   serveStatic: boolean
   experimental?: {
-    wasm?: boolean
+    wasm?: boolean | RollupWasmOptions
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
