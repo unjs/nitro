@@ -67,7 +67,7 @@ async function killWorker (worker?: NitroWorker) {
   }
 }
 
-export function createDevServer (nitro: Nitro): NitroDevServer {
+export function createDevServer (nitro: Nitro, app: App = createApp()): NitroDevServer {
   // Worker
   const workerEntry = resolve(nitro.options.output.dir, nitro.options.output.serverDir, 'index.mjs')
 
@@ -98,9 +98,6 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     return reloadPromise
   })
   nitro.hooks.hook('dev:reload', reload)
-
-  // App
-  const app = createApp()
 
   // Dev-only handlers
   for (const handler of nitro.options.devHandlers) {
