@@ -9,7 +9,8 @@
     ".": "./dist/index.mjs",
     "./cli": "./dist/cli.mjs",
     "./runtime/*": "./dist/runtime/*.mjs",
-    "./dist/runtime/*": "./dist/runtime/*.mjs"
+    "./dist/runtime/*": "./dist/runtime/*.mjs",
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
