@@ -3,6 +3,7 @@ import { dirname, join, normalize, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import { defu } from 'defu'
 import { terser } from 'rollup-plugin-terser'
+import type { RollupWasmOptions } from '@rollup/plugin-wasm'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
@@ -130,7 +131,7 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // WASM import support
   if (nitro.options.experimental.wasm) {
-    const options = { ...nitro.options.experimental.wasm as any }
+    const options = { ...nitro.options.experimental.wasm as RollupWasmOptions }
     rollupConfig.plugins.push(wasmPlugin(options))
   }
 
