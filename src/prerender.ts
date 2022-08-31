@@ -63,6 +63,10 @@ export async function prerender (nitro: Nitro) {
           (_route as any)._contents = new TextDecoder('utf-8').decode(new Uint8Array(_route.data))
         }
         return (_route as any)._contents
+      },
+      set (value: string) {
+        (_route as any)._contents = value
+        _route.data = new TextEncoder().encode(value)
       }
     })
     if (res.status !== 200) {
