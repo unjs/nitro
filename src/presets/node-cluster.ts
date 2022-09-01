@@ -10,11 +10,11 @@ export const nodeCluster = defineNitroPreset({
     dir: '{{ buildDir }}'
   },
   commands: {
-    preview: 'node ./node-cluster.index.mjs'
+    preview: 'node ./server/node-cluster.index.mjs'
   },
   hooks: {
     async 'compiled' (nitro) {
-      const path = resolve(nitro.options.output.dir, 'node-cluster.index.mjs')
+      const path = resolve(nitro.options.output.dir, 'server', 'node-cluster.index.mjs')
       await writeFile(path, entryTemplate())
     }
   }
@@ -36,8 +36,7 @@ export async function prod(port) {
       cluster.fork()
     })
   } else {
-    process.cwd()
-    import(resolve('..', 'server', 'index.mjs'))
+    import(resolve('.', 'server', 'index.mjs'))
   }
 }
   `.trim()
