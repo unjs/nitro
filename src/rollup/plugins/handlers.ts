@@ -1,17 +1,11 @@
 import { hash } from 'ohash'
-import { relative } from 'pathe'
-import table from 'table'
-import isPrimitive from 'is-primitive'
-import { isDebug } from 'std-env'
-import type { Nitro, NitroEventHandler } from '../../types'
+import type { Nitro } from '../../types'
 import { virtual } from './virtual'
 
 const unique = (arr: any[]) => Array.from(new Set(arr))
 
 export function handlers (nitro: Nitro) {
   const getImportId = (p: string, lazy?: boolean) => (lazy ? '_lazy_' : '_') + hash(p).slice(0, 6)
-
-  let lastDump = ''
 
   return virtual({
     '#internal/nitro/virtual/server-handlers': () => {
@@ -24,16 +18,6 @@ export function handlers (nitro: Nitro) {
       }
       if (nitro.options.renderer) {
         handlers.push({ route: '/**', lazy: true, handler: nitro.options.renderer })
-      }
-
-      if (isDebug) {
-        const dumped = dumpHandler(handlers)
-        if (dumped !== lastDump) {
-          lastDump = dumped
-          if (handlers.length) {
-            console.log(dumped)
-          }
-        }
       }
 
       // Imports take priority
@@ -55,30 +39,4 @@ ${handlers.map(h => `  { route: '${h.route || ''}', handler: ${getImportId(h.han
       return code
     }
   }, nitro.vfs)
-}
-
-function dumpHandler (handler: NitroEventHandler[]) {
-  const data = handler.map(({ route, handler, ...props }) => {
-    return [
-      (route && route !== '/') ? route : '*',
-      relative(process.cwd(), handler as string),
-      dumpObject(props)
-    ]
-  })
-  return table.table([
-    ['Path', 'Handler', 'Options'],
-    ...data
-  ], {
-    singleLine: true,
-    border: table.getBorderCharacters('norc')
-  })
-}
-
-function dumpObject (obj: any) {
-  const items = []
-  for (const key in obj) {
-    const val = obj[key]
-    items.push(`${key}: ${isPrimitive(val) ? val : JSON.stringify(val)}`)
-  }
-  return items.join(', ')
 }

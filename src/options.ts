@@ -1,12 +1,12 @@
-import { resolve } from 'pathe'
+import { resolve, join } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
 import { defu } from 'defu'
+import { resolveModuleExportNames, resolvePath as resovleModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
-import { resolvePath as resovleModule } from 'mlly'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -36,11 +36,12 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
-  autoImport: {
+  imports: {
     exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/],
     presets: nitroImports
   },
   virtual: {},
+  compressPublicAssets: false,
 
   // Dev
   dev: false,
@@ -55,6 +56,7 @@ const NitroDefaults: NitroConfig = {
   routes: {},
   prerender: {
     crawlLinks: false,
+    ignore: [],
     routes: []
   },
 
@@ -64,7 +66,11 @@ const NitroDefaults: NitroConfig = {
   },
   unenv: {},
   analyze: false,
-  moduleSideEffects: ['unenv/runtime/polyfill/', 'node-fetch-native/polyfill'],
+  moduleSideEffects: [
+    'unenv/runtime/polyfill/',
+    'node-fetch-native/polyfill',
+    'node-fetch-native/dist/polyfill'
+  ],
   replace: {},
   node: true,
   sourceMap: true,
@@ -121,6 +127,15 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options[key] = resolve(options.rootDir, options[key])
   }
 
+  // Add aliases
+  options.alias = {
+    ...options.alias,
+    '~/': join(options.srcDir, '/'),
+    '@/': join(options.srcDir, '/'),
+    '~~/': join(options.rootDir, '/'),
+    '@@/': join(options.rootDir, '/')
+  }
+
   // Resolve possibly template paths
   if (!options.entry) {
     throw new Error(`Nitro entry is missing! Is "${options.preset}" preset correct?`)
@@ -138,18 +153,25 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     options.scanDirs = [options.srcDir]
   }
 
-  // TODO: https://github.com/unjs/nitro/issues/294
-  // options.autoImport.include = [
-  //   ...Array.isArray(options.autoImport.include)
-  //     ? options.autoImport.include
-  //     : [options.autoImport.include].filter(Boolean),
-  //   ...options.scanDirs
-  //     .filter(i => i.includes('node_modules'))
-  //     .map(i => new RegExp(`(^|\\/)${escapeRE(i.split('node_modules/').pop())}(\\/|$)(?!node_modules\\/)`))
-  // ]
+  // Backward compatibility for options.autoImports
+  // TODO: Remove in major release
+  if (options.autoImport === false) {
+    options.imports = false
+  } else if (options.imports !== false) {
+    options.imports = options.autoImport = defu(options.imports, options.autoImport)
+  }
 
-  if (options.autoImport && Array.isArray(options.autoImport.exclude)) {
-    options.autoImport.exclude.push(options.buildDir)
+  if (options.imports && Array.isArray(options.imports.exclude)) {
+    options.imports.exclude.push(options.buildDir)
+  }
+
+  // Add h3 auto imports preset
+  if (options.imports) {
+    const h3Exports = await resolveModuleExportNames('h3', { url: import.meta.url })
+    options.imports.presets.push({
+      from: 'h3',
+      imports: h3Exports.filter(n => !n.match(/^[A-Z]/) && n !== 'use')
+    })
   }
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
@@ -183,6 +205,9 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   for (const p in fsMounts) {
     options.devStorage[p] = options.devStorage[p] || { driver: 'fs', base: fsMounts[p] }
   }
+
+  // Resolve plugin paths
+  options.plugins = options.plugins.map(p => resolvePath(p, options))
 
   return options
 }

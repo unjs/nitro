@@ -5,6 +5,7 @@ import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport, normalizeid } from 'mlly'
 import semver from 'semver'
 import { parseURL } from 'ufo'
+import { isDirectory } from '../../utils'
 
 export interface NodeExternalsOptions {
   inline?: string[]
@@ -67,7 +68,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       const resolved = await this.resolve(originalId, importer, { ...options, skipSelf: true }) || { id }
 
       // Try resolving with mlly as fallback
-      if (!existsSync(resolved.id)) {
+      if (!isAbsolute(resolved.id) || !existsSync(resolved.id) || await isDirectory(resolved.id)) {
         resolved.id = await _resolve(resolved.id).catch(() => resolved.id)
       }
 
@@ -80,7 +81,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       if (opts.trace === false) {
         return {
           ...resolved,
-          id: normalizeid(resolved.id),
+          id: isAbsolute(resolved.id) ? normalizeid(resolved.id) : resolved.id,
           external: true
         }
       }
