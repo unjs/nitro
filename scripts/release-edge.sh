@@ -7,6 +7,9 @@ set -xe
 # Restore all git changes
 git restore -s@ -SW  -- .
 
+# Bump acording to changelog
+pnpm changelogen --bump
+
 # Bump versions to edge
 pnpm jiti ./scripts/bump-edge
 
