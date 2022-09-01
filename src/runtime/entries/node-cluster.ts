@@ -21,6 +21,10 @@ server.listen(port, hostname, (err) => {
   }
   const protocol = cert && key ? 'https' : 'http'
   console.log(`Listening on ${protocol}://${hostname}:${port}${useRuntimeConfig().app.baseURL}`)
+  console.log(`PID: ${process.pid}`)
+})
+server.on('request', () => {
+  console.log(`Request PID: ${process.pid}`)
 })
 
 if (process.env.DEBUG) {

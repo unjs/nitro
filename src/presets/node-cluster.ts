@@ -26,7 +26,7 @@ import os from 'node:os'
 import cluster from 'node:cluster'
 import { resolve } from 'pathe'
 
-export async function prod(port) {
+(() => {
   const numCPUs = os.cpus().length
   if (cluster.isPrimary) {
     for (let i = 0; i < numCPUs; i++) {
@@ -36,9 +36,9 @@ export async function prod(port) {
       cluster.fork()
     })
   } else {
-    import(resolve('.', 'server', 'index.mjs'))
+    import(resolve('.output', 'server', 'index.mjs'))
   }
-}
+})()
   `.trim()
 }
 
