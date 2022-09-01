@@ -79,11 +79,14 @@ Public asset directories to serve in development and bundle in production.
 
 If a `public/` directory is detected, it will be added by default, but you can add more by yourself too!
 
+## `compressPublicAssets`
+
+If enabled, Nitro will generate a precompressed (gzip and brotli) verison of all public assets and prerendered routes
+bigger than 1024 bytes into public directory. Using this option you can support zero overhead asset compression without using a CDN.
+
 ## `serverAssets`
 
 Assets can be accessed in server logic and bundled in production.
-
-
 
 ## `devServer`
 
@@ -95,7 +98,7 @@ Dev server options. You can use `watch` to make the dev server reload if any fil
 
 Watch options for development mode. See [chokidar](https://github.com/paulmillr/chokidar) for more information.
 
-## `autoImport`
+## `imports`
 
 Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for more information.
 
