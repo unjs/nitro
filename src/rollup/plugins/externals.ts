@@ -18,6 +18,8 @@ export interface NodeExternalsOptions {
   traceInclude?: string[]
 }
 
+const IS_RELATIVE_RE = /^\.\.?\//
+
 export function externals (opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>()
 
@@ -247,5 +249,3 @@ async function isFile (file: string) {
     throw err
   }
 }
-
-const IS_RELATIVE_RE = /^\.\.?\//
