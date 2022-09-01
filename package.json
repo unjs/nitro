@@ -54,7 +54,7 @@
     "@rollup/pluginutils": "^4.2.1",
     "@vercel/nft": "^0.22.0",
     "archiver": "^5.3.1",
-    "c12": "^0.2.9",
+    "c12": "^0.2.10",
     "chalk": "^5.0.1",
     "chokidar": "^3.5.3",
     "consola": "^2.15.3",

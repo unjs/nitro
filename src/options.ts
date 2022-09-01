@@ -99,6 +99,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     defaults: NitroDefaults,
     cwd: userConfig.rootDir,
     dotenv: userConfig.dev,
+    extend: { extendKey: ['extends', 'preset'] },
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
@@ -114,7 +115,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     },
     overrides: {
       ...userConfig,
-      extends: [preset]
+      preset
     }
   })
   const options = klona(config) as NitroOptions

@@ -29,7 +29,7 @@ importers:
       '@vercel/nft': ^0.22.0
       '@vitest/coverage-c8': ^0.22.1
       archiver: ^5.3.1
-      c12: ^0.2.9
+      c12: ^0.2.10
       c8: ^7.12.0
       chalk: ^5.0.1
       changelogen: ^0.2.3
@@ -99,7 +99,7 @@ importers:
       '@rollup/pluginutils': 4.2.1
       '@vercel/nft': 0.22.0
       archiver: 5.3.1
-      c12: 0.2.9
+      c12: 0.2.10
       chalk: 5.0.1
       chokidar: 3.5.3
       consola: 2.15.3
@@ -1652,19 +1652,6 @@ packages:
       mlly: 0.5.14
       pathe: 0.3.5
       rc9: 1.2.2
-    dev: true
-
-  /c12/0.2.9:
-    resolution: {integrity: sha512-6jYdexgAKr+3kYoTmvC5eDtDHUg7GmFQSdeQqZzAKiPlFAN1heGUoXDbAYYwUCfefZy+WgVJbmAej5TTQpp3jA==}
-    dependencies:
-      defu: 6.1.0
-      dotenv: 16.0.1
-      gittar: 0.1.1
-      jiti: 1.14.0
-      mlly: 0.5.14
-      pathe: 0.3.5
-      rc9: 1.2.2
-    dev: false
 
   /c8/7.12.0:
     resolution: {integrity: sha512-CtgQrHOkyxr5koX1wEUmN/5cfDa2ckbHRA4Gy5LAL0zaCFtVWJS5++n+w4/sr2GWGerBxgTjpKeDclk/Qk6W/A==}
