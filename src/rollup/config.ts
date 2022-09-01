@@ -32,7 +32,6 @@ import { esbuild } from './plugins/esbuild'
 import { raw } from './plugins/raw'
 import { storage } from './plugins/storage'
 import { importMeta } from './plugins/import-meta'
-import { cluster } from './plugins/cluster'
 
 export type RollupConfig = InputOptions & { output: OutputOptions }
 
@@ -194,11 +193,6 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // Handlers
   rollupConfig.plugins.push(handlers(nitro))
-
-  // Cluster
-  if (nitro.options.cluster?.enabled) {
-    rollupConfig.plugins.push(cluster(nitro))
-  }
 
   // Polyfill
   rollupConfig.plugins.push(virtual({
