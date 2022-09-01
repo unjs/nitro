@@ -185,4 +185,10 @@ export interface NitroOptions {
     preview: string
     deploy: string
   }
+
+  // Cluster
+  cluster: {
+    workers: string | number // possible string value: 'auto' (use max available cores count), otherwise count of worker
+    isolate: boolean // true = use child_process module; false = worker_threads
+  }
 }
