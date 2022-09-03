@@ -49,7 +49,7 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
-      h3: ^0.7.20
+      h3: ^0.7.21
       hookable: ^5.3.0
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -71,7 +71,7 @@ importers:
       radix3: ^0.1.2
       rollup: ^2.79.0
       rollup-plugin-terser: ^7.0.2
-      rollup-plugin-visualizer: ^5.8.0
+      rollup-plugin-visualizer: ^5.8.1
       scule: ^0.3.2
       semver: ^7.3.7
       serve-placeholder: ^2.0.1
@@ -113,7 +113,7 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
-      h3: 0.7.20
+      h3: 0.7.21
       hookable: 5.3.0
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -134,7 +134,7 @@ importers:
       radix3: 0.1.2
       rollup: 2.79.0
       rollup-plugin-terser: 7.0.2_rollup@2.79.0
-      rollup-plugin-visualizer: 5.8.0_rollup@2.79.0
+      rollup-plugin-visualizer: 5.8.1_rollup@2.79.0
       scule: 0.3.2
       semver: 7.3.7
       serve-placeholder: 2.0.1
@@ -3267,8 +3267,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/0.7.20:
-    resolution: {integrity: sha512-8/66Rm4JrJXpV9xI5v/lYd/3o0vEj5VGK0hv4N+T0ZeLQvtqvkkoZPc7pdN6mQu/BwhebgyIr+hW+PatSboLdQ==}
+  /h3/0.7.21:
+    resolution: {integrity: sha512-F/qdr3JKh8zBLiZyiprH5kuzG6vjoTK3nFnIYFUIQPLsw755GI5JezAFc3HJxbgYlzawcGeJlmsw4xu2t/0n/Q==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.1.1
@@ -4598,12 +4598,15 @@ packages:
       terser: 5.13.1
     dev: false
 
-  /rollup-plugin-visualizer/5.8.0_rollup@2.79.0:
-    resolution: {integrity: sha512-pY6j/7qHz5I9rB7d/bQoA5gX+2FbV3MBG055wrsFxDn550bgl0FNViRj6wDHh85PMswv+JVdZjhnMBzz/hdAHA==}
+  /rollup-plugin-visualizer/5.8.1_rollup@2.79.0:
+    resolution: {integrity: sha512-NBT/xN/LWCwDM2/j5vYmjzpEAKHyclo/8Cv8AfTCwgADAG+tLJDy1vzxMw6NO0dSDjmTeRELD9UU3FwknLv0GQ==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
       rollup: ^2.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
     dependencies:
       nanoid: 3.3.4
       open: 8.4.0
@@ -5232,7 +5235,7 @@ packages:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.1.1
-      h3: 0.7.20
+      h3: 0.7.21
       ioredis: 5.2.2
       listhen: 0.2.15
       mri: 1.2.0
