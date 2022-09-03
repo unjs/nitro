@@ -50,7 +50,7 @@ importers:
       globby: ^13.1.2
       gzip-size: ^7.0.0
       h3: ^0.7.19
-      hookable: ^5.2.2
+      hookable: ^5.3.0
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
       jiti: ^1.14.0
@@ -114,7 +114,7 @@ importers:
       globby: 13.1.2
       gzip-size: 7.0.0
       h3: 0.7.19
-      hookable: 5.2.2
+      hookable: 5.3.0
       http-proxy: 1.18.1
       is-primitive: 3.0.1
       jiti: 1.14.0
@@ -3316,8 +3316,8 @@ packages:
     dependencies:
       function-bind: 1.1.1
 
-  /hookable/5.2.2:
-    resolution: {integrity: sha512-J+tYTxF7bOYEQX2MJ3jWWjAKhQLzRAf0efkxyNfuSnIFLl3AXOpkuOVpVhBx5zMSeGPzIUNN5FpYQaA1eYzfVQ==}
+  /hookable/5.3.0:
+    resolution: {integrity: sha512-4gTA2q08HT8G32uIW7Jpro3rSXgT2ZTM8R6+r7H7joq90eZlqFPPTvHD6w8WZUohIrbXbDperL96ilb6dkNxNw==}
 
   /hosted-git-info/2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -5137,7 +5137,7 @@ packages:
       defu: 6.1.0
       esbuild: 0.15.6
       globby: 13.1.2
-      hookable: 5.2.2
+      hookable: 5.3.0
       jiti: 1.14.0
       magic-string: 0.26.3
       mkdirp: 1.0.4
