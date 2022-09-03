@@ -247,13 +247,14 @@ function formatRollupError (_error: RollupError | OnResolveResult) {
   try {
     const logs: string[] = []
     for (const error of ('errors' in _error ? _error.errors : [_error as RollupError])) {
-      const id = error.id || (_error as RollupError).id
+      const id = (error as any).path || error.id || (_error as RollupError).id
       let path = isAbsolute(id) ? relative(process.cwd(), id) : id
       const location = (error as RollupError).loc || (error as PartialMessage).location
       if (location) {
         path += `:${location.line}:${location.column}`
       }
-      logs.push(`Rollup error while processing \`${path}\`` + '\n\n' + ((error as PartialMessage).text || (error as RollupError).frame))
+      const text = (error as PartialMessage).text || (error as RollupError).frame
+      logs.push(`Rollup error while processing \`${path}\`` + text ? '\n\n' + text : '')
     }
     return logs.join('\n\n')
   } catch {
