@@ -88,8 +88,8 @@ export interface DevServerOptions {
 }
 
 export interface CompressOptions {
-  gzip: boolean
-  brotli: boolean
+  gzip?: boolean
+  brotli?: boolean
 }
 
 export interface NitroOptions {

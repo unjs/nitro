@@ -28,8 +28,7 @@ export function publicAssets (nitro: Nitro): Plugin {
       })
       for (const id of files) {
         let type = mime.getType(id) || 'text/plain'
-        const isTextType = type.startsWith('text')
-        if (isTextType) { type += '; charset=utf-8' }
+        if (type.startsWith('text')) { type += '; charset=utf-8' }
         const fullPath = resolve(nitro.options.output.publicDir, id)
         const assetData = await fsp.readFile(fullPath)
         const etag = createEtag(assetData)
@@ -44,28 +43,19 @@ export function publicAssets (nitro: Nitro): Plugin {
           path: relative(nitro.options.output.serverDir, fullPath)
         }
 
-        if (!!nitro.options.compressPublicAssets && assetData.length > 1024 && !assetId.endsWith('.map') && isTypeCompressible(type)) {
-          let encodings = []
-          if (typeof nitro.options.compressPublicAssets === 'boolean') {
-            encodings = ['gzip', 'br']
-          } else {
-            const { gzip, brotli } = nitro.options.compressPublicAssets
-            if (gzip) { encodings.push('gzip') }
-            if (brotli) { encodings.push('br') }
-          }
-
+        if (nitro.options.compressPublicAssets && assetData.length > 1024 && !assetId.endsWith('.map') && isTypeCompressible(type)) {
+          const { gzip, brotli } = nitro.options.compressPublicAssets || {} as any
+          const encodings = [gzip !== false && 'gzip', brotli !== false && 'br'].filter(Boolean)
           for (const encoding of encodings) {
             const suffix = '.' + (encoding === 'gzip' ? 'gz' : 'br')
             const compressedPath = fullPath + suffix
             const gzipOptions = { level: zlib.constants.Z_BEST_COMPRESSION }
+            const isTextType = type.startsWith('text')
             const brotliOptions = {
-              [zlib.constants.BROTLI_PARAM_MODE]: isTextType
-                ? zlib.constants.BROTLI_MODE_TEXT
-                : zlib.constants.BROTLI_MODE_GENERIC,
+              [zlib.constants.BROTLI_PARAM_MODE]: isTextType ? zlib.constants.BROTLI_MODE_TEXT : zlib.constants.BROTLI_MODE_GENERIC,
               [zlib.constants.BROTLI_PARAM_QUALITY]: zlib.constants.BROTLI_MAX_QUALITY,
               [zlib.constants.BROTLI_PARAM_SIZE_HINT]: assetData.length
             }
-
             const compressedBuff: Buffer = await new Promise((resolve, reject) => {
               (encoding === 'gzip')
                 ? zlib.gzip(assetData, gzipOptions, (error, result) => error ? reject(error) : resolve(result))
