@@ -81,8 +81,10 @@ If a `public/` directory is detected, it will be added by default, but you can a
 
 ## `compressPublicAssets`
 
-If enabled, Nitro will generate a precompressed (gzip and brotli) verison of all public assets and prerendered routes
-bigger than 1024 bytes into public directory. Using this option you can support zero overhead asset compression without using a CDN.
+- Default: `{ gzip: false, brotli: false }`
+
+If enabled, Nitro will generate a pre-compressed (gzip and/or brotli) version of supported types of public assets and prerendered routes
+larger than 1024 bytes into the public directory. The best compression level is used. Using this option you can support zero overhead asset compression without using a CDN.
 
 ## `serverAssets`
 

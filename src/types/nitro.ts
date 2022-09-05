@@ -87,6 +87,11 @@ export interface DevServerOptions {
   watch: string[]
 }
 
+export interface CompressOptions {
+  gzip?: boolean
+  brotli?: boolean
+}
+
 export interface NitroOptions {
   // Internal
   _config: NitroConfig
@@ -135,7 +140,7 @@ export interface NitroOptions {
   imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
-  compressPublicAssets: boolean
+  compressPublicAssets: boolean | CompressOptions
 
   // Dev
   dev: boolean

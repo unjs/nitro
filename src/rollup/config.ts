@@ -138,6 +138,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   // Build-time environment variables
   const buildEnvVars = {
     NODE_ENV: nitro.options.dev ? 'development' : (nitro.options.preset === 'nitro-prerender' ? 'prerender' : 'production'),
+    prerender: nitro.options.preset === 'nitro-prerender',
     server: true,
     client: false,
     dev: String(nitro.options.dev),
