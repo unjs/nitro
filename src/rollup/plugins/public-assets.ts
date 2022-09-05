@@ -57,9 +57,12 @@ export function publicAssets (nitro: Nitro): Plugin {
               [zlib.constants.BROTLI_PARAM_SIZE_HINT]: assetData.length
             }
             const compressedBuff: Buffer = await new Promise((resolve, reject) => {
-              (encoding === 'gzip')
-                ? zlib.gzip(assetData, gzipOptions, (error, result) => error ? reject(error) : resolve(result))
-                : zlib.brotliCompress(assetData, brotliOptions, (error, result) => error ? reject(error) : resolve(result))
+              const cb = (error, result: Buffer) => error ? reject(error) : resolve(result)
+              if (encoding === 'gzip') {
+                zlib.gzip(assetData, gzipOptions, cb)
+              } else {
+                zlib.brotliCompress(assetData, brotliOptions, cb)
+              }
             })
             await fsp.writeFile(compressedPath, compressedBuff)
             assets[assetId + suffix] = {
