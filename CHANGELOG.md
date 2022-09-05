@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## main (v0.5.0..main)
+
+
+### 🚀 Enhancements
+
+  - Add static `prerender` env variable (3bd48e3)
+  - Improve  public asset compression (#466)
+  - Add `node-cluster` preset (#455)
+
+### 🩹 Fixes
+
+  - Include error path property and handle null locations (#462)
+  - **types:** Allow `EventHandler` type for dev handlers (b0a3f43)
+
+### ❤️  Contributors
+
+- Daniel Roe
+- David Kubeš
+- Mastercuber
+- Pooya Parsa
+
 ## main (v0.4.24..main)
 
 
