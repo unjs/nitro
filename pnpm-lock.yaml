@@ -27,7 +27,7 @@ importers:
       '@types/semver': ^7.3.12
       '@types/serve-static': ^1.15.0
       '@vercel/nft': ^0.22.1
-      '@vitest/coverage-c8': ^0.23.0
+      '@vitest/coverage-c8': ^0.23.1
       archiver: ^5.3.1
       c12: ^0.2.10
       c8: ^7.12.0
@@ -85,7 +85,7 @@ importers:
       unimport: ^0.6.7
       unstorage: ^0.5.6
       vitepress: ^0.22.4
-      vitest: ^0.23.0
+      vitest: ^0.23.1
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.2.0
@@ -155,7 +155,7 @@ importers:
       '@types/object-hash': 2.2.1
       '@types/semver': 7.3.12
       '@types/serve-static': 1.15.0
-      '@vitest/coverage-c8': 0.23.0
+      '@vitest/coverage-c8': 0.23.1
       c8: 7.12.0
       changelogen: 0.3.0
       edge-runtime: 1.1.0-beta.31
@@ -166,7 +166,7 @@ importers:
       typescript: 4.8.2
       unbuild: 0.8.10
       vitepress: 0.22.4
-      vitest: 0.23.0
+      vitest: 0.23.1
 
   examples/api-routes:
     specifiers:
@@ -1289,11 +1289,11 @@ packages:
       vue: 3.2.33
     dev: true
 
-  /@vitest/coverage-c8/0.23.0:
-    resolution: {integrity: sha512-8vhn1xViCNI1rx8dzncuzePZsN2eiQN8xFtsXy4sW2nZjH4UcIQlD1nwIY6Yei/RwFalay9F1sq588a/OPMjwg==}
+  /@vitest/coverage-c8/0.23.1:
+    resolution: {integrity: sha512-si3vK1h3BHdoGfb5J2jXstthROHwDW+yqVNGO/NOPG8642+d1RO/jFFvF3OSSYFEsxxcDL0uywEVcXCjGuPYdA==}
     dependencies:
       c8: 7.12.0
-      vitest: 0.23.0
+      vitest: 0.23.1
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -5372,8 +5372,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.23.0:
-    resolution: {integrity: sha512-I3ctlfiXYprA2tID1qP+m6pmgmKx3HYfRe66MetGOHKCHLY7hz74ihiwIEtN7LReJgF3U5cM735iYPkn/Go1iQ==}
+  /vitest/0.23.1:
+    resolution: {integrity: sha512-kn9pG+h6VA3yj/xRvwgLKEd33rOlzMqJEg3tl5HSm3WUPlkY1Lr1FK8RN1uIqVKvFxmz6HGU3EQW+xW2kazRkQ==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
