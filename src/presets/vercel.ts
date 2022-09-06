@@ -40,7 +40,8 @@ export const vercel = defineNitroPreset({
             src: '/(.*)',
             dest: '/'
           }
-        ]
+        ],
+        ...nitro.options.vercel.config
       }
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
@@ -96,7 +97,8 @@ export const vercelEdge = defineNitroPreset({
             src: '/(.*)',
             dest: '/'
           }
-        ]
+        ],
+        ...nitro.options.vercel.config
       }
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
