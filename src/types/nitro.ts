@@ -215,7 +215,7 @@ export interface NitroOptions {
         sizes: number[];
         domains: string[];
         minimumCacheTTL?: number;
-        formats?: 'image/avif' | 'image/webp'[];
+        formats?: ('image/avif' | 'image/webp')[];
         dangerouslyAllowSVG?: boolean;
         contentSecurityPolicy?: string;
       };
