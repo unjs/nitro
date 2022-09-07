@@ -111,6 +111,7 @@ export interface NitroOptions {
   }
 
   // Dirs
+  workspaceDir: string
   rootDir: string
   srcDir: string
   scanDirs: string[]
