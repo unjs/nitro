@@ -3,6 +3,7 @@ import { dirname, join, normalize, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import { defu } from 'defu'
 import { terser } from 'rollup-plugin-terser'
+import type { RollupWasmOptions } from '@rollup/plugin-wasm'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
@@ -57,7 +58,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   const buildServerDir = join(nitro.options.buildDir, 'dist/server')
   const runtimeAppDir = join(runtimeDir, 'app')
 
-  const rollupConfig: RollupConfig = defu<RollupConfig, RollupConfig>(nitro.options.rollupConfig, {
+  const rollupConfig = defu(nitro.options.rollupConfig, <RollupConfig> {
     input: nitro.options.entry,
     output: {
       dir: nitro.options.output.serverDir,
@@ -121,8 +122,8 @@ export const getRollupConfig = (nitro: Nitro) => {
     rollupConfig.plugins.push(timing())
   }
 
-  if (nitro.options.autoImport) {
-    rollupConfig.plugins.push(unimportPlugin.rollup(nitro.options.autoImport))
+  if (nitro.options.imports) {
+    rollupConfig.plugins.push(unimportPlugin.rollup(nitro.options.imports))
   }
 
   // Raw asset loader
@@ -130,12 +131,14 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // WASM import support
   if (nitro.options.experimental.wasm) {
-    rollupConfig.plugins.push(wasmPlugin())
+    const options = { ...nitro.options.experimental.wasm as RollupWasmOptions }
+    rollupConfig.plugins.push(wasmPlugin(options))
   }
 
   // Build-time environment variables
   const buildEnvVars = {
     NODE_ENV: nitro.options.dev ? 'development' : (nitro.options.preset === 'nitro-prerender' ? 'prerender' : 'production'),
+    prerender: nitro.options.preset === 'nitro-prerender',
     server: true,
     client: false,
     dev: String(nitro.options.dev),

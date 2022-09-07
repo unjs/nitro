@@ -14,6 +14,7 @@ import { handlers } from '#internal/nitro/virtual/server-handlers'
 export interface NitroApp {
   h3App: H3App
   router: Router
+  // TODO: Type hooks and allow extending
   hooks: Hookable
   localCall: ReturnType<typeof createCall>
   localFetch: ReturnType<typeof createLocalFetch>

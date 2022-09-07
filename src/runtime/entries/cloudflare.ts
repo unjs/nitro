@@ -34,6 +34,7 @@ async function handleEvent (event: FetchEvent) {
   })
 
   return new Response(r.body, {
+    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
     statusText: r.statusText

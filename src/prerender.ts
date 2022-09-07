@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
-import { parseURL, withBase } from 'ufo'
+import { parseURL, withBase, withoutBase } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
@@ -37,6 +37,9 @@ export async function prerender (nitro: Nitro) {
   const canPrerender = (route: string = '/') => {
     if (generatedRoutes.has(route)) { return false }
     if (route.length > 250) { return false }
+    for (const ignore of nitro.options.prerender.ignore) {
+      if (route.startsWith(ignore)) { return false }
+    }
     return true
   }
 
@@ -52,8 +55,20 @@ export async function prerender (nitro: Nitro) {
     const _route: PrerenderGenerateRoute = { route }
 
     // Fetch the route
-    const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
-    _route.contents = await res.text()
+    const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'x-nitro-prerender': route } }) as ReturnType<typeof fetch>)
+    _route.data = await res.arrayBuffer()
+    Object.defineProperty(_route, 'contents', {
+      get: () => {
+        if (!(_route as any)._contents) {
+          (_route as any)._contents = new TextDecoder('utf-8').decode(new Uint8Array(_route.data))
+        }
+        return (_route as any)._contents
+      },
+      set (value: string) {
+        (_route as any)._contents = value
+        _route.data = new TextEncoder().encode(value)
+      }
+    })
     if (res.status !== 200) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any
       _route.error.statusCode = res.status
@@ -64,6 +79,7 @@ export async function prerender (nitro: Nitro) {
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
     _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+    _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL)
 
     await nitro.hooks.callHook('prerender:generate', _route, nitro)
 
@@ -71,18 +87,14 @@ export async function prerender (nitro: Nitro) {
     if (_route.skip) { return }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
-    await writeFile(filePath, _route.contents)
+    await writeFile(filePath, Buffer.from(_route.data))
 
     // Crawl route links
-    if (
-      !_route.error &&
-      nitro.options.prerender.crawlLinks &&
-      isImplicitHTML
-    ) {
-      const crawledRoutes = extractLinks(_route.contents, route, res)
-      for (const crawledRoute of crawledRoutes) {
-        if (canPrerender(crawledRoute)) {
-          routes.add(crawledRoute)
+    if (!_route.error && isImplicitHTML) {
+      const extractedLinks = extractLinks(_route.contents, route, res, nitro.options.prerender.crawlLinks)
+      for (const _link of extractedLinks) {
+        if (canPrerender(_link)) {
+          routes.add(_link)
         }
       }
     }
@@ -110,14 +122,20 @@ export async function prerender (nitro: Nitro) {
 
 const LINK_REGEX = /href=['"]?([^'" >]+)/g
 
-function extractLinks (html: string, from: string, res: Response) {
+function extractLinks (html: string, from: string, res: Response, crawlLinks: boolean) {
   const links: string[] = []
   const _links: string[] = []
 
-  // Extract from any <TAG href="">
-  _links.push(...Array.from(html.matchAll(LINK_REGEX)).map(m => m[1]))
+  // Extract from any <TAG href=""> to crawl
+  if (crawlLinks) {
+    _links.push(
+      ...Array.from(html.matchAll(LINK_REGEX))
+        .map(m => m[1])
+        .filter(link => allowedExtensions.has(getExtension(link)))
+    )
+  }
 
-  // Extract from X-Nitro-Prerender headers
+  // Extract from x-nitro-prerender headers
   const header = res.headers.get('x-nitro-prerender') || ''
   _links.push(...header.split(',').map(i => i.trim()))
 
@@ -125,7 +143,6 @@ function extractLinks (html: string, from: string, res: Response) {
     const parsed = parseURL(link)
     if (parsed.protocol) { continue }
     let { pathname } = parsed
-    if (!allowedExtensions.has(getExtension(pathname))) { continue }
     if (!pathname.startsWith('/')) {
       const fromURL = new URL(from, 'http://localhost')
       pathname = new URL(pathname, fromURL).pathname

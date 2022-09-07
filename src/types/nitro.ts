@@ -7,6 +7,7 @@ import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import type { WatchOptions } from 'chokidar'
 import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
+import type { RollupWasmOptions } from '@rollup/plugin-wasm'
 import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
@@ -27,6 +28,7 @@ export interface Nitro {
 export interface PrerenderRoute {
   route: string
   contents?: string
+  data?: ArrayBuffer
   fileName?: string
   error?: Error & { statusCode: number, statusMessage: string }
   generateTimeMS?: number
@@ -85,6 +87,11 @@ export interface DevServerOptions {
   watch: string[]
 }
 
+export interface CompressOptions {
+  gzip?: boolean
+  brotli?: boolean
+}
+
 export interface NitroOptions {
   // Internal
   _config: NitroConfig
@@ -122,13 +129,18 @@ export interface NitroOptions {
   renderer: string
   serveStatic: boolean
   experimental?: {
-    wasm?: boolean
+    wasm?: boolean | RollupWasmOptions
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
+  /**
+   * @deprecated Please use `imports` option
+   */
   autoImport: UnimportPluginOptions | false
+  imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
+  compressPublicAssets: boolean | CompressOptions
 
   // Dev
   dev: boolean
@@ -144,6 +156,7 @@ export interface NitroOptions {
   devErrorHandler: NitroErrorHandler
   prerender: {
     crawlLinks: boolean
+    ignore: string[]
     routes: string[]
   }
 
