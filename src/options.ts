@@ -7,6 +7,7 @@ import { resolveModuleExportNames, resolvePath as resovleModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
+import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -123,6 +124,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.preset = preset
 
   options.rootDir = resolve(options.rootDir || '.')
+  options.workspaceDir = await findWorkspaceDir(options.rootDir)
   options.srcDir = resolve(options.srcDir || options.rootDir)
   for (const key of ['srcDir', 'publicDir', 'buildDir']) {
     options[key] = resolve(options.rootDir, options[key])
@@ -146,6 +148,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.output.publicDir = resolvePath(options.output.publicDir, options)
   options.output.serverDir = resolvePath(options.output.serverDir, options)
 
+  options.nodeModulesDirs.push(resolve(options.workspaceDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
   options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
