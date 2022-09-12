@@ -7,8 +7,8 @@ import type { Nitro } from '../types'
 export const netlify = defineNitroPreset({
   extends: 'aws-lambda',
   output: {
-    dir: '{{ workspaceDir }}/.netlify/functions-internal',
-    publicDir: '{{ workspaceDir }}/dist'
+    dir: '{{ rootDir }}/.netlify/functions-internal',
+    publicDir: '{{ rootDir }}/dist'
   },
   rollupConfig: {
     output: {
@@ -59,8 +59,8 @@ export const netlifyEdge = defineNitroPreset({
   extends: 'base-worker',
   entry: '#internal/nitro/entries/netlify-edge',
   output: {
-    serverDir: '{{ workspaceDir }}/.netlify/edge-functions',
-    publicDir: '{{ workspaceDir }}/dist'
+    serverDir: '{{ rootDir }}/.netlify/edge-functions',
+    publicDir: '{{ rootDir }}/dist'
   },
   rollupConfig: {
     output: {
