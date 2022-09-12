@@ -48,7 +48,7 @@
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-inject": "^4.0.4",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^14.0.1",
+    "@rollup/plugin-node-resolve": "^14.1.0",
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-wasm": "^5.2.0",
     "@rollup/pluginutils": "^4.2.1",
@@ -120,7 +120,7 @@
     "expect-type": "^0.14.2",
     "miniflare": "^2.8.2",
     "typescript": "^4.8.3",
-    "unbuild": "^0.8.10",
+    "unbuild": "^0.8.11",
     "vitepress": "^0.22.4",
     "vitest": "^0.23.2"
   },
