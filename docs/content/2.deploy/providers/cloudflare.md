@@ -23,11 +23,11 @@ account_id = "<the account_id you obtained>"
 workers_dev = true
 route = ""
 zone_id = ""
-compatibility_date = "2022-04-07"
+compatibility_date = "2022-09-10"
+main=".output/server/index.mjs"
 
 [site]
 bucket = ".output/public"
-entry-point = ".output"
 
 [build]
 command = ""
