@@ -111,18 +111,18 @@
     "@types/object-hash": "^2.2.1",
     "@types/semver": "^7.3.12",
     "@types/serve-static": "^1.15.0",
-    "@vitest/coverage-c8": "^0.23.1",
+    "@vitest/coverage-c8": "^0.23.2",
     "c8": "^7.12.0",
     "changelogen": "^0.3.0",
     "edge-runtime": "1.1.0-beta.31",
-    "eslint": "^8.23.0",
+    "eslint": "^8.23.1",
     "execa": "^6.1.0",
     "expect-type": "^0.14.2",
-    "miniflare": "^2.8.1",
-    "typescript": "^4.8.2",
+    "miniflare": "^2.8.2",
+    "typescript": "^4.8.3",
     "unbuild": "^0.8.10",
     "vitepress": "^0.22.4",
-    "vitest": "^0.23.1"
+    "vitest": "^0.23.2"
   },
   "packageManager": "pnpm@7.11.0",
   "engines": {
