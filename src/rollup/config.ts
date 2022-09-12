@@ -281,7 +281,7 @@ export const plugins = [
     extensions,
     preferBuiltins: !!nitro.options.node,
     rootDir: nitro.options.rootDir,
-    moduleDirectories: ['node_modules'].concat(nitro.options.nodeModulesDirs),
+    modulePaths: nitro.options.nodeModulesDirs,
     // 'module' is intentionally not supported because of externals
     mainFields: ['main'],
     exportConditions: [
