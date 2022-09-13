@@ -13,6 +13,7 @@ import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
+import type { PresetOptions } from './presets'
 
 export interface Nitro {
   options: NitroOptions,
@@ -87,7 +88,12 @@ export interface DevServerOptions {
   watch: string[]
 }
 
-export interface NitroOptions {
+export interface CompressOptions {
+  gzip?: boolean
+  brotli?: boolean
+}
+
+export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig
 
@@ -106,6 +112,7 @@ export interface NitroOptions {
   }
 
   // Dirs
+  workspaceDir: string
   rootDir: string
   srcDir: string
   scanDirs: string[]
@@ -135,7 +142,7 @@ export interface NitroOptions {
   imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
-  compressPublicAssets: boolean
+  compressPublicAssets: boolean | CompressOptions
 
   // Dev
   dev: boolean

@@ -145,7 +145,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       for (const pkgName of opts.traceInclude || []) {
         const path = await this.resolve(pkgName)
         if (path?.id) {
-          trackedExternals.add(path.id)
+          trackedExternals.add(path.id.replace(/\?.+/, ''))
         }
       }
 

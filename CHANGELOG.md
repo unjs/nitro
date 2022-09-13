@@ -2,6 +2,98 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## main (v0.5.0..main)
+
+
+### 🚀 Enhancements
+
+  - Add static `prerender` env variable (3bd48e3)
+  - Improve  public asset compression (#466)
+  - Add `node-cluster` preset (#455)
+
+### 🩹 Fixes
+
+  - Include error path property and handle null locations (#462)
+  - **types:** Allow `EventHandler` type for dev handlers (b0a3f43)
+
+### ❤️  Contributors
+
+- Daniel Roe
+- David Kubeš
+- Mastercuber
+- Pooya Parsa
+
+## main (v0.4.24..main)
+
+
+### 🚀 Enhancements
+
+  - Add cloudflare-pages preset (#210)
+  - Support prerendering binary files (#320)
+  - Opt-in option to compress public assets using `gzip` and `br` (#449)
+  - Allow specifying wasm plugin options (#450)
+  - Allow using `extends` alongside with `preset` (6a43985)
+
+### 🩹 Fixes
+
+  - **azure:** Fix route name (#430)
+  - Update types for defu usage (0f241bc)
+  - Add resolved side-effect for node-fetch-native (#435)
+  - **aws-lambda:** Join cookies with semicolon (#356)
+  - **aws-lambda:** Fix normalizeIncomingHeaders (#418)
+  - **aws-lambda:** Return outgoing cookies on response objects (#357)
+  - **aws-lambda:** Add `multiValueQueryStringParameters` to aws preset (#398)
+  - ⚠️  Update unenv to 0.6.x (#438)
+  - Add code location and codeframe for rollup errors (#406)
+  - **prerender:** Allow updating route contents (#452)
+  - **externals:** ⚠️  Fall back to `mlly` resolver in more cases (#431)
+  - ⚠️  `NITRO_PRESET` should have highest periority (92d711f)
+
+### 💅 Refactors
+
+  - ⚠️  Rename options `autoImport` to `imports` (#433)
+  - Utilize knitwork to generate safe variable names (#447)
+
+### 📖 Documentation
+
+  - Migrate to docus (#365)
+  - Simplify deploy index route (a1d7b17)
+  - **storage:** Fix typo (#424)
+
+### 🏡 Chore
+
+  - Update lock (4ceeee2)
+  - Narrow plugin override type (b4e24f6)
+  - Add `@vitest/coverage-c8` (4a5e565)
+  - Remove unused `@types/jsdom` from dependencies (#429)
+  - Add vitest config (ab59150)
+
+### 📦 Build
+
+  - Expose `package.json` subpath export (d0029c0)
+  - Use changelogen to bump edge and generate chagelog (679e356)
+
+#### ⚠️  Breaking Changes
+
+  - ⚠️  Update unenv to 0.6.x (#438)
+  - **externals:** ⚠️  Fall back to `mlly` resolver in more cases (#431)
+  - ⚠️  `NITRO_PRESET` should have highest periority (92d711f)
+  - ⚠️  Rename options `autoImport` to `imports` (#433)
+
+### ❤️  Contributors
+
+- Ahad Birang
+- Alexander Lichter
+- Anthony Fu
+- Daniel Roe
+- Dániel Földi
+- Eckhardt (Kaizen) Dreyer
+- Julien Huang
+- Pooya Parsa
+- Sören Schwert
+- Tobias Diez
+- Yaël Guilloux
+
 ### [0.4.24](https://github.com/unjs/nitro/compare/v0.4.23...v0.4.24) (2022-08-12)
 
 

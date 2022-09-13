@@ -138,6 +138,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   // Build-time environment variables
   const buildEnvVars = {
     NODE_ENV: nitro.options.dev ? 'development' : (nitro.options.preset === 'nitro-prerender' ? 'prerender' : 'production'),
+    prerender: nitro.options.preset === 'nitro-prerender',
     server: true,
     client: false,
     dev: String(nitro.options.dev),
@@ -280,7 +281,7 @@ export const plugins = [
     extensions,
     preferBuiltins: !!nitro.options.node,
     rootDir: nitro.options.rootDir,
-    moduleDirectories: ['node_modules'].concat(nitro.options.nodeModulesDirs),
+    modulePaths: nitro.options.nodeModulesDirs,
     // 'module' is intentionally not supported because of externals
     mainFields: ['main'],
     exportConditions: [

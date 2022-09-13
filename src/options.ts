@@ -7,6 +7,7 @@ import { resolveModuleExportNames, resolvePath as resovleModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
+import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -87,7 +88,7 @@ const NitroDefaults: NitroConfig = {
 
 export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
   // Detect preset
-  let preset = userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'node-server'
+  let preset = process.env.NITRO_PRESET || userConfig.preset || detectTarget() || 'node-server'
   if (userConfig.dev) {
     preset = 'nitro-dev'
   }
@@ -99,6 +100,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     defaults: NitroDefaults,
     cwd: userConfig.rootDir,
     dotenv: userConfig.dev,
+    extend: { extendKey: ['extends', 'preset'] },
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
@@ -114,7 +116,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
     },
     overrides: {
       ...userConfig,
-      extends: [preset]
+      preset
     }
   })
   const options = klona(config) as NitroOptions
@@ -122,6 +124,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.preset = preset
 
   options.rootDir = resolve(options.rootDir || '.')
+  options.workspaceDir = await findWorkspaceDir(options.rootDir)
   options.srcDir = resolve(options.srcDir || options.rootDir)
   for (const key of ['srcDir', 'publicDir', 'buildDir']) {
     options[key] = resolve(options.rootDir, options[key])
@@ -145,6 +148,7 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.output.publicDir = resolvePath(options.output.publicDir, options)
   options.output.serverDir = resolvePath(options.output.serverDir, options)
 
+  options.nodeModulesDirs.push(resolve(options.workspaceDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
   options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
