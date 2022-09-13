@@ -1,8 +1,8 @@
 import { resolve } from 'pathe'
+import { defu } from 'defu'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
-import { defu } from 'defu'
 
 // https://vercel.com/docs/build-output-api/v3
 
@@ -41,7 +41,7 @@ export const vercel = defineNitroPreset({
             src: '/(.*)',
             dest: '/'
           }
-        ],
+        ]
       })
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
@@ -97,7 +97,7 @@ export const vercelEdge = defineNitroPreset({
             src: '/(.*)',
             dest: '/'
           }
-        ],
+        ]
       })
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
