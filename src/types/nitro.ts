@@ -13,7 +13,7 @@ import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
-import { VercelBuildConfigV3 } from './presets'
+import type { PresetOptions } from './presets'
 
 export interface Nitro {
   options: NitroOptions,
@@ -93,7 +93,7 @@ export interface CompressOptions {
   brotli?: boolean
 }
 
-export interface NitroOptions {
+export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig
 
@@ -192,8 +192,5 @@ export interface NitroOptions {
     preview: string
     deploy: string
   }
-
-  // Platform Specific
-  vercel: VercelBuildConfigV3;
 }
 

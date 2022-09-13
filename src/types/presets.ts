@@ -38,3 +38,9 @@ export interface VercelBuildConfigV3 {
     >;
     cache?: string[];
 }
+
+export interface PresetOptions {
+  vercel: {
+    config: VercelBuildConfigV3
+  }
+}

@@ -83,12 +83,7 @@ const NitroDefaults: NitroConfig = {
   },
   nodeModulesDirs: [],
   hooks: {},
-  commands: {},
-
-  // Platform
-  vercel: {
-    config: {}
-  }
+  commands: {}
 }
 
 export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
