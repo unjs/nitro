@@ -77,7 +77,7 @@ export const vercelEdge = defineNitroPreset({
   hooks: {
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
-      const buildConfig = {
+      const buildConfig = defu(nitro.options.vercel.config, {
         version: 3,
         routes: [
           ...nitro.options.publicAssets
@@ -98,8 +98,7 @@ export const vercelEdge = defineNitroPreset({
             dest: '/'
           }
         ],
-        ...nitro.options.vercel.config
-      }
+      })
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
       const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
