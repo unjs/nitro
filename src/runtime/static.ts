@@ -18,6 +18,7 @@ export default eventHandler(async (event) => {
   const encodings = encodingHeader.split(',')
     .map(e => EncodingMap[e.trim()])
     .filter(Boolean)
+    .sort()
     .concat([''])
   if (encodings.length > 1) {
     event.res.setHeader('Vary', 'Accept-Encoding')
