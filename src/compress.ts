@@ -37,7 +37,7 @@ export async function compressPublicAssets (nitro: Nitro) {
       const compressedPath = filePath + suffix
       if (existsSync(compressedPath)) { continue }
       const gzipOptions = { level: zlib.constants.Z_BEST_COMPRESSION }
-      const isTextType = true // type.startsWith('text')
+      const isTextType = mimeType.startsWith('text')
       const brotliOptions = {
         [zlib.constants.BROTLI_PARAM_MODE]: isTextType ? zlib.constants.BROTLI_MODE_TEXT : zlib.constants.BROTLI_MODE_GENERIC,
         [zlib.constants.BROTLI_PARAM_QUALITY]: zlib.constants.BROTLI_MAX_QUALITY,

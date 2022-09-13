@@ -119,7 +119,7 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     it('serve static asset /favicon.ico', async () => {
       const { status, headers } = await callHandler({ url: '/favicon.ico' })
       expect(status).toBe(200)
-      expect(headers.etag).toMatchInlineSnapshot('"\\"3c2e-dKdB0JNG9uHgD12RJtaVJk8vyiw\\""')
+      expect(headers.etag).toMatchInlineSnapshot('"\\"a5c-c9m1+C8fL2uF6tr6qU4s4vtSa0g\\""')
       expect(headers['content-type']).toMatchInlineSnapshot('"image/vnd.microsoft.icon"')
     })
 
