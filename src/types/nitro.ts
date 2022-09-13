@@ -13,6 +13,7 @@ import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
+import { VercelBuildConfigV3 } from './presets'
 
 export interface Nitro {
   options: NitroOptions,
@@ -192,45 +193,6 @@ export interface NitroOptions {
   }
 
   // Platform Specific
-  vercel: {
-    config: {
-      version: 3;
-      routes?: (
-        | {
-            src: string;
-            headers: {
-              'cache-control': string;
-            };
-            continue: boolean;
-          }
-        | {
-            handle: string;
-          }
-        | {
-            src: string;
-            dest: string;
-          }
-      )[];
-      images?: {
-        sizes: number[];
-        domains: string[];
-        minimumCacheTTL?: number;
-        formats?: ('image/avif' | 'image/webp')[];
-        dangerouslyAllowSVG?: boolean;
-        contentSecurityPolicy?: string;
-      };
-      wildcard?: Array<{
-        domain: string;
-        value: string;
-      }>;
-      overrides?: Record<
-        string,
-        {
-          path?: string;
-          contentType?: string;
-        }
-      >;
-      cache?: string[];
-    };
-  };
+  vercel: VercelBuildConfigV3;
 }
+
