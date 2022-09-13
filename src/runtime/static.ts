@@ -1,5 +1,5 @@
 import { eventHandler, createError } from 'h3'
-import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
+import { joinURL, withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
 import { getAsset, readAsset, isPublicAssetURL } from '#internal/nitro/virtual/public-assets'
 
 const METHODS = ['HEAD', 'GET']
@@ -24,7 +24,7 @@ export default eventHandler(async (event) => {
   }
 
   for (const encoding of encodings) {
-    for (const _id of [id + encoding, id + '/index.html' + encoding]) {
+    for (const _id of [id + encoding, joinURL(id, 'index.html' + encoding)]) {
       const _asset = getAsset(_id)
       if (_asset) {
         asset = _asset
