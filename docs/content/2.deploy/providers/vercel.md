@@ -35,3 +35,7 @@ It is possible to deploy your nitro applications directly on [Vercel Edge Functi
 > Edge Functions run after the cache, and can both cache and return responses. [Read More](https://vercel.com/docs/concepts/functions/edge-functions)
 
 In order to enable this target, please set `NITRO_PRESET` environment variable to `vercel-edge`.
+
+## Custom Build Output Configuration
+
+You can provide additional [build output configuration](https://vercel.com/docs/build-output-api/v3) using `vercel.config` key inside `nitro.config`. It will be merged with build-in auto generated config.

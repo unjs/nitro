@@ -1,4 +1,5 @@
 import { resolve } from 'pathe'
+import { defu } from 'defu'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
@@ -20,7 +21,7 @@ export const vercel = defineNitroPreset({
   hooks: {
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
-      const buildConfig = {
+      const buildConfig = defu(nitro.options.vercel.config, {
         version: 3,
         routes: [
           ...nitro.options.publicAssets
@@ -41,7 +42,7 @@ export const vercel = defineNitroPreset({
             dest: '/'
           }
         ]
-      }
+      })
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
       const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
@@ -76,7 +77,7 @@ export const vercelEdge = defineNitroPreset({
   hooks: {
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
-      const buildConfig = {
+      const buildConfig = defu(nitro.options.vercel.config, {
         version: 3,
         routes: [
           ...nitro.options.publicAssets
@@ -97,7 +98,7 @@ export const vercelEdge = defineNitroPreset({
             dest: '/'
           }
         ]
-      }
+      })
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
       const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
