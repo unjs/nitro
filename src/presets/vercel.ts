@@ -21,7 +21,7 @@ export const vercel = defineNitroPreset({
   hooks: {
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
-      const buildConfig = defu(nitro.options.vercel.config, {
+      const buildConfig = defu(nitro.options.vercel?.config, {
         version: 3,
         routes: [
           ...nitro.options.publicAssets
@@ -77,7 +77,7 @@ export const vercelEdge = defineNitroPreset({
   hooks: {
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
-      const buildConfig = defu(nitro.options.vercel.config, {
+      const buildConfig = defu(nitro.options.vercel?.config, {
         version: 3,
         routes: [
           ...nitro.options.publicAssets
