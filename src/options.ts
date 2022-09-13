@@ -89,8 +89,8 @@ const NitroDefaults: NitroConfig = {
 export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
   // Detect preset
   let preset = process.env.NITRO_PRESET || userConfig.preset || detectTarget() || 'node-server'
-  if (userConfig.preset === "nitro-prerender") {
-    preset = "nitro-prerender"
+  if (userConfig.preset === 'nitro-prerender') {
+    preset = 'nitro-prerender'
   }
   if (userConfig.dev) {
     preset = 'nitro-dev'
