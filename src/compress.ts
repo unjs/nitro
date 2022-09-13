@@ -23,8 +23,7 @@ export async function compressPublicAssets (nitro: Nitro) {
 
     const mimeType = mime.getType(fileName) || 'text/plain'
 
-    if (fileContents.length < 1024 || fileName.endsWith('.map') || !isCompressable(mimeType)) {
-      // console.log('Skipping compression for', fileName, fileContents.length, mimeType)
+    if (fileContents.length < 1024 || fileName.endsWith('.map') || !isCompressableMime(mimeType)) {
       continue
     }
 
@@ -37,9 +36,10 @@ export async function compressPublicAssets (nitro: Nitro) {
       const compressedPath = filePath + suffix
       if (existsSync(compressedPath)) { continue }
       const gzipOptions = { level: zlib.constants.Z_BEST_COMPRESSION }
-      const isTextType = mimeType.startsWith('text')
       const brotliOptions = {
-        [zlib.constants.BROTLI_PARAM_MODE]: isTextType ? zlib.constants.BROTLI_MODE_TEXT : zlib.constants.BROTLI_MODE_GENERIC,
+        [zlib.constants.BROTLI_PARAM_MODE]: isTextMime(mimeType)
+          ? zlib.constants.BROTLI_MODE_TEXT
+          : zlib.constants.BROTLI_MODE_GENERIC,
         [zlib.constants.BROTLI_PARAM_QUALITY]: zlib.constants.BROTLI_MAX_QUALITY,
         [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileContents.length
       }
@@ -56,32 +56,10 @@ export async function compressPublicAssets (nitro: Nitro) {
   }
 }
 
-function isCompressable (mimeType: string) {
-  return [
-    'application/javascript',
-    'application/json',
-    'application/manifest+json',
-    'application/rss+xml',
-    'application/vnd.ms-fontobject',
-    'application/x-font-opentype',
-    'application/x-font-truetype',
-    'application/x-font-ttf',
-    'application/x-javascript',
-    'application/xml',
-    'application/xhtml+xml',
-    'font/eot',
-    'font/opentype',
-    'font/otf',
-    'font/truetype',
-    'image/svg+xml',
-    'image/vnd.microsoft.icon',
-    'image/x-icon',
-    'image/x-win-bitmap',
-    'text/css',
-    'text/javascript',
-    'text/plain',
-    'text/html',
-    'text/xml',
-    'text/x-component'
-  ].includes(mimeType)
+function isTextMime (mimeType: string) {
+  return /text|javascript|json|xml/.test(mimeType)
+}
+
+function isCompressableMime (mimeType: string) {
+  return /image|text|font|json|xml|javascript/.test(mimeType)
 }
