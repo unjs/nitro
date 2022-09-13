@@ -6,6 +6,7 @@ import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro, PrerenderGenerateRoute, PrerenderRoute } from './types'
 import { writeFile } from './utils'
+import { compressPublicAssets } from './compress'
 
 const allowedExtensions = new Set(['', '.json'])
 
@@ -117,6 +118,10 @@ export async function prerender (nitro: Nitro) {
       await nitro.hooks.callHook('prerender:route', _route)
       nitro.logger.log(chalk[_route.error ? 'yellow' : 'gray'](`  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${_route.error ? `(${_route.error})` : ''}`))
     }
+  }
+
+  if (nitro.options.compressPublicAssets) {
+    await compressPublicAssets(nitro)
   }
 }
 

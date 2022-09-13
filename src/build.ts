@@ -15,6 +15,7 @@ import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
 import { runtimeDir } from './dirs'
 import { snapshotStorage } from './storage'
+import { compressPublicAssets } from './compress'
 
 export async function prepare (nitro: Nitro) {
   await prepareDir(nitro.options.output.dir)
@@ -32,6 +33,9 @@ export async function copyPublicAssets (nitro: Nitro) {
     if (await isDirectory(asset.dir)) {
       await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL!))
     }
+  }
+  if (nitro.options.compressPublicAssets) {
+    await compressPublicAssets(nitro)
   }
   nitro.logger.success('Generated public ' + prettyPath(nitro.options.output.publicDir))
 }

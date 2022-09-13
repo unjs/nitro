@@ -1,5 +1,4 @@
 import { promises as fsp } from 'fs'
-import zlib from 'node:zlib'
 import { relative, resolve } from 'pathe'
 import createEtag from 'etag'
 import mime from 'mime'
@@ -23,12 +22,11 @@ export function publicAssets (nitro: Nitro): Plugin {
       const files = await globby('**', {
         cwd: nitro.options.output.publicDir,
         absolute: false,
-        dot: true,
-        ignore: ['*.gz', '*.br']
+        dot: true
       })
       for (const id of files) {
-        let type = mime.getType(id) || 'text/plain'
-        if (type.startsWith('text')) { type += '; charset=utf-8' }
+        let mimeType = mime.getType(id.replace(/\.(gz|br)$/, '')) || 'text/plain'
+        if (mimeType.startsWith('text')) { mimeType += '; charset=utf-8' }
         const fullPath = resolve(nitro.options.output.publicDir, id)
         const assetData = await fsp.readFile(fullPath)
         const etag = createEtag(assetData)
@@ -36,42 +34,12 @@ export function publicAssets (nitro: Nitro): Plugin {
 
         const assetId = '/' + decodeURIComponent(id)
         assets[assetId] = {
-          type,
+          type: mimeType,
+          encoding: id.endsWith('.gz') ? 'gzip' : id.endsWith('.br') ? 'br' : undefined,
           etag,
           mtime: stat.mtime.toJSON(),
           size: stat.size,
           path: relative(nitro.options.output.serverDir, fullPath)
-        }
-
-        if (nitro.options.compressPublicAssets && assetData.length > 1024 && !assetId.endsWith('.map') && isTypeCompressible(type)) {
-          const { gzip, brotli } = nitro.options.compressPublicAssets || {} as any
-          const encodings = [gzip !== false && 'gzip', brotli !== false && 'br'].filter(Boolean)
-          for (const encoding of encodings) {
-            const suffix = '.' + (encoding === 'gzip' ? 'gz' : 'br')
-            const compressedPath = fullPath + suffix
-            const gzipOptions = { level: zlib.constants.Z_BEST_COMPRESSION }
-            const isTextType = type.startsWith('text')
-            const brotliOptions = {
-              [zlib.constants.BROTLI_PARAM_MODE]: isTextType ? zlib.constants.BROTLI_MODE_TEXT : zlib.constants.BROTLI_MODE_GENERIC,
-              [zlib.constants.BROTLI_PARAM_QUALITY]: zlib.constants.BROTLI_MAX_QUALITY,
-              [zlib.constants.BROTLI_PARAM_SIZE_HINT]: assetData.length
-            }
-            const compressedBuff: Buffer = await new Promise((resolve, reject) => {
-              const cb = (error, result: Buffer) => error ? reject(error) : resolve(result)
-              if (encoding === 'gzip') {
-                zlib.gzip(assetData, gzipOptions, cb)
-              } else {
-                zlib.brotliCompress(assetData, brotliOptions, cb)
-              }
-            })
-            await fsp.writeFile(compressedPath, compressedBuff)
-            assets[assetId + suffix] = {
-              ...assets[assetId],
-              encoding,
-              size: compressedBuff.length,
-              path: assets[assetId].path + suffix
-            }
-          }
         }
       }
 
@@ -118,33 +86,4 @@ export function getAsset (id) {
 `
     }
   }, nitro.vfs)
-}
-
-const isTypeCompressible = (type: string): boolean => {
-  return [
-    'application/javascript',
-    'application/json',
-    'application/manifest+json',
-    'application/rss+xml',
-    'application/vnd.ms-fontobject',
-    'application/x-font-opentype',
-    'application/x-font-truetype',
-    'application/x-font-ttf',
-    'application/x-javascript',
-    'application/xml',
-    'application/xhtml+xml',
-    'font/eot',
-    'font/opentype',
-    'font/otf',
-    'font/truetype',
-    'image/svg+xml',
-    'image/vnd.microsoft.icon',
-    'image/x-icon',
-    'image/x-win-bitmap',
-    'text/css',
-    'text/javascript',
-    'text/plain',
-    'text/xml',
-    'text/x-component'
-  ].includes(type)
 }
