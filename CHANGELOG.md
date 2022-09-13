@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## main (v0.5.1..main)
+
+
+### 🚀 Enhancements
+
+  - Add `workspaceDir` and use it for presets auto generated dir (#481)
+  - Support custom vercel output configuration (#476)
+
+### 🔥 Performance
+
+  - **static:** Prefer brotli (d3c218f)
+
+### 🩹 Fixes
+
+  - **externals:** Strip query parameters from commonjs ids (#475)
+  - Use `rootDir` for providers output instead of `workspaceDir` (#491)
+  - Use node-resolve's `modulePaths` (#490)
+  - **node-server:** Listen to default host and support ipv6 (e1ff8cc)
+  - Allow for non-existent vercel config (#492)
+  - Properly serve `/index.html` static asset (#494)
+  - Compress assets outside of rollup (502f7b8)
+  - Compress binrary brotli assets with `BROTLI_MODE_GENERIC` (618f03d)
+  - **compress:** Improve mime handling (5cf6aed)
+  - **compress:** Properly ignore already compressed files (c24dbcf)
+
+### 💅 Refactors
+
+  - **cloudflare:** Update instructions to wrangler2 (db71959)
+
+### 📖 Documentation
+
+  - Fix typo (#474)
+  - Remove folder creation step for Azure Static Web Apps (#479)
+  - Fix internal link (#483)
+  - **cloudflare:** Update to use wrangler2 (#444)
+
+### ✅ Tests
+
+  - Update test (ac23a7d)
+
+### ❤️  Contributors
+
+- Alexander Lichter
+- Anthony Chu
+- Daniel Roe
+- Horu
+- Mahdi Boomeri
+- Nuzhat Minhaz
+- Oumar Barry
+- Pooya Parsa
+
 ## main (v0.5.0..main)
 
 
