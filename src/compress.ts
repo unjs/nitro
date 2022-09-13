@@ -11,7 +11,7 @@ export async function compressPublicAssets (nitro: Nitro) {
     cwd: nitro.options.output.publicDir,
     absolute: false,
     dot: true,
-    ignore: ['*.gz', '*.br']
+    ignore: ['**/*.gz', '**/*.br']
   })
 
   for (const fileName of publicFiles) {
