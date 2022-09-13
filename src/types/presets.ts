@@ -1,4 +1,7 @@
-// https://vercel.com/docs/build-output-api/v3
+/**
+ * Vercel Build Output Configuration
+ * @see https://vercel.com/docs/build-output-api/v3
+ */
 export interface VercelBuildConfigV3 {
     version: 3;
     routes?: (
