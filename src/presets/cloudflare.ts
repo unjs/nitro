@@ -8,8 +8,8 @@ export const cloudflare = defineNitroPreset({
   extends: 'base-worker',
   entry: '#internal/nitro/entries/cloudflare',
   commands: {
-    preview: 'npx miniflare ./server/index.mjs --site ./public',
-    deploy: 'npx @cloudflare/wrangler publish'
+    preview: 'npx wrangler dev ./server/index.mjs --site ./public --local',
+    deploy: 'npx wrangler publish'
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
