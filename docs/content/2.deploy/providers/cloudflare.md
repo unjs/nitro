@@ -20,7 +20,7 @@ Create a `wrangler.toml` in your root directory:
 name = "playground"
 main = "./.output/server/index.mjs"
 workers_dev = true
-compatibility_date = "2022-04-07"
+compatibility_date = "2022-09-10"
 account_id = "<the account_id you obtained (optional)>"
 route = "<mainly useful when you want to setup custom domains (optional too)>"
 
