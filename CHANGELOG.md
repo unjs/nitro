@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## main (v0.5.2..main)
+
+
+### 🚀 Enhancements
+
+  - Show preset in build logs (047357f)
+
+### 🩹 Fixes
+
+  - **prerender:** Prevent double slash when joining url to `index.html` (#499)
+  - **options:** Allow overriding preset using `nitro.config` and `loadOptions` (82a2b1e)
+  - Apply default autopreset before extending (cc37fb6)
+  - **vercel, azure:** Serve prerendered routes statically (#500)
+  - **options:** Resolve preset from first config layer (1247890)
+  - **prerender:** Skip writing routes with error (ff99330)
+
+### 💅 Refactors
+
+  - Remove `#autopreset` workaround (ad659e0)
+
+### 🏡 Chore
+
+  - Revert playground changes (2dd05fb)
+  - **vercel:** Typecheck generated config (c197622)
+
+### ❤️  Contributors
+
+- Daniel Roe
+- Pooya Parsa
+
 ## main (v0.5.1..main)
 
 
