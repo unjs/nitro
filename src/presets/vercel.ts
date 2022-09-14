@@ -70,17 +70,16 @@ export const vercelEdge = defineNitroPreset({
   }
 })
 
-function generateOverrides (routeFiles: Array<{ route: string, fileName: string }>) {
-  return Object.fromEntries(
-    routeFiles.map(({ route, fileName }) => [withoutLeadingSlash(fileName), { path: withoutLeadingSlash(route) }])
-  )
-}
-
 function generateBuildConfig (nitro: Nitro) {
-  const overrides = generateOverrides(nitro._routeFiles?.filter(r => r.fileName !== r.route) || [])
+  // const overrides = generateOverrides(nitro._prerenderedRoutes?.filter(r => r.fileName !== r.route) || [])
   return defu(nitro.options.vercel?.config, {
     version: 3,
-    overrides,
+    overrides: Object.fromEntries(
+      (nitro._prerenderedRoutes?.filter(r => r.fileName !== r.route) || [])
+        .map(({ route, fileName }) =>
+          [withoutLeadingSlash(fileName), { path: withoutLeadingSlash(route) }]
+        )
+    ),
     routes: [
       ...nitro.options.publicAssets
         .filter(asset => !asset.fallthrough)

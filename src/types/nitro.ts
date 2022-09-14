@@ -24,8 +24,9 @@ export interface Nitro {
   logger: Consola
   storage: Storage
   close: () => Promise<void>
+
   /* @internal */
-  _routeFiles?: Array<{ route: string, fileName: string }>
+  _prerenderedRoutes?: PrerenderGenerateRoute[]
 }
 
 export interface PrerenderRoute {

@@ -47,7 +47,7 @@ async function writeRoutes (nitro: Nitro) {
     }
   }
 
-  const routeFiles = nitro._routeFiles || []
+  const routeFiles = nitro._prerenderedRoutes || []
 
   const indexFileExists = routeFiles.some(route => route.fileName === '/index.html')
   if (!indexFileExists) {

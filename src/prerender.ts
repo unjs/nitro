@@ -21,7 +21,7 @@ export async function prerender (nitro: Nitro) {
   }
   // Build with prerender preset
   nitro.logger.info('Initializing prerenderer')
-  nitro._routeFiles = []
+  nitro._prerenderedRoutes = []
   const nitroRenderer = await createNitro({
     ...nitro.options._config,
     rootDir: nitro.options.rootDir,
@@ -90,7 +90,7 @@ export async function prerender (nitro: Nitro) {
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
     await writeFile(filePath, Buffer.from(_route.data))
-    nitro._routeFiles.push({ route, fileName: _route.fileName })
+    nitro._prerenderedRoutes.push(_route)
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
