@@ -85,8 +85,8 @@ export async function prerender (nitro: Nitro) {
 
     await nitro.hooks.callHook('prerender:generate', _route, nitro)
 
-    // Check if route skipped by hook
-    if (_route.skip) { return }
+    // Check if route skipped or has errors
+    if (_route.skip || _route.error) { return }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
     await writeFile(filePath, Buffer.from(_route.data))
