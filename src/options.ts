@@ -95,7 +95,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
 
   // Load configuration and preset
   configOverrides = klona(configOverrides)
-  const { config } = await loadConfig({
+  const { config, layers } = await loadConfig({
     name: 'nitro',
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
@@ -124,7 +124,8 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   })
   const options = klona(config) as NitroOptions
   options._config = configOverrides
-  options.preset = presetOverride || options.preset || defaultPreset
+
+  options.preset = presetOverride || layers.find(l => l.config.preset)?.config.preset || defaultPreset
 
   options.rootDir = resolve(options.rootDir || '.')
   options.workspaceDir = await findWorkspaceDir(options.rootDir)
