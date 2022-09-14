@@ -11,7 +11,7 @@ export const vercel = defineNitroPreset({
   entry: '#internal/nitro/entries/vercel',
   output: {
     dir: '{{ rootDir }}/.vercel/output',
-    serverDir: '{{ output.dir }}/functions/index.func',
+    serverDir: '{{ output.dir }}/functions/__nuxt.func',
     publicDir: '{{ output.dir }}/static'
   },
   commands: {
@@ -19,30 +19,15 @@ export const vercel = defineNitroPreset({
     preview: ''
   },
   hooks: {
+    'prerender:generate' (route, nitro: any) {
+      nitro._routes = nitro._routes || new Set<string>()
+      if (route.fileName.endsWith('.html')) {
+        nitro._routes.add(route.fileName)
+      }
+    },
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
-      const buildConfig = defu(nitro.options.vercel?.config, {
-        version: 3,
-        routes: [
-          ...nitro.options.publicAssets
-            .filter(asset => !asset.fallthrough)
-            .map(asset => asset.baseURL)
-            .map(baseURL => ({
-              src: baseURL + '(.*)',
-              headers: {
-                'cache-control': 'public,max-age=31536000,immutable'
-              },
-              continue: true
-            })),
-          {
-            handle: 'filesystem'
-          },
-          {
-            src: '/(.*)',
-            dest: '/'
-          }
-        ]
-      })
+      const buildConfig = generateBuildConfig(nitro)
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
       const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
@@ -62,7 +47,7 @@ export const vercelEdge = defineNitroPreset({
   entry: '#internal/nitro/entries/vercel-edge',
   output: {
     dir: '{{ rootDir }}/.vercel/output',
-    serverDir: '{{ output.dir }}/functions/index.func',
+    serverDir: '{{ output.dir }}/functions/__nuxt.func',
     publicDir: '{{ output.dir }}/static'
   },
   commands: {
@@ -75,30 +60,15 @@ export const vercelEdge = defineNitroPreset({
     }
   },
   hooks: {
+    'prerender:generate' (route, nitro: any) {
+      nitro._routes = nitro._routes || new Set<string>()
+      if (route.fileName.endsWith('.html')) {
+        nitro._routes.add(route.fileName)
+      }
+    },
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
-      const buildConfig = defu(nitro.options.vercel?.config, {
-        version: 3,
-        routes: [
-          ...nitro.options.publicAssets
-            .filter(asset => !asset.fallthrough)
-            .map(asset => asset.baseURL)
-            .map(baseURL => ({
-              src: baseURL + '(.*)',
-              headers: {
-                'cache-control': 'public,max-age=31536000,immutable'
-              },
-              continue: true
-            })),
-          {
-            handle: 'filesystem'
-          },
-          {
-            src: '/(.*)',
-            dest: '/'
-          }
-        ]
-      })
+      const buildConfig = generateBuildConfig(nitro)
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2))
 
       const functionConfigPath = resolve(nitro.options.output.serverDir, '.vc-config.json')
@@ -110,3 +80,36 @@ export const vercelEdge = defineNitroPreset({
     }
   }
 })
+
+function generateOverrides (paths: string[]) {
+  return Object.fromEntries(paths.map(route => [
+    route.replace(/^\//, ''),
+    { path: route.replace(/(\/index)?\.html$/, '').replace(/^\//, '') }
+  ]))
+}
+
+function generateBuildConfig (nitro: Nitro) {
+  return defu(nitro.options.vercel?.config, {
+    version: 3,
+    routes: [
+      ...nitro.options.publicAssets
+        .filter(asset => !asset.fallthrough)
+        .map(asset => asset.baseURL)
+        .map(baseURL => ({
+          src: baseURL + '(.*)',
+          headers: {
+            'cache-control': 'public,max-age=31536000,immutable'
+          },
+          continue: true
+        })),
+      {
+        handle: 'filesystem'
+      },
+      {
+        src: '/(.*)',
+        dest: '/__nuxt'
+      }
+    ],
+    overrides: generateOverrides(Array.from((nitro as any)._routes as Set<string>))
+  })
+}
