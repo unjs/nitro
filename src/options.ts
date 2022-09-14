@@ -87,26 +87,27 @@ const NitroDefaults: NitroConfig = {
 
 export async function loadOptions (configOverrides: NitroConfig = {}): Promise<NitroOptions> {
   // Detect preset
-  let preset = configOverrides.preset || process.env.NITRO_PRESET
+  let presetOverride = configOverrides.preset || process.env.NITRO_PRESET
   if (configOverrides.dev) {
-    preset = 'nitro-dev'
+    presetOverride = 'nitro-dev'
   }
 
   // Load configuration and preset
   configOverrides = klona(configOverrides)
   const { config } = await loadConfig({
     name: 'nitro',
-    defaults: NitroDefaults,
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
     extend: { extendKey: ['extends', 'preset'] },
-    defaultConfig: {
-      preset: '#autopreset'
+    overrides: {
+      ...configOverrides,
+      preset: presetOverride
     },
+    defaultConfig: {
+      preset: detectTarget() || 'node-server'
+    },
+    defaults: NitroDefaults,
     resolve (id: string) {
-      if (id === '#autopreset') {
-        preset = id = detectTarget() || 'node-server'
-      }
       type PT = Map<String, NitroConfig>
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
       if (matchedPreset) {
@@ -118,15 +119,10 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
         }
       }
       return null
-    },
-    overrides: {
-      ...configOverrides,
-      preset
     }
   })
   const options = klona(config) as NitroOptions
   options._config = configOverrides
-  options.preset = preset
 
   options.rootDir = resolve(options.rootDir || '.')
   options.workspaceDir = await findWorkspaceDir(options.rootDir)
