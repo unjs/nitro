@@ -65,3 +65,4 @@ Temporary Items
 .env
 .netlify
 .vercel
+staticwebapp.config.json
