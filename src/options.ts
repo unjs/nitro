@@ -86,8 +86,9 @@ const NitroDefaults: NitroConfig = {
 }
 
 export async function loadOptions (configOverrides: NitroConfig = {}): Promise<NitroOptions> {
-  // Detect preset
+  // Preset
   let presetOverride = configOverrides.preset || process.env.NITRO_PRESET
+  const defaultPreset = detectTarget() || 'node-server'
   if (configOverrides.dev) {
     presetOverride = 'nitro-dev'
   }
@@ -104,7 +105,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       preset: presetOverride
     },
     defaultConfig: {
-      preset: detectTarget() || 'node-server'
+      preset: defaultPreset
     },
     defaults: NitroDefaults,
     resolve (id: string) {
@@ -123,6 +124,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   })
   const options = klona(config) as NitroOptions
   options._config = configOverrides
+  options.preset = presetOverride || options.preset || defaultPreset
 
   options.rootDir = resolve(options.rootDir || '.')
   options.workspaceDir = await findWorkspaceDir(options.rootDir)

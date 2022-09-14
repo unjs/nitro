@@ -142,13 +142,12 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
   await writeTypes(nitro)
   await _snapshot(nitro)
 
-  nitro.logger.start('Building server...')
+  nitro.logger.info(`Building Nitro Server (preset: \`${nitro.options.preset}\`)`)
   const build = await rollup.rollup(rollupConfig).catch((error) => {
     nitro.logger.error(formatRollupError(error))
     throw error
   })
 
-  nitro.logger.start('Writing server bundle...')
   await build.write(rollupConfig.output)
 
   // Write build info
@@ -163,7 +162,7 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
   }
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2))
 
-  nitro.logger.success('Server built')
+  nitro.logger.success('Nitro server built')
   if (nitro.options.logLevel > 1) {
     await printFSTree(nitro.options.output.serverDir)
   }
