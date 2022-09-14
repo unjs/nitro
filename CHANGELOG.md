@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## main (v0.5.2..main)
+## 0.5.2
 
 
 ### 🚀 Enhancements
@@ -32,7 +32,7 @@ All notable changes to this project will be documented in this file. See [standa
 - Daniel Roe
 - Pooya Parsa
 
-## main (v0.5.1..main)
+## 0.5.1
 
 
 ### 🚀 Enhancements
@@ -83,7 +83,7 @@ All notable changes to this project will be documented in this file. See [standa
 - Oumar Barry
 - Pooya Parsa
 
-## main (v0.5.0..main)
+## v0.5.0
 
 
 ### 🚀 Enhancements
@@ -104,7 +104,7 @@ All notable changes to this project will be documented in this file. See [standa
 - Mastercuber
 - Pooya Parsa
 
-## main (v0.4.24..main)
+## 0.4.24
 
 
 ### 🚀 Enhancements
