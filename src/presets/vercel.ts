@@ -1,5 +1,6 @@
 import { resolve } from 'pathe'
 import { defu } from 'defu'
+import { withoutLeadingSlash } from 'ufo'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
@@ -19,12 +20,6 @@ export const vercel = defineNitroPreset({
     preview: ''
   },
   hooks: {
-    'prerender:generate' (route, nitro: any) {
-      nitro._routes = nitro._routes || new Set<string>()
-      if (route.fileName.endsWith('.html')) {
-        nitro._routes.add(route.fileName)
-      }
-    },
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
       const buildConfig = generateBuildConfig(nitro)
@@ -60,12 +55,6 @@ export const vercelEdge = defineNitroPreset({
     }
   },
   hooks: {
-    'prerender:generate' (route, nitro: any) {
-      nitro._routes = nitro._routes || new Set<string>()
-      if (route.fileName.endsWith('.html')) {
-        nitro._routes.add(route.fileName)
-      }
-    },
     async 'compiled' (nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, 'config.json')
       const buildConfig = generateBuildConfig(nitro)
@@ -81,16 +70,17 @@ export const vercelEdge = defineNitroPreset({
   }
 })
 
-function generateOverrides (paths: string[]) {
-  return Object.fromEntries(paths.map(route => [
-    route.replace(/^\//, ''),
-    { path: route.replace(/(\/index)?\.html$/, '').replace(/^\//, '') }
-  ]))
+function generateOverrides (routeFiles: Array<{ route: string, fileName: string }>) {
+  return Object.fromEntries(
+    routeFiles.map(({ route, fileName }) => [withoutLeadingSlash(fileName), { path: withoutLeadingSlash(route) }])
+  )
 }
 
 function generateBuildConfig (nitro: Nitro) {
+  const overrides = generateOverrides(nitro._routeFiles?.filter(r => r.fileName !== r.route) || [])
   return defu(nitro.options.vercel?.config, {
     version: 3,
+    overrides,
     routes: [
       ...nitro.options.publicAssets
         .filter(asset => !asset.fallthrough)
@@ -109,7 +99,6 @@ function generateBuildConfig (nitro: Nitro) {
         src: '/(.*)',
         dest: '/__nitro'
       }
-    ],
-    overrides: generateOverrides(Array.from((nitro as any)._routes as Set<string>))
+    ]
   })
 }
