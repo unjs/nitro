@@ -48,7 +48,7 @@ async function writeRoutes (nitro: Nitro) {
   }
 
   const routeFiles = nitro._routeFiles || []
-  console.log({ routeFiles })
+
   const indexFileExists = routeFiles.some(route => route.fileName === '/index.html')
   if (!indexFileExists) {
     config.routes.unshift(
