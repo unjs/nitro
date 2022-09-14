@@ -11,7 +11,7 @@ export const vercel = defineNitroPreset({
   entry: '#internal/nitro/entries/vercel',
   output: {
     dir: '{{ rootDir }}/.vercel/output',
-    serverDir: '{{ output.dir }}/functions/__nuxt.func',
+    serverDir: '{{ output.dir }}/functions/__nitro.func',
     publicDir: '{{ output.dir }}/static'
   },
   commands: {
@@ -47,7 +47,7 @@ export const vercelEdge = defineNitroPreset({
   entry: '#internal/nitro/entries/vercel-edge',
   output: {
     dir: '{{ rootDir }}/.vercel/output',
-    serverDir: '{{ output.dir }}/functions/__nuxt.func',
+    serverDir: '{{ output.dir }}/functions/__nitro.func',
     publicDir: '{{ output.dir }}/static'
   },
   commands: {
@@ -107,7 +107,7 @@ function generateBuildConfig (nitro: Nitro) {
       },
       {
         src: '/(.*)',
-        dest: '/__nuxt'
+        dest: '/__nitro'
       }
     ],
     overrides: generateOverrides(Array.from((nitro as any)._routes as Set<string>))
