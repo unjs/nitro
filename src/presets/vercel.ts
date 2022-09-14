@@ -4,6 +4,7 @@ import { withoutLeadingSlash } from 'ufo'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
+import type { VercelBuildConfigV3 } from '../types/presets'
 
 // https://vercel.com/docs/build-output-api/v3
 
@@ -72,7 +73,7 @@ export const vercelEdge = defineNitroPreset({
 
 function generateBuildConfig (nitro: Nitro) {
   // const overrides = generateOverrides(nitro._prerenderedRoutes?.filter(r => r.fileName !== r.route) || [])
-  return defu(nitro.options.vercel?.config, {
+  return defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
     version: 3,
     overrides: Object.fromEntries(
       (nitro._prerenderedRoutes?.filter(r => r.fileName !== r.route) || [])
