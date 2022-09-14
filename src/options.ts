@@ -16,7 +16,6 @@ import { nitroImports } from './imports'
 
 const NitroDefaults: NitroConfig = {
   // General
-  preset: '#autopreset',
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
 
@@ -101,6 +100,9 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
     extend: { extendKey: ['extends', 'preset'] },
+    defaultConfig: {
+      preset: '#autopreset'
+    },
     resolve (id: string) {
       if (id === '#autopreset') {
         preset = id = detectTarget() || 'node-server'
