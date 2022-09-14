@@ -54,7 +54,7 @@
     "@rollup/pluginutils": "^4.2.1",
     "@vercel/nft": "^0.22.1",
     "archiver": "^5.3.1",
-    "c12": "^0.2.11",
+    "c12": "^0.2.12",
     "chalk": "^5.0.1",
     "chokidar": "^3.5.3",
     "consola": "^2.15.3",
@@ -103,7 +103,7 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^11.0.0",
-    "@types/aws-lambda": "^8.10.103",
+    "@types/aws-lambda": "^8.10.104",
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^9.0.13",
     "@types/http-proxy": "^1.17.9",

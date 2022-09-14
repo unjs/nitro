@@ -16,7 +16,6 @@ import { nitroImports } from './imports'
 
 const NitroDefaults: NitroConfig = {
   // General
-  preset: undefined,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
 
@@ -86,21 +85,29 @@ const NitroDefaults: NitroConfig = {
   commands: {}
 }
 
-export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
-  // Detect preset
-  let preset = process.env.NITRO_PRESET || userConfig.preset || detectTarget() || 'node-server'
-  if (userConfig.dev) {
-    preset = 'nitro-dev'
+export async function loadOptions (configOverrides: NitroConfig = {}): Promise<NitroOptions> {
+  // Preset
+  let presetOverride = configOverrides.preset || process.env.NITRO_PRESET
+  const defaultPreset = detectTarget() || 'node-server'
+  if (configOverrides.dev) {
+    presetOverride = 'nitro-dev'
   }
 
   // Load configuration and preset
-  userConfig = klona(userConfig)
+  configOverrides = klona(configOverrides)
   const { config } = await loadConfig({
     name: 'nitro',
-    defaults: NitroDefaults,
-    cwd: userConfig.rootDir,
-    dotenv: userConfig.dev,
+    cwd: configOverrides.rootDir,
+    dotenv: configOverrides.dev,
     extend: { extendKey: ['extends', 'preset'] },
+    overrides: {
+      ...configOverrides,
+      preset: presetOverride
+    },
+    defaultConfig: {
+      preset: defaultPreset
+    },
+    defaults: NitroDefaults,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
@@ -113,15 +120,11 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
         }
       }
       return null
-    },
-    overrides: {
-      ...userConfig,
-      preset
     }
   })
   const options = klona(config) as NitroOptions
-  options._config = userConfig
-  options.preset = preset
+  options._config = configOverrides
+  options.preset = presetOverride || options.preset || defaultPreset
 
   options.rootDir = resolve(options.rootDir || '.')
   options.workspaceDir = await findWorkspaceDir(options.rootDir)
