@@ -74,7 +74,7 @@ export const netlifyEdge = defineNitroPreset({
         functions: [
           {
             function: 'server',
-            pattern: '/*'
+            pattern: '^.*$'
           }
         ]
       }
