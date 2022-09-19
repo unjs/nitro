@@ -5,6 +5,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "strict": true,
     "paths": {
       "nitropack": [
         "../../src/index"
