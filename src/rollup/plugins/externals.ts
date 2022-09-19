@@ -196,11 +196,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
           }
 
           // Exclude older version files
-          if (isNewer) {
-            ignoreDirs.push(existingPkgDir)
-          } else {
-            ignoreDirs.push(pkgDir)
-          }
+          ignoreDirs.push(isNewer ? existingPkgDir : pkgDir)
         } else {
           // Add to traced packages
           tracedPackages.set(pkgName, pkgDir)
