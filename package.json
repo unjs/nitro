@@ -81,7 +81,7 @@
     "mri": "^1.2.0",
     "node-fetch-native": "^0.1.5",
     "ohash": "^0.1.5",
-    "ohmyfetch": "^0.4.18",
+    "ohmyfetch": "^0.4.19",
     "pathe": "^0.3.8",
     "perfect-debounce": "^0.1.3",
     "pkg-types": "^0.3.5",
