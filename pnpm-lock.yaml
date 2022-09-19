@@ -29,7 +29,7 @@ importers:
       '@vercel/nft': ^0.22.1
       '@vitest/coverage-c8': ^0.23.4
       archiver: ^5.3.1
-      c12: ^0.2.12
+      c12: ^0.2.13
       c8: ^7.12.0
       chalk: ^5.0.1
       changelogen: ^0.3.0
@@ -53,7 +53,7 @@ importers:
       hookable: ^5.3.0
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
-      jiti: ^1.15.0
+      jiti: ^1.16.0
       klona: ^2.0.5
       knitwork: ^0.1.2
       listhen: ^0.3.1
@@ -61,10 +61,10 @@ importers:
       miniflare: ^2.9.0
       mlly: ^0.5.14
       mri: ^1.2.0
-      node-fetch-native: ^0.1.4
+      node-fetch-native: ^0.1.5
       ohash: ^0.1.5
       ohmyfetch: ^0.4.18
-      pathe: ^0.3.7
+      pathe: ^0.3.8
       perfect-debounce: ^0.1.3
       pkg-types: ^0.3.5
       pretty-bytes: ^6.0.0
@@ -99,7 +99,7 @@ importers:
       '@rollup/pluginutils': 4.2.1
       '@vercel/nft': 0.22.1
       archiver: 5.3.1
-      c12: 0.2.12
+      c12: 0.2.13
       chalk: 5.0.1
       chokidar: 3.5.3
       consola: 2.15.3
@@ -117,17 +117,17 @@ importers:
       hookable: 5.3.0
       http-proxy: 1.18.1
       is-primitive: 3.0.1
-      jiti: 1.15.0
+      jiti: 1.16.0
       klona: 2.0.5
       knitwork: 0.1.2
       listhen: 0.3.1
       mime: 3.0.0
       mlly: 0.5.14
       mri: 1.2.0
-      node-fetch-native: 0.1.4
+      node-fetch-native: 0.1.5
       ohash: 0.1.5
       ohmyfetch: 0.4.18
-      pathe: 0.3.7
+      pathe: 0.3.8
       perfect-debounce: 0.1.3
       pkg-types: 0.3.5
       pretty-bytes: 6.0.0
@@ -1692,15 +1692,15 @@ packages:
       streamsearch: 1.1.0
     dev: true
 
-  /c12/0.2.12:
-    resolution: {integrity: sha512-Oq+XDrx2luek30VrWU0QXrvPbILAp8fDVgprRvhP4WL4CZaSqE7CNHIhq1R824YSkMVUOfMjsZFRcVqs7I2Xxg==}
+  /c12/0.2.13:
+    resolution: {integrity: sha512-wJL0/knDbqM/3moLb+8Xd+w3JdkggkIIhiNBkxZ1mWlskKC/vajb85wM3UPg/D9nK6RbI1NgaVTg6AeXBVbknA==}
     dependencies:
       defu: 6.1.0
       dotenv: 16.0.2
       gittar: 0.1.1
-      jiti: 1.15.0
+      jiti: 1.16.0
       mlly: 0.5.14
-      pathe: 0.3.7
+      pathe: 0.3.8
       pkg-types: 0.3.5
       rc9: 1.2.2
 
@@ -1776,7 +1776,7 @@ packages:
     resolution: {integrity: sha512-fGd9Su9RMMtnUbyozW43kF2pBti6c4vWAgNcQruZFGi6BPXIBxn9JOzrFiMUn7V/8seym+N+in+LiuYM9ZnuTw==}
     hasBin: true
     dependencies:
-      c12: 0.2.12
+      c12: 0.2.13
       consola: 2.15.3
       convert-gitmoji: 0.1.2
       execa: 6.1.0
@@ -3702,8 +3702,8 @@ packages:
       supports-color: 7.2.0
     dev: false
 
-  /jiti/1.15.0:
-    resolution: {integrity: sha512-cClBkETOCVIpPMjX3ULlivuBvmt8l2Xtz+SHrULO06OqdtV0QFR2cuhc4FJnXByjUUX4CY0pl1nph0aFh9D3yA==}
+  /jiti/1.16.0:
+    resolution: {integrity: sha512-L3BJStEf5NAqNuzrpfbN71dp43mYIcBUlCRea/vdyv5dW/AYa1d4bpelko4SHdY3I6eN9Wzyasxirj1/vv5kmg==}
     hasBin: true
 
   /joycon/3.1.1:
@@ -4076,7 +4076,7 @@ packages:
       esbuild: 0.14.54
       fs-extra: 10.1.0
       globby: 11.1.0
-      jiti: 1.15.0
+      jiti: 1.16.0
       mri: 1.2.0
       pathe: 0.2.0
       typescript: 4.8.3
@@ -4086,7 +4086,7 @@ packages:
     resolution: {integrity: sha512-DgRgNUSX9NIxxCxygX4Xeg9C7GX7OUx1wuQ8cXx9o9LE0e9wrH+OZ9fcnrlEedsC/rtqry3ZhUddC759XD/L0w==}
     dependencies:
       acorn: 8.8.0
-      pathe: 0.3.7
+      pathe: 0.3.8
       pkg-types: 0.3.5
       ufo: 0.8.5
 
@@ -4117,8 +4117,8 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /node-fetch-native/0.1.4:
-    resolution: {integrity: sha512-10EKpOCQPXwZVFh3U1ptOMWBgKTbsN7Vvo6WVKt5pw4hp8zbv6ZVBZPlXw+5M6Tyi1oc1iD4/sNPd71KYA16tQ==}
+  /node-fetch-native/0.1.5:
+    resolution: {integrity: sha512-4NYY0JOTYFsahDjKy4gId6uuf7TPzkIDSDMuvtmlFd2Jf25tj9fQsDD5+kLdzM7sm6BbG8lL/154tdrsgN25Zw==}
     dev: false
 
   /node-fetch/2.6.7:
@@ -4247,7 +4247,7 @@ packages:
     resolution: {integrity: sha512-MslzNrQzBLtZHmiZBI8QMOcMpdNFlK61OJ34nFNFynZ4v+4BonfCQ7VIN4EGXvGGq5zhDzgdJoY3o9S1l2T7KQ==}
     dependencies:
       destr: 1.1.1
-      node-fetch-native: 0.1.4
+      node-fetch-native: 0.1.5
       ufo: 0.8.5
       undici: 5.4.0
     dev: false
@@ -4415,8 +4415,8 @@ packages:
     resolution: {integrity: sha512-sTitTPYnn23esFR3RlqYBWn4c45WGeLcsKzQiUpXJAyfcWkolvlYpV8FLo7JishK946oQwMFUCHXQ9AjGPKExw==}
     dev: true
 
-  /pathe/0.3.7:
-    resolution: {integrity: sha512-yz7GK+kSsS27x727jtXpd5VT4dDfP/JDIQmaowfxyWCnFjOWtE1VIh7i6TzcSfzW0n4+bRQztj1VdKnITNq/MA==}
+  /pathe/0.3.8:
+    resolution: {integrity: sha512-c71n61F1skhj/jzZe+fWE9XDoTYjWbUwIKVwFftZ5IOgiX44BVkTkD+/803YDgR50tqeO4eXWxLyVHBLWQAD1g==}
 
   /pathval/1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
@@ -4439,7 +4439,7 @@ packages:
     dependencies:
       jsonc-parser: 3.2.0
       mlly: 0.5.14
-      pathe: 0.3.7
+      pathe: 0.3.8
 
   /pluralize/8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
@@ -5242,13 +5242,13 @@ packages:
       esbuild: 0.15.8
       globby: 13.1.2
       hookable: 5.3.0
-      jiti: 1.15.0
+      jiti: 1.16.0
       magic-string: 0.26.3
       mkdirp: 1.0.4
       mkdist: 0.3.13_typescript@4.8.3
       mlly: 0.5.14
       mri: 1.2.0
-      pathe: 0.3.7
+      pathe: 0.3.8
       pkg-types: 0.3.5
       pretty-bytes: 6.0.0
       rimraf: 3.0.2
@@ -5277,8 +5277,8 @@ packages:
     dependencies:
       defu: 6.1.0
       mime: 3.0.0
-      node-fetch-native: 0.1.4
-      pathe: 0.3.7
+      node-fetch-native: 0.1.5
+      pathe: 0.3.8
     dev: false
 
   /unimport/0.6.7_smomlxmjgt6y4akd764agnhchu:
@@ -5290,7 +5290,7 @@ packages:
       local-pkg: 0.4.2
       magic-string: 0.26.2
       mlly: 0.5.14
-      pathe: 0.3.7
+      pathe: 0.3.8
       scule: 0.3.2
       strip-literal: 0.4.0
       unplugin: 0.9.0_smomlxmjgt6y4akd764agnhchu
