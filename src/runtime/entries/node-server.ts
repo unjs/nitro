@@ -15,7 +15,7 @@ const port = (destr(process.env.NITRO_PORT || process.env.PORT) || 3000) as numb
 const host = process.env.NITRO_HOST || process.env.HOST
 
 // @ts-ignore
-const s = server.listen({ host, port }, (err) => {
+const s = server.listen(port, host, (err) => {
   if (err) {
     console.error(err)
     process.exit(1)
