@@ -207,8 +207,9 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         }
       }
 
-      // Filter out files from ignored packages
+      // Filter out files from ignored packages and dedup
       tracedFiles = tracedFiles.filter(f => !ignoreDirs.some(d => f.startsWith(d)))
+      tracedFiles = Array.from(new Set(tracedFiles))
 
       // Ensure all package.json files are traced
       for (const pkgDir of tracedPackages.values()) {
@@ -226,14 +227,9 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         await fsp.mkdir(dirname(dst), { recursive: true })
         await fsp.copyFile(src, dst)
       }
-      if (process.platform === 'win32') {
-        // Workaround for EBUSY on windows (#424)
-        for (const file of tracedFiles) {
-          await writeFile(file)
-        }
-      } else {
-        await Promise.all(tracedFiles.map(writeFile))
-      }
+
+      // Write traced files
+      await Promise.all(tracedFiles.map(writeFile))
 
       // Write an informative package.json
       await fsp.writeFile(resolve(opts.outDir, 'package.json'), JSON.stringify({
