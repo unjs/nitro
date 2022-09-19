@@ -173,7 +173,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         if (!pkgName) {
           continue
         }
-        const pkgDir = resolve(baseDir, pkgName)
+        let pkgDir = resolve(baseDir, pkgName)
 
         // Check for duplicate versions
         const existingPkgDir = tracedPackages.get(pkgName)
@@ -196,11 +196,16 @@ export function externals (opts: NodeExternalsOptions): Plugin {
           }
 
           // Exclude older version files
-          ignoreDirs.push(isNewer ? existingPkgDir : pkgDir)
-        } else {
-          // Add to traced packages
-          tracedPackages.set(pkgName, pkgDir)
+          if (isNewer) {
+            ignoreDirs.push(existingPkgDir)
+          } else {
+            ignoreDirs.push(pkgDir)
+            pkgDir = existingPkgDir // Update for tracedPackages
+          }
         }
+
+        // Add to traced packages
+        tracedPackages.set(pkgName, pkgDir)
       }
 
       // Filter out files from ignored packages and dedup
