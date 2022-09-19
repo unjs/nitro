@@ -22,6 +22,7 @@ export type TypedInternalResponse<Route, Default = unknown> =
 export interface $Fetch<DefaultT = unknown, DefaultR extends NitroFetchRequest = NitroFetchRequest> {
   <T = DefaultT, R extends NitroFetchRequest = DefaultR> (request: R, opts?: FetchOptions): Promise<TypedInternalResponse<R, T>>
   raw<T = DefaultT, R extends NitroFetchRequest = DefaultR> (request: R, opts?: FetchOptions): Promise<FetchResponse<TypedInternalResponse<R, T>>>
+  create<T = DefaultT, R extends NitroFetchRequest = DefaultR> (defaults: FetchOptions): $Fetch<T, R>
 }
 
 declare global {
