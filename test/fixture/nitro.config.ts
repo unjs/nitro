@@ -21,6 +21,9 @@ export default defineNitroConfig({
       dir: 'public/build'
     }
   ],
+  nodeModulesDirs: [
+    './_/node_modules'
+  ],
   prerender: {
     crawlLinks: true,
     ignore: [

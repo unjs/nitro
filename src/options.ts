@@ -155,7 +155,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   options.nodeModulesDirs.push(resolve(options.workspaceDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
-  options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
+  options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs.map(dir => resolve(options.rootDir, dir))))
 
   if (!options.scanDirs.length) {
     options.scanDirs = [options.srcDir]

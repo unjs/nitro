@@ -15,6 +15,7 @@ describe('API routes', () => {
       | string | number | TestResponse
       | { testFile: string, hasEnv: boolean }
       | { internalApiKey: string }
+      | { [key: string]: any }
       >>() // middleware
     expectTypeOf($fetch('/api/unknown')).toMatchTypeOf<Promise<unknown>>()
     expectTypeOf($fetch<TestResponse>('/test')).toMatchTypeOf<Promise<TestResponse>>()
