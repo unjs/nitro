@@ -174,10 +174,10 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         if (existingPkgDir && existingPkgDir !== pkgDir) {
           const v1 = await getPackageJson(existingPkgDir).then(r => r.version)
           const v2 = await getPackageJson(pkgDir).then(r => r.version)
-          if (semver.gte(v1, v2)) {
-            // Existing record is newer or same. Just skip.
-            continue
-          }
+          // if (semver.gte(v1, v2)) {
+          // Existing record is newer or same. Just skip.
+          // continue
+          // }
           if (semver.major(v1) !== semver.major(v2)) {
             console.warn(`Multiple major versions of package ${pkgName} are being externalized. Picking latest version.\n` + [
               existingPkgDir + '@' + v1,
