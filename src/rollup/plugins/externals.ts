@@ -216,6 +216,8 @@ export function externals (opts: NodeExternalsOptions): Plugin {
 
       // Write an informative package.json
       await fsp.writeFile(resolve(opts.outDir, 'package.json'), JSON.stringify({
+        name: 'nitro-output',
+        version: '0.0.0',
         private: true,
         bundledDependencies: Array.from(tracedPackages.keys())
       }, null, 2), 'utf8')
