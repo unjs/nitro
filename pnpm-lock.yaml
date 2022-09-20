@@ -32,7 +32,7 @@ importers:
       c12: ^0.2.13
       c8: ^7.12.0
       chalk: ^5.0.1
-      changelogen: ^0.3.0
+      changelogen: ^0.3.2
       chokidar: ^3.5.3
       consola: ^2.15.3
       cookie-es: ^0.5.0
@@ -156,7 +156,7 @@ importers:
       '@types/serve-static': 1.15.0
       '@vitest/coverage-c8': 0.23.4
       c8: 7.12.0
-      changelogen: 0.3.0
+      changelogen: 0.3.2
       edge-runtime: 1.1.0-beta.31
       eslint: 8.23.1
       execa: 6.1.0
@@ -1506,8 +1506,8 @@ packages:
     resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
-  /changelogen/0.3.0:
-    resolution: {integrity: sha512-fGd9Su9RMMtnUbyozW43kF2pBti6c4vWAgNcQruZFGi6BPXIBxn9JOzrFiMUn7V/8seym+N+in+LiuYM9ZnuTw==}
+  /changelogen/0.3.2:
+    resolution: {integrity: sha512-h2wTlwHvQAlLLcgoac6HaSegPsYvJGhy+2UOoS8VykraVJ7/4lORQA6T5ck3d9oNJGcUzsao/1sXmiijTbCF4Q==}
     hasBin: true
     dependencies:
       c12: 0.2.13
