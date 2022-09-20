@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## main (v0.5.3..main)
+## v0.5.3
 
 
 ### 🩹 Fixes
@@ -17,10 +17,6 @@ All notable changes to this project will be documented in this file. See [standa
 ### 📖 Documentation
 
   - Add pointer event none to Ellipsis component (#512)
-
-### 🏡 Chore
-
-  - Update changelog (7e45900)
 
 ### ❤️  Contributors
 
