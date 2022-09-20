@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## main (v0.5.3..main)
+
+
+### 🩹 Fixes
+
+  - **vercel:** Always strip leading slash (#502)
+  - **types:** Add `create` method to `$Fetch` interface (#510)
+  - **netlify-edge:** Update manifest pattern and output format (#509)
+  - **node-server:** Allow port as socket path (#507)
+  - Add missing name and version fields to `.output/package.json` (#516)
+  - **externals:** Avoid overriding packages with version conflict (#515)
+
+### 📖 Documentation
+
+  - Add pointer event none to Ellipsis component (#512)
+
+### 🏡 Chore
+
+  - Update changelog (7e45900)
+
+### ❤️  Contributors
+
+- Daniel Roe
+- Julien Huang
+- Pooya Parsa
+- Reinier Kaper
+- 菜狗
+
 ## 0.5.2
 
 
