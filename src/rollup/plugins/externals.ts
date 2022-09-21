@@ -141,7 +141,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         if (packageEntry !== originalId) {
           // Reverse engineer subpath export
           const { exports } = await getPackageJson(packageEntry);
-          const resolvedSubpath = findSubpath(
+          const resolvedSubpath = exports && findSubpath(
             subpath.replace(/^\//, "./"),
             exports
           );
