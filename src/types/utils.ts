@@ -24,15 +24,17 @@ type CalcMatchScore<
   ? KeySeg extends FirstKeySegMatcher // return score if `KeySeg` is empty string (except first pass)
     ? Subtract<[...Score, ...TupleIfDiff<Route, Key, ['', '']>], TupleIfDiff<Key, Route, ['', '']>>
     : `${Route}/` extends `${infer RouteSeg}/${infer RouteRest}`
-      ? RouteSeg extends KeySeg
-        ? CalcMatchScore<KeyRest, RouteRest, [...Score, '', '']> // exact match
-        : KeySeg extends `:${string}`
-          ? RouteSeg extends ''
-            ? never
-            : CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // param match
-          : KeySeg extends RouteSeg
-            ? CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // match by ${string}
-            : never
+      ? `${RouteSeg}?` extends `${infer RouteSegWithoutQuery}?${string}`
+          ? RouteSegWithoutQuery extends KeySeg
+            ? CalcMatchScore<KeyRest, RouteRest, [...Score, '', '']> // exact match
+            : KeySeg extends `:${string}`
+              ? RouteSegWithoutQuery extends ''
+                ? never
+                : CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // param match
+              : KeySeg extends RouteSegWithoutQuery
+                ? CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // match by ${string}
+                : never
+          : never
       : never
   : never
 

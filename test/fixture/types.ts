@@ -74,6 +74,11 @@ describe('API routes', () => {
     >>()
   })
 
+  it('ignores query suffixes', () => {
+    expectTypeOf($fetch('/api/hey?test=true')).toEqualTypeOf<Promise<string>>()
+    expectTypeOf($fetch('/api/hello?')).toEqualTypeOf<Promise<{ message: string }>>()
+  })
+
   it('generates types for routes matching Api keys with /** globs', () => {
     expectTypeOf($fetch('/api/wildcard/foo/bar')).toEqualTypeOf<Promise<any>>()
     expectTypeOf($fetch('/api/typed/todos/parent/child')).toEqualTypeOf<Promise<
