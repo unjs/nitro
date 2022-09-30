@@ -15,7 +15,7 @@ interface Context {
   nitro?: Nitro,
   rootDir: string
   outDir: string
-  fetch: (url:string) => Promise<any>
+  fetch: (url: string) => Promise<any>
   server?: Listener
 }
 
@@ -26,14 +26,20 @@ export async function setupTest (preset) {
     preset,
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, '.output', preset),
-    fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)))
+    fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: 'manual' })
   }
 
   const nitro = ctx.nitro = await createNitro({
     preset: ctx.preset,
     rootDir: ctx.rootDir,
     serveStatic: preset !== 'cloudflare' && preset !== 'vercel-edge',
-    output: { dir: ctx.outDir }
+    output: { dir: ctx.outDir },
+    routes: {
+      '/rules/redirect': { redirect: '/base' },
+      '/rules/redirect/obj': {
+        redirect: { to: 'https://nitro.unjs.io/', statusCode: 308 }
+      }
+    }
   })
   await prepare(nitro)
   await copyPublicAssets(nitro)
@@ -57,7 +63,7 @@ export async function startServer (ctx, handle) {
   console.log('>', ctx.server!.url)
 }
 
-type TestHandlerResult = { data: any, status: number, headers: Record<string, string>}
+type TestHandlerResult = { data: any, status: number, headers: Record<string, string> }
 type TestHandler = (options: any) => Promise<TestHandlerResult | Response>
 
 export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise<TestHandler>) {
@@ -94,6 +100,16 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
 
     const { data: paramsData2 } = await callHandler({ url: '/api/wildcard/foo/bar/baz' })
     expect(paramsData2).toBe('foo/bar/baz')
+  })
+
+  it('handles route rules - redirects', async () => {
+    const base = await callHandler({ url: '/rules/redirect' })
+    expect(base.status).toBe(307)
+    expect(base.headers.location).toBe('/base')
+
+    const obj = await callHandler({ url: '/rules/redirect/obj' })
+    expect(obj.status).toBe(308)
+    expect(obj.headers.location).toBe('https://nitro.unjs.io/')
   })
 
   it('handles errors', async () => {
