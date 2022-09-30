@@ -38,6 +38,8 @@ function createNitroApp (): NitroApp {
 
   h3App.use(eventHandler((event) => {
     const routeOptions = routerOptions.lookup(event.req.url) || {}
+    // Share applicable route rules across handlers
+    event.context.routeOptions = routeOptions
     if (routeOptions.redirect) {
       return sendRedirect(event, routeOptions.redirect.to || routeOptions.redirect, routeOptions.redirect.statusCode || 307)
     }
