@@ -82,6 +82,14 @@ function generateBuildConfig (nitro: Nitro) {
         )
     ),
     routes: [
+      ...Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect).map(([key, value]) => {
+        const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
+        return {
+          src: key.replace('/**', '/.*'),
+          status: redirect.statusCode || 307,
+          headers: { Location: redirect.to }
+        }
+      }),
       ...nitro.options.publicAssets
         .filter(asset => !asset.fallthrough)
         .map(asset => asset.baseURL)

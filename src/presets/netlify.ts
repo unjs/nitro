@@ -19,6 +19,12 @@ export const netlify = defineNitroPreset({
     async 'compiled' (nitro: Nitro) {
       const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
       let contents = '/* /.netlify/functions/server 200'
+
+      for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect)) {
+        const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
+        contents = `${key.replace('/**', '/*')}\t${redirect.to}\t${redirect.statusCode || 307}` + '\n' + contents
+      }
+
       if (existsSync(redirectsPath)) {
         const currentRedirects = await fsp.readFile(redirectsPath, 'utf-8')
         if (currentRedirects.match(/^\/\* /m)) {
@@ -28,6 +34,7 @@ export const netlify = defineNitroPreset({
         nitro.logger.info('Adding Nitro fallback to `_redirects` to handle all unmatched routes.')
         contents = currentRedirects + '\n' + contents
       }
+
       await fsp.writeFile(redirectsPath, contents)
 
       const serverCJSPath = join(nitro.options.output.serverDir, 'server.js')

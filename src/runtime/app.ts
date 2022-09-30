@@ -1,4 +1,4 @@
-import { App as H3App, createApp, createRouter, lazyEventHandler, Router } from 'h3'
+import { App as H3App, createApp, createRouter, eventHandler, lazyEventHandler, Router, sendRedirect } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createRouter as createMatcher } from 'radix3'
@@ -35,6 +35,13 @@ function createNitroApp (): NitroApp {
   const router = createRouter()
 
   const routerOptions = createMatcher({ routes: config.nitro.routes })
+
+  h3App.use(eventHandler((event) => {
+    const routeOptions = routerOptions.lookup(event.req.url) || {}
+    if (routeOptions.redirect) {
+      return sendRedirect(event, routeOptions.redirect.to || routeOptions.redirect, routeOptions.redirect.statusCode || 307)
+    }
+  }))
 
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler

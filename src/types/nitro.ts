@@ -68,7 +68,7 @@ export interface NitroConfig extends DeepPartial<NitroOptions> {
 
 export interface NitroRouteOption {
   swr?: boolean | number
-  redirect?: string
+  redirect?: string | { to: string, statusCode?: 307 | 308 }
 }
 
 export interface NitroRoutesOptions {
