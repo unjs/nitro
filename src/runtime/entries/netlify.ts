@@ -26,8 +26,8 @@ export const handler = async function handler (event: Event, context: Context): 
   if (routeOptions.static || routeOptions.swr) {
     const builder = await import('@netlify/functions').then(r => r.builder || r.default.builder)
     const ttl = typeof routeOptions.swr === 'number' ? routeOptions.swr : 60
-    return Promise.resolve(builder(_handler)(event as any, context))
-      .then(r => routeOptions.swr ? ({ ttl, ...r }) : r) as Promise<Result>
+    return Promise.resolve(builder(_handler)(event as any, context) as Promise<Result>)
+      .then(r => routeOptions.swr ? ({ ttl, ...r }) : r)
   }
 
   return _handler(event, context)
