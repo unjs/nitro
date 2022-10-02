@@ -1,4 +1,4 @@
-import { App as H3App, appendHeaders, createApp, createRouter, eventHandler, lazyEventHandler, Router, sendRedirect } from 'h3'
+import { App as H3App, createApp, createRouter, eventHandler, lazyEventHandler, Router, sendRedirect, setHeaders } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createRouter as createMatcher } from 'radix3'
@@ -40,8 +40,16 @@ function createNitroApp (): NitroApp {
     const routeOptions = routerOptions.lookup(event.req.url) || {}
     // Share applicable route rules across handlers
     event.context.routeOptions = routeOptions
+    if (routeOptions.cors) {
+      setHeaders(event, {
+        'access-control-allow-origin': '*',
+        'access-control-allowed-methods': '*',
+        'access-control-allow-headers': '*',
+        'access-control-max-age': '0'
+      })
+    }
     if (routeOptions.headers) {
-      appendHeaders(event, routeOptions.headers)
+      setHeaders(event, routeOptions.headers)
     }
     if (routeOptions.redirect) {
       return sendRedirect(event, routeOptions.redirect.to || routeOptions.redirect, routeOptions.redirect.statusCode || 307)

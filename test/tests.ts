@@ -36,6 +36,7 @@ export async function setupTest (preset) {
     output: { dir: ctx.outDir },
     routes: {
       '/rules/headers': { headers: { 'cache-control': 's-maxage=60' } },
+      '/rules/cors': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
       '/rules/redirect': { redirect: '/base' },
       '/rules/redirect/obj': {
         redirect: { to: 'https://nitro.unjs.io/', statusCode: 308 }
@@ -116,6 +117,17 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
   it('handles route rules - headers', async () => {
     const { headers } = await callHandler({ url: '/rules/headers' })
     expect(headers['cache-control']).toBe('s-maxage=60')
+  })
+
+  it('handles route rules - cors', async () => {
+    const expectedHeaders = {
+      'access-control-allow-origin': '*',
+      'access-control-allowed-methods': 'GET',
+      'access-control-allow-headers': '*',
+      'access-control-max-age': '0'
+    }
+    const { headers } = await callHandler({ url: '/rules/cors' })
+    expect(headers).toMatchObject(expectedHeaders)
   })
 
   it('handles errors', async () => {
