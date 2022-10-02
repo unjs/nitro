@@ -69,6 +69,7 @@ export interface NitroConfig extends DeepPartial<NitroOptions> {
 export interface NitroRouteOption {
   swr?: boolean | number
   redirect?: string
+  static?: boolean
 }
 
 export interface NitroRoutesOptions {

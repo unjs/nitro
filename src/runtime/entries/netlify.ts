@@ -23,7 +23,7 @@ export const handler = async function handler (event: Event, context: Context): 
   const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, query)
   const routeOptions = routerOptions.lookup(url) || {}
 
-  if (routeOptions.swr) {
+  if (routeOptions.static || routeOptions.swr) {
     const builder = await import('@netlify/functions').then(r => r.builder || r.default.builder)
     const ttl = typeof routeOptions.swr === 'number' ? routeOptions.swr : 60
     return Promise.resolve(builder(_handler)(event as any, context))
