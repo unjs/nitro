@@ -82,13 +82,33 @@ function generateBuildConfig (nitro: Nitro) {
         )
     ),
     routes: [
-      ...Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect).map(([key, value]) => {
-        const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
-        return {
-          src: key.replace('/**', '/.*'),
-          status: redirect.statusCode || 307,
-          headers: { Location: redirect.to }
+      ...Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect || value.headers || value.cors).map(([key, value]) => {
+        let route = {
+          src: key.replace('/**', '/.*')
         }
+        if (value.redirect) {
+          const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
+          route = defu(route, {
+            status: redirect.statusCode || 307,
+            headers: { Location: redirect.to }
+          })
+        }
+        if (value.cors) {
+          route = defu(route, {
+            headers: {
+              'access-control-allow-origin': '*',
+              'access-control-allowed-methods': '*',
+              'access-control-allow-headers': '*',
+              'access-control-max-age': '0'
+            }
+          })
+        }
+        if (value.headers) {
+          route = defu(route, {
+            headers: value.headers
+          })
+        }
+        return route
       }),
       ...nitro.options.publicAssets
         .filter(asset => !asset.fallthrough)
