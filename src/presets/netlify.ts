@@ -17,25 +17,8 @@ export const netlify = defineNitroPreset({
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
-      const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
-      let contents = '/* /.netlify/functions/server 200'
-
-      for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect)) {
-        const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
-        contents = `${key.replace('/**', '/*')}\t${redirect.to}\t${redirect.statusCode || 307}` + '\n' + contents
-      }
-
-      if (existsSync(redirectsPath)) {
-        const currentRedirects = await fsp.readFile(redirectsPath, 'utf-8')
-        if (currentRedirects.match(/^\/\* /m)) {
-          nitro.logger.info('Not adding Nitro fallback to `_redirects` (as an existing fallback was found).')
-          return
-        }
-        nitro.logger.info('Adding Nitro fallback to `_redirects` to handle all unmatched routes.')
-        contents = currentRedirects + '\n' + contents
-      }
-
-      await fsp.writeFile(redirectsPath, contents)
+      await writeHeaders(nitro)
+      await writeRedirects(nitro)
 
       const serverCJSPath = join(nitro.options.output.serverDir, 'server.js')
       const serverJSCode = `
@@ -92,3 +75,61 @@ export const netlifyEdge = defineNitroPreset({
     }
   }
 })
+
+async function writeRedirects (nitro: Nitro) {
+  const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
+  let contents = '/* /.netlify/functions/server 200'
+
+  for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect)) {
+    const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
+    contents += `${key.replace('/**', '/*')}\t${redirect.to}\t${redirect.statusCode || 307}\n`
+  }
+
+  if (existsSync(redirectsPath)) {
+    const currentRedirects = await fsp.readFile(redirectsPath, 'utf-8')
+    if (currentRedirects.match(/^\/\* /m)) {
+      nitro.logger.info('Not adding Nitro fallback to `_redirects` (as an existing fallback was found).')
+      return
+    }
+    nitro.logger.info('Adding Nitro fallback to `_redirects` to handle all unmatched routes.')
+    contents = currentRedirects + '\n' + contents
+  }
+
+  await fsp.writeFile(redirectsPath, contents)
+}
+
+async function writeHeaders (nitro: Nitro) {
+  const headersPath = join(nitro.options.output.publicDir, '_headers')
+  let contents = ''
+
+  for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.cors || value.headers)) {
+    const headers = [
+      key.replace('/**', '/*'),
+      ...Object.entries({
+        ...value.cors
+          ? {
+              'access-control-allow-origin': '*',
+              'access-control-allowed-methods': '*',
+              'access-control-allow-headers': '*',
+              'access-control-max-age': '0'
+            }
+          : {},
+        ...value.headers || {}
+      }).map(([header, value]) => `  ${header}: ${value}`)
+    ].join('\n')
+
+    contents += headers + '\n'
+  }
+
+  if (existsSync(headersPath)) {
+    const currentheaders = await fsp.readFile(headersPath, 'utf-8')
+    if (currentheaders.match(/^\/\* /m)) {
+      nitro.logger.info('Not adding Nitro fallback to `_headers` (as an existing fallback was found).')
+      return
+    }
+    nitro.logger.info('Adding Nitro fallback to `_headers` to handle all unmatched routes.')
+    contents = currentheaders + '\n' + contents
+  }
+
+  await fsp.writeFile(headersPath, contents)
+}
