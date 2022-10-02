@@ -35,6 +35,7 @@ export async function setupTest (preset) {
     serveStatic: preset !== 'cloudflare' && preset !== 'vercel-edge',
     output: { dir: ctx.outDir },
     routes: {
+      '/rules/headers': { headers: { 'cache-control': 's-maxage=60' } },
       '/rules/redirect': { redirect: '/base' },
       '/rules/redirect/obj': {
         redirect: { to: 'https://nitro.unjs.io/', statusCode: 308 }
@@ -110,6 +111,11 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     const obj = await callHandler({ url: '/rules/redirect/obj' })
     expect(obj.status).toBe(308)
     expect(obj.headers.location).toBe('https://nitro.unjs.io/')
+  })
+
+  it('handles route rules - headers', async () => {
+    const { headers } = await callHandler({ url: '/rules/headers' })
+    expect(headers['cache-control']).toBe('s-maxage=60')
   })
 
   it('handles errors', async () => {
