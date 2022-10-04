@@ -1,3 +1,4 @@
+import fsp from 'fs/promises'
 import { resolve } from 'pathe'
 import { defu } from 'defu'
 import { withoutLeadingSlash } from 'ufo'
@@ -34,6 +35,16 @@ export const vercel = defineNitroPreset({
         shouldAddHelpers: false
       }
       await writeFile(functionConfigPath, JSON.stringify(functionConfig, null, 2))
+
+      // Write prerender functions
+      for (const [key, value] of Object.entries(nitro.options.routeRules).filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))) {
+        if (!value.cache) { continue } // for type support
+        const funcPrefix = resolve(nitro.options.output.serverDir, '..' + generateEndpoint(key))
+        await fsp.cp(nitro.options.output.serverDir, funcPrefix + '.func', { recursive: true })
+        await writeFile(funcPrefix + '.prerender-config.json', JSON.stringify({
+          expiration: value.cache.static ? false : typeof value.cache.swr === 'number' ? value.cache.swr : 60
+        }))
+      }
     }
   }
 })
@@ -112,10 +123,20 @@ function generateBuildConfig (nitro: Nitro) {
       {
         handle: 'filesystem'
       },
+      ...Object.entries(nitro.options.routeRules)
+        .filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))
+        .map(([key]) => ({
+          src: key.replace('/**', '/(.*)'),
+          dst: generateEndpoint(key)
+        })),
       {
         src: '/(.*)',
         dest: '/__nitro'
       }
     ]
   })
+}
+
+function generateEndpoint (url: string) {
+  return '/__nitro-' + withoutLeadingSlash(url.replace(/[^a-z]/g, '-'))
 }
