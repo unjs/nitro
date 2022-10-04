@@ -20,6 +20,12 @@ export const netlify = defineNitroPreset({
     async 'compiled' (nitro: Nitro) {
       const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
       let contents = '/* /.netlify/functions/server 200'
+
+      // Rewrite SWR and static paths to builder functions
+      for (const [key] of Object.entries(nitro.options.routes).filter(([_, value]) => value.swr || value.static)) {
+        contents = `${key.replace('/**', '/*')}\t/.netlify/builders/server 200\n` + contents
+      }
+
       if (existsSync(redirectsPath)) {
         const currentRedirects = await fsp.readFile(redirectsPath, 'utf-8')
         if (currentRedirects.match(/^\/\* /m)) {
