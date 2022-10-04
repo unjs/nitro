@@ -127,7 +127,7 @@ function generateBuildConfig (nitro: Nitro) {
         .filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))
         .map(([key]) => ({
           src: key.replace('/**', '/(.*)'),
-          dst: generateEndpoint(key)
+          dest: generateEndpoint(key)
         })),
       {
         src: '/(.*)',
