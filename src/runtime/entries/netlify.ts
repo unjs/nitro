@@ -1,6 +1,6 @@
 import '#internal/nitro/virtual/polyfill'
 
-import type { APIGatewayProxyEvent, APIGatewayProxyEventV2, APIGatewayProxyResult, APIGatewayProxyResultV2, Context } from 'aws-lambda'
+import type { APIGatewayProxyEvent, APIGatewayProxyEventV2, APIGatewayProxyResult, APIGatewayProxyResultV2, Context, Handler } from 'aws-lambda'
 import { withQuery } from 'ufo'
 import { createRouter as createMatcher } from 'radix3'
 
@@ -26,8 +26,10 @@ export const handler = async function handler (event: Event, context: Context): 
   if (routeOptions.static || routeOptions.swr) {
     const builder = await import('@netlify/functions').then(r => r.builder || r.default.builder)
     const ttl = typeof routeOptions.swr === 'number' ? routeOptions.swr : 60
-    return Promise.resolve(builder(_handler)(event as any, context) as Promise<Result>)
-      .then(r => routeOptions.swr ? ({ ttl, ...r }) : r)
+    const swrHandler: Handler = routeOptions.swr
+      ? (event, context) => _handler(event, context).then(r => ({ ...r, ttl }))
+      : _handler
+    return builder(swrHandler)(event as any, context) as Promise<Result>
   }
 
   return _handler(event, context)
