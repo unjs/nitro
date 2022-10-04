@@ -8,3 +8,8 @@ export const nodeServer = defineNitroPreset({
     preview: 'node ./server/index.mjs'
   }
 })
+
+export const nodeCluster = defineNitroPreset({
+  extends: 'node-server',
+  entry: '#internal/nitro/entries/node-cluster'
+})

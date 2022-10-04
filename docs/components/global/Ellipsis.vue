@@ -10,5 +10,6 @@
   background: linear-gradient(97.62deg, rgba(240,219,79,0.22) 2.27%, rgba(242,223,97,0.22) 50.88%, rgba(242,223,97,0.22) 98.48%);
   filter: blur(169px);
   transform: matrix(-0.95, -0.3, -0.3, 0.95, 200, 250);
+  pointer-events: none;
 }
 </style>

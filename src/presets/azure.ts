@@ -1,5 +1,4 @@
 import fse from 'fs-extra'
-import { globby } from 'globby'
 import { join, resolve } from 'pathe'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
@@ -20,7 +19,7 @@ export const azure = defineNitroPreset({
   }
 })
 
-async function writeRoutes (nitro) {
+async function writeRoutes (nitro: Nitro) {
   const host = {
     version: '2.0'
   }
@@ -48,8 +47,9 @@ async function writeRoutes (nitro) {
     }
   }
 
-  const indexPath = resolve(nitro.options.output.publicDir, 'index.html')
-  const indexFileExists = fse.existsSync(indexPath)
+  const routeFiles = nitro._prerenderedRoutes || []
+
+  const indexFileExists = routeFiles.some(route => route.fileName === '/index.html')
   if (!indexFileExists) {
     config.routes.unshift(
       {
@@ -63,36 +63,29 @@ async function writeRoutes (nitro) {
     )
   }
 
-  const folderFiles = await globby([
-    join(nitro.options.output.publicDir, 'index.html'),
-    join(nitro.options.output.publicDir, '**/index.html')
-  ])
-  const prefix = nitro.options.output.publicDir.length
   const suffix = '/index.html'.length
-  folderFiles.forEach(file =>
-    config.routes.unshift({
-      route: file.slice(prefix, -suffix) || '/',
-      rewrite: file.slice(prefix)
-    })
-  )
+  for (const { fileName } of routeFiles) {
+    if (!fileName.endsWith('/index.html')) { continue }
 
-  const otherFiles = await globby([join(nitro.options.output.publicDir, '**/*.html'), join(nitro.options.output.publicDir, '*.html')])
-  otherFiles.forEach((file) => {
-    if (file.endsWith('index.html')) {
-      return
-    }
-    const route = file.slice(prefix, -'.html'.length)
+    config.routes.unshift({
+      route: fileName.slice(0, -suffix) || '/',
+      rewrite: fileName
+    })
+  }
+
+  for (const { fileName } of routeFiles) {
+    if (!fileName.endsWith('.html') || fileName.endsWith('index.html')) { continue }
+
+    const route = fileName.slice(0, -'.html'.length)
     const existingRouteIndex = config.routes.findIndex(_route => _route.route === route)
     if (existingRouteIndex > -1) {
       config.routes.splice(existingRouteIndex, 1)
     }
-    config.routes.unshift(
-      {
-        route,
-        rewrite: file.slice(prefix)
-      }
-    )
-  })
+    config.routes.unshift({
+      route,
+      rewrite: fileName
+    })
+  }
 
   const functionDefinition = {
     entryPoint: 'handle',
@@ -113,12 +106,12 @@ async function writeRoutes (nitro) {
     ]
   }
 
-  await writeFile(resolve(nitro.options.output.serverDir, 'function.json'), JSON.stringify(functionDefinition))
-  await writeFile(resolve(nitro.options.output.serverDir, '../host.json'), JSON.stringify(host))
+  await writeFile(resolve(nitro.options.output.serverDir, 'function.json'), JSON.stringify(functionDefinition, null, 2))
+  await writeFile(resolve(nitro.options.output.serverDir, '../host.json'), JSON.stringify(host, null, 2))
   const stubPackageJson = resolve(nitro.options.output.serverDir, '../package.json')
   await writeFile(stubPackageJson, JSON.stringify({ private: true }))
-  await writeFile(resolve(nitro.options.rootDir, 'staticwebapp.config.json'), JSON.stringify(config))
+  await writeFile(resolve(nitro.options.rootDir, 'staticwebapp.config.json'), JSON.stringify(config, null, 2))
   if (!indexFileExists) {
-    await writeFile(indexPath, '')
+    await writeFile(resolve(nitro.options.output.publicDir, 'index.html'), '')
   }
 }

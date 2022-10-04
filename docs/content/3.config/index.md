@@ -79,11 +79,16 @@ Public asset directories to serve in development and bundle in production.
 
 If a `public/` directory is detected, it will be added by default, but you can add more by yourself too!
 
+## `compressPublicAssets`
+
+- Default: `{ gzip: false, brotli: false }`
+
+If enabled, Nitro will generate a pre-compressed (gzip and/or brotli) version of supported types of public assets and prerendered routes
+larger than 1024 bytes into the public directory. The best compression level is used. Using this option you can support zero overhead asset compression without using a CDN.
+
 ## `serverAssets`
 
 Assets can be accessed in server logic and bundled in production.
-
-
 
 ## `devServer`
 

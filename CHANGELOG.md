@@ -2,6 +2,216 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+
+## v0.5.3
+
+[compare changes](https://github.com/unjs/nitropack/compare/v0.5.2...v0.5.3)
+
+
+### 🚀 Enhancements
+
+  - Show preset in build logs ([047357f](https://github.com/unjs/nitropack/commit/047357f))
+
+### 🩹 Fixes
+
+  - **prerender:** Prevent double slash when joining url to `index.html` ([#499](https://github.com/unjs/nitropack/pull/499))
+  - **options:** Allow overriding preset using `nitro.config` and `loadOptions` ([82a2b1e](https://github.com/unjs/nitropack/commit/82a2b1e))
+  - Apply default autopreset before extending ([cc37fb6](https://github.com/unjs/nitropack/commit/cc37fb6))
+  - **vercel, azure:** Serve prerendered routes statically ([#500](https://github.com/unjs/nitropack/pull/500))
+  - **options:** Resolve preset from first config layer ([1247890](https://github.com/unjs/nitropack/commit/1247890))
+  - **prerender:** Skip writing routes with error ([ff99330](https://github.com/unjs/nitropack/commit/ff99330))
+
+### 💅 Refactors
+
+  - Remove `#autopreset` workaround ([ad659e0](https://github.com/unjs/nitropack/commit/ad659e0))
+
+### 🏡 Chore
+
+  - Revert playground changes ([2dd05fb](https://github.com/unjs/nitropack/commit/2dd05fb))
+  - **vercel:** Typecheck generated config ([c197622](https://github.com/unjs/nitropack/commit/c197622))
+  - **release:** 0.5.3 ([5c30297](https://github.com/unjs/nitropack/commit/5c30297))
+
+### ❤️  Contributors
+
+- Daniel Roe
+- Pooya Parsa
+
+## v0.5.2
+
+[compare changes](https://github.com/unjs/nitropack/compare/v0.5.1...v0.5.2)
+
+
+### 🚀 Enhancements
+
+  - Add `workspaceDir` and use it for presets auto generated dir ([#481](https://github.com/unjs/nitropack/pull/481))
+  - Support custom vercel output configuration ([#476](https://github.com/unjs/nitropack/pull/476))
+
+### 🔥 Performance
+
+  - **static:** Prefer brotli ([d3c218f](https://github.com/unjs/nitropack/commit/d3c218f))
+
+### 🩹 Fixes
+
+  - **externals:** Strip query parameters from commonjs ids ([#475](https://github.com/unjs/nitropack/pull/475))
+  - Use `rootDir` for providers output instead of `workspaceDir` ([#491](https://github.com/unjs/nitropack/pull/491))
+  - Use node-resolve's `modulePaths` ([#490](https://github.com/unjs/nitropack/pull/490))
+  - **node-server:** Listen to default host and support ipv6 ([e1ff8cc](https://github.com/unjs/nitropack/commit/e1ff8cc))
+  - Allow for non-existent vercel config ([#492](https://github.com/unjs/nitropack/pull/492))
+  - Properly serve `/index.html` static asset ([#494](https://github.com/unjs/nitropack/pull/494))
+  - Compress assets outside of rollup ([502f7b8](https://github.com/unjs/nitropack/commit/502f7b8))
+  - Compress binrary brotli assets with `BROTLI_MODE_GENERIC` ([618f03d](https://github.com/unjs/nitropack/commit/618f03d))
+  - **compress:** Improve mime handling ([5cf6aed](https://github.com/unjs/nitropack/commit/5cf6aed))
+  - **compress:** Properly ignore already compressed files ([c24dbcf](https://github.com/unjs/nitropack/commit/c24dbcf))
+
+### 💅 Refactors
+
+  - **cloudflare:** Update instructions to wrangler2 ([db71959](https://github.com/unjs/nitropack/commit/db71959))
+
+### 📖 Documentation
+
+  - Fix typo ([#474](https://github.com/unjs/nitropack/pull/474))
+  - Remove folder creation step for Azure Static Web Apps ([#479](https://github.com/unjs/nitropack/pull/479))
+  - Fix internal link ([#483](https://github.com/unjs/nitropack/pull/483))
+  - **cloudflare:** Update to use wrangler2 ([#444](https://github.com/unjs/nitropack/pull/444))
+
+### 🏡 Chore
+
+  - **release:** 0.5.2 ([2ee32a4](https://github.com/unjs/nitropack/commit/2ee32a4))
+
+### ✅ Tests
+
+  - Update test ([ac23a7d](https://github.com/unjs/nitropack/commit/ac23a7d))
+
+### ❤️  Contributors
+
+- Alexander Lichter
+- Anthony Chu
+- Daniel Roe
+- Horu
+- Mahdi Boomeri
+- Nuzhat Minhaz
+- Oumar Barry
+- Pooya Parsa
+
+## v0.5.1
+
+[compare changes](https://github.com/unjs/nitropack/compare/v0.5.0...v0.5.1)
+
+
+### 🚀 Enhancements
+
+  - Add static `prerender` env variable ([3bd48e3](https://github.com/unjs/nitropack/commit/3bd48e3))
+  - Improve  public asset compression ([#466](https://github.com/unjs/nitropack/pull/466))
+  - Add `node-cluster` preset ([#455](https://github.com/unjs/nitropack/pull/455))
+
+### 🩹 Fixes
+
+  - Include error path property and handle null locations ([#462](https://github.com/unjs/nitropack/pull/462))
+  - **types:** Allow `EventHandler` type for dev handlers ([b0a3f43](https://github.com/unjs/nitropack/commit/b0a3f43))
+
+### 🏡 Chore
+
+  - **release:** 0.5.1 ([2a05d1e](https://github.com/unjs/nitropack/commit/2a05d1e))
+
+### ❤️  Contributors
+
+- Daniel Roe
+- David Kubeš
+- Mastercuber
+- Pooya Parsa
+
+## v0.5.0
+
+
+### 🚀 Enhancements
+
+  - Add static `prerender` env variable (3bd48e3)
+  - Improve  public asset compression (#466)
+  - Add `node-cluster` preset (#455)
+
+### 🩹 Fixes
+
+  - Include error path property and handle null locations (#462)
+  - **types:** Allow `EventHandler` type for dev handlers (b0a3f43)
+
+### ❤️  Contributors
+
+- Daniel Roe
+- David Kubeš
+- Mastercuber
+- Pooya Parsa
+
+## 0.4.24
+
+
+### 🚀 Enhancements
+
+  - Add cloudflare-pages preset (#210)
+  - Support prerendering binary files (#320)
+  - Opt-in option to compress public assets using `gzip` and `br` (#449)
+  - Allow specifying wasm plugin options (#450)
+  - Allow using `extends` alongside with `preset` (6a43985)
+
+### 🩹 Fixes
+
+  - **azure:** Fix route name (#430)
+  - Update types for defu usage (0f241bc)
+  - Add resolved side-effect for node-fetch-native (#435)
+  - **aws-lambda:** Join cookies with semicolon (#356)
+  - **aws-lambda:** Fix normalizeIncomingHeaders (#418)
+  - **aws-lambda:** Return outgoing cookies on response objects (#357)
+  - **aws-lambda:** Add `multiValueQueryStringParameters` to aws preset (#398)
+  - ⚠️  Update unenv to 0.6.x (#438)
+  - Add code location and codeframe for rollup errors (#406)
+  - **prerender:** Allow updating route contents (#452)
+  - **externals:** ⚠️  Fall back to `mlly` resolver in more cases (#431)
+  - ⚠️  `NITRO_PRESET` should have highest periority (92d711f)
+
+### 💅 Refactors
+
+  - ⚠️  Rename options `autoImport` to `imports` (#433)
+  - Utilize knitwork to generate safe variable names (#447)
+
+### 📖 Documentation
+
+  - Migrate to docus (#365)
+  - Simplify deploy index route (a1d7b17)
+  - **storage:** Fix typo (#424)
+
+### 🏡 Chore
+
+  - Update lock (4ceeee2)
+  - Narrow plugin override type (b4e24f6)
+  - Add `@vitest/coverage-c8` (4a5e565)
+  - Remove unused `@types/jsdom` from dependencies (#429)
+  - Add vitest config (ab59150)
+
+### 📦 Build
+
+  - Expose `package.json` subpath export (d0029c0)
+  - Use changelogen to bump edge and generate chagelog (679e356)
+
+#### ⚠️  Breaking Changes
+
+  - ⚠️  Update unenv to 0.6.x (#438)
+  - **externals:** ⚠️  Fall back to `mlly` resolver in more cases (#431)
+  - ⚠️  `NITRO_PRESET` should have highest periority (92d711f)
+  - ⚠️  Rename options `autoImport` to `imports` (#433)
+
+### ❤️  Contributors
+
+- Ahad Birang
+- Alexander Lichter
+- Anthony Fu
+- Daniel Roe
+- Dániel Földi
+- Eckhardt (Kaizen) Dreyer
+- Julien Huang
+- Pooya Parsa
+- Sören Schwert
+- Tobias Diez
+- Yaël Guilloux
+
 ### [0.4.24](https://github.com/unjs/nitro/compare/v0.4.23...v0.4.24) (2022-08-12)
 
 

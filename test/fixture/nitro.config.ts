@@ -1,6 +1,7 @@
 import { defineNitroConfig } from '../../src'
 
 export default defineNitroConfig({
+  compressPublicAssets: true,
   imports: {
     presets: [
       {
@@ -19,6 +20,9 @@ export default defineNitroConfig({
       baseURL: 'build',
       dir: 'public/build'
     }
+  ],
+  nodeModulesDirs: [
+    './_/node_modules'
   ],
   prerender: {
     crawlLinks: true,

@@ -119,7 +119,7 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     it('serve static asset /favicon.ico', async () => {
       const { status, headers } = await callHandler({ url: '/favicon.ico' })
       expect(status).toBe(200)
-      expect(headers.etag).toMatchInlineSnapshot('"\\"3c2e-dKdB0JNG9uHgD12RJtaVJk8vyiw\\""')
+      expect(headers.etag).toBeDefined()
       expect(headers['content-type']).toMatchInlineSnapshot('"image/vnd.microsoft.icon"')
     })
 
@@ -133,6 +133,11 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     it('shows 404 for /build/non-file', async () => {
       const { status } = await callHandler({ url: '/build/non-file' })
       expect(status).toBe(404)
+    })
+
+    it('resolve module version conflicts', async () => {
+      const { data } = await callHandler({ url: '/modules' })
+      expect(data).toMatchObject({ depA: '2.0.1', depB: '2.0.1', depLib: '2.0.1' })
     })
   }
 }

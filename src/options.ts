@@ -7,6 +7,7 @@ import { resolveModuleExportNames, resolvePath as resovleModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest } from 'std-env'
+import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
@@ -15,7 +16,6 @@ import { nitroImports } from './imports'
 
 const NitroDefaults: NitroConfig = {
   // General
-  preset: undefined,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
 
@@ -41,6 +41,7 @@ const NitroDefaults: NitroConfig = {
     presets: nitroImports
   },
   virtual: {},
+  compressPublicAssets: false,
 
   // Dev
   dev: false,
@@ -84,20 +85,29 @@ const NitroDefaults: NitroConfig = {
   commands: {}
 }
 
-export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroOptions> {
-  // Detect preset
-  let preset = userConfig.preset || process.env.NITRO_PRESET || detectTarget() || 'node-server'
-  if (userConfig.dev) {
-    preset = 'nitro-dev'
+export async function loadOptions (configOverrides: NitroConfig = {}): Promise<NitroOptions> {
+  // Preset
+  let presetOverride = configOverrides.preset || process.env.NITRO_PRESET
+  const defaultPreset = detectTarget() || 'node-server'
+  if (configOverrides.dev) {
+    presetOverride = 'nitro-dev'
   }
 
   // Load configuration and preset
-  userConfig = klona(userConfig)
-  const { config } = await loadConfig({
+  configOverrides = klona(configOverrides)
+  const { config, layers } = await loadConfig({
     name: 'nitro',
+    cwd: configOverrides.rootDir,
+    dotenv: configOverrides.dev,
+    extend: { extendKey: ['extends', 'preset'] },
+    overrides: {
+      ...configOverrides,
+      preset: presetOverride
+    },
+    defaultConfig: {
+      preset: defaultPreset
+    },
     defaults: NitroDefaults,
-    cwd: userConfig.rootDir,
-    dotenv: userConfig.dev,
     resolve (id: string) {
       type PT = Map<String, NitroConfig>
       let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
@@ -110,17 +120,15 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
         }
       }
       return null
-    },
-    overrides: {
-      ...userConfig,
-      extends: [preset]
     }
   })
   const options = klona(config) as NitroOptions
-  options._config = userConfig
-  options.preset = preset
+  options._config = configOverrides
+
+  options.preset = presetOverride || layers.find(l => l.config.preset)?.config.preset || defaultPreset
 
   options.rootDir = resolve(options.rootDir || '.')
+  options.workspaceDir = await findWorkspaceDir(options.rootDir)
   options.srcDir = resolve(options.srcDir || options.rootDir)
   for (const key of ['srcDir', 'publicDir', 'buildDir']) {
     options[key] = resolve(options.rootDir, options[key])
@@ -144,9 +152,10 @@ export async function loadOptions (userConfig: NitroConfig = {}): Promise<NitroO
   options.output.publicDir = resolvePath(options.output.publicDir, options)
   options.output.serverDir = resolvePath(options.output.serverDir, options)
 
+  options.nodeModulesDirs.push(resolve(options.workspaceDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(pkgDir, 'node_modules'))
-  options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs))
+  options.nodeModulesDirs = Array.from(new Set(options.nodeModulesDirs.map(dir => resolve(options.rootDir, dir))))
 
   if (!options.scanDirs.length) {
     options.scanDirs = [options.srcDir]

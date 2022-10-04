@@ -1,4 +1,4 @@
-import type { Handler, CompatibilityEvent, H3Error } from 'h3'
+import type { Handler, EventHandler, CompatibilityEvent, H3Error } from 'h3'
 
 export interface NitroEventHandler {
   /**
@@ -41,7 +41,7 @@ export interface NitroDevEventHandler {
    * Event handler
    *
    */
-  handler: Handler
+  handler: Handler | EventHandler
 }
 
 export type NitroErrorHandler = (error: H3Error, event: CompatibilityEvent) => void | Promise<void>

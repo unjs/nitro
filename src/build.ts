@@ -1,11 +1,13 @@
 import { promises as fsp } from 'fs'
-import { relative, resolve, join, dirname } from 'pathe'
+import { relative, resolve, join, dirname, isAbsolute } from 'pathe'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import { defu } from 'defu'
 import { watch } from 'chokidar'
 import { debounce } from 'perfect-debounce'
 import type { TSConfig } from 'pkg-types'
+import type { RollupError } from 'rollup'
+import type { OnResolveResult, PartialMessage } from 'esbuild'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig, RollupConfig } from './rollup/config'
 import { prettyPath, writeFile, isDirectory } from './utils'
@@ -13,6 +15,7 @@ import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
 import { runtimeDir } from './dirs'
 import { snapshotStorage } from './storage'
+import { compressPublicAssets } from './compress'
 
 export async function prepare (nitro: Nitro) {
   await prepareDir(nitro.options.output.dir)
@@ -30,6 +33,9 @@ export async function copyPublicAssets (nitro: Nitro) {
     if (await isDirectory(asset.dir)) {
       await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL!))
     }
+  }
+  if (nitro.options.compressPublicAssets) {
+    await compressPublicAssets(nitro)
   }
   nitro.logger.success('Generated public ' + prettyPath(nitro.options.output.publicDir))
 }
@@ -136,13 +142,12 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
   await writeTypes(nitro)
   await _snapshot(nitro)
 
-  nitro.logger.start('Building server...')
+  nitro.logger.info(`Building Nitro Server (preset: \`${nitro.options.preset}\`)`)
   const build = await rollup.rollup(rollupConfig).catch((error) => {
-    nitro.logger.error('Rollup error: ' + error.message)
+    nitro.logger.error(formatRollupError(error))
     throw error
   })
 
-  nitro.logger.start('Writing server bundle...')
   await build.write(rollupConfig.output)
 
   // Write build info
@@ -157,7 +162,7 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
   }
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2))
 
-  nitro.logger.success('Server built')
+  nitro.logger.success('Nitro server built')
   if (nitro.options.logLevel > 1) {
     await printFSTree(nitro.options.output.serverDir)
   }
@@ -204,7 +209,7 @@ function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
 
       // Encountered an error while bundling
       case 'ERROR':
-        nitro.logger.error('Rollup error: ', event.error)
+        nitro.logger.error(formatRollupError(event.error))
     }
   })
   return watcher
@@ -239,4 +244,23 @@ async function _watch (nitro: Nitro, rollupConfig: RollupConfig) {
   })
 
   await reload()
+}
+
+function formatRollupError (_error: RollupError | OnResolveResult) {
+  try {
+    const logs: string[] = []
+    for (const error of ('errors' in _error ? _error.errors : [_error as RollupError])) {
+      const id = (error as any).path || error.id || (_error as RollupError).id
+      let path = isAbsolute(id) ? relative(process.cwd(), id) : id
+      const location = (error as RollupError).loc || (error as PartialMessage).location
+      if (location) {
+        path += `:${location.line}:${location.column}`
+      }
+      const text = (error as PartialMessage).text || (error as RollupError).frame
+      logs.push(`Rollup error while processing \`${path}\`` + text ? '\n\n' + text : '')
+    }
+    return logs.join('\n\n')
+  } catch {
+    return _error?.toString()
+  }
 }

@@ -1,11 +1,12 @@
 import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
-import { parseURL, withBase, withoutBase } from 'ufo'
+import { joinURL, parseURL, withBase, withoutBase } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
 import type { Nitro, PrerenderGenerateRoute, PrerenderRoute } from './types'
 import { writeFile } from './utils'
+import { compressPublicAssets } from './compress'
 
 const allowedExtensions = new Set(['', '.json'])
 
@@ -20,6 +21,7 @@ export async function prerender (nitro: Nitro) {
   }
   // Build with prerender preset
   nitro.logger.info('Initializing prerenderer')
+  nitro._prerenderedRoutes = []
   const nitroRenderer = await createNitro({
     ...nitro.options._config,
     rootDir: nitro.options.rootDir,
@@ -63,6 +65,10 @@ export async function prerender (nitro: Nitro) {
           (_route as any)._contents = new TextDecoder('utf-8').decode(new Uint8Array(_route.data))
         }
         return (_route as any)._contents
+      },
+      set (value: string) {
+        (_route as any)._contents = value
+        _route.data = new TextEncoder().encode(value)
       }
     })
     if (res.status !== 200) {
@@ -74,16 +80,17 @@ export async function prerender (nitro: Nitro) {
     // Write to the file
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
-    _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+    _route.fileName = isImplicitHTML ? joinURL(route, 'index.html') : routeWithIndex
     _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL)
 
     await nitro.hooks.callHook('prerender:generate', _route, nitro)
 
-    // Check if route skipped by hook
-    if (_route.skip) { return }
+    // Check if route skipped or has errors
+    if (_route.skip || _route.error) { return }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
     await writeFile(filePath, Buffer.from(_route.data))
+    nitro._prerenderedRoutes.push(_route)
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
@@ -113,6 +120,10 @@ export async function prerender (nitro: Nitro) {
       await nitro.hooks.callHook('prerender:route', _route)
       nitro.logger.log(chalk[_route.error ? 'yellow' : 'gray'](`  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${_route.error ? `(${_route.error})` : ''}`))
     }
+  }
+
+  if (nitro.options.compressPublicAssets) {
+    await compressPublicAssets(nitro)
   }
 }
 

@@ -64,7 +64,8 @@ export const netlifyEdge = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      entryFileNames: 'server.js'
+      entryFileNames: 'server.js',
+      format: 'esm'
     }
   },
   hooks: {
@@ -74,7 +75,7 @@ export const netlifyEdge = defineNitroPreset({
         functions: [
           {
             function: 'server',
-            pattern: '/*'
+            pattern: '^.*$'
           }
         ]
       }

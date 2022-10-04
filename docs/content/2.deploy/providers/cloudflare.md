@@ -18,37 +18,36 @@ Create a `wrangler.toml` in your root directory:
 
 ```ini
 name = "playground"
-type = "javascript"
-account_id = "<the account_id you obtained>"
+main = "./.output/server/index.mjs"
 workers_dev = true
-route = ""
-zone_id = ""
-compatibility_date = "2022-04-07"
+compatibility_date = "2022-09-10"
+account_id = "<the account_id you obtained (optional)>"
+route = "<mainly useful when you want to setup custom domains (optional too)>"
 
 [site]
 bucket = ".output/public"
-entry-point = ".output"
-
-[build]
-command = ""
-upload.format = "service-worker"
 ```
 
 ### Testing locally
 
-You can use [miniflare](https://miniflare.dev/), a local Cloudflare Workers development server, to test your app locally:
+You can use [wrangler2](https://github.com/cloudflare/wrangler2), to test your app locally:
 
 ```bash
 NITRO_PRESET=cloudflare yarn build
-npx miniflare .output/server/index.mjs --site .output/public
+
+# If you have added a 'wrangler.toml' file like above in the root of your project:
+npx wrangler dev --local
+
+# If you don't have a 'wrangler.toml', directly use:
+npx wrangler dev .output/server/index.mjs --site .output/public --local
 ```
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/wrangler) and login to your Cloudflare account:
+Install [wrangler2](https://github.com/cloudflare/wrangler2) and login to your Cloudflare account:
 
 ```bash
-npm i @cloudflare/wrangler -g
+npm i wrangler -g
 wrangler login
 ```
 
@@ -61,7 +60,11 @@ NITRO_PRESET=cloudflare yarn build
 You can preview locally:
 
 ```bash
+# If you have a 'wrangler.toml' like above:
 wrangler dev
+
+# If you don't have a 'wrangler.toml':
+wrangler dev .output/server/index.mjs --site .output/public
 ```
 
 Publish:
@@ -120,7 +123,7 @@ jobs:
           NITRO_PRESET: cloudflare
 
       - name: Publish to Cloudflare
-        uses: cloudflare/wrangler-action@1.3.0
+        uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
 ```
