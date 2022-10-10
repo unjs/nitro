@@ -51,7 +51,7 @@
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-wasm": "^5.2.0",
-    "@rollup/pluginutils": "^4.2.1",
+    "@rollup/pluginutils": "^5.0.0",
     "@vercel/nft": "^0.22.1",
     "archiver": "^5.3.1",
     "c12": "^0.2.13",
