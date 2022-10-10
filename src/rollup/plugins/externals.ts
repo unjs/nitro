@@ -5,7 +5,7 @@ import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport, normalizeid } from 'mlly'
 import semver from 'semver'
-import { isDirectory } from '../../utils'
+import { isDirectory, retry } from '../../utils'
 
 export interface NodeExternalsOptions {
   inline?: string[]
@@ -263,16 +263,4 @@ async function isFile (file: string) {
     if (err.code === 'ENOENT') { return false }
     throw err
   }
-}
-
-async function retry (fn: () => Promise<void>, retries: number) {
-  let retry = 0
-  let error: any
-  while (retry++ < retries) {
-    try { return await fn() } catch (err) {
-      error = err
-      await new Promise(resolve => setTimeout(resolve, 2))
-    }
-  }
-  throw error
 }
