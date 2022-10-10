@@ -14,7 +14,7 @@ importers:
       '@rollup/plugin-commonjs': ^22.0.2
       '@rollup/plugin-inject': ^5.0.0
       '@rollup/plugin-json': ^5.0.0
-      '@rollup/plugin-node-resolve': ^14.1.0
+      '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^4.0.0
       '@rollup/plugin-wasm': ^5.2.0
       '@rollup/pluginutils': ^4.2.1
@@ -92,7 +92,7 @@ importers:
       '@rollup/plugin-commonjs': 22.0.2_rollup@2.79.1
       '@rollup/plugin-inject': 5.0.0_rollup@2.79.1
       '@rollup/plugin-json': 5.0.0_rollup@2.79.1
-      '@rollup/plugin-node-resolve': 14.1.0_rollup@2.79.1
+      '@rollup/plugin-node-resolve': 15.0.0_rollup@2.79.1
       '@rollup/plugin-replace': 4.0.0_rollup@2.79.1
       '@rollup/plugin-wasm': 5.2.0_rollup@2.79.1
       '@rollup/pluginutils': 4.2.1
@@ -899,22 +899,25 @@ packages:
       '@rollup/pluginutils': 3.1.0_rollup@2.79.1
       '@types/resolve': 1.17.1
       deepmerge: 4.2.2
-      is-builtin-module: 3.1.0
+      is-builtin-module: 3.2.0
       is-module: 1.0.0
       resolve: 1.22.1
       rollup: 2.79.1
     dev: true
 
-  /@rollup/plugin-node-resolve/14.1.0_rollup@2.79.1:
-    resolution: {integrity: sha512-5G2niJroNCz/1zqwXtk0t9+twOSDlG00k1Wfd7bkbbXmwg8H8dvgHdIWAun53Ps/rckfvOC7scDBjuGFg5OaWw==}
-    engines: {node: '>= 10.0.0'}
+  /@rollup/plugin-node-resolve/15.0.0_rollup@2.79.1:
+    resolution: {integrity: sha512-iwJbzfTzlzDDQcGmkS7EkCKwe2kSkdBrjX87Fy/KrNjr6UNnLpod0t6X66e502LRe5JJCA4FFqrEscWPnZAkig==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^2.78.0
+      rollup: ^2.78.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
     dependencies:
-      '@rollup/pluginutils': 3.1.0_rollup@2.79.1
-      '@types/resolve': 1.17.1
+      '@rollup/pluginutils': 4.2.1
+      '@types/resolve': 1.20.2
       deepmerge: 4.2.2
-      is-builtin-module: 3.1.0
+      is-builtin-module: 3.2.0
       is-module: 1.0.0
       resolve: 1.22.1
       rollup: 2.79.1
@@ -1038,6 +1041,11 @@ packages:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
       '@types/node': 17.0.31
+    dev: true
+
+  /@types/resolve/1.20.2:
+    resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
+    dev: false
 
   /@types/semver/7.3.12:
     resolution: {integrity: sha512-WwA1MW0++RfXmCr12xeYOOC5baSC9mSb0ZqCquFzKhcoF4TvHu5MKOuXsncgZcpVFhB1pXd5hZmM0ryAoCp12A==}
@@ -1436,8 +1444,8 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /builtin-modules/3.2.0:
-    resolution: {integrity: sha512-lGzLKcioL90C7wMczpkY0n/oART3MbBa8R9OFGE1rJxoVI86u4WAGfEk8Wjv10eKSyTHVGkSo3bvBylCEtk7LA==}
+  /builtin-modules/3.3.0:
+    resolution: {integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==}
     engines: {node: '>=6'}
 
   /builtins/5.0.1:
@@ -2552,7 +2560,7 @@ packages:
       eslint-utils: 3.0.0_eslint@8.25.0
       esquery: 1.4.0
       indent-string: 4.0.0
-      is-builtin-module: 3.1.0
+      is-builtin-module: 3.2.0
       lodash: 4.17.21
       pluralize: 8.0.0
       read-pkg-up: 7.0.1
@@ -3296,11 +3304,11 @@ packages:
       has-tostringtag: 1.0.0
     dev: true
 
-  /is-builtin-module/3.1.0:
-    resolution: {integrity: sha512-OV7JjAgOTfAFJmHZLvpSTb4qi0nIILDV1gWPYDnDJUTNFM5aGlRAhk4QcT8i7TuAleeEV5Fdkqn3t4mS+Q11fg==}
+  /is-builtin-module/3.2.0:
+    resolution: {integrity: sha512-phDA4oSGt7vl1n5tJvTWooWWAsXLY+2xCnxNqvKhGEzujg+A43wPlPOyDg3C8XQHN+6k/JTQWJ/j0dQh/qr+Hw==}
     engines: {node: '>=6'}
     dependencies:
-      builtin-modules: 3.2.0
+      builtin-modules: 3.3.0
 
   /is-callable/1.2.4:
     resolution: {integrity: sha512-nsuwtxZfMX67Oryl9LCQ+upnC0Z0BgpwntpS89m1H/TLF0zNfzfLMV/9Wa/6MZsj0acpEjAO0KF1xT6ZdLl95w==}
