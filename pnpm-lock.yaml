@@ -168,39 +168,39 @@ importers:
 
   examples/api-routes:
     specifiers:
-      nitropack: link:.
+      nitropack: link:../..
     devDependencies:
-      nitropack: 'link:'
+      nitropack: link:../..
 
   examples/cached-handler:
     specifiers:
-      nitropack: link:.
+      nitropack: link:../..
     devDependencies:
-      nitropack: 'link:'
+      nitropack: link:../..
 
   examples/custom-error-handler:
     specifiers:
-      nitropack: link:.
+      nitropack: link:../..
     devDependencies:
-      nitropack: 'link:'
+      nitropack: link:../..
 
   examples/hello-world:
     specifiers:
-      nitropack: link:.
+      nitropack: link:../..
     devDependencies:
-      nitropack: 'link:'
+      nitropack: link:../..
 
   examples/middleware:
     specifiers:
-      nitropack: link:.
+      nitropack: link:../..
     devDependencies:
-      nitropack: 'link:'
+      nitropack: link:../..
 
   examples/plugins:
     specifiers:
-      nitropack: link:.
+      nitropack: link:../..
     devDependencies:
-      nitropack: 'link:'
+      nitropack: link:../..
 
 packages:
 
