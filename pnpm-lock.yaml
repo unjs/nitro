@@ -27,7 +27,7 @@ importers:
       '@types/semver': ^7.3.12
       '@types/serve-static': ^1.15.0
       '@vercel/nft': ^0.22.1
-      '@vitest/coverage-c8': ^0.24.0
+      '@vitest/coverage-c8': ^0.24.1
       archiver: ^5.3.1
       c12: ^0.2.13
       c8: ^7.12.0
@@ -84,7 +84,7 @@ importers:
       unenv: ^0.6.2
       unimport: ^0.6.8
       unstorage: ^0.5.6
-      vitest: ^0.24.0
+      vitest: ^0.24.1
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.3.0
@@ -154,7 +154,7 @@ importers:
       '@types/object-hash': 2.2.1
       '@types/semver': 7.3.12
       '@types/serve-static': 1.15.0
-      '@vitest/coverage-c8': 0.24.0
+      '@vitest/coverage-c8': 0.24.1
       c8: 7.12.0
       changelogen: 0.3.2
       edge-runtime: 1.1.0-beta.31
@@ -164,7 +164,7 @@ importers:
       miniflare: 2.9.0
       typescript: 4.8.4
       unbuild: 0.8.11
-      vitest: 0.24.0
+      vitest: 0.24.1
 
   examples/api-routes:
     specifiers:
@@ -850,7 +850,7 @@ packages:
       glob: 7.2.0
       is-reference: 1.2.1
       magic-string: 0.25.9
-      resolve: 1.22.0
+      resolve: 1.22.1
       rollup: 2.79.1
     dev: true
 
@@ -1259,11 +1259,11 @@ packages:
       - supports-color
     dev: false
 
-  /@vitest/coverage-c8/0.24.0:
-    resolution: {integrity: sha512-Ho5256BOrLnsJgEgE368ED17cr8rOAXrxvwpZ+XZUA4yAcMBxGAX08cCeG4dibmNVD2NE9Hcpd2foMZsTge3wA==}
+  /@vitest/coverage-c8/0.24.1:
+    resolution: {integrity: sha512-cOFHXRHB9WHtGgsHE4FX4Ef1c9Hon668RNJQOJvqSy1/1Y7zIYIBhFWmuFKLZRCMV4jGT5CRiuB9KtdNsOc3og==}
     dependencies:
       c8: 7.12.0
-      vitest: 0.24.0
+      vitest: 0.24.1
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -4451,15 +4451,6 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /resolve/1.22.0:
-    resolution: {integrity: sha512-Hhtrw0nLeSrFQ7phPp4OOcVjLPIeMnRlr5mcnVuMe7M/7eBn98A3hmFRLoFo3DLZkivSYwhRUJTyPyWAk56WLw==}
-    hasBin: true
-    dependencies:
-      is-core-module: 2.10.0
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
-    dev: true
-
   /resolve/1.22.1:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
     hasBin: true
@@ -5247,8 +5238,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.24.0:
-    resolution: {integrity: sha512-k5j3FPTor+MJx2x0pDW2gtVk+s9VC6nSHT3SoqOIk9Je5fFpPgict+Xy2eAVXUogvSixs45Ya1oZk+oK93BO0w==}
+  /vitest/0.24.1:
+    resolution: {integrity: sha512-NKkK1xnDIOOr42pKBfGQQl6b6IWdFVBpG6ZS1T+nUlJuqcOiZ7lxjVwHy9wrtTYpJ0BWww9y6bSGYXubD29Nag==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
