@@ -5,7 +5,7 @@ import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport, normalizeid } from 'mlly'
 import semver from 'semver'
-import { isDirectory } from '../../utils'
+import { isDirectory, retry } from '../../utils'
 
 export interface NodeExternalsOptions {
   inline?: string[]
@@ -220,7 +220,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         }
       }
 
-      const writeFile = async (file) => {
+      const writeFile = async (file: string) => {
         if (!await isFile(file)) { return }
         const src = resolve(opts.traceOptions.base, file)
         const { pkgName, subpath } = parseNodeModulePath(file)
@@ -230,7 +230,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       }
 
       // Write traced files
-      await Promise.all(tracedFiles.map(writeFile))
+      await Promise.all(tracedFiles.map(file => retry(() => writeFile(file), 3)))
 
       // Write an informative package.json
       await fsp.writeFile(resolve(opts.outDir, 'package.json'), JSON.stringify({
