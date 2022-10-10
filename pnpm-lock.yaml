@@ -12,7 +12,7 @@ importers:
       '@nuxtjs/eslint-config-typescript': ^11.0.0
       '@rollup/plugin-alias': ^4.0.0
       '@rollup/plugin-commonjs': ^22.0.2
-      '@rollup/plugin-inject': ^4.0.4
+      '@rollup/plugin-inject': ^5.0.0
       '@rollup/plugin-json': ^4.1.0
       '@rollup/plugin-node-resolve': ^14.1.0
       '@rollup/plugin-replace': ^4.0.0
@@ -90,7 +90,7 @@ importers:
       '@netlify/functions': 1.3.0
       '@rollup/plugin-alias': 4.0.0_rollup@2.79.1
       '@rollup/plugin-commonjs': 22.0.2_rollup@2.79.1
-      '@rollup/plugin-inject': 4.0.4_rollup@2.79.1
+      '@rollup/plugin-inject': 5.0.0_rollup@2.79.1
       '@rollup/plugin-json': 4.1.0_rollup@2.79.1
       '@rollup/plugin-node-resolve': 14.1.0_rollup@2.79.1
       '@rollup/plugin-replace': 4.0.0_rollup@2.79.1
@@ -853,14 +853,18 @@ packages:
       resolve: 1.22.0
       rollup: 2.79.1
 
-  /@rollup/plugin-inject/4.0.4_rollup@2.79.1:
-    resolution: {integrity: sha512-4pbcU4J/nS+zuHk+c+OL3WtmEQhqxlZ9uqfjQMQDOHOPld7PsCd8k5LWs8h5wjwJN7MgnAn768F2sDxEP4eNFQ==}
+  /@rollup/plugin-inject/5.0.0_rollup@2.79.1:
+    resolution: {integrity: sha512-UfJG/Kz965mnpIWemWzoAKIb2qaApsptDE2jHqdElHQjdbm1TYUiBc7SAOs9xSMUB/spB9G2KUfYzDWCRRO13Q==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0 || ^2.0.0
+      rollup: ^1.20.0||^2.0.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
     dependencies:
-      '@rollup/pluginutils': 3.1.0_rollup@2.79.1
+      '@rollup/pluginutils': 4.2.1
       estree-walker: 2.0.2
-      magic-string: 0.25.9
+      magic-string: 0.26.6
       rollup: 2.79.1
     dev: false
 
@@ -3654,7 +3658,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       sourcemap-codec: 1.4.8
-    dev: false
 
   /make-dir/3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
@@ -4383,7 +4386,7 @@ packages:
       rollup: ^2.55
       typescript: ^4.1
     dependencies:
-      magic-string: 0.26.3
+      magic-string: 0.26.6
       rollup: 2.79.1
       typescript: 4.8.4
     optionalDependencies:
