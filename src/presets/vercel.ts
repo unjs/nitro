@@ -1,5 +1,5 @@
 import fsp from 'fs/promises'
-import { resolve } from 'pathe'
+import { dirname, relative, resolve } from 'pathe'
 import { defu } from 'defu'
 import { withoutLeadingSlash } from 'ufo'
 import { writeFile } from '../utils'
@@ -40,7 +40,7 @@ export const vercel = defineNitroPreset({
       for (const [key, value] of Object.entries(nitro.options.routeRules).filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))) {
         if (!value.cache) { continue } // for type support
         const funcPrefix = resolve(nitro.options.output.serverDir, '..' + generateEndpoint(key))
-        await fsp.cp(nitro.options.output.serverDir, funcPrefix + '.func', { recursive: true })
+        await fsp.symlink('./' + relative(dirname(funcPrefix), nitro.options.output.serverDir), funcPrefix + '.func', 'junction')
         await writeFile(funcPrefix + '.prerender-config.json', JSON.stringify({
           expiration: value.cache.static ? false : typeof value.cache.swr === 'number' ? value.cache.swr : 60
         }))
