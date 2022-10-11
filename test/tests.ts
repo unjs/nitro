@@ -40,7 +40,9 @@ export async function setupTest (preset) {
       '/rules/redirect': { redirect: '/base' },
       '/rules/redirect/obj': {
         redirect: { to: 'https://nitro.unjs.io/', statusCode: 308 }
-      }
+      },
+      '/rules/nested/**': { redirect: '/base', headers: { 'x-test': 'test' } },
+      '/rules/nested/override': { redirect: { to: '/other' } }
     }
   })
   await prepare(nitro)
@@ -128,6 +130,17 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     }
     const { headers } = await callHandler({ url: '/rules/cors' })
     expect(headers).toMatchObject(expectedHeaders)
+  })
+
+  it('handles route rules - allowing overriding', async () => {
+    const override = await callHandler({ url: '/rules/nested/override' })
+    expect(override.headers.location).toBe('/other')
+    // TODO: allow merging?
+    // expect(override.headers['x-test']).toBe('test')
+
+    const base = await callHandler({ url: '/rules/nested/base' })
+    expect(base.headers.location).toBe('/base')
+    expect(base.headers['x-test']).toBe('test')
   })
 
   it('handles errors', async () => {
