@@ -104,7 +104,7 @@ async function writeHeaders (nitro: Nitro) {
   let contents = ''
 
   for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.cors || value.headers)) {
-    const headers = [
+    contents = [
       key.replace('/**', '/*'),
       ...Object.entries({
         ...value.cors
@@ -118,18 +118,16 @@ async function writeHeaders (nitro: Nitro) {
         ...value.headers || {}
       }).map(([header, value]) => `  ${header}: ${value}`)
     ].join('\n')
-
-    contents += headers + '\n'
   }
 
   if (existsSync(headersPath)) {
-    const currentheaders = await fsp.readFile(headersPath, 'utf-8')
-    if (currentheaders.match(/^\/\* /m)) {
+    const currentHeaders = await fsp.readFile(headersPath, 'utf-8')
+    if (currentHeaders.match(/^\/\* /m)) {
       nitro.logger.info('Not adding Nitro fallback to `_headers` (as an existing fallback was found).')
       return
     }
     nitro.logger.info('Adding Nitro fallback to `_headers` to handle all unmatched routes.')
-    contents = currentheaders + '\n' + contents
+    contents = currentHeaders + '\n' + contents
   }
 
   await fsp.writeFile(headersPath, contents)
