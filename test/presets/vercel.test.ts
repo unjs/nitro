@@ -96,6 +96,18 @@ describe('nitro:preset:vercel', async () => {
             "handle": "filesystem",
           },
           {
+            "dest": "/__nitro--rules-static",
+            "src": "/rules/static",
+          },
+          {
+            "dest": "/__nitro--rules-swr",
+            "src": "/rules/swr",
+          },
+          {
+            "dest": "/__nitro--rules-swr-ttl",
+            "src": "/rules/swr-ttl",
+          },
+          {
             "dest": "/__nitro",
             "src": "/(.*)",
           },
