@@ -39,8 +39,8 @@ export async function setupTest (preset) {
       '/rules/cors': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
       '/rules/redirect': { redirect: '/base' },
       '/rules/static': { static: true },
-      '/rules/swr': { swr: true },
-      '/rules/swr-ttl': { swr: 60 },
+      '/rules/swr/**': { swr: true },
+      '/rules/swr-ttl/**': { swr: 60 },
       '/rules/redirect/obj': {
         redirect: { to: 'https://nitro.unjs.io/', statusCode: 308 }
       },
