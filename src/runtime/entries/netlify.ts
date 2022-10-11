@@ -1,36 +1,60 @@
 import '#internal/nitro/virtual/polyfill'
-
-import type { APIGatewayProxyEvent, APIGatewayProxyEventV2, APIGatewayProxyResult, APIGatewayProxyResultV2, Context, Handler } from 'aws-lambda'
+import type { Handler } from '@netlify/functions/dist/main'
+import type { APIGatewayProxyEventHeaders } from 'aws-lambda'
 import { withQuery } from 'ufo'
 import { createRouter as createMatcher } from 'radix3'
-
+import { nitroApp } from '../app'
 import { useRuntimeConfig } from '../config'
 
-import { handler as _handler } from '#internal/nitro/entries/aws-lambda'
-
-// Compatibility types that work with AWS v1, AWS v2 & Netlify
-type Event = Omit<APIGatewayProxyEvent, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'> | Omit<APIGatewayProxyEventV2, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'>
-type Result = Exclude<APIGatewayProxyResult | APIGatewayProxyResultV2, string> & {
-  statusCode: number,
-  ttl?: number
-}
-
-export const handler = async function handler (event: Event, context: Context): Promise<Result> {
+export const handler: Handler = async function handler (event, context) {
   const config = useRuntimeConfig()
   const routerOptions = createMatcher({ routes: config.nitro.routes })
 
-  const query = { ...event.queryStringParameters, ...(event as APIGatewayProxyEvent).multiValueQueryStringParameters }
-  const url = withQuery((event as APIGatewayProxyEvent).path || (event as APIGatewayProxyEventV2).rawPath, query)
+  const query = { ...event.queryStringParameters, ...event.multiValueQueryStringParameters }
+  const url = withQuery(event.path, query)
   const routeOptions = routerOptions.lookup(url) || {}
 
   if (routeOptions.static || routeOptions.swr) {
+    // @ts-expect-error incorrect type defs for @netlify/functions
     const builder = await import('@netlify/functions').then(r => r.builder || r.default.builder)
     const ttl = typeof routeOptions.swr === 'number' ? routeOptions.swr : 60
     const swrHandler: Handler = routeOptions.swr
-      ? (event, context) => _handler(event, context).then(r => ({ ...r, ttl }))
-      : _handler
-    return builder(swrHandler)(event as any, context) as Promise<Result>
+      ? (event, context) => Promise.resolve(lambda(event, context)).then(r => ({ statusCode: 200, ...r, ttl }))
+      : lambda
+    return builder(swrHandler)(event, context)
   }
 
-  return _handler(event, context)
+  return lambda(event, context)
+}
+
+const lambda: Handler = async function lambda (event, context) {
+  const query = { ...event.queryStringParameters, ...(event).multiValueQueryStringParameters }
+  const url = withQuery((event).path, query)
+  const method = (event).httpMethod || 'get'
+
+  const r = await nitroApp.localCall({
+    event,
+    url,
+    context,
+    headers: normalizeIncomingHeaders(event.headers),
+    method,
+    query,
+    body: event.body // TODO: handle event.isBase64Encoded
+  })
+
+  return {
+    statusCode: r.status,
+    headers: normalizeOutgoingHeaders(r.headers),
+    body: r.body.toString()
+  }
+}
+
+function normalizeIncomingHeaders (headers?: APIGatewayProxyEventHeaders) {
+  return Object.fromEntries(Object.entries(headers || {}).map(([key, value]) => [key.toLowerCase(), value!]))
+}
+
+function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
+  return Object.fromEntries(Object.entries(headers)
+    .filter(([key]) => !['set-cookie'].includes(key))
+    .map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
 }
