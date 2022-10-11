@@ -1,5 +1,6 @@
 import { promises as fsp } from 'fs'
 import { relative, resolve, join, dirname, isAbsolute } from 'pathe'
+import { resolveAlias } from 'pathe/utils'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import { defu } from 'defu'
@@ -66,7 +67,15 @@ export async function writeTypes (nitro: Nitro) {
   if (nitro.unimport) {
     autoImportedTypes = [
       nitro.unimport
-        .generateTypeDeclarations({ exportHelper: false })
+        .generateTypeDeclarations({
+          exportHelper: false,
+          resolvePath: (i) => {
+            if (i.from.startsWith('#internal/nitro')) {
+              return resolveAlias(i.from, nitro.options.alias)
+            }
+            return i.from
+          }
+        })
         .trim()
     ]
   }
