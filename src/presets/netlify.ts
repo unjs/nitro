@@ -82,7 +82,8 @@ async function writeRedirects (nitro: Nitro) {
 
   for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect)) {
     const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
-    contents += `${key.replace('/**', '/*')}\t${redirect.to}\t${redirect.statusCode || 307}\n`
+    // TODO: update to 307 when netlify support 307/308 redirects
+    contents = `${key.replace('/**', '/*')}\t${redirect.to}\t${redirect.statusCode || 301}\n` + contents
   }
 
   if (existsSync(redirectsPath)) {
