@@ -82,7 +82,7 @@ async function writeRedirects (nitro: Nitro) {
 
   for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect)) {
     const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
-    // TODO: update to 307 when netlify support 307/308 redirects
+    // TODO: update to 307 when netlify support 307/308
     contents = `${key.replace('/**', '/*')}\t${redirect.to}\t${redirect.statusCode || 301}\n` + contents
   }
 
@@ -104,7 +104,7 @@ async function writeHeaders (nitro: Nitro) {
   let contents = ''
 
   for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.cors || value.headers)) {
-    contents = [
+    const headers = [
       key.replace('/**', '/*'),
       ...Object.entries({
         ...value.cors
@@ -118,6 +118,8 @@ async function writeHeaders (nitro: Nitro) {
         ...value.headers || {}
       }).map(([header, value]) => `  ${header}: ${value}`)
     ].join('\n')
+
+    contents += headers + '\n'
   }
 
   if (existsSync(headersPath)) {
