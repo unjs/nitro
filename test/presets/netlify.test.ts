@@ -37,6 +37,7 @@ describe('nitro:preset:netlify', async () => {
       /rules/nested/*	/base	301
       /rules/redirect/obj	https://nitro.unjs.io/	308
       /rules/redirect	/base	301
+      /rules/static	/.netlify/builders/server 200
       /* /.netlify/functions/server 200"
     `)
     /* eslint-enable no-tabs */
