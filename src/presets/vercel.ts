@@ -40,7 +40,7 @@ export const vercel = defineNitroPreset({
       for (const [key, value] of Object.entries(nitro.options.routeRules).filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))) {
         if (!value.cache) { continue } // for type support
         const funcPrefix = resolve(nitro.options.output.serverDir, '..' + generateEndpoint(key))
-        await fsp.symlink(nitro.options.output.serverDir, funcPrefix + '.func', 'junction')
+        await fsp.cp(nitro.options.output.serverDir, funcPrefix + '.func', { recursive: true })
         await writeFile(funcPrefix + '.prerender-config.json', JSON.stringify({
           expiration: value.cache.static ? false : typeof value.cache.swr === 'number' ? value.cache.swr : 60
         }))
