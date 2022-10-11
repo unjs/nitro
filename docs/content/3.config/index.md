@@ -173,7 +173,10 @@ Example:
 ```js
 {
   routes: {
-    '/blog/**': { swr: true }
+    '/blog/**': { swr: true },
+    '/assets/**': { headers: { 'cache-control': 's-maxage=0' } },
+    '/api/v1/**': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
+    '/old-page': { redirect: '/new-page' }
   }
 }
 ```
