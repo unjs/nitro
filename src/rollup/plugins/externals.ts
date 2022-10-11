@@ -198,7 +198,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
           const [newerDir, olderDir] = isNewer ? [pkgDir, existingPkgDir] : [existingPkgDir, pkgDir]
           // Try to map traced files from one package to another for minor/patch versions
           if (getMajor(v1) === getMajor(v2)) {
-            tracedFiles = tracedFiles.map(f => f.startsWith(olderDir) ? f.replace(olderDir, newerDir) : f)
+            tracedFiles = tracedFiles.map(f => f.startsWith(olderDir + '/') ? f.replace(olderDir, newerDir) : f)
           }
           // Exclude older version files
           ignoreDirs.push(olderDir + '/')
