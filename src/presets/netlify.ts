@@ -6,6 +6,7 @@ import type { Nitro } from '../types'
 // Netlify functions
 export const netlify = defineNitroPreset({
   extends: 'aws-lambda',
+  entry: '#internal/nitro/entries/netlify',
   output: {
     dir: '{{ rootDir }}/.netlify/functions-internal',
     publicDir: '{{ rootDir }}/dist'
@@ -79,6 +80,11 @@ export const netlifyEdge = defineNitroPreset({
 async function writeRedirects (nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
   let contents = '/* /.netlify/functions/server 200'
+
+  // Rewrite SWR and static paths to builder functions
+  for (const [key] of Object.entries(nitro.options.routes).filter(([_, value]) => value.swr || value.static)) {
+    contents = `${key.replace('/**', '/*')}\t/.netlify/builders/server 200\n` + contents
+  }
 
   for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect)) {
     const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect

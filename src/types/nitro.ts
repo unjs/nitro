@@ -68,6 +68,7 @@ export interface NitroConfig extends DeepPartial<NitroOptions> {
 
 export interface NitroRouteOption {
   swr?: boolean | number
+  static?: boolean
   redirect?: string | { to: string, statusCode?: 301 | 302 | 307 | 308 }
   headers?: Record<string, string>
   cors?: boolean

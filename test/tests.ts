@@ -38,6 +38,7 @@ export async function setupTest (preset) {
       '/rules/headers': { headers: { 'cache-control': 's-maxage=60' } },
       '/rules/cors': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
       '/rules/redirect': { redirect: '/base' },
+      '/rules/static': { static: true },
       '/rules/redirect/obj': {
         redirect: { to: 'https://nitro.unjs.io/', statusCode: 308 }
       },
