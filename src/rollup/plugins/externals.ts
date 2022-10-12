@@ -183,7 +183,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
           const isNewer = semver.gt(v2, v1)
 
           // Warn about major version differences
-          const getMajor = (v: string) => v.split('.').filter(s => s !== '0')[0]
+          const getMajor = v => v.split('.').filter(s => s !== '0')[0]
           if (getMajor(v1) !== getMajor(v2)) {
             const warn = `Multiple major versions of package \`${pkgName}\` are being externalized. Picking latest version:\n\n` + [
               `  ${isNewer ? '-' : '+'} ` + existingPkgDir + '@' + v1,
@@ -195,14 +195,13 @@ export function externals (opts: NodeExternalsOptions): Plugin {
             }
           }
 
-          const [newerDir, olderDir] = isNewer ? [pkgDir, existingPkgDir] : [existingPkgDir, pkgDir]
-          // Try to map traced files from one package to another for minor/patch versions
-          if (getMajor(v1) === getMajor(v2)) {
-            tracedFiles = tracedFiles.map(f => f.startsWith(olderDir + '/') ? f.replace(olderDir, newerDir) : f)
-          }
           // Exclude older version files
-          ignoreDirs.push(olderDir + '/')
-          pkgDir = newerDir // Update for tracedPackages
+          if (isNewer) {
+            ignoreDirs.push(existingPkgDir)
+          } else {
+            ignoreDirs.push(pkgDir)
+            pkgDir = existingPkgDir // Update for tracedPackages
+          }
         }
 
         // Add to traced packages
@@ -225,13 +224,9 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         if (!await isFile(file)) { return }
         const src = resolve(opts.traceOptions.base, file)
         const { pkgName, subpath } = parseNodeModulePath(file)
-        const dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`)
+        const dst = resolve(opts.outDir, `node_modules/${pkgName}/${subpath}`)
         await fsp.mkdir(dirname(dst), { recursive: true })
-        try {
-          await fsp.copyFile(src, dst)
-        } catch (err) {
-          consola.warn(`Could not resolve \`${src}\`. Skipping.`)
-        }
+        await fsp.copyFile(src, dst)
       }
 
       // Write traced files
