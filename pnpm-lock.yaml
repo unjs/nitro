@@ -31,7 +31,7 @@ importers:
       archiver: ^5.3.1
       c12: ^0.2.13
       c8: ^7.12.0
-      chalk: ^5.1.0
+      chalk: ^5.1.2
       changelogen: ^0.3.2
       chokidar: ^3.5.3
       consola: ^2.15.3
@@ -99,7 +99,7 @@ importers:
       '@vercel/nft': 0.22.1
       archiver: 5.3.1
       c12: 0.2.13
-      chalk: 5.1.0
+      chalk: 5.1.2
       chokidar: 3.5.3
       consola: 2.15.3
       cookie-es: 0.5.0
@@ -1596,8 +1596,8 @@ packages:
       supports-color: 7.2.0
     dev: true
 
-  /chalk/5.1.0:
-    resolution: {integrity: sha512-56zD4khRTBoIyzUYAFgDDaPhUMN/fC/rySe6aZGqbj/VWiU2eI3l6ZLOtYGFZAV5v02mwPjtpzlrOveJiz5eZQ==}
+  /chalk/5.1.2:
+    resolution: {integrity: sha512-E5CkT4jWURs1Vy5qGJye+XwCkNj7Od3Af7CP6SujMetSMkLs8Do2RWJK5yx1wamHV/op8Rz+9rltjaTQWDnEFQ==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   /changelogen/0.3.2:
@@ -5064,7 +5064,7 @@ packages:
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.79.1
       '@rollup/plugin-replace': 4.0.0_rollup@2.79.1
       '@rollup/pluginutils': 4.2.1
-      chalk: 5.1.0
+      chalk: 5.1.2
       consola: 2.15.3
       defu: 6.1.0
       esbuild: 0.15.10
