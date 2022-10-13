@@ -1,8 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
 
-const levels = ['log', 'info', 'warn', 'error']
-
 const higherOrderLog = (name: string, context) => {
   const logFn = (params) => {
     if (context[name]) {
@@ -16,9 +14,19 @@ const higherOrderLog = (name: string, context) => {
 }
 /**
  * intercepts all calls to console.* and redirects them to the azure context logger
+ * Do not intercept twice
  */
-const interceptLogging = context =>
-  levels.forEach(m => higherOrderLog(m, context))
+const interceptLoggingFactory = () => {
+  let intercepted = false
+  const levels = ['log', 'info', 'warn', 'error']
+
+  return (context) => {
+    if (intercepted) { return }
+    levels.forEach(m => higherOrderLog(m, context))
+    intercepted = true
+  }
+}
+const interceptLogging = interceptLoggingFactory()
 
 export async function handle(context, req) {
   const url = '/' + (req.params.url || '')
