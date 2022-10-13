@@ -35,4 +35,6 @@ if (process.env.DEBUG) {
   process.on('uncaughtException', err => console.error('[nitro] [dev] [uncaughtException] ' + err))
 }
 
-export default {}
+export default {
+  server
+}
