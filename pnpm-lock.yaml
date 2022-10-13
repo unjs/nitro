@@ -17,7 +17,7 @@ importers:
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-wasm': ^6.0.0
-      '@rollup/pluginutils': ^5.0.0
+      '@rollup/pluginutils': ^5.0.1
       '@types/aws-lambda': ^8.10.107
       '@types/etag': ^1.8.1
       '@types/fs-extra': ^9.0.13
@@ -50,7 +50,7 @@ importers:
       globby: ^13.1.2
       gzip-size: ^7.0.0
       h3: ^0.7.21
-      hookable: ^5.3.0
+      hookable: ^5.4.0
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
       jiti: ^1.16.0
@@ -68,7 +68,7 @@ importers:
       perfect-debounce: ^0.1.3
       pkg-types: ^0.3.5
       pretty-bytes: ^6.0.0
-      radix3: ^0.1.2
+      radix3: ^0.2.0
       rollup: ^2.79.1
       rollup-plugin-terser: ^7.0.2
       rollup-plugin-visualizer: ^5.8.2
@@ -95,7 +95,7 @@ importers:
       '@rollup/plugin-node-resolve': 15.0.0_rollup@2.79.1
       '@rollup/plugin-replace': 5.0.0_rollup@2.79.1
       '@rollup/plugin-wasm': 6.0.0_rollup@2.79.1
-      '@rollup/pluginutils': 5.0.0_rollup@2.79.1
+      '@rollup/pluginutils': 5.0.1_rollup@2.79.1
       '@vercel/nft': 0.22.1
       archiver: 5.3.1
       c12: 0.2.13
@@ -113,7 +113,7 @@ importers:
       globby: 13.1.2
       gzip-size: 7.0.0
       h3: 0.7.21
-      hookable: 5.3.0
+      hookable: 5.4.0
       http-proxy: 1.18.1
       is-primitive: 3.0.1
       jiti: 1.16.0
@@ -130,7 +130,7 @@ importers:
       perfect-debounce: 0.1.3
       pkg-types: 0.3.5
       pretty-bytes: 6.0.0
-      radix3: 0.1.2
+      radix3: 0.2.0
       rollup: 2.79.1
       rollup-plugin-terser: 7.0.2_rollup@2.79.1
       rollup-plugin-visualizer: 5.8.2_rollup@2.79.1
@@ -997,8 +997,8 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
 
-  /@rollup/pluginutils/5.0.0_rollup@2.79.1:
-    resolution: {integrity: sha512-LJAlpJhSH4cAoNrh5G4mQ7VJJgmGVN1A91Skwpd6uMT4CGmDbrZ59RQWwNB08WkLtKOzTHFj6pKgVn18zlDFrQ==}
+  /@rollup/pluginutils/5.0.1_rollup@2.79.1:
+    resolution: {integrity: sha512-4HaCVEXXuObvcPUaUlLt4faHYHCeQOOWNj8NKFGaRSrw3ZLD0TWeAFZicV9vXjnE2nkNuaVTfTuwAnjR+6uc9A==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0
@@ -1006,6 +1006,7 @@ packages:
       rollup:
         optional: true
     dependencies:
+      '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 2.79.1
@@ -1035,8 +1036,8 @@ packages:
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
     dev: true
 
-  /@types/estree/0.0.51:
-    resolution: {integrity: sha512-CuPgU6f3eT/XgKKPqKd/gLZV1Xmvf1a2R5POBOGQa6uv82xpls89HU5zKeVoyR8XzHd1RGNOlQlvUe3CFkjWNQ==}
+  /@types/estree/1.0.0:
+    resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
 
   /@types/etag/1.8.1:
     resolution: {integrity: sha512-bsKkeSqN7HYyYntFRAmzcwx/dKW4Wa+KVMTInANlI72PWLQmOpZu96j0OqHZGArW4VQwCmJPteQlXaUDeOB0WQ==}
@@ -3213,8 +3214,8 @@ packages:
     dependencies:
       function-bind: 1.1.1
 
-  /hookable/5.3.0:
-    resolution: {integrity: sha512-4gTA2q08HT8G32uIW7Jpro3rSXgT2ZTM8R6+r7H7joq90eZlqFPPTvHD6w8WZUohIrbXbDperL96ilb6dkNxNw==}
+  /hookable/5.4.0:
+    resolution: {integrity: sha512-kMikhpdc0PRI2/d1p36RdA2iWiDHN8UQfb1m1hjsR2edAHxaC5qfF16Vg653zu+XEl5TyWn2AVJOVEjbeQxEOQ==}
 
   /hosted-git-info/2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -3448,7 +3449,7 @@ packages:
   /is-reference/1.2.1:
     resolution: {integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==}
     dependencies:
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
 
   /is-regex/1.1.4:
     resolution: {integrity: sha512-kvRdxDsxZjhzUX07ZnLydzS1TU/TJlTUHHY4YLL87e37oUA49DfkLqgy+VjFocowy29cKvcSiu+kIv728jTTVg==}
@@ -4343,6 +4344,10 @@ packages:
     resolution: {integrity: sha512-Mpfd/OuX0zoJ6ojLD/RTOHvJPg6e6PjINtmYzV87kIXc5iUtDz34i7gg4SV4XjqRJTmSiYO/g9i/mKWGf4z8wg==}
     dev: false
 
+  /radix3/0.2.0:
+    resolution: {integrity: sha512-31LEskiJwlPK3rbEacXdPs7+MezZ+f7SnmJsvDhmhxcrP54IAawgMrR128V3x6JAXiHok/mwCF6UySl+nk7Otw==}
+    dev: false
+
   /randombytes/2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
     dependencies:
@@ -5069,7 +5074,7 @@ packages:
       defu: 6.1.0
       esbuild: 0.15.10
       globby: 13.1.2
-      hookable: 5.3.0
+      hookable: 5.4.0
       jiti: 1.16.0
       magic-string: 0.26.3
       mkdirp: 1.0.4
