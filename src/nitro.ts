@@ -1,6 +1,6 @@
 import { existsSync } from 'fs'
 import { resolve } from 'pathe'
-import { createHooks } from 'hookable'
+import { createHooks, createDebugger } from 'hookable'
 import { createUnimport } from 'unimport'
 import consola from 'consola'
 import type { NitroConfig, Nitro } from './types'
@@ -26,6 +26,12 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Storage
   nitro.storage = await createStorage(nitro)
   nitro.hooks.hook('close', async () => { await nitro.storage.dispose() })
+
+  if (nitro.options.debug) {
+    // @ts-expect-error remove in next version of hookable
+    createDebugger(nitro.hooks, { tag: 'nitro build' })
+    nitro.options.plugins.push('#internal/nitro/debug')
+  }
 
   // Logger config
   if (nitro.options.logLevel !== undefined) {
