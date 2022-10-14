@@ -1,6 +1,6 @@
 import { createDebugger } from 'hookable'
-import type { NitroAppPlugin } from './plugin'
+import { defineNitroPlugin } from './plugin'
 
-export default <NitroAppPlugin> function (nitro) {
+export default defineNitroPlugin((nitro) => {
   createDebugger(nitro.hooks, { tag: 'nitro app' })
-}
+})
