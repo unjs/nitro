@@ -185,7 +185,7 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
 
     it('resolve module version conflicts', async () => {
       const { data } = await callHandler({ url: '/modules' })
-      expect(data).toMatchObject({ depA: '2.0.1', depB: '2.0.1', depLib: '2.0.1' })
+      expect(data).toMatchObject({ depA: '2.0.1', depB: '2.0.1', depLib: '2.0.1', subpathLib: '2.0.1' })
     })
   }
 }
