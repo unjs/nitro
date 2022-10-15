@@ -12,6 +12,7 @@ import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
+import { CacheOptions } from '../runtime/types'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
 import type { PresetOptions } from './presets'
 
@@ -62,16 +63,9 @@ type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPar
 
 export type NitroPreset = NitroConfig | (() => NitroConfig)
 
-export interface NitroConfig extends DeepPartial<NitroOptions> {
+export interface NitroConfig extends DeepPartial<Omit<NitroOptions, 'routes'>> {
   extends?: string | string[] | NitroPreset
-}
-
-export interface NitroRouteOptions {
-  swr?: boolean | number
-  static?: boolean
-  redirect?: string | { to: string, statusCode?: 301 | 302 | 307 | 308 }
-  headers?: Record<string, string>
-  cors?: boolean
+  routes?: { [path: string]: NitroRouteConfig }
 }
 
 export interface PublicAssetDir {
@@ -93,6 +87,25 @@ export interface DevServerOptions {
 export interface CompressOptions {
   gzip?: boolean
   brotli?: boolean
+}
+
+type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc['length']]>
+type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>
+type HTTPStatusCode = IntRange<100, 600>
+
+export interface NitroRouteConfig {
+  cache?: Exclude<CacheOptions, 'getKey' | 'transform'>
+  headers?: Record<string, string>
+  redirect?: string | { to: string, statusCode?: HTTPStatusCode }
+
+  // Shortcuts
+  cors?: boolean
+  swr?: boolean | number
+  static?: boolean | number
+}
+
+export interface NitroRouteOptions extends Omit<NitroRouteConfig, 'redirect' | 'cors' | 'swr' | 'static'> {
+  redirect?: { to: string, statusCode: HTTPStatusCode }
 }
 
 export interface NitroOptions extends PresetOptions {

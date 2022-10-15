@@ -82,34 +82,23 @@ function generateBuildConfig (nitro: Nitro) {
         )
     ),
     routes: [
-      ...Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect || value.headers || value.cors).map(([key, value]) => {
-        let route = {
-          src: key.replace('/**', '/.*')
-        }
-        if (value.redirect) {
-          const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
-          route = defu(route, {
-            status: redirect.statusCode || 307,
-            headers: { Location: redirect.to }
-          })
-        }
-        if (value.cors) {
-          route = defu(route, {
-            headers: {
-              'access-control-allow-origin': '*',
-              'access-control-allowed-methods': '*',
-              'access-control-allow-headers': '*',
-              'access-control-max-age': '0'
-            }
-          })
-        }
-        if (value.headers) {
-          route = defu(route, {
-            headers: value.headers
-          })
-        }
-        return route
-      }),
+      ...Object.entries(nitro.options.routes)
+        .filter(([_, routeOptions]) => routeOptions.redirect || routeOptions.headers)
+        .map(([path, routeOptions]) => {
+          let route = {
+            src: path.replace('/**', '/.*')
+          }
+          if (routeOptions.redirect) {
+            route = defu(route, {
+              status: routeOptions.redirect.statusCode,
+              headers: { Location: routeOptions.redirect.to }
+            })
+          }
+          if (routeOptions.headers) {
+            route = defu(route, { headers: routeOptions.headers })
+          }
+          return route
+        }),
       ...nitro.options.publicAssets
         .filter(asset => !asset.fallthrough)
         .map(asset => asset.baseURL)

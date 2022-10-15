@@ -41,9 +41,10 @@ function createNitroApp (): NitroApp {
 
     // Wrap matching handlers for caching route options
     const routeOptions = getRouteOptionsForPath(h.route.replace(/:\w+|\*\*/g, '_'))
-    if (routeOptions.swr) {
+    if (routeOptions.cache) {
       handler = cachedEventHandler(handler, {
-        group: 'nitro/routes'
+        group: 'nitro/routes',
+        ...routeOptions.cache
       })
     }
 
