@@ -95,7 +95,7 @@
     "serve-placeholder": "^2.0.1",
     "serve-static": "^1.15.0",
     "source-map-support": "^0.5.21",
-    "std-env": "^3.2.1",
+    "std-env": "^3.3.0",
     "ufo": "^0.8.5",
     "unenv": "^0.6.2",
     "unimport": "^0.6.8",

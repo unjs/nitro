@@ -7,6 +7,12 @@ description: 'Discover Cleavr preset for Nitro!'
 
 **Preset:** `cleavr` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
+::alert
+**Zero Config Provider**
+:br
+Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+::
+
 Nitro provides a built-in preset to generate output format compatible with [Cleavr.io](https://cleavr.io/).
 
 ## Set up your web app

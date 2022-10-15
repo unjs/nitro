@@ -70,7 +70,8 @@ const autodetectableProviders = {
   cloudflare_pages: 'cloudflare_pages',
   netlify: 'netlify',
   stormkit: 'stormkit',
-  vercel: 'vercel'
+  vercel: 'vercel',
+  cleavr: 'cleavr'
 }
 
 export function detectTarget () {
