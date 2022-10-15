@@ -51,7 +51,7 @@ describe('nitro:preset:vercel', async () => {
             "headers": {
               "access-control-allow-headers": "*",
               "access-control-allow-origin": "*",
-              "access-control-allowed-methods": "*",
+              "access-control-allowed-methods": "GET",
               "access-control-max-age": "0",
             },
             "src": "/rules/cors",
