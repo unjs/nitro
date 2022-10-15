@@ -3,13 +3,14 @@ import { Server as HttpServer } from 'http'
 import type { AddressInfo } from 'net'
 import { Server as HttpsServer } from 'https'
 import destr from 'destr'
+import { toNodeListener } from 'h3'
 import { nitroApp } from '../app'
 import { useRuntimeConfig } from '#internal/nitro'
 
 const cert = process.env.NITRO_SSL_CERT
 const key = process.env.NITRO_SSL_KEY
 
-const server = cert && key ? new HttpsServer({ key, cert }, nitroApp.h3App.nodeHandler) : new HttpServer(nitroApp.h3App.nodeHandler)
+const server = cert && key ? new HttpsServer({ key, cert }, toNodeListener(nitroApp.h3App)) : new HttpServer(toNodeListener(nitroApp.h3App))
 
 const port = (destr(process.env.NITRO_PORT || process.env.PORT) || 3000) as number
 const host = process.env.NITRO_HOST || process.env.HOST

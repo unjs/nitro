@@ -1,7 +1,8 @@
 import '#internal/nitro/virtual/polyfill'
+import { toNodeListener } from 'h3'
 import { nitroApp } from '../app'
 
-export const handler = nitroApp.h3App.nodeHandler
+export const listener = toNodeListener(nitroApp.h3App)
 
 if (process.env.DEBUG) {
   process.on('unhandledRejection', err => console.error('[nitro] [dev] [unhandledRejection]', err))
