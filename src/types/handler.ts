@@ -1,4 +1,4 @@
-import type { EventHandler, NodeMiddleware, H3Event, H3Error } from 'h3'
+import type { EventHandler, H3Event, H3Error } from 'h3'
 
 export interface NitroEventHandler {
   /**
