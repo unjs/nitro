@@ -5,9 +5,10 @@ import { join } from 'path'
 import { mkdirSync } from 'fs'
 import { threadId, parentPort } from 'worker_threads'
 import { isWindows, provider } from 'std-env'
+import { toNodeListener } from 'h3'
 import { nitroApp } from '../app'
 
-const server = new Server(nitroApp.h3App.nodeHandler)
+const server = new Server(toNodeListener(nitroApp.h3App))
 
 function getAddress () {
   if (provider === 'stackblitz' || process.env.NITRO_NO_UNIX_SOCKET) {

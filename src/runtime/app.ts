@@ -1,4 +1,4 @@
-import { App as H3App, createApp, createRouter, eventHandler, lazyEventHandler, Router, sendRedirect, setHeaders } from 'h3'
+import { App as H3App, createApp, createRouter, eventHandler, lazyEventHandler, Router, sendRedirect, setHeaders, toNodeListener } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
 import { createRouter as createMatcher } from 'radix3'
@@ -77,7 +77,7 @@ function createNitroApp (): NitroApp {
 
   h3App.use(config.app.baseURL, router)
 
-  const localCall = createCall(h3App.nodeHandler as any)
+  const localCall = createCall(toNodeListener(h3App) as any)
   const localFetch = createLocalFetch(localCall, globalThis.fetch)
 
   const $fetch = createFetch({ fetch: localFetch, Headers, defaults: { baseURL: config.app.baseURL } })

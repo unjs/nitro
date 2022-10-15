@@ -21,6 +21,9 @@ describe('nitro:preset:vercel', async () => {
     expect(config).toMatchInlineSnapshot(`
       {
         "overrides": {
+          "api/hey/index.html": {
+            "path": "api/hey",
+          },
           "api/param/foo.json/index.html": {
             "path": "api/param/foo.json",
           },
