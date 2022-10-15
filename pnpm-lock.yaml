@@ -49,7 +49,7 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
-      h3: ^0.8.0
+      h3: ^0.8.1
       hookable: ^5.4.1
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -68,10 +68,10 @@ importers:
       perfect-debounce: ^0.1.3
       pkg-types: ^0.3.5
       pretty-bytes: ^6.0.0
-      radix3: ^0.2.0
+      radix3: ^0.2.1
       rollup: ^2.79.1
       rollup-plugin-terser: ^7.0.2
-      rollup-plugin-visualizer: ^5.8.2
+      rollup-plugin-visualizer: ^5.8.3
       scule: ^0.3.2
       semver: ^7.3.8
       serve-placeholder: ^2.0.1
@@ -79,8 +79,8 @@ importers:
       source-map-support: ^0.5.21
       std-env: ^3.3.0
       typescript: ^4.8.4
-      ufo: ^0.8.5
-      unbuild: ^0.9.2
+      ufo: ^0.8.6
+      unbuild: ^0.9.4
       unenv: ^0.6.2
       unimport: ^0.6.8
       unstorage: ^0.5.6
@@ -112,7 +112,7 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
-      h3: 0.8.0
+      h3: 0.8.1
       hookable: 5.4.1
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -130,17 +130,17 @@ importers:
       perfect-debounce: 0.1.3
       pkg-types: 0.3.5
       pretty-bytes: 6.0.0
-      radix3: 0.2.0
+      radix3: 0.2.1
       rollup: 2.79.1
       rollup-plugin-terser: 7.0.2_rollup@2.79.1
-      rollup-plugin-visualizer: 5.8.2_rollup@2.79.1
+      rollup-plugin-visualizer: 5.8.3_rollup@2.79.1
       scule: 0.3.2
       semver: 7.3.8
       serve-placeholder: 2.0.1
       serve-static: 1.15.0
       source-map-support: 0.5.21
       std-env: 3.3.0
-      ufo: 0.8.5
+      ufo: 0.8.6
       unenv: 0.6.2
       unimport: 0.6.8
       unstorage: 0.5.6
@@ -163,7 +163,7 @@ importers:
       expect-type: 0.14.2
       miniflare: 2.10.0
       typescript: 4.8.4
-      unbuild: 0.9.2
+      unbuild: 0.9.4
       vitest: 0.24.3
 
   examples/api-routes:
@@ -1249,20 +1249,6 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.36.1
       eslint-visitor-keys: 3.3.0
-    dev: true
-
-  /@unjsio/rollup-plugin-dts/5.0.0-rc.1_em67h3dl2s4tcthxg4ia4iozly:
-    resolution: {integrity: sha512-ygcyY5+1PfKjxO6mNlfFWrA1hv9GaMIJMppL+zKqp1zRsDag9jmf7D3isnRWiiE0DSlBHjGGCiKFZ5c5XcWzTA==}
-    engines: {node: '>=v14'}
-    peerDependencies:
-      rollup: ^3.0.0
-      typescript: ^4.1
-    dependencies:
-      magic-string: 0.26.7
-      rollup: 3.2.0
-      typescript: 4.8.4
-    optionalDependencies:
-      '@babel/code-frame': 7.18.6
     dev: true
 
   /@vercel/nft/0.22.1:
@@ -3183,16 +3169,16 @@ packages:
       cookie-es: 0.5.0
       destr: 1.1.1
       radix3: 0.1.2
-      ufo: 0.8.5
+      ufo: 0.8.6
     dev: false
 
-  /h3/0.8.0:
-    resolution: {integrity: sha512-0LEzRjCphn5N3HQmafNOiie+A1saU2QIE6AkH4vpFnER+TsfL32kIX57m6Ye8EdaFaaNDpbWDJwbr4x8Q5mIRA==}
+  /h3/0.8.1:
+    resolution: {integrity: sha512-HWTShxx4RKpse3f2h5KOWTEAIZLKq9SHWaVBZkOhBH+fH8uRGYY1iNO7VDwImFwARtR/Pg+bVI8feXX9NIdQRQ==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.1.1
-      radix3: 0.2.0
-      ufo: 0.8.5
+      radix3: 0.2.1
+      ufo: 0.8.6
     dev: false
 
   /has-bigints/1.0.2:
@@ -3661,7 +3647,7 @@ packages:
       get-port-please: 2.6.1
       http-shutdown: 1.2.2
       selfsigned: 2.0.1
-      ufo: 0.8.5
+      ufo: 0.8.6
     dev: false
 
   /listhen/0.3.4:
@@ -3674,7 +3660,7 @@ packages:
       http-shutdown: 1.2.2
       ip-regex: 5.0.0
       node-forge: 1.3.1
-      ufo: 0.8.5
+      ufo: 0.8.6
     dev: false
 
   /local-pkg/0.4.2:
@@ -3940,7 +3926,7 @@ packages:
       acorn: 8.8.0
       pathe: 0.3.9
       pkg-types: 0.3.5
-      ufo: 0.8.5
+      ufo: 0.8.6
 
   /mri/1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -4101,7 +4087,7 @@ packages:
     dependencies:
       destr: 1.1.1
       node-fetch-native: 0.1.7
-      ufo: 0.8.5
+      ufo: 0.8.6
       undici: 5.10.0
     dev: false
 
@@ -4352,8 +4338,8 @@ packages:
     resolution: {integrity: sha512-Mpfd/OuX0zoJ6ojLD/RTOHvJPg6e6PjINtmYzV87kIXc5iUtDz34i7gg4SV4XjqRJTmSiYO/g9i/mKWGf4z8wg==}
     dev: false
 
-  /radix3/0.2.0:
-    resolution: {integrity: sha512-31LEskiJwlPK3rbEacXdPs7+MezZ+f7SnmJsvDhmhxcrP54IAawgMrR128V3x6JAXiHok/mwCF6UySl+nk7Otw==}
+  /radix3/0.2.1:
+    resolution: {integrity: sha512-FnhArTl5Tq7dodiLeSPKrDUyCQuJqEncP8cKdyy399g8F/cz7GH6FmzA3Rkosu2IZMkpswFFwXfb2ERSiL06pg==}
     dev: false
 
   /randombytes/2.1.0:
@@ -4485,6 +4471,20 @@ packages:
     dependencies:
       glob: 7.2.0
 
+  /rollup-plugin-dts/5.0.0_em67h3dl2s4tcthxg4ia4iozly:
+    resolution: {integrity: sha512-OO8ayCvuJCKaQSShyVTARxGurVVk4ulzbuvz+0zFd1f93vlnWFU5pBMT7HFeS6uj7MvvZLx4kUAarGATSU1+Ng==}
+    engines: {node: '>=v14'}
+    peerDependencies:
+      rollup: ^3.0.0
+      typescript: ^4.1
+    dependencies:
+      magic-string: 0.26.7
+      rollup: 3.2.0
+      typescript: 4.8.4
+    optionalDependencies:
+      '@babel/code-frame': 7.18.6
+    dev: true
+
   /rollup-plugin-terser/7.0.2_rollup@2.79.1:
     resolution: {integrity: sha512-w3iIaU4OxcF52UUXiZNsNeuXIMDvFrr+ZXK6bFZ0Q60qyVfq4uLptoS4bbq3paG3x216eQllFZX7zt6TIImguQ==}
     peerDependencies:
@@ -4497,12 +4497,12 @@ packages:
       terser: 5.13.1
     dev: false
 
-  /rollup-plugin-visualizer/5.8.2_rollup@2.79.1:
-    resolution: {integrity: sha512-Fh7KoAa7FVVOojmyyX9ro7fBSR7mPG2cgfDbA877HM4IeJJtSZO+I/R3h/u6TB8wVP5J4pXPpTaRMSREyqCS3g==}
+  /rollup-plugin-visualizer/5.8.3_rollup@2.79.1:
+    resolution: {integrity: sha512-QGJk4Bqe4AOat5AjipOh8esZH1nck5X2KFpf4VytUdSUuuuSwvIQZjMGgjcxe/zXexltqaXp5Vx1V3LmnQH15Q==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
-      rollup: ^2.0.0
+      rollup: 2.x || 3.x
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -5032,8 +5032,8 @@ packages:
     hasBin: true
     dev: true
 
-  /ufo/0.8.5:
-    resolution: {integrity: sha512-e4+UtA5IRO+ha6hYklwj6r7BjiGMxS0O+UaSg9HbaTefg4kMkzj4tXzEBajRR+wkxf+golgAWKzLbytCUDMJAA==}
+  /ufo/0.8.6:
+    resolution: {integrity: sha512-fk6CmUgwKCfX79EzcDQQpSCMxrHstvbLswFChHS0Vump+kFkw7nJBfTZoC1j0bOGoY9I7R3n2DGek5ajbcYnOw==}
 
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -5044,8 +5044,8 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: true
 
-  /unbuild/0.9.2:
-    resolution: {integrity: sha512-DQeN06/+V7JIOC3i0sTDYB6spRsTLuE0tdld2y0tXMvbzIEl+oEGL6JaIjVcjQ3CF9j2CqfVvLAXiPe2ZoZePA==}
+  /unbuild/0.9.4:
+    resolution: {integrity: sha512-IkKPqzazcCNfwTSs5bDRS2bOvg1Zh9gPYQq/ruVarCoM4f7KXclSrcb0jyJiSU/5qhakZ8K5B2CzwX4ZaaVKdQ==}
     hasBin: true
     dependencies:
       '@rollup/plugin-alias': 4.0.0_rollup@3.2.0
@@ -5054,7 +5054,6 @@ packages:
       '@rollup/plugin-node-resolve': 15.0.0_rollup@3.2.0
       '@rollup/plugin-replace': 5.0.0_rollup@3.2.0
       '@rollup/pluginutils': 5.0.1_rollup@3.2.0
-      '@unjsio/rollup-plugin-dts': 5.0.0-rc.1_em67h3dl2s4tcthxg4ia4iozly
       chalk: 5.1.2
       consola: 2.15.3
       defu: 6.1.0
@@ -5072,6 +5071,7 @@ packages:
       pretty-bytes: 6.0.0
       rimraf: 3.0.2
       rollup: 3.2.0
+      rollup-plugin-dts: 5.0.0_em67h3dl2s4tcthxg4ia4iozly
       scule: 0.3.2
       typescript: 4.8.4
       untyped: 0.5.0
@@ -5137,7 +5137,7 @@ packages:
       listhen: 0.2.15
       mri: 1.2.0
       ohmyfetch: 0.4.19
-      ufo: 0.8.5
+      ufo: 0.8.6
       ws: 8.8.1
     transitivePeerDependencies:
       - bufferutil
