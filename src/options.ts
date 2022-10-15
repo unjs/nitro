@@ -9,7 +9,7 @@ import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest, isDebug } from 'std-env'
 import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
-import type { NitroConfig, NitroOptions } from './types'
+import type { NitroConfig, NitroOptions, NitroRouteConfig, NitroRouteOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
 import * as PRESETS from './presets'
 import { nitroImports } from './imports'
@@ -183,18 +183,47 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     })
   }
 
-  // Normalize route rules
-  for (const rule of Object.values(options.routes)) {
-    if (rule.cors) {
-      rule.headers = {
+  // Normalize route rules (NitroRouteConfig => NitroRouteOptions)
+  const routes: { [p: string]: NitroRouteOptions } = {}
+  for (const path in options.routes) {
+    const routeConfig = options.routes[path] as NitroRouteConfig
+    const routeOptions: NitroRouteOptions = {
+      ...routeConfig,
+      redirect: undefined
+    }
+    // Redirect
+    if (routeConfig.redirect) {
+      routeOptions.redirect = {
+        statusCode: 307,
+        ...(typeof routeConfig.redirect === 'string' ? { to: routeConfig.redirect } : routeConfig.redirect)
+      }
+    }
+    // CORS
+    if (routeConfig.cors) {
+      routeOptions.headers = {
         'access-control-allow-origin': '*',
         'access-control-allowed-methods': '*',
         'access-control-allow-headers': '*',
         'access-control-max-age': '0',
-        ...rule.headers
+        ...routeOptions.headers
       }
     }
+    // Cache: swr
+    if (routeConfig.swr) {
+      routeOptions.cache = routeOptions.cache || {}
+      routeOptions.cache.swr = true
+      if (typeof routeConfig.swr === 'number') {
+        routeOptions.cache.maxAge = routeConfig.swr
+      }
+    }
+    // Cache: static
+    if (routeConfig.static) {
+      routeOptions.cache = routeOptions.cache || {}
+      routeOptions.cache.static = true
+    }
+    routes[path] = routeOptions
   }
+  options.routes = routes
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {

@@ -81,15 +81,18 @@ async function writeRedirects (nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, '_redirects')
   let contents = '/* /.netlify/functions/server 200'
 
-  // Rewrite SWR and static paths to builder functions
-  for (const [key] of Object.entries(nitro.options.routes).filter(([_, value]) => value.swr || value.static)) {
+  // Rewrite static cached paths to builder functions
+  for (const [key] of Object.entries(nitro.options.routes)
+    .filter(([_, routeOptions]) => routeOptions.cache?.static || routeOptions.cache?.swr)
+  ) {
     contents = `${key.replace('/**', '/*')}\t/.netlify/builders/server 200\n` + contents
   }
 
-  for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.redirect)) {
-    const redirect = typeof value.redirect === 'string' ? { to: value.redirect } : value.redirect
-    // TODO: update to 307 when netlify support 307/308
-    contents = `${key.replace('/**', '/*')}\t${redirect.to}\t${redirect.statusCode || 301}\n` + contents
+  for (const [key, routeOptions] of Object.entries(nitro.options.routes).filter(([_, routeOptions]) => routeOptions.redirect)) {
+    // TODO: Remove map when netlify support 307/308
+    let code = routeOptions.redirect.statusCode
+    code = ({ 307: 302, 308: 301 })[code] || code
+    contents = `${key.replace('/**', '/*')}\t${routeOptions.redirect.to}\t${code}\n` + contents
   }
 
   if (existsSync(redirectsPath)) {
@@ -109,10 +112,11 @@ async function writeHeaders (nitro: Nitro) {
   const headersPath = join(nitro.options.output.publicDir, '_headers')
   let contents = ''
 
-  for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.cors || value.headers)) {
+  for (const [path, routeOptions] of Object.entries(nitro.options.routes)
+    .filter(([_, routeOptions]) => routeOptions.headers)) {
     const headers = [
-      key.replace('/**', '/*'),
-      ...Object.entries({ ...value.headers }).map(([header, value]) => `  ${header}: ${value}`)
+      path.replace('/**', '/*'),
+      ...Object.entries({ ...routeOptions.headers }).map(([header, value]) => `  ${header}: ${value}`)
     ].join('\n')
 
     contents += headers + '\n'

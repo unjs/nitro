@@ -33,10 +33,10 @@ describe('nitro:preset:netlify', async () => {
     const redirects = await fsp.readFile(resolve(ctx.rootDir, 'dist/_redirects'), 'utf-8')
     /* eslint-disable no-tabs */
     expect(redirects).toMatchInlineSnapshot(`
-      "/rules/nested/override	/other	301
-      /rules/nested/*	/base	301
-      /rules/redirect/obj	https://nitro.unjs.io/	308
-      /rules/redirect	/base	301
+      "/rules/nested/override	/other	302
+      /rules/nested/*	/base	302
+      /rules/redirect/obj	https://nitro.unjs.io/	301
+      /rules/redirect	/base	302
       /rules/static	/.netlify/builders/server 200
       /* /.netlify/functions/server 200"
     `)
