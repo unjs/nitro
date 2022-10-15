@@ -17,7 +17,6 @@ export function createRouteOptionsHandler () {
     }
     // Apply redirect options
     if (routeOptions.redirect) {
-      // @ts-ignore
       return sendRedirect(event, routeOptions.redirect.to, routeOptions.redirect.statusCode)
     }
   })
