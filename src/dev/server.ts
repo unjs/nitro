@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
-import { App, createApp, eventHandler, fromNodeMiddleware, H3Error, isEventHandler, toNodeListener } from 'h3'
+import { App, createApp, eventHandler, fromNodeMiddleware, H3Error, toNodeListener } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
