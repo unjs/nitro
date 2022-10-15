@@ -66,16 +66,12 @@ export interface NitroConfig extends DeepPartial<NitroOptions> {
   extends?: string | string[] | NitroPreset
 }
 
-export interface NitroRouteOption {
+export interface NitroRouteOptions {
   swr?: boolean | number
   static?: boolean
   redirect?: string | { to: string, statusCode?: 301 | 302 | 307 | 308 }
   headers?: Record<string, string>
   cors?: boolean
-}
-
-export interface NitroRoutesOptions {
-  [path: string]: NitroRouteOption
 }
 
 export interface PublicAssetDir {
@@ -111,10 +107,6 @@ export interface NitroOptions extends PresetOptions {
     app: {
       baseURL: string
     },
-    nitro: {
-      /** @deprecated Use top-level routes option! */
-      routes: NitroRoutesOptions
-    }
     [key: string]: any
   }
 
@@ -159,7 +151,7 @@ export interface NitroOptions extends PresetOptions {
   // Routing
   baseURL: string,
   handlers: NitroEventHandler[]
-  routes: NitroRoutesOptions
+  routes: { [path: string]: NitroRouteOptions }
   devHandlers: NitroDevEventHandler[]
   errorHandler: string
   devErrorHandler: NitroErrorHandler

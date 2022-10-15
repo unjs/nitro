@@ -1,9 +1,10 @@
-import { App as H3App, createApp, createRouter, eventHandler, lazyEventHandler, Router, sendRedirect, setHeaders, toNodeListener } from 'h3'
+import { App as H3App, createApp, createRouter, eventHandler, H3Event, lazyEventHandler, Router, sendRedirect, setHeaders, toNodeListener } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
-import { createRouter as createMatcher } from 'radix3'
+import { createRouter as createRadixRouter, toRouteMatcher } from 'radix3'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { createHooks, Hookable } from 'hookable'
+import { NitroRouteOptions } from '../types'
 import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
@@ -34,12 +35,29 @@ function createNitroApp (): NitroApp {
 
   const router = createRouter()
 
-  const routerOptions = createMatcher({ routes: config.nitro.routes })
+  const _routeOptionsMatcher = toRouteMatcher(createRadixRouter({ routes: config.nitro.routes }))
+  const getRouteOptionsForPath = (path: string) => {
+    const routeOptions: NitroRouteOptions = {}
+    for (const rule of _routeOptionsMatcher.matchAll(path)) {
+      Object.assign(routeOptions, rule)
+    }
+    return routeOptions
+  }
+  const getRouteOptions = (event: H3Event) => {
+    event.context._nitro = event.context._nitro || {}
+    if (!event.context._nitro.routeOptions) {
+      const path = new URL(event.req.url, 'http://localhost').pathname
+      event.context._nitro.routeOptions = getRouteOptionsForPath(path)
+    }
+    return event.context._nitro.routeOptions
+  }
 
+  // Apply route options to all requests
   h3App.use(eventHandler((event) => {
-    const routeOptions = routerOptions.lookup(event.req.url) || {}
-    // Share applicable route rules across handlers
-    event.context.routeOptions = routeOptions
+    // Match route options against path
+    const routeOptions = getRouteOptions(event)
+
+    // Apply CORS options
     if (routeOptions.cors) {
       setHeaders(event, {
         'access-control-allow-origin': '*',
@@ -48,19 +66,25 @@ function createNitroApp (): NitroApp {
         'access-control-max-age': '0'
       })
     }
+
+    // Apply headers options
     if (routeOptions.headers) {
       setHeaders(event, routeOptions.headers)
     }
+    // Apply redirect options
     if (routeOptions.redirect) {
-      return sendRedirect(event, routeOptions.redirect.to || routeOptions.redirect, routeOptions.redirect.statusCode || 307)
+      if (typeof routeOptions.redirect === 'string') {
+        routeOptions.redirect = { to: routeOptions.redirect }
+      }
+      return sendRedirect(event, routeOptions.redirect.to, routeOptions.redirect.statusCode || 307)
     }
   }))
 
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler
 
-    const referenceRoute = h.route.replace(/:\w+|\*\*/g, '_')
-    const routeOptions = routerOptions.lookup(referenceRoute) || {}
+    // Apply SWR route options to matching handlers
+    const routeOptions = getRouteOptionsForPath(h.route.replace(/:\w+|\*\*/g, '_'))
     if (routeOptions.swr) {
       handler = cachedEventHandler(handler, {
         group: 'nitro/routes'

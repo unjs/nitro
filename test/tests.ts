@@ -136,8 +136,7 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
   it('handles route rules - allowing overriding', async () => {
     const override = await callHandler({ url: '/rules/nested/override' })
     expect(override.headers.location).toBe('/other')
-    // TODO: allow merging?
-    // expect(override.headers['x-test']).toBe('test')
+    expect(override.headers['x-test']).toBe('test')
 
     const base = await callHandler({ url: '/rules/nested/base' })
     expect(base.headers.location).toBe('/base')
