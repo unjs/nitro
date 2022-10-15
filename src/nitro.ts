@@ -28,8 +28,7 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   nitro.hooks.hook('close', async () => { await nitro.storage.dispose() })
 
   if (nitro.options.debug) {
-    // @ts-expect-error remove in next version of hookable
-    createDebugger(nitro.hooks, { tag: 'nitro build' })
+    createDebugger(nitro.hooks, { tag: 'nitro' })
     nitro.options.plugins.push('#internal/nitro/debug')
   }
 
