@@ -49,7 +49,7 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
-      h3: ^0.7.21
+      h3: ^0.8.0
       hookable: ^5.4.1
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -112,7 +112,7 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
-      h3: 0.7.21
+      h3: 0.8.0
       hookable: 5.4.1
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -3183,6 +3183,15 @@ packages:
       cookie-es: 0.5.0
       destr: 1.1.1
       radix3: 0.1.2
+      ufo: 0.8.5
+    dev: false
+
+  /h3/0.8.0:
+    resolution: {integrity: sha512-0LEzRjCphn5N3HQmafNOiie+A1saU2QIE6AkH4vpFnER+TsfL32kIX57m6Ye8EdaFaaNDpbWDJwbr4x8Q5mIRA==}
+    dependencies:
+      cookie-es: 0.5.0
+      destr: 1.1.1
+      radix3: 0.2.0
       ufo: 0.8.5
     dev: false
 
