@@ -1,12 +1,12 @@
-import { App as H3App, createApp, createRouter, eventHandler, lazyEventHandler, Router, sendRedirect, setHeaders, toNodeListener } from 'h3'
+import { App as H3App, createApp, createRouter, lazyEventHandler, Router, toNodeListener } from 'h3'
 import { createFetch, Headers } from 'ohmyfetch'
 import destr from 'destr'
-import { createRouter as createMatcher } from 'radix3'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { createHooks, Hookable } from 'hookable'
 import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
+import { createRouteOptionsHandler, getRouteOptionsForPath } from './route-options'
 import { plugins } from '#internal/nitro/virtual/plugins'
 import errorHandler from '#internal/nitro/virtual/error-handler'
 import { handlers } from '#internal/nitro/virtual/server-handlers'
@@ -34,33 +34,13 @@ function createNitroApp (): NitroApp {
 
   const router = createRouter()
 
-  const routerOptions = createMatcher({ routes: config.nitro.routes })
-
-  h3App.use(eventHandler((event) => {
-    const routeOptions = routerOptions.lookup(event.req.url) || {}
-    // Share applicable route rules across handlers
-    event.context.routeOptions = routeOptions
-    if (routeOptions.cors) {
-      setHeaders(event, {
-        'access-control-allow-origin': '*',
-        'access-control-allowed-methods': '*',
-        'access-control-allow-headers': '*',
-        'access-control-max-age': '0'
-      })
-    }
-    if (routeOptions.headers) {
-      setHeaders(event, routeOptions.headers)
-    }
-    if (routeOptions.redirect) {
-      return sendRedirect(event, routeOptions.redirect.to || routeOptions.redirect, routeOptions.redirect.statusCode || 307)
-    }
-  }))
+  h3App.use(createRouteOptionsHandler())
 
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler
 
-    const referenceRoute = h.route.replace(/:\w+|\*\*/g, '_')
-    const routeOptions = routerOptions.lookup(referenceRoute) || {}
+    // Wrap matching handlers for caching route options
+    const routeOptions = getRouteOptionsForPath(h.route.replace(/:\w+|\*\*/g, '_'))
     if (routeOptions.swr) {
       handler = cachedEventHandler(handler, {
         group: 'nitro/routes'
