@@ -112,17 +112,7 @@ async function writeHeaders (nitro: Nitro) {
   for (const [key, value] of Object.entries(nitro.options.routes).filter(([_, value]) => value.cors || value.headers)) {
     const headers = [
       key.replace('/**', '/*'),
-      ...Object.entries({
-        ...value.cors
-          ? {
-              'access-control-allow-origin': '*',
-              'access-control-allowed-methods': '*',
-              'access-control-allow-headers': '*',
-              'access-control-max-age': '0'
-            }
-          : {},
-        ...value.headers || {}
-      }).map(([header, value]) => `  ${header}: ${value}`)
+      ...Object.entries({ ...value.headers }).map(([header, value]) => `  ${header}: ${value}`)
     ].join('\n')
 
     contents += headers + '\n'

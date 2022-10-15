@@ -93,16 +93,6 @@ function generateBuildConfig (nitro: Nitro) {
             headers: { Location: redirect.to }
           })
         }
-        if (value.cors) {
-          route = defu(route, {
-            headers: {
-              'access-control-allow-origin': '*',
-              'access-control-allowed-methods': '*',
-              'access-control-allow-headers': '*',
-              'access-control-max-age': '0'
-            }
-          })
-        }
         if (value.headers) {
           route = defu(route, {
             headers: value.headers

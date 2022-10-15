@@ -183,6 +183,19 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     })
   }
 
+  // Normalize route rules
+  for (const rule of Object.values(options.routes)) {
+    if (rule.cors) {
+      rule.headers = {
+        ...rule.headers,
+        'access-control-allow-origin': '*',
+        'access-control-allowed-methods': '*',
+        'access-control-allow-headers': '*',
+        'access-control-max-age': '0'
+      }
+    }
+  }
+
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
     app: {

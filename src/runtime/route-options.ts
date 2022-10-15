@@ -10,17 +10,6 @@ export function createRouteOptionsHandler () {
   return eventHandler((event) => {
     // Match route options against path
     const routeOptions = getRouteOptions(event)
-
-    // Apply CORS options
-    if (routeOptions.cors) {
-      setHeaders(event, {
-        'access-control-allow-origin': '*',
-        'access-control-allowed-methods': '*',
-        'access-control-allow-headers': '*',
-        'access-control-max-age': '0'
-      })
-    }
-
     // Apply headers options
     if (routeOptions.headers) {
       setHeaders(event, routeOptions.headers)
