@@ -194,6 +194,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     // Redirect
     if (routeConfig.redirect) {
       routeOptions.redirect = {
+        to: '/',
         statusCode: 307,
         ...(typeof routeConfig.redirect === 'string' ? { to: routeConfig.redirect } : routeConfig.redirect)
       }
