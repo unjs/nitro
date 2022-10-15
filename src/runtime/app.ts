@@ -77,7 +77,7 @@ function createNitroApp (): NitroApp {
 
   h3App.use(config.app.baseURL, router)
 
-  const localCall = createCall(toNodeListener(h3App.handler) as any)
+  const localCall = createCall(toNodeListener(h3App) as any)
   const localFetch = createLocalFetch(localCall, globalThis.fetch)
 
   const $fetch = createFetch({ fetch: localFetch, Headers, defaults: { baseURL: config.app.baseURL } })
