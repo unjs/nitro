@@ -11,7 +11,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions, NitroRouteConfig, NitroRouteOptions } from './types'
 import { runtimeDir, pkgDir } from './dirs'
-import * as PRESETS from './presets'
+import * as _PRESETS from './presets'
 import { nitroImports } from './imports'
 
 const NitroDefaults: NitroConfig = {
@@ -110,17 +110,17 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     },
     defaults: NitroDefaults,
     resolve (id: string) {
-      type PT = Map<String, NitroConfig>
-      let matchedPreset = (PRESETS as any as PT)[id] || (PRESETS as any as PT)[camelCase(id)]
-      if (matchedPreset) {
-        if (typeof matchedPreset === 'function') {
-          matchedPreset = matchedPreset()
-        }
-        return {
-          config: matchedPreset
-        }
+      const presets = _PRESETS as any as Map<String, NitroConfig>
+      let matchedPreset = presets[camelCase(id)] || presets[id]
+      if (!matchedPreset) {
+        return null
       }
-      return null
+      if (typeof matchedPreset === 'function') {
+        matchedPreset = matchedPreset()
+      }
+      return {
+        config: matchedPreset
+      }
     }
   })
   const options = klona(config) as NitroOptions
