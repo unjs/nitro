@@ -1,10 +1,10 @@
-import type { CompatibilityEventHandler, LazyEventHandler, RouterMethod } from 'h3'
+import type { H3EventHandler, LazyEventHandler, RouterMethod } from 'h3'
 
 type HandlerDefinition = {
   route: string
   lazy?: boolean
   middleware?: boolean
-  handler: CompatibilityEventHandler
+  handler: H3EventHandler
   method?: RouterMethod
 } & {
   lazy: true
