@@ -104,6 +104,7 @@ export interface NitroOptions extends PresetOptions {
   _config: NitroConfig
 
   // General
+  debug: boolean
   preset: string
   logLevel: LogLevel
   runtimeConfig: {

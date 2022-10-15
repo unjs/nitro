@@ -6,7 +6,7 @@ import { defu } from 'defu'
 import { resolveModuleExportNames, resolvePath as resovleModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
-import { isTest } from 'std-env'
+import { isTest, isDebug } from 'std-env'
 import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions } from './types'
@@ -16,6 +16,7 @@ import { nitroImports } from './imports'
 
 const NitroDefaults: NitroConfig = {
   // General
+  debug: isDebug,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
 
