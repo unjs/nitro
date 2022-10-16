@@ -11,6 +11,10 @@ import { compressPublicAssets } from './compress'
 const allowedExtensions = new Set(['', '.json'])
 
 export async function prerender (nitro: Nitro) {
+  if (nitro.options.noPublicDir) {
+    console.warn('[nitro] Skipping prerender since `noPublicDir` option is enabled.')
+    return
+  }
   // Skip if no prerender routes specified
   const routes = new Set(nitro.options.prerender.routes)
   if (nitro.options.prerender.crawlLinks && !routes.size) {

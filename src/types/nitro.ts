@@ -142,6 +142,7 @@ export interface NitroOptions extends PresetOptions {
   timing: boolean
   renderer: string
   serveStatic: boolean
+  noPublicDir: boolean
   experimental?: {
     wasm?: boolean | RollupWasmOptions
   }

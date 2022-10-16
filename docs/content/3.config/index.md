@@ -73,6 +73,12 @@ Serve `public/` assets in production.
 
 **Note:** It is highly recommended that your edge CDN (nginx, apache, cloud) serves the `public/` directory instead.
 
+## `noPublicDir`
+
+- Default: `false`
+
+If enabled, disabled `.output/public` directory creation. Skipping to copy `public/` dir and also disables prerenderer.
+
 ## `publicAssets`
 
 Public asset directories to serve in development and bundle in production.
