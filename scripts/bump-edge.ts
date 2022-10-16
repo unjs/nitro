@@ -90,8 +90,6 @@ async function loadWorkspace (dir: string) {
 }
 
 async function main () {
-  await execaCommand('changelogen --bump', { stdio: 'inherit' })
-
   const workspace = await loadWorkspace(process.cwd())
 
   const commit = await execaCommand('git rev-parse --short HEAD').then(r => r.stdout.trim())
