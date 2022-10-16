@@ -1,7 +1,7 @@
 import type { InternalApi } from './fetch'
 
-type MatchResult<Key extends string, Exact extends boolean = false, Score extends any[] = []> = {
-  [k in Key]: { key: k, exact: Exact, score: Score }
+type MatchResult<Key extends string, Exact extends boolean = false, Score extends any[] = [], catchAll extends boolean = false> = {
+  [k in Key]: { key: k, exact: Exact, score: Score, catchAll: catchAll }
 }[Key]
 
 type Subtract<Minuend extends any[] = [], Subtrahend extends any[] = []> =
@@ -46,7 +46,9 @@ type _MatchedRoutes<
       ? Route extends MatchedKeys
         ? MatchResult<MatchedKeys, true> // exact match
         : MatchedKeys extends `${infer Root}/**${string}`
-          ? MatchResult<MatchedKeys, false, CalcMatchScore<Root, Route, [], true>> // glob match
+          ? MatchedKeys extends `${string}/**`
+            ? Route extends `${Root}/${string}` ? MatchResult<MatchedKeys, false, [], true> : never // catchAll match
+            : MatchResult<MatchedKeys, false, CalcMatchScore<Root, Route, [], true>> // glob match
           : MatchResult<MatchedKeys, false, CalcMatchScore<MatchedKeys, Route, [], true>> // partial match
       : never
     : never
@@ -58,5 +60,6 @@ export type MatchedRoutes<
  > = Route extends '/'
     ? keyof InternalApi // root middleware
     : Extract<Matches, { exact: true }> extends never
-      ? Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key'] // partial match and glob match
-      : Extract<Matches, { exact: true }>['key'] // exact
+      ? | Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key']
+        | Extract<Matches, { catchAll: true }>['key'] // partial, glob and catchAll matches
+      : Extract<Matches, { exact: true }>['key'] // exact matches
