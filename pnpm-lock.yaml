@@ -61,7 +61,7 @@ importers:
       miniflare: ^2.10.0
       mlly: ^0.5.16
       mri: ^1.2.0
-      node-fetch-native: ^0.1.7
+      node-fetch-native: ^0.1.8
       ohash: ^0.1.5
       ohmyfetch: ^0.4.19
       pathe: ^0.3.9
@@ -123,7 +123,7 @@ importers:
       mime: 3.0.0
       mlly: 0.5.16
       mri: 1.2.0
-      node-fetch-native: 0.1.7
+      node-fetch-native: 0.1.8
       ohash: 0.1.5
       ohmyfetch: 0.4.19
       pathe: 0.3.9
@@ -3956,8 +3956,8 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /node-fetch-native/0.1.7:
-    resolution: {integrity: sha512-hps7dFJM0IEF056JftDSSjWDAwW9v2clwHoUJiHyYgl+ojoqjKyWybljMlpTmlC1O+864qovNlRLyAIjRxu9Ag==}
+  /node-fetch-native/0.1.8:
+    resolution: {integrity: sha512-ZNaury9r0NxaT2oL65GvdGDy+5PlSaHTovT6JV5tOW07k1TQmgC0olZETa4C9KZg0+6zBr99ctTYa3Utqj9P/Q==}
     dev: false
 
   /node-fetch/2.6.7:
@@ -4086,7 +4086,7 @@ packages:
     resolution: {integrity: sha512-OH2xVeRPNsHkx+JFdq1ewe9EwVDfTrv6lsBHpIx8wIWXowP5FyLhhYVaXIVlPsW542rt7gmwK14FwIDWUXEO+Q==}
     dependencies:
       destr: 1.1.1
-      node-fetch-native: 0.1.7
+      node-fetch-native: 0.1.8
       ufo: 0.8.6
       undici: 5.10.0
     dev: false
@@ -5094,7 +5094,7 @@ packages:
     dependencies:
       defu: 6.1.0
       mime: 3.0.0
-      node-fetch-native: 0.1.7
+      node-fetch-native: 0.1.8
       pathe: 0.3.9
     dev: false
 

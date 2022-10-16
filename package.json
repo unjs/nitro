@@ -79,7 +79,7 @@
     "mime": "^3.0.0",
     "mlly": "^0.5.16",
     "mri": "^1.2.0",
-    "node-fetch-native": "^0.1.7",
+    "node-fetch-native": "^0.1.8",
     "ohash": "^0.1.5",
     "ohmyfetch": "^0.4.19",
     "pathe": "^0.3.9",
