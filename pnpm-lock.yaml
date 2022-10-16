@@ -57,6 +57,7 @@ importers:
       klona: ^2.0.6
       knitwork: ^1.0.0
       listhen: ^1.0.2
+      magic-string: ^0.26.7
       mime: ^3.0.0
       miniflare: ^2.11.0
       mlly: ^1.1.0
@@ -121,6 +122,7 @@ importers:
       klona: 2.0.6
       knitwork: 1.0.0
       listhen: 1.0.2
+      magic-string: 0.26.7
       mime: 3.0.0
       mlly: 1.1.0
       mri: 1.2.0
@@ -3815,6 +3817,13 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
+  /magic-string/0.26.7:
+    resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}
+    engines: {node: '>=12'}
+    dependencies:
+      sourcemap-codec: 1.4.8
+    dev: false
+
   /magic-string/0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
     engines: {node: '>=12'}
@@ -4747,6 +4756,11 @@ packages:
   /source-map/0.7.4:
     resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
     engines: {node: '>= 8'}
+    dev: false
+
+  /sourcemap-codec/1.4.8:
+    resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
+    deprecated: Please use @jridgewell/sourcemap-codec instead
     dev: false
 
   /spdx-correct/3.1.1:
