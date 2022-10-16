@@ -1,4 +1,6 @@
+// @ts-ignore
 import process from 'https://deno.land/std/node/process.ts'
+// @ts-ignore
 import { serve, serveTls } from 'https://deno.land/std/http/server.ts'
 
 import destr from 'destr'
