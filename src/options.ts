@@ -149,9 +149,9 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     throw new Error(`Nitro entry is missing! Is "${options.preset}" preset correct?`)
   }
   options.entry = resolvePath(options.entry, options)
-  options.output.dir = resolvePath(options.output.dir, options)
-  options.output.publicDir = resolvePath(options.output.publicDir, options)
-  options.output.serverDir = resolvePath(options.output.serverDir, options)
+  options.output.dir = resolvePath(options.output.dir || '.output', options)
+  options.output.publicDir = resolvePath(options.output.publicDir || 'public', options)
+  options.output.serverDir = resolvePath(options.output.serverDir || 'server', options)
 
   options.nodeModulesDirs.push(resolve(options.workspaceDir, 'node_modules'))
   options.nodeModulesDirs.push(resolve(options.rootDir, 'node_modules'))
