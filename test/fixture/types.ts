@@ -1,6 +1,6 @@
 import { expectTypeOf } from 'expect-type'
 import { describe, it } from 'vitest'
-import { $Fetch } from '../..'
+import { $Fetch, InternalApi } from '../..'
 
 interface TestResponse { message: string }
 
@@ -11,16 +11,7 @@ describe('API routes', () => {
   const dynamicString: string = ''
 
   it('generates types for middleware, unknown and manual typed routes', () => {
-    expectTypeOf($fetch('/')).toMatchTypeOf<Promise<
-      | string | number | TestResponse
-      | { testFile: string, hasEnv: boolean }
-      | { internalApiKey: string }
-      | {
-        depA: any
-        depB: any
-        depLib: any
-      }
-    >>() // middleware
+    expectTypeOf($fetch('/')).toMatchTypeOf<Promise<InternalApi[keyof InternalApi]>>() // middleware
     expectTypeOf($fetch('/api/unknown')).toEqualTypeOf<Promise<unknown>>()
     expectTypeOf($fetch<TestResponse>('/test')).toEqualTypeOf<Promise<TestResponse>>()
   })
