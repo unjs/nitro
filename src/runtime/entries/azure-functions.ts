@@ -8,7 +8,7 @@ export async function handle (context, req) {
     url,
     headers: req.headers,
     method: req.method,
-    body: req.body
+    body: req.rawBody
   })
 
   context.res = {
