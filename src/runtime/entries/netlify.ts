@@ -2,22 +2,18 @@ import '#internal/nitro/virtual/polyfill'
 import type { Handler, HandlerResponse, HandlerContext, HandlerEvent } from '@netlify/functions/dist/main'
 import type { APIGatewayProxyEventHeaders } from 'aws-lambda'
 import { withQuery } from 'ufo'
-import { createRouter as createMatcher } from 'radix3'
 import { nitroApp } from '../app'
-import { useRuntimeConfig } from '../config'
+import { getRouteRulesForPath } from '../route-rules'
 
 export const handler: Handler = async function handler (event, context) {
-  const config = useRuntimeConfig()
-  const routerOptions = createMatcher({ routes: config.nitro.routes })
-
   const query = { ...event.queryStringParameters, ...event.multiValueQueryStringParameters }
   const url = withQuery(event.path, query)
-  const routeOptions = routerOptions.lookup(url) || {}
+  const routeRules = getRouteRulesForPath(url)
 
-  if (routeOptions.static || routeOptions.swr) {
+  if (routeRules.cache && (routeRules.cache.swr || routeRules.cache.static)) {
     const builder = await import('@netlify/functions').then(r => r.builder || r.default.builder)
-    const ttl = typeof routeOptions.swr === 'number' ? routeOptions.swr : 60
-    const swrHandler = routeOptions.swr
+    const ttl = typeof routeRules.cache.swr === 'number' ? routeRules.cache.swr : 60
+    const swrHandler = routeRules.cache.swr
       ? ((event, context) => lambda(event, context).then(r => ({ ...r, ttl }))) as Handler
       : lambda
     return builder(swrHandler)(event, context) as any

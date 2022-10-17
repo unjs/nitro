@@ -9,7 +9,7 @@ import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest, isDebug } from 'std-env'
 import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
-import type { NitroConfig, NitroOptions, NitroRouteConfig, NitroRouteOptions } from './types'
+import type { NitroConfig, NitroOptions, NitroRouteConfig, NitroRouteRules } from './types'
 import { runtimeDir, pkgDir } from './dirs'
 import * as _PRESETS from './presets'
 import { nitroImports } from './imports'
@@ -54,7 +54,7 @@ const NitroDefaults: NitroConfig = {
   handlers: [],
   devHandlers: [],
   errorHandler: '#internal/nitro/error',
-  routes: {},
+  routeRules: {},
   prerender: {
     crawlLinks: false,
     ignore: [],
@@ -183,17 +183,20 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     })
   }
 
-  // Normalize route rules (NitroRouteConfig => NitroRouteOptions)
-  const routes: { [p: string]: NitroRouteOptions } = {}
-  for (const path in options.routes) {
-    const routeConfig = options.routes[path] as NitroRouteConfig
-    const routeOptions: NitroRouteOptions = {
+  // Backward compatibility for options.routes
+  options.routeRules = defu(options.routeRules, (options as any).routes || {})
+
+  // Normalize route rules (NitroRouteConfig => NitroRouteRules)
+  const normalizedRules: { [p: string]: NitroRouteRules } = {}
+  for (const path in options.routeRules) {
+    const routeConfig = options.routeRules[path] as NitroRouteConfig
+    const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined
     }
     // Redirect
     if (routeConfig.redirect) {
-      routeOptions.redirect = {
+      routeRules.redirect = {
         to: '/',
         statusCode: 307,
         ...(typeof routeConfig.redirect === 'string' ? { to: routeConfig.redirect } : routeConfig.redirect)
@@ -201,30 +204,30 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     }
     // CORS
     if (routeConfig.cors) {
-      routeOptions.headers = {
+      routeRules.headers = {
         'access-control-allow-origin': '*',
         'access-control-allowed-methods': '*',
         'access-control-allow-headers': '*',
         'access-control-max-age': '0',
-        ...routeOptions.headers
+        ...routeRules.headers
       }
     }
     // Cache: swr
     if (routeConfig.swr) {
-      routeOptions.cache = routeOptions.cache || {}
-      routeOptions.cache.swr = true
+      routeRules.cache = routeRules.cache || {}
+      routeRules.cache.swr = true
       if (typeof routeConfig.swr === 'number') {
-        routeOptions.cache.maxAge = routeConfig.swr
+        routeRules.cache.maxAge = routeConfig.swr
       }
     }
     // Cache: static
     if (routeConfig.static) {
-      routeOptions.cache = routeOptions.cache || {}
-      routeOptions.cache.static = true
+      routeRules.cache = routeRules.cache || {}
+      routeRules.cache.static = true
     }
-    routes[path] = routeOptions
+    normalizedRules[path] = routeRules
   }
-  options.routes = routes
+  options.routeRules = normalizedRules
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
@@ -232,7 +235,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       baseURL: options.baseURL
     },
     nitro: {
-      routes: options.routes
+      routeRules: options.routeRules
     }
   })
 

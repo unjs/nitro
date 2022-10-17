@@ -82,17 +82,17 @@ async function writeRedirects (nitro: Nitro) {
   let contents = '/* /.netlify/functions/server 200'
 
   // Rewrite static cached paths to builder functions
-  for (const [key] of Object.entries(nitro.options.routes)
-    .filter(([_, routeOptions]) => routeOptions.cache?.static || routeOptions.cache?.swr)
+  for (const [key] of Object.entries(nitro.options.routeRules)
+    .filter(([_, routeRules]) => routeRules.cache?.static || routeRules.cache?.swr)
   ) {
     contents = `${key.replace('/**', '/*')}\t/.netlify/builders/server 200\n` + contents
   }
 
-  for (const [key, routeOptions] of Object.entries(nitro.options.routes).filter(([_, routeOptions]) => routeOptions.redirect)) {
+  for (const [key, routeRules] of Object.entries(nitro.options.routeRules).filter(([_, routeRules]) => routeRules.redirect)) {
     // TODO: Remove map when netlify support 307/308
-    let code = routeOptions.redirect.statusCode
+    let code = routeRules.redirect.statusCode
     code = ({ 307: 302, 308: 301 })[code] || code
-    contents = `${key.replace('/**', '/*')}\t${routeOptions.redirect.to}\t${code}\n` + contents
+    contents = `${key.replace('/**', '/*')}\t${routeRules.redirect.to}\t${code}\n` + contents
   }
 
   if (existsSync(redirectsPath)) {
@@ -112,11 +112,11 @@ async function writeHeaders (nitro: Nitro) {
   const headersPath = join(nitro.options.output.publicDir, '_headers')
   let contents = ''
 
-  for (const [path, routeOptions] of Object.entries(nitro.options.routes)
-    .filter(([_, routeOptions]) => routeOptions.headers)) {
+  for (const [path, routeRules] of Object.entries(nitro.options.routeRules)
+    .filter(([_, routeRules]) => routeRules.headers)) {
     const headers = [
       path.replace('/**', '/*'),
-      ...Object.entries({ ...routeOptions.headers }).map(([header, value]) => `  ${header}: ${value}`)
+      ...Object.entries({ ...routeRules.headers }).map(([header, value]) => `  ${header}: ${value}`)
     ].join('\n')
 
     contents += headers + '\n'

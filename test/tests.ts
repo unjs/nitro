@@ -34,7 +34,7 @@ export async function setupTest (preset) {
     rootDir: ctx.rootDir,
     serveStatic: preset !== 'cloudflare' && preset !== 'vercel-edge',
     output: { dir: ctx.outDir },
-    routes: {
+    routeRules: {
       '/rules/headers': { headers: { 'cache-control': 's-maxage=60' } },
       '/rules/cors': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
       '/rules/redirect': { redirect: '/base' },
