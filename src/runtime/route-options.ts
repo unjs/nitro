@@ -2,35 +2,35 @@ import { eventHandler, H3Event, sendRedirect, setHeaders } from 'h3'
 import defu from 'defu'
 import { createRouter as createRadixRouter, toRouteMatcher } from 'radix3'
 import { useRuntimeConfig } from './config'
-import type { NitroRouteOptions } from 'nitropack'
+import type { NitroRouteRules } from 'nitropack'
 
 const config = useRuntimeConfig()
-const _routeOptionsMatcher = toRouteMatcher(createRadixRouter({ routes: config.nitro.routes }))
+const _routeRulesMatcher = toRouteMatcher(createRadixRouter({ routes: config.nitro.routes }))
 
-export function createRouteOptionsHandler () {
+export function createRouteRulesHandler () {
   return eventHandler((event) => {
     // Match route options against path
-    const routeOptions = getRouteOptions(event)
+    const routeRules = getRouteRules(event)
     // Apply headers options
-    if (routeOptions.headers) {
-      setHeaders(event, routeOptions.headers)
+    if (routeRules.headers) {
+      setHeaders(event, routeRules.headers)
     }
     // Apply redirect options
-    if (routeOptions.redirect) {
-      return sendRedirect(event, routeOptions.redirect.to, routeOptions.redirect.statusCode)
+    if (routeRules.redirect) {
+      return sendRedirect(event, routeRules.redirect.to, routeRules.redirect.statusCode)
     }
   })
 }
 
-export function getRouteOptions (event: H3Event): NitroRouteOptions {
+export function getRouteRules (event: H3Event): NitroRouteRules {
   event.context._nitro = event.context._nitro || {}
-  if (!event.context._nitro.routeOptions) {
+  if (!event.context._nitro.routeRules) {
     const path = new URL(event.req.url, 'http://localhost').pathname
-    event.context._nitro.routeOptions = getRouteOptionsForPath(path)
+    event.context._nitro.routeRules = getRouteRulesForPath(path)
   }
-  return event.context._nitro.routeOptions
+  return event.context._nitro.routeRules
 }
 
-export function getRouteOptionsForPath (path: string): NitroRouteOptions {
-  return defu({}, ..._routeOptionsMatcher.matchAll(path).reverse())
+export function getRouteRulesForPath (path: string): NitroRouteRules {
+  return defu({}, ..._routeRulesMatcher.matchAll(path).reverse())
 }

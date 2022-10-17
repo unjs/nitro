@@ -12,12 +12,12 @@ export const handler: Handler = async function handler (event, context) {
 
   const query = { ...event.queryStringParameters, ...event.multiValueQueryStringParameters }
   const url = withQuery(event.path, query)
-  const routeOptions = routerOptions.lookup(url) || {}
+  const routeRules = routerOptions.lookup(url) || {}
 
-  if (routeOptions.static || routeOptions.swr) {
+  if (routeRules.static || routeRules.swr) {
     const builder = await import('@netlify/functions').then(r => r.builder || r.default.builder)
-    const ttl = typeof routeOptions.swr === 'number' ? routeOptions.swr : 60
-    const swrHandler = routeOptions.swr
+    const ttl = typeof routeRules.swr === 'number' ? routeRules.swr : 60
+    const swrHandler = routeRules.swr
       ? ((event, context) => lambda(event, context).then(r => ({ ...r, ttl }))) as Handler
       : lambda
     return builder(swrHandler)(event, context) as any

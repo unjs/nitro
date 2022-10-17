@@ -6,7 +6,7 @@ import { createHooks, Hookable } from 'hookable'
 import { useRuntimeConfig } from './config'
 import { timingMiddleware } from './timing'
 import { cachedEventHandler } from './cache'
-import { createRouteOptionsHandler, getRouteOptionsForPath } from './route-options'
+import { createRouteRulesHandler, getRouteRulesForPath } from './route-options'
 import { plugins } from '#internal/nitro/virtual/plugins'
 import errorHandler from '#internal/nitro/virtual/error-handler'
 import { handlers } from '#internal/nitro/virtual/server-handlers'
@@ -34,17 +34,17 @@ function createNitroApp (): NitroApp {
 
   const router = createRouter()
 
-  h3App.use(createRouteOptionsHandler())
+  h3App.use(createRouteRulesHandler())
 
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler
 
     // Wrap matching handlers for caching route options
-    const routeOptions = getRouteOptionsForPath(h.route.replace(/:\w+|\*\*/g, '_'))
-    if (routeOptions.cache) {
+    const routeRules = getRouteRulesForPath(h.route.replace(/:\w+|\*\*/g, '_'))
+    if (routeRules.cache) {
       handler = cachedEventHandler(handler, {
         group: 'nitro/routes',
-        ...routeOptions.cache
+        ...routeRules.cache
       })
     }
 

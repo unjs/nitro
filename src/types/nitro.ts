@@ -104,7 +104,7 @@ export interface NitroRouteConfig {
   static?: boolean | number
 }
 
-export interface NitroRouteOptions extends Omit<NitroRouteConfig, 'redirect' | 'cors' | 'swr' | 'static'> {
+export interface NitroRouteRules extends Omit<NitroRouteConfig, 'redirect' | 'cors' | 'swr' | 'static'> {
   redirect?: { to: string, statusCode: HTTPStatusCode }
 }
 
@@ -165,7 +165,7 @@ export interface NitroOptions extends PresetOptions {
   // Routing
   baseURL: string,
   handlers: NitroEventHandler[]
-  routes: { [path: string]: NitroRouteOptions }
+  routes: { [path: string]: NitroRouteRules }
   devHandlers: NitroDevEventHandler[]
   errorHandler: string
   devErrorHandler: NitroErrorHandler
