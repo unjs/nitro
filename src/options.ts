@@ -129,7 +129,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   options.preset = presetOverride || layers.find(l => l.config.preset)?.config.preset || defaultPreset
 
   options.rootDir = resolve(options.rootDir || '.')
-  options.workspaceDir = await findWorkspaceDir(options.rootDir)
+  options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(() => options.rootDir)
   options.srcDir = resolve(options.srcDir || options.rootDir)
   for (const key of ['srcDir', 'publicDir', 'buildDir']) {
     options[key] = resolve(options.rootDir, options[key])
