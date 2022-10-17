@@ -2,7 +2,6 @@ import { hash } from 'ohash'
 import { handleCacheHeaders, defineEventHandler, createEvent, EventHandler } from 'h3'
 import type { H3Event } from 'h3'
 import { parseURL } from 'ufo'
-import { ServerResponse } from 'unenv/runtime/node/http/_response'
 import { useStorage } from '#internal/nitro'
 
 export interface CacheEntry<T=any> {
