@@ -123,7 +123,7 @@
     "unbuild": "^0.9.4",
     "vitest": "^0.24.3"
   },
-  "packageManager": "pnpm@7.13.4",
+  "packageManager": "pnpm@7.13.5",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0 || ^18.0.0"
   },
