@@ -2,6 +2,7 @@ import { hash } from 'ohash'
 import { handleCacheHeaders, defineEventHandler, createEvent, EventHandler } from 'h3'
 import type { H3Event } from 'h3'
 import { parseURL } from 'ufo'
+import { ServerResponse } from 'unenv/runtime/node/http/_response'
 import { useStorage } from '#internal/nitro'
 
 export interface CacheEntry<T=any> {
@@ -126,6 +127,7 @@ export function defineCachedEventHandler <T=any> (
     // Create proxies to avoid sharing state with user request
     const reqProxy = cloneWithProxy(incomingEvent.req, { headers: {} })
     const resHeaders: Record<string, number | string | string[]> = {}
+    let _resSendBody = null
     const resProxy = cloneWithProxy(incomingEvent.res, {
       statusCode: 200,
       getHeader (name) { return resHeaders[name] },
@@ -133,13 +135,34 @@ export function defineCachedEventHandler <T=any> (
       getHeaderNames () { return Object.keys(resHeaders) },
       hasHeader (name) { return name in resHeaders },
       removeHeader (name) { delete resHeaders[name] },
-      getHeaders () { return resHeaders }
+      getHeaders () { return resHeaders },
+      end (chunk, arg2?, arg3?) {
+        _resSendBody = chunk
+        if (typeof arg2 === 'function') { arg2() }
+        if (typeof arg3 === 'function') { arg3() }
+        return this
+      },
+      write (chunk, arg2?, arg3?) {
+        _resSendBody = chunk
+        if (typeof arg2 === 'function') { arg2() }
+        if (typeof arg3 === 'function') { arg3() }
+        return this
+      },
+      writeHead (statusCode, headers) {
+        this.statusCode = statusCode
+        if (headers) {
+          for (const header in headers) {
+            this.setHeader(header, headers[header])
+          }
+        }
+        return this
+      }
     })
 
     // Call handler
     const event = createEvent(reqProxy, resProxy)
     event.context = incomingEvent.context
-    const body = await handler(event)
+    const body = await handler(event) || _resSendBody
 
     // Collect cachable headers
     const headers = event.res.getHeaders()
