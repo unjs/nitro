@@ -5,7 +5,7 @@ import { useRuntimeConfig } from './config'
 import type { NitroRouteRules } from 'nitropack'
 
 const config = useRuntimeConfig()
-const _routeRulesMatcher = toRouteMatcher(createRadixRouter({ routes: config.nitro.routes }))
+const _routeRulesMatcher = toRouteMatcher(createRadixRouter({ routes: config.nitro.routeRules }))
 
 export function createRouteRulesHandler () {
   return eventHandler((event) => {

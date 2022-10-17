@@ -168,7 +168,7 @@ export default <NitroErrorHandler> function (error, event) {
 }
 ```
 
-## `routes`
+## `routeRules`
 
 **🧪 Experimental!**
 
@@ -181,7 +181,7 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
 
 ```js
 {
-  routes: {
+  routeRules: {
     '/blog/**': { swr: true },
     '/blog/**': { swr: 600 },
     '/blog/**': { static: true },

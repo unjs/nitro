@@ -54,7 +54,7 @@ const NitroDefaults: NitroConfig = {
   handlers: [],
   devHandlers: [],
   errorHandler: '#internal/nitro/error',
-  routes: {},
+  routeRules: {},
   prerender: {
     crawlLinks: false,
     ignore: [],
@@ -183,10 +183,13 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     })
   }
 
+  // Backward compatibility for options.routes
+  options.routeRules = defu(options.routeRules, (options as any).routes || {})
+
   // Normalize route rules (NitroRouteConfig => NitroRouteRules)
-  const routes: { [p: string]: NitroRouteRules } = {}
-  for (const path in options.routes) {
-    const routeConfig = options.routes[path] as NitroRouteConfig
+  const normalizedRules: { [p: string]: NitroRouteRules } = {}
+  for (const path in options.routeRules) {
+    const routeConfig = options.routeRules[path] as NitroRouteConfig
     const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined
@@ -222,9 +225,9 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       routeRules.cache = routeRules.cache || {}
       routeRules.cache.static = true
     }
-    routes[path] = routeRules
+    normalizedRules[path] = routeRules
   }
-  options.routes = routes
+  options.routeRules = normalizedRules
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL))
   options.runtimeConfig = defu(options.runtimeConfig, {
@@ -232,7 +235,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       baseURL: options.baseURL
     },
     nitro: {
-      routes: options.routes
+      routeRules: options.routeRules
     }
   })
 

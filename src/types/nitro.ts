@@ -63,9 +63,9 @@ type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPar
 
 export type NitroPreset = NitroConfig | (() => NitroConfig)
 
-export interface NitroConfig extends DeepPartial<Omit<NitroOptions, 'routes'>> {
+export interface NitroConfig extends DeepPartial<Omit<NitroOptions, 'routeRules'>> {
   extends?: string | string[] | NitroPreset
-  routes?: { [path: string]: NitroRouteConfig }
+  routeRules?: { [path: string]: NitroRouteConfig }
 }
 
 export interface PublicAssetDir {
@@ -165,7 +165,7 @@ export interface NitroOptions extends PresetOptions {
   // Routing
   baseURL: string,
   handlers: NitroEventHandler[]
-  routes: { [path: string]: NitroRouteRules }
+  routeRules: { [path: string]: NitroRouteRules }
   devHandlers: NitroDevEventHandler[]
   errorHandler: string
   devErrorHandler: NitroErrorHandler

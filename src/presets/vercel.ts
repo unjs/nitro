@@ -82,7 +82,7 @@ function generateBuildConfig (nitro: Nitro) {
         )
     ),
     routes: [
-      ...Object.entries(nitro.options.routes)
+      ...Object.entries(nitro.options.routeRules)
         .filter(([_, routeRules]) => routeRules.redirect || routeRules.headers)
         .map(([path, routeRules]) => {
           let route = {
