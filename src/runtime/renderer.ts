@@ -50,9 +50,6 @@ export function defineRenderHandler (handler: RenderHandler) {
     }
 
     // Send response body
-    if (!event.res.writableEnded) {
-      // TODO: Warn if body is not string
-      event.res.end(typeof response.body === 'string' ? response.body : JSON.stringify(response.body))
-    }
+    return typeof response.body === 'string' ? response.body : JSON.stringify(response.body)
   })
 }
