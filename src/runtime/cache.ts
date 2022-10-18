@@ -136,13 +136,17 @@ export function defineCachedEventHandler <T=any> (
       removeHeader (name) { delete resHeaders[name] },
       getHeaders () { return resHeaders },
       end (chunk, arg2?, arg3?) {
-        _resSendBody = chunk
+        if (typeof chunk === 'string') {
+          _resSendBody = chunk
+        }
         if (typeof arg2 === 'function') { arg2() }
         if (typeof arg3 === 'function') { arg3() }
         return this
       },
       write (chunk, arg2?, arg3?) {
-        _resSendBody = chunk
+        if (typeof chunk === 'string') {
+          _resSendBody = chunk
+        }
         if (typeof arg2 === 'function') { arg2() }
         if (typeof arg3 === 'function') { arg3() }
         return this
