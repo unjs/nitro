@@ -173,8 +173,8 @@ export function defineCachedEventHandler <T=any> (
 
     // Collect cachable headers
     const headers = event.res.getHeaders()
-    headers.Etag = `W/"${hash(body)}"`
-    headers['Last-Modified'] = new Date().toUTCString()
+    headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`
+    headers['last-modified'] = headers['Last-Modified'] || headers['last-modified'] || new Date().toUTCString()
     const cacheControl = []
     if (opts.swr) {
       if (opts.maxAge) {
@@ -189,7 +189,7 @@ export function defineCachedEventHandler <T=any> (
       cacheControl.push(`max-age=${opts.maxAge}`)
     }
     if (cacheControl.length) {
-      headers['Cache-Control'] = cacheControl.join(', ')
+      headers['cache-control'] = cacheControl.join(', ')
     }
 
     // Create cache entry for response
@@ -222,7 +222,7 @@ export function defineCachedEventHandler <T=any> (
 
     // Check for cache headers
     if (handleCacheHeaders(event, {
-      modifiedTime: new Date(response.headers['Last-Modified'] as string),
+      modifiedTime: new Date(response.headers['last-modified'] as string),
       etag: response.headers.etag as string,
       maxAge: opts.maxAge
     })) {
