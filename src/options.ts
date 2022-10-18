@@ -248,7 +248,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     asset.baseURL = withLeadingSlash(withoutTrailingSlash(asset.baseURL || '/'))
   }
 
-  for (const pkg of ['defu', 'h3']) {
+  for (const pkg of ['defu', 'h3', 'radix3']) {
     if (!options.alias[pkg]) {
       options.alias[pkg] = await resovleModule(pkg, { url: import.meta.url })
     }
