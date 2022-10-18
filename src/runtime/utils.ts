@@ -61,7 +61,7 @@ export function normalizeError (error: any) {
     })
 
   const statusCode = error.statusCode || 500
-  const statusMessage = error.statusMessage ?? (statusCode === 404 ? 'Route Not Found' : 'Internal Server Error')
+  const statusMessage = error.statusMessage ?? (statusCode === 404 ? 'Not Found' : '')
   const message = error.message || error.toString()
 
   return {
