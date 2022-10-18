@@ -103,9 +103,13 @@ export interface ResponseCacheEntry<T=any> {
   headers: Record<string, string | number | string[]>
 }
 
+export interface CachedEventHandlerOptions<T=any> extends Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey' | 'transform'> {
+  headersOnly?: boolean
+}
+
 export function defineCachedEventHandler <T=any> (
   handler: EventHandler<T>,
-  opts: Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey'> = defaultCacheOptions
+  opts: CachedEventHandlerOptions<T> = defaultCacheOptions
 ): EventHandler<T> {
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
@@ -199,6 +203,15 @@ export function defineCachedEventHandler <T=any> (
   }, _opts)
 
   return defineEventHandler<T>(async (event) => {
+    // Headers-only mode
+    if (opts.headersOnly) {
+      // TODO: Send SWR too
+      if (handleCacheHeaders(event, { maxAge: opts.maxAge })) {
+        return
+      }
+      return handler(event)
+    }
+
     // Call with cache
     const response = await _cachedHandler(event)
 

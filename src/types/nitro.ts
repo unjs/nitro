@@ -12,7 +12,7 @@ import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
-import { CacheOptions } from '../runtime/types'
+import { CachedEventHandlerOptions } from '../runtime/types'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
 import type { PresetOptions } from './presets'
 
@@ -94,7 +94,7 @@ type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumer
 type HTTPStatusCode = IntRange<100, 600>
 
 export interface NitroRouteConfig {
-  cache?: Exclude<CacheOptions, 'getKey' | 'transform'>
+  cache?: CachedEventHandlerOptions
   headers?: Record<string, string>
   redirect?: string | { to: string, statusCode?: HTTPStatusCode }
 
