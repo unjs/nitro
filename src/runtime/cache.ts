@@ -171,6 +171,13 @@ export function defineCachedEventHandler <T=any> (
     event.context = incomingEvent.context
     const body = await handler(event) || _resSendBody
 
+    // Abort cache if status code is error
+    // (Fine: 100 info, 200 okay, 300 redirect)
+    // (Not fine: 400: client error, 500: server error)
+    if (event.res.statusCode >= 400) {
+      throw new Error(`[nitro] Request failed with status code ${event.res.statusCode} for ${event.req.url}`)
+    }
+
     // Collect cachable headers
     const headers = event.res.getHeaders()
     headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`
