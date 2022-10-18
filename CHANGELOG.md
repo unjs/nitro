@@ -8,15 +8,19 @@ All notable changes to this project will be documented in this file. See [standa
 [compare changes](https://github.com/unjs/nitro/compare/v0.5.4...v0.6.0)
 
 
+#### ⚠️  Breaking Changes
+
+- H3 updated to to 0.8x [[Release Notes](https://github.com/unjs/h3/releases/tag/v0.8.0)]
+- Experimental `routes` is renamed to `routeRules` ([#593](https://github.com/unjs/nitro/pull/593))
+
 ### 🚀 Enhancements
 
   - Support `redirect`, `headers`, and `cors` route rules ([#538](https://github.com/unjs/nitro/pull/538))
   - **netlify:** Incremental static regeneration + swr ([#540](https://github.com/unjs/nitro/pull/540))
   - Add `debugger` option to debug hooks ([#577](https://github.com/unjs/nitro/pull/577))
-  - **deps:** ⚠️  Upgrade h3 to 0.8.x ([#581](https://github.com/unjs/nitro/pull/581))
   - Allow matching multiple route rules ([#582](https://github.com/unjs/nitro/pull/582))
   - Normalize route options and shortcuts ([#583](https://github.com/unjs/nitro/pull/583))
-  - Add cleavr preset ([#523](https://github.com/unjs/nitro/pull/523))
+  - **cleavr:** Add cleavr preset ([#523](https://github.com/unjs/nitro/pull/523))
   - **cleavr:** Auto detect preset ([d5bbdeb](https://github.com/unjs/nitro/commit/d5bbdeb))
   - Allow disabling public dir generation using `noPublicDir` ([00a304a](https://github.com/unjs/nitro/commit/00a304a))
   - **cache:** Mock `res.end`, `res.write` and `res.writeHead` ([673fe8e](https://github.com/unjs/nitro/commit/673fe8e))
@@ -27,7 +31,6 @@ All notable changes to this project will be documented in this file. See [standa
 
   - Fully resolve internal paths for autoimports ([#543](https://github.com/unjs/nitro/pull/543))
   - Retry writing traced files if there are conflicts ([#537](https://github.com/unjs/nitro/pull/537))
-  - **externals:** Fallback traced files for minor/patch versions ([#529](https://github.com/unjs/nitro/pull/529))
   - **externals:** Rewrite traced file paths to latest semver-minor version ([#578](https://github.com/unjs/nitro/pull/578))
   - Workaround rollup issue ([b884d0c](https://github.com/unjs/nitro/commit/b884d0c))
   - Handle output dirs set to empty string ([#584](https://github.com/unjs/nitro/pull/584))
@@ -35,17 +38,16 @@ All notable changes to this project will be documented in this file. See [standa
   - Default `workspaceDir` to `rootDir` ([#594](https://github.com/unjs/nitro/pull/594))
   - **renderer:** Directly return body to allow caching ([859a984](https://github.com/unjs/nitro/commit/859a984))
   - **cache:** Only spy on end/write for string chunks ([bd0b1ed](https://github.com/unjs/nitro/commit/bd0b1ed))
-  - Do not assign default statusMessage for errors ([cbe0e91](https://github.com/unjs/nitro/commit/cbe0e91))
+  - **error:** Do not assign default statusMessage for errors ([cbe0e91](https://github.com/unjs/nitro/commit/cbe0e91))
   - **cache:** Use lowercase headers ([9eb5769](https://github.com/unjs/nitro/commit/9eb5769))
   - **cache:** Abort cache handler for error status codes ([ba21751](https://github.com/unjs/nitro/commit/ba21751))
   - **cache:** Skip error status codes by invalidating cache ([4fd164f](https://github.com/unjs/nitro/commit/4fd164f))
-  - Ensure radix3 version is expected ([245ed70](https://github.com/unjs/nitro/commit/245ed70))
+  - **deps:** Ensure radix3 version is expected ([245ed70](https://github.com/unjs/nitro/commit/245ed70))
   - **cache:** Invalidate entries with undefined body ([e9285da](https://github.com/unjs/nitro/commit/e9285da))
   - **app:** Only apply cache rules ro routes (not middleware) ([4603279](https://github.com/unjs/nitro/commit/4603279))
 
 ### 💅 Refactors
 
-  - Use NitroDefaults for output dir fallback ([277d88d](https://github.com/unjs/nitro/commit/277d88d))
   - ⚠️  Rename routeOptions to routeRules ([#593](https://github.com/unjs/nitro/pull/593))
 
 ### 📖 Documentation
@@ -56,22 +58,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 🏡 Chore
 
-  - Update changelog ([c752e00](https://github.com/unjs/nitro/commit/c752e00))
-  - Update changelog ([2d4598c](https://github.com/unjs/nitro/commit/2d4598c))
-  - **deps:** ⚠️  Update all non-major dependencies ([#573](https://github.com/unjs/nitro/pull/573))
   - **ci:** Bump edge version acording to changelog ([8b7740e](https://github.com/unjs/nitro/commit/8b7740e))
-  - Update h3 ([604684e](https://github.com/unjs/nitro/commit/604684e))
-  - Update h3 ([1ed98f5](https://github.com/unjs/nitro/commit/1ed98f5))
 
 ### 🤖 CI
 
   - Fetch tags for proper version bump ([6d4b416](https://github.com/unjs/nitro/commit/6d4b416))
-
-#### ⚠️  Breaking Changes
-
-  - **deps:** ⚠️  Upgrade h3 to 0.8.x ([#581](https://github.com/unjs/nitro/pull/581))
-  - ⚠️  Rename routeOptions to routeRules ([#593](https://github.com/unjs/nitro/pull/593))
-  - **deps:** ⚠️  Update all non-major dependencies ([#573](https://github.com/unjs/nitro/pull/573))
 
 ### ❤️  Contributors
 
@@ -80,7 +71,6 @@ All notable changes to this project will be documented in this file. See [standa
 - Daniel Roe
 - Louis Haftmann
 - Pooya Parsa
-- Renovate[bot]
 - Tobias Diez
 - Wolfgang Ziegler
 
