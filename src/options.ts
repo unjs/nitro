@@ -225,6 +225,10 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       routeRules.cache = routeRules.cache || {}
       routeRules.cache.static = true
     }
+    // Cache: false
+    if (routeConfig.cache === false) {
+      routeRules.cache = false
+    }
     normalizedRules[path] = routeRules
   }
   options.routeRules = normalizedRules

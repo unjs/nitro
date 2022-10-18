@@ -94,7 +94,7 @@ type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumer
 type HTTPStatusCode = IntRange<100, 600>
 
 export interface NitroRouteConfig {
-  cache?: CachedEventHandlerOptions
+  cache?: CachedEventHandlerOptions | false
   headers?: Record<string, string>
   redirect?: string | { to: string, statusCode?: HTTPStatusCode }
 
