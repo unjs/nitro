@@ -125,6 +125,7 @@ export function defineCachedEventHandler <T=any> (
     },
     validate: (entry) => {
       if (entry.value.code >= 400) { return false }
+      if (entry.value.body === undefined) { return false }
       return true
     },
     group: opts.group || 'nitro/handlers',
