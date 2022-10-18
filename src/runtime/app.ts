@@ -38,20 +38,17 @@ function createNitroApp (): NitroApp {
 
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler
-
-    // Wrap matching handlers for caching route options
-    const routeRules = getRouteRulesForPath(h.route.replace(/:\w+|\*\*/g, '_'))
-    if (routeRules.cache) {
-      handler = cachedEventHandler(handler, {
-        group: 'nitro/routes',
-        ...routeRules.cache
-      })
-    }
-
     if (h.middleware || !h.route) {
       const middlewareBase = (config.app.baseURL + (h.route || '/')).replace(/\/+/g, '/')
       h3App.use(middlewareBase, handler)
     } else {
+      const routeRules = getRouteRulesForPath(h.route.replace(/:\w+|\*\*/g, '_'))
+      if (routeRules.cache) {
+        handler = cachedEventHandler(handler, {
+          group: 'nitro/routes',
+          ...routeRules.cache
+        })
+      }
       router.use(h.route, handler, h.method)
     }
   }
