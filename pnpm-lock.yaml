@@ -18,7 +18,7 @@ importers:
       '@rollup/plugin-replace': ^5.0.0
       '@rollup/plugin-wasm': ^6.0.0
       '@rollup/pluginutils': ^5.0.1
-      '@types/aws-lambda': ^8.10.107
+      '@types/aws-lambda': ^8.10.108
       '@types/etag': ^1.8.1
       '@types/fs-extra': ^9.0.13
       '@types/http-proxy': ^1.17.9
@@ -37,7 +37,7 @@ importers:
       consola: ^2.15.3
       cookie-es: ^0.5.0
       defu: ^6.1.0
-      destr: ^1.1.1
+      destr: ^1.2.0
       dot-prop: ^7.2.0
       edge-runtime: 1.1.0-beta.31
       esbuild: ^0.15.11
@@ -104,7 +104,7 @@ importers:
       consola: 2.15.3
       cookie-es: 0.5.0
       defu: 6.1.0
-      destr: 1.1.1
+      destr: 1.2.0
       dot-prop: 7.2.0
       esbuild: 0.15.11
       escape-string-regexp: 5.0.0
@@ -146,7 +146,7 @@ importers:
       unstorage: 0.6.0
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 11.0.0_z4bbprzjrhnsfa24uvmcbu7f5q
-      '@types/aws-lambda': 8.10.107
+      '@types/aws-lambda': 8.10.108
       '@types/etag': 1.8.1
       '@types/fs-extra': 9.0.13
       '@types/http-proxy': 1.17.9
@@ -1031,8 +1031,8 @@ packages:
       rollup: 3.2.0
     dev: true
 
-  /@types/aws-lambda/8.10.107:
-    resolution: {integrity: sha512-UTI9ZPw4VzvgYUJ7gUU77/ovGrIniRRWiMWxms5dP+1fsxNPeP/cOopQ0mxXPc9NvbeROcDUDN34m8eEhdEitg==}
+  /@types/aws-lambda/8.10.108:
+    resolution: {integrity: sha512-1yh1W1WoqK3lGHy+V/Fi55zobxrDHUUsluCWdMlOXkCvtsCmHPXOG+CQ2STIL4B1g6xi6I6XzxaF8V9+zeIFLA==}
     dev: true
 
   /@types/better-sqlite3/7.6.0:
@@ -1881,8 +1881,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /destr/1.1.1:
-    resolution: {integrity: sha512-QqkneF8LrYmwATMdnuD2MLI3GHQIcBnG6qFC2q9bSH430VTCDAVjcspPmUaKhPGtAtPAftIUFqY1obQYQuwmbg==}
+  /destr/1.2.0:
+    resolution: {integrity: sha512-JG+cG4ZPB1L27sl2C2URg8MIOmIUtTbE5wEx02BpmrTCqg/hXxFKXsYsnODl5PdpqNRaS1KQGUQ56V8jk8XpYQ==}
 
   /destroy/1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
@@ -3167,7 +3167,7 @@ packages:
     resolution: {integrity: sha512-U7ZD/Te+LBS1IpUvsZRe+E+ZiA3zQS0u43DMrZ+raiVObeYe0G5F4Kr/g6Fn2fH92Np0ROkij/wEhkAMbUsBdQ==}
     dependencies:
       cookie-es: 0.5.0
-      destr: 1.1.1
+      destr: 1.2.0
       radix3: 0.2.1
       ufo: 0.8.6
     dev: false
@@ -4069,7 +4069,7 @@ packages:
   /ohmyfetch/0.4.20:
     resolution: {integrity: sha512-+c3/l+X91owrT1reTos1R13rb2j8NGZpKi0bRWwrnxIHlr1FZ8NzghIsNBKpUvk9nsnFoNK4phw+nTnXrcALzA==}
     dependencies:
-      destr: 1.1.1
+      destr: 1.2.0
       node-fetch-native: 0.1.8
       ufo: 0.8.6
       undici: 5.11.0
@@ -4337,7 +4337,7 @@ packages:
     resolution: {integrity: sha512-zbe8+HR2X28eZepAwohuKkebbEsA67h0DO9I7g12QrHa2CQopR9gztOLPIPXXGTvcxeUjAN4wZ+b29t3m/u05g==}
     dependencies:
       defu: 6.1.0
-      destr: 1.1.1
+      destr: 1.2.0
       flat: 5.0.2
 
   /read-pkg-up/7.0.1:
@@ -5113,7 +5113,7 @@ packages:
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3
-      destr: 1.1.1
+      destr: 1.2.0
       h3: 0.8.4
       ioredis: 5.2.3
       listhen: 0.3.4
