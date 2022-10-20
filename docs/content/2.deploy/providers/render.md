@@ -15,7 +15,7 @@ Nitro supports deploying on [Render](https://render.com/) with minimal configura
 
 1. Depending on your package manager, set the build command to `yarn && yarn build`, `npm install && npm run build`, or `pnpm i --shamefully-hoist && pnpm build`.
 
-1. Update the start command to `node .output/server/index.mjs`
+1. Update the start command to `node -C production .output/server/index.mjs`
 
 1. Click 'Advanced' and add an environment variable with `NITRO_PRESET` set to `render-com`.
 

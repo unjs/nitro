@@ -71,7 +71,7 @@ npx nitropack build
 4️⃣ Output is in the `.output` directory and ready to be deployed on almost any VPS with no dependencies. You can locally try it too:
 
 ```bash
-node .output/server/index.mjs
+node -C production .output/server/index.mjs
 ```
 
 That's it you got it! Read the [documentation](https://nitro.unjs.io) to learn more.
