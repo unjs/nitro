@@ -13,8 +13,10 @@ import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
 import { CachedEventHandlerOptions } from '../runtime/types'
+import type * as _PRESETS from '../presets'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
 import type { PresetOptions } from './presets'
+import type { Kebab } from './utils'
 
 export interface Nitro {
   options: NitroOptions,
@@ -113,22 +115,8 @@ export interface NitroOptions extends PresetOptions {
   _config: NitroConfig
 
   // General
-  preset:
-    | 'aws-lambda'
-    | 'azure'
-    | 'cleavr'
-    | 'cloudflare'
-    | 'digital-ocean'
-    | 'firebase'
-    | 'heroku'
-    | 'layer0'
-    | 'netlify'
-    | 'render-com'
-    | 'stormkit'
-    | 'vercel'
-    | (string & {})
   debug: boolean
-  preset: string
+  preset: Kebab<keyof typeof _PRESETS> | (string & {})
   logLevel: LogLevel
   runtimeConfig: {
     app: {
