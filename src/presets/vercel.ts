@@ -82,6 +82,23 @@ function generateBuildConfig (nitro: Nitro) {
         )
     ),
     routes: [
+      ...Object.entries(nitro.options.routeRules)
+        .filter(([_, routeRules]) => routeRules.redirect || routeRules.headers)
+        .map(([path, routeRules]) => {
+          let route = {
+            src: path.replace('/**', '/.*')
+          }
+          if (routeRules.redirect) {
+            route = defu(route, {
+              status: routeRules.redirect.statusCode,
+              headers: { Location: routeRules.redirect.to }
+            })
+          }
+          if (routeRules.headers) {
+            route = defu(route, { headers: routeRules.headers })
+          }
+          return route
+        }),
       ...nitro.options.publicAssets
         .filter(asset => !asset.fallthrough)
         .map(asset => asset.baseURL)

@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
-import { App, createApp, eventHandler, H3Error } from 'h3'
+import { App, createApp, eventHandler, fromNodeMiddleware, H3Error, toNodeListener } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
@@ -112,9 +112,9 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
     const url = joinURL(nitro.options.runtimeConfig.app.baseURL, asset.baseURL)
-    app.use(url, serveStatic(asset.dir))
+    app.use(url, fromNodeMiddleware(serveStatic(asset.dir)))
     if (!asset.fallthrough) {
-      app.use(url, servePlaceholder())
+      app.use(url, fromNodeMiddleware(servePlaceholder()))
     }
   }
 
@@ -152,7 +152,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // Listen
   let listeners: Listener[] = []
   const _listen: NitroDevServer['listen'] = async (port, opts?) => {
-    const listener = await listen(app, { port, ...opts })
+    const listener = await listen(toNodeListener(app), { port, ...opts })
     listeners.push(listener)
     return listener
   }

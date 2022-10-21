@@ -8,7 +8,8 @@ export async function handle (context, req) {
     url,
     headers: req.headers,
     method: req.method,
-    body: req.body
+    // https://github.com/Azure/azure-functions-host/issues/293
+    body: req.rawBody
   })
 
   context.res = {

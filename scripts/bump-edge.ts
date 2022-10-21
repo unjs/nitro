@@ -1,5 +1,5 @@
 import { promises as fsp } from 'fs'
-import { execSync } from 'child_process'
+import { execaCommand } from 'execa'
 import { resolve } from 'pathe'
 import { globby } from 'globby'
 
@@ -92,7 +92,7 @@ async function loadWorkspace (dir: string) {
 async function main () {
   const workspace = await loadWorkspace(process.cwd())
 
-  const commit = execSync('git rev-parse --short HEAD').toString('utf-8').trim()
+  const commit = await execaCommand('git rev-parse --short HEAD').then(r => r.stdout.trim())
   const date = Math.round(Date.now() / (1000 * 60))
 
   for (const pkg of workspace.packages.filter(p => !p.data.private)) {

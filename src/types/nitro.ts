@@ -12,6 +12,7 @@ import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
+import { CachedEventHandlerOptions } from '../runtime/types'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
 import type { PresetOptions } from './presets'
 
@@ -62,17 +63,9 @@ type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPar
 
 export type NitroPreset = NitroConfig | (() => NitroConfig)
 
-export interface NitroConfig extends DeepPartial<NitroOptions> {
+export interface NitroConfig extends DeepPartial<Omit<NitroOptions, 'routeRules'>> {
   extends?: string | string[] | NitroPreset
-}
-
-export interface NitroRouteOption {
-  swr?: boolean | number
-  redirect?: string
-}
-
-export interface NitroRoutesOptions {
-  [path: string]: NitroRouteOption
+  routeRules?: { [path: string]: NitroRouteConfig }
 }
 
 export interface PublicAssetDir {
@@ -96,6 +89,25 @@ export interface CompressOptions {
   brotli?: boolean
 }
 
+type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc['length']]>
+type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>
+type HTTPStatusCode = IntRange<100, 600>
+
+export interface NitroRouteConfig {
+  cache?: CachedEventHandlerOptions | false
+  headers?: Record<string, string>
+  redirect?: string | { to: string, statusCode?: HTTPStatusCode }
+
+  // Shortcuts
+  cors?: boolean
+  swr?: boolean | number
+  static?: boolean | number
+}
+
+export interface NitroRouteRules extends Omit<NitroRouteConfig, 'redirect' | 'cors' | 'swr' | 'static'> {
+  redirect?: { to: string, statusCode: HTTPStatusCode }
+}
+
 export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig
@@ -115,15 +127,13 @@ export interface NitroOptions extends PresetOptions {
     | 'stormkit'
     | 'vercel'
     | (string & {})
+  debug: boolean
+  preset: string
   logLevel: LogLevel
   runtimeConfig: {
     app: {
       baseURL: string
     },
-    nitro: {
-      /** @deprecated Use top-level routes option! */
-      routes: NitroRoutesOptions
-    }
     [key: string]: any
   }
 
@@ -146,6 +156,7 @@ export interface NitroOptions extends PresetOptions {
   timing: boolean
   renderer: string
   serveStatic: boolean
+  noPublicDir: boolean
   experimental?: {
     wasm?: boolean | RollupWasmOptions
   }
@@ -168,7 +179,7 @@ export interface NitroOptions extends PresetOptions {
   // Routing
   baseURL: string,
   handlers: NitroEventHandler[]
-  routes: NitroRoutesOptions
+  routeRules: { [path: string]: NitroRouteRules }
   devHandlers: NitroDevEventHandler[]
   errorHandler: string
   devErrorHandler: NitroErrorHandler

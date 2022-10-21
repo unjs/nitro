@@ -49,7 +49,7 @@ cd nitro-app
 1️⃣ Create `routes/index.ts`:
 
 ```ts [routes/index.ts]
-export default () => 'nitro is amazing!'
+export default defineEventHandler(() => 'nitro is amazing!')
 ```
 
 2️⃣ Start development server:

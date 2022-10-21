@@ -1,5 +1,6 @@
 import { promises as fsp } from 'fs'
 import { relative, resolve, join, dirname, isAbsolute } from 'pathe'
+import { resolveAlias } from 'pathe/utils'
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import { defu } from 'defu'
@@ -19,7 +20,9 @@ import { compressPublicAssets } from './compress'
 
 export async function prepare (nitro: Nitro) {
   await prepareDir(nitro.options.output.dir)
-  await prepareDir(nitro.options.output.publicDir)
+  if (!nitro.options.noPublicDir) {
+    await prepareDir(nitro.options.output.publicDir)
+  }
   await prepareDir(nitro.options.output.serverDir)
 }
 
@@ -29,6 +32,7 @@ async function prepareDir (dir: string) {
 }
 
 export async function copyPublicAssets (nitro: Nitro) {
+  if (nitro.options.noPublicDir) { return }
   for (const asset of nitro.options.publicAssets) {
     if (await isDirectory(asset.dir)) {
       await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL!))
@@ -66,7 +70,15 @@ export async function writeTypes (nitro: Nitro) {
   if (nitro.unimport) {
     autoImportedTypes = [
       nitro.unimport
-        .generateTypeDeclarations({ exportHelper: false })
+        .generateTypeDeclarations({
+          exportHelper: false,
+          resolvePath: (i) => {
+            if (i.from.startsWith('#internal/nitro')) {
+              return resolveAlias(i.from, nitro.options.alias)
+            }
+            return i.from
+          }
+        })
         .trim()
     ]
   }

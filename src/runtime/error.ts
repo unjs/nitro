@@ -37,7 +37,9 @@ export default <NitroErrorHandler> function (error, event) {
   }
 
   event.res.statusCode = statusCode
-  event.res.statusMessage = statusMessage
+  if (statusMessage) {
+    event.res.statusMessage = statusMessage
+  }
 
   if (isJsonRequest(event)) {
     event.res.setHeader('Content-Type', 'application/json')
@@ -50,7 +52,7 @@ export default <NitroErrorHandler> function (error, event) {
 
 function renderHTMLError (error: ParsedError): string {
   const statusCode = error.statusCode || 500
-  const statusMessage = error.statusMessage || 'server'
+  const statusMessage = error.statusMessage || 'Request Error'
   return `<!DOCTYPE html>
   <html lang="en">
   <head>

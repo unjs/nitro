@@ -1,4 +1,4 @@
-import { CompatibilityEvent, eventHandler } from 'h3'
+import { H3Event, eventHandler } from 'h3'
 import { useNitroApp } from './app'
 
 export interface RenderResponse {
@@ -8,7 +8,7 @@ export interface RenderResponse {
   headers: Record<string, string>
 }
 
-export type RenderHandler = (event: CompatibilityEvent) => Partial<RenderResponse> | Promise<Partial<RenderResponse>>
+export type RenderHandler = (event: H3Event) => Partial<RenderResponse> | Promise<Partial<RenderResponse>>
 
 export function defineRenderHandler (handler: RenderHandler) {
   return eventHandler(async (event) => {
@@ -50,9 +50,6 @@ export function defineRenderHandler (handler: RenderHandler) {
     }
 
     // Send response body
-    if (!event.res.writableEnded) {
-      // TODO: Warn if body is not string
-      event.res.end(typeof response.body === 'string' ? response.body : JSON.stringify(response.body))
-    }
+    return typeof response.body === 'string' ? response.body : JSON.stringify(response.body)
   })
 }
