@@ -101,7 +101,20 @@ export interface NitroOptions extends PresetOptions {
   _config: NitroConfig
 
   // General
-  preset: string
+  preset:
+    | 'aws-lambda'
+    | 'azure'
+    | 'cleavr'
+    | 'cloudflare'
+    | 'digital-ocean'
+    | 'firebase'
+    | 'heroku'
+    | 'layer0'
+    | 'netlify'
+    | 'render-com'
+    | 'stormkit'
+    | 'vercel'
+    | (string & {})
   logLevel: LogLevel
   runtimeConfig: {
     app: {
