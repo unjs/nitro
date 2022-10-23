@@ -16,7 +16,7 @@ import { CachedEventHandlerOptions } from '../runtime/types'
 import type * as _PRESETS from '../presets'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
 import type { PresetOptions } from './presets'
-import type { Kebab } from './utils'
+import type { KebabCase } from './utils'
 
 export interface Nitro {
   options: NitroOptions,
@@ -116,7 +116,7 @@ export interface NitroOptions extends PresetOptions {
 
   // General
   debug: boolean
-  preset: Kebab<keyof typeof _PRESETS> | (string & {})
+  preset: KebabCase<keyof typeof _PRESETS> | (string & {})
   logLevel: LogLevel
   runtimeConfig: {
     app: {
