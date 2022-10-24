@@ -58,3 +58,8 @@ export type MatchedRoutes<
     : Extract<Matches, { exact: true }> extends never
       ? Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key'] // partial match and glob match
       : Extract<Matches, { exact: true }>['key'] // exact
+
+export type KebabCase<T extends string, A extends string = ''> =
+    T extends `${infer F}${infer R}` ?
+    KebabCase<R, `${A}${F extends Lowercase<F> ? '' : '-'}${Lowercase<F>}`> :
+    A
