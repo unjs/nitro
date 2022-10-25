@@ -13,7 +13,8 @@ export const nitroImports: Preset[] = [
       'useNitroApp',
       'defineNitroPlugin',
       'nitroPlugin',
-      'defineRenderHandler'
+      'defineRenderHandler',
+      'getRouteRules'
     ]
   }
 ]

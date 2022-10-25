@@ -14,10 +14,12 @@ export interface CacheEntry<T=any> {
 export interface CacheOptions<T = any> {
   name?: string;
   getKey?: (...args: any[]) => string;
-  transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
+  transform?: (entry: CacheEntry<T>, ...args: any[]) => any
+  validate?: (entry: CacheEntry<T>) => boolean
   group?: string;
   integrity?: any;
   maxAge?: number;
+  static?: boolean; // TODO
   swr?: boolean;
   staleMaxAge?: number;
   base?: string;
@@ -39,6 +41,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
   const group = opts.group || 'nitro'
   const name = opts.name || fn.name || '_'
   const integrity = hash([opts.integrity, fn, opts])
+  const validate = opts.validate || (() => true)
 
   async function get (key: string, resolver: () => T | Promise<T>): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
@@ -50,7 +53,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
       entry.expires = Date.now() + ttl
     }
 
-    const expired = (entry.integrity !== integrity) || (ttl && (Date.now() - (entry.mtime || 0)) > ttl)
+    const expired = (entry.integrity !== integrity) || (ttl && (Date.now() - (entry.mtime || 0)) > ttl) || !validate(entry)
 
     const _resolve = async () => {
       if (!pending[key]) {
@@ -65,7 +68,9 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
       entry.mtime = Date.now()
       entry.integrity = integrity
       delete pending[key]
-      useStorage().setItem(cacheKey, entry).catch(error => console.error('[nitro] [cache]', error))
+      if (validate(entry)) {
+        useStorage().setItem(cacheKey, entry).catch(error => console.error('[nitro] [cache]', error))
+      }
     }
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve()
@@ -102,9 +107,13 @@ export interface ResponseCacheEntry<T=any> {
   headers: Record<string, string | number | string[]>
 }
 
+export interface CachedEventHandlerOptions<T=any> extends Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey' | 'transform' | 'validate'> {
+  headersOnly?: boolean
+}
+
 export function defineCachedEventHandler <T=any> (
   handler: EventHandler<T>,
-  opts: Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey'> = defaultCacheOptions
+  opts: CachedEventHandlerOptions<T> = defaultCacheOptions
 ): EventHandler<T> {
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
@@ -113,6 +122,11 @@ export function defineCachedEventHandler <T=any> (
       const friendlyName = decodeURI(parseURL(url).pathname).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16)
       const urlHash = hash(url)
       return `${friendlyName}.${urlHash}`
+    },
+    validate: (entry) => {
+      if (entry.value.code >= 400) { return false }
+      if (entry.value.body === undefined) { return false }
+      return true
     },
     group: opts.group || 'nitro/handlers',
     integrity: [
@@ -125,6 +139,7 @@ export function defineCachedEventHandler <T=any> (
     // Create proxies to avoid sharing state with user request
     const reqProxy = cloneWithProxy(incomingEvent.req, { headers: {} })
     const resHeaders: Record<string, number | string | string[]> = {}
+    let _resSendBody
     const resProxy = cloneWithProxy(incomingEvent.res, {
       statusCode: 200,
       getHeader (name) { return resHeaders[name] },
@@ -132,18 +147,43 @@ export function defineCachedEventHandler <T=any> (
       getHeaderNames () { return Object.keys(resHeaders) },
       hasHeader (name) { return name in resHeaders },
       removeHeader (name) { delete resHeaders[name] },
-      getHeaders () { return resHeaders }
+      getHeaders () { return resHeaders },
+      end (chunk, arg2?, arg3?) {
+        if (typeof chunk === 'string') {
+          _resSendBody = chunk
+        }
+        if (typeof arg2 === 'function') { arg2() }
+        if (typeof arg3 === 'function') { arg3() }
+        return this
+      },
+      write (chunk, arg2?, arg3?) {
+        if (typeof chunk === 'string') {
+          _resSendBody = chunk
+        }
+        if (typeof arg2 === 'function') { arg2() }
+        if (typeof arg3 === 'function') { arg3() }
+        return this
+      },
+      writeHead (statusCode, headers) {
+        this.statusCode = statusCode
+        if (headers) {
+          for (const header in headers) {
+            this.setHeader(header, headers[header])
+          }
+        }
+        return this
+      }
     })
 
     // Call handler
     const event = createEvent(reqProxy, resProxy)
     event.context = incomingEvent.context
-    const body = await handler(event)
+    const body = await handler(event) || _resSendBody
 
     // Collect cachable headers
     const headers = event.res.getHeaders()
-    headers.Etag = `W/"${hash(body)}"`
-    headers['Last-Modified'] = new Date().toUTCString()
+    headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`
+    headers['last-modified'] = headers['Last-Modified'] || headers['last-modified'] || new Date().toUTCString()
     const cacheControl = []
     if (opts.swr) {
       if (opts.maxAge) {
@@ -158,7 +198,7 @@ export function defineCachedEventHandler <T=any> (
       cacheControl.push(`max-age=${opts.maxAge}`)
     }
     if (cacheControl.length) {
-      headers['Cache-Control'] = cacheControl.join(', ')
+      headers['cache-control'] = cacheControl.join(', ')
     }
 
     // Create cache entry for response
@@ -172,6 +212,15 @@ export function defineCachedEventHandler <T=any> (
   }, _opts)
 
   return defineEventHandler<T>(async (event) => {
+    // Headers-only mode
+    if (opts.headersOnly) {
+      // TODO: Send SWR too
+      if (handleCacheHeaders(event, { maxAge: opts.maxAge })) {
+        return
+      }
+      return handler(event)
+    }
+
     // Call with cache
     const response = await _cachedHandler(event)
 
@@ -182,7 +231,7 @@ export function defineCachedEventHandler <T=any> (
 
     // Check for cache headers
     if (handleCacheHeaders(event, {
-      modifiedTime: new Date(response.headers['Last-Modified'] as string),
+      modifiedTime: new Date(response.headers['last-modified'] as string),
       etag: response.headers.etag as string,
       maxAge: opts.maxAge
     })) {

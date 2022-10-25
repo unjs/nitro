@@ -6,7 +6,7 @@ export default defineEventHandler((event) => {
     '/api/hello',
     '/api/hello?bar=baz',
     '/prerender#foo',
-    '../api/hey/',
+    '../api/hey',
     '/api/param/foo.json',
     '/api/param/foo.css'
   ]

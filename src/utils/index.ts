@@ -70,7 +70,8 @@ const autodetectableProviders = {
   cloudflare_pages: 'cloudflare_pages',
   netlify: 'netlify',
   stormkit: 'stormkit',
-  vercel: 'vercel'
+  vercel: 'vercel',
+  cleavr: 'cleavr'
 }
 
 export function detectTarget () {
@@ -145,4 +146,16 @@ export function resolveAliases (_aliases: Record<string, string>) {
     }
   }
   return aliases
+}
+
+export async function retry (fn: () => Promise<void>, retries: number) {
+  let retry = 0
+  let error: any
+  while (retry++ < retries) {
+    try { return await fn() } catch (err) {
+      error = err
+      await new Promise(resolve => setTimeout(resolve, 2))
+    }
+  }
+  throw error
 }

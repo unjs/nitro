@@ -1,5 +1,5 @@
-import type { CompatibilityEvent } from 'h3'
-
+import type { H3Event } from 'h3'
+import { getRequestHeader } from 'h3'
 const METHOD_WITH_BODY_RE = /post|put|patch/i
 const TEXT_MIME_RE = /application\/text|text\/html/
 const JSON_MIME_RE = /application\/json/
@@ -27,15 +27,15 @@ export async function useRequestBody (request: globalThis.Request): Promise<any>
   }
 }
 
-export function hasReqHeader (req: CompatibilityEvent['req'], header: string, includes: string) {
-  const value = req.headers[header]
+export function hasReqHeader (event: H3Event, name: string, includes: string) {
+  const value = getRequestHeader(event, name)
   return value && typeof value === 'string' && value.toLowerCase().includes(includes)
 }
 
-export function isJsonRequest (event: CompatibilityEvent) {
-  return hasReqHeader(event.req, 'accept', 'application/json') ||
-    hasReqHeader(event.req, 'user-agent', 'curl/') ||
-    hasReqHeader(event.req, 'user-agent', 'httpie/') ||
+export function isJsonRequest (event: H3Event) {
+  return hasReqHeader(event, 'accept', 'application/json') ||
+    hasReqHeader(event, 'user-agent', 'curl/') ||
+    hasReqHeader(event, 'user-agent', 'httpie/') ||
     event.req.url?.endsWith('.json') ||
     event.req.url?.includes('/api/')
 }
@@ -61,7 +61,7 @@ export function normalizeError (error: any) {
     })
 
   const statusCode = error.statusCode || 500
-  const statusMessage = error.statusMessage ?? (statusCode === 404 ? 'Route Not Found' : 'Internal Server Error')
+  const statusMessage = error.statusMessage ?? (statusCode === 404 ? 'Not Found' : '')
   const message = error.message || error.toString()
 
   return {
