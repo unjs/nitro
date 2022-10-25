@@ -61,23 +61,23 @@ export default eventHandler(async (event) => {
     }
   }
 
-  if (asset.type) {
+  if (asset.type && !event.res.getHeader('Content-Type')) {
     event.res.setHeader('Content-Type', asset.type)
   }
 
-  if (asset.etag) {
+  if (asset.etag && !event.res.getHeader('ETag')) {
     event.res.setHeader('ETag', asset.etag)
   }
 
-  if (asset.mtime) {
+  if (asset.mtime && !event.res.getHeader('Last-Modified')) {
     event.res.setHeader('Last-Modified', asset.mtime)
   }
 
-  if (asset.encoding) {
+  if (asset.encoding && !event.res.getHeader('Content-Encoding')) {
     event.res.setHeader('Content-Encoding', asset.encoding)
   }
 
-  if (asset.size) {
+  if (asset.size && !event.res.getHeader('Content-Length')) {
     event.res.setHeader('Content-Length', asset.size)
   }
 
