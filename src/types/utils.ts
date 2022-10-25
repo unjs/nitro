@@ -1,7 +1,7 @@
 import type { InternalApi } from './fetch'
 
-type MatchResult<Key extends string, Exact extends boolean = false, Score extends any[] = []> = {
-  [k in Key]: { key: k, exact: Exact, score: Score }
+type MatchResult<Key extends string, Exact extends boolean = false, Score extends any[] = [], catchAll extends boolean = false> = {
+  [k in Key]: { key: k, exact: Exact, score: Score, catchAll: catchAll }
 }[Key]
 
 type Subtract<Minuend extends any[] = [], Subtrahend extends any[] = []> =
@@ -24,15 +24,17 @@ type CalcMatchScore<
   ? KeySeg extends FirstKeySegMatcher // return score if `KeySeg` is empty string (except first pass)
     ? Subtract<[...Score, ...TupleIfDiff<Route, Key, ['', '']>], TupleIfDiff<Key, Route, ['', '']>>
     : `${Route}/` extends `${infer RouteSeg}/${infer RouteRest}`
-      ? RouteSeg extends KeySeg
-        ? CalcMatchScore<KeyRest, RouteRest, [...Score, '', '']> // exact match
-        : KeySeg extends `:${string}`
-          ? RouteSeg extends ''
-            ? never
-            : CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // param match
-          : KeySeg extends RouteSeg
-            ? CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // match by ${string}
-            : never
+      ? `${RouteSeg}?` extends `${infer RouteSegWithoutQuery}?${string}`
+          ? RouteSegWithoutQuery extends KeySeg
+            ? CalcMatchScore<KeyRest, RouteRest, [...Score, '', '']> // exact match
+            : KeySeg extends `:${string}`
+              ? RouteSegWithoutQuery extends ''
+                ? never
+                : CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // param match
+              : KeySeg extends RouteSegWithoutQuery
+                ? CalcMatchScore<KeyRest, RouteRest, [...Score, '']> // match by ${string}
+                : never
+          : never
       : never
   : never
 
@@ -44,7 +46,9 @@ type _MatchedRoutes<
       ? Route extends MatchedKeys
         ? MatchResult<MatchedKeys, true> // exact match
         : MatchedKeys extends `${infer Root}/**${string}`
-          ? MatchResult<MatchedKeys, false, CalcMatchScore<Root, Route, [], true>> // glob match
+          ? MatchedKeys extends `${string}/**`
+            ? Route extends `${Root}/${string}` ? MatchResult<MatchedKeys, false, [], true> : never // catchAll match
+            : MatchResult<MatchedKeys, false, CalcMatchScore<Root, Route, [], true>> // glob match
           : MatchResult<MatchedKeys, false, CalcMatchScore<MatchedKeys, Route, [], true>> // partial match
       : never
     : never
@@ -56,10 +60,11 @@ export type MatchedRoutes<
  > = Route extends '/'
     ? keyof InternalApi // root middleware
     : Extract<Matches, { exact: true }> extends never
-      ? Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key'] // partial match and glob match
-      : Extract<Matches, { exact: true }>['key'] // exact
+      ? | Extract<Exclude<Matches, { score: never }>, { score: MaxTuple<Matches['score']> }>['key']
+        | Extract<Matches, { catchAll: true }>['key'] // partial, glob and catchAll matches
+      : Extract<Matches, { exact: true }>['key'] // exact matches
 
 export type KebabCase<T extends string, A extends string = ''> =
-    T extends `${infer F}${infer R}` ?
-    KebabCase<R, `${A}${F extends Lowercase<F> ? '' : '-'}${Lowercase<F>}`> :
-    A
+  T extends `${infer F}${infer R}` ?
+  KebabCase<R, `${A}${F extends Lowercase<F> ? '' : '-'}${Lowercase<F>}`> :
+  A
