@@ -98,7 +98,7 @@
     "std-env": "^3.3.0",
     "ufo": "^0.8.6",
     "unenv": "^0.6.2",
-    "unimport": "^0.6.8",
+    "unimport": "^0.7.0",
     "unstorage": "^0.6.0"
   },
   "devDependencies": {
