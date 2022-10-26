@@ -69,7 +69,7 @@ export async function writeTypes (nitro: Nitro) {
 
   if (nitro.unimport) {
     autoImportedTypes = [
-      nitro.unimport
+      (await nitro.unimport
         .generateTypeDeclarations({
           exportHelper: false,
           resolvePath: (i) => {
@@ -78,7 +78,7 @@ export async function writeTypes (nitro: Nitro) {
             }
             return i.from
           }
-        })
+        }))
         .trim()
     ]
   }
