@@ -6,7 +6,7 @@ const METHODS = ['HEAD', 'GET']
 
 const EncodingMap = { gzip: '.gz', br: '.br' }
 
-export default eventHandler(async (event) => {
+export default eventHandler((event) => {
   if (event.req.method && !METHODS.includes(event.req.method)) {
     return
   }
