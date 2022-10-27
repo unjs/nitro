@@ -143,7 +143,7 @@ export interface NitroOptions extends PresetOptions {
   bundledStorage: string[]
   timing: boolean
   renderer: string
-  serveStatic: boolean
+  serveStatic: boolean | 'node' | 'deno'
   noPublicDir: boolean
   experimental?: {
     wasm?: boolean | RollupWasmOptions

@@ -6,7 +6,7 @@ const METHODS = ['HEAD', 'GET']
 
 const EncodingMap = { gzip: '.gz', br: '.br' }
 
-export default eventHandler(async (event) => {
+export default eventHandler((event) => {
   if (event.req.method && !METHODS.includes(event.req.method)) {
     return
   }
@@ -87,6 +87,5 @@ export default eventHandler(async (event) => {
   // event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
   // }
 
-  const contents = await readAsset(id)
-  event.res.end(contents)
+  return readAsset(id)
 })
