@@ -87,6 +87,5 @@ export default eventHandler(async (event) => {
   // event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
   // }
 
-  const contents = await readAsset(id)
-  event.res.end(contents)
+  return readAsset(id)
 })

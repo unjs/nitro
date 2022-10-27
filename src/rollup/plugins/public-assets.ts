@@ -48,14 +48,23 @@ export function publicAssets (nitro: Nitro): Plugin {
     // #internal/nitro/virtual/public-assets-node
     '#internal/nitro/virtual/public-assets-node': () => {
       return `
-import { promises as fsp } from 'fs'
-import { resolve } from 'pathe'
-import { dirname } from 'pathe'
-import { fileURLToPath } from 'url'
+import { promises as fsp } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { resolve, dirname } from 'pathe'
 import assets from '#internal/nitro/virtual/public-assets-data'
 export function readAsset (id) {
   const serverDir = dirname(fileURLToPath(import.meta.url))
   return fsp.readFile(resolve(serverDir, assets[id].path))
+}`
+    },
+    // #internal/nitro/virtual/public-assets-deno
+    '#internal/nitro/virtual/public-assets-deno': () => {
+      return `
+import assets from '#internal/nitro/virtual/public-assets-data'
+export function readAsset (id) {
+  const path = '.' + new URL('../public/test.txt', 'file://').pathname
+  console.log(id, '=>', assets[id].path, '=>', path)
+  return Deno.readFile(path);
 }`
     },
     // #internal/nitro/virtual/public-assets
@@ -66,7 +75,9 @@ export function readAsset (id) {
 
       return `
 import assets from '#internal/nitro/virtual/public-assets-data'
-${nitro.options.serveStatic ? 'export * from "#internal/nitro/virtual/public-assets-node"' : 'export const readAsset = () => Promise(null)'}
+${nitro.options.serveStatic
+  ? `export * from "#internal/nitro/virtual/public-assets-${nitro.options.serveStatic === 'deno' ? 'deno' : 'node'}"`
+   : 'export const readAsset = () => Promise(null)'}
 
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 
