@@ -62,8 +62,8 @@ export function readAsset (id) {
       return `
 import assets from '#internal/nitro/virtual/public-assets-data'
 export function readAsset (id) {
+  // https://deno.com/deploy/docs/serve-static-assets
   const path = '.' + new URL('../public/test.txt', 'file://').pathname
-  console.log(id, '=>', assets[id].path, '=>', path)
   return Deno.readFile(path);
 }`
     },

@@ -11,7 +11,6 @@ export const deno = defineNitroPreset({
   },
   rollupConfig: {
     preserveEntrySignatures: false,
-
     external: [
       'https://deno.land/std/http/server.ts'
     ],
