@@ -48,7 +48,7 @@ export default eventHandler(async (event) => {
   const ifNotMatch = event.req.headers['if-none-match'] === asset.etag
   if (ifNotMatch) {
     event.res.statusCode = 304
-    event.res.end('Not Modified (etag)')
+    event.res.end()
     return
   }
 
@@ -56,7 +56,7 @@ export default eventHandler(async (event) => {
   if (ifModifiedSinceH && asset.mtime) {
     if (new Date(ifModifiedSinceH) >= new Date(asset.mtime)) {
       event.res.statusCode = 304
-      event.res.end('Not Modified (mtime)')
+      event.res.end()
       return
     }
   }
