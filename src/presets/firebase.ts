@@ -14,10 +14,23 @@ export const firebase = defineNitroPreset({
   },
   hooks: {
     async 'compiled' (ctx) {
+      copyFirebaseFunctionNodeModule(ctx)
       await writeRoutes(ctx)
     }
   }
 })
+
+function copyFirebaseFunctionNodeModule (nitro: Nitro) {
+  const functionDir = join(nitro.options.output.serverDir, 'node_modules', 'firebase-functions')
+  if (fse.existsSync(functionDir)) {
+    const nodeModulesDir = nitro.options.nodeModulesDirs.find(dir => fse.existsSync(join(dir, 'firebase-functions')))
+    if (nodeModulesDir) {
+      fse.copySync(join(nodeModulesDir, 'firebase-functions', 'lib'), join(functionDir, 'lib'))
+      fse.mkdirSync(join(nitro.options.output.serverDir, 'node_modules', '.bin'))
+      fse.copyFileSync(join(nodeModulesDir, '.bin', 'firebase-functions'), join(nitro.options.output.serverDir, 'node_modules', '.bin', 'firebase-functions'))
+    }
+  }
+}
 
 async function writeRoutes (nitro: Nitro) {
   if (!fse.existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
