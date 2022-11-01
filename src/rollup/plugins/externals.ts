@@ -1,9 +1,11 @@
 import { existsSync, promises as fsp } from 'fs'
 import { resolve, dirname, normalize, join, isAbsolute } from 'pathe'
+import consola from 'consola'
 import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport, normalizeid } from 'mlly'
 import semver from 'semver'
+import { isDirectory, retry } from '../../utils'
 
 export interface NodeExternalsOptions {
   inline?: string[]
@@ -64,7 +66,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       const resolved = await this.resolve(originalId, importer, { ...options, skipSelf: true }) || { id }
 
       // Try resolving with mlly as fallback
-      if (!existsSync(resolved.id)) {
+      if (!isAbsolute(resolved.id) || !existsSync(resolved.id) || await isDirectory(resolved.id)) {
         resolved.id = await _resolve(resolved.id).catch(() => resolved.id)
       }
 
@@ -77,7 +79,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       if (opts.trace === false) {
         return {
           ...resolved,
-          id: normalizeid(resolved.id),
+          id: isAbsolute(resolved.id) ? normalizeid(resolved.id) : resolved.id,
           external: true
         }
       }
@@ -139,14 +141,17 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       for (const pkgName of opts.traceInclude || []) {
         const path = await this.resolve(pkgName)
         if (path?.id) {
-          trackedExternals.add(path.id)
+          trackedExternals.add(path.id.replace(/\?.+/, ''))
         }
       }
 
       // Trace files
-      const tracedFiles = await nodeFileTrace(Array.from(trackedExternals), opts.traceOptions)
+      let tracedFiles = await nodeFileTrace(Array.from(trackedExternals), opts.traceOptions)
         .then(r => Array.from(r.fileList).map(f => resolve(opts.traceOptions.base, f)))
         .then(r => r.filter(file => file.includes('node_modules')))
+
+      // Resolve symlinks
+      tracedFiles = await Promise.all(tracedFiles.map(file => fsp.realpath(file)))
 
       // Read package.json with cache
       const packageJSONCache = new Map() // pkgDir => contents
@@ -161,32 +166,52 @@ export function externals (opts: NodeExternalsOptions): Plugin {
 
       // Keep track of npm packages
       const tracedPackages = new Map() // name => pkgDir
+      const ignoreDirs = []
+      const ignoreWarns = new Set()
       for (const file of tracedFiles) {
         const { baseDir, pkgName } = parseNodeModulePath(file)
         if (!pkgName) {
           continue
         }
-        const pkgDir = resolve(baseDir, pkgName)
+        let pkgDir = resolve(baseDir, pkgName)
 
         // Check for duplicate versions
         const existingPkgDir = tracedPackages.get(pkgName)
         if (existingPkgDir && existingPkgDir !== pkgDir) {
           const v1 = await getPackageJson(existingPkgDir).then(r => r.version)
           const v2 = await getPackageJson(pkgDir).then(r => r.version)
-          if (semver.gte(v1, v2)) {
-            // Existing record is newer or same. Just skip.
-            continue
+          const isNewer = semver.gt(v2, v1)
+
+          // Warn about major version differences
+          const getMajor = (v: string) => v.split('.').filter(s => s !== '0')[0]
+          if (getMajor(v1) !== getMajor(v2)) {
+            const warn = `Multiple major versions of package \`${pkgName}\` are being externalized. Picking latest version:\n\n` + [
+              `  ${isNewer ? '-' : '+'} ` + existingPkgDir + '@' + v1,
+              `  ${isNewer ? '+' : '-'} ` + pkgDir + '@' + v2
+            ].join('\n')
+            if (!ignoreWarns.has(warn)) {
+              consola.warn(warn)
+              ignoreWarns.add(warn)
+            }
           }
-          if (semver.major(v1) !== semver.major(v2)) {
-            console.warn(`Multiple major versions of package ${pkgName} are being externalized. Picking latest version.\n` + [
-              existingPkgDir + '@' + v1,
-              pkgDir + '@' + v2
-            ].map(p => '  - ' + p).join('\n'))
+
+          const [newerDir, olderDir] = isNewer ? [pkgDir, existingPkgDir] : [existingPkgDir, pkgDir]
+          // Try to map traced files from one package to another for minor/patch versions
+          if (getMajor(v1) === getMajor(v2)) {
+            tracedFiles = tracedFiles.map(f => f.startsWith(olderDir + '/') ? f.replace(olderDir, newerDir) : f)
           }
+          // Exclude older version files
+          ignoreDirs.push(olderDir + '/')
+          pkgDir = newerDir // Update for tracedPackages
         }
+
         // Add to traced packages
         tracedPackages.set(pkgName, pkgDir)
       }
+
+      // Filter out files from ignored packages and dedup
+      tracedFiles = tracedFiles.filter(f => !ignoreDirs.some(d => f.startsWith(d)))
+      tracedFiles = Array.from(new Set(tracedFiles))
 
       // Ensure all package.json files are traced
       for (const pkgDir of tracedPackages.values()) {
@@ -196,25 +221,26 @@ export function externals (opts: NodeExternalsOptions): Plugin {
         }
       }
 
-      const writeFile = async (file) => {
+      const writeFile = async (file: string) => {
         if (!await isFile(file)) { return }
         const src = resolve(opts.traceOptions.base, file)
         const { pkgName, subpath } = parseNodeModulePath(file)
-        const dst = resolve(opts.outDir, `node_modules/${pkgName}/${subpath}`)
+        const dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`)
         await fsp.mkdir(dirname(dst), { recursive: true })
-        await fsp.copyFile(src, dst)
-      }
-      if (process.platform === 'win32') {
-        // Workaround for EBUSY on windows (#424)
-        for (const file of tracedFiles) {
-          await writeFile(file)
+        try {
+          await fsp.copyFile(src, dst)
+        } catch (err) {
+          consola.warn(`Could not resolve \`${src}\`. Skipping.`)
         }
-      } else {
-        await Promise.all(tracedFiles.map(writeFile))
       }
+
+      // Write traced files
+      await Promise.all(tracedFiles.map(file => retry(() => writeFile(file), 3)))
 
       // Write an informative package.json
       await fsp.writeFile(resolve(opts.outDir, 'package.json'), JSON.stringify({
+        name: 'nitro-output',
+        version: '0.0.0',
         private: true,
         bundledDependencies: Array.from(tracedPackages.keys())
       }, null, 2), 'utf8')

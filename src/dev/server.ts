@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
-import { App, createApp, eventHandler } from 'h3'
+import { App, createApp, eventHandler, fromNodeMiddleware, H3Error, toNodeListener } from 'h3'
 import httpProxy from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
@@ -74,7 +74,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // Error handler
   const errorHandler = nitro.options.devErrorHandler || defaultErrorHandler
 
-  let lastError: Error = null
+  let lastError: H3Error = null
   let reloadPromise: Promise<void> = null
 
   let currentWorker: NitroWorker = null
@@ -112,14 +112,26 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
     const url = joinURL(nitro.options.runtimeConfig.app.baseURL, asset.baseURL)
-    app.use(url, serveStatic(asset.dir))
+    app.use(url, fromNodeMiddleware(serveStatic(asset.dir)))
     if (!asset.fallthrough) {
-      app.use(url, servePlaceholder())
+      app.use(url, fromNodeMiddleware(servePlaceholder()))
     }
   }
 
   // Worker proxy
   const proxy = httpProxy.createProxy()
+  proxy.on('proxyReq', (proxyReq, req) => {
+    // TODO: Avoid overwriting headers if already set
+    if (req.socket.remoteAddress) {
+      proxyReq.setHeader('X-Forwarded-For', req.socket.remoteAddress)
+    }
+    if (req.socket.remotePort) {
+      proxyReq.setHeader('X-Forwarded-Port', req.socket.remotePort)
+    }
+    if (req.socket.remoteFamily) {
+      proxyReq.setHeader('X-Forwarded-Proto', req.socket.remoteFamily)
+    }
+  })
   app.use(eventHandler(async (event) => {
     await reloadPromise
     const address = currentWorker?.address
@@ -140,7 +152,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // Listen
   let listeners: Listener[] = []
   const _listen: NitroDevServer['listen'] = async (port, opts?) => {
-    const listener = await listen(app, { port, ...opts })
+    const listener = await listen(toNodeListener(app), { port, ...opts })
     listeners.push(listener)
     return listener
   }

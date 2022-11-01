@@ -1,1 +1,1 @@
-export default () => 'Hey API'
+export default eventHandler(() => 'Hey API')

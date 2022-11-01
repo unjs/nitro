@@ -1,15 +1,20 @@
 import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
-import { joinURL, parseURL } from 'ufo'
+import { joinURL, parseURL, withBase, withoutBase } from 'ufo'
 import chalk from 'chalk'
 import { createNitro } from './nitro'
 import { build } from './build'
-import type { Nitro, PrerenderRoute } from './types'
+import type { Nitro, PrerenderGenerateRoute, PrerenderRoute } from './types'
 import { writeFile } from './utils'
+import { compressPublicAssets } from './compress'
 
 const allowedExtensions = new Set(['', '.json'])
 
 export async function prerender (nitro: Nitro) {
+  if (nitro.options.noPublicDir) {
+    console.warn('[nitro] Skipping prerender since `noPublicDir` option is enabled.')
+    return
+  }
   // Skip if no prerender routes specified
   const routes = new Set(nitro.options.prerender.routes)
   if (nitro.options.prerender.crawlLinks && !routes.size) {
@@ -20,6 +25,7 @@ export async function prerender (nitro: Nitro) {
   }
   // Build with prerender preset
   nitro.logger.info('Initializing prerenderer')
+  nitro._prerenderedRoutes = []
   const nitroRenderer = await createNitro({
     ...nitro.options._config,
     rootDir: nitro.options.rootDir,
@@ -37,23 +43,38 @@ export async function prerender (nitro: Nitro) {
   const canPrerender = (route: string = '/') => {
     if (generatedRoutes.has(route)) { return false }
     if (route.length > 250) { return false }
+    for (const ignore of nitro.options.prerender.ignore) {
+      if (route.startsWith(ignore)) { return false }
+    }
     return true
   }
 
   const generateRoute = async (route: string) => {
     const start = Date.now()
 
-    // Check if we should render routee
+    // Check if we should render route
     if (!canPrerender(route)) { return }
     generatedRoutes.add(route)
     routes.delete(route)
 
     // Create result object
-    const _route: PrerenderRoute = { route }
+    const _route: PrerenderGenerateRoute = { route }
 
     // Fetch the route
-    const res = await (localFetch(joinURL(nitro.options.baseURL, route), { headers: { 'X-Nitro-Prerender': route } }) as ReturnType<typeof fetch>)
-    _route.contents = await res.text()
+    const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { 'x-nitro-prerender': route } }) as ReturnType<typeof fetch>)
+    _route.data = await res.arrayBuffer()
+    Object.defineProperty(_route, 'contents', {
+      get: () => {
+        if (!(_route as any)._contents) {
+          (_route as any)._contents = new TextDecoder('utf-8').decode(new Uint8Array(_route.data))
+        }
+        return (_route as any)._contents
+      },
+      set (value: string) {
+        (_route as any)._contents = value
+        _route.data = new TextEncoder().encode(value)
+      }
+    })
     if (res.status !== 200) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any
       _route.error.statusCode = res.status
@@ -63,20 +84,24 @@ export async function prerender (nitro: Nitro) {
     // Write to the file
     const isImplicitHTML = !route.endsWith('.html') && (res.headers.get('content-type') || '').includes('html')
     const routeWithIndex = route.endsWith('/') ? route + 'index' : route
-    _route.fileName = isImplicitHTML ? route + '/index.html' : routeWithIndex
+    _route.fileName = isImplicitHTML ? joinURL(route, 'index.html') : routeWithIndex
+    _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL)
+
+    await nitro.hooks.callHook('prerender:generate', _route, nitro)
+
+    // Check if route skipped or has errors
+    if (_route.skip || _route.error) { return }
+
     const filePath = join(nitro.options.output.publicDir, _route.fileName)
-    await writeFile(filePath, _route.contents)
+    await writeFile(filePath, Buffer.from(_route.data))
+    nitro._prerenderedRoutes.push(_route)
 
     // Crawl route links
-    if (
-      !_route.error &&
-      nitro.options.prerender.crawlLinks &&
-      isImplicitHTML
-    ) {
-      const crawledRoutes = extractLinks(_route.contents, route, res)
-      for (const crawledRoute of crawledRoutes) {
-        if (canPrerender(crawledRoute)) {
-          routes.add(crawledRoute)
+    if (!_route.error && isImplicitHTML) {
+      const extractedLinks = extractLinks(_route.contents, route, res, nitro.options.prerender.crawlLinks)
+      for (const _link of extractedLinks) {
+        if (canPrerender(_link)) {
+          routes.add(_link)
         }
       }
     }
@@ -100,18 +125,28 @@ export async function prerender (nitro: Nitro) {
       nitro.logger.log(chalk[_route.error ? 'yellow' : 'gray'](`  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${_route.error ? `(${_route.error})` : ''}`))
     }
   }
+
+  if (nitro.options.compressPublicAssets) {
+    await compressPublicAssets(nitro)
+  }
 }
 
 const LINK_REGEX = /href=['"]?([^'" >]+)/g
 
-function extractLinks (html: string, from: string, res: Response) {
+function extractLinks (html: string, from: string, res: Response, crawlLinks: boolean) {
   const links: string[] = []
   const _links: string[] = []
 
-  // Extract from any <TAG href="">
-  _links.push(...Array.from(html.matchAll(LINK_REGEX)).map(m => m[1]))
+  // Extract from any <TAG href=""> to crawl
+  if (crawlLinks) {
+    _links.push(
+      ...Array.from(html.matchAll(LINK_REGEX))
+        .map(m => m[1])
+        .filter(link => allowedExtensions.has(getExtension(link)))
+    )
+  }
 
-  // Extract from X-Nitro-Prerender headers
+  // Extract from x-nitro-prerender headers
   const header = res.headers.get('x-nitro-prerender') || ''
   _links.push(...header.split(',').map(i => i.trim()))
 
@@ -119,7 +154,6 @@ function extractLinks (html: string, from: string, res: Response) {
     const parsed = parseURL(link)
     if (parsed.protocol) { continue }
     let { pathname } = parsed
-    if (!allowedExtensions.has(getExtension(pathname))) { continue }
     if (!pathname.startsWith('/')) {
       const fromURL = new URL(from, 'http://localhost')
       pathname = new URL(pathname, fromURL).pathname

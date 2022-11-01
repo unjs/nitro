@@ -44,7 +44,7 @@ export function scanRoutes (nitro: Nitro, dir: string, prefix: string = '/') {
       method = methodMatch[1]
     }
 
-    route = route.replace(/\/index$/, '')
+    route = route.replace(/\/index$/, '') || '/'
 
     return {
       handler: file.fullPath,
@@ -60,6 +60,16 @@ async function scanServerDir (nitro: Nitro, name: string, mapper: (file: FileInf
   const files = await scanDirs(dirs)
   const handlers: NitroEventHandler[] = files.map(mapper)
   return { dirs, files, handlers }
+}
+
+export async function scanPlugins (nitro: Nitro) {
+  const plugins = []
+  for (const dir of nitro.options.scanDirs) {
+    const pluginDir = join(dir, 'plugins')
+    const pluginFiles = await globby(GLOB_SCAN_PATTERN, { cwd: pluginDir, absolute: true })
+    plugins.push(...pluginFiles.sort())
+  }
+  return plugins
 }
 
 function scanDirs (dirs: string[]): Promise<FileInfo[]> {

@@ -1,10 +1,11 @@
 import { existsSync } from 'fs'
 import { resolve } from 'pathe'
-import { createHooks } from 'hookable'
+import { createHooks, createDebugger } from 'hookable'
 import { createUnimport } from 'unimport'
 import consola from 'consola'
 import type { NitroConfig, Nitro } from './types'
 import { loadOptions } from './options'
+import { scanPlugins } from './scan'
 import { createStorage } from './storage'
 
 export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
@@ -25,6 +26,11 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Storage
   nitro.storage = await createStorage(nitro)
   nitro.hooks.hook('close', async () => { await nitro.storage.dispose() })
+
+  if (nitro.options.debug) {
+    createDebugger(nitro.hooks, { tag: 'nitro' })
+    nitro.options.plugins.push('#internal/nitro/debug')
+  }
 
   // Logger config
   if (nitro.options.logLevel !== undefined) {
@@ -56,8 +62,16 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     dir: resolve(nitro.options.srcDir, 'assets')
   })
 
-  if (nitro.options.autoImport) {
-    nitro.unimport = createUnimport(nitro.options.autoImport)
+  // Plugins
+  const scannedPlugins = await scanPlugins(nitro)
+  for (const plugin of scannedPlugins) {
+    if (!nitro.options.plugins.find(p => p === plugin)) {
+      nitro.options.plugins.push(plugin)
+    }
+  }
+
+  if (nitro.options.imports) {
+    nitro.unimport = createUnimport(nitro.options.imports)
     // Support for importing from '#imports'
     nitro.options.virtual['#imports'] = () => nitro.unimport.toExports()
     // Backward compatibility

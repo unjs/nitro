@@ -1,16 +1,22 @@
 /* eslint-disable no-use-before-define */
 import type { Preset as UnenvPreset } from 'unenv'
-import type { Unimport, UnimportOptions } from 'unimport'
+import type { Unimport } from 'unimport'
+import type { UnimportPluginOptions } from 'unimport/unplugin'
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
 import type { NestedHooks, Hookable } from 'hookable'
 import type { Consola, LogLevel } from 'consola'
 import type { WatchOptions } from 'chokidar'
 import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
-import type { Storage } from 'unstorage'
+import type { RollupWasmOptions } from '@rollup/plugin-wasm'
+import type { Storage, BuiltinDriverName } from 'unstorage'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
+import { CachedEventHandlerOptions } from '../runtime/types'
+import type * as _PRESETS from '../presets'
 import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
+import type { PresetOptions } from './presets'
+import type { KebabCase } from './utils'
 
 export interface Nitro {
   options: NitroOptions,
@@ -21,14 +27,22 @@ export interface Nitro {
   logger: Consola
   storage: Storage
   close: () => Promise<void>
+
+  /* @internal */
+  _prerenderedRoutes?: PrerenderGenerateRoute[]
 }
 
 export interface PrerenderRoute {
   route: string
   contents?: string
+  data?: ArrayBuffer
   fileName?: string
   error?: Error & { statusCode: number, statusMessage: string }
   generateTimeMS?: number
+}
+
+export interface PrerenderGenerateRoute extends PrerenderRoute {
+  skip?: boolean
 }
 
 type HookResult = void | Promise<void>
@@ -38,30 +52,22 @@ export interface NitroHooks {
   'dev:reload': () => HookResult
   'close': () => HookResult
   'prerender:route': (route: PrerenderRoute) => HookResult
+  'prerender:generate': (route: PrerenderGenerateRoute, nitro: Nitro) => HookResult
 }
 
+type CustomDriverName = string & { _custom?: any }
+
 export interface StorageMounts {
-  [path: string]: {
-    driver: 'fs' | 'http' | 'memory' | 'redis' | 'cloudflare-kv',
-    [option: string]: any
-  }
+  [path: string]: { driver: BuiltinDriverName | CustomDriverName, [option: string]: any }
 }
 
 type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] } : T
 
 export type NitroPreset = NitroConfig | (() => NitroConfig)
 
-export interface NitroConfig extends DeepPartial<NitroOptions> {
+export interface NitroConfig extends DeepPartial<Omit<NitroOptions, 'routeRules'>> {
   extends?: string | string[] | NitroPreset
-}
-
-export interface NitroRouteOption {
-  swr?: boolean | number
-  redirect?: string
-}
-
-export interface NitroRoutesOptions {
-  [path: string]: NitroRouteOption
+  routeRules?: { [path: string]: NitroRouteConfig }
 }
 
 export interface PublicAssetDir {
@@ -80,25 +86,47 @@ export interface DevServerOptions {
   watch: string[]
 }
 
-export interface NitroOptions {
+export interface CompressOptions {
+  gzip?: boolean
+  brotli?: boolean
+}
+
+type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc['length']]>
+type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>
+type HTTPStatusCode = IntRange<100, 600>
+
+export interface NitroRouteConfig {
+  cache?: CachedEventHandlerOptions | false
+  headers?: Record<string, string>
+  redirect?: string | { to: string, statusCode?: HTTPStatusCode }
+
+  // Shortcuts
+  cors?: boolean
+  swr?: boolean | number
+  static?: boolean | number
+}
+
+export interface NitroRouteRules extends Omit<NitroRouteConfig, 'redirect' | 'cors' | 'swr' | 'static'> {
+  redirect?: { to: string, statusCode: HTTPStatusCode }
+}
+
+export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig
 
   // General
-  preset: string
+  debug: boolean
+  preset: KebabCase<keyof typeof _PRESETS> | (string & {})
   logLevel: LogLevel
   runtimeConfig: {
     app: {
       baseURL: string
     },
-    nitro: {
-      /** @deprecated Use top-level routes option! */
-      routes: NitroRoutesOptions
-    }
     [key: string]: any
   }
 
   // Dirs
+  workspaceDir: string
   rootDir: string
   srcDir: string
   scanDirs: string[]
@@ -115,15 +143,21 @@ export interface NitroOptions {
   bundledStorage: string[]
   timing: boolean
   renderer: string
-  serveStatic: boolean
+  serveStatic: boolean | 'node' | 'deno'
+  noPublicDir: boolean
   experimental?: {
-    wasm?: boolean
+    wasm?: boolean | RollupWasmOptions
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
-  autoImport: UnimportOptions
+  /**
+   * @deprecated Please use `imports` option
+   */
+  autoImport: UnimportPluginOptions | false
+  imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
+  compressPublicAssets: boolean | CompressOptions
 
   // Dev
   dev: boolean
@@ -133,12 +167,13 @@ export interface NitroOptions {
   // Routing
   baseURL: string,
   handlers: NitroEventHandler[]
-  routes: NitroRoutesOptions
+  routeRules: { [path: string]: NitroRouteRules }
   devHandlers: NitroDevEventHandler[]
   errorHandler: string
   devErrorHandler: NitroErrorHandler
   prerender: {
     crawlLinks: boolean
+    ignore: string[]
     routes: string[]
   }
 

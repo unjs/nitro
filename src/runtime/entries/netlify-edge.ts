@@ -13,6 +13,7 @@ export default async function (request: Request, _context) {
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
+    // @ts-ignore TODO
     headers: request.headers,
     method: request.method,
     redirect: request.redirect,
@@ -20,7 +21,7 @@ export default async function (request: Request, _context) {
   })
 
   return new Response(r.body, {
-    headers: r.headers,
+    headers: r.headers as HeadersInit,
     status: r.status,
     statusText: r.statusText
   })

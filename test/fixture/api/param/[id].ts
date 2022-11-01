@@ -1,3 +1,3 @@
-export default defineEventHandler((event) => {
-  return event.context.params.id
+export default eventHandler((event) => {
+  return event.context.params.id as number
 })

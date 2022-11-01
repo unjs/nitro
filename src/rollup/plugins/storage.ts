@@ -1,5 +1,5 @@
-import { serializeImportName } from '../../utils'
-import { builtinDrivers } from '../../storage'
+import { builtinDrivers } from 'unstorage'
+import { genImport, genSafeVariableName } from 'knitwork'
 import type { Nitro } from '../../types'
 import { virtual } from './virtual'
 
@@ -44,7 +44,7 @@ for (const base of bundledStorage) {
 import { createStorage } from 'unstorage'
 import { assets } from '#internal/nitro/virtual/server-assets'
 
-${driverImports.map(i => `import ${serializeImportName(i)} from '${i}'`).join('\n')}
+${driverImports.map(i => genImport(i, genSafeVariableName(i))).join('\n')}
 
 const storage = createStorage({})
 
@@ -52,7 +52,7 @@ export const useStorage = () => storage
 
 storage.mount('/assets', assets)
 
-${mounts.map(m => `storage.mount('${m.path}', ${serializeImportName(m.driver)}(${JSON.stringify(m.opts)}))`).join('\n')}
+${mounts.map(m => `storage.mount('${m.path}', ${genSafeVariableName(m.driver)}(${JSON.stringify(m.opts)}))`).join('\n')}
 
 ${(!isDevOrPrerender && nitro.options.bundledStorage.length) ? bundledStorageCode : ''}
 `

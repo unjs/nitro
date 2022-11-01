@@ -2,7 +2,7 @@ import { pathToFileURL } from 'url'
 import { resolve } from 'pathe'
 import { globby } from 'globby'
 import type { Plugin } from 'rollup'
-import { serializeImportName } from '../../utils'
+import { genSafeVariableName } from 'knitwork'
 
 const PLUGIN_NAME = 'dynamic-require'
 const HELPER_DYNAMIC = `\0${PLUGIN_NAME}.mjs`
@@ -66,7 +66,7 @@ export function dynamicRequire ({ dir, ignore, inline }: Options): Plugin {
       const chunks = (await Promise.all(files.map(async id => ({
         id,
         src: resolve(dir, id).replace(/\\/g, '/'),
-        name: serializeImportName(id),
+        name: genSafeVariableName(id),
         meta: await getWebpackChunkMeta(resolve(dir, id))
       })))).filter(chunk => chunk.meta)
 

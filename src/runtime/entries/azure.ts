@@ -6,7 +6,8 @@ export async function handle (context, req) {
   let url: string
   if (req.headers['x-ms-original-url']) {
     // This URL has been proxied as there was no static file matching it.
-    url = parseURL(req.headers['x-ms-original-url']).pathname
+    const parsedURL = parseURL(req.headers['x-ms-original-url'])
+    url = parsedURL.pathname + parsedURL.search
   } else {
     // Because Azure SWA handles /api/* calls differently they
     // never hit the proxy and we have to reconstitute the URL.
@@ -17,7 +18,8 @@ export async function handle (context, req) {
     url,
     headers: req.headers,
     method: req.method,
-    body: req.body
+    // https://github.com/Azure/azure-functions-host/issues/293
+    body: req.rawBody
   })
 
   context.res = {

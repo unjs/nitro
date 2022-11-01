@@ -26,12 +26,20 @@ export default <NitroErrorHandler> function (error, event) {
   }
 
   // Console output
-  if (statusCode !== 404) {
-    console.error('[nitro] [request error]', error.message + '\n' + stack.map(l => '  ' + l.text).join('  \n'))
+  if (error.unhandled || error.fatal) {
+    const tags = [
+      '[nitro]',
+      '[request error]',
+      error.unhandled && '[unhandled]',
+      error.fatal && '[fatal]'
+    ].filter(Boolean).join(' ')
+    console.error(tags, error.message + '\n' + stack.map(l => '  ' + l.text).join('  \n'))
   }
 
   event.res.statusCode = statusCode
-  event.res.statusMessage = statusMessage
+  if (statusMessage) {
+    event.res.statusMessage = statusMessage
+  }
 
   if (isJsonRequest(event)) {
     event.res.setHeader('Content-Type', 'application/json')
@@ -44,7 +52,7 @@ export default <NitroErrorHandler> function (error, event) {
 
 function renderHTMLError (error: ParsedError): string {
   const statusCode = error.statusCode || 500
-  const statusMessage = error.statusMessage || 'server'
+  const statusMessage = error.statusMessage || 'Request Error'
   return `<!DOCTYPE html>
   <html lang="en">
   <head>

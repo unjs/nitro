@@ -1,7 +1,8 @@
 import { defineNitroConfig } from '../../src'
 
 export default defineNitroConfig({
-  autoImport: {
+  compressPublicAssets: true,
+  imports: {
     presets: [
       {
         // TODO: move this to built-in preset
@@ -20,10 +21,17 @@ export default defineNitroConfig({
       dir: 'public/build'
     }
   ],
+  nodeModulesDirs: [
+    './_/node_modules'
+  ],
   prerender: {
     crawlLinks: true,
+    ignore: [
+      // '/api/param/'
+    ],
     routes: [
       '/prerender',
+      '/icon.png',
       '/404'
     ]
   }

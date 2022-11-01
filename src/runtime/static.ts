@@ -1,10 +1,12 @@
 import { eventHandler, createError } from 'h3'
-import { withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
+import { joinURL, withoutTrailingSlash, withLeadingSlash, parseURL } from 'ufo'
 import { getAsset, readAsset, isPublicAssetURL } from '#internal/nitro/virtual/public-assets'
 
 const METHODS = ['HEAD', 'GET']
 
-export default eventHandler(async (event) => {
+const EncodingMap = { gzip: '.gz', br: '.br' }
+
+export default eventHandler((event) => {
   if (event.req.method && !METHODS.includes(event.req.method)) {
     return
   }
@@ -12,12 +14,24 @@ export default eventHandler(async (event) => {
   let id = decodeURIComponent(withLeadingSlash(withoutTrailingSlash(parseURL(event.req.url).pathname)))
   let asset
 
-  for (const _id of [id, id + '/index.html']) {
-    const _asset = getAsset(_id)
-    if (_asset) {
-      asset = _asset
-      id = _id
-      break
+  const encodingHeader = String(event.req.headers['accept-encoding'] || '')
+  const encodings = encodingHeader.split(',')
+    .map(e => EncodingMap[e.trim()])
+    .filter(Boolean)
+    .sort()
+    .concat([''])
+  if (encodings.length > 1) {
+    event.res.setHeader('Vary', 'Accept-Encoding')
+  }
+
+  for (const encoding of encodings) {
+    for (const _id of [id + encoding, joinURL(id, 'index.html' + encoding)]) {
+      const _asset = getAsset(_id)
+      if (_asset) {
+        asset = _asset
+        id = _id
+        break
+      }
     }
   }
 
@@ -34,7 +48,7 @@ export default eventHandler(async (event) => {
   const ifNotMatch = event.req.headers['if-none-match'] === asset.etag
   if (ifNotMatch) {
     event.res.statusCode = 304
-    event.res.end('Not Modified (etag)')
+    event.res.end()
     return
   }
 
@@ -42,21 +56,29 @@ export default eventHandler(async (event) => {
   if (ifModifiedSinceH && asset.mtime) {
     if (new Date(ifModifiedSinceH) >= new Date(asset.mtime)) {
       event.res.statusCode = 304
-      event.res.end('Not Modified (mtime)')
+      event.res.end()
       return
     }
   }
 
-  if (asset.type) {
+  if (asset.type && !event.res.getHeader('Content-Type')) {
     event.res.setHeader('Content-Type', asset.type)
   }
 
-  if (asset.etag) {
+  if (asset.etag && !event.res.getHeader('ETag')) {
     event.res.setHeader('ETag', asset.etag)
   }
 
-  if (asset.mtime) {
+  if (asset.mtime && !event.res.getHeader('Last-Modified')) {
     event.res.setHeader('Last-Modified', asset.mtime)
+  }
+
+  if (asset.encoding && !event.res.getHeader('Content-Encoding')) {
+    event.res.setHeader('Content-Encoding', asset.encoding)
+  }
+
+  if (asset.size && !event.res.getHeader('Content-Length')) {
+    event.res.setHeader('Content-Length', asset.size)
   }
 
   // TODO: Asset dir cache control
@@ -65,6 +87,5 @@ export default eventHandler(async (event) => {
   // event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
   // }
 
-  const contents = await readAsset(id)
-  event.res.end(contents)
+  return readAsset(id)
 })

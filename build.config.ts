@@ -2,6 +2,7 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   declaration: true,
+  name: 'nitro',
   entries: [
     'src/index',
     'src/cli',
