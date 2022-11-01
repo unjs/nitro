@@ -24,7 +24,7 @@ const { statusCode, headers, body } = handler({ rawPath: '/' })
 
 **Preset:** `aws-lambda-edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-::alert{type=warning}
+::alert
 **Zero Config Provider**
 :br
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
@@ -34,7 +34,7 @@ Nitro provides a built-in preset to generate output format compatible with [AWS 
 
 The output entrypoint in `.output/server/index.mjs` is compatible with [AWS Lambda@Edge format](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html).
 
-::alert
+::alert{type=warning}
 **Bootstrap**
 :br
 Nitro uses [AWS CDK](https://github.com/aws/aws-cdk) for deploying Lambda@Edge.
