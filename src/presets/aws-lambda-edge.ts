@@ -117,6 +117,8 @@ export class NitroLambdaEdgeStack extends Stack {
       }
     );
     const bucket = new s3.Bucket(this, "Bucket", {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -136,6 +138,8 @@ export class NitroLambdaEdgeStack extends Stack {
           origin: s3Origin,
         }),
       }),
+      priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
+      httpVersion: cloudfront.HttpVersion.HTTP3,
     });
     new s3deployment.BucketDeployment(this, "Deployment", {
       sources: [nitro.staticAsset],
