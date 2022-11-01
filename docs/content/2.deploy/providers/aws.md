@@ -24,7 +24,7 @@ const { statusCode, headers, body } = handler({ rawPath: '/' })
 
 **Preset:** `aws-lambda-edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-::alert
+::alert{type=warning}
 **Zero Config Provider**
 :br
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
