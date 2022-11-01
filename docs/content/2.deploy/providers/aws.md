@@ -24,15 +24,19 @@ const { statusCode, headers, body } = handler({ rawPath: '/' })
 
 **Preset:** `aws-lambda-edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-::: info Zero Config Provider
+::alert
+**Zero Config Provider**
+:br
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
-:::
+::
 
 Nitro provides a built-in preset to generate output format compatible with [AWS Lambda@Edge](https://docs.aws.amazon.com/lambda/latest/dg/lambda-edge.html).
 
 The output entrypoint in `.output/server/index.mjs` is compatible with [AWS Lambda@Edge format](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html).
 
-::: warning Bootstrap
+::warning
+**Bootstrap**
+:br
 Nitro uses [AWS CDK](https://github.com/aws/aws-cdk) for deploying Lambda@Edge.
 If you are using AWS CDK for the first time on a region-by-region basis, you will need to run the following commands. 
 ```bash
@@ -41,7 +45,7 @@ npx cdk bootstrap \
   aws://<aws-account-id>/<aws-region>
 ```
 Lambda@Edge uses us-east-1, so be sure to include it in your bootstrap, even when deploying to a different region.
-:::
+::
 
 ### Deploy from your local machine
 
