@@ -3,7 +3,7 @@ import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
 import { defu } from 'defu'
-import { resolveModuleExportNames, resolvePath as resovleModule } from 'mlly'
+import { resolveModuleExportNames, resolvePath as resolveModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest, isDebug } from 'std-env'
@@ -250,7 +250,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
 
   for (const pkg of ['defu', 'h3', 'radix3']) {
     if (!options.alias[pkg]) {
-      options.alias[pkg] = await resovleModule(pkg, { url: import.meta.url })
+      options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url })
     }
   }
 
