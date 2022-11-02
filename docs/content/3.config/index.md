@@ -47,7 +47,7 @@ Server runtime configuration.
 
 - Default: `{}`
 
-Enable experimental features. Currently, non are available!
+Enable experimental features. Currently, none are available!
 
 ## `storage`
 
