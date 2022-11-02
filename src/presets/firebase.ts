@@ -14,13 +14,13 @@ export const firebase = defineNitroPreset({
   },
   hooks: {
     async 'compiled' (ctx) {
-      resolveRequiredNodeModule(ctx)
+      resolveRequiredNodeModules(ctx)
       await writeRoutes(ctx)
     }
   }
 })
 
-function resolveRequiredNodeModule (nitro: Nitro) {
+function resolveRequiredNodeModules (nitro: Nitro) {
   const functionDir = join(nitro.options.output.serverDir, 'node_modules', 'firebase-functions')
   if (fse.existsSync(functionDir)) {
     const nodeModulesDir = nitro.options.nodeModulesDirs.find(dir => fse.existsSync(join(dir, 'firebase-functions')))
