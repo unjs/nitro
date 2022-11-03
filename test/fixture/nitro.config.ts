@@ -27,6 +27,10 @@ export default defineNitroConfig({
   nodeModulesDirs: [
     './_/node_modules'
   ],
+  routeRules: {
+    '/api/param/prerender4': { prerender: true },
+    '/api/param/prerender2': { prerender: false }
+  },
   prerender: {
     crawlLinks: true,
     ignore: [
