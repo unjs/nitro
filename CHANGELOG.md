@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 
+## v0.6.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v0.6.0...v0.6.1)
+
+
+### 🚀 Enhancements
+
+  - Autocompletion for the `preset` config ([#606](https://github.com/unjs/nitro/pull/606))
+  - `deno` deploy preset ([#619](https://github.com/unjs/nitro/pull/619))
+  - `devProxy` support ([#631](https://github.com/unjs/nitro/pull/631))
+  - Prerender:routes hook ([#632](https://github.com/unjs/nitro/pull/632))
+  - Support `prerender` route rule ([#633](https://github.com/unjs/nitro/pull/633))
+
+### 🩹 Fixes
+
+  - Add `cleavr` to built-in presets ([#601](https://github.com/unjs/nitro/pull/601))
+  - Correct type inference for routes ([#518](https://github.com/unjs/nitro/pull/518))
+  - Allow user to override static headers ([#610](https://github.com/unjs/nitro/pull/610))
+  - Do not write bodies for 304 responses ([#618](https://github.com/unjs/nitro/pull/618))
+
+### 💅 Refactors
+
+  - Fix typo in internal function name ([#625](https://github.com/unjs/nitro/pull/625))
+
+### 📖 Documentation
+
+  - Fix typo ([#624](https://github.com/unjs/nitro/pull/624))
+
+### 🏡 Chore
+
+  - Manually update changelog ([95d6172](https://github.com/unjs/nitro/commit/95d6172))
+  - Add feature request template ([87996e0](https://github.com/unjs/nitro/commit/87996e0))
+  - Upgrade `unimport` ([#613](https://github.com/unjs/nitro/pull/613))
+
+### ✅ Tests
+
+  - Update fixtures ([086802d](https://github.com/unjs/nitro/commit/086802d))
+
+### ❤️  Contributors
+
+- Alexander Lichter
+- Anish Ghimire
+- Anthony Fu
+- Damian Głowala
+- Daniel Roe
+- David Tai
+- Pooya Parsa
+- Ʀᴀʏ
+
 ## v0.6.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v0.5.4...v0.6.0)
