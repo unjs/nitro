@@ -114,7 +114,7 @@
     "@vitest/coverage-c8": "^0.24.5",
     "c8": "^7.12.0",
     "changelogen": "^0.3.5",
-    "edge-runtime": "1.1.0",
+    "edge-runtime": "2.0.1",
     "eslint": "^8.26.0",
     "execa": "^6.1.0",
     "expect-type": "^0.15.0",
