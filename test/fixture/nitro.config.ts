@@ -15,6 +15,9 @@ export default defineNitroConfig({
       }
     ]
   },
+  devProxy: {
+    '/proxy/example': { target: 'https://example.com', changeOrigin: true }
+  },
   publicAssets: [
     {
       baseURL: 'build',

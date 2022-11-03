@@ -9,6 +9,7 @@ import type { WatchOptions } from 'chokidar'
 import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
 import type { RollupWasmOptions } from '@rollup/plugin-wasm'
 import type { Storage, BuiltinDriverName } from 'unstorage'
+import type { ServerOptions as HTTPProxyOptions } from 'http-proxy'
 import type { NodeExternalsOptions } from '../rollup/plugins/externals'
 import type { RollupConfig } from '../rollup/config'
 import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
@@ -163,6 +164,7 @@ export interface NitroOptions extends PresetOptions {
   dev: boolean
   devServer: DevServerOptions
   watchOptions: WatchOptions
+  devProxy: Record<string, string | HTTPProxyOptions>
 
   // Routing
   baseURL: string,
