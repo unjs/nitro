@@ -52,6 +52,7 @@ export interface NitroHooks {
   'compiled': (nitro: Nitro) => HookResult
   'dev:reload': () => HookResult
   'close': () => HookResult
+  'prerender:routes': (routes: Set<string>) => HookResult
   'prerender:route': (route: PrerenderRoute) => HookResult
   'prerender:generate': (route: PrerenderGenerateRoute, nitro: Nitro) => HookResult
 }
