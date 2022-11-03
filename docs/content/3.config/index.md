@@ -146,6 +146,23 @@ There are situations in that we directly want to provide a handler instance with
 
 We can use `devHandlers` but note that they are **only available in development mode** and **not in production build**.
 
+## `devProxy`
+
+Proxy configuration for development server.
+
+You can use this option to override development server routes and proxy-pass requests.
+
+```js
+{
+  devProxy: {
+    '/proxy/test': 'http://localhost:3001',
+    '/proxy/example': { target: 'https://example.com', changeOrigin: true }
+  }
+}
+```
+
+See [https://github.com/http-party/node-http-proxy#options](https://github.com/http-party/node-http-proxy#options) for all available target options.
+
 ## `errorHandler`
 
 Path to a custom runtime error handler. Replacing nitro's built-in error page.
