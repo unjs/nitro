@@ -101,6 +101,7 @@ export interface NitroRouteConfig {
   cache?: CachedEventHandlerOptions | false
   headers?: Record<string, string>
   redirect?: string | { to: string, statusCode?: HTTPStatusCode }
+  prerender?: boolean
 
   // Shortcuts
   cors?: boolean

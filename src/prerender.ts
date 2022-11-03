@@ -2,9 +2,11 @@ import { pathToFileURL } from 'url'
 import { resolve, join } from 'pathe'
 import { joinURL, parseURL, withBase, withoutBase } from 'ufo'
 import chalk from 'chalk'
+import { createRouter as createRadixRouter, toRouteMatcher } from 'radix3'
+import { defu } from 'defu'
 import { createNitro } from './nitro'
 import { build } from './build'
-import type { Nitro, PrerenderGenerateRoute, PrerenderRoute } from './types'
+import type { Nitro, NitroRouteRules, PrerenderGenerateRoute, PrerenderRoute } from './types'
 import { writeFile } from './utils'
 import { compressPublicAssets } from './compress'
 
@@ -15,18 +17,31 @@ export async function prerender (nitro: Nitro) {
     console.warn('[nitro] Skipping prerender since `noPublicDir` option is enabled.')
     return
   }
-  // Skip if no prerender routes specified
+
+  // Initial list of routes to prerender
   const routes = new Set(nitro.options.prerender.routes)
+
+  // Extend with static prerender route rules
+  const prerenderRulePaths = Object.entries(nitro.options.routeRules)
+    .filter(([path, options]) => options.prerender && !path.includes('*'))
+    .map(e => e[0])
+  for (const route of prerenderRulePaths) {
+    routes.add(route)
+  }
+
+  // Crawl / at least if no routes are defined
+  if (nitro.options.prerender.crawlLinks && !routes.size) {
+    routes.add('/')
+  }
 
   // Allow extending prereneder routes
   await nitro.hooks.callHook('prerender:routes', routes)
 
-  if (nitro.options.prerender.crawlLinks && !routes.size) {
-    routes.add('/')
-  }
+  // Skip if no prerender routes specified
   if (!routes.size) {
     return
   }
+
   // Build with prerender preset
   nitro.logger.info('Initializing prerenderer')
   nitro._prerenderedRoutes = []
@@ -42,6 +57,10 @@ export async function prerender (nitro: Nitro) {
   const serverEntrypoint = resolve(nitroRenderer.options.output.serverDir, 'index.mjs')
   const { localFetch } = await import(pathToFileURL(serverEntrypoint).href)
 
+  // Create route rule matcher
+  const _routeRulesMatcher = toRouteMatcher(createRadixRouter({ routes: nitro.options.routeRules }))
+  const _getRouteRules = (path: string) => defu({}, ..._routeRulesMatcher.matchAll(path).reverse()) as NitroRouteRules
+
   // Start prerendering
   const generatedRoutes = new Set()
   const canPrerender = (route: string = '/') => {
@@ -50,6 +69,7 @@ export async function prerender (nitro: Nitro) {
     for (const ignore of nitro.options.prerender.ignore) {
       if (route.startsWith(ignore)) { return false }
     }
+    if (_getRouteRules(route).prerender === false) { return false }
     return true
   }
 
