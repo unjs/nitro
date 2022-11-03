@@ -1,8 +1,8 @@
 import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
-import { App, createApp, eventHandler, fromNodeMiddleware, H3Error, toNodeListener } from 'h3'
-import httpProxy from 'http-proxy'
+import { App, createApp, eventHandler, fromNodeMiddleware, H3Error, H3Event, toNodeListener } from 'h3'
+import httpProxy, { ServerOptions } from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
 import serveStatic from 'serve-static'
@@ -118,9 +118,19 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     }
   }
 
-  // Worker proxy
-  const proxy = httpProxy.createProxy()
-  proxy.on('proxyReq', (proxyReq, req) => {
+  // User defined dev proxy
+  for (const route of Object.keys(nitro.options.devProxy).sort().reverse()) {
+    let opts = nitro.options.devProxy[route]
+    if (typeof opts === 'string') { opts = { target: opts } }
+    const proxy = createProxy(opts)
+    app.use(route, eventHandler(async (event) => {
+      await proxy.handle(event)
+    }))
+  }
+
+  // Main worker proxy
+  const proxy = createProxy()
+  proxy.proxy.on('proxyReq', (proxyReq, req) => {
     // TODO: Avoid overwriting headers if already set
     if (req.socket.remoteAddress) {
       proxyReq.setHeader('X-Forwarded-For', req.socket.remoteAddress)
@@ -138,14 +148,9 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     if (!address || (address.socketPath && !existsSync(address.socketPath))) {
       return errorHandler(lastError, event)
     }
-    return new Promise<void>((resolve, reject) => {
-      proxy.web(event.req, event.res, { target: address }, (error: any) => {
-        lastError = error
-        if (error.code !== 'ECONNRESET') {
-          reject(error)
-        }
-        resolve()
-      })
+    await proxy.handle(event, { target: address }).catch((err) => {
+      lastError = err
+      throw err
     })
   }))
 
@@ -181,5 +186,23 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     app,
     close,
     watcher
+  }
+}
+
+function createProxy (defaults: ServerOptions = {}) {
+  const proxy = httpProxy.createProxy()
+  const handle = (event: H3Event, opts: ServerOptions = {}) => {
+    return new Promise<void>((resolve, reject) => {
+      proxy.web(event.req, event.res, { ...defaults, ...opts }, (error: any) => {
+        if (error.code !== 'ECONNRESET') {
+          reject(error)
+        }
+        resolve()
+      })
+    })
+  }
+  return {
+    proxy,
+    handle
   }
 }

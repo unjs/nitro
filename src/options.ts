@@ -48,6 +48,7 @@ const NitroDefaults: NitroConfig = {
   dev: false,
   devServer: { watch: [] },
   watchOptions: { ignoreInitial: true },
+  devProxy: {},
 
   // Routing
   baseURL: process.env.NITRO_APP_BASE_URL || '/',
