@@ -39,7 +39,7 @@ importers:
       defu: ^6.1.0
       destr: ^1.2.0
       dot-prop: ^7.2.0
-      edge-runtime: 1.1.0
+      edge-runtime: 2.0.1
       esbuild: ^0.15.13
       escape-string-regexp: ^5.0.0
       eslint: ^8.26.0
@@ -157,7 +157,7 @@ importers:
       '@vitest/coverage-c8': 0.24.5
       c8: 7.12.0
       changelogen: 0.3.5
-      edge-runtime: 1.1.0
+      edge-runtime: 2.0.1
       eslint: 8.26.0
       execa: 6.1.0
       expect-type: 0.15.0
@@ -429,14 +429,14 @@ packages:
     resolution: {integrity: sha512-MkLDDtPhXZIMx83NykdFmOpF7gVWIdd6GBHYb8V/E+PKWvD2pK/qWx9B30oN1iDJ2XBm0SGDjz02S8nDHI9lMQ==}
     dev: true
 
-  /@edge-runtime/primitives/1.1.0:
-    resolution: {integrity: sha512-MpL5fKlOs9mz5DMRuFchLe3Il84t7XpfbPq4qtaEK37uNMCRx1MzA3d7A4aTsR/guXSZvV/AtEbKVqBWjuSThA==}
+  /@edge-runtime/primitives/2.0.1:
+    resolution: {integrity: sha512-ZNOK+bHPGNM8WphjADFgH1ikWnN1mqeGvOGPlGJRS0PeG35WoPYxo8EMziyvcn/7mj1oNORza9rM8tkAFOAwvQ==}
     dev: true
 
-  /@edge-runtime/vm/1.1.0:
-    resolution: {integrity: sha512-a3PSCdznoop5+ifkNDaSINB9V+Anwh+wpoaASIWhq9PLQuBF9D6Yxe/mLRZkuZRkOJ2ZmaTzMGDI5ROUChTL7g==}
+  /@edge-runtime/vm/2.0.1:
+    resolution: {integrity: sha512-+5UtwEL08QidClBAPc+7NBrbKvF/Kkz0jPSOf6rsMlDs5Ac7F3k9ZwBknf81nfCQvo0gkuVtDjOPbcLR5qvYeg==}
     dependencies:
-      '@edge-runtime/primitives': 1.1.0
+      '@edge-runtime/primitives': 2.0.1
     dev: true
 
   /@esbuild/android-arm/0.15.13:
@@ -1927,12 +1927,12 @@ packages:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
     dev: false
 
-  /edge-runtime/1.1.0:
-    resolution: {integrity: sha512-CvUOrwV3Qx0V56LttLEvQWyuRsjaEKJH+UOT5Z8xmy0vr3/PAJC2RGW317LCl3XZgbiym4gcf36kQAbrsjKXmw==}
+  /edge-runtime/2.0.1:
+    resolution: {integrity: sha512-PelXUAwkoFw/i6Igp5AHnBWtRxJQ1fac1FoDiaiw5o/PaPGodSFw8sA7ZwABXEuEeNwVYG8xBqvEqBxnJREoaA==}
     hasBin: true
     dependencies:
       '@edge-runtime/format': 1.1.0
-      '@edge-runtime/vm': 1.1.0
+      '@edge-runtime/vm': 2.0.1
       exit-hook: 2.2.1
       http-status: 1.5.3
       mri: 1.2.0
