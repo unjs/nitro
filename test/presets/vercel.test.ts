@@ -30,11 +30,11 @@ describe('nitro:preset:vercel', async () => {
           "api/param/prerender1/index.html": {
             "path": "api/param/prerender1",
           },
-          "api/param/prerender2/index.html": {
-            "path": "api/param/prerender2",
-          },
           "api/param/prerender3/index.html": {
             "path": "api/param/prerender3",
+          },
+          "api/param/prerender4/index.html": {
+            "path": "api/param/prerender4",
           },
           "prerender/index.html": {
             "path": "prerender",
