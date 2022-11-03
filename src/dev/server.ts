@@ -2,7 +2,7 @@ import { Worker } from 'worker_threads'
 import { existsSync, promises as fsp } from 'fs'
 import { debounce } from 'perfect-debounce'
 import { App, createApp, eventHandler, fromNodeMiddleware, H3Error, H3Event, toNodeListener } from 'h3'
-import httpProxy, { ServerOptions } from 'http-proxy'
+import httpProxy, { ServerOptions as HTTPProxyOptions } from 'http-proxy'
 import { listen, Listener, ListenOptions } from 'listhen'
 import { servePlaceholder } from 'serve-placeholder'
 import serveStatic from 'serve-static'
@@ -189,9 +189,9 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   }
 }
 
-function createProxy (defaults: ServerOptions = {}) {
+function createProxy (defaults: HTTPProxyOptions = {}) {
   const proxy = httpProxy.createProxy()
-  const handle = (event: H3Event, opts: ServerOptions = {}) => {
+  const handle = (event: H3Event, opts: HTTPProxyOptions = {}) => {
     return new Promise<void>((resolve, reject) => {
       proxy.web(event.req, event.res, { ...defaults, ...opts }, (error: any) => {
         if (error.code !== 'ECONNRESET') {
