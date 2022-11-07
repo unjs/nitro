@@ -1,5 +1,5 @@
 import '#internal/nitro/virtual/polyfill'
-import { requestHasBody, useRequestBody } from '../utils'
+import { requestHasBody } from '../utils'
 import { nitroApp } from '../app'
 
 /** @see https://developers.cloudflare.com/pages/platform/functions/#writing-your-first-function */
@@ -32,7 +32,7 @@ export async function onRequest (ctx: CFRequestContext) {
   const url = new URL(ctx.request.url)
   let body
   if (requestHasBody(ctx.request)) {
-    body = await useRequestBody(ctx.request)
+    body = Buffer.from(await ctx.request.arrayBuffer())
   }
 
   const r = await nitroApp.localCall({

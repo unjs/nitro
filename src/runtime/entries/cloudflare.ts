@@ -1,7 +1,7 @@
 import '#internal/nitro/virtual/polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
-import { requestHasBody, useRequestBody } from '../utils'
+import { requestHasBody } from '../utils'
 import { nitroApp } from '../app'
 import { useRuntimeConfig } from '#internal/nitro'
 
@@ -19,7 +19,7 @@ async function handleEvent (event: FetchEvent) {
   const url = new URL(event.request.url)
   let body
   if (requestHasBody(event.request)) {
-    body = await useRequestBody(event.request)
+    body = Buffer.from(await event.request.arrayBuffer())
   }
 
   const r = await nitroApp.localCall({
