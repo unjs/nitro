@@ -5,7 +5,7 @@ import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
 import type { Plugin } from 'rollup'
 import { resolvePath, isValidNodeImport, normalizeid } from 'mlly'
 import semver from 'semver'
-import { isDirectory, retry } from '../../utils'
+import { isDirectory, isFalse, retry } from '../../utils'
 
 export interface NodeExternalsOptions {
   inline?: string[]
@@ -36,13 +36,8 @@ export function externals (opts: NodeExternalsOptions): Plugin {
   return {
     name: 'node-externals',
     async resolveId (originalId, importer, options) {
-      // Skip internals
-      if (!originalId || originalId.startsWith('\x00') || originalId.includes('?') || originalId.startsWith('#')) {
-        return null
-      }
-
-      // Skip relative paths
-      if (originalId.startsWith('.')) {
+      // Skip internals and relative paths
+      if (!originalId || originalId.startsWith('\x00') || originalId.includes('?') || originalId.startsWith('#') || originalId.startsWith('.')) {
         return null
       }
 
@@ -76,7 +71,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       }
 
       // Externalize with full path if trace is disabled
-      if (opts.trace === false) {
+      if (isFalse(opts.trace)) {
         return {
           ...resolved,
           id: isAbsolute(resolved.id) ? normalizeid(resolved.id) : resolved.id,
@@ -133,7 +128,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
       }
     },
     async buildEnd () {
-      if (opts.trace === false) {
+      if (isFalse(opts.trace)) {
         return
       }
 

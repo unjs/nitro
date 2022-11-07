@@ -2,6 +2,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyEventHeaders, APIGatewayProxy
 import '#internal/nitro/virtual/polyfill'
 import { withQuery } from 'ufo'
 import { nitroApp } from '../app'
+import { isArray } from '../../utils'
 
 // Compatibility types that work with AWS v1, AWS v2 & Netlify
 type Event = Omit<APIGatewayProxyEvent, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'> | Omit<APIGatewayProxyEventV2, 'pathParameters' | 'stageVariables' | 'requestContext' | 'resource'>
@@ -27,7 +28,7 @@ export const handler = async function handler (event: Event, context: Context): 
   })
 
   const outgoingCookies = r.headers['set-cookie']
-  const cookies = Array.isArray(outgoingCookies) ? outgoingCookies : outgoingCookies?.split(',') || []
+  const cookies = isArray(outgoingCookies) ? outgoingCookies : outgoingCookies?.split(',') || []
 
   return {
     cookies,
@@ -44,5 +45,5 @@ function normalizeIncomingHeaders (headers?: APIGatewayProxyEventHeaders) {
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
   return Object.fromEntries(Object.entries(headers)
     .filter(([key]) => !['set-cookie'].includes(key))
-    .map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
+    .map(([k, v]) => [k, isArray(v) ? v.join(',') : v!]))
 }

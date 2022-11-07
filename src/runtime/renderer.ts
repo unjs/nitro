@@ -1,4 +1,5 @@
 import { H3Event, eventHandler } from 'h3'
+import { isString } from '../utils'
 import { useNitroApp } from './app'
 
 export interface RenderResponse {
@@ -50,6 +51,6 @@ export function defineRenderHandler (handler: RenderHandler) {
     }
 
     // Send response body
-    return typeof response.body === 'string' ? response.body : JSON.stringify(response.body)
+    return isString(response.body) ? response.body : JSON.stringify(response.body)
   })
 }

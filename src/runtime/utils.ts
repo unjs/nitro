@@ -1,10 +1,11 @@
 import type { H3Event } from 'h3'
 import { getRequestHeader } from 'h3'
+import { isString } from '../utils'
 const METHOD_WITH_BODY_RE = /post|put|patch/i
 const TEXT_MIME_RE = /application\/text|text\/html/
 const JSON_MIME_RE = /application\/json/
 
-export function requestHasBody (request: globalThis.Request) : boolean {
+export function requestHasBody (request: globalThis.Request): boolean {
   return METHOD_WITH_BODY_RE.test(request.method)
 }
 
@@ -29,7 +30,7 @@ export async function useRequestBody (request: globalThis.Request): Promise<any>
 
 export function hasReqHeader (event: H3Event, name: string, includes: string) {
   const value = getRequestHeader(event, name)
-  return value && typeof value === 'string' && value.toLowerCase().includes(includes)
+  return isString(value) && value.toLowerCase().includes(includes)
 }
 
 export function isJsonRequest (event: H3Event) {

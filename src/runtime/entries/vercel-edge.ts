@@ -1,4 +1,5 @@
 import '#internal/nitro/virtual/polyfill'
+import { isArray } from '../../utils'
 import { requestHasBody, useRequestBody } from '#internal/nitro/utils'
 import { nitroApp } from '#internal/nitro/app'
 
@@ -28,5 +29,5 @@ export default async function handleEvent (request, event) {
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+  return Object.entries(headers).map(([k, v]) => [k, isArray(v) ? v.join(',') : v])
 }

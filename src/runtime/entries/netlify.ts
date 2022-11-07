@@ -2,6 +2,7 @@ import '#internal/nitro/virtual/polyfill'
 import type { Handler, HandlerResponse, HandlerContext, HandlerEvent } from '@netlify/functions/dist/main'
 import type { APIGatewayProxyEventHeaders } from 'aws-lambda'
 import { withQuery } from 'ufo'
+import { isArray, isNumber } from '../../utils'
 import { nitroApp } from '../app'
 import { getRouteRulesForPath } from '../route-rules'
 
@@ -12,7 +13,7 @@ export const handler: Handler = async function handler (event, context) {
 
   if (routeRules.cache && (routeRules.cache.swr || routeRules.cache.static)) {
     const builder = await import('@netlify/functions').then(r => r.builder || r.default.builder)
-    const ttl = typeof routeRules.cache.swr === 'number' ? routeRules.cache.swr : 60
+    const ttl = isNumber(routeRules.cache.swr) ? routeRules.cache.swr : 60
     const swrHandler = routeRules.cache.swr
       ? ((event, context) => lambda(event, context).then(r => ({ ...r, ttl }))) as Handler
       : lambda
@@ -51,5 +52,5 @@ function normalizeIncomingHeaders (headers?: APIGatewayProxyEventHeaders) {
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
   return Object.fromEntries(Object.entries(headers)
     .filter(([key]) => !['set-cookie'].includes(key))
-    .map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
+    .map(([k, v]) => [k, isArray(v) ? v.join(',') : v!]))
 }

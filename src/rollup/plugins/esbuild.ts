@@ -5,6 +5,7 @@ import type { Plugin, PluginContext } from 'rollup'
 import { Loader, TransformResult, transform } from 'esbuild'
 import { createFilter } from '@rollup/pluginutils'
 import type { FilterPattern } from '@rollup/pluginutils'
+import { isFalse, isString } from '../../utils'
 
 const defaultLoaders: { [ext: string]: Loader } = {
   '.ts': 'ts',
@@ -44,9 +45,9 @@ export function esbuild (options: Options): Plugin {
   if (options.loaders) {
     for (const key of Object.keys(options.loaders)) {
       const value = options.loaders[key]
-      if (typeof value === 'string') {
+      if (isString(value)) {
         loaders[key] = value
-      } else if (value === false) {
+      } else if (isFalse(value)) {
         delete loaders[key]
       }
     }

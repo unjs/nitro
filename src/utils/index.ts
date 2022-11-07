@@ -7,6 +7,8 @@ import chalk from 'chalk'
 import { getProperty } from 'dot-prop'
 import { provider } from 'std-env'
 import { Nitro } from '../types'
+import { isString } from './utils'
+export * from './utils'
 
 export function hl (str: string) {
   return chalk.cyan(str)
@@ -39,14 +41,14 @@ export function tryImport (dir: string, path: string) {
 
 export async function writeFile (file: string, contents: Buffer | string, log = false) {
   await fse.mkdirp(dirname(file))
-  await fse.writeFile(file, contents, typeof contents === 'string' ? 'utf-8' : undefined)
+  await fse.writeFile(file, contents, isString(contents) ? 'utf-8' : undefined)
   if (log) {
     consola.info('Generated', prettyPath(file))
   }
 }
 
 export function resolvePath (path: string, nitroOptions: Nitro['options'], base?: string): string {
-  if (typeof path !== 'string') {
+  if (!isString(path)) {
     throw new TypeError('Invalid path: ' + path)
   }
 

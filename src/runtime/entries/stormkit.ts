@@ -1,6 +1,7 @@
 import type { Handler } from 'aws-lambda'
 import '#internal/nitro/virtual/polyfill'
 import { nitroApp } from '../app'
+import { isArray } from '../../utils'
 
 interface StormkitEvent {
   url: string // e.g. /my/path, /my/path?with=query
@@ -42,5 +43,5 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v!]))
+  return Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, isArray(v) ? v.join(',') : v!]))
 }

@@ -43,10 +43,7 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Public assets
   for (const dir of options.scanDirs) {
     const publicDir = resolve(dir, 'public')
-    if (!existsSync(publicDir)) { continue }
-    if (options.publicAssets.find(asset => asset.dir === publicDir)) {
-      continue
-    }
+    if (!existsSync(publicDir) || options.publicAssets.find(asset => asset.dir === publicDir)) { continue }
     options.publicAssets.push({ dir: publicDir } as any)
   }
   for (const asset of options.publicAssets) {

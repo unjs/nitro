@@ -18,7 +18,7 @@ import { sanitizeFilePath } from 'mlly'
 import unimportPlugin from 'unimport/unplugin'
 import { hash } from 'ohash'
 import type { Nitro } from '../types'
-import { resolveAliases } from '../utils'
+import { isFalse, isString, resolveAliases } from '../utils'
 import { runtimeDir } from '../dirs'
 import { replace } from './plugins/replace'
 import { virtual } from './plugins/virtual'
@@ -38,7 +38,7 @@ export type RollupConfig = InputOptions & { output: OutputOptions }
 export const getRollupConfig = (nitro: Nitro) => {
   const extensions: string[] = ['.ts', '.mjs', '.js', '.json', '.node']
 
-  const nodePreset = nitro.options.node === false ? unenv.nodeless : unenv.node
+  const nodePreset = isFalse(nitro.options.node) ? unenv.nodeless : unenv.node
 
   const builtinPreset: Preset = {
     alias: {
@@ -58,7 +58,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   const buildServerDir = join(nitro.options.buildDir, 'dist/server')
   const runtimeAppDir = join(runtimeDir, 'app')
 
-  const rollupConfig = defu(nitro.options.rollupConfig, <RollupConfig> {
+  const rollupConfig = defu(nitro.options.rollupConfig, <RollupConfig>{
     input: nitro.options.entry,
     output: {
       dir: nitro.options.output.serverDir,
@@ -173,7 +173,7 @@ export const getRollupConfig = (nitro: Nitro) => {
   // Dynamic Require Support
   rollupConfig.plugins.push(dynamicRequire({
     dir: resolve(nitro.options.buildDir, 'dist/server'),
-    inline: nitro.options.node === false || nitro.options.inlineDynamicImports,
+    inline: isFalse(nitro.options.node) || nitro.options.inlineDynamicImports,
     ignore: [
       'client.manifest.mjs',
       'server.js',
@@ -217,7 +217,7 @@ export const plugins = [
   // https://github.com/rollup/plugins/tree/master/packages/alias
   let buildDir = nitro.options.buildDir
   // Windows (native) dynamic imports should be file:// urls
-  if (isWindows && (nitro.options.externals?.trace === false) && nitro.options.dev) {
+  if (isWindows && isFalse(nitro.options.externals?.trace) && nitro.options.dev) {
     buildDir = pathToFileURL(buildDir).href
   }
   rollupConfig.plugins.push(alias({
@@ -249,7 +249,7 @@ export const plugins = [
         'virtual:',
         runtimeDir,
         nitro.options.srcDir,
-        ...nitro.options.handlers.map(m => m.handler).filter(i => typeof i === 'string')
+        ...nitro.options.handlers.map(m => m.handler).filter(i => isString(i))
       ],
       traceOptions: {
         base: '/',

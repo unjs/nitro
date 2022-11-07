@@ -1,5 +1,6 @@
 import destr from 'destr'
 import { snakeCase } from 'scule'
+import { isObject } from '../utils'
 
 // Bundled runtime config (injected by nitro)
 const _runtimeConfig = process.env.RUNTIME_CONFIG as any
@@ -12,9 +13,7 @@ const getEnv = (key: string) => {
   const envKey = snakeCase(key).toUpperCase()
   return destr(process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey])
 }
-function isObject (input: unknown) {
-  return typeof input === 'object' && !Array.isArray(input)
-}
+
 function overrideConfig (obj: object, parentKey: string = '') {
   for (const key in obj) {
     const subKey = parentKey ? `${parentKey}_${key}` : key
@@ -41,7 +40,7 @@ function deepFreeze (object: Record<string, any>) {
   const propNames = Object.getOwnPropertyNames(object)
   for (const name of propNames) {
     const value = object[name]
-    if (value && typeof value === 'object') {
+    if (isObject(value)) {
       deepFreeze(value)
     }
   }

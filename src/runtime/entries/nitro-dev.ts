@@ -7,6 +7,7 @@ import { threadId, parentPort } from 'worker_threads'
 import { isWindows, provider } from 'std-env'
 import { toNodeListener } from 'h3'
 import { nitroApp } from '../app'
+import { isString } from '../../utils'
 
 const server = new Server(toNodeListener(nitroApp.h3App))
 
@@ -29,7 +30,7 @@ server.listen(listenAddress, () => {
   const _address = server.address()
   parentPort.postMessage({
     event: 'listen',
-    address: typeof _address === 'string'
+    address: isString(_address)
       ? { socketPath: _address }
       : { host: 'localhost', port: _address.port }
   })

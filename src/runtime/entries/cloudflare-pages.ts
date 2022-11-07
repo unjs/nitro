@@ -1,6 +1,7 @@
 import '#internal/nitro/virtual/polyfill'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
+import { isArray } from '../../utils'
 
 /** @see https://developers.cloudflare.com/pages/platform/functions/#writing-your-first-function */
 interface CFRequestContext {
@@ -57,5 +58,5 @@ export async function onRequest (ctx: CFRequestContext) {
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+  return Object.entries(headers).map(([k, v]) => [k, isArray(v) ? v.join(',') : v])
 }

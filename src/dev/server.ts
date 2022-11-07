@@ -10,6 +10,7 @@ import { resolve } from 'pathe'
 import { joinURL } from 'ufo'
 import { FSWatcher, watch } from 'chokidar'
 import type { Nitro } from '../types'
+import { isString } from '../utils'
 import { createVFSHandler } from './vfs'
 import defaultErrorHandler from './error'
 
@@ -121,7 +122,7 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
   // User defined dev proxy
   for (const route of Object.keys(nitro.options.devProxy).sort().reverse()) {
     let opts = nitro.options.devProxy[route]
-    if (typeof opts === 'string') { opts = { target: opts } }
+    if (isString(opts)) { opts = { target: opts } }
     const proxy = createProxy(opts)
     app.use(route, eventHandler(async (event) => {
       await proxy.handle(event)

@@ -4,6 +4,7 @@ import { serve } from 'https://deno.land/std/http/server.ts'
 
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
+import { isArray } from '../../utils'
 
 serve((request: Request) => {
   return handleRequest(request)
@@ -35,5 +36,5 @@ async function handleRequest (request: Request) {
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+  return Object.entries(headers).map(([k, v]) => [k, isArray(v) ? v.join(',') : v])
 }

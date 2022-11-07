@@ -5,6 +5,7 @@ import { globby } from 'globby'
 import { resolve } from 'pathe'
 import mime from 'mime'
 import type { Nitro } from './types'
+import { isFalse } from './utils'
 
 export async function compressPublicAssets (nitro: Nitro) {
   const publicFiles = await globby('**', {
@@ -29,7 +30,7 @@ export async function compressPublicAssets (nitro: Nitro) {
 
     const { gzip, brotli } = nitro.options.compressPublicAssets || {} as any
 
-    const encodings = [gzip !== false && 'gzip', brotli !== false && 'br'].filter(Boolean)
+    const encodings = [!isFalse(gzip) && 'gzip', !isFalse(brotli) && 'br'].filter(Boolean)
 
     for (const encoding of encodings) {
       const suffix = '.' + (encoding === 'gzip' ? 'gz' : 'br')
@@ -45,11 +46,9 @@ export async function compressPublicAssets (nitro: Nitro) {
       }
       const compressedBuff: Buffer = await new Promise((resolve, reject) => {
         const cb = (error, result: Buffer) => error ? reject(error) : resolve(result)
-        if (encoding === 'gzip') {
-          zlib.gzip(fileContents, gzipOptions, cb)
-        } else {
-          zlib.brotliCompress(fileContents, brotliOptions, cb)
-        }
+        encoding === 'gzip'
+          ? zlib.gzip(fileContents, gzipOptions, cb)
+          : zlib.brotliCompress(fileContents, brotliOptions, cb)
       })
       await fsp.writeFile(compressedPath, compressedBuff)
     }

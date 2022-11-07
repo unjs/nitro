@@ -2,9 +2,10 @@ import { hash } from 'ohash'
 import { handleCacheHeaders, defineEventHandler, createEvent, EventHandler } from 'h3'
 import type { H3Event } from 'h3'
 import { parseURL } from 'ufo'
+import { isFunction, isString, isUndefined } from '../utils'
 import { useStorage } from '#internal/nitro'
 
-export interface CacheEntry<T=any> {
+export interface CacheEntry<T = any> {
   value?: T
   expires?: number
   mtime?: number
@@ -32,7 +33,7 @@ const defaultCacheOptions = {
   maxAge: 1
 }
 
-export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CacheOptions<T>) {
+export function defineCachedFunction<T = any> (fn: ((...args) => T | Promise<T>), opts: CacheOptions<T>) {
   opts = { ...defaultCacheOptions, ...opts }
 
   const pending: { [key: string]: Promise<T> } = {}
@@ -87,11 +88,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
   return async (...args) => {
     const key = (opts.getKey || getKey)(...args)
     const entry = await get(key, () => fn(...args))
-    let value = entry.value
-    if (opts.transform) {
-      value = await opts.transform(entry, ...args) || value
-    }
-    return value
+    return (opts.transform && await opts.transform(entry, ...args)) || entry.value
   }
 }
 
@@ -101,17 +98,17 @@ function getKey (...args: string[]) {
   return args.length ? hash(args, {}) : ''
 }
 
-export interface ResponseCacheEntry<T=any> {
+export interface ResponseCacheEntry<T = any> {
   body: T
   code: number
   headers: Record<string, string | number | string[]>
 }
 
-export interface CachedEventHandlerOptions<T=any> extends Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey' | 'transform' | 'validate'> {
+export interface CachedEventHandlerOptions<T = any> extends Omit<CacheOptions<ResponseCacheEntry<T>>, 'getKey' | 'transform' | 'validate'> {
   headersOnly?: boolean
 }
 
-export function defineCachedEventHandler <T=any> (
+export function defineCachedEventHandler<T = any> (
   handler: EventHandler<T>,
   opts: CachedEventHandlerOptions<T> = defaultCacheOptions
 ): EventHandler<T> {
@@ -123,11 +120,7 @@ export function defineCachedEventHandler <T=any> (
       const urlHash = hash(url)
       return `${friendlyName}.${urlHash}`
     },
-    validate: (entry) => {
-      if (entry.value.code >= 400) { return false }
-      if (entry.value.body === undefined) { return false }
-      return true
-    },
+    validate: entry => entry.value.code < 400 && !isUndefined(entry.value.body),
     group: opts.group || 'nitro/handlers',
     integrity: [
       opts.integrity,
@@ -149,19 +142,19 @@ export function defineCachedEventHandler <T=any> (
       removeHeader (name) { delete resHeaders[name] },
       getHeaders () { return resHeaders },
       end (chunk, arg2?, arg3?) {
-        if (typeof chunk === 'string') {
+        if (isString(chunk)) {
           _resSendBody = chunk
         }
-        if (typeof arg2 === 'function') { arg2() }
-        if (typeof arg3 === 'function') { arg3() }
+        if (isFunction(arg2)) { arg2() }
+        if (isFunction(arg3)) { arg3() }
         return this
       },
       write (chunk, arg2?, arg3?) {
-        if (typeof chunk === 'string') {
+        if (isString(chunk)) {
           _resSendBody = chunk
         }
-        if (typeof arg2 === 'function') { arg2() }
-        if (typeof arg3 === 'function') { arg3() }
+        if (isFunction(arg2)) { arg2() }
+        if (isFunction(arg3)) { arg3() }
         return this
       },
       writeHead (statusCode, headers) {

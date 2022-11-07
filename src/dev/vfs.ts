@@ -1,5 +1,6 @@
 import { createError, eventHandler } from 'h3'
 import type { Nitro } from '../types'
+import { isFunction } from '../utils'
 
 export function createVFSHandler (nitro: Nitro) {
   return eventHandler(async (event) => {
@@ -26,7 +27,7 @@ export function createVFSHandler (nitro: Nitro) {
     let file = ''
     if (id in vfsEntries) {
       let contents = vfsEntries[id]
-      if (typeof contents === 'function') {
+      if (isFunction(contents)) {
         contents = await contents()
       }
       file = editorTemplate({

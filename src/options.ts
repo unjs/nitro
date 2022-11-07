@@ -8,7 +8,7 @@ import { resolveModuleExportNames, resolvePath as resolveModule } from 'mlly'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
 import { isTest, isDebug } from 'std-env'
 import { findWorkspaceDir } from 'pkg-types'
-import { resolvePath, detectTarget } from './utils'
+import { resolvePath, detectTarget, isFunction, isString, isNumber, isArray, isFalse } from './utils'
 import type { NitroConfig, NitroOptions, NitroRouteConfig, NitroRouteRules } from './types'
 import { runtimeDir, pkgDir } from './dirs'
 import * as _PRESETS from './presets'
@@ -116,7 +116,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       if (!matchedPreset) {
         return null
       }
-      if (typeof matchedPreset === 'function') {
+      if (isFunction(matchedPreset)) {
         matchedPreset = matchedPreset()
       }
       return {
@@ -165,13 +165,13 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
 
   // Backward compatibility for options.autoImports
   // TODO: Remove in major release
-  if (options.autoImport === false) {
+  if (isFalse(options.autoImport)) {
     options.imports = false
-  } else if (options.imports !== false) {
+  } else if (!isFalse(options.imports)) {
     options.imports = options.autoImport = defu(options.imports, options.autoImport)
   }
 
-  if (options.imports && Array.isArray(options.imports.exclude)) {
+  if (options.imports && isArray(options.imports.exclude)) {
     options.imports.exclude.push(options.buildDir)
   }
 
@@ -200,7 +200,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       routeRules.redirect = {
         to: '/',
         statusCode: 307,
-        ...(typeof routeConfig.redirect === 'string' ? { to: routeConfig.redirect } : routeConfig.redirect)
+        ...(isString(routeConfig.redirect) ? { to: routeConfig.redirect } : routeConfig.redirect)
       }
     }
     // CORS
@@ -217,7 +217,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     if (routeConfig.swr) {
       routeRules.cache = routeRules.cache || {}
       routeRules.cache.swr = true
-      if (typeof routeConfig.swr === 'number') {
+      if (isNumber(routeConfig.swr)) {
         routeRules.cache.maxAge = routeConfig.swr
       }
     }
@@ -227,7 +227,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
       routeRules.cache.static = true
     }
     // Cache: false
-    if (routeConfig.cache === false) {
+    if (isFalse(routeConfig.cache)) {
       routeRules.cache = false
     }
     normalizedRules[path] = routeRules

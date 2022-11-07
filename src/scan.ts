@@ -75,12 +75,10 @@ export async function scanPlugins (nitro: Nitro) {
 function scanDirs (dirs: string[]): Promise<FileInfo[]> {
   return Promise.all(dirs.map(async (dir) => {
     const fileNames = await globby(GLOB_SCAN_PATTERN, { cwd: dir, dot: true })
-    return fileNames.map((fileName) => {
-      return {
-        dir,
-        path: fileName,
-        fullPath: resolve(dir, fileName)
-      }
-    }).sort((a, b) => b.path.localeCompare(a.path))
+    return fileNames.map(fileName => ({
+      dir,
+      path: fileName,
+      fullPath: resolve(dir, fileName)
+    })).sort((a, b) => b.path.localeCompare(a.path))
   })).then(r => r.flat())
 }

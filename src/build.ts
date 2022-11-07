@@ -11,7 +11,7 @@ import type { RollupError } from 'rollup'
 import type { OnResolveResult, PartialMessage } from 'esbuild'
 import { printFSTree } from './utils/tree'
 import { getRollupConfig, RollupConfig } from './rollup/config'
-import { prettyPath, writeFile, isDirectory } from './utils'
+import { prettyPath, writeFile, isDirectory, isString } from './utils'
 import { GLOB_SCAN_PATTERN, scanHandlers } from './scan'
 import type { Nitro } from './types'
 import { runtimeDir } from './dirs'
@@ -20,10 +20,9 @@ import { compressPublicAssets } from './compress'
 
 export async function prepare (nitro: Nitro) {
   await prepareDir(nitro.options.output.dir)
-  if (!nitro.options.noPublicDir) {
-    await prepareDir(nitro.options.output.publicDir)
-  }
-  await prepareDir(nitro.options.output.serverDir)
+  await prepareDir(!nitro.options.noPublicDir
+    ? nitro.options.output.publicDir
+    : nitro.options.output.serverDir)
 }
 
 async function prepareDir (dir: string) {
@@ -59,7 +58,7 @@ export async function writeTypes (nitro: Nitro) {
   ]
 
   for (const mw of middleware) {
-    if (typeof mw.handler !== 'string' || !mw.route) { continue }
+    if (!isString(mw.handler) || !mw.route) { continue }
     const relativePath = relative(join(nitro.options.buildDir, 'types'), mw.handler).replace(/\.[a-z]+$/, '')
     routeTypes[mw.route] = routeTypes[mw.route] || []
     routeTypes[mw.route].push(`Awaited<ReturnType<typeof import('${relativePath}').default>>`)
@@ -142,7 +141,7 @@ async function _snapshot (nitro: Nitro) {
 
   const data = await snapshotStorage(nitro)
   await Promise.all(Object.entries(data).map(async ([path, contents]) => {
-    if (typeof contents !== 'string') { contents = JSON.stringify(contents) }
+    if (!isString(contents)) { contents = JSON.stringify(contents) }
     const fsPath = join(storageDir, path.replace(/:/g, '/'))
     await fsp.mkdir(dirname(fsPath), { recursive: true })
     await fsp.writeFile(fsPath, contents, 'utf8')
@@ -182,9 +181,9 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
 
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir)
-  const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/([^\s]*)/g, ` ${rOutput}/$1`)
-  }
+  const rewriteRelativePaths = (input: string) =>
+    input.replace(/\s\.\/([^\s]*)/g, ` ${rOutput}/$1`)
+
   if (buildInfo.commands.preview) {
     nitro.logger.success(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
   }

@@ -3,6 +3,7 @@ import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
+import { isArray } from '../../utils'
 import { useRuntimeConfig } from '#internal/nitro'
 
 addEventListener('fetch', (event: any) => {
@@ -58,5 +59,5 @@ const baseURLModifier = (request: Request) => {
 }
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+  return Object.entries(headers).map(([k, v]) => [k, isArray(v) ? v.join(',') : v])
 }

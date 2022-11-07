@@ -1,5 +1,6 @@
 import { resolve, dirname } from 'pathe'
 import type { Plugin } from 'rollup'
+import { isFunction } from '../../utils'
 
 // Based on https://github.com/rollup/plugins/blob/master/packages/virtual/src/index.ts
 
@@ -44,7 +45,7 @@ export function virtual (modules: RollupVirtualOptions, cache: Record<string, Vi
       if (!_modules.has(idNoPrefix)) { return null }
 
       let m = _modules.get(idNoPrefix)
-      if (typeof m === 'function') {
+      if (isFunction(m)) {
         m = await m()
       }
 
