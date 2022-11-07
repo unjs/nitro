@@ -20,10 +20,9 @@ import { compressPublicAssets } from './compress'
 
 export async function prepare (nitro: Nitro) {
   await prepareDir(nitro.options.output.dir)
-  if (!nitro.options.noPublicDir) {
-    await prepareDir(nitro.options.output.publicDir)
-  }
-  await prepareDir(nitro.options.output.serverDir)
+  await prepareDir(!nitro.options.noPublicDir
+    ? nitro.options.output.publicDir
+    : nitro.options.output.serverDir)
 }
 
 async function prepareDir (dir: string) {
@@ -182,9 +181,9 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
 
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir)
-  const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/([^\s]*)/g, ` ${rOutput}/$1`)
-  }
+  const rewriteRelativePaths = (input: string) =>
+    input.replace(/\s\.\/([^\s]*)/g, ` ${rOutput}/$1`)
+
   if (buildInfo.commands.preview) {
     nitro.logger.success(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``)
   }

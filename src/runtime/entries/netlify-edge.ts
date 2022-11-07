@@ -4,10 +4,7 @@ import { requestHasBody, useRequestBody } from '../utils'
 
 export default async function (request: Request, _context) {
   const url = new URL(request.url)
-  let body
-  if (requestHasBody(request)) {
-    body = await useRequestBody(request)
-  }
+  const body = requestHasBody(request) && await useRequestBody(request)
 
   const r = await nitroApp.localCall({
     url: url.pathname + url.search,

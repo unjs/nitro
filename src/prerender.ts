@@ -64,12 +64,13 @@ export async function prerender (nitro: Nitro) {
   // Start prerendering
   const generatedRoutes = new Set()
   const canPrerender = (route: string = '/') => {
-    if (generatedRoutes.has(route)) { return false }
-    if (route.length > 250) { return false }
-    for (const ignore of nitro.options.prerender.ignore) {
-      if (route.startsWith(ignore)) { return false }
+    if (generatedRoutes.has(route) ||
+      route.length > 250 ||
+      nitro.options.prerender.ignore.some(ignore => route.startsWith(ignore)) ||
+      _getRouteRules(route).prerender === false) {
+      return false
     }
-    if (_getRouteRules(route).prerender === false) { return false }
+
     return true
   }
 
@@ -174,17 +175,17 @@ function extractLinks (html: string, from: string, res: Response, crawlLinks: bo
   const header = res.headers.get('x-nitro-prerender') || ''
   _links.push(...header.split(',').map(i => i.trim()))
 
-  for (const link of _links.filter(Boolean)) {
+  return _links.filter(Boolean).reduce((links, link) => {
     const parsed = parseURL(link)
-    if (parsed.protocol) { continue }
+    if (parsed.protocol) { return links }
     let { pathname } = parsed
     if (!pathname.startsWith('/')) {
       const fromURL = new URL(from, 'http://localhost')
       pathname = new URL(pathname, fromURL).pathname
     }
     links.push(pathname)
-  }
-  return links
+    return links
+  }, links)
 }
 
 const EXT_REGEX = /\.[a-z0-9]+$/

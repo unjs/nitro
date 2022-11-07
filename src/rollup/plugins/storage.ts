@@ -4,21 +4,19 @@ import type { Nitro } from '../../types'
 import { virtual } from './virtual'
 
 export function storage (nitro: Nitro) {
-  const mounts: { path: string, driver: string, opts: object }[] = []
-
   const isDevOrPrerender = nitro.options.dev || nitro.options.preset === 'nitro-prerender'
   const storageMounts = isDevOrPrerender
     ? { ...nitro.options.storage, ...nitro.options.devStorage }
     : nitro.options.storage
 
-  for (const path in storageMounts) {
+  const mounts: { path: string, driver: string, opts: object }[] = Object.keys(storageMounts).map((path) => {
     const mount = storageMounts[path]
-    mounts.push({
+    return {
       path,
       driver: builtinDrivers[mount.driver] || mount.driver,
       opts: mount
-    })
-  }
+    }
+  })
 
   const driverImports = Array.from(new Set(mounts.map(m => m.driver)))
 

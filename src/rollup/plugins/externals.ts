@@ -36,13 +36,12 @@ export function externals (opts: NodeExternalsOptions): Plugin {
   return {
     name: 'node-externals',
     async resolveId (originalId, importer, options) {
-      // Skip internals
-      if (!originalId || originalId.startsWith('\x00') || originalId.includes('?') || originalId.startsWith('#')) {
-        return null
-      }
-
-      // Skip relative paths
-      if (originalId.startsWith('.')) {
+      // Skip internals and relative paths
+      if (!originalId ||
+        originalId.startsWith('\x00') ||
+        originalId.includes('?') ||
+        originalId.startsWith('#') ||
+        originalId.startsWith('.')) {
         return null
       }
 
