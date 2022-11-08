@@ -15,7 +15,6 @@ interface Context {
   nitro?: Nitro
   rootDir: string
   outDir: string
-  devDir: string
   fetch: (url: string) => Promise<any>
   server?: Listener
   isDev: boolean
@@ -29,7 +28,6 @@ export async function setupTest (preset: string) {
     isDev: preset === 'nitro-dev',
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, '.output', preset),
-    devDir: resolve(fixtureDir, '.nitro', 'dev'),
     fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: 'manual' })
   }
 
