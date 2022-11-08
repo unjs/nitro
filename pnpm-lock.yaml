@@ -27,7 +27,7 @@ importers:
       '@types/semver': ^7.3.13
       '@types/serve-static': ^1.15.0
       '@vercel/nft': ^0.22.1
-      '@vitest/coverage-c8': ^0.24.5
+      '@vitest/coverage-c8': ^0.25.1
       archiver: ^5.3.1
       c12: ^0.2.13
       c8: ^7.12.0
@@ -39,7 +39,7 @@ importers:
       defu: ^6.1.0
       destr: ^1.2.0
       dot-prop: ^7.2.0
-      edge-runtime: 2.0.1
+      edge-runtime: 2.0.2
       esbuild: ^0.15.13
       escape-string-regexp: ^5.0.0
       eslint: ^8.27.0
@@ -84,7 +84,7 @@ importers:
       unenv: ^0.6.2
       unimport: ^0.7.0
       unstorage: ^0.6.0
-      vitest: ^0.24.5
+      vitest: ^0.25.1
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@netlify/functions': 1.3.0
@@ -154,17 +154,17 @@ importers:
       '@types/object-hash': 2.2.1
       '@types/semver': 7.3.13
       '@types/serve-static': 1.15.0
-      '@vitest/coverage-c8': 0.24.5
+      '@vitest/coverage-c8': 0.25.1
       c8: 7.12.0
       changelogen: 0.3.5
-      edge-runtime: 2.0.1
+      edge-runtime: 2.0.2
       eslint: 8.27.0
       execa: 6.1.0
       expect-type: 0.15.0
       miniflare: 2.11.0
       typescript: 4.8.4
       unbuild: 0.9.4
-      vitest: 0.24.5
+      vitest: 0.25.1
 
   examples/api-routes:
     specifiers:
@@ -429,14 +429,14 @@ packages:
     resolution: {integrity: sha512-MkLDDtPhXZIMx83NykdFmOpF7gVWIdd6GBHYb8V/E+PKWvD2pK/qWx9B30oN1iDJ2XBm0SGDjz02S8nDHI9lMQ==}
     dev: true
 
-  /@edge-runtime/primitives/2.0.1:
-    resolution: {integrity: sha512-ZNOK+bHPGNM8WphjADFgH1ikWnN1mqeGvOGPlGJRS0PeG35WoPYxo8EMziyvcn/7mj1oNORza9rM8tkAFOAwvQ==}
+  /@edge-runtime/primitives/2.0.2:
+    resolution: {integrity: sha512-pE/VlEMzF2+WOdQUR8vgecd0b5kY4/d2Z5rA8tdq2uANQvqallJQ6tJvLmWxResq75kMFln4NDXrtzNBw3mgXA==}
     dev: true
 
-  /@edge-runtime/vm/2.0.1:
-    resolution: {integrity: sha512-+5UtwEL08QidClBAPc+7NBrbKvF/Kkz0jPSOf6rsMlDs5Ac7F3k9ZwBknf81nfCQvo0gkuVtDjOPbcLR5qvYeg==}
+  /@edge-runtime/vm/2.0.2:
+    resolution: {integrity: sha512-yQFE4H5R7jy98xRMnH3dOt3PQkORVtKTT2gn0U86JBHWMvoSZxvd1hw8UXxJtyp+bqW3yV7N1oTwDdX71It+Gg==}
     dependencies:
-      '@edge-runtime/primitives': 2.0.1
+      '@edge-runtime/primitives': 2.0.2
     dev: true
 
   /@esbuild/android-arm/0.15.13:
@@ -1264,11 +1264,11 @@ packages:
       - supports-color
     dev: false
 
-  /@vitest/coverage-c8/0.24.5:
-    resolution: {integrity: sha512-955yK/SdSBZPYrSXgXB0F+0JnOX5EY9kSL7ywJ4rNajmkFUhwLjuKm13Xb6YKSyIY/g5WvbBnyowqfNRxBJ3ww==}
+  /@vitest/coverage-c8/0.25.1:
+    resolution: {integrity: sha512-gpl5QNaNeIN0mfRiosCqBFoZcizb5GA458TDnOQXkGDc4kklazxn70u9evGfV62wiiAUfGGebgRhxlBkAa6m6g==}
     dependencies:
       c8: 7.12.0
-      vitest: 0.24.5
+      vitest: 0.25.1
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -1292,6 +1292,11 @@ packages:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
       acorn: 8.8.0
+    dev: true
+
+  /acorn-walk/8.2.0:
+    resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
+    engines: {node: '>=0.4.0'}
     dev: true
 
   /acorn/8.8.0:
@@ -1927,12 +1932,12 @@ packages:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
     dev: false
 
-  /edge-runtime/2.0.1:
-    resolution: {integrity: sha512-PelXUAwkoFw/i6Igp5AHnBWtRxJQ1fac1FoDiaiw5o/PaPGodSFw8sA7ZwABXEuEeNwVYG8xBqvEqBxnJREoaA==}
+  /edge-runtime/2.0.2:
+    resolution: {integrity: sha512-pM4EYn+cyXthPmjAzxVF3mQRNh2ejLI2QUbVH093sPVdTKJ8Lp76jk6Hb68dRD7i6JtpLnQLGuWK01HUkv1G2A==}
     hasBin: true
     dependencies:
       '@edge-runtime/format': 1.1.0
-      '@edge-runtime/vm': 2.0.1
+      '@edge-runtime/vm': 2.0.2
       exit-hook: 2.2.1
       http-status: 1.5.3
       mri: 1.2.0
@@ -5209,8 +5214,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.24.5:
-    resolution: {integrity: sha512-zw6JhPUHtLILQDe5Q39b/SzoITkG+R7hcFjuthp4xsi6zpmfQPOZcHodZ+3bqoWl4EdGK/p1fuMiEwdxgbGLOA==}
+  /vitest/0.25.1:
+    resolution: {integrity: sha512-eH74h6MkuEgsqR4mAQZeMK9O0PROiKY+i+1GMz/fBi5A3L2ml5U7JQs7LfPU7+uWUziZyLHagl+rkyfR8SLhlA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -5234,9 +5239,12 @@ packages:
       '@types/chai': 4.3.3
       '@types/chai-subset': 1.3.3
       '@types/node': 17.0.31
+      acorn: 8.8.0
+      acorn-walk: 8.2.0
       chai: 4.3.6
       debug: 4.3.4
       local-pkg: 0.4.2
+      source-map: 0.6.1
       strip-literal: 0.4.2
       tinybench: 2.3.1
       tinypool: 0.3.0
