@@ -186,5 +186,10 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
       const { data } = await callHandler({ url: '/modules' })
       expect(data).toMatchObject({ depA: '2.0.1', depB: '2.0.1', depLib: '2.0.1', subpathLib: '2.0.1' })
     })
+
+    it('handles proxy', async () => {
+      const { status } = await callHandler({ url: '/proxy/example' })
+      expect(status).toBe(200)
+    })
   }
 }
