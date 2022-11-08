@@ -6,33 +6,38 @@ import { expect, it, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
 import { joinURL } from 'ufo'
 import * as _nitro from '../src'
-import type { Nitro } from '../src'
+import { createDevServer, Nitro } from '../src'
 
 const { createNitro, build, prepare, copyPublicAssets, prerender } = (_nitro as any as { default: typeof _nitro }).default || _nitro
 
 interface Context {
   preset: string
-  nitro?: Nitro,
+  nitro?: Nitro
   rootDir: string
   outDir: string
+  devDir: string
   fetch: (url: string) => Promise<any>
   server?: Listener
+  isDev: boolean
 }
 
-export async function setupTest (preset) {
+export async function setupTest (preset: string) {
   const fixtureDir = fileURLToPath(new URL('./fixture', import.meta.url).href)
 
   const ctx: Context = {
     preset,
+    isDev: preset === 'nitro-dev',
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, '.output', preset),
+    devDir: resolve(fixtureDir, '.nitro', 'dev'),
     fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: 'manual' })
   }
 
   const nitro = ctx.nitro = await createNitro({
     preset: ctx.preset,
+    dev: ctx.isDev,
     rootDir: ctx.rootDir,
-    serveStatic: preset !== 'cloudflare' && preset !== 'vercel-edge',
+    serveStatic: preset !== 'cloudflare' && preset !== 'vercel-edge' && !ctx.isDev,
     output: { dir: ctx.outDir },
     routeRules: {
       '/rules/headers': { headers: { 'cache-control': 's-maxage=60' } },
@@ -46,10 +51,13 @@ export async function setupTest (preset) {
       '/rules/nested/override': { redirect: { to: '/other' } }
     }
   })
-  await prepare(nitro)
-  await copyPublicAssets(nitro)
-  await prerender(nitro)
-  await build(nitro)
+
+  if (!ctx.isDev) {
+    await prepare(nitro)
+    await copyPublicAssets(nitro)
+    await prerender(nitro)
+    await build(nitro)
+  }
 
   afterAll(async () => {
     if (ctx.server) {
@@ -63,8 +71,18 @@ export async function setupTest (preset) {
   return ctx
 }
 
-export async function startServer (ctx, handle) {
+export async function startServer (ctx: Context, handle) {
   ctx.server = await listen(handle)
+  console.log('>', ctx.server!.url)
+}
+
+export async function startDevServer (ctx: Context) {
+  const devServer = createDevServer(ctx.nitro)
+  ctx.server = await devServer.listen({})
+  await prepare(ctx.nitro)
+  await build(ctx.nitro)
+  // TODO: How to await that dev server is ready?!
+  await new Promise(resolve => setTimeout(resolve, 1000))
   console.log('>', ctx.server!.url)
 }
 
@@ -162,6 +180,11 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     expect(data.hasEnv).toBe(true)
   })
 
+  it('returns correct status for devProxy', async () => {
+    const { status } = await callHandler({ url: '/proxy/example' })
+    expect(status).toBe(ctx.isDev ? 200 : 404)
+  })
+
   if (ctx.nitro!.options.serveStatic) {
     it('serve static asset /favicon.ico', async () => {
       const { status, headers } = await callHandler({ url: '/favicon.ico' })
@@ -185,11 +208,6 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     it('resolve module version conflicts', async () => {
       const { data } = await callHandler({ url: '/modules' })
       expect(data).toMatchObject({ depA: '2.0.1', depB: '2.0.1', depLib: '2.0.1', subpathLib: '2.0.1' })
-    })
-
-    it('handles proxy', async () => {
-      const { status } = await callHandler({ url: '/proxy/example' })
-      expect(status).toBe(200)
     })
   }
 }

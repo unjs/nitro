@@ -124,7 +124,11 @@ export function createDevServer (nitro: Nitro): NitroDevServer {
     if (typeof opts === 'string') { opts = { target: opts } }
     const proxy = createProxy(opts)
     app.use(route, eventHandler(async (event) => {
-      await proxy.handle(event)
+      try {
+        await proxy.handle(event)
+      } catch (err) {
+        console.error(err)
+      }
     }))
   }
 
