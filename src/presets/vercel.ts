@@ -128,7 +128,7 @@ function generateBuildConfig (nitro: Nitro) {
       ...Object.entries(nitro.options.routeRules)
         .filter(([key, value]) => value.cache && (value.cache.swr || value.cache.static) && key.includes('/**'))
         .map(([key]) => ({
-          src: key.replace(/^(.*)\/\*\*/, '(<?url>$1/.*)'),
+          src: key.replace(/^(.*)\/\*\*/, '(?<url>$1/.*)'),
           dest: generateEndpoint(key) + '?url=$url'
         })),
       {
