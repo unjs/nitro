@@ -85,7 +85,6 @@ export const vercelEdge = defineNitroPreset({
 })
 
 function generateBuildConfig (nitro: Nitro) {
-  // const overrides = generateOverrides(nitro._prerenderedRoutes?.filter(r => r.fileName !== r.route) || [])
   return defu(nitro.options.vercel?.config, <VercelBuildConfigV3> {
     version: 3,
     overrides: Object.fromEntries(
