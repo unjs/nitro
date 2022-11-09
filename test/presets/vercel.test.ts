@@ -97,11 +97,11 @@ describe('nitro:preset:vercel', async () => {
           },
           {
             "dest": "/__nitro--rules-swr?url=$url",
-            "src": "(<?url>/rules/swr/.*)",
+            "src": "(?<url>/rules/swr/.*)",
           },
           {
             "dest": "/__nitro--rules-swr-ttl?url=$url",
-            "src": "(<?url>/rules/swr-ttl/.*)",
+            "src": "(?<url>/rules/swr-ttl/.*)",
           },
           {
             "dest": "/__nitro",
