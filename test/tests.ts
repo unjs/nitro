@@ -6,7 +6,7 @@ import { expect, it, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
 import { joinURL } from 'ufo'
 import * as _nitro from '../src'
-import { createDevServer, Nitro } from '../src'
+import { Nitro } from '../src'
 
 const { createNitro, build, prepare, copyPublicAssets, prerender } = (_nitro as any as { default: typeof _nitro }).default || _nitro
 
@@ -71,16 +71,6 @@ export async function setupTest (preset: string) {
 
 export async function startServer (ctx: Context, handle) {
   ctx.server = await listen(handle)
-  console.log('>', ctx.server!.url)
-}
-
-export async function startDevServer (ctx: Context) {
-  const devServer = createDevServer(ctx.nitro)
-  ctx.server = await devServer.listen({})
-  await prepare(ctx.nitro)
-  const ready = new Promise<void>((resolve) => { ctx.nitro.hooks.hook('dev:reload', () => resolve()) })
-  await build(ctx.nitro)
-  await ready
   console.log('>', ctx.server!.url)
 }
 
