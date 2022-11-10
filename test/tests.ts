@@ -10,7 +10,7 @@ import { Nitro } from '../src'
 
 const { createNitro, build, prepare, copyPublicAssets, prerender } = (_nitro as any as { default: typeof _nitro }).default || _nitro
 
-interface Context {
+export interface Context {
   preset: string
   nitro?: Nitro
   rootDir: string
