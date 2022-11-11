@@ -32,7 +32,7 @@ importers:
       c12: ^0.2.13
       c8: ^7.12.0
       chalk: ^5.1.2
-      changelogen: ^0.3.5
+      changelogen: ^0.4.0
       chokidar: ^3.5.3
       consola: ^2.15.3
       cookie-es: ^0.5.0
@@ -55,7 +55,7 @@ importers:
       is-primitive: ^3.0.1
       jiti: ^1.16.0
       klona: ^2.0.5
-      knitwork: ^0.1.2
+      knitwork: ^0.1.3
       listhen: ^0.3.5
       mime: ^3.0.0
       miniflare: ^2.11.0
@@ -118,7 +118,7 @@ importers:
       is-primitive: 3.0.1
       jiti: 1.16.0
       klona: 2.0.5
-      knitwork: 0.1.2
+      knitwork: 0.1.3
       listhen: 0.3.5
       mime: 3.0.0
       mlly: 0.5.16
@@ -156,7 +156,7 @@ importers:
       '@types/serve-static': 1.15.0
       '@vitest/coverage-c8': 0.25.1
       c8: 7.12.0
-      changelogen: 0.3.5
+      changelogen: 0.4.0
       edge-runtime: 2.0.2
       eslint: 8.27.0
       execa: 6.1.0
@@ -1605,15 +1605,16 @@ packages:
     resolution: {integrity: sha512-E5CkT4jWURs1Vy5qGJye+XwCkNj7Od3Af7CP6SujMetSMkLs8Do2RWJK5yx1wamHV/op8Rz+9rltjaTQWDnEFQ==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
-  /changelogen/0.3.5:
-    resolution: {integrity: sha512-WK+tUhVtIhuFJU5kkUZhnM+M+cVCGgJc1zCENqd55jdlZl6fg4CYjTC/QiH31EehoKA3XjXu7Npi2g4hwGTbzg==}
+  /changelogen/0.4.0:
+    resolution: {integrity: sha512-GtNYojFz6sqXLesOqTG4G9rKGQ3ehyFnYuCBIUXlencCa6xVP/ZU4zOXS467/UoBm9robSJL+5YQzsbWGAxqcg==}
     hasBin: true
     dependencies:
       c12: 0.2.13
       consola: 2.15.3
-      convert-gitmoji: 0.1.2
+      convert-gitmoji: 0.1.3
       execa: 6.1.0
       mri: 1.2.0
+      node-fetch-native: 0.1.8
       pkg-types: 0.3.6
       scule: 0.3.2
       semver: 7.3.8
@@ -1738,8 +1739,8 @@ packages:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
     dev: false
 
-  /convert-gitmoji/0.1.2:
-    resolution: {integrity: sha512-VifpTrCsstbBn0lD7uvBzt5fwHE1HZidG4eUTgNz6vOIY81AXLXz38AUBubsFc3nKjUkFkuI7sJyn87YOjt8aA==}
+  /convert-gitmoji/0.1.3:
+    resolution: {integrity: sha512-t5yxPyI8h8KPvRwrS/sRrfIpT2gJbmBAY0TFokyUBy3PM44RuFRpZwHdACz+GTSPLRLo3s4qsscOMLjHiXBwzw==}
     dev: true
 
   /convert-hrtime/3.0.0:
@@ -3610,8 +3611,8 @@ packages:
     engines: {node: '>= 8'}
     dev: false
 
-  /knitwork/0.1.2:
-    resolution: {integrity: sha512-2ekmY2S/VB3YGVhrIFadyJQpkjMFSf48tsXCnA+kjs4FEQIT+5FLyOF0No/X58z/2E/VaMyeJfukRoVT4gMsfQ==}
+  /knitwork/0.1.3:
+    resolution: {integrity: sha512-f6Mz4kK8k0BAlGZn9Eb7mCUwSyRLoKTLr//u75tyLKm0jgt0ydnI8ubcTPwZjSJredpBZV7ry1EOrNbMJYT0mA==}
     dev: false
 
   /lazystream/1.0.1:
@@ -3940,7 +3941,6 @@ packages:
 
   /node-fetch-native/0.1.8:
     resolution: {integrity: sha512-ZNaury9r0NxaT2oL65GvdGDy+5PlSaHTovT6JV5tOW07k1TQmgC0olZETa4C9KZg0+6zBr99ctTYa3Utqj9P/Q==}
-    dev: false
 
   /node-fetch/2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
