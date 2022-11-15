@@ -29,7 +29,7 @@ importers:
       '@vercel/nft': ^0.22.1
       '@vitest/coverage-c8': ^0.25.2
       archiver: ^5.3.1
-      c12: ^0.2.13
+      c12: ^1.0.0
       c8: ^7.12.0
       chalk: ^5.1.2
       changelogen: ^0.4.0
@@ -98,7 +98,7 @@ importers:
       '@rollup/pluginutils': 5.0.2_rollup@2.79.1
       '@vercel/nft': 0.22.1
       archiver: 5.3.1
-      c12: 0.2.13
+      c12: 1.0.0
       chalk: 5.1.2
       chokidar: 3.5.3
       consola: 2.15.3
@@ -1534,13 +1534,27 @@ packages:
     resolution: {integrity: sha512-wJL0/knDbqM/3moLb+8Xd+w3JdkggkIIhiNBkxZ1mWlskKC/vajb85wM3UPg/D9nK6RbI1NgaVTg6AeXBVbknA==}
     dependencies:
       defu: 6.1.1
-      dotenv: 16.0.2
+      dotenv: 16.0.3
       gittar: 0.1.1
       jiti: 1.16.0
       mlly: 0.5.17
       pathe: 0.3.9
       pkg-types: 0.3.6
-      rc9: 1.2.2
+      rc9: 1.2.3
+    dev: true
+
+  /c12/1.0.0:
+    resolution: {integrity: sha512-Dp9prxz3dNX11uVVzBmUmuh1oM+V6mnEm1YZSazKAnLsZF5EGzfi6REVvHJHHIypu0C/02D4uNdnH6vzHSHzow==}
+    dependencies:
+      defu: 6.1.1
+      dotenv: 16.0.3
+      gittar: 0.1.1
+      jiti: 1.16.0
+      mlly: 1.0.0
+      pathe: 1.0.0
+      pkg-types: 1.0.1
+      rc9: 1.2.3
+    dev: false
 
   /c8/7.12.0:
     resolution: {integrity: sha512-CtgQrHOkyxr5koX1wEUmN/5cfDa2ckbHRA4Gy5LAL0zaCFtVWJS5++n+w4/sr2GWGerBxgTjpKeDclk/Qk6W/A==}
@@ -1930,8 +1944,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /dotenv/16.0.2:
-    resolution: {integrity: sha512-JvpYKUmzQhYoIFgK2MOnF3bciIZoItIIoryihy0rIA+H4Jy0FmgyKYAHCTN98P5ybGSJcIFbh6QKeJdtZd1qhA==}
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
 
   /duplexer/0.1.2:
@@ -3916,6 +3930,15 @@ packages:
       pkg-types: 1.0.0
       ufo: 1.0.0
 
+  /mlly/1.0.0:
+    resolution: {integrity: sha512-QL108Hwt+u9bXdWgOI0dhzZfACovn5Aen4Xvc8Jasd9ouRH4NjnrXEiyP3nVvJo91zPlYjVRckta0Nt2zfoR6g==}
+    dependencies:
+      acorn: 8.8.1
+      pathe: 1.0.0
+      pkg-types: 1.0.1
+      ufo: 1.0.0
+    dev: false
+
   /mri/1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
@@ -4277,6 +4300,14 @@ packages:
       mlly: 0.5.17
       pathe: 1.0.0
 
+  /pkg-types/1.0.1:
+    resolution: {integrity: sha512-jHv9HB+Ho7dj6ItwppRDDl0iZRYBD0jsakHXtFgoLr+cHSF6xC+QL54sJmWxyGxOLYSHm0afhXhXcQDQqH9z8g==}
+    dependencies:
+      jsonc-parser: 3.2.0
+      mlly: 1.0.0
+      pathe: 1.0.0
+    dev: false
+
   /pluralize/8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
@@ -4346,8 +4377,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /rc9/1.2.2:
-    resolution: {integrity: sha512-zbe8+HR2X28eZepAwohuKkebbEsA67h0DO9I7g12QrHa2CQopR9gztOLPIPXXGTvcxeUjAN4wZ+b29t3m/u05g==}
+  /rc9/1.2.3:
+    resolution: {integrity: sha512-nw2fMaR5c0BrQB41+mK+AB6oytKQzY9K4wkPyUeNOg6yzn0wzT01JqivtRoTT/bGduUg8R/Zx4rFEqEm0jZTZA==}
     dependencies:
       defu: 6.1.1
       destr: 1.2.1
