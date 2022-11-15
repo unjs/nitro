@@ -37,6 +37,8 @@ describe('nitro:preset:netlify', async () => {
       /rules/nested/*	/base	302
       /rules/redirect/obj	https://nitro.unjs.io/	301
       /rules/redirect	/base	302
+      /rules/swr-ttl/*	/.netlify/builders/server 200
+      /rules/swr/*	/.netlify/builders/server 200
       /rules/static	/.netlify/builders/server 200
       /* /.netlify/functions/server 200"
     `)
