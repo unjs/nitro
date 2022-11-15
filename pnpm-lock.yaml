@@ -55,7 +55,7 @@ importers:
       is-primitive: ^3.0.1
       jiti: ^1.16.0
       klona: ^2.0.5
-      knitwork: ^0.1.3
+      knitwork: ^1.0.0
       listhen: ^0.3.5
       mime: ^3.0.0
       miniflare: ^2.11.0
@@ -118,7 +118,7 @@ importers:
       is-primitive: 3.0.1
       jiti: 1.16.0
       klona: 2.0.5
-      knitwork: 0.1.3
+      knitwork: 1.0.0
       listhen: 0.3.5
       mime: 3.0.0
       mlly: 0.5.16
@@ -3611,8 +3611,8 @@ packages:
     engines: {node: '>= 8'}
     dev: false
 
-  /knitwork/0.1.3:
-    resolution: {integrity: sha512-f6Mz4kK8k0BAlGZn9Eb7mCUwSyRLoKTLr//u75tyLKm0jgt0ydnI8ubcTPwZjSJredpBZV7ry1EOrNbMJYT0mA==}
+  /knitwork/1.0.0:
+    resolution: {integrity: sha512-dWl0Dbjm6Xm+kDxhPQJsCBTxrJzuGl0aP9rhr+TG8D3l+GL90N8O8lYUi7dTSAN2uuDqCtNgb6aEuQH5wsiV8Q==}
     dev: false
 
   /lazystream/1.0.1:
