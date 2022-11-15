@@ -6,9 +6,12 @@ import { nitroApp } from '../app'
 const handler = toNodeListener(nitroApp.h3App)
 
 export default <NodeListener> function (req, res) {
-  const { url } = parseQuery(req.headers['x-now-route-matches'] as string)
-  if (url) {
-    req.url = url as string
+  const query = req.headers['x-now-route-matches'] as string
+  if (query) {
+    const { url } = parseQuery(query)
+    if (url) {
+      req.url = url as string
+    }
   }
   return handler(req, res)
 }
