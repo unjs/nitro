@@ -1,7 +1,7 @@
 import { resolve } from 'pathe'
 import { listen, Listener } from 'listhen'
 import destr from 'destr'
-import { fetch } from 'ohmyfetch'
+import { fetch } from 'ofetch'
 import { expect, it, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
 import { joinURL } from 'ufo'

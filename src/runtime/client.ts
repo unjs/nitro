@@ -1,5 +1,5 @@
 // Client polyfill
-import { $fetch } from 'ohmyfetch'
+import { $fetch } from 'ofetch'
 import { $Fetch, NitroFetchRequest } from '../types'
 
 if (!globalThis.$fetch) {

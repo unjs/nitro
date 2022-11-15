@@ -1,4 +1,4 @@
-import type { FetchRequest, FetchOptions, FetchResponse } from 'ohmyfetch'
+import type { FetchRequest, FetchOptions, FetchResponse } from 'ofetch'
 import type { MatchedRoutes } from './utils'
 
 // An interface to extend in a local project

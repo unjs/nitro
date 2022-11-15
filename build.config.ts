@@ -13,7 +13,7 @@ export default defineBuildConfig({
     '@netlify/functions',
     '@nuxt/devalue',
     'destr',
-    'ohmyfetch',
+    'ofetch',
     'ora'
   ],
   externals: [
