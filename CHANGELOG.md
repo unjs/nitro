@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0-0](https://github.com/unjs/nitro/compare/v0.6.2...v1.0.0-0) (2022-11-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove deperecated `autoImport`
+
+* remove deperecated `autoImport` ([c99fa44](https://github.com/unjs/nitro/commit/c99fa441eeb1992af087a6bec85ea868a5eb1e62))
+
 ### [0.6.2](https://github.com/unjs/nitro/compare/v0.6.1...v0.6.2) (2022-11-15)
 
 
