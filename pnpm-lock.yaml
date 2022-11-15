@@ -29,7 +29,7 @@ importers:
       '@vercel/nft': ^0.22.1
       '@vitest/coverage-c8': ^0.25.2
       archiver: ^5.3.1
-      c12: ^1.0.0
+      c12: ^1.0.1
       c8: ^7.12.0
       chalk: ^5.1.2
       changelogen: ^0.4.0
@@ -50,7 +50,7 @@ importers:
       fs-extra: ^10.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
-      h3: ^0.8.6
+      h3: ^1.0.1
       hookable: ^1.0.0
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -63,13 +63,13 @@ importers:
       mlly: ^1.0.0
       mri: ^1.2.0
       node-fetch-native: ^1.0.1
+      ofetch: ^1.0.0
       ohash: ^1.0.0
-      ohmyfetch: ^0.4.21
       pathe: ^1.0.0
       perfect-debounce: ^0.1.3
       pkg-types: ^1.0.1
       pretty-bytes: ^6.0.0
-      radix3: ^0.2.1
+      radix3: ^1.0.0
       rollup: ^2.79.1
       rollup-plugin-terser: ^7.0.2
       rollup-plugin-visualizer: ^5.8.3
@@ -82,9 +82,9 @@ importers:
       typescript: ^4.8.4
       ufo: ^1.0.0
       unbuild: ^0.9.4
-      unenv: ^0.6.2
+      unenv: ^1.0.0
       unimport: ^0.7.0
-      unstorage: ^1.0.0
+      unstorage: ^1.0.1
       vitest: ^0.25.2
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -99,7 +99,7 @@ importers:
       '@rollup/pluginutils': 5.0.2_rollup@2.79.1
       '@vercel/nft': 0.22.1
       archiver: 5.3.1
-      c12: 1.0.0
+      c12: 1.0.1
       chalk: 5.1.2
       chokidar: 3.5.3
       consola: 2.15.3
@@ -113,7 +113,7 @@ importers:
       fs-extra: 10.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
-      h3: 0.8.6
+      h3: 1.0.1
       hookable: 1.0.0
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -125,13 +125,13 @@ importers:
       mlly: 1.0.0
       mri: 1.2.0
       node-fetch-native: 1.0.1
+      ofetch: 1.0.0
       ohash: 1.0.0
-      ohmyfetch: 0.4.21
       pathe: 1.0.0
       perfect-debounce: 0.1.3
       pkg-types: 1.0.1
       pretty-bytes: 6.0.0
-      radix3: 0.2.1
+      radix3: 1.0.0
       rollup: 2.79.1
       rollup-plugin-terser: 7.0.2_rollup@2.79.1
       rollup-plugin-visualizer: 5.8.3_rollup@2.79.1
@@ -142,9 +142,9 @@ importers:
       source-map-support: 0.5.21
       std-env: 3.3.1
       ufo: 1.0.0
-      unenv: 0.6.2
+      unenv: 1.0.0
       unimport: 0.7.0_rollup@2.79.1
-      unstorage: 1.0.0
+      unstorage: 1.0.1
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 11.0.0_rmayb2veg2btbq6mbmnyivgasy
       '@types/aws-lambda': 8.10.108
@@ -1531,6 +1531,7 @@ packages:
     engines: {node: '>=10.16.0'}
     dependencies:
       streamsearch: 1.1.0
+    dev: true
 
   /c12/0.2.13:
     resolution: {integrity: sha512-wJL0/knDbqM/3moLb+8Xd+w3JdkggkIIhiNBkxZ1mWlskKC/vajb85wM3UPg/D9nK6RbI1NgaVTg6AeXBVbknA==}
@@ -1545,8 +1546,8 @@ packages:
       rc9: 1.2.2
     dev: true
 
-  /c12/1.0.0:
-    resolution: {integrity: sha512-Dp9prxz3dNX11uVVzBmUmuh1oM+V6mnEm1YZSazKAnLsZF5EGzfi6REVvHJHHIypu0C/02D4uNdnH6vzHSHzow==}
+  /c12/1.0.1:
+    resolution: {integrity: sha512-EN9Rqix2q9X3PseFkUvRFZ/0fvncF35ZR5nykLDwv4Ml/Q1WYPLkcdqlrczFll2G9t4qmxgM4my3EF3IrRGl5Q==}
     dependencies:
       defu: 6.1.1
       dotenv: 16.0.3
@@ -1555,7 +1556,7 @@ packages:
       mlly: 1.0.0
       pathe: 1.0.0
       pkg-types: 1.0.1
-      rc9: 1.2.3
+      rc9: 2.0.0
     dev: false
 
   /c8/7.12.0:
@@ -3222,13 +3223,13 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/0.8.6:
-    resolution: {integrity: sha512-CSWNOKa3QGo67rFU2PhbFTp0uPJtilNji2Z0pMiSRQt3+OkIW0u3E1WMJqIycLqaTgb9JyFqH/S4mcTyyGtvyQ==}
+  /h3/1.0.1:
+    resolution: {integrity: sha512-gDCGpRvjchZW2JBlTqbJ9IOs+mdkXXuwSQkSye+jubHAv/UhdamKqoQvd4RFgyBNjHSId8Y+b10UdTcPlP/V+w==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.2.1
-      radix3: 0.2.1
-      ufo: 0.8.6
+      radix3: 1.0.0
+      ufo: 1.0.0
     dev: false
 
   /has-bigints/1.0.2:
@@ -4013,6 +4014,7 @@ packages:
 
   /node-fetch-native/0.1.8:
     resolution: {integrity: sha512-ZNaury9r0NxaT2oL65GvdGDy+5PlSaHTovT6JV5tOW07k1TQmgC0olZETa4C9KZg0+6zBr99ctTYa3Utqj9P/Q==}
+    dev: true
 
   /node-fetch-native/1.0.1:
     resolution: {integrity: sha512-VzW+TAk2wE4X9maiKMlT+GsPU4OMmR1U9CrHSmd3DFLn2IcZ9VJ6M6BBugGfYUnPCLSYxXdZy17M0BEJyhUTwg==}
@@ -4136,17 +4138,16 @@ packages:
       es-abstract: 1.19.5
     dev: true
 
-  /ohash/1.0.0:
-    resolution: {integrity: sha512-kxSyzq6tt+6EE/xCnD1XaFhCCjUNUaz3X30rJp6mnjGLXAAvuPFqohMdv0aScWzajR45C29HyBaXZ8jXBwnh9A==}
-    dev: false
-
-  /ohmyfetch/0.4.21:
-    resolution: {integrity: sha512-VG7f/JRvqvBOYvL0tHyEIEG7XHWm7OqIfAs6/HqwWwDfjiJ1g0huIpe5sFEmyb+7hpFa1EGNH2aERWR72tlClw==}
+  /ofetch/1.0.0:
+    resolution: {integrity: sha512-d40aof8czZFSQKJa4+F7Ch3UC5D631cK1TTUoK+iNEut9NoiCL+u0vykl/puYVUS2df4tIQl5upQcolIcEzQjQ==}
     dependencies:
       destr: 1.2.1
-      node-fetch-native: 0.1.8
-      ufo: 0.8.6
-      undici: 5.12.0
+      node-fetch-native: 1.0.1
+      ufo: 1.0.0
+    dev: false
+
+  /ohash/1.0.0:
+    resolution: {integrity: sha512-kxSyzq6tt+6EE/xCnD1XaFhCCjUNUaz3X30rJp6mnjGLXAAvuPFqohMdv0aScWzajR45C29HyBaXZ8jXBwnh9A==}
     dev: false
 
   /on-finished/2.4.1:
@@ -4402,8 +4403,8 @@ packages:
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  /radix3/0.2.1:
-    resolution: {integrity: sha512-FnhArTl5Tq7dodiLeSPKrDUyCQuJqEncP8cKdyy399g8F/cz7GH6FmzA3Rkosu2IZMkpswFFwXfb2ERSiL06pg==}
+  /radix3/1.0.0:
+    resolution: {integrity: sha512-6n3AEXth91ASapMVKiEh2wrbFJmI+NBilrWE0AbiGgfm0xet0QXC8+a3K19r1UVYjUjctUgB053c3V/J6V0kCQ==}
     dev: false
 
   /randombytes/2.1.0:
@@ -4425,8 +4426,8 @@ packages:
       flat: 5.0.2
     dev: true
 
-  /rc9/1.2.3:
-    resolution: {integrity: sha512-nw2fMaR5c0BrQB41+mK+AB6oytKQzY9K4wkPyUeNOg6yzn0wzT01JqivtRoTT/bGduUg8R/Zx4rFEqEm0jZTZA==}
+  /rc9/2.0.0:
+    resolution: {integrity: sha512-yVeYJHOpJLOhs3V6RKwz7RPPwPurrx3JjwK264sPgvo/lFdhuUrLien7iSvAO6STVkN0gSMk/MehQNHQhflqZw==}
     dependencies:
       defu: 6.1.1
       destr: 1.2.1
@@ -4827,6 +4828,7 @@ packages:
   /streamsearch/1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
+    dev: true
 
   /string-width/4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
@@ -5109,10 +5111,6 @@ packages:
     hasBin: true
     dev: true
 
-  /ufo/0.8.6:
-    resolution: {integrity: sha512-fk6CmUgwKCfX79EzcDQQpSCMxrHstvbLswFChHS0Vump+kFkw7nJBfTZoC1j0bOGoY9I7R3n2DGek5ajbcYnOw==}
-    dev: false
-
   /ufo/1.0.0:
     resolution: {integrity: sha512-DRty0ZBNlJ2R59y4mEupJRKLbkLQsc4qtxjpQv78AwEDuBkaUogMc2LkeqW3HddFlw6NwnXYfdThEZOiNgkmmQ==}
 
@@ -5160,25 +5158,18 @@ packages:
       - supports-color
     dev: true
 
-  /undici/5.12.0:
-    resolution: {integrity: sha512-zMLamCG62PGjd9HHMpo05bSLvvwWOZgGeiWlN/vlqu3+lRo3elxktVGEyLMX+IO7c2eflLjcW74AlkhEZm15mg==}
-    engines: {node: '>=12.18'}
-    dependencies:
-      busboy: 1.6.0
-    dev: false
-
   /undici/5.9.1:
     resolution: {integrity: sha512-6fB3a+SNnWEm4CJbgo0/CWR8RGcOCQP68SF4X0mxtYTq2VNN8T88NYrWVBAeSX+zb7bny2dx2iYhP3XHi00omg==}
     engines: {node: '>=12.18'}
     dev: true
 
-  /unenv/0.6.2:
-    resolution: {integrity: sha512-IdQfYsHsGKDkiBdeOmtU4MjWvPYfMDOC63cvFqZPodAc5aVezvfD9Bwr7FL/G78cAMMCaDm5Jux3vYo+Z8c/Dg==}
+  /unenv/1.0.0:
+    resolution: {integrity: sha512-vlyi2Rzj4CNlA1JsEXufX+ItkGr3Z5DfLzKniYEneMlBVtuxS+57f1LwTPj2eiBPSPaGHMUVzEnjSCGE7l8JQg==}
     dependencies:
       defu: 6.1.1
       mime: 3.0.0
-      node-fetch-native: 0.1.8
-      pathe: 0.3.9
+      node-fetch-native: 1.0.1
+      pathe: 1.0.0
     dev: false
 
   /unimport/0.7.0_rollup@2.79.1:
@@ -5212,18 +5203,18 @@ packages:
       webpack-virtual-modules: 0.4.5
     dev: false
 
-  /unstorage/1.0.0:
-    resolution: {integrity: sha512-hsXAvUMXZjyLlkwwWtVB7bjXZuPvhxqmEw53a5loxqlzemWtYvQwcEfYvVBtC47sQPAuK3ktKzbbspusUmt1KA==}
+  /unstorage/1.0.1:
+    resolution: {integrity: sha512-J1c4b8K2KeihHrQtdgl/ybIapArUbPaPb+TyJy/nGSauDwDYqciZsEKdkee568P3c8SSH4TIgnGRHDWMPGw+Lg==}
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3
       destr: 1.2.1
-      h3: 0.8.6
+      h3: 1.0.1
       ioredis: 5.2.4
       listhen: 1.0.0
       mkdir: 0.0.2
       mri: 1.2.0
-      ohmyfetch: 0.4.21
+      ofetch: 1.0.0
       ufo: 1.0.0
       ws: 8.11.0
     transitivePeerDependencies:
