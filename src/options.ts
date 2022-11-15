@@ -163,14 +163,6 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     options.scanDirs = [options.srcDir]
   }
 
-  // Backward compatibility for options.autoImports
-  // TODO: Remove in major release
-  if (options.autoImport === false) {
-    options.imports = false
-  } else if (options.imports !== false) {
-    options.imports = options.autoImport = defu(options.imports, options.autoImport)
-  }
-
   if (options.imports && Array.isArray(options.imports.exclude)) {
     options.imports.exclude.push(options.buildDir)
   }

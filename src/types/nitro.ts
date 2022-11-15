@@ -153,10 +153,7 @@ export interface NitroOptions extends PresetOptions {
   }
   serverAssets: ServerAssetDir[]
   publicAssets: PublicAssetDir[]
-  /**
-   * @deprecated Please use `imports` option
-   */
-  autoImport: UnimportPluginOptions | false
+
   imports: UnimportPluginOptions | false
   plugins: string[]
   virtual: Record<string, string | (() => string | Promise<string>)>
