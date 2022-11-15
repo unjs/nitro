@@ -79,7 +79,7 @@ importers:
       source-map-support: ^0.5.21
       std-env: ^3.3.1
       typescript: ^4.8.4
-      ufo: ^0.8.6
+      ufo: ^1.0.0
       unbuild: ^0.9.4
       unenv: ^0.6.2
       unimport: ^0.7.0
@@ -140,7 +140,7 @@ importers:
       serve-static: 1.15.0
       source-map-support: 0.5.21
       std-env: 3.3.1
-      ufo: 0.8.6
+      ufo: 1.0.0
       unenv: 0.6.2
       unimport: 0.7.0_rollup@2.79.1
       unstorage: 0.6.0
