@@ -69,7 +69,7 @@
     "globby": "^13.1.2",
     "gzip-size": "^7.0.0",
     "h3": "^1.0.1",
-    "hookable": "^1.0.0",
+    "hookable": "^5.4.2",
     "http-proxy": "^1.18.1",
     "is-primitive": "^3.0.1",
     "jiti": "^1.16.0",
@@ -121,7 +121,7 @@
     "expect-type": "^0.15.0",
     "miniflare": "^2.11.0",
     "typescript": "^4.8.4",
-    "unbuild": "^0.9.4",
+    "unbuild": "^1.0.1",
     "vitest": "^0.25.2"
   },
   "packageManager": "pnpm@7.16.0",
