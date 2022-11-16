@@ -98,7 +98,7 @@
     "std-env": "^3.3.1",
     "ufo": "^1.0.0",
     "unenv": "^1.0.0",
-    "unimport": "^1.0.0",
+    "unimport": "^1.0.1",
     "unstorage": "^1.0.1"
   },
   "devDependencies": {
@@ -124,7 +124,7 @@
     "unbuild": "^1.0.1",
     "vitest": "^0.25.2"
   },
-  "packageManager": "pnpm@7.16.0",
+  "packageManager": "pnpm@7.16.1",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
