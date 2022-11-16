@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0-1](https://github.com/unjs/nitro/compare/v1.0.0-0...v1.0.0-1) (2022-11-16)
+
+
+### Features
+
+* **vercel:** incremental static generation + swr ([#545](https://github.com/unjs/nitro/issues/545)) ([88ce2de](https://github.com/unjs/nitro/commit/88ce2de96ef5bab1e945e539e61581cd33aaf54b))
+
+
+### Bug Fixes
+
+* upgrade hookable to 5.x ([dc3383b](https://github.com/unjs/nitro/commit/dc3383b4c74f2411600af271ccc30753a727e1fb))
+
 ## [1.0.0-0](https://github.com/unjs/nitro/compare/v0.6.2...v1.0.0-0) (2022-11-15)
 
 
