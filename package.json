@@ -115,7 +115,7 @@
     "c8": "^7.12.0",
     "changelogen": "^0.4.0",
     "edge-runtime": "2.0.2",
-    "eslint": "^8.27.0",
+    "eslint": "^8.28.0",
     "eslint-config-unjs": "^0.0.2",
     "execa": "^6.1.0",
     "expect-type": "^0.15.0",
