@@ -102,6 +102,7 @@
     "unstorage": "^1.0.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20221111.1",
     "@nuxtjs/eslint-config-typescript": "^11.0.0",
     "@types/aws-lambda": "^8.10.108",
     "@types/etag": "^1.8.1",
