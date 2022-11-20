@@ -1,6 +1,9 @@
 import '#internal/nitro/virtual/polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
+import { RequestInit } from '@cloudflare/workers-types'
+import { createCall } from 'unenv/runtime/fetch/index'
+import { NodeListener, App, createEvent, createError, isError, sendError, H3EventContext } from 'h3'
 import { requestHasBody } from '../utils'
 import { nitroApp } from '../app'
 import { useRuntimeConfig } from '#internal/nitro'
@@ -22,7 +25,14 @@ async function handleEvent (event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer())
   }
 
-  const r = await nitroApp.localCall({
+  const headers = Object.fromEntries(event.request.headers.entries())
+
+  const localCall = createCall(toNodeListener(nitroApp.h3App, {
+    headers,
+    cf: (event.request as unknown as RequestInit)?.cf
+  }) as any)
+
+  const r = await localCall({
     event,
     url: url.pathname + url.search,
     host: url.hostname,
@@ -59,4 +69,29 @@ const baseURLModifier = (request: Request) => {
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
   return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+}
+
+function toNodeListener (app: App, context: H3EventContext): NodeListener {
+  const toNodeHandle: NodeListener = async function (req, res) {
+    const event = createEvent(req, res)
+    event.context = { ...event.context, context }
+    try {
+      await app.handler(event)
+    } catch (_error: any) {
+      const error = createError(_error)
+      if (!isError(_error)) {
+        error.unhandled = true
+      }
+
+      if (app.options.onError) {
+        await app.options.onError(error, event)
+      } else {
+        if (error.unhandled || error.fatal) {
+          console.error('[h3]', error.fatal ? '[fatal]' : '[unhandled]', error) // eslint-disable-line no-console
+        }
+        await sendError(event, error, !!app.options.debug)
+      }
+    }
+  }
+  return toNodeHandle
 }
