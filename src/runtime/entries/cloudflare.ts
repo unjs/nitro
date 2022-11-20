@@ -25,10 +25,7 @@ async function handleEvent (event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer())
   }
 
-  const headers = Object.fromEntries(event.request.headers.entries())
-
   const localCall = createCall(toNodeListener(nitroApp.h3App, {
-    headers,
     cf: (event.request as unknown as RequestInit)?.cf
   }) as any)
 
@@ -74,7 +71,7 @@ function normalizeOutgoingHeaders (headers: Record<string, string | string[] | u
 function toNodeListener (app: App, context: H3EventContext): NodeListener {
   const toNodeHandle: NodeListener = async function (req, res) {
     const event = createEvent(req, res)
-    event.context = { ...event.context, context }
+    event.context = { ...event.context, ...context }
     try {
       await app.handler(event)
     } catch (_error: any) {
