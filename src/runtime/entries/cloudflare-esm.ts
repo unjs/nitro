@@ -1,6 +1,9 @@
 import '#internal/nitro/virtual/polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
+import type { ExecutionContext, RequestInit } from '@cloudflare/workers-types'
+import { createCall } from 'unenv/runtime/fetch/index'
+import { NodeListener, App, createEvent, createError, isError, sendError, H3EventContext } from 'h3'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
 import { useRuntimeConfig } from '#internal/nitro'
@@ -9,7 +12,7 @@ import { useRuntimeConfig } from '#internal/nitro'
 import manifest from '__STATIC_CONTENT_MANIFEST'
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env, ctx: ExecutionContext) {
     try {
       // TODO: Update to new API: https://github.com/cloudflare/kv-asset-handler#es-modules
       return await getAssetFromKV({
@@ -33,7 +36,13 @@ export default {
       body = await useRequestBody(request)
     }
 
-    const r = await nitroApp.localCall({
+    const localCall = createCall(toNodeListener(nitroApp.h3App, {
+      cf: (request as unknown as RequestInit)?.cf,
+      env,
+      ctx
+    }) as any)
+
+    const r = await localCall({
       event: { request },
       url: url.pathname + url.search,
       host: url.hostname,
@@ -71,4 +80,29 @@ const baseURLModifier = (request: Request) => {
 
 function normalizeOutgoingHeaders(headers: Record<string, string | string[] | undefined>) {
   return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+}
+
+function toNodeListener (app: App, context: H3EventContext): NodeListener {
+  const toNodeHandle: NodeListener = async function (req, res) {
+    const event = createEvent(req, res)
+    event.context = { ...event.context, ...context }
+    try {
+      await app.handler(event)
+    } catch (_error: any) {
+      const error = createError(_error)
+      if (!isError(_error)) {
+        error.unhandled = true
+      }
+
+      if (app.options.onError) {
+        await app.options.onError(error, event)
+      } else {
+        if (error.unhandled || error.fatal) {
+          console.error('[h3]', error.fatal ? '[fatal]' : '[unhandled]', error) // eslint-disable-line no-console
+        }
+        await sendError(event, error, !!app.options.debug)
+      }
+    }
+  }
+  return toNodeHandle
 }
