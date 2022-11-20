@@ -1,7 +1,7 @@
 import '#internal/nitro/virtual/polyfill'
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
 import { withoutBase } from 'ufo'
-import { RequestInit } from '@cloudflare/workers-types'
+import type { RequestInit } from '@cloudflare/workers-types'
 import { createCall } from 'unenv/runtime/fetch/index'
 import { NodeListener, App, createEvent, createError, isError, sendError, H3EventContext } from 'h3'
 import { requestHasBody } from '../utils'
