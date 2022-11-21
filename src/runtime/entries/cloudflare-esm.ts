@@ -8,7 +8,7 @@ import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
 import { useRuntimeConfig } from '#internal/nitro'
 
-// Bundled by Wrangler 2. See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
+// @ts-ignore Bundled by Wrangler 2. See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from '__STATIC_CONTENT_MANIFEST'
 
 export default {
