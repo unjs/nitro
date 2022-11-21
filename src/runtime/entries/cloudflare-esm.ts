@@ -4,27 +4,26 @@ import { withoutBase } from 'ufo'
 import type { ExecutionContext, RequestInit } from '@cloudflare/workers-types'
 import { createCall } from 'unenv/runtime/fetch/index'
 import { NodeListener, App, createEvent, createError, isError, sendError, H3EventContext } from 'h3'
+// @ts-ignore Bundled by Wrangler 2. See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
+import manifest from '__STATIC_CONTENT_MANIFEST'
 import { requestHasBody, useRequestBody } from '../utils'
 import { nitroApp } from '../app'
 import { useRuntimeConfig } from '#internal/nitro'
 
-// @ts-ignore Bundled by Wrangler 2. See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
-import manifest from '__STATIC_CONTENT_MANIFEST'
-
 export default {
-  async fetch(request, env, ctx: ExecutionContext) {
+  async fetch (request, env, ctx: ExecutionContext) {
     try {
       // TODO: Update to new API: https://github.com/cloudflare/kv-asset-handler#es-modules
       return await getAssetFromKV({
         request,
-        waitUntil(promise) {
+        waitUntil (promise) {
           return ctx.waitUntil(promise)
         }
       }, {
         cacheControl: assetsCacheControl,
         mapRequestToAsset: baseURLModifier,
         ASSET_NAMESPACE: env.__STATIC_CONTENT,
-        ASSET_MANIFEST: JSON.parse(manifest),
+        ASSET_MANIFEST: JSON.parse(manifest)
       })
     } catch (_err) {
       // Ignore
@@ -62,7 +61,7 @@ export default {
   }
 }
 
-function assetsCacheControl(_request) {
+function assetsCacheControl (_request) {
   // TODO: Detect public asset bases
   // if (request.url.startsWith(buildAssetsURL())) {
   //   return {
@@ -78,7 +77,7 @@ const baseURLModifier = (request: Request) => {
   return mapRequestToAsset(new Request(url, request))
 }
 
-function normalizeOutgoingHeaders(headers: Record<string, string | string[] | undefined>) {
+function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
   return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
 }
 
