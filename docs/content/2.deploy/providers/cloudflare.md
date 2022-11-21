@@ -128,6 +128,13 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
 ```
 
+### Module Workers
+
+**Preset:** `cloudflare-esm` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+::alert{type="warning"}
+**Note:** This is an experimental preset.
+::
 
 ## Cloudflare Pages
 
