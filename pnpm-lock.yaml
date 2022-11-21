@@ -8,6 +8,7 @@ importers:
   .:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
+      '@cloudflare/workers-types': ^4.20221111.1
       '@netlify/functions': ^1.3.0
       '@nuxtjs/eslint-config-typescript': ^11.0.0
       '@rollup/plugin-alias': ^4.0.2
@@ -146,6 +147,7 @@ importers:
       unimport: 1.0.1_rollup@2.79.1
       unstorage: 1.0.1
     devDependencies:
+      '@cloudflare/workers-types': 4.20221111.1
       '@nuxtjs/eslint-config-typescript': 11.0.0_e3uo4sehh4zr4i6m57mkkxxv7y
       '@types/aws-lambda': 8.10.108
       '@types/etag': 1.8.1
@@ -431,6 +433,10 @@ packages:
     dependencies:
       mime: 3.0.0
     dev: false
+
+  /@cloudflare/workers-types/4.20221111.1:
+    resolution: {integrity: sha512-BNV2wN8V6Zduvo7UzxcdjBbLQ906D2KhS804PDufLgx/sanGJCHVJMOIaLvS/b61JKtot1U7P/l1fjrjZ7/E3A==}
+    dev: true
 
   /@edge-runtime/format/1.1.0:
     resolution: {integrity: sha512-MkLDDtPhXZIMx83NykdFmOpF7gVWIdd6GBHYb8V/E+PKWvD2pK/qWx9B30oN1iDJ2XBm0SGDjz02S8nDHI9lMQ==}
