@@ -22,9 +22,28 @@ export type TypedInternalResponse<Route, Default = unknown, Method extends Route
         : MiddlewareOf<Route, Method>
       : Default
 
+// Extracts the available http methods based on the route.
+// Defaults to all methods if there aren't any methods available or if there is a catch-all route.
+export type AvailableRouterMethod<R extends NitroFetchRequest> = R extends string
+  ? keyof InternalApi[MatchedRoutes<R>] extends undefined
+    ? RouterMethod
+    : Extract<keyof InternalApi[MatchedRoutes<R>], 'default'> extends undefined
+      ? Extract<RouterMethod, keyof InternalApi[MatchedRoutes<R>]>
+      : RouterMethod
+  : RouterMethod;
+
+// Argumented fetch options to include the correct request methods.
+// This overrides the default, which is only narrowed to a string.
+export interface NitroFetchOptions<R extends NitroFetchRequest> extends FetchOptions {
+  method?: AvailableRouterMethod<R>;
+}
+
+// Extract the route method from options which might be undefined or without a method parameter.
+export type ExtractedRouteMethod<R extends NitroFetchRequest, O extends NitroFetchOptions<R>> = O extends undefined ? 'get' : O['method'] extends RouterMethod ? O['method'] : 'get'
+
 export interface $Fetch<DefaultT = unknown, DefaultR extends NitroFetchRequest = NitroFetchRequest> {
-  <M extends RouterMethod, T = DefaultT, R extends NitroFetchRequest = DefaultR> (request: R, opts?: {method?: M}): Promise<TypedInternalResponse<R, T, M>>
-  raw<M extends RouterMethod, T = DefaultT, R extends NitroFetchRequest = DefaultR> (request: R, opts?: {method?: M}): Promise<FetchResponse<TypedInternalResponse<R, T, M>>>
+  <T = DefaultT, R extends NitroFetchRequest = DefaultR, O extends NitroFetchOptions<R> = NitroFetchOptions<R>> (request: R, opts?: O): Promise<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>
+  raw<T = DefaultT, R extends NitroFetchRequest = DefaultR, O extends NitroFetchOptions<R> = NitroFetchOptions<R>> (request: R, opts?: O): Promise<FetchResponse<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>>
   create<T = DefaultT, R extends NitroFetchRequest = DefaultR> (defaults: FetchOptions): $Fetch<T, R>
 }
 
