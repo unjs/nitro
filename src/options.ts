@@ -264,7 +264,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   options.plugins = options.plugins.map(p => resolvePath(p, options))
 
   if (isWindows) {
-    options.plugins = options.plugins.map(p => pathToFileURL(p).toString())
+    options.plugins = options.plugins.map(p => pathToFileURL(p).href)
   }
 
   return options
