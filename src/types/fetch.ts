@@ -9,7 +9,7 @@ export type NitroFetchRequest = Exclude<keyof InternalApi, `/_${string}`|`/api/_
 
 export type MiddlewareOf<Route extends string, Method extends RouterMethod | 'default'> = Method extends keyof InternalApi[MatchedRoutes<Route>] ? Exclude<InternalApi[MatchedRoutes<Route>][Method], Error | void> : never
 
-export type TypedInternalResponse<Route, Default = unknown, Method extends RouterMethod = 'get'> =
+export type TypedInternalResponse<Route, Default = unknown, Method extends RouterMethod = RouterMethod> =
   Default extends string | boolean | number | null | void | object
     // Allow user overrides
     ? Default
