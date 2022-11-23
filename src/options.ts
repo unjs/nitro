@@ -1,3 +1,5 @@
+import { pathToFileURL } from 'url'
+import { isWindows } from 'std-env'
 import { resolve, join } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
@@ -260,6 +262,10 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
 
   // Resolve plugin paths
   options.plugins = options.plugins.map(p => resolvePath(p, options))
+
+  if (isWindows) {
+    options.plugins = options.plugins.map(p => pathToFileURL(p).toString())
+  }
 
   return options
 }
