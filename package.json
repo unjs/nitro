@@ -103,7 +103,7 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^11.0.0",
-    "@types/aws-lambda": "^8.10.108",
+    "@types/aws-lambda": "^8.10.109",
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^9.0.13",
     "@types/http-proxy": "^1.17.9",
