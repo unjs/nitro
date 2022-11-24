@@ -29,7 +29,8 @@ export const cloudflareEsm = defineNitroPreset({
   rollupConfig: {
     external: '__STATIC_CONTENT_MANIFEST',
     output: {
-      format: 'esm'
+      format: 'esm',
+      exports: 'named'
     }
   },
   hooks: {
