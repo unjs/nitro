@@ -1,13 +1,13 @@
 ---
 title: Edgio
-description: 'Discover Edgio preset for Nitro!'
+description: 'Discover Edgio (formerly Layer0) preset for Nitro!'
 ---
 
 **Preset:** `edgio` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-Nitro provides a built-in preset to generate output format compatible with [Edgio](https://edg.io/).
+Nitro provides a built-in preset to generate output format compatible with [Edgio (formerly Layer0)](https://edg.io/).
 
-Edgio extends the capabilities of a traditional CDN by not only hosting your static content, but also providing server-side rendering for progressive web applications as well as caching both your APIs and HTML at the network edge to provide your users with the fastest browsing experience.
+Edgio (formerly Layer0) extends the capabilities of a traditional CDN by not only hosting your static content, but also providing server-side rendering for progressive web applications as well as caching both your APIs and HTML at the network edge to provide your users with the fastest browsing experience.
 
 If this is your first time deploying to Edgio, the interactive CLI as part of the `deploy` command will prompt to authenticate using your browser. You may also [sign up](https://app.layer0.co/signup) prior to deployment.
 
