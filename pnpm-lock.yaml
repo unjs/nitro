@@ -18,7 +18,7 @@ importers:
       '@rollup/plugin-replace': ^5.0.1
       '@rollup/plugin-wasm': ^6.0.1
       '@rollup/pluginutils': ^5.0.2
-      '@types/aws-lambda': ^8.10.108
+      '@types/aws-lambda': ^8.10.109
       '@types/etag': ^1.8.1
       '@types/fs-extra': ^9.0.13
       '@types/http-proxy': ^1.17.9
@@ -147,7 +147,7 @@ importers:
       unstorage: 1.0.1
     devDependencies:
       '@nuxtjs/eslint-config-typescript': 11.0.0_hsf322ms6xhhd4b5ne6lb74y4a
-      '@types/aws-lambda': 8.10.108
+      '@types/aws-lambda': 8.10.109
       '@types/etag': 1.8.1
       '@types/fs-extra': 9.0.13
       '@types/http-proxy': 1.17.9
@@ -1022,8 +1022,8 @@ packages:
       rollup: 3.3.0
     dev: true
 
-  /@types/aws-lambda/8.10.108:
-    resolution: {integrity: sha512-1yh1W1WoqK3lGHy+V/Fi55zobxrDHUUsluCWdMlOXkCvtsCmHPXOG+CQ2STIL4B1g6xi6I6XzxaF8V9+zeIFLA==}
+  /@types/aws-lambda/8.10.109:
+    resolution: {integrity: sha512-/ME92FneNyXQzrAfcnQQlW1XkCZGPDlpi2ao1MJwecN+6SbeonKeggU8eybv1DfKli90FAVT1MlIZVXfwVuCyg==}
     dev: true
 
   /@types/better-sqlite3/7.6.0:
