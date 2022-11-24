@@ -1,7 +1,7 @@
 import { resolve } from 'pathe'
 import { listen, Listener } from 'listhen'
 import destr from 'destr'
-import { fetch } from 'ohmyfetch'
+import { fetch } from 'ofetch'
 import { expect, it, afterAll } from 'vitest'
 import { fileURLToPath } from 'mlly'
 import { joinURL } from 'ufo'
@@ -39,6 +39,8 @@ export async function setupTest (preset) {
       '/rules/cors': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
       '/rules/redirect': { redirect: '/base' },
       '/rules/static': { static: true },
+      '/rules/swr/**': { swr: true },
+      '/rules/swr-ttl/**': { swr: 60 },
       '/rules/redirect/obj': {
         redirect: { to: 'https://nitro.unjs.io/', statusCode: 308 }
       },

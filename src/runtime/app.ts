@@ -1,5 +1,5 @@
 import { App as H3App, createApp, createRouter, lazyEventHandler, Router, toNodeListener } from 'h3'
-import { createFetch, Headers } from 'ohmyfetch'
+import { createFetch, Headers } from 'ofetch'
 import destr from 'destr'
 import { createCall, createFetch as createLocalFetch } from 'unenv/runtime/fetch/index'
 import { createHooks, Hookable } from 'hookable'

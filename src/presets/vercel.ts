@@ -1,4 +1,5 @@
-import { resolve } from 'pathe'
+import fsp from 'fs/promises'
+import { dirname, relative, resolve } from 'pathe'
 import { defu } from 'defu'
 import { withoutLeadingSlash } from 'ufo'
 import { writeFile } from '../utils'
@@ -34,6 +35,18 @@ export const vercel = defineNitroPreset({
         shouldAddHelpers: false
       }
       await writeFile(functionConfigPath, JSON.stringify(functionConfig, null, 2))
+
+      // Write prerender functions
+      for (const [key, value] of Object.entries(nitro.options.routeRules).filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))) {
+        if (!value.cache) { continue } // for type support
+        const funcPrefix = resolve(nitro.options.output.serverDir, '..' + generateEndpoint(key))
+        await fsp.mkdir(dirname(funcPrefix), { recursive: true })
+        await fsp.symlink('./' + relative(dirname(funcPrefix), nitro.options.output.serverDir), funcPrefix + '.func', 'junction')
+        await writeFile(funcPrefix + '.prerender-config.json', JSON.stringify({
+          expiration: value.cache.static ? false : typeof value.cache.swr === 'number' ? value.cache.swr : 60,
+          allowQuery: key.includes('/**') ? ['url'] : undefined
+        }))
+      }
     }
   }
 })
@@ -72,7 +85,6 @@ export const vercelEdge = defineNitroPreset({
 })
 
 function generateBuildConfig (nitro: Nitro) {
-  // const overrides = generateOverrides(nitro._prerenderedRoutes?.filter(r => r.fileName !== r.route) || [])
   return defu(nitro.options.vercel?.config, <VercelBuildConfigV3> {
     version: 3,
     overrides: Object.fromEntries(
@@ -112,10 +124,20 @@ function generateBuildConfig (nitro: Nitro) {
       {
         handle: 'filesystem'
       },
+      ...Object.entries(nitro.options.routeRules)
+        .filter(([key, value]) => value.cache && (value.cache.swr || value.cache.static) && key.includes('/**'))
+        .map(([key]) => ({
+          src: key.replace(/^(.*)\/\*\*/, '(?<url>$1/.*)'),
+          dest: generateEndpoint(key) + '?url=$url'
+        })),
       {
         src: '/(.*)',
         dest: '/__nitro'
       }
     ]
   })
+}
+
+function generateEndpoint (url: string) {
+  return url.includes('/**') ? '/__nitro-' + withoutLeadingSlash(url.replace(/\/\*\*.*/, '').replace(/[^a-z]/g, '-')) : url
 }
