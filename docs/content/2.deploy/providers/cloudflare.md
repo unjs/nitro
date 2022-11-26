@@ -128,13 +128,42 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
 ```
 
-### Module Workers
+## Cloudflare Module Workers
 
 **Preset:** `cloudflare-esm` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
 ::
+
+::alert{type="info"}
+**Note:** This preset uses [module syntax](https://developers.cloudflare.com/workers/learning/migrating-to-module-workers/) for deployment.
+::
+
+The module syntax allows you to use [service bindings](https://developers.cloudflare.com/workers/platform/bindings/about-service-bindings/), [Durable Objects](https://developers.cloudflare.com/workers/learning/using-durable-objects/), and [D1](https://developers.cloudflare.com/d1/). You can access the module bindings and context via `event.context`.
+
+For example, with the following additions to your `wrangler.toml`:
+
+```ini
+services = [
+  { binding = "WORKER", service = "<service name>" }
+]
+d1_databases = [
+  { binding = "D1", database_id = "<database id>" }
+]
+```
+
+```js
+// waitUntil allows cache writes, external logging, etc without blocking the event
+event.context.ctx.waitUntil(logRequest(event.node.req))
+
+// bindings
+const res = await event.context.env.WORKER.fetch('<worker URL>')
+
+// D1
+const stmt = await event.context.env.D1.prepare('SELECT id FROM table')
+const { results } = await stmt.all()
+```
 
 ## Cloudflare Pages
 
