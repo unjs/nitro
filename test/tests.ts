@@ -32,7 +32,7 @@ export async function setupTest (preset) {
   const nitro = ctx.nitro = await createNitro({
     preset: ctx.preset,
     rootDir: ctx.rootDir,
-    serveStatic: preset !== 'cloudflare' && preset !== 'vercel-edge',
+    serveStatic: !preset.includes('cloudflare') && preset !== 'vercel-edge',
     output: { dir: ctx.outDir },
     routeRules: {
       '/rules/headers': { headers: { 'cache-control': 's-maxage=60' } },
