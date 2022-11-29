@@ -64,12 +64,10 @@ export async function prerender (nitro: Nitro) {
   // Start prerendering
   const generatedRoutes = new Set()
   const canPrerender = (route: string = '/') => {
-    if (generatedRoutes.has(route)) { return false }
-    if (route.length > 250) { return false }
-    for (const ignore of nitro.options.prerender.ignore) {
-      if (route.startsWith(ignore)) { return false }
-    }
-    if (_getRouteRules(route).prerender === false) { return false }
+    if (generatedRoutes.has(route) ||
+      route.length > 250 ||
+      nitro.options.prerender.ignore.some(ignore => route.startsWith(ignore)) ||
+      _getRouteRules(route).prerender === false) { return false }
     return true
   }
 

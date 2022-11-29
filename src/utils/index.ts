@@ -114,13 +114,12 @@ export function readPackageJson (
     return _require(`${packageName}/package.json`)
   } catch (error) {
     if (error.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
-      const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(_require.resolve(packageName))
-      for (const pkgModulePath of pkgModulePaths || []) {
+      const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(_require.resolve(packageName)) || []
+      for (const pkgModulePath of pkgModulePaths) {
         const path = resolve(pkgModulePath, packageName, 'package.json')
         if (fse.existsSync(path)) {
           return fse.readJSONSync(path)
         }
-        continue
       }
 
       throw error
@@ -137,12 +136,11 @@ export function resolveAliases (_aliases: Record<string, string>) {
   // Resolve alias values in relation to each other
   for (const key in aliases) {
     for (const alias in aliases) {
-      if (!['~', '@', '#'].includes(alias[0])) { continue }
-      if (alias === '@' && !aliases[key].startsWith('@/')) { continue } // Don't resolve @foo/bar
+      if (!['~', '@', '#'].includes(alias[0]) ||
+        (alias === '@' && !aliases[key].startsWith('@/')) || // Don't resolve @foo/bar
+        !aliases[key].startsWith(alias)) { continue }
 
-      if (aliases[key].startsWith(alias)) {
-        aliases[key] = aliases[alias] + aliases[key].slice(alias.length)
-      }
+      aliases[key] = aliases[alias] + aliases[key].slice(alias.length)
     }
   }
   return aliases
