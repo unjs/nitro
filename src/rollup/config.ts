@@ -2,7 +2,7 @@ import { pathToFileURL } from 'url'
 import { dirname, join, normalize, relative, resolve } from 'pathe'
 import type { InputOptions, OutputOptions } from 'rollup'
 import { defu } from 'defu'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import type { RollupWasmOptions } from '@rollup/plugin-wasm'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
@@ -309,8 +309,8 @@ export const plugins = [
   // https://github.com/rollup/plugins/tree/master/packages/inject
   rollupConfig.plugins.push(inject(env.inject))
 
-  // https://github.com/TrySound/rollup-plugin-terser
-  // https://github.com/terser/terser#minify-Nitro
+  // https://github.com/rollup/plugins/tree/master/packages/terser#readme
+  // https://github.com/terser/terser#minify-options
   if (nitro.options.minify) {
     rollupConfig.plugins.push(terser({
       mangle: {
