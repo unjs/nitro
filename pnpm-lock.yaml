@@ -47,7 +47,7 @@ importers:
       etag: ^1.8.1
       execa: ^6.1.0
       expect-type: ^0.15.0
-      fs-extra: ^10.1.0
+      fs-extra: ^11.1.0
       globby: ^13.1.2
       gzip-size: ^7.0.0
       h3: ^1.0.1
@@ -110,7 +110,7 @@ importers:
       esbuild: 0.15.16
       escape-string-regexp: 5.0.0
       etag: 1.8.1
-      fs-extra: 10.1.0
+      fs-extra: 11.1.0
       globby: 13.1.2
       gzip-size: 7.0.0
       h3: 1.0.1
@@ -2823,6 +2823,16 @@ packages:
       graceful-fs: 4.2.10
       jsonfile: 6.1.0
       universalify: 2.0.0
+    dev: true
+
+  /fs-extra/11.1.0:
+    resolution: {integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw==}
+    engines: {node: '>=14.14'}
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: false
 
   /fs-memo/1.2.0:
     resolution: {integrity: sha512-YEexkCpL4j03jn5SxaMHqcO6IuWuqm8JFUYhyCep7Ao89JIYmB8xoKhK7zXXJ9cCaNXpyNH5L3QtAmoxjoHW2w==}
