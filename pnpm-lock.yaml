@@ -23,7 +23,7 @@ importers:
       '@types/fs-extra': ^9.0.13
       '@types/http-proxy': ^1.17.9
       '@types/node-fetch': ^2.6.2
-      '@types/object-hash': ^2.2.1
+      '@types/object-hash': ^3.0.1
       '@types/semver': ^7.3.13
       '@types/serve-static': ^1.15.0
       '@vercel/nft': ^0.22.1
@@ -152,7 +152,7 @@ importers:
       '@types/fs-extra': 9.0.13
       '@types/http-proxy': 1.17.9
       '@types/node-fetch': 2.6.2
-      '@types/object-hash': 2.2.1
+      '@types/object-hash': 3.0.1
       '@types/semver': 7.3.13
       '@types/serve-static': 1.15.0
       '@vitest/coverage-c8': 0.25.3
@@ -1093,8 +1093,8 @@ packages:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: true
 
-  /@types/object-hash/2.2.1:
-    resolution: {integrity: sha512-i/rtaJFCsPljrZvP/akBqEwUP2y5cZLOmvO+JaYnz01aPknrQ+hB5MRcO7iqCUsFaYfTG8kGfKUyboA07xeDHQ==}
+  /@types/object-hash/3.0.1:
+    resolution: {integrity: sha512-AeyooJR4pesRnPLXONFEpxrdvwYVkBiq26j4Uo4QYcJO2FQhAFmHHWBfRpEzwMtItz7q9JiD50s7HDbHS7PleQ==}
     dev: true
 
   /@types/resolve/1.20.2:

@@ -108,7 +108,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/http-proxy": "^1.17.9",
     "@types/node-fetch": "^2.6.2",
-    "@types/object-hash": "^2.2.1",
+    "@types/object-hash": "^3.0.1",
     "@types/semver": "^7.3.13",
     "@types/serve-static": "^1.15.0",
     "@vitest/coverage-c8": "^0.25.3",
