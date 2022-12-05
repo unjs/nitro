@@ -37,7 +37,7 @@ importers:
       consola: ^2.15.3
       cookie-es: ^0.5.0
       defu: ^6.1.1
-      destr: ^1.2.1
+      destr: ^1.2.2
       dot-prop: ^7.2.0
       edge-runtime: 2.0.2
       esbuild: ^0.15.18
@@ -105,7 +105,7 @@ importers:
       consola: 2.15.3
       cookie-es: 0.5.0
       defu: 6.1.1
-      destr: 1.2.1
+      destr: 1.2.2
       dot-prop: 7.2.0
       esbuild: 0.15.18
       escape-string-regexp: 5.0.0
@@ -1899,8 +1899,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /destr/1.2.1:
-    resolution: {integrity: sha512-ud8w0qMLlci6iFG7CNgeRr8OcbUWMsbfjtWft1eJ5Luqrz/M8Ebqk/KCzne8rKUlIQWWfLv0wD6QHrqOf4GshA==}
+  /destr/1.2.2:
+    resolution: {integrity: sha512-lrbCJwD9saUQrqUfXvl6qoM+QN3W7tLV5pAOs+OqOmopCCz/JkE05MHedJR1xfk4IAnZuJXPVuN5+7jNA2ZCiA==}
 
   /destroy/1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
@@ -3015,7 +3015,7 @@ packages:
     resolution: {integrity: sha512-gDCGpRvjchZW2JBlTqbJ9IOs+mdkXXuwSQkSye+jubHAv/UhdamKqoQvd4RFgyBNjHSId8Y+b10UdTcPlP/V+w==}
     dependencies:
       cookie-es: 0.5.0
-      destr: 1.2.1
+      destr: 1.2.2
       radix3: 1.0.0
       ufo: 1.0.1
     dev: false
@@ -3928,7 +3928,7 @@ packages:
   /ofetch/1.0.0:
     resolution: {integrity: sha512-d40aof8czZFSQKJa4+F7Ch3UC5D631cK1TTUoK+iNEut9NoiCL+u0vykl/puYVUS2df4tIQl5upQcolIcEzQjQ==}
     dependencies:
-      destr: 1.2.1
+      destr: 1.2.2
       node-fetch-native: 1.0.1
       ufo: 1.0.1
     dev: false
@@ -4207,7 +4207,7 @@ packages:
     resolution: {integrity: sha512-zbe8+HR2X28eZepAwohuKkebbEsA67h0DO9I7g12QrHa2CQopR9gztOLPIPXXGTvcxeUjAN4wZ+b29t3m/u05g==}
     dependencies:
       defu: 6.1.1
-      destr: 1.2.1
+      destr: 1.2.2
       flat: 5.0.2
     dev: true
 
@@ -4215,7 +4215,7 @@ packages:
     resolution: {integrity: sha512-yVeYJHOpJLOhs3V6RKwz7RPPwPurrx3JjwK264sPgvo/lFdhuUrLien7iSvAO6STVkN0gSMk/MehQNHQhflqZw==}
     dependencies:
       defu: 6.1.1
-      destr: 1.2.1
+      destr: 1.2.2
       flat: 5.0.2
     dev: false
 
@@ -5001,7 +5001,7 @@ packages:
     dependencies:
       anymatch: 3.1.2
       chokidar: 3.5.3
-      destr: 1.2.1
+      destr: 1.2.2
       h3: 1.0.1
       ioredis: 5.2.4
       listhen: 1.0.1
