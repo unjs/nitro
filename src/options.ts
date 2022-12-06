@@ -1,4 +1,5 @@
-import { resolve, join } from 'pathe'
+import { pathToFileURL } from 'node:url'
+import { resolve, join, isAbsolute } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
@@ -259,7 +260,13 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   }
 
   // Resolve plugin paths
-  options.plugins = options.plugins.map(p => resolvePath(p, options))
+  options.plugins = options.plugins.map((p) => {
+    const path = resolvePath(p, options)
+    if (options.dev && isAbsolute(path)) {
+      return pathToFileURL(path).href
+    }
+    return path
+  })
 
   return options
 }
