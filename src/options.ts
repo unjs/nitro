@@ -267,6 +267,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     }
     return path
   })
+
   return options
 }
 
