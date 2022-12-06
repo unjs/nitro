@@ -168,6 +168,15 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
     options.imports.exclude.push(options.buildDir)
   }
 
+  // Normalise absolute auto-import paths for windows machines
+  if (options.imports && options.dev) {
+    for (const entry of options.imports.imports) {
+      if (isAbsolute(entry.from)) {
+        entry.from = pathToFileURL(entry.from).href
+      }
+    }
+  }
+
   // Add h3 auto imports preset
   if (options.imports) {
     const h3Exports = await resolveModuleExportNames('h3', { url: import.meta.url })
