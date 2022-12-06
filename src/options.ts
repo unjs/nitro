@@ -7,7 +7,7 @@ import { defu } from 'defu'
 import { resolveModuleExportNames, resolvePath as resolveModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
-import { isTest, isDebug, isWindows } from 'std-env'
+import { isTest, isDebug } from 'std-env'
 import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions, NitroRouteConfig, NitroRouteRules } from './types'
@@ -262,7 +262,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   // Resolve plugin paths
   options.plugins = options.plugins.map((p) => {
     const path = resolvePath(p, options)
-    if (isWindows && options.dev && isAbsolute(path)) {
+    if (options.dev && isAbsolute(path)) {
       return pathToFileURL(path).href
     }
     return path
