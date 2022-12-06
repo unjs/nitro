@@ -1,4 +1,5 @@
-import { resolve, join } from 'pathe'
+import { pathToFileURL } from 'node:url'
+import { resolve, join, isAbsolute } from 'pathe'
 import { loadConfig } from 'c12'
 import { klona } from 'klona/full'
 import { camelCase } from 'scule'
@@ -6,7 +7,7 @@ import { defu } from 'defu'
 import { resolveModuleExportNames, resolvePath as resolveModule } from 'mlly'
 // import escapeRE from 'escape-string-regexp'
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo'
-import { isTest, isDebug } from 'std-env'
+import { isTest, isDebug, isWindows } from 'std-env'
 import { findWorkspaceDir } from 'pkg-types'
 import { resolvePath, detectTarget } from './utils'
 import type { NitroConfig, NitroOptions, NitroRouteConfig, NitroRouteRules } from './types'
@@ -259,8 +260,13 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
   }
 
   // Resolve plugin paths
-  options.plugins = options.plugins.map(p => resolvePath(p, options))
-
+  options.plugins = options.plugins.map((p) => {
+    const path = resolvePath(p, options)
+    if (isWindows && options.dev && isAbsolute(path)) {
+      return pathToFileURL(path).href
+    }
+    return path
+  })
   return options
 }
 
