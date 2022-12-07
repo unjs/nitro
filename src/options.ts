@@ -170,6 +170,7 @@ export async function loadOptions (configOverrides: NitroConfig = {}): Promise<N
 
   // Normalise absolute auto-import paths for windows machines
   if (options.imports && options.dev) {
+    options.imports.imports = options.imports.imports || []
     for (const entry of options.imports.imports) {
       if (isAbsolute(entry.from)) {
         entry.from = pathToFileURL(entry.from).href
