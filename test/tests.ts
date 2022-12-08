@@ -58,7 +58,18 @@ export async function setupTest(preset: string) {
     },
   }));
 
-  if (!ctx.isDev) {
+  if (ctx.isDev) {
+    // Setup development server
+    const devServer = _nitro.createDevServer(ctx.nitro);
+    ctx.server = await devServer.listen({});
+    await prepare(ctx.nitro);
+    const ready = new Promise<void>((resolve) => {
+      ctx.nitro.hooks.hook("dev:reload", () => resolve());
+    });
+    await build(ctx.nitro);
+    await ready;
+  } else {
+    // Production build
     await prepare(nitro);
     await copyPublicAssets(nitro);
     await prerender(nitro);
