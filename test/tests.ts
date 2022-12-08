@@ -102,7 +102,8 @@ type TestHandler = (options: any) => Promise<TestHandlerResult | Response>;
 
 export function testNitro(
   ctx: Context,
-  getHandler: () => TestHandler | Promise<TestHandler>
+  getHandler: () => TestHandler | Promise<TestHandler>,
+  additionalTests?: (ctx: Context, callHandler: TestHandler) => void
 ) {
   let _handler: TestHandler;
 
@@ -198,11 +199,6 @@ export function testNitro(
     expect(data.hasEnv).toBe(true);
   });
 
-  it("returns correct status for devProxy", async () => {
-    const { status } = await callHandler({ url: "/proxy/example" });
-    expect(status).toBe(ctx.isDev ? 200 : 404);
-  });
-
   if (ctx.nitro!.options.serveStatic) {
     it("serve static asset /favicon.ico", async () => {
       const { status, headers } = await callHandler({ url: "/favicon.ico" });
@@ -238,5 +234,9 @@ export function testNitro(
         subpathLib: "2.0.1",
       });
     });
+
+    if (additionalTests) {
+      additionalTests(ctx, callHandler);
+    }
   }
 }
