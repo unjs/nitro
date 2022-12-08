@@ -1,11 +1,11 @@
-import type { NitroApp } from './app'
+import type { NitroApp } from "./app";
 
 export interface NitroAppPlugin {
-  (nitro: NitroApp): void
+  (nitro: NitroApp): void;
 }
 
-export function defineNitroPlugin (def: NitroAppPlugin) {
-  return def
+export function defineNitroPlugin(def: NitroAppPlugin) {
+  return def;
 }
 
-export const nitroPlugin = defineNitroPlugin
+export const nitroPlugin = defineNitroPlugin;
