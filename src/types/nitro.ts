@@ -1,23 +1,23 @@
 /* eslint-disable no-use-before-define */
-import type { Preset as UnenvPreset } from 'unenv'
-import type { Unimport } from 'unimport'
-import type { UnimportPluginOptions } from 'unimport/unplugin'
-import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer'
-import type { NestedHooks, Hookable } from 'hookable'
-import type { Consola, LogLevel } from 'consola'
-import type { WatchOptions } from 'chokidar'
-import type { RollupCommonJSOptions } from '@rollup/plugin-commonjs'
-import type { RollupWasmOptions } from '@rollup/plugin-wasm'
-import type { Storage, BuiltinDriverName } from 'unstorage'
-import type { ServerOptions as HTTPProxyOptions } from 'http-proxy'
-import type { NodeExternalsOptions } from '../rollup/plugins/externals'
-import type { RollupConfig } from '../rollup/config'
-import type { Options as EsbuildOptions } from '../rollup/plugins/esbuild'
-import { CachedEventHandlerOptions } from '../runtime/types'
-import type * as _PRESETS from '../presets'
-import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from './handler'
-import type { PresetOptions } from './presets'
-import type { KebabCase } from './utils'
+import type { Preset as UnenvPreset } from "unenv";
+import type { Unimport } from "unimport";
+import type { UnimportPluginOptions } from "unimport/unplugin";
+import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
+import type { NestedHooks, Hookable } from "hookable";
+import type { Consola, LogLevel } from "consola";
+import type { WatchOptions } from "chokidar";
+import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
+import type { RollupWasmOptions } from "@rollup/plugin-wasm";
+import type { Storage, BuiltinDriverName } from "unstorage";
+import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
+import type { NodeExternalsOptions } from "../rollup/plugins/externals";
+import type { RollupConfig } from "../rollup/config";
+import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
+import { CachedEventHandlerOptions } from "../runtime/types";
+import type * as _PRESETS from "../presets";
+import type { NitroErrorHandler, NitroDevEventHandler, NitroEventHandler } from "./handler";
+import type { PresetOptions } from "./presets";
+import type { KebabCase } from "./utils";
 
 export interface Nitro {
   options: NitroOptions,
@@ -48,13 +48,13 @@ export interface PrerenderGenerateRoute extends PrerenderRoute {
 
 type HookResult = void | Promise<void>
 export interface NitroHooks {
-  'rollup:before': (nitro: Nitro) => HookResult
-  'compiled': (nitro: Nitro) => HookResult
-  'dev:reload': () => HookResult
-  'close': () => HookResult
-  'prerender:routes': (routes: Set<string>) => HookResult
-  'prerender:route': (route: PrerenderRoute) => HookResult
-  'prerender:generate': (route: PrerenderGenerateRoute, nitro: Nitro) => HookResult
+  "rollup:before": (nitro: Nitro) => HookResult
+  "compiled": (nitro: Nitro) => HookResult
+  "dev:reload": () => HookResult
+  "close": () => HookResult
+  "prerender:routes": (routes: Set<string>) => HookResult
+  "prerender:route": (route: PrerenderRoute) => HookResult
+  "prerender:generate": (route: PrerenderGenerateRoute, nitro: Nitro) => HookResult
 }
 
 type CustomDriverName = string & { _custom?: any }
@@ -67,7 +67,7 @@ type DeepPartial<T> = T extends Record<string, any> ? { [P in keyof T]?: DeepPar
 
 export type NitroPreset = NitroConfig | (() => NitroConfig)
 
-export interface NitroConfig extends DeepPartial<Omit<NitroOptions, 'routeRules'>> {
+export interface NitroConfig extends DeepPartial<Omit<NitroOptions, "routeRules">> {
   extends?: string | string[] | NitroPreset
   routeRules?: { [path: string]: NitroRouteConfig }
 }
@@ -93,7 +93,7 @@ export interface CompressOptions {
   brotli?: boolean
 }
 
-type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc['length']]>
+type Enumerate<N extends number, Acc extends number[] = []> = Acc["length"] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc["length"]]>
 type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>
 type HTTPStatusCode = IntRange<100, 600>
 
@@ -109,7 +109,7 @@ export interface NitroRouteConfig {
   static?: boolean | number
 }
 
-export interface NitroRouteRules extends Omit<NitroRouteConfig, 'redirect' | 'cors' | 'swr' | 'static'> {
+export interface NitroRouteRules extends Omit<NitroRouteConfig, "redirect" | "cors" | "swr" | "static"> {
   redirect?: { to: string, statusCode: HTTPStatusCode }
 }
 
@@ -146,7 +146,7 @@ export interface NitroOptions extends PresetOptions {
   bundledStorage: string[]
   timing: boolean
   renderer: string
-  serveStatic: boolean | 'node' | 'deno'
+  serveStatic: boolean | "node" | "deno"
   noPublicDir: boolean
   experimental?: {
     wasm?: boolean | RollupWasmOptions

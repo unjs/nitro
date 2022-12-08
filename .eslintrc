@@ -1,10 +1,14 @@
 {
   "extends": [
-    "@nuxtjs/eslint-config-typescript"
+    "eslint-config-unjs"
   ],
   "rules": {
-    "import/no-named-as-default-member": "off",
-    "import/default": "off",
-    "no-console": "off"
+    "unicorn/prevent-abbreviations": 0,
+    "no-undef": 0,
+    "unicorn/catch-error-name": 0,
+    "unicorn/no-null": 0,
+    "unicorn/no-useless-undefined": 0,
+    "unicorn/no-await-expression-member": 0,
+    "unicorn/no-array-push-push": 0
   }
 }

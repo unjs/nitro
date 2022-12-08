@@ -1,19 +1,19 @@
-import { defineTheme } from '@nuxt-themes/config'
+import { defineTheme } from "@nuxt-themes/config";
 
 export default defineTheme({
-  title: '⚗️ Nitro',
+  title: "⚗️ Nitro",
   header: {
     title: false,
     logo: true
   },
-  description: 'Build and Deploy Universal JavaScript Servers.',
-  url: 'https://nitro.unjs.io',
+  description: "Build and Deploy Universal JavaScript Servers.",
+  url: "https://nitro.unjs.io",
   socials: {
-    twitter: 'unjsio',
-    github: 'unjs/nitro'
+    twitter: "unjsio",
+    github: "unjs/nitro"
   },
   github: {
-    root: 'docs/content',
+    root: "docs/content",
     edit: true,
     releases: false
   },
@@ -21,15 +21,15 @@ export default defineTheme({
     level: 1
   },
   cover: {
-    src: '/cover.jpg',
-    alt: 'Nitro'
+    src: "/cover.jpg",
+    alt: "Nitro"
   },
   footer: {
     credits: {
-      icon: '',
-      text: 'Made with 💛',
-      href: 'https://github.com/unjs/nitro'
+      icon: "",
+      text: "Made with 💛",
+      href: "https://github.com/unjs/nitro"
     },
     icons: []
   }
-})
+});

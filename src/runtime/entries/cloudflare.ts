@@ -1,25 +1,25 @@
-import '#internal/nitro/virtual/polyfill'
-import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
-import { withoutBase } from 'ufo'
-import { requestHasBody } from '../utils'
-import { nitroApp } from '../app'
-import { useRuntimeConfig } from '#internal/nitro'
+import "#internal/nitro/virtual/polyfill";
+import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
+import { withoutBase } from "ufo";
+import { requestHasBody } from "../utils";
+import { nitroApp } from "../app";
+import { useRuntimeConfig } from "#internal/nitro";
 
-addEventListener('fetch', (event: any) => {
-  event.respondWith(handleEvent(event))
-})
+addEventListener("fetch", (event: any) => {
+  event.respondWith(handleEvent(event));
+});
 
 async function handleEvent (event: FetchEvent) {
   try {
-    return await getAssetFromKV(event, { cacheControl: assetsCacheControl, mapRequestToAsset: baseURLModifier })
-  } catch (_err) {
+    return await getAssetFromKV(event, { cacheControl: assetsCacheControl, mapRequestToAsset: baseURLModifier });
+  } catch {
     // Ignore
   }
 
-  const url = new URL(event.request.url)
-  let body
+  const url = new URL(event.request.url);
+  let body;
   if (requestHasBody(event.request)) {
-    body = Buffer.from(await event.request.arrayBuffer())
+    body = Buffer.from(await event.request.arrayBuffer());
   }
 
   const r = await nitroApp.localCall({
@@ -31,14 +31,14 @@ async function handleEvent (event: FetchEvent) {
     method: event.request.method,
     redirect: event.request.redirect,
     body
-  })
+  });
 
   return new Response(r.body, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
     statusText: r.statusText
-  })
+  });
 }
 
 function assetsCacheControl (_request) {
@@ -49,14 +49,14 @@ function assetsCacheControl (_request) {
   //     edgeTTL: 31536000
   //   }
   // }
-  return {}
+  return {};
 }
 
 const baseURLModifier = (request: Request) => {
-  const url = withoutBase(request.url, useRuntimeConfig().app.baseURL)
-  return mapRequestToAsset(new Request(url, request))
-}
+  const url = withoutBase(request.url, useRuntimeConfig().app.baseURL);
+  return mapRequestToAsset(new Request(url, request));
+};
 
 function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v]);
 }

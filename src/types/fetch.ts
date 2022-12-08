@@ -1,5 +1,5 @@
-import type { FetchRequest, FetchOptions, FetchResponse } from 'ofetch'
-import type { MatchedRoutes } from './utils'
+import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
+import type { MatchedRoutes } from "./utils";
 
 // An interface to extend in a local project
 export interface InternalApi { }
@@ -26,13 +26,15 @@ export interface $Fetch<DefaultT = unknown, DefaultR extends NitroFetchRequest =
 }
 
 declare global {
-  // eslint-disable-next-line no-var
-  var $fetch: $Fetch
+  // eslint-disable-next-line no-var, no-unused-vars
+  var $fetch: $Fetch;
+  // eslint-disable-next-line no-unused-vars
   namespace NodeJS {
+    // eslint-disable-next-line no-unused-vars
     interface Global {
       $fetch: $Fetch
     }
   }
 }
 
-export { }
+export { };

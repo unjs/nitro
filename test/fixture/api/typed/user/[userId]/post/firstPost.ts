@@ -1,3 +1,3 @@
 export default eventHandler(() => ({
-  internalApiKey: '/api/typed/user/:userId/post/firstPost' as const
-}))
+  internalApiKey: "/api/typed/user/:userId/post/firstPost" as const
+}));

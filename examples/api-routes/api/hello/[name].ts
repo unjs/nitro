@@ -1,1 +1,1 @@
-export default defineEventHandler(event => `Hello ${event.context.params.name}!`)
+export default defineEventHandler(event => `Hello ${event.context.params.name}!`);
