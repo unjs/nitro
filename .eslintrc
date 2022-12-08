@@ -4,6 +4,7 @@
     "space-before-function-paren": 0,
     "arrow-parens": 0,
     "comma-dangle": 0,
+    "semi": 0,
     "unicorn/prevent-abbreviations": 0,
     "quotes": 0,
     "keyword-spacing": 0,

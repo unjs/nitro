@@ -61,14 +61,18 @@ export const vercel = defineNitroPreset({
           funcPrefix + ".func",
           "junction"
         );
+
+        let expiration: boolean | number = 60;
+        if (value.cache.static) {
+          expiration = false;
+        } else if (typeof value.cache.swr === "number") {
+          expiration = value.cache.swr;
+        }
+
         await writeFile(
           funcPrefix + ".prerender-config.json",
           JSON.stringify({
-            expiration: value.cache.static
-              ? false
-              : typeof value.cache.swr === "number"
-              ? value.cache.swr
-              : 60,
+            expiration,
             allowQuery: key.includes("/**") ? ["url"] : undefined,
           })
         );
