@@ -15,8 +15,10 @@ describe("retry", () => {
     expect(counter).toEqual(2);
   });
   it("throws function", async () => {
-    // eslint-disable-next-line require-await
-    const fn = async () => { throw new Error("deliberate"); };
+    // eslint-disable-next-line require-await, unicorn/consistent-function-scoping
+    const fn = async () => {
+      throw new Error("deliberate");
+    };
     expect(await retry(fn, 2).catch(() => "thrown")).toEqual("thrown");
   });
 });

@@ -9,44 +9,59 @@ import { getProperty } from "dot-prop";
 import { provider } from "std-env";
 import { Nitro } from "../types";
 
-export function hl (str: string) {
+export function hl(str: string) {
   return chalk.cyan(str);
 }
 
-export function prettyPath (p: string, highlight = true) {
+export function prettyPath(p: string, highlight = true) {
   p = relative(process.cwd(), p);
   return highlight ? hl(p) : p;
 }
 
-export function compileTemplate (contents: string) {
-  return (params: Record<string, any>) => contents.replace(/{{ ?([\w.]+) ?}}/g, (_, match) => {
-    const val = getProperty<Record<string, string>, string>(params, match);
-    if (!val) {
-      consola.warn(`cannot resolve template param '${match}' in ${contents.slice(0, 20)}`);
-    }
-    return val || `${match}`;
-  });
+export function compileTemplate(contents: string) {
+  return (params: Record<string, any>) =>
+    contents.replace(/{{ ?([\w.]+) ?}}/g, (_, match) => {
+      const val = getProperty<Record<string, string>, string>(params, match);
+      if (!val) {
+        consola.warn(
+          `cannot resolve template param '${match}' in ${contents.slice(0, 20)}`
+        );
+      }
+      return val || `${match}`;
+    });
 }
 
-export function jitiImport (dir: string, path: string) {
+export function jitiImport(dir: string, path: string) {
   return jiti(dir, { interopDefault: true })(path);
 }
 
-export function tryImport (dir: string, path: string) {
+export function tryImport(dir: string, path: string) {
   try {
     return jitiImport(dir, path);
   } catch {}
 }
 
-export async function writeFile (file: string, contents: Buffer | string, log = false) {
+export async function writeFile(
+  file: string,
+  contents: Buffer | string,
+  log = false
+) {
   await fsp.mkdir(dirname(file), { recursive: true });
-  await fsp.writeFile(file, contents, typeof contents === "string" ? "utf8" : undefined);
+  await fsp.writeFile(
+    file,
+    contents,
+    typeof contents === "string" ? "utf8" : undefined
+  );
   if (log) {
     consola.info("Generated", prettyPath(file));
   }
 }
 
-export function resolvePath (path: string, nitroOptions: Nitro["options"], base?: string): string {
+export function resolvePath(
+  path: string,
+  nitroOptions: Nitro["options"],
+  base?: string
+): string {
   if (typeof path !== "string") {
     throw new TypeError("Invalid path: " + path);
   }
@@ -62,7 +77,7 @@ export function resolvePath (path: string, nitroOptions: Nitro["options"], base?
   return resolve(base || nitroOptions.srcDir, path);
 }
 
-export function replaceAll (input: string, from: string, to: string) {
+export function replaceAll(input: string, from: string, to: string) {
   return input.replace(new RegExp(from, "g"), to);
 }
 
@@ -72,14 +87,14 @@ const autodetectableProviders = {
   netlify: "netlify",
   stormkit: "stormkit",
   vercel: "vercel",
-  cleavr: "cleavr"
+  cleavr: "cleavr",
 };
 
-export function detectTarget () {
+export function detectTarget() {
   return autodetectableProviders[provider];
 }
 
-export async function isDirectory (path: string) {
+export async function isDirectory(path: string) {
   try {
     return (await fsp.stat(path)).isDirectory();
   } catch {
@@ -90,10 +105,13 @@ export async function isDirectory (path: string) {
 const _getDependenciesMode = {
   dev: ["devDependencies"],
   prod: ["dependencies"],
-  all: ["devDependencies", "dependencies"]
+  all: ["devDependencies", "dependencies"],
 };
 const _require = createRequire(import.meta.url);
-export function getDependencies (dir: string, mode: keyof typeof _getDependenciesMode = "all") {
+export function getDependencies(
+  dir: string,
+  mode: keyof typeof _getDependenciesMode = "all"
+) {
   const fields = _getDependenciesMode[mode];
   const pkg = _require(resolve(dir, "package.json"));
   const dependencies = [];
@@ -107,7 +125,7 @@ export function getDependencies (dir: string, mode: keyof typeof _getDependencie
   return dependencies;
 }
 
-export function readPackageJson (
+export function readPackageJson(
   packageName: string,
   _require: NodeRequire = createRequire(import.meta.url)
 ) {
@@ -115,7 +133,9 @@ export function readPackageJson (
     return _require(`${packageName}/package.json`);
   } catch (error) {
     if (error.code === "ERR_PACKAGE_PATH_NOT_EXPORTED") {
-      const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(_require.resolve(packageName));
+      const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(
+        _require.resolve(packageName)
+      );
       for (const pkgModulePath of pkgModulePaths || []) {
         const path = resolve(pkgModulePath, packageName, "package.json");
         if (existsSync(path)) {
@@ -130,16 +150,23 @@ export function readPackageJson (
   }
 }
 
-export function resolveAliases (_aliases: Record<string, string>) {
+export function resolveAliases(_aliases: Record<string, string>) {
   // Sort aliases from specific to general (ie. fs/promises before fs)
-  const aliases = Object.fromEntries(Object.entries(_aliases).sort(([a], [b]) =>
-    (b.split("/").length - a.split("/").length) || (b.length - a.length)
-  ));
+  const aliases = Object.fromEntries(
+    Object.entries(_aliases).sort(
+      ([a], [b]) =>
+        b.split("/").length - a.split("/").length || b.length - a.length
+    )
+  );
   // Resolve alias values in relation to each other
   for (const key in aliases) {
     for (const alias in aliases) {
-      if (!["~", "@", "#"].includes(alias[0])) { continue; }
-      if (alias === "@" && !aliases[key].startsWith("@/")) { continue; } // Don't resolve @foo/bar
+      if (!["~", "@", "#"].includes(alias[0])) {
+        continue;
+      }
+      if (alias === "@" && !aliases[key].startsWith("@/")) {
+        continue;
+      } // Don't resolve @foo/bar
 
       if (aliases[key].startsWith(alias)) {
         aliases[key] = aliases[alias] + aliases[key].slice(alias.length);
@@ -149,13 +176,15 @@ export function resolveAliases (_aliases: Record<string, string>) {
   return aliases;
 }
 
-export async function retry (fn: () => Promise<void>, retries: number) {
+export async function retry(fn: () => Promise<void>, retries: number) {
   let retry = 0;
   let error: any;
   while (retry++ < retries) {
-    try { return await fn(); } catch (err) {
+    try {
+      return await fn();
+    } catch (err) {
       error = err;
-      await new Promise(resolve => setTimeout(resolve, 2));
+      await new Promise((resolve) => setTimeout(resolve, 2));
     }
   }
   throw error;

@@ -5,9 +5,11 @@ import { useRuntimeConfig } from "./config";
 import type { NitroRouteRules } from "nitropack";
 
 const config = useRuntimeConfig();
-const _routeRulesMatcher = toRouteMatcher(createRadixRouter({ routes: config.nitro.routeRules }));
+const _routeRulesMatcher = toRouteMatcher(
+  createRadixRouter({ routes: config.nitro.routeRules })
+);
 
-export function createRouteRulesHandler () {
+export function createRouteRulesHandler() {
   return eventHandler((event) => {
     // Match route options against path
     const routeRules = getRouteRules(event);
@@ -17,12 +19,16 @@ export function createRouteRulesHandler () {
     }
     // Apply redirect options
     if (routeRules.redirect) {
-      return sendRedirect(event, routeRules.redirect.to, routeRules.redirect.statusCode);
+      return sendRedirect(
+        event,
+        routeRules.redirect.to,
+        routeRules.redirect.statusCode
+      );
     }
   });
 }
 
-export function getRouteRules (event: H3Event): NitroRouteRules {
+export function getRouteRules(event: H3Event): NitroRouteRules {
   event.context._nitro = event.context._nitro || {};
   if (!event.context._nitro.routeRules) {
     const path = new URL(event.req.url, "http://localhost").pathname;
@@ -31,6 +37,6 @@ export function getRouteRules (event: H3Event): NitroRouteRules {
   return event.context._nitro.routeRules;
 }
 
-export function getRouteRulesForPath (path: string): NitroRouteRules {
+export function getRouteRulesForPath(path: string): NitroRouteRules {
   return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
 }

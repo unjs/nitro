@@ -3,15 +3,18 @@ import type { Plugin } from "rollup";
 
 // Based on https://github.com/rollup/plugins/blob/master/packages/virtual/src/index.ts
 
-export type VirtualModule = string | (() => string | Promise<string>)
+export type VirtualModule = string | (() => string | Promise<string>);
 
 export interface RollupVirtualOptions {
-  [id: string]: VirtualModule
+  [id: string]: VirtualModule;
 }
 
 const PREFIX = "\0virtual:";
 
-export function virtual (modules: RollupVirtualOptions, cache: Record<string, VirtualModule> = {}): Plugin {
+export function virtual(
+  modules: RollupVirtualOptions,
+  cache: Record<string, VirtualModule> = {}
+): Plugin {
   const _modules = new Map<string, VirtualModule>();
 
   for (const [id, mod] of Object.entries(modules)) {
@@ -23,25 +26,33 @@ export function virtual (modules: RollupVirtualOptions, cache: Record<string, Vi
   return {
     name: "virtual",
 
-    resolveId (id, importer) {
-      if (id in modules) { return PREFIX + id; }
+    resolveId(id, importer) {
+      if (id in modules) {
+        return PREFIX + id;
+      }
 
       if (importer) {
         const importerNoPrefix = importer.startsWith(PREFIX)
           ? importer.slice(PREFIX.length)
           : importer;
         const resolved = resolve(dirname(importerNoPrefix), id);
-        if (_modules.has(resolved)) { return PREFIX + resolved; }
+        if (_modules.has(resolved)) {
+          return PREFIX + resolved;
+        }
       }
 
       return null;
     },
 
-    async load (id) {
-      if (!id.startsWith(PREFIX)) { return null; }
+    async load(id) {
+      if (!id.startsWith(PREFIX)) {
+        return null;
+      }
 
       const idNoPrefix = id.slice(PREFIX.length);
-      if (!_modules.has(idNoPrefix)) { return null; }
+      if (!_modules.has(idNoPrefix)) {
+        return null;
+      }
 
       let m = _modules.get(idNoPrefix);
       if (typeof m === "function") {
@@ -52,8 +63,8 @@ export function virtual (modules: RollupVirtualOptions, cache: Record<string, Vi
 
       return {
         code: m as string,
-        map: null
+        map: null,
       };
-    }
+    },
   };
 }

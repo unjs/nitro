@@ -1,17 +1,25 @@
 import { createError, eventHandler } from "h3";
 import type { Nitro } from "../types";
 
-export function createVFSHandler (nitro: Nitro) {
+export function createVFSHandler(nitro: Nitro) {
   return eventHandler(async (event) => {
     const vfsEntries = {
       ...nitro.vfs,
-      ...nitro.options.virtual
+      ...nitro.options.virtual,
     };
 
     const items = Object.keys(vfsEntries)
       .map((key) => {
-        const linkClass = event.req.url === `/${encodeURIComponent(key)}` ? "bg-gray-700 text-white" : "hover:bg-gray-800 text-gray-200";
-        return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(key)}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(nitro.options.rootDir, "")}</a></li>`;
+        const linkClass =
+          event.req.url === `/${encodeURIComponent(key)}`
+            ? "bg-gray-700 text-white"
+            : "hover:bg-gray-800 text-gray-200";
+        return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(
+          key
+        )}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(
+          nitro.options.rootDir,
+          ""
+        )}</a></li>`;
       })
       .join("\n");
     const files = `
@@ -35,7 +43,7 @@ export function createVFSHandler (nitro: Nitro) {
         theme: "vs-dark",
         value: contents,
         wordWrap: "wordWrapColumn",
-        wordWrapColumn: 80
+        wordWrapColumn: 80,
       });
     } else if (id) {
       throw createError({ message: "File not found", statusCode: 404 });
@@ -81,7 +89,9 @@ const editorTemplate = (options: Record<string, any>) => `
   window.MonacoEnvironment = { getWorkerUrl: () => proxy }
 
   require(['vs/editor/editor.main'], function () {
-    monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(options)})
+    monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(
+      options
+    )})
   })
 </script>
 `;

@@ -9,16 +9,17 @@ export const azureFunctions = defineNitroPreset({
   serveStatic: true,
   entry: "#internal/nitro/entries/azure-functions",
   commands: {
-    deploy: "az functionapp deployment source config-zip -g <resource-group> -n <app-name> --src {{ output.dir }}/deploy.zip"
+    deploy:
+      "az functionapp deployment source config-zip -g <resource-group> -n <app-name> --src {{ output.dir }}/deploy.zip",
   },
   hooks: {
-    async "compiled" (ctx: Nitro) {
+    async compiled(ctx: Nitro) {
       await writeRoutes(ctx);
-    }
-  }
+    },
+  },
 });
 
-function zipDirectory (dir: string, outfile: string): Promise<undefined> {
+function zipDirectory(dir: string, outfile: string): Promise<undefined> {
   const archive = archiver("zip", { zlib: { level: 9 } });
   const stream = createWriteStream(outfile);
 
@@ -33,10 +34,10 @@ function zipDirectory (dir: string, outfile: string): Promise<undefined> {
   });
 }
 
-async function writeRoutes (nitro: Nitro) {
+async function writeRoutes(nitro: Nitro) {
   const host = {
     version: "2.0",
-    extensions: { http: { routePrefix: "" } }
+    extensions: { http: { routePrefix: "" } },
   };
 
   const functionDefinition = {
@@ -48,25 +49,26 @@ async function writeRoutes (nitro: Nitro) {
         direction: "in",
         name: "req",
         route: "{*url}",
-        methods: [
-          "delete",
-          "get",
-          "head",
-          "options",
-          "patch",
-          "post",
-          "put"
-        ]
+        methods: ["delete", "get", "head", "options", "patch", "post", "put"],
       },
       {
         type: "http",
         direction: "out",
-        name: "res"
-      }
-    ]
+        name: "res",
+      },
+    ],
   };
 
-  await writeFile(resolve(nitro.options.output.serverDir, "function.json"), JSON.stringify(functionDefinition));
-  await writeFile(resolve(nitro.options.output.dir, "host.json"), JSON.stringify(host));
-  await zipDirectory(nitro.options.output.dir, join(nitro.options.output.dir, "deploy.zip"));
+  await writeFile(
+    resolve(nitro.options.output.serverDir, "function.json"),
+    JSON.stringify(functionDefinition)
+  );
+  await writeFile(
+    resolve(nitro.options.output.dir, "host.json"),
+    JSON.stringify(host)
+  );
+  await zipDirectory(
+    nitro.options.output.dir,
+    join(nitro.options.output.dir, "deploy.zip")
+  );
 }

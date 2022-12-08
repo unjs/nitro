@@ -1,11 +1,11 @@
 import { extname } from "pathe";
 import type { Plugin, RenderedChunk } from "rollup";
 
-export interface Options { }
+export interface Options {}
 
 const TIMING = "globalThis.__timing__";
 
-const iife = code => `(function() { ${code.trim()} })();`.replace(/\n/g, "");
+const iife = (code) => `(function() { ${code.trim()} })();`.replace(/\n/g, "");
 
 const HELPER = iife(`
 const start = () => Date.now();
@@ -19,24 +19,28 @@ ${TIMING} = { start, end, metrics, logStart, logEnd };
 
 const HELPERIMPORT = "import './timing.js';";
 
-export function timing (_opts: Options = {}): Plugin {
+export function timing(_opts: Options = {}): Plugin {
   return {
     name: "timing",
-    generateBundle () {
+    generateBundle() {
       this.emitFile({
         type: "asset",
         fileName: "timing.js",
-        source: HELPER
+        source: HELPER,
       });
     },
-    renderChunk (code, chunk: RenderedChunk) {
+    renderChunk(code, chunk: RenderedChunk) {
       let name = chunk.fileName || "";
       name = name.replace(extname(name), "");
-      const logName = name === "index" ? "Nitro Start" : ("Load " + name);
+      const logName = name === "index" ? "Nitro Start" : "Load " + name;
       return {
-        code: (chunk.isEntry ? HELPERIMPORT : "") + `${TIMING}.logStart('${logName}');` + code + `;${TIMING}.logEnd('${logName}');`,
-        map: null
+        code:
+          (chunk.isEntry ? HELPERIMPORT : "") +
+          `${TIMING}.logStart('${logName}');` +
+          code +
+          `;${TIMING}.logEnd('${logName}');`,
+        map: null,
       };
-    }
+    },
   };
 }

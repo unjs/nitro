@@ -12,7 +12,7 @@ addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(url, event));
 });
 
-async function handleEvent (url, event) {
+async function handleEvent(url, event) {
   let body;
   if (requestHasBody(event.request)) {
     body = await useRequestBody(event.request);
@@ -26,13 +26,13 @@ async function handleEvent (url, event) {
     headers: event.request.headers,
     method: event.request.method,
     redirect: event.request.redirect,
-    body
+    body,
   });
 
   return new Response(r.body, {
     headers: r.headers as HeadersInit,
     status: r.status,
-    statusText: r.statusText
+    statusText: r.statusText,
   });
 }
 

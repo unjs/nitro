@@ -5,20 +5,20 @@ import { nitroApp } from "../app";
 /** @see https://developers.cloudflare.com/pages/platform/functions/#writing-your-first-function */
 interface CFRequestContext {
   /** same as existing Worker API */
-  request: any
+  request: any;
   /** same as existing Worker API */
-  env: any
+  env: any;
   /** if filename includes [id] or [[path]] **/
-  params: any
+  params: any;
   /** Same as ctx.waitUntil in existing Worker API */
-  waitUntil: any
+  waitUntil: any;
   /** Used for middleware or to fetch assets */
-  next: any
+  next: any;
   /** Arbitrary space for passing data between middlewares */
-  data: any
+  data: any;
 }
 
-export async function onRequest (ctx: CFRequestContext) {
+export async function onRequest(ctx: CFRequestContext) {
   try {
     // const asset = await env.ASSETS.fetch(request, { cacheControl: assetsCacheControl })
     const asset = await ctx.next();
@@ -41,7 +41,7 @@ export async function onRequest (ctx: CFRequestContext) {
     headers: ctx.request.headers,
     host: url.hostname,
     protocol: url.protocol,
-    body
+    body,
     // TODO: Allow passing custom context
     // cf: ctx,
     // TODO: Handle redirects?
@@ -52,10 +52,15 @@ export async function onRequest (ctx: CFRequestContext) {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
-    statusText: r.statusText
+    statusText: r.statusText,
   });
 }
 
-function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v]);
+function normalizeOutgoingHeaders(
+  headers: Record<string, string | string[] | undefined>
+) {
+  return Object.entries(headers).map(([k, v]) => [
+    k,
+    Array.isArray(v) ? v.join(",") : v,
+  ]);
 }

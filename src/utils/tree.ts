@@ -6,20 +6,24 @@ import { gzipSize } from "gzip-size";
 import chalk from "chalk";
 import { isTest } from "std-env";
 
-export async function printFSTree (dir: string) {
+export async function printFSTree(dir: string) {
   if (isTest) {
     return;
   }
 
   const files = await globby("**/*.*", { cwd: dir, ignore: ["*.map"] });
 
-  const items = (await Promise.all(files.map(async (file) => {
-    const path = resolve(dir, file);
-    const src = await fsp.readFile(path);
-    const size = src.byteLength;
-    const gzip = await gzipSize(src);
-    return { file, path, size, gzip };
-  }))).sort((a, b) => b.path.localeCompare(a.path));
+  const items = (
+    await Promise.all(
+      files.map(async (file) => {
+        const path = resolve(dir, file);
+        const src = await fsp.readFile(path);
+        const size = src.byteLength;
+        const gzip = await gzipSize(src);
+        return { file, path, size, gzip };
+      })
+    )
+  ).sort((a, b) => b.path.localeCompare(a.path));
 
   let totalSize = 0;
   let totalGzip = 0;
@@ -29,7 +33,9 @@ export async function printFSTree (dir: string) {
 
   for (const [index, item] of items.entries()) {
     let dir = dirname(item.file);
-    if (dir === ".") { dir = ""; }
+    if (dir === ".") {
+      dir = "";
+    }
     const rpath = relative(process.cwd(), item.path);
     const treeChar = index === items.length - 1 ? "└─" : "├─";
 
@@ -41,10 +47,20 @@ export async function printFSTree (dir: string) {
       continue;
     }
 
-    process.stdout.write(chalk.gray(`  ${treeChar} ${rpath} (${prettyBytes(item.size)}) (${prettyBytes(item.gzip)} gzip)\n`));
+    process.stdout.write(
+      chalk.gray(
+        `  ${treeChar} ${rpath} (${prettyBytes(item.size)}) (${prettyBytes(
+          item.gzip
+        )} gzip)\n`
+      )
+    );
     totalSize += item.size;
     totalGzip += item.gzip;
   }
 
-  process.stdout.write(`${chalk.cyan("Σ Total size:")} ${prettyBytes(totalSize + totalNodeModulesSize)} (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)\n`);
+  process.stdout.write(
+    `${chalk.cyan("Σ Total size:")} ${prettyBytes(
+      totalSize + totalNodeModulesSize
+    )} (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)\n`
+  );
 }

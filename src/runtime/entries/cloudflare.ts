@@ -1,5 +1,8 @@
 import "#internal/nitro/virtual/polyfill";
-import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
+import {
+  getAssetFromKV,
+  mapRequestToAsset,
+} from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "../app";
@@ -9,9 +12,12 @@ addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
 });
 
-async function handleEvent (event: FetchEvent) {
+async function handleEvent(event: FetchEvent) {
   try {
-    return await getAssetFromKV(event, { cacheControl: assetsCacheControl, mapRequestToAsset: baseURLModifier });
+    return await getAssetFromKV(event, {
+      cacheControl: assetsCacheControl,
+      mapRequestToAsset: baseURLModifier,
+    });
   } catch {
     // Ignore
   }
@@ -30,18 +36,18 @@ async function handleEvent (event: FetchEvent) {
     headers: Object.fromEntries(event.request.headers.entries()),
     method: event.request.method,
     redirect: event.request.redirect,
-    body
+    body,
   });
 
   return new Response(r.body, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
-    statusText: r.statusText
+    statusText: r.statusText,
   });
 }
 
-function assetsCacheControl (_request) {
+function assetsCacheControl(_request) {
   // TODO: Detect public asset bases
   // if (request.url.startsWith(buildAssetsURL())) {
   //   return {
@@ -57,6 +63,11 @@ const baseURLModifier = (request: Request) => {
   return mapRequestToAsset(new Request(url, request));
 };
 
-function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v]);
+function normalizeOutgoingHeaders(
+  headers: Record<string, string | string[] | undefined>
+) {
+  return Object.entries(headers).map(([k, v]) => [
+    k,
+    Array.isArray(v) ? v.join(",") : v,
+  ]);
 }

@@ -1,6 +1,6 @@
 ---
 title: Netlify
-description: 'Discover Netlify preset for Nitro!'
+description: "Discover Netlify preset for Nitro!"
 ---
 
 **Preset:** `netlify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
@@ -34,5 +34,4 @@ Nitro output can directly run the server at the edge. Closer to your users.
 
 **Preset:** `netlify-builder` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-On-demand Builders are serverless functions used to generate web content as needed that’s automatically cached on Netlify’s Edge CDN. They enable you to build pages for your site when a user visits them for the first time and then cache them at the edge for subsequent visits.  ([Read More](https://docs.netlify.com/configure-builds/on-demand-builders/))
-
+On-demand Builders are serverless functions used to generate web content as needed that’s automatically cached on Netlify’s Edge CDN. They enable you to build pages for your site when a user visits them for the first time and then cache them at the edge for subsequent visits. ([Read More](https://docs.netlify.com/configure-builds/on-demand-builders/))

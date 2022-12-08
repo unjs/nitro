@@ -3,10 +3,7 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "lib": [
-      "WebWorker",
-      "DOM.Iterable"
-    ],
+    "lib": ["WebWorker", "DOM.Iterable"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
@@ -14,22 +11,11 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "paths": {
-      "nitropack": [
-        "./src/index"
-      ],
-      "#internal/nitro": [
-        "./src/runtime/index"
-      ],
-      "#internal/nitro/*": [
-        "./src/runtime/*"
-      ]
-    },
+      "nitropack": ["./src/index"],
+      "#internal/nitro": ["./src/runtime/index"],
+      "#internal/nitro/*": ["./src/runtime/*"]
+    }
   },
-  "include": [
-    "src",
-    "test",
-  ],
-  "exclude": [
-    "test/fixture"
-  ]
+  "include": ["src", "test"],
+  "exclude": ["test/fixture"]
 }

@@ -11,41 +11,49 @@ import type { Nitro } from "../types";
 export const firebase = defineNitroPreset({
   entry: "#internal/nitro/entries/firebase",
   commands: {
-    deploy: "npx firebase deploy"
+    deploy: "npx firebase deploy",
   },
   hooks: {
-    async "compiled" (ctx) {
+    async compiled(ctx) {
       await writeRoutes(ctx);
-    }
-  }
+    },
+  },
 });
 
-async function writeRoutes (nitro: Nitro) {
+async function writeRoutes(nitro: Nitro) {
   if (!existsSync(join(nitro.options.rootDir, "firebase.json"))) {
     const firebase = {
       functions: {
-        source: relative(nitro.options.rootDir, nitro.options.output.serverDir)
+        source: relative(nitro.options.rootDir, nitro.options.output.serverDir),
       },
       hosting: [
         {
           site: "<your_project_id>",
-          public: relative(nitro.options.rootDir, nitro.options.output.publicDir),
+          public: relative(
+            nitro.options.rootDir,
+            nitro.options.output.publicDir
+          ),
           cleanUrls: true,
           rewrites: [
             {
               source: "**",
-              function: "server"
-            }
-          ]
-        }
-      ]
+              function: "server",
+            },
+          ],
+        },
+      ],
     };
-    await writeFile(resolve(nitro.options.rootDir, "firebase.json"), JSON.stringify(firebase));
+    await writeFile(
+      resolve(nitro.options.rootDir, "firebase.json"),
+      JSON.stringify(firebase)
+    );
   }
 
   const _require = createRequire(import.meta.url);
 
-  const jsons = await globby(join(nitro.options.output.serverDir, "node_modules/**/package.json"));
+  const jsons = await globby(
+    join(nitro.options.output.serverDir, "node_modules/**/package.json")
+  );
   const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length;
   const suffixLength = "/package.json".length;
   // eslint-disable-next-line unicorn/no-array-reduce
@@ -59,7 +67,9 @@ async function writeRoutes (nitro: Nitro) {
 
   let nodeVersion = "14";
   try {
-    const currentNodeVersion = JSON.parse(await readFile(join(nitro.options.rootDir, "package.json"), "utf8")).engines.node;
+    const currentNodeVersion = JSON.parse(
+      await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
+    ).engines.node;
     if (["16", "14"].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
     }
@@ -71,7 +81,9 @@ async function writeRoutes (nitro: Nitro) {
   }
 
   const getPackageVersion = async (id) => {
-    const pkg = await readPackageJSON(id, { url: nitro.options.nodeModulesDirs });
+    const pkg = await readPackageJSON(id, {
+      url: nitro.options.nodeModulesDirs,
+    });
     return pkg.version;
   };
 
@@ -86,9 +98,9 @@ async function writeRoutes (nitro: Nitro) {
           "firebase-functions-test": "latest",
           "firebase-admin": await getPackageVersion("firebase-admin"),
           "firebase-functions": await getPackageVersion("firebase-functions"),
-          ...dependencies
+          ...dependencies,
         },
-        engines: { node: nodeVersion }
+        engines: { node: nodeVersion },
       },
       null,
       2

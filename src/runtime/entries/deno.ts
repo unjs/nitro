@@ -9,7 +9,7 @@ serve((request: Request) => {
   return handleRequest(request);
 });
 
-async function handleRequest (request: Request) {
+async function handleRequest(request: Request) {
   const url = new URL(request.url);
   let body;
   if (requestHasBody(request)) {
@@ -23,17 +23,22 @@ async function handleRequest (request: Request) {
     headers: Object.fromEntries(request.headers.entries()),
     method: request.method,
     redirect: request.redirect,
-    body
+    body,
   });
 
   return new Response(r.body || undefined, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
-    statusText: r.statusText
+    statusText: r.statusText,
   });
 }
 
-function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v]);
+function normalizeOutgoingHeaders(
+  headers: Record<string, string | string[] | undefined>
+) {
+  return Object.entries(headers).map(([k, v]) => [
+    k,
+    Array.isArray(v) ? v.join(",") : v,
+  ]);
 }

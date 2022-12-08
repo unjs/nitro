@@ -10,9 +10,13 @@ import { useRuntimeConfig } from "#internal/nitro";
 const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;
 
-const server = cert && key ? new HttpsServer({ key, cert }, toNodeListener(nitroApp.h3App)) : new HttpServer(toNodeListener(nitroApp.h3App));
+const server =
+  cert && key
+    ? new HttpsServer({ key, cert }, toNodeListener(nitroApp.h3App))
+    : new HttpServer(toNodeListener(nitroApp.h3App));
 
-const port = (destr(process.env.NITRO_PORT || process.env.PORT) || 3000) as number;
+const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
+  3000) as number;
 const host = process.env.NITRO_HOST || process.env.HOST;
 
 // @ts-ignore
@@ -25,16 +29,26 @@ const s = server.listen(port, host, (err) => {
   const protocol = cert && key ? "https" : "http";
   const i = s.address() as AddressInfo;
   const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-  const url = `${protocol}://${i.family === "IPv6" ? `[${i.address}]` : i.address}:${i.port}${baseURL}`;
+  const url = `${protocol}://${
+    i.family === "IPv6" ? `[${i.address}]` : i.address
+  }:${i.port}${baseURL}`;
   console.log(`Listening ${url}`);
 });
 
 if (process.env.DEBUG) {
-  process.on("unhandledRejection", err => console.error("[nitro] [dev] [unhandledRejection]", err));
-  process.on("uncaughtException", err => console.error("[nitro] [dev] [uncaughtException]", err));
+  process.on("unhandledRejection", (err) =>
+    console.error("[nitro] [dev] [unhandledRejection]", err)
+  );
+  process.on("uncaughtException", (err) =>
+    console.error("[nitro] [dev] [uncaughtException]", err)
+  );
 } else {
-  process.on("unhandledRejection", err => console.error("[nitro] [dev] [unhandledRejection] " + err));
-  process.on("uncaughtException", err => console.error("[nitro] [dev] [uncaughtException] " + err));
+  process.on("unhandledRejection", (err) =>
+    console.error("[nitro] [dev] [unhandledRejection] " + err)
+  );
+  process.on("uncaughtException", (err) =>
+    console.error("[nitro] [dev] [uncaughtException] " + err)
+  );
 }
 
 export default {};

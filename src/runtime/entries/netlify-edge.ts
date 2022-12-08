@@ -17,12 +17,12 @@ export default async function (request: Request, _context) {
     headers: request.headers,
     method: request.method,
     redirect: request.redirect,
-    body
+    body,
   });
 
   return new Response(r.body, {
     headers: r.headers as HeadersInit,
     status: r.status,
-    statusText: r.statusText
+    statusText: r.statusText,
   });
 }

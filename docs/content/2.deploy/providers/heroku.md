@@ -1,6 +1,6 @@
 ---
 title: Heroku
-description: 'Discover Herolu preset for Nitro!'
+description: "Discover Herolu preset for Nitro!"
 ---
 
 **Preset:** `heroku` ([switch to this preset](/deploy/#changing-the-deployment-preset))

@@ -1,6 +1,6 @@
 import { NitroErrorHandler } from "../types";
 
-function errorHandler (error, event) {
+function errorHandler(error, event) {
   event.res.setHeader("Content-Type", "text/html; charset=UTF-8");
   event.res.statusCode = 503;
   event.res.statusMessage = "Server Unavailable";
@@ -12,7 +12,8 @@ function errorHandler (error, event) {
     body = `<code><pre>${error.stack}</pre></code>`;
   } else {
     title = "Reloading server...";
-    body = "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
+    body =
+      "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
   }
 
   event.res.end(`<!DOCTYPE html>
@@ -20,7 +21,7 @@ function errorHandler (error, event) {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    ${error ? "" : "<meta http-equiv=\"refresh\" content=\"2\">"}
+    ${error ? "" : '<meta http-equiv="refresh" content="2">'}
     <title>${title}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico/css/pico.min.css">
   </head>

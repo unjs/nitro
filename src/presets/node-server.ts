@@ -5,11 +5,11 @@ export const nodeServer = defineNitroPreset({
   entry: "#internal/nitro/entries/node-server",
   serveStatic: true,
   commands: {
-    preview: "node ./server/index.mjs"
-  }
+    preview: "node ./server/index.mjs",
+  },
 });
 
 export const nodeCluster = defineNitroPreset({
   extends: "node-server",
-  entry: "#internal/nitro/entries/node-cluster"
+  entry: "#internal/nitro/entries/node-cluster",
 });

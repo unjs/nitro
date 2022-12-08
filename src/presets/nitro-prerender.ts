@@ -4,10 +4,10 @@ export const nitroPrerender = defineNitroPreset({
   extends: "node",
   entry: "#internal/nitro/entries/nitro-prerenderer",
   output: {
-    serverDir: "{{ buildDir }}/prerender"
+    serverDir: "{{ buildDir }}/prerender",
   },
   commands: {
-    preview: "npx serve -s ./public"
+    preview: "npx serve -s ./public",
   },
-  externals: { trace: false }
+  externals: { trace: false },
 });

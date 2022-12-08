@@ -7,17 +7,16 @@ export const deno = defineNitroPreset({
   serveStatic: "deno",
   commands: {
     preview: "",
-    deploy: "cd ./ && deployctl deploy --project=<project_name> server/index.ts"
+    deploy:
+      "cd ./ && deployctl deploy --project=<project_name> server/index.ts",
   },
   rollupConfig: {
     preserveEntrySignatures: false,
-    external: [
-      "https://deno.land/std/http/server.ts"
-    ],
+    external: ["https://deno.land/std/http/server.ts"],
     output: {
       entryFileNames: "index.ts",
       manualChunks: () => "index",
-      format: "esm"
-    }
-  }
+      format: "esm",
+    },
+  },
 });

@@ -5,14 +5,14 @@ import { normalizeError, isJsonRequest } from "./utils";
 const isDev = process.env.NODE_ENV === "development";
 
 interface ParsedError {
-  url: string
-  statusCode: number
-  statusMessage: number
-  message: string
-  stack?: string[]
+  url: string;
+  statusCode: number;
+  statusMessage: number;
+  message: string;
+  stack?: string[];
 }
 
-export default <NitroErrorHandler> function (error, event) {
+export default <NitroErrorHandler>function (error, event) {
   const { stack, statusCode, statusMessage, message } = normalizeError(error);
 
   const showDetails = isDev && statusCode !== 404;
@@ -22,7 +22,7 @@ export default <NitroErrorHandler> function (error, event) {
     statusCode,
     statusMessage,
     message,
-    stack: showDetails ? stack.map(i => i.text) : undefined
+    stack: showDetails ? stack.map((i) => i.text) : undefined,
   };
 
   // Console output
@@ -31,9 +31,14 @@ export default <NitroErrorHandler> function (error, event) {
       "[nitro]",
       "[request error]",
       error.unhandled && "[unhandled]",
-      error.fatal && "[fatal]"
-    ].filter(Boolean).join(" ");
-    console.error(tags, error.message + "\n" + stack.map(l => "  " + l.text).join("  \n"));
+      error.fatal && "[fatal]",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    console.error(
+      tags,
+      error.message + "\n" + stack.map((l) => "  " + l.text).join("  \n")
+    );
   }
 
   event.res.statusCode = statusCode;
@@ -50,7 +55,7 @@ export default <NitroErrorHandler> function (error, event) {
   }
 };
 
-function renderHTMLError (error: ParsedError): string {
+function renderHTMLError(error: ParsedError): string {
   const statusCode = error.statusCode || 500;
   const statusMessage = error.statusMessage || "Request Error";
   return `<!DOCTYPE html>
@@ -70,7 +75,10 @@ function renderHTMLError (error: ParsedError): string {
           </header>
           <code>
             ${error.message}<br><br>
-            ${"\n" + (error.stack || []).map(i => `&nbsp;&nbsp;${i}`).join("<br>")}
+            ${
+              "\n" +
+              (error.stack || []).map((i) => `&nbsp;&nbsp;${i}`).join("<br>")
+            }
           </code>
           <footer>
             <a href="/" onclick="event.preventDefault();history.back();">Go Back</a>

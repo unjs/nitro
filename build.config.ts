@@ -6,7 +6,7 @@ export default defineBuildConfig({
   entries: [
     "src/index",
     "src/cli",
-    { input: "src/runtime/", outDir: "dist/runtime", format: "esm" }
+    { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
   ],
   dependencies: [
     "@cloudflare/kv-asset-handler",
@@ -14,9 +14,7 @@ export default defineBuildConfig({
     "@nuxt/devalue",
     "destr",
     "ofetch",
-    "ora"
+    "ora",
   ],
-  externals: [
-    "@nuxt/schema"
-  ]
+  externals: ["@nuxt/schema"],
 });

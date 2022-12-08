@@ -1,21 +1,26 @@
 import { hash } from "ohash";
-import { handleCacheHeaders, defineEventHandler, createEvent, EventHandler } from "h3";
+import {
+  handleCacheHeaders,
+  defineEventHandler,
+  createEvent,
+  EventHandler,
+} from "h3";
 import type { H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "#internal/nitro";
 
-export interface CacheEntry<T=any> {
-  value?: T
-  expires?: number
-  mtime?: number
-  integrity?: string
+export interface CacheEntry<T = any> {
+  value?: T;
+  expires?: number;
+  mtime?: number;
+  integrity?: string;
 }
 
 export interface CacheOptions<T = any> {
   name?: string;
   getKey?: (...args: any[]) => string;
-  transform?: (entry: CacheEntry<T>, ...args: any[]) => any
-  validate?: (entry: CacheEntry<T>) => boolean
+  transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
+  validate?: (entry: CacheEntry<T>) => boolean;
   group?: string;
   integrity?: any;
   maxAge?: number;
@@ -29,10 +34,13 @@ const defaultCacheOptions = {
   name: "_",
   base: "/cache",
   swr: true,
-  maxAge: 1
+  maxAge: 1,
 };
 
-export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>), opts: CacheOptions<T>) {
+export function defineCachedFunction<T = any>(
+  fn: (...args) => T | Promise<T>,
+  opts: CacheOptions<T>
+) {
   opts = { ...defaultCacheOptions, ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
@@ -43,17 +51,27 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
   const integrity = hash([opts.integrity, fn, opts]);
   const validate = opts.validate || (() => true);
 
-  async function get (key: string, resolver: () => T | Promise<T>): Promise<CacheEntry<T>> {
+  async function get(
+    key: string,
+    resolver: () => T | Promise<T>
+  ): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
-    const cacheKey = [opts.base, group, name, key + ".json"].filter(Boolean).join(":").replace(/:\/$/, ":index");
-    const entry: CacheEntry<T> = await useStorage().getItem(cacheKey) as any || {};
+    const cacheKey = [opts.base, group, name, key + ".json"]
+      .filter(Boolean)
+      .join(":")
+      .replace(/:\/$/, ":index");
+    const entry: CacheEntry<T> =
+      ((await useStorage().getItem(cacheKey)) as any) || {};
 
     const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000;
     if (ttl) {
       entry.expires = Date.now() + ttl;
     }
 
-    const expired = (entry.integrity !== integrity) || (ttl && (Date.now() - (entry.mtime || 0)) > ttl) || !validate(entry);
+    const expired =
+      entry.integrity !== integrity ||
+      (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
+      !validate(entry);
 
     const _resolve = async () => {
       if (!pending[key]) {
@@ -69,7 +87,9 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
       entry.integrity = integrity;
       delete pending[key];
       if (validate(entry)) {
-        useStorage().setItem(cacheKey, entry).catch(error => console.error("[nitro] [cache]", error));
+        useStorage()
+          .setItem(cacheKey, entry)
+          .catch((error) => console.error("[nitro] [cache]", error));
       }
     };
 
@@ -90,7 +110,7 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
     const entry = await get(key, () => fn(...args));
     let value = entry.value;
     if (opts.transform) {
-      value = await opts.transform(entry, ...args) || value;
+      value = (await opts.transform(entry, ...args)) || value;
     }
     return value;
   };
@@ -98,21 +118,25 @@ export function defineCachedFunction <T=any> (fn: ((...args) => T | Promise<T>),
 
 export const cachedFunction = defineCachedFunction;
 
-function getKey (...args: string[]) {
+function getKey(...args: string[]) {
   return args.length > 0 ? hash(args, {}) : "";
 }
 
-export interface ResponseCacheEntry<T=any> {
-  body: T
-  code: number
-  headers: Record<string, string | number | string[]>
+export interface ResponseCacheEntry<T = any> {
+  body: T;
+  code: number;
+  headers: Record<string, string | number | string[]>;
 }
 
-export interface CachedEventHandlerOptions<T=any> extends Omit<CacheOptions<ResponseCacheEntry<T>>, "getKey" | "transform" | "validate"> {
-  headersOnly?: boolean
+export interface CachedEventHandlerOptions<T = any>
+  extends Omit<
+    CacheOptions<ResponseCacheEntry<T>>,
+    "getKey" | "transform" | "validate"
+  > {
+  headersOnly?: boolean;
 }
 
-export function defineCachedEventHandler <T=any> (
+export function defineCachedEventHandler<T = any>(
   handler: EventHandler<T>,
   opts: CachedEventHandlerOptions<T> = defaultCacheOptions
 ): EventHandler<T> {
@@ -120,97 +144,127 @@ export function defineCachedEventHandler <T=any> (
     ...opts,
     getKey: (event) => {
       const url = event.req.originalUrl || event.req.url;
-      const friendlyName = decodeURI(parseURL(url).pathname).replace(/[^\dA-Za-z]/g, "").slice(0, 16);
+      const friendlyName = decodeURI(parseURL(url).pathname)
+        .replace(/[^\dA-Za-z]/g, "")
+        .slice(0, 16);
       const urlHash = hash(url);
       return `${friendlyName}.${urlHash}`;
     },
     validate: (entry) => {
-      if (entry.value.code >= 400) { return false; }
-      if (entry.value.body === undefined) { return false; }
+      if (entry.value.code >= 400) {
+        return false;
+      }
+      if (entry.value.body === undefined) {
+        return false;
+      }
       return true;
     },
     group: opts.group || "nitro/handlers",
-    integrity: [
-      opts.integrity,
-      handler
-    ]
+    integrity: [opts.integrity, handler],
   };
 
-  const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(async (incomingEvent: H3Event) => {
-    // Create proxies to avoid sharing state with user request
-    const reqProxy = cloneWithProxy(incomingEvent.req, { headers: {} });
-    const resHeaders: Record<string, number | string | string[]> = {};
-    let _resSendBody;
-    const resProxy = cloneWithProxy(incomingEvent.res, {
-      statusCode: 200,
-      getHeader (name) { return resHeaders[name]; },
-      setHeader (name, value) { resHeaders[name] = value as any; return this; },
-      getHeaderNames () { return Object.keys(resHeaders); },
-      hasHeader (name) { return name in resHeaders; },
-      removeHeader (name) { delete resHeaders[name]; },
-      getHeaders () { return resHeaders; },
-      end (chunk, arg2?, arg3?) {
-        if (typeof chunk === "string") {
-          _resSendBody = chunk;
-        }
-        if (typeof arg2 === "function") { arg2(); }
-        if (typeof arg3 === "function") { arg3(); }
-        return this;
-      },
-      write (chunk, arg2?, arg3?) {
-        if (typeof chunk === "string") {
-          _resSendBody = chunk;
-        }
-        if (typeof arg2 === "function") { arg2(); }
-        if (typeof arg3 === "function") { arg3(); }
-        return this;
-      },
-      writeHead (statusCode, headers) {
-        this.statusCode = statusCode;
-        if (headers) {
-          for (const header in headers) {
-            this.setHeader(header, headers[header]);
+  const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
+    async (incomingEvent: H3Event) => {
+      // Create proxies to avoid sharing state with user request
+      const reqProxy = cloneWithProxy(incomingEvent.req, { headers: {} });
+      const resHeaders: Record<string, number | string | string[]> = {};
+      let _resSendBody;
+      const resProxy = cloneWithProxy(incomingEvent.res, {
+        statusCode: 200,
+        getHeader(name) {
+          return resHeaders[name];
+        },
+        setHeader(name, value) {
+          resHeaders[name] = value as any;
+          return this;
+        },
+        getHeaderNames() {
+          return Object.keys(resHeaders);
+        },
+        hasHeader(name) {
+          return name in resHeaders;
+        },
+        removeHeader(name) {
+          delete resHeaders[name];
+        },
+        getHeaders() {
+          return resHeaders;
+        },
+        end(chunk, arg2?, arg3?) {
+          if (typeof chunk === "string") {
+            _resSendBody = chunk;
           }
+          if (typeof arg2 === "function") {
+            arg2();
+          }
+          if (typeof arg3 === "function") {
+            arg3();
+          }
+          return this;
+        },
+        write(chunk, arg2?, arg3?) {
+          if (typeof chunk === "string") {
+            _resSendBody = chunk;
+          }
+          if (typeof arg2 === "function") {
+            arg2();
+          }
+          if (typeof arg3 === "function") {
+            arg3();
+          }
+          return this;
+        },
+        writeHead(statusCode, headers) {
+          this.statusCode = statusCode;
+          if (headers) {
+            for (const header in headers) {
+              this.setHeader(header, headers[header]);
+            }
+          }
+          return this;
+        },
+      });
+
+      // Call handler
+      const event = createEvent(reqProxy, resProxy);
+      event.context = incomingEvent.context;
+      const body = (await handler(event)) || _resSendBody;
+
+      // Collect cachable headers
+      const headers = event.res.getHeaders();
+      headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`;
+      headers["last-modified"] =
+        headers["Last-Modified"] ||
+        headers["last-modified"] ||
+        new Date().toUTCString();
+      const cacheControl = [];
+      if (opts.swr) {
+        if (opts.maxAge) {
+          cacheControl.push(`s-maxage=${opts.maxAge}`);
         }
-        return this;
+        if (opts.staleMaxAge) {
+          cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`);
+        } else {
+          cacheControl.push("stale-while-revalidate");
+        }
+      } else if (opts.maxAge) {
+        cacheControl.push(`max-age=${opts.maxAge}`);
       }
-    });
-
-    // Call handler
-    const event = createEvent(reqProxy, resProxy);
-    event.context = incomingEvent.context;
-    const body = await handler(event) || _resSendBody;
-
-    // Collect cachable headers
-    const headers = event.res.getHeaders();
-    headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`;
-    headers["last-modified"] = headers["Last-Modified"] || headers["last-modified"] || new Date().toUTCString();
-    const cacheControl = [];
-    if (opts.swr) {
-      if (opts.maxAge) {
-        cacheControl.push(`s-maxage=${opts.maxAge}`);
+      if (cacheControl.length > 0) {
+        headers["cache-control"] = cacheControl.join(", ");
       }
-      if (opts.staleMaxAge) {
-        cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`);
-      } else {
-        cacheControl.push("stale-while-revalidate");
-      }
-    } else if (opts.maxAge) {
-      cacheControl.push(`max-age=${opts.maxAge}`);
-    }
-    if (cacheControl.length > 0) {
-      headers["cache-control"] = cacheControl.join(", ");
-    }
 
-    // Create cache entry for response
-    const cacheEntry: ResponseCacheEntry<T> = {
-      code: event.res.statusCode,
-      headers,
-      body
-    };
+      // Create cache entry for response
+      const cacheEntry: ResponseCacheEntry<T> = {
+        code: event.res.statusCode,
+        headers,
+        body,
+      };
 
-    return cacheEntry;
-  }, _opts);
+      return cacheEntry;
+    },
+    _opts
+  );
 
   return defineEventHandler<T>(async (event) => {
     // Headers-only mode
@@ -231,11 +285,13 @@ export function defineCachedEventHandler <T=any> (
     }
 
     // Check for cache headers
-    if (handleCacheHeaders(event, {
-      modifiedTime: new Date(response.headers["last-modified"] as string),
-      etag: response.headers.etag as string,
-      maxAge: opts.maxAge
-    })) {
+    if (
+      handleCacheHeaders(event, {
+        modifiedTime: new Date(response.headers["last-modified"] as string),
+        etag: response.headers.etag as string,
+        maxAge: opts.maxAge,
+      })
+    ) {
       return;
     }
 
@@ -250,21 +306,24 @@ export function defineCachedEventHandler <T=any> (
   });
 }
 
-function cloneWithProxy<T extends object = any> (obj: T, overrides: Partial<T>): T {
+function cloneWithProxy<T extends object = any>(
+  obj: T,
+  overrides: Partial<T>
+): T {
   return new Proxy(obj, {
-    get (target, property, receiver) {
+    get(target, property, receiver) {
       if (property in overrides) {
         return overrides[property];
       }
       return Reflect.get(target, property, receiver);
     },
-    set (target, property, value, receiver) {
+    set(target, property, value, receiver) {
       if (property in overrides) {
         overrides[property] = value;
         return true;
       }
       return Reflect.set(target, property, value, receiver);
-    }
+    },
   });
 }
 

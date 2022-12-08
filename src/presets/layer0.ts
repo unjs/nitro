@@ -7,10 +7,10 @@ export const layer0 = defineNitroPreset({
   extends: "node",
   commands: {
     deploy: "cd ./ && npm run deploy",
-    preview: "cd ./ && npm run preview"
+    preview: "cd ./ && npm run preview",
   },
   hooks: {
-    async "compiled" (nitro) {
+    async compiled(nitro) {
       // Write Layer0 config, router, and connector files
       const layer0Config = {
         connector: "./layer0",
@@ -19,11 +19,14 @@ export const layer0 = defineNitroPreset({
         backends: {},
         includeFiles: {
           "public/**/*": true,
-          "server/**/*": true
-        }
+          "server/**/*": true,
+        },
       };
       const configPath = resolve(nitro.options.output.dir, "layer0.config.js");
-      await writeFile(configPath, `module.exports = ${JSON.stringify(layer0Config, null, 2)}`);
+      await writeFile(
+        configPath,
+        `module.exports = ${JSON.stringify(layer0Config, null, 2)}`
+      );
 
       const routerPath = resolve(nitro.options.output.dir, "routes.js");
       await writeFile(routerPath, routesTemplate());
@@ -35,25 +38,28 @@ export const layer0 = defineNitroPreset({
         private: true,
         scripts: {
           deploy: "npm install && 0 deploy",
-          preview: "npm install && 0 build && 0 run -p"
+          preview: "npm install && 0 build && 0 run -p",
         },
         devDependencies: {
           "@layer0/cli": "^4.13.2",
-          "@layer0/core": "^4.13.2"
-        }
+          "@layer0/core": "^4.13.2",
+        },
       };
-      await writeFile(resolve(nitro.options.output.dir, "package.json"), JSON.stringify(pkgJSON, null, 2));
-    }
-  }
+      await writeFile(
+        resolve(nitro.options.output.dir, "package.json"),
+        JSON.stringify(pkgJSON, null, 2)
+      );
+    },
+  },
 });
 
-async function writeFile (path: string, contents: string) {
+async function writeFile(path: string, contents: string) {
   await fsp.mkdir(dirname(path), { recursive: true });
   await fsp.writeFile(path, contents, "utf8");
 }
 
 // Layer0 entrypoint (.output/layer0/prod.js)
-function entryTemplate () {
+function entryTemplate() {
   return `
 const http = require('http')
 
@@ -66,7 +72,7 @@ module.exports = async function prod(port) {
 }
 
 // Layer0 router (.output/routes.js)
-function routesTemplate () {
+function routesTemplate() {
   return `
 import { Router } from '@layer0/core'
 

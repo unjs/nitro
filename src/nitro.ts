@@ -8,7 +8,7 @@ import { loadOptions } from "./options";
 import { scanPlugins } from "./scan";
 import { createStorage } from "./storage";
 
-export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
+export async function createNitro(config: NitroConfig = {}): Promise<Nitro> {
   // Resolve options
   const options = await loadOptions(config);
 
@@ -20,12 +20,14 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     logger: consola.withTag("nitro"),
     scannedHandlers: [],
     close: () => nitro.hooks.callHook("close"),
-    storage: undefined
+    storage: undefined,
   };
 
   // Storage
   nitro.storage = await createStorage(nitro);
-  nitro.hooks.hook("close", async () => { await nitro.storage.dispose(); });
+  nitro.hooks.hook("close", async () => {
+    await nitro.storage.dispose();
+  });
 
   if (nitro.options.debug) {
     createDebugger(nitro.hooks, { tag: "nitro" });
@@ -43,8 +45,10 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Public assets
   for (const dir of options.scanDirs) {
     const publicDir = resolve(dir, "public");
-    if (!existsSync(publicDir)) { continue; }
-    if (options.publicAssets.some(asset => asset.dir === publicDir)) {
+    if (!existsSync(publicDir)) {
+      continue;
+    }
+    if (options.publicAssets.some((asset) => asset.dir === publicDir)) {
       continue;
     }
     options.publicAssets.push({ dir: publicDir } as any);
@@ -59,7 +63,7 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
   // Server assets
   nitro.options.serverAssets.push({
     baseName: "server",
-    dir: resolve(nitro.options.srcDir, "assets")
+    dir: resolve(nitro.options.srcDir, "assets"),
   });
 
   // Plugins
@@ -75,7 +79,7 @@ export async function createNitro (config: NitroConfig = {}): Promise<Nitro> {
     // Support for importing from '#imports'
     nitro.options.virtual["#imports"] = () => nitro.unimport.toExports();
     // Backward compatibility
-    nitro.options.virtual["#nitro"] = "export * from \"#imports\"";
+    nitro.options.virtual["#nitro"] = 'export * from "#imports"';
   }
 
   return nitro;

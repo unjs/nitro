@@ -5,14 +5,24 @@ import { globby } from "globby";
 
 // Temporary forked from nuxt/framework
 
-async function loadPackage (dir: string) {
+async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, "package.json");
-  const data = JSON.parse(await fsp.readFile(pkgPath, "utf8").catch(() => "{}"));
-  const save = () => fsp.writeFile(pkgPath, JSON.stringify(data, null, 2) + "\n");
+  const data = JSON.parse(
+    await fsp.readFile(pkgPath, "utf8").catch(() => "{}")
+  );
+  const save = () =>
+    fsp.writeFile(pkgPath, JSON.stringify(data, null, 2) + "\n");
 
   const updateDeps = (reviver: Function) => {
-    for (const type of ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"]) {
-      if (!data[type]) { continue; }
+    for (const type of [
+      "dependencies",
+      "devDependencies",
+      "optionalDependencies",
+      "peerDependencies",
+    ]) {
+      if (!data[type]) {
+        continue;
+      }
       for (const e of Object.entries(data[type])) {
         const dep = { name: e[0], range: e[1], type };
         delete data[type][dep.name];
@@ -27,27 +37,31 @@ async function loadPackage (dir: string) {
     dir,
     data,
     save,
-    updateDeps
+    updateDeps,
   };
 }
 
-type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
-type Package = ThenArg<ReturnType<typeof loadPackage>>
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
+type Package = ThenArg<ReturnType<typeof loadPackage>>;
 
-async function loadWorkspace (dir: string) {
+async function loadWorkspace(dir: string) {
   const workspacePkg = await loadPackage(dir);
-  const pkgDirs = await globby(workspacePkg.data.workspaces || [], { onlyDirectories: true });
+  const pkgDirs = await globby(workspacePkg.data.workspaces || [], {
+    onlyDirectories: true,
+  });
 
   const packages: Package[] = [workspacePkg];
 
   for (const pkgDir of pkgDirs) {
     const pkg = await loadPackage(pkgDir);
-    if (!pkg.data.name) { continue; }
+    if (!pkg.data.name) {
+      continue;
+    }
     packages.push(pkg);
   }
 
   const find = (name: string) => {
-    const pkg = packages.find(pkg => pkg.data.name === name);
+    const pkg = packages.find((pkg) => pkg.data.name === name);
     if (!pkg) {
       throw new Error("Workspace package not found: " + name);
     }
@@ -76,7 +90,7 @@ async function loadWorkspace (dir: string) {
     }
   };
 
-  const save = () => Promise.all(packages.map(pkg => pkg.save()));
+  const save = () => Promise.all(packages.map((pkg) => pkg.save()));
 
   return {
     dir,
@@ -85,26 +99,33 @@ async function loadWorkspace (dir: string) {
     save,
     find,
     rename,
-    setVersion
+    setVersion,
   };
 }
 
-async function main () {
+async function main() {
   const workspace = await loadWorkspace(process.cwd());
 
-  const commit = await execaCommand("git rev-parse --short HEAD").then(r => r.stdout.trim());
+  const commit = await execaCommand("git rev-parse --short HEAD").then((r) =>
+    r.stdout.trim()
+  );
   const date = Math.round(Date.now() / (1000 * 60));
 
-  for (const pkg of workspace.packages.filter(p => !p.data.private)) {
-    workspace.setVersion(pkg.data.name, `${pkg.data.version}-${date}.${commit}`);
+  for (const pkg of workspace.packages.filter((p) => !p.data.private)) {
+    workspace.setVersion(
+      pkg.data.name,
+      `${pkg.data.version}-${date}.${commit}`
+    );
     workspace.rename(pkg.data.name, pkg.data.name + "-edge");
   }
 
   await workspace.save();
 }
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 main().catch((err) => {
   // eslint-disable-next-line no-console
   console.error(err);
+  // eslint-disable-next-line unicorn/no-process-exit
   process.exit(1);
 });

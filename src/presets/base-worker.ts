@@ -9,9 +9,9 @@ export const baseWorker = defineNitroPreset({
     output: {
       format: "iife",
       generatedCode: {
-        symbols: true
-      }
-    }
+        symbols: true,
+      },
+    },
   },
-  inlineDynamicImports: true // iffe does not support code-splitting
+  inlineDynamicImports: true, // iffe does not support code-splitting
 });

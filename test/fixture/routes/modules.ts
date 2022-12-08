@@ -12,6 +12,6 @@ export default defineEventHandler(() => {
     depA,
     depB,
     depLib,
-    subpathLib
+    subpathLib,
   };
 });

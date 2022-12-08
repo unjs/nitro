@@ -4,11 +4,13 @@ const METHOD_WITH_BODY_RE = /post|put|patch/i;
 const TEXT_MIME_RE = /application\/text|text\/html/;
 const JSON_MIME_RE = /application\/json/;
 
-export function requestHasBody (request: globalThis.Request) : boolean {
+export function requestHasBody(request: globalThis.Request): boolean {
   return METHOD_WITH_BODY_RE.test(request.method);
 }
 
-export async function useRequestBody (request: globalThis.Request): Promise<any> {
+export async function useRequestBody(
+  request: globalThis.Request
+): Promise<any> {
   const contentType = request.headers.get("content-type") || "";
   if (contentType.includes("form")) {
     const formData = await request.formData();
@@ -27,25 +29,29 @@ export async function useRequestBody (request: globalThis.Request): Promise<any>
   }
 }
 
-export function hasReqHeader (event: H3Event, name: string, includes: string) {
+export function hasReqHeader(event: H3Event, name: string, includes: string) {
   const value = getRequestHeader(event, name);
-  return value && typeof value === "string" && value.toLowerCase().includes(includes);
+  return (
+    value && typeof value === "string" && value.toLowerCase().includes(includes)
+  );
 }
 
-export function isJsonRequest (event: H3Event) {
-  return hasReqHeader(event, "accept", "application/json") ||
+export function isJsonRequest(event: H3Event) {
+  return (
+    hasReqHeader(event, "accept", "application/json") ||
     hasReqHeader(event, "user-agent", "curl/") ||
     hasReqHeader(event, "user-agent", "httpie/") ||
     event.req.url?.endsWith(".json") ||
-    event.req.url?.includes("/api/");
+    event.req.url?.includes("/api/")
+  );
 }
 
-export function normalizeError (error: any) {
+export function normalizeError(error: any) {
   const cwd = process.cwd();
-  const stack = (error.stack as string || "")
+  const stack = ((error.stack as string) || "")
     .split("\n")
     .splice(1)
-    .filter(line => line.includes("at "))
+    .filter((line) => line.includes("at "))
     .map((line) => {
       const text = line
         .replace(cwd + "/", "./")
@@ -54,20 +60,22 @@ export function normalizeError (error: any) {
         .trim();
       return {
         text,
-        internal: (line.includes("node_modules") && !line.includes(".cache")) ||
+        internal:
+          (line.includes("node_modules") && !line.includes(".cache")) ||
           line.includes("internal") ||
-          line.includes("new Promise")
+          line.includes("new Promise"),
       };
     });
 
   const statusCode = error.statusCode || 500;
-  const statusMessage = error.statusMessage ?? (statusCode === 404 ? "Not Found" : "");
+  const statusMessage =
+    error.statusMessage ?? (statusCode === 404 ? "Not Found" : "");
   const message = error.message || error.toString();
 
   return {
     stack,
     statusCode,
     statusMessage,
-    message
+    message,
   };
 }

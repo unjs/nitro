@@ -3,15 +3,24 @@ import { extname } from "pathe";
 import type { Plugin } from "rollup";
 
 export interface RawOptions {
-  extensions?: string[]
+  extensions?: string[];
 }
 
-export function raw (opts: RawOptions = {}): Plugin {
-  const extensions = new Set([".md", ".mdx", ".yml", ".txt", ".css", ".htm", ".html", ...(opts.extensions || [])]);
+export function raw(opts: RawOptions = {}): Plugin {
+  const extensions = new Set([
+    ".md",
+    ".mdx",
+    ".yml",
+    ".txt",
+    ".css",
+    ".htm",
+    ".html",
+    ...(opts.extensions || []),
+  ]);
 
   return {
     name: "raw",
-    resolveId (id) {
+    resolveId(id) {
       if (id[0] === "\0") {
         return;
       }
@@ -28,19 +37,21 @@ export function raw (opts: RawOptions = {}): Plugin {
         return { id: "\0raw:" + id };
       }
     },
-    load (id) {
+    load(id) {
       if (id.startsWith("\0raw:")) {
         // this.addWatchFile(id.substring(5))
         return fsp.readFile(id.slice(5), "utf8");
       }
     },
-    transform (code, id) {
+    transform(code, id) {
       if (id.startsWith("\0raw:")) {
         return {
-          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
-          map: null
+          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(
+            code
+          )}`,
+          map: null,
         };
       }
-    }
+    },
   };
 }

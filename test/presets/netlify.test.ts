@@ -8,29 +8,36 @@ import { setupTest, testNitro } from "../tests";
 describe("nitro:preset:netlify", async () => {
   const ctx = await setupTest("netlify");
   testNitro(ctx, async () => {
-    const { handler } = await import(resolve(ctx.outDir, "server/server.js")) as { handler: Handler };
+    const { handler } = (await import(
+      resolve(ctx.outDir, "server/server.js")
+    )) as { handler: Handler };
     return async ({ url: rawRelativeUrl, headers, method, body }) => {
       // creating new URL object to parse query easier
       const url = new URL(`https://example.com${rawRelativeUrl}`);
-      const queryStringParameters = Object.fromEntries(url.searchParams.entries());
+      const queryStringParameters = Object.fromEntries(
+        url.searchParams.entries()
+      );
       const event: Partial<APIGatewayEvent> = {
         resource: "/my/path",
         path: url.pathname,
         headers: headers || {},
         httpMethod: method || "GET",
         queryStringParameters,
-        body: body || ""
+        body: body || "",
       };
       const res = await handler(event, {} as any, () => {});
       return {
         data: destr(res.body),
         status: res.statusCode,
-        headers: res.headers
+        headers: res.headers,
       };
     };
   });
   it("should add route rules - redirects", async () => {
-    const redirects = await fsp.readFile(resolve(ctx.rootDir, "dist/_redirects"), "utf8");
+    const redirects = await fsp.readFile(
+      resolve(ctx.rootDir, "dist/_redirects"),
+      "utf8"
+    );
     /* eslint-disable no-tabs */
     expect(redirects).toMatchInlineSnapshot(`
       "/rules/nested/override	/other	302
@@ -45,7 +52,10 @@ describe("nitro:preset:netlify", async () => {
     /* eslint-enable no-tabs */
   });
   it("should add route rules - headers", async () => {
-    const headers = await fsp.readFile(resolve(ctx.rootDir, "dist/_headers"), "utf8");
+    const headers = await fsp.readFile(
+      resolve(ctx.rootDir, "dist/_headers"),
+      "utf8"
+    );
     /* eslint-disable no-tabs */
     expect(headers).toMatchInlineSnapshot(`
       "/rules/headers

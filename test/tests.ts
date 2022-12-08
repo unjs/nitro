@@ -8,46 +8,51 @@ import { joinURL } from "ufo";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
 
-const { createNitro, build, prepare, copyPublicAssets, prerender } = (_nitro as any as { default: typeof _nitro }).default || _nitro;
+const { createNitro, build, prepare, copyPublicAssets, prerender } =
+  (_nitro as any as { default: typeof _nitro }).default || _nitro;
 
 interface Context {
-  preset: string
-  nitro?: Nitro,
-  rootDir: string
-  outDir: string
-  fetch: (url: string) => Promise<any>
-  server?: Listener
+  preset: string;
+  nitro?: Nitro;
+  rootDir: string;
+  outDir: string;
+  fetch: (url: string) => Promise<any>;
+  server?: Listener;
 }
 
-export async function setupTest (preset) {
+export async function setupTest(preset) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
 
   const ctx: Context = {
     preset,
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, ".output", preset),
-    fetch: url => fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: "manual" })
+    fetch: (url) =>
+      fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: "manual" }),
   };
 
-  const nitro = ctx.nitro = await createNitro({
+  const nitro = (ctx.nitro = await createNitro({
     preset: ctx.preset,
     rootDir: ctx.rootDir,
     serveStatic: preset !== "cloudflare" && preset !== "vercel-edge",
     output: { dir: ctx.outDir },
     routeRules: {
       "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
-      "/rules/cors": { cors: true, headers: { "access-control-allowed-methods": "GET" } },
+      "/rules/cors": {
+        cors: true,
+        headers: { "access-control-allowed-methods": "GET" },
+      },
       "/rules/redirect": { redirect: "/base" },
       "/rules/static": { static: true },
       "/rules/swr/**": { swr: true },
       "/rules/swr-ttl/**": { swr: 60 },
       "/rules/redirect/obj": {
-        redirect: { to: "https://nitro.unjs.io/", statusCode: 308 }
+        redirect: { to: "https://nitro.unjs.io/", statusCode: 308 },
       },
       "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
-      "/rules/nested/override": { redirect: { to: "/other" } }
-    }
-  });
+      "/rules/nested/override": { redirect: { to: "/other" } },
+    },
+  }));
   await prepare(nitro);
   await copyPublicAssets(nitro);
   await prerender(nitro);
@@ -65,18 +70,25 @@ export async function setupTest (preset) {
   return ctx;
 }
 
-export async function startServer (ctx, handle) {
+export async function startServer(ctx, handle) {
   ctx.server = await listen(handle);
   console.log(">", ctx.server!.url);
 }
 
-type TestHandlerResult = { data: any, status: number, headers: Record<string, string> }
-type TestHandler = (options: any) => Promise<TestHandlerResult | Response>
+type TestHandlerResult = {
+  data: any;
+  status: number;
+  headers: Record<string, string>;
+};
+type TestHandler = (options: any) => Promise<TestHandlerResult | Response>;
 
-export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise<TestHandler>) {
+export function testNitro(
+  ctx: Context,
+  getHandler: () => TestHandler | Promise<TestHandler>
+) {
   let _handler: TestHandler;
 
-  async function callHandler (options): Promise<TestHandlerResult> {
+  async function callHandler(options): Promise<TestHandlerResult> {
     const result = await _handler(options);
     if (result.constructor.name !== "Response") {
       return result as TestHandlerResult;
@@ -84,7 +96,7 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     return {
       data: destr(await (result as Response).text()),
       status: result.status,
-      headers: Object.fromEntries((result as Response).headers.entries())
+      headers: Object.fromEntries((result as Response).headers.entries()),
     };
   }
 
@@ -102,10 +114,14 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     const { data: kebabData } = await callHandler({ url: "/api/kebab" });
     expect(kebabData).to.have.string("hello-world");
 
-    const { data: paramsData } = await callHandler({ url: "/api/param/test_param" });
+    const { data: paramsData } = await callHandler({
+      url: "/api/param/test_param",
+    });
     expect(paramsData).toBe("test_param");
 
-    const { data: paramsData2 } = await callHandler({ url: "/api/wildcard/foo/bar/baz" });
+    const { data: paramsData2 } = await callHandler({
+      url: "/api/wildcard/foo/bar/baz",
+    });
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
@@ -129,7 +145,7 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
       "access-control-allow-origin": "*",
       "access-control-allowed-methods": "GET",
       "access-control-allow-headers": "*",
-      "access-control-max-age": "0"
+      "access-control-max-age": "0",
     };
     const { headers } = await callHandler({ url: "/rules/cors" });
     expect(headers).toMatchObject(expectedHeaders);
@@ -149,8 +165,8 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
     const { status } = await callHandler({
       url: "/api/error",
       headers: {
-        Accept: "application/json"
-      }
+        Accept: "application/json",
+      },
     });
     expect(status).toBe(503);
     const { data: heyData } = await callHandler({ url: "/api/hey" });
@@ -169,14 +185,20 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
       const { status, headers } = await callHandler({ url: "/favicon.ico" });
       expect(status).toBe(200);
       expect(headers.etag).toBeDefined();
-      expect(headers["content-type"]).toMatchInlineSnapshot("\"image/vnd.microsoft.icon\"");
+      expect(headers["content-type"]).toMatchInlineSnapshot(
+        '"image/vnd.microsoft.icon"'
+      );
     });
 
     it("serve static asset /build/test.txt", async () => {
       const { status, headers } = await callHandler({ url: "/build/test.txt" });
       expect(status).toBe(200);
-      expect(headers.etag).toMatchInlineSnapshot("\"\\\"7-vxGfAKTuGVGhpDZqQLqV60dnKPw\\\"\"");
-      expect(headers["content-type"]).toMatchInlineSnapshot("\"text/plain; charset=utf-8\"");
+      expect(headers.etag).toMatchInlineSnapshot(
+        '"\\"7-vxGfAKTuGVGhpDZqQLqV60dnKPw\\""'
+      );
+      expect(headers["content-type"]).toMatchInlineSnapshot(
+        '"text/plain; charset=utf-8"'
+      );
     });
 
     it("shows 404 for /build/non-file", async () => {
@@ -186,7 +208,12 @@ export function testNitro (ctx: Context, getHandler: () => TestHandler | Promise
 
     it("resolve module version conflicts", async () => {
       const { data } = await callHandler({ url: "/modules" });
-      expect(data).toMatchObject({ depA: "2.0.1", depB: "2.0.1", depLib: "2.0.1", subpathLib: "2.0.1" });
+      expect(data).toMatchObject({
+        depA: "2.0.1",
+        depB: "2.0.1",
+        depLib: "2.0.1",
+        subpathLib: "2.0.1",
+      });
     });
   }
 }

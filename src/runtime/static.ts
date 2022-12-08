@@ -1,6 +1,10 @@
 import { eventHandler, createError } from "h3";
 import { joinURL, withoutTrailingSlash, withLeadingSlash, parseURL } from "ufo";
-import { getAsset, readAsset, isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import {
+  getAsset,
+  readAsset,
+  isPublicAssetURL,
+} from "#internal/nitro/virtual/public-assets";
 
 const METHODS = new Set(["HEAD", "GET"]);
 
@@ -11,14 +15,20 @@ export default eventHandler((event) => {
     return;
   }
 
-  let id = decodeURIComponent(withLeadingSlash(withoutTrailingSlash(parseURL(event.req.url).pathname)));
+  let id = decodeURIComponent(
+    withLeadingSlash(withoutTrailingSlash(parseURL(event.req.url).pathname))
+  );
   let asset;
 
   const encodingHeader = String(event.req.headers["accept-encoding"] || "");
-  const encodings = [...encodingHeader.split(",")
-    .map(e => EncodingMap[e.trim()])
-    .filter(Boolean)
-    .sort(), ""];
+  const encodings = [
+    ...encodingHeader
+      .split(",")
+      .map((e) => EncodingMap[e.trim()])
+      .filter(Boolean)
+      .sort(),
+    "",
+  ];
   if (encodings.length > 1) {
     event.res.setHeader("Vary", "Accept-Encoding");
   }
@@ -38,7 +48,7 @@ export default eventHandler((event) => {
     if (isPublicAssetURL(id)) {
       throw createError({
         statusMessage: "Cannot find static asset " + id,
-        statusCode: 404
+        statusCode: 404,
       });
     }
     return;
@@ -52,7 +62,11 @@ export default eventHandler((event) => {
   }
 
   const ifModifiedSinceH = event.req.headers["if-modified-since"];
-  if (ifModifiedSinceH && asset.mtime && new Date(ifModifiedSinceH) >= new Date(asset.mtime)) {
+  if (
+    ifModifiedSinceH &&
+    asset.mtime &&
+    new Date(ifModifiedSinceH) >= new Date(asset.mtime)
+  ) {
     event.res.statusCode = 304;
     event.res.end();
     return;

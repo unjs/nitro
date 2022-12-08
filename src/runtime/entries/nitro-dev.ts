@@ -10,7 +10,7 @@ import { nitroApp } from "../app";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
-function getAddress () {
+function getAddress() {
   if (provider === "stackblitz" || process.env.NITRO_NO_UNIX_SOCKET) {
     return "0";
   }
@@ -29,16 +29,25 @@ server.listen(listenAddress, () => {
   const _address = server.address();
   parentPort.postMessage({
     event: "listen",
-    address: typeof _address === "string"
-      ? { socketPath: _address }
-      : { host: "localhost", port: _address.port }
+    address:
+      typeof _address === "string"
+        ? { socketPath: _address }
+        : { host: "localhost", port: _address.port },
   });
 });
 
 if (process.env.DEBUG) {
-  process.on("unhandledRejection", err => console.error("[nitro] [dev] [unhandledRejection]", err));
-  process.on("uncaughtException", err => console.error("[nitro] [dev] [uncaughtException]", err));
+  process.on("unhandledRejection", (err) =>
+    console.error("[nitro] [dev] [unhandledRejection]", err)
+  );
+  process.on("uncaughtException", (err) =>
+    console.error("[nitro] [dev] [uncaughtException]", err)
+  );
 } else {
-  process.on("unhandledRejection", err => console.error("[nitro] [dev] [unhandledRejection] " + err));
-  process.on("uncaughtException", err => console.error("[nitro] [dev] [uncaughtException] " + err));
+  process.on("unhandledRejection", (err) =>
+    console.error("[nitro] [dev] [unhandledRejection] " + err)
+  );
+  process.on("uncaughtException", (err) =>
+    console.error("[nitro] [dev] [uncaughtException] " + err)
+  );
 }

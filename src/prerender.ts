@@ -6,15 +6,22 @@ import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type { Nitro, NitroRouteRules, PrerenderGenerateRoute, PrerenderRoute } from "./types";
+import type {
+  Nitro,
+  NitroRouteRules,
+  PrerenderGenerateRoute,
+  PrerenderRoute,
+} from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
 
-export async function prerender (nitro: Nitro) {
+export async function prerender(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
-    console.warn("[nitro] Skipping prerender since `noPublicDir` option is enabled.");
+    console.warn(
+      "[nitro] Skipping prerender since `noPublicDir` option is enabled."
+    );
     return;
   }
 
@@ -24,7 +31,7 @@ export async function prerender (nitro: Nitro) {
   // Extend with static prerender route rules
   const prerenderRulePaths = Object.entries(nitro.options.routeRules)
     .filter(([path, options]) => options.prerender && !path.includes("*"))
-    .map(e => e[0]);
+    .map((e) => e[0]);
   for (const route of prerenderRulePaths) {
     routes.add(route);
   }
@@ -49,27 +56,41 @@ export async function prerender (nitro: Nitro) {
     ...nitro.options._config,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
-    preset: "nitro-prerender"
+    preset: "nitro-prerender",
   });
   await build(nitroRenderer);
 
   // Import renderer entry
-  const serverEntrypoint = resolve(nitroRenderer.options.output.serverDir, "index.mjs");
+  const serverEntrypoint = resolve(
+    nitroRenderer.options.output.serverDir,
+    "index.mjs"
+  );
   const { localFetch } = await import(pathToFileURL(serverEntrypoint).href);
 
   // Create route rule matcher
-  const _routeRulesMatcher = toRouteMatcher(createRadixRouter({ routes: nitro.options.routeRules }));
-  const _getRouteRules = (path: string) => defu({}, ..._routeRulesMatcher.matchAll(path).reverse()) as NitroRouteRules;
+  const _routeRulesMatcher = toRouteMatcher(
+    createRadixRouter({ routes: nitro.options.routeRules })
+  );
+  const _getRouteRules = (path: string) =>
+    defu({}, ..._routeRulesMatcher.matchAll(path).reverse()) as NitroRouteRules;
 
   // Start prerendering
   const generatedRoutes = new Set();
   const canPrerender = (route: string = "/") => {
-    if (generatedRoutes.has(route)) { return false; }
-    if (route.length > 250) { return false; }
-    for (const ignore of nitro.options.prerender.ignore) {
-      if (route.startsWith(ignore)) { return false; }
+    if (generatedRoutes.has(route)) {
+      return false;
     }
-    if (_getRouteRules(route).prerender === false) { return false; }
+    if (route.length > 250) {
+      return false;
+    }
+    for (const ignore of nitro.options.prerender.ignore) {
+      if (route.startsWith(ignore)) {
+        return false;
+      }
+    }
+    if (_getRouteRules(route).prerender === false) {
+      return false;
+    }
     return true;
   };
 
@@ -77,7 +98,9 @@ export async function prerender (nitro: Nitro) {
     const start = Date.now();
 
     // Check if we should render route
-    if (!canPrerender(route)) { return; }
+    if (!canPrerender(route)) {
+      return;
+    }
     generatedRoutes.add(route);
     routes.delete(route);
 
@@ -85,19 +108,23 @@ export async function prerender (nitro: Nitro) {
     const _route: PrerenderGenerateRoute = { route };
 
     // Fetch the route
-    const res = await (localFetch(withBase(route, nitro.options.baseURL), { headers: { "x-nitro-prerender": route } }) as ReturnType<typeof fetch>);
+    const res = await (localFetch(withBase(route, nitro.options.baseURL), {
+      headers: { "x-nitro-prerender": route },
+    }) as ReturnType<typeof fetch>);
     _route.data = await res.arrayBuffer();
     Object.defineProperty(_route, "contents", {
       get: () => {
         if (!(_route as any)._contents) {
-          (_route as any)._contents = new TextDecoder("utf8").decode(new Uint8Array(_route.data));
+          (_route as any)._contents = new TextDecoder("utf8").decode(
+            new Uint8Array(_route.data)
+          );
         }
         return (_route as any)._contents;
       },
-      set (value: string) {
+      set(value: string) {
         (_route as any)._contents = value;
         _route.data = new TextEncoder().encode(value);
-      }
+      },
     });
     if (res.status !== 200) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
@@ -106,15 +133,21 @@ export async function prerender (nitro: Nitro) {
     }
 
     // Write to the file
-    const isImplicitHTML = !route.endsWith(".html") && (res.headers.get("content-type") || "").includes("html");
+    const isImplicitHTML =
+      !route.endsWith(".html") &&
+      (res.headers.get("content-type") || "").includes("html");
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
-    _route.fileName = isImplicitHTML ? joinURL(route, "index.html") : routeWithIndex;
+    _route.fileName = isImplicitHTML
+      ? joinURL(route, "index.html")
+      : routeWithIndex;
     _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL);
 
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
 
     // Check if route skipped or has errors
-    if (_route.skip || _route.error) { return; }
+    if (_route.skip || _route.error) {
+      return;
+    }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName);
     await writeFile(filePath, Buffer.from(_route.data));
@@ -122,7 +155,12 @@ export async function prerender (nitro: Nitro) {
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
-      const extractedLinks = extractLinks(_route.contents, route, res, nitro.options.prerender.crawlLinks);
+      const extractedLinks = extractLinks(
+        _route.contents,
+        route,
+        res,
+        nitro.options.prerender.crawlLinks
+      );
       for (const _link of extractedLinks) {
         if (canPrerender(_link)) {
           routes.add(_link);
@@ -134,19 +172,30 @@ export async function prerender (nitro: Nitro) {
     return _route;
   };
 
-  nitro.logger.info(nitro.options.prerender.crawlLinks
-    ? `Prerendering ${routes.size} initial routes with crawler`
-    : `Prerendering ${routes.size} routes`
+  nitro.logger.info(
+    nitro.options.prerender.crawlLinks
+      ? `Prerendering ${routes.size} initial routes with crawler`
+      : `Prerendering ${routes.size} routes`
   );
   for (let i = 0; i < 100 && routes.size > 0; i++) {
     for (const route of routes) {
-      const _route = await generateRoute(route).catch(error => ({ route, error } as PrerenderRoute));
+      const _route = await generateRoute(route).catch(
+        (error) => ({ route, error } as PrerenderRoute)
+      );
 
       // Skipped (not allowed or duplicate)
-      if (!_route) { continue; }
+      if (!_route) {
+        continue;
+      }
 
       await nitro.hooks.callHook("prerender:route", _route);
-      nitro.logger.log(chalk[_route.error ? "yellow" : "gray"](`  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${_route.error ? `(${_route.error})` : ""}`));
+      nitro.logger.log(
+        chalk[_route.error ? "yellow" : "gray"](
+          `  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${
+            _route.error ? `(${_route.error})` : ""
+          }`
+        )
+      );
     }
   }
 
@@ -157,7 +206,12 @@ export async function prerender (nitro: Nitro) {
 
 const LINK_REGEX = /href=["']?([^ "'>]+)/g;
 
-function extractLinks (html: string, from: string, res: Response, crawlLinks: boolean) {
+function extractLinks(
+  html: string,
+  from: string,
+  res: Response,
+  crawlLinks: boolean
+) {
   const links: string[] = [];
   const _links: string[] = [];
 
@@ -165,18 +219,20 @@ function extractLinks (html: string, from: string, res: Response, crawlLinks: bo
   if (crawlLinks) {
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
-        .map(m => m[1])
-        .filter(link => allowedExtensions.has(getExtension(link)))
+        .map((m) => m[1])
+        .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get("x-nitro-prerender") || "";
-  _links.push(...header.split(",").map(i => i.trim()));
+  _links.push(...header.split(",").map((i) => i.trim()));
 
   for (const link of _links.filter(Boolean)) {
     const parsed = parseURL(link);
-    if (parsed.protocol) { continue; }
+    if (parsed.protocol) {
+      continue;
+    }
     let { pathname } = parsed;
     if (!pathname.startsWith("/")) {
       const fromURL = new URL(from, "http://localhost");
@@ -189,6 +245,6 @@ function extractLinks (html: string, from: string, res: Response, crawlLinks: bo
 
 const EXT_REGEX = /\.[\da-z]+$/;
 
-function getExtension (path: string): string {
+function getExtension(path: string): string {
   return (path.match(EXT_REGEX) || [])[0] || "";
 }

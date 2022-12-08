@@ -12,20 +12,22 @@ describe("nitro:preset:aws-lambda", async () => {
     return async ({ url: rawRelativeUrl, headers, method, body }) => {
       // creating new URL object to parse query easier
       const url = new URL(`https://example.com${rawRelativeUrl}`);
-      const queryStringParameters = Object.fromEntries(url.searchParams.entries());
+      const queryStringParameters = Object.fromEntries(
+        url.searchParams.entries()
+      );
       const event: Partial<APIGatewayProxyEvent> = {
         resource: "/my/path",
         path: url.pathname,
         headers: headers || {},
         httpMethod: method || "GET",
         queryStringParameters,
-        body: body || ""
+        body: body || "",
       };
       const res = await handler(event);
       return {
         data: destr(res.body),
         status: res.statusCode,
-        headers: res.headers
+        headers: res.headers,
       };
     };
   });
@@ -35,27 +37,34 @@ describe("nitro:preset:aws-lambda", async () => {
     return async ({ url: rawRelativeUrl, headers, method, body }) => {
       // creating new URL object to parse query easier
       const url = new URL(`https://example.com${rawRelativeUrl}`);
-      const queryStringParameters = Object.fromEntries(url.searchParams.entries());
+      const queryStringParameters = Object.fromEntries(
+        url.searchParams.entries()
+      );
       const event: Partial<APIGatewayProxyEventV2> = {
         rawPath: url.pathname,
         headers: headers || {},
         requestContext: {
-          ...Object.fromEntries([["accountId"], ["apiId"], ["domainName"], ["domainPrefix"]]),
+          ...Object.fromEntries([
+            ["accountId"],
+            ["apiId"],
+            ["domainName"],
+            ["domainPrefix"],
+          ]),
           http: {
             path: url.pathname,
             protocol: "http",
             ...Object.fromEntries([["userAgent"], ["sourceIp"]]),
-            method: method || "GET"
-          }
+            method: method || "GET",
+          },
         },
         queryStringParameters,
-        body: body || ""
+        body: body || "",
       };
       const res = await handler(event);
       return {
         data: destr(res.body),
         status: res.statusCode,
-        headers: res.headers
+        headers: res.headers,
       };
     };
   });

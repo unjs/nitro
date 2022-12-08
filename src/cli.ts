@@ -7,7 +7,7 @@ import { build, prepare, copyPublicAssets } from "./build";
 import { prerender } from "./prerender";
 import { createDevServer } from "./dev/server";
 
-async function main () {
+async function main() {
   const args = mri(process.argv.slice(2));
   const command = args._[0];
   const rootDir = resolve(args._[1] || ".");
@@ -16,7 +16,7 @@ async function main () {
     const nitro = await createNitro({
       rootDir,
       dev: true,
-      preset: "nitro-dev"
+      preset: "nitro-dev",
     });
     const server = createDevServer(nitro);
     await server.listen({});
@@ -28,7 +28,7 @@ async function main () {
   if (command === "build") {
     const nitro = await createNitro({
       rootDir,
-      dev: false
+      dev: false,
     });
     await prepare(nitro);
     await copyPublicAssets(nitro);

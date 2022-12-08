@@ -5,17 +5,20 @@ import { snakeCase } from "scule";
 const _runtimeConfig = process.env.RUNTIME_CONFIG as any;
 
 const ENV_PREFIX = "NITRO_";
-const ENV_PREFIX_ALT = _runtimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_";
+const ENV_PREFIX_ALT =
+  _runtimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_";
 
 // Allow override from process.env and deserialize
 const getEnv = (key: string) => {
   const envKey = snakeCase(key).toUpperCase();
-  return destr(process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey]);
+  return destr(
+    process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey]
+  );
 };
-function isObject (input: unknown) {
+function isObject(input: unknown) {
   return typeof input === "object" && !Array.isArray(input);
 }
-function overrideConfig (obj: object, parentKey: string = "") {
+function overrideConfig(obj: object, parentKey: string = "") {
   for (const key in obj) {
     const subKey = parentKey ? `${parentKey}_${key}` : key;
     const envValue = getEnv(subKey);
@@ -37,7 +40,7 @@ export const useRuntimeConfig = () => config;
 export default config;
 
 // Utils
-function deepFreeze (object: Record<string, any>) {
+function deepFreeze(object: Record<string, any>) {
   const propNames = Object.getOwnPropertyNames(object);
   for (const name of propNames) {
     const value = object[name];

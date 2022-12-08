@@ -18,7 +18,7 @@ import { runtimeDir } from "./dirs";
 import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
 
-export async function prepare (nitro: Nitro) {
+export async function prepare(nitro: Nitro) {
   await prepareDir(nitro.options.output.dir);
   if (!nitro.options.noPublicDir) {
     await prepareDir(nitro.options.output.publicDir);
@@ -26,60 +26,73 @@ export async function prepare (nitro: Nitro) {
   await prepareDir(nitro.options.output.serverDir);
 }
 
-async function prepareDir (dir: string) {
+async function prepareDir(dir: string) {
   await fsp.mkdir(dir, { recursive: true });
   await fse.emptyDir(dir);
 }
 
-export async function copyPublicAssets (nitro: Nitro) {
-  if (nitro.options.noPublicDir) { return; }
+export async function copyPublicAssets(nitro: Nitro) {
+  if (nitro.options.noPublicDir) {
+    return;
+  }
   for (const asset of nitro.options.publicAssets) {
     if (await isDirectory(asset.dir)) {
-      await fse.copy(asset.dir, join(nitro.options.output.publicDir, asset.baseURL!));
+      await fse.copy(
+        asset.dir,
+        join(nitro.options.output.publicDir, asset.baseURL!)
+      );
     }
   }
   if (nitro.options.compressPublicAssets) {
     await compressPublicAssets(nitro);
   }
-  nitro.logger.success("Generated public " + prettyPath(nitro.options.output.publicDir));
+  nitro.logger.success(
+    "Generated public " + prettyPath(nitro.options.output.publicDir)
+  );
 }
 
-export async function build (nitro: Nitro) {
+export async function build(nitro: Nitro) {
   const rollupConfig = getRollupConfig(nitro);
   await nitro.hooks.callHook("rollup:before", nitro);
-  return nitro.options.dev ? _watch(nitro, rollupConfig) : _build(nitro, rollupConfig);
+  return nitro.options.dev
+    ? _watch(nitro, rollupConfig)
+    : _build(nitro, rollupConfig);
 }
 
-export async function writeTypes (nitro: Nitro) {
+export async function writeTypes(nitro: Nitro) {
   const routeTypes: Record<string, string[]> = {};
 
-  const middleware = [
-    ...nitro.scannedHandlers,
-    ...nitro.options.handlers
-  ];
+  const middleware = [...nitro.scannedHandlers, ...nitro.options.handlers];
 
   for (const mw of middleware) {
-    if (typeof mw.handler !== "string" || !mw.route) { continue; }
-    const relativePath = relative(join(nitro.options.buildDir, "types"), mw.handler).replace(/\.[a-z]+$/, "");
+    if (typeof mw.handler !== "string" || !mw.route) {
+      continue;
+    }
+    const relativePath = relative(
+      join(nitro.options.buildDir, "types"),
+      mw.handler
+    ).replace(/\.[a-z]+$/, "");
     routeTypes[mw.route] = routeTypes[mw.route] || [];
-    routeTypes[mw.route].push(`Awaited<ReturnType<typeof import('${relativePath}').default>>`);
+    routeTypes[mw.route].push(
+      `Awaited<ReturnType<typeof import('${relativePath}').default>>`
+    );
   }
 
   let autoImportedTypes: string[] = [];
 
   if (nitro.unimport) {
     autoImportedTypes = [
-      (await nitro.unimport
-        .generateTypeDeclarations({
+      (
+        await nitro.unimport.generateTypeDeclarations({
           exportHelper: false,
           resolvePath: (i) => {
             if (i.from.startsWith("#internal/nitro")) {
               return resolveAlias(i.from, nitro.options.alias);
             }
             return i.from;
-          }
-        }))
-        .trim()
+          },
+        })
+      ).trim(),
     ];
   }
 
@@ -88,15 +101,20 @@ export async function writeTypes (nitro: Nitro) {
     "declare module 'nitropack' {",
     "  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T",
     "  interface InternalApi {",
-    ...Object.entries(routeTypes).map(([path, types]) => `    '${path}': ${types.join(" | ")}`),
+    ...Object.entries(routeTypes).map(
+      ([path, types]) => `    '${path}': ${types.join(" | ")}`
+    ),
     "  }",
     "}",
     ...autoImportedTypes,
     // Makes this a module for augmentation purposes
-    "export {}"
+    "export {}",
   ];
 
-  await writeFile(join(nitro.options.buildDir, "types/nitro.d.ts"), lines.join("\n"));
+  await writeFile(
+    join(nitro.options.buildDir, "types/nitro.d.ts"),
+    lines.join("\n")
+  );
 
   if (nitro.options.typescript.generateTsConfig) {
     const tsConfig: TSConfig = {
@@ -108,27 +126,43 @@ export async function writeTypes (nitro: Nitro) {
         resolveJsonModule: true,
         paths: nitro.options.typescript.internalPaths
           ? {
-              "#internal/nitro": [
-                join(runtimeDir, "index")
-              ],
-              "#internal/nitro/*": [
-                join(runtimeDir, "*")
-              ]
+              "#internal/nitro": [join(runtimeDir, "index")],
+              "#internal/nitro/*": [join(runtimeDir, "*")],
             }
-          : {}
+          : {},
       },
       include: [
         "./nitro.d.ts",
-        join(relative(join(nitro.options.buildDir, "types"), nitro.options.rootDir), "**/*"),
-        ...nitro.options.srcDir !== nitro.options.rootDir ? [join(relative(join(nitro.options.buildDir, "types"), nitro.options.srcDir), "**/*")] : []
-      ]
+        join(
+          relative(
+            join(nitro.options.buildDir, "types"),
+            nitro.options.rootDir
+          ),
+          "**/*"
+        ),
+        ...(nitro.options.srcDir !== nitro.options.rootDir
+          ? [
+              join(
+                relative(
+                  join(nitro.options.buildDir, "types"),
+                  nitro.options.srcDir
+                ),
+                "**/*"
+              ),
+            ]
+          : []),
+      ],
     };
-    await writeFile(join(nitro.options.buildDir, "types/tsconfig.json"), JSON.stringify(tsConfig, null, 2));
+    await writeFile(
+      join(nitro.options.buildDir, "types/tsconfig.json"),
+      JSON.stringify(tsConfig, null, 2)
+    );
   }
 }
 
-async function _snapshot (nitro: Nitro) {
-  if (nitro.options.bundledStorage.length === 0 ||
+async function _snapshot(nitro: Nitro) {
+  if (
+    nitro.options.bundledStorage.length === 0 ||
     nitro.options.preset === "nitro-prerender"
   ) {
     return;
@@ -137,24 +171,30 @@ async function _snapshot (nitro: Nitro) {
   const storageDir = resolve(nitro.options.buildDir, "snapshot");
   nitro.options.serverAssets.push({
     baseName: "nitro:bundled",
-    dir: storageDir
+    dir: storageDir,
   });
 
   const data = await snapshotStorage(nitro);
-  await Promise.all(Object.entries(data).map(async ([path, contents]) => {
-    if (typeof contents !== "string") { contents = JSON.stringify(contents); }
-    const fsPath = join(storageDir, path.replace(/:/g, "/"));
-    await fsp.mkdir(dirname(fsPath), { recursive: true });
-    await fsp.writeFile(fsPath, contents, "utf8");
-  }));
+  await Promise.all(
+    Object.entries(data).map(async ([path, contents]) => {
+      if (typeof contents !== "string") {
+        contents = JSON.stringify(contents);
+      }
+      const fsPath = join(storageDir, path.replace(/:/g, "/"));
+      await fsp.mkdir(dirname(fsPath), { recursive: true });
+      await fsp.writeFile(fsPath, contents, "utf8");
+    })
+  );
 }
 
-async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
+async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   await scanHandlers(nitro);
   await writeTypes(nitro);
   await _snapshot(nitro);
 
-  nitro.logger.info(`Building Nitro Server (preset: \`${nitro.options.preset}\`)`);
+  nitro.logger.info(
+    `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
+  );
   const build = await rollup.rollup(rollupConfig).catch((error) => {
     nitro.logger.error(formatRollupError(error));
     throw error;
@@ -169,8 +209,8 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
     preset: nitro.options.preset,
     commands: {
       preview: nitro.options.commands.preview,
-      deploy: nitro.options.commands.deploy
-    }
+      deploy: nitro.options.commands.deploy,
+    },
   };
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
 
@@ -186,19 +226,29 @@ async function _build (nitro: Nitro, rollupConfig: RollupConfig) {
     return input.replace(/\s\.\/(\S*)/g, ` ${rOutput}/$1`);
   };
   if (buildInfo.commands.preview) {
-    nitro.logger.success(`You can preview this build using \`${rewriteRelativePaths(buildInfo.commands.preview)}\``);
+    nitro.logger.success(
+      `You can preview this build using \`${rewriteRelativePaths(
+        buildInfo.commands.preview
+      )}\``
+    );
   }
   if (buildInfo.commands.deploy) {
-    nitro.logger.success(`You can deploy this build using \`${rewriteRelativePaths(buildInfo.commands.deploy)}\``);
+    nitro.logger.success(
+      `You can deploy this build using \`${rewriteRelativePaths(
+        buildInfo.commands.deploy
+      )}\``
+    );
   }
 }
 
-function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
-  const watcher = rollup.watch(defu(rollupConfig, {
-    watch: {
-      chokidar: nitro.options.watchOptions
-    }
-  }));
+function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
+  const watcher = rollup.watch(
+    defu(rollupConfig, {
+      watch: {
+        chokidar: nitro.options.watchOptions,
+      },
+    })
+  );
   let start: number;
 
   watcher.on("event", (event) => {
@@ -215,7 +265,10 @@ function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
       // Finished building all bundles
       case "END":
         nitro.hooks.callHook("compiled", nitro);
-        nitro.logger.success("Nitro built", start ? `in ${Date.now() - start} ms` : "");
+        nitro.logger.success(
+          "Nitro built",
+          start ? `in ${Date.now() - start} ms` : ""
+        );
         nitro.hooks.callHook("dev:reload");
         return;
 
@@ -227,28 +280,33 @@ function startRollupWatcher (nitro: Nitro, rollupConfig: RollupConfig) {
   return watcher;
 }
 
-async function _watch (nitro: Nitro, rollupConfig: RollupConfig) {
+async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
   let rollupWatcher: rollup.RollupWatcher;
 
   const reload = debounce(async () => {
-    if (rollupWatcher) { await rollupWatcher.close(); }
+    if (rollupWatcher) {
+      await rollupWatcher.close();
+    }
     await scanHandlers(nitro);
     rollupWatcher = startRollupWatcher(nitro, rollupConfig);
     await writeTypes(nitro);
   });
 
-  const watchPatterns = nitro.options.scanDirs.flatMap(dir => [
+  const watchPatterns = nitro.options.scanDirs.flatMap((dir) => [
     join(dir, "api"),
     join(dir, "routes"),
-    join(dir, "middleware", GLOB_SCAN_PATTERN)
+    join(dir, "middleware", GLOB_SCAN_PATTERN),
   ]);
 
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);
-  const reloadWacher = watch(watchPatterns, { ignoreInitial: true }).on("all", (event) => {
-    if (watchReloadEvents.has(event)) {
-      reload();
+  const reloadWacher = watch(watchPatterns, { ignoreInitial: true }).on(
+    "all",
+    (event) => {
+      if (watchReloadEvents.has(event)) {
+        reload();
+      }
     }
-  });
+  );
 
   nitro.hooks.hook("close", () => {
     rollupWatcher.close();
@@ -258,18 +316,24 @@ async function _watch (nitro: Nitro, rollupConfig: RollupConfig) {
   await reload();
 }
 
-function formatRollupError (_error: RollupError | OnResolveResult) {
+function formatRollupError(_error: RollupError | OnResolveResult) {
   try {
     const logs: string[] = [];
-    for (const error of ("errors" in _error ? _error.errors : [_error as RollupError])) {
+    for (const error of "errors" in _error
+      ? _error.errors
+      : [_error as RollupError]) {
       const id = (error as any).path || error.id || (_error as RollupError).id;
       let path = isAbsolute(id) ? relative(process.cwd(), id) : id;
-      const location = (error as RollupError).loc || (error as PartialMessage).location;
+      const location =
+        (error as RollupError).loc || (error as PartialMessage).location;
       if (location) {
         path += `:${location.line}:${location.column}`;
       }
-      const text = (error as PartialMessage).text || (error as RollupError).frame;
-      logs.push(`Rollup error while processing \`${path}\`` + text ? "\n\n" + text : "");
+      const text =
+        (error as PartialMessage).text || (error as RollupError).frame;
+      logs.push(
+        `Rollup error while processing \`${path}\`` + text ? "\n\n" + text : ""
+      );
     }
     return logs.join("\n\n");
   } catch {
