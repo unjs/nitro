@@ -1,4 +1,4 @@
-import fse from 'fs-extra'
+import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'pathe'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
@@ -26,7 +26,7 @@ async function writeRoutes (nitro: Nitro) {
 
   let nodeVersion = '16'
   try {
-    const currentNodeVersion = fse.readJSONSync(join(nitro.options.rootDir, 'package.json')).engines.node
+    const currentNodeVersion = JSON.parse(await readFile(join(nitro.options.rootDir, 'package.json'), 'utf8')).engines.node
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }

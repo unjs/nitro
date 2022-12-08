@@ -1,6 +1,7 @@
 import { createRequire } from 'module'
+import fsp from 'node:fs/promises'
+import { existsSync, readFileSync } from 'node:fs'
 import { relative, dirname, resolve } from 'pathe'
-import fse from 'fs-extra'
 import jiti from 'jiti'
 import consola from 'consola'
 import chalk from 'chalk'
@@ -38,8 +39,8 @@ export function tryImport (dir: string, path: string) {
 }
 
 export async function writeFile (file: string, contents: Buffer | string, log = false) {
-  await fse.mkdirp(dirname(file))
-  await fse.writeFile(file, contents, typeof contents === 'string' ? 'utf-8' : undefined)
+  await fsp.mkdir(dirname(file), { recursive: true })
+  await fsp.writeFile(file, contents, typeof contents === 'string' ? 'utf-8' : undefined)
   if (log) {
     consola.info('Generated', prettyPath(file))
   }
@@ -80,7 +81,7 @@ export function detectTarget () {
 
 export async function isDirectory (path: string) {
   try {
-    return (await fse.stat(path)).isDirectory()
+    return (await fsp.stat(path)).isDirectory()
   } catch (_err) {
     return false
   }
@@ -117,8 +118,8 @@ export function readPackageJson (
       const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(_require.resolve(packageName))
       for (const pkgModulePath of pkgModulePaths || []) {
         const path = resolve(pkgModulePath, packageName, 'package.json')
-        if (fse.existsSync(path)) {
-          return fse.readJSONSync(path)
+        if (existsSync(path)) {
+          return JSON.parse(readFileSync(path, 'utf8'))
         }
         continue
       }

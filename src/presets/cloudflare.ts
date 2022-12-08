@@ -1,5 +1,5 @@
 import { resolve } from 'pathe'
-import { move } from 'fs-extra'
+import fse from 'fs-extra'
 import { writeFile } from '../utils'
 import { defineNitroPreset } from '../preset'
 import type { Nitro } from '../types'
@@ -37,8 +37,8 @@ export const cloudflarePages = defineNitroPreset({
   },
   hooks: {
     async 'compiled' (nitro: Nitro) {
-      await move(resolve(nitro.options.output.serverDir, 'path.js'), resolve(nitro.options.output.serverDir, '[[path]].js'))
-      await move(resolve(nitro.options.output.serverDir, 'path.js.map'), resolve(nitro.options.output.serverDir, '[[path]].js.map'))
+      await fse.move(resolve(nitro.options.output.serverDir, 'path.js'), resolve(nitro.options.output.serverDir, '[[path]].js'))
+      await fse.move(resolve(nitro.options.output.serverDir, 'path.js.map'), resolve(nitro.options.output.serverDir, '[[path]].js.map'))
     }
   }
 })

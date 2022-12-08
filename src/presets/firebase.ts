@@ -1,6 +1,7 @@
 import { createRequire } from 'module'
+import { existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { join, relative, resolve } from 'pathe'
-import fse from 'fs-extra'
 import { globby } from 'globby'
 import { readPackageJSON } from 'pkg-types'
 import { writeFile } from '../utils'
@@ -20,7 +21,7 @@ export const firebase = defineNitroPreset({
 })
 
 async function writeRoutes (nitro: Nitro) {
-  if (!fse.existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
+  if (!existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
         source: relative(nitro.options.rootDir, nitro.options.output.serverDir)
@@ -57,7 +58,7 @@ async function writeRoutes (nitro: Nitro) {
 
   let nodeVersion = '14'
   try {
-    const currentNodeVersion = fse.readJSONSync(join(nitro.options.rootDir, 'package.json')).engines.node
+    const currentNodeVersion = JSON.parse(await readFile(join(nitro.options.rootDir, 'package.json'), 'utf8')).engines.node
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }

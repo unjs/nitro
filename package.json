@@ -65,7 +65,7 @@
     "esbuild": "^0.16.2",
     "escape-string-regexp": "^5.0.0",
     "etag": "^1.8.1",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.0",
     "globby": "^13.1.2",
     "gzip-size": "^7.0.0",
     "h3": "^1.0.1",
