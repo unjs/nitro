@@ -11,20 +11,22 @@ import type { Nitro } from "../src";
 const { createNitro, build, prepare, copyPublicAssets, prerender } =
   (_nitro as any as { default: typeof _nitro }).default || _nitro;
 
-interface Context {
+export interface Context {
   preset: string;
   nitro?: Nitro;
   rootDir: string;
   outDir: string;
   fetch: (url: string) => Promise<any>;
   server?: Listener;
+  isDev: boolean;
 }
 
-export async function setupTest(preset) {
+export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
 
   const ctx: Context = {
     preset,
+    isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, ".output", preset),
     fetch: (url) =>
@@ -33,8 +35,10 @@ export async function setupTest(preset) {
 
   const nitro = (ctx.nitro = await createNitro({
     preset: ctx.preset,
+    dev: ctx.isDev,
     rootDir: ctx.rootDir,
-    serveStatic: preset !== "cloudflare" && preset !== "vercel-edge",
+    serveStatic:
+      preset !== "cloudflare" && preset !== "vercel-edge" && !ctx.isDev,
     output: { dir: ctx.outDir },
     routeRules: {
       "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
@@ -53,10 +57,24 @@ export async function setupTest(preset) {
       "/rules/nested/override": { redirect: { to: "/other" } },
     },
   }));
-  await prepare(nitro);
-  await copyPublicAssets(nitro);
-  await prerender(nitro);
-  await build(nitro);
+
+  if (ctx.isDev) {
+    // Setup development server
+    const devServer = _nitro.createDevServer(ctx.nitro);
+    ctx.server = await devServer.listen({});
+    await prepare(ctx.nitro);
+    const ready = new Promise<void>((resolve) => {
+      ctx.nitro.hooks.hook("dev:reload", () => resolve());
+    });
+    await build(ctx.nitro);
+    await ready;
+  } else {
+    // Production build
+    await prepare(nitro);
+    await copyPublicAssets(nitro);
+    await prerender(nitro);
+    await build(nitro);
+  }
 
   afterAll(async () => {
     if (ctx.server) {
@@ -70,7 +88,7 @@ export async function setupTest(preset) {
   return ctx;
 }
 
-export async function startServer(ctx, handle) {
+export async function startServer(ctx: Context, handle) {
   ctx.server = await listen(handle);
   console.log(">", ctx.server!.url);
 }
@@ -84,7 +102,8 @@ type TestHandler = (options: any) => Promise<TestHandlerResult | Response>;
 
 export function testNitro(
   ctx: Context,
-  getHandler: () => TestHandler | Promise<TestHandler>
+  getHandler: () => TestHandler | Promise<TestHandler>,
+  additionalTests?: (ctx: Context, callHandler: TestHandler) => void
 ) {
   let _handler: TestHandler;
 
@@ -215,5 +234,9 @@ export function testNitro(
         subpathLib: "2.0.1",
       });
     });
+
+    if (additionalTests) {
+      additionalTests(ctx, callHandler);
+    }
   }
 }
