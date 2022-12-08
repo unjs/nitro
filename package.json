@@ -102,7 +102,7 @@
     "unstorage": "^1.0.1"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config-typescript": "^11.0.0",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@types/aws-lambda": "^8.10.109",
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^9.0.13",
