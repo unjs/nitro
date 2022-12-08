@@ -35,4 +35,3 @@ Examples:
 
 - [ ] I have linked an issue or discussion.
 - [ ] I have updated the documentation accordingly.
-

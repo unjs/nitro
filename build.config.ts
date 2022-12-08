@@ -1,22 +1,20 @@
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from "unbuild";
 
 export default defineBuildConfig({
   declaration: true,
-  name: 'nitro',
+  name: "nitro",
   entries: [
-    'src/index',
-    'src/cli',
-    { input: 'src/runtime/', outDir: 'dist/runtime', format: 'esm' }
+    "src/index",
+    "src/cli",
+    { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
   ],
   dependencies: [
-    '@cloudflare/kv-asset-handler',
-    '@netlify/functions',
-    '@nuxt/devalue',
-    'destr',
-    'ohmyfetch',
-    'ora'
+    "@cloudflare/kv-asset-handler",
+    "@netlify/functions",
+    "@nuxt/devalue",
+    "destr",
+    "ofetch",
+    "ora",
   ],
-  externals: [
-    '@nuxt/schema'
-  ]
-})
+  externals: ["@nuxt/schema"],
+});

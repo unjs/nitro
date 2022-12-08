@@ -1,50 +1,58 @@
-import { createError, eventHandler } from 'h3'
-import type { Nitro } from '../types'
+import { createError, eventHandler } from "h3";
+import type { Nitro } from "../types";
 
-export function createVFSHandler (nitro: Nitro) {
+export function createVFSHandler(nitro: Nitro) {
   return eventHandler(async (event) => {
     const vfsEntries = {
       ...nitro.vfs,
-      ...nitro.options.virtual
-    }
+      ...nitro.options.virtual,
+    };
 
     const items = Object.keys(vfsEntries)
       .map((key) => {
-        const linkClass = event.req.url === `/${encodeURIComponent(key)}` ? 'bg-gray-700 text-white' : 'hover:bg-gray-800 text-gray-200'
-        return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(key)}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(nitro.options.rootDir, '')}</a></li>`
+        const linkClass =
+          event.req.url === `/${encodeURIComponent(key)}`
+            ? "bg-gray-700 text-white"
+            : "hover:bg-gray-800 text-gray-200";
+        return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(
+          key
+        )}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(
+          nitro.options.rootDir,
+          ""
+        )}</a></li>`;
       })
-      .join('\n')
+      .join("\n");
     const files = `
       <div>
         <p class="bg-gray-700 text-white text-bold border-b border-gray-500 text-center">virtual files</p>
         <ul class="flex flex-col">${items}</ul>
       </div>
-      `
+      `;
 
-    const id = decodeURIComponent(event.req.url?.slice(1) || '')
+    const id = decodeURIComponent(event.req.url?.slice(1) || "");
 
-    let file = ''
+    let file = "";
     if (id in vfsEntries) {
-      let contents = vfsEntries[id]
-      if (typeof contents === 'function') {
-        contents = await contents()
+      let contents = vfsEntries[id];
+      if (typeof contents === "function") {
+        contents = await contents();
       }
       file = editorTemplate({
         readOnly: true,
-        language: id.endsWith('html') ? 'html' : 'javascript',
-        theme: 'vs-dark',
+        language: id.endsWith("html") ? "html" : "javascript",
+        theme: "vs-dark",
         value: contents,
-        wordWrap: 'wordWrapColumn',
-        wordWrapColumn: 80
-      })
+        wordWrap: "wordWrapColumn",
+        wordWrapColumn: 80,
+      });
     } else if (id) {
-      throw createError({ message: 'File not found', statusCode: 404 })
+      throw createError({ message: "File not found", statusCode: 404 });
     } else {
       file = `
         <div class="m-2">
           <h1 class="text-white">Select a virtual file to inspect</h1>
         </div>
-      `
+      `;
     }
     return `
 <!doctype html>
@@ -60,13 +68,13 @@ export function createVFSHandler (nitro: Nitro) {
     ${file}
   </div>
 </body>
-</html>`
-  })
+</html>`;
+  });
 }
 
-const monacoVersion = '0.30.0'
-const monacoUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${monacoVersion}/min`
-const vsUrl = `${monacoUrl}/vs`
+const monacoVersion = "0.30.0";
+const monacoUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${monacoVersion}/min`;
+const vsUrl = `${monacoUrl}/vs`;
 
 const editorTemplate = (options: Record<string, any>) => `
 <div id="editor" class="min-h-screen flex-1"></div>
@@ -81,7 +89,9 @@ const editorTemplate = (options: Record<string, any>) => `
   window.MonacoEnvironment = { getWorkerUrl: () => proxy }
 
   require(['vs/editor/editor.main'], function () {
-    monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(options)})
+    monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(
+      options
+    )})
   })
 </script>
-`
+`;

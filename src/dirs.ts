@@ -1,9 +1,9 @@
-import { fileURLToPath } from 'url'
-import { dirname, resolve } from 'pathe'
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "pathe";
 
-let distDir = dirname(fileURLToPath(import.meta.url))
+let distDir = dirname(fileURLToPath(import.meta.url));
 if (/(chunks|shared)$/.test(distDir)) {
-  distDir = dirname(distDir)
+  distDir = dirname(distDir);
 }
-export const pkgDir = resolve(distDir, '..')
-export const runtimeDir = resolve(distDir, 'runtime')
+export const pkgDir = resolve(distDir, "..");
+export const runtimeDir = resolve(distDir, "runtime");

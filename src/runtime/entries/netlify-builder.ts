@@ -1,4 +1,4 @@
-import { builder } from '@netlify/functions'
-import { handler as _handler } from '#internal/nitro/entries/aws-lambda'
+import { builder } from "@netlify/functions";
+import { handler as _handler } from "#internal/nitro/entries/aws-lambda";
 
-export const handler = builder(_handler)
+export const handler = builder(_handler);
