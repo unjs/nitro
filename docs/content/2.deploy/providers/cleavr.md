@@ -1,6 +1,6 @@
 ---
 title: Cleavr
-description: "Discover Cleavr preset for Nitro!"
+description: 'Discover Cleavr preset for Nitro!'
 ---
 
 ## Cleavr
@@ -26,7 +26,6 @@ export default {
   }
 }
 ```
-
 Push changes to your code repository.
 
 **In your Cleavr panel:**

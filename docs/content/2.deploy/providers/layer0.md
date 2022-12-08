@@ -1,6 +1,6 @@
 ---
 title: Layer0
-description: "Discover Layer0 preset for Nitro!"
+description: 'Discover Layer0 preset for Nitro!'
 ---
 
 **Preset:** `layer0` ([switch to this preset](/deploy/#changing-the-deployment-preset))

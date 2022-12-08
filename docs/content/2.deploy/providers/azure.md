@@ -1,6 +1,6 @@
 ---
 title: Azure
-description: "Discover Azure preset for Nitro!"
+description: 'Discover Azure preset for Nitro!'
 ---
 
 ## Azure Static Web Apps
@@ -30,10 +30,10 @@ When you link your GitHub repository to Azure Static Web Apps, a workflow file i
 
 When you are asked to select your framework, select custom and provide the following information:
 
-| Input               | Value            |
-| ------------------- | ---------------- |
-| **app_location**    | '/'              |
-| **api_location**    | '.output/server' |
+| Input | Value |
+| --- | --- |
+| **app_location** | '/' |
+| **api_location** | '.output/server' |
 | **output_location** | '.output/public' |
 
 If you miss this step, you can always find the build configuration section in your workflow and update the build configuration:
@@ -42,9 +42,9 @@ If you miss this step, you can always find the build configuration section in yo
 # .github/workflows/azure-static-web-apps-<RANDOM_NAME>.yml
 
 ###### Repository/Build Configurations ######
-app_location: "/"
-api_location: ".output/server"
-output_location: ".output/public"
+app_location: '/'
+api_location: '.output/server'
+output_location: '.output/public'
 ###### End of Repository/Build Configurations ######
 ```
 
@@ -104,8 +104,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        node: [14]
+        os: [ ubuntu-latest ]
+        node: [ 14 ]
     steps:
       - uses: actions/setup-node@v2
         with:
@@ -135,7 +135,7 @@ jobs:
         env:
           NITRO_PRESET: azure-functions
 
-      - name: "Deploy to Azure Functions"
+      - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         with:
           app-name: <your-app-name>

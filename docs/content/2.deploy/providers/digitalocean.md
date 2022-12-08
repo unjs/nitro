@@ -1,6 +1,6 @@
 ---
 title: DigitalOcean
-description: "Discover DigitalOcean preset for Nitro!"
+description: 'Discover DigitalOcean preset for Nitro!'
 ---
 
 **Preset:** `digital-ocean` ([switch to this preset](/deploy/#changing-the-deployment-preset))
@@ -23,9 +23,9 @@ Nitro supports deploying on the [Digital Ocean App Platform](https://docs.digita
 
    ```json
    {
-     "engines": {
-       "node": "16.x"
-     }
+      "engines": {
+         "node": "16.x"
+      }
    }
    ```
 

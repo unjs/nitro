@@ -1,11 +1,12 @@
 ---
 title: Cloudflare
-description: "Discover Cloudflare preset for Nitro!"
+description: 'Discover Cloudflare preset for Nitro!'
 ---
 
 ## Cloudflare Workers
 
 **Preset:** `cloudflare` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
 
 ::alert{type="info"}
 **Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
@@ -95,8 +96,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        node: [14]
+        os: [ ubuntu-latest ]
+        node: [ 14 ]
 
     steps:
       - uses: actions/setup-node@v1
@@ -126,6 +127,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
 ```
+
 
 ## Cloudflare Pages
 

@@ -1,6 +1,6 @@
 ---
 title: Vercel
-description: "Discover Vercel preset for Nitro!"
+description: 'Discover Vercel preset for Nitro!'
 ---
 
 **Preset:** `vercel` ([switch to this preset](/deploy/#changing-the-deployment-preset))
