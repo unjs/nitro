@@ -1,1 +1,1 @@
-export default defineEventHandler<'Default override'>(() => 'Default override')
+export default defineEventHandler<"Default override">(() => "Default override");

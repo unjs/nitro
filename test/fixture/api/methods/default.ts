@@ -1,1 +1,1 @@
-export default defineEventHandler<'Default route'>(() => 'Default route')
+export default defineEventHandler<"Default route">(() => "Default route");
