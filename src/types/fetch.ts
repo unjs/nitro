@@ -47,16 +47,4 @@ export interface $Fetch<
   ): $Fetch<T, R>;
 }
 
-declare global {
-  // eslint-disable-next-line no-var, no-unused-vars
-  var $fetch: $Fetch;
-  // eslint-disable-next-line no-unused-vars
-  namespace NodeJS {
-    // eslint-disable-next-line no-unused-vars
-    interface Global {
-      $fetch: $Fetch;
-    }
-  }
-}
-
 export {};
