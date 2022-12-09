@@ -3,10 +3,21 @@ import { relative, resolve, join, dirname, isAbsolute } from "pathe";
 import { resolveAlias } from "pathe/utils";
 import * as rollup from "rollup";
 import fse from "fs-extra";
+import { defu } from "defu";
+import { watch } from "chokidar";
+import { debounce } from "perfect-debounce";
 import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
+import { printFSTree } from "./utils/tree";
+import { getRollupConfig, RollupConfig } from "./rollup/config";
+import { prettyPath, writeFile, isDirectory } from "./utils";
+import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
+import type { Nitro } from "./types";
+import { runtimeDir } from "./dirs";
+import { snapshotStorage } from "./storage";
+import { compressPublicAssets } from "./compress";
 
 export async function prepare(nitro: Nitro) {
   await prepareDir(nitro.options.output.dir);
