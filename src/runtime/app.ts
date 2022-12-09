@@ -30,9 +30,9 @@ export interface NitroApp {
   localFetch: ReturnType<typeof createLocalFetch>;
 }
 
-function createNitroApp(): NitroApp {
-  const config = useRuntimeConfig();
+const config = useRuntimeConfig();
 
+function createNitroApp(): NitroApp {
   const hooks = createHooks();
 
   const h3App = createApp({
@@ -73,14 +73,6 @@ function createNitroApp(): NitroApp {
   const localCall = createCall(toNodeListener(h3App) as any);
   const localFetch = createLocalFetch(localCall, globalThis.fetch);
 
-  const $fetch = createFetch({
-    fetch: localFetch,
-    Headers,
-    defaults: { baseURL: config.app.baseURL },
-  });
-  // @ts-ignore
-  globalThis.$fetch = $fetch;
-
   const app: NitroApp = {
     hooks,
     h3App,
@@ -97,5 +89,11 @@ function createNitroApp(): NitroApp {
 }
 
 export const nitroApp: NitroApp = createNitroApp();
+
+export const $fetch = createFetch({
+  fetch: nitroApp.localFetch,
+  Headers,
+  defaults: { baseURL: config.app.baseURL },
+});
 
 export const useNitroApp = () => nitroApp;

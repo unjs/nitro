@@ -46,6 +46,12 @@ const NitroDefaults: NitroConfig = {
   imports: {
     exclude: [/[/\\]node_modules[/\\]/, /[/\\]\.git[/\\]/],
     presets: nitroImports,
+    imports: [
+      {
+        from: "#internal/nitro/app",
+        name: "$fetch",
+      },
+    ],
   },
   virtual: {},
   compressPublicAssets: false,
