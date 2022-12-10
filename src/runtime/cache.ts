@@ -21,6 +21,7 @@ export interface CacheOptions<T = any> {
   getKey?: (...args: any[]) => string;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   validate?: (entry: CacheEntry<T>) => boolean;
+  refresh?: () => boolean;
   group?: string;
   integrity?: any;
   maxAge?: number;
@@ -69,6 +70,7 @@ export function defineCachedFunction<T = any>(
     }
 
     const expired =
+      opts.refresh?.() ||
       entry.integrity !== integrity ||
       (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
       !validate(entry);
