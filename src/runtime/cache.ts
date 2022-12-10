@@ -21,7 +21,7 @@ export interface CacheOptions<T = any> {
   getKey?: (...args: any[]) => string;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   validate?: (entry: CacheEntry<T>) => boolean;
-  refresh?: () => boolean;
+  refresh?: (...args: any[]) => boolean;
   group?: string;
   integrity?: any;
   maxAge?: number;
@@ -54,7 +54,8 @@ export function defineCachedFunction<T = any>(
 
   async function get(
     key: string,
-    resolver: () => T | Promise<T>
+    resolver: () => T | Promise<T>,
+    refresh?: boolean
   ): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
     const cacheKey = [opts.base, group, name, key + ".json"]
@@ -70,7 +71,7 @@ export function defineCachedFunction<T = any>(
     }
 
     const expired =
-      opts.refresh?.() ||
+      refresh ||
       entry.integrity !== integrity ||
       (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
       !validate(entry);
@@ -109,7 +110,8 @@ export function defineCachedFunction<T = any>(
 
   return async (...args) => {
     const key = (opts.getKey || getKey)(...args);
-    const entry = await get(key, () => fn(...args));
+    const refresh = opts.refresh?.(...args);
+    const entry = await get(key, () => fn(...args), refresh);
     let value = entry.value;
     if (opts.transform) {
       value = (await opts.transform(entry, ...args)) || value;
@@ -135,6 +137,7 @@ export interface CachedEventHandlerOptions<T = any>
     CacheOptions<ResponseCacheEntry<T>>,
     "getKey" | "transform" | "validate"
   > {
+  refresh?: (event: H3Event) => boolean;
   headersOnly?: boolean;
 }
 
