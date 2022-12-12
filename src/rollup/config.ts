@@ -97,7 +97,9 @@ export const getRollupConfig = (nitro: Nitro) => {
       exports: "auto",
       intro: "",
       outro: "",
-      preferConst: true,
+      generatedCode: {
+        constBindings: true,
+      },
       sanitizeFileName: sanitizeFilePath,
       sourcemap: nitro.options.sourceMap,
       sourcemapExcludeSources: true,
