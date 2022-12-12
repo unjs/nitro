@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import { dirname, join, normalize, relative, resolve } from "pathe";
-import type { InputOptions, OutputOptions } from "rollup";
+import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
 import { terser } from "rollup-plugin-terser";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
@@ -133,7 +133,9 @@ export const getRollupConfig = (nitro: Nitro) => {
   }
 
   if (nitro.options.imports) {
-    rollupConfig.plugins.push(unimportPlugin.rollup(nitro.options.imports));
+    rollupConfig.plugins.push(
+      unimportPlugin.rollup(nitro.options.imports) as Plugin
+    );
   }
 
   // Raw asset loader
