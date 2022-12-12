@@ -61,15 +61,16 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   type _RollupConfig = Omit<RollupConfig, "plugins"> & { plugins: Plugin[] };
 
-  const rollupConfig: _RollupConfig = defu(nitro.options.rollupConfig as any, {
+  const rollupConfig: _RollupConfig = defu(nitro.options.rollupConfig as any, <
+    _RollupConfig
+  >{
     input: nitro.options.entry,
     output: {
       dir: nitro.options.output.serverDir,
       entryFileNames: "index.mjs",
       chunkFileNames(chunkInfo) {
         let prefix = "";
-        const modules = Object.keys(chunkInfo.modules);
-        const lastModule = modules[modules.length - 1];
+        const lastModule = chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1];
         if (lastModule.startsWith(buildServerDir)) {
           prefix = join("app", relative(buildServerDir, dirname(lastModule)));
         } else if (lastModule.startsWith(runtimeAppDir)) {
