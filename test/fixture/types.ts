@@ -182,13 +182,13 @@ describe("API routes", () => {
       Promise<"Index post">
     >();
     expectTypeOf(
-      $fetch("/api/methods/default", { method: "get" })
+      $fetch("/api/methods/default", { method: "GET" })
     ).toMatchTypeOf<Promise<"Default route">>();
     expectTypeOf(
-      $fetch("/api/methods/default", { method: "put" })
+      $fetch("/api/methods/default", { method: "PUT" })
     ).toMatchTypeOf<Promise<"Default route">>();
     expectTypeOf(
-      $fetch("/api/methods/default", { method: "post" })
+      $fetch("/api/methods/default", { method: "POST" })
     ).toMatchTypeOf<Promise<"Default override">>();
   });
 });
