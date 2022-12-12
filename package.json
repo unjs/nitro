@@ -29,7 +29,7 @@
     "docs:build": "vitepress build docs",
     "docs:dev": "vitepress dev docs",
     "docs:serve": "vitepress serve docs",
-    "lint": "eslint --ext .ts,.mjs,.cjs . && prettier -c src test",
+    "lint": "eslint --ext .ts,.mjs,.cjs . && prettier -c src",
     "nitro": "jiti ./src/cli.ts",
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
