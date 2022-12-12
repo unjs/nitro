@@ -398,7 +398,8 @@ export const plugins = [
   // https://www.npmjs.com/package/@rollup/plugin-terser
   // https://github.com/terser/terser#minify-options
   if (nitro.options.minify) {
-    const { terser } = createRequire(import.meta.url)("rollup-plugin-terser");
+    const _terser = createRequire(import.meta.url)("@rollup/plugin-terser");
+    const terser = _terser.default || _terser;
     rollupConfig.plugins.push(
       terser({
         mangle: {
