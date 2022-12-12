@@ -80,9 +80,10 @@ type DeepPartial<T> = T extends Record<string, any>
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
 export interface NitroConfig
-  extends DeepPartial<Omit<NitroOptions, "routeRules">> {
+  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">> {
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
+  rollupConfig?: RollupConfig;
 }
 
 export interface PublicAssetDir {
