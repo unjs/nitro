@@ -1,8 +1,9 @@
 import { pathToFileURL } from "node:url";
+import { createRequire } from "node:module";
 import { dirname, join, normalize, relative, resolve } from "pathe";
 import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
-import { terser } from "rollup-plugin-terser";
+// import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
@@ -58,15 +59,18 @@ export const getRollupConfig = (nitro: Nitro) => {
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
   const runtimeAppDir = join(runtimeDir, "app");
 
-  const rollupConfig = defu(nitro.options.rollupConfig, <RollupConfig>{
+  type _RollupConfig = Omit<RollupConfig, "plugins"> & { plugins: Plugin[] };
+
+  const rollupConfig: _RollupConfig = defu(nitro.options.rollupConfig as any, <
+    _RollupConfig
+  >{
     input: nitro.options.entry,
     output: {
       dir: nitro.options.output.serverDir,
       entryFileNames: "index.mjs",
       chunkFileNames(chunkInfo) {
         let prefix = "";
-        const modules = Object.keys(chunkInfo.modules);
-        const lastModule = modules[modules.length - 1];
+        const lastModule = chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1];
         if (lastModule.startsWith(buildServerDir)) {
           prefix = join("app", relative(buildServerDir, dirname(lastModule)));
         } else if (lastModule.startsWith(runtimeAppDir)) {
@@ -96,7 +100,9 @@ export const getRollupConfig = (nitro: Nitro) => {
       exports: "auto",
       intro: "",
       outro: "",
-      preferConst: true,
+      generatedCode: {
+        constBindings: true,
+      },
       sanitizeFileName: sanitizeFilePath,
       sourcemap: nitro.options.sourceMap,
       sourcemapExcludeSources: true,
@@ -389,9 +395,11 @@ export const plugins = [
   // https://github.com/rollup/plugins/tree/master/packages/inject
   rollupConfig.plugins.push(inject(env.inject));
 
-  // https://github.com/TrySound/rollup-plugin-terser
-  // https://github.com/terser/terser#minify-Nitro
+  // https://www.npmjs.com/package/@rollup/plugin-terser
+  // https://github.com/terser/terser#minify-options
   if (nitro.options.minify) {
+    const _terser = createRequire(import.meta.url)("@rollup/plugin-terser");
+    const terser = _terser.default || _terser;
     rollupConfig.plugins.push(
       terser({
         mangle: {
