@@ -47,7 +47,7 @@ Server runtime configuration.
 
 - Default: `{}`
 
-Enable experimental features. Currently, non are available!
+Enable experimental features. Currently, none are available!
 
 ## `storage`
 
@@ -72,6 +72,12 @@ Path to main render (file should export an event handler as default)
 Serve `public/` assets in production.
 
 **Note:** It is highly recommended that your edge CDN (nginx, apache, cloud) serves the `public/` directory instead.
+
+## `noPublicDir`
+
+- Default: `false`
+
+If enabled, disabled `.output/public` directory creation. Skipping to copy `public/` dir and also disables prerenderer.
 
 ## `publicAssets`
 
@@ -140,6 +146,23 @@ There are situations in that we directly want to provide a handler instance with
 
 We can use `devHandlers` but note that they are **only available in development mode** and **not in production build**.
 
+## `devProxy`
+
+Proxy configuration for development server.
+
+You can use this option to override development server routes and proxy-pass requests.
+
+```js
+{
+  devProxy: {
+    '/proxy/test': 'http://localhost:3001',
+    '/proxy/example': { target: 'https://example.com', changeOrigin: true }
+  }
+}
+```
+
+See [https://github.com/http-party/node-http-proxy#options](https://github.com/http-party/node-http-proxy#options) for all available target options.
+
 ## `errorHandler`
 
 Path to a custom runtime error handler. Replacing nitro's built-in error page.
@@ -162,18 +185,24 @@ export default <NitroErrorHandler> function (error, event) {
 }
 ```
 
-## `routes`
+## `routeRules`
 
 **🧪 Experimental!**
 
-Route options. It is a map from route pattern (following [unjs/radix3](https://github.com/unjs/radix3)) to options.
+Route options. It is a map from route pattern (following [unjs/radix3](https://github.com/unjs/radix3#route-matcher)) to route options.
 
-Example:
+When `cache` option is set, handlers matching pattern will be automatically wrapped with `defineCachedEventHandler`. See [Cache API](/guide/introduction/cache) for all available cache options. (`swr: true|number` is shortcut for `cache: { swr: true, maxAge: number }`.)
+
+
+**Example:**
 
 ```js
 {
-  routes: {
+  routeRules: {
     '/blog/**': { swr: true },
+    '/blog/**': { swr: 600 },
+    '/blog/**': { static: true },
+    '/blog/**': { cache: { /* cache options*/ } },
     '/assets/**': { headers: { 'cache-control': 's-maxage=0' } },
     '/api/v1/**': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
     '/old-page': { redirect: '/new-page' }

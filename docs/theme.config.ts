@@ -27,7 +27,7 @@ export default defineTheme({
   footer: {
     credits: {
       icon: '',
-      text: 'Made by 💛',
+      text: 'Made with 💛',
       href: 'https://github.com/unjs/nitro'
     },
     icons: []

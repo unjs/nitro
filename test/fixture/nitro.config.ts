@@ -1,4 +1,4 @@
-import { defineNitroConfig } from '../../src'
+import { defineNitroConfig } from "../../src";
 
 export default defineNitroConfig({
   compressPublicAssets: true,
@@ -6,33 +6,30 @@ export default defineNitroConfig({
     presets: [
       {
         // TODO: move this to built-in preset
-        from: 'scule',
-        imports: [
-          'camelCase',
-          'pascalCase',
-          'kebabCase'
-        ]
-      }
-    ]
+        from: "scule",
+        imports: ["camelCase", "pascalCase", "kebabCase"],
+      },
+    ],
+  },
+  devProxy: {
+    "/proxy/example": { target: "https://example.com", changeOrigin: true },
   },
   publicAssets: [
     {
-      baseURL: 'build',
-      dir: 'public/build'
-    }
+      baseURL: "build",
+      dir: "public/build",
+    },
   ],
-  nodeModulesDirs: [
-    './_/node_modules'
-  ],
+  nodeModulesDirs: ["./_/node_modules"],
+  routeRules: {
+    "/api/param/prerender4": { prerender: true },
+    "/api/param/prerender2": { prerender: false },
+  },
   prerender: {
     crawlLinks: true,
     ignore: [
       // '/api/param/'
     ],
-    routes: [
-      '/prerender',
-      '/icon.png',
-      '/404'
-    ]
-  }
-})
+    routes: ["/prerender", "/icon.png", "/404"],
+  },
+});

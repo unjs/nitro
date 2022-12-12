@@ -1,3 +1,3 @@
-import type { NitroAppPlugin } from '../plugin'
+import type { NitroAppPlugin } from "../plugin";
 
-export const plugins: NitroAppPlugin[] = []
+export const plugins: NitroAppPlugin[] = [];

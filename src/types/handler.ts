@@ -1,4 +1,4 @@
-import type { Handler, EventHandler, CompatibilityEvent, H3Error } from 'h3'
+import type { EventHandler, H3Event, H3Error } from "h3";
 
 export interface NitroEventHandler {
   /**
@@ -6,42 +6,45 @@ export interface NitroEventHandler {
    *
    * If an empty string used, will be used as a middleware
    */
-  route?: string
+  route?: string;
 
   /**
    * Specifies this is a middleware handler.
    * Middleware are called on every route and should normally return nothing to pass to the next handlers
    */
-  middleware?: boolean
+  middleware?: boolean;
 
   /**
    * Use lazy loading to import handler
    */
-  lazy?: boolean
+  lazy?: boolean;
 
   /**
    * Path to event handler
    *
    */
-  handler: string
+  handler: string;
 
   /**
    * Router method matcher
    */
-  method?: string
+  method?: string;
 }
 
 export interface NitroDevEventHandler {
   /**
    * Path prefix or route
    */
-  route?: string
+  route?: string;
 
   /**
    * Event handler
    *
    */
-  handler: Handler | EventHandler
+  handler: EventHandler;
 }
 
-export type NitroErrorHandler = (error: H3Error, event: CompatibilityEvent) => void | Promise<void>
+export type NitroErrorHandler = (
+  error: H3Error,
+  event: H3Event
+) => void | Promise<void>;

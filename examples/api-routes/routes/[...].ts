@@ -1,5 +1,3 @@
-import { defineEventHandler } from 'h3'
-
 export default defineEventHandler(() => {
   return `
 <h2>API Routes:</h2>
@@ -8,5 +6,5 @@ export default defineEventHandler(() => {
 <li><a href="/api/hello/world">/api/hello/world</a></li>
 <li><a href="/api/test">/api/test</a></li>
 </ul>
-`
-})
+`;
+});
