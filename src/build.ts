@@ -117,7 +117,7 @@ export async function writeTypes(nitro: Nitro) {
       [
         `    '${path}': {`,
         ...Object.entries(methods).map(
-          ([method, imports]) => `      '${method}': ${imports.join(" | ")}`
+          ([method, types]) => `      '${method}': ${types.join(" | ")}`
         ),
         "    }",
       ].join("\n")
