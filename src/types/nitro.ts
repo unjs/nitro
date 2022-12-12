@@ -83,7 +83,7 @@ export interface NitroConfig
   extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">> {
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
-  rollupConfig?: RollupConfig;
+  rollupConfig?: Partial<RollupConfig>;
 }
 
 export interface PublicAssetDir {
