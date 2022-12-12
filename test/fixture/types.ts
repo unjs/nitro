@@ -1,6 +1,6 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
-import { $Fetch, InternalApi } from "../..";
+import { $Fetch } from "../..";
 
 interface TestResponse {
   message: string;
@@ -13,9 +13,7 @@ describe("API routes", () => {
   const dynamicString: string = "";
 
   it("generates types for middleware, unknown and manual typed routes", () => {
-    expectTypeOf($fetch("/")).toMatchTypeOf<
-      Promise<InternalApi[keyof InternalApi]>
-    >(); // middleware
+    expectTypeOf($fetch("/")).toMatchTypeOf<Promise<unknown>>(); // middleware
     expectTypeOf($fetch("/api/unknown")).toEqualTypeOf<Promise<unknown>>();
     expectTypeOf($fetch<TestResponse>("/test")).toEqualTypeOf<
       Promise<TestResponse>
@@ -174,5 +172,23 @@ describe("API routes", () => {
     expectTypeOf($fetch("/api/typed/catchall/some/foo/bar/baz")).toEqualTypeOf<
       Promise<{ internalApiKey: "/api/typed/catchall/some/**:test" }>
     >();
+  });
+
+  it("generates the correct type depending on the method used", () => {
+    expectTypeOf($fetch("/api/methods", { method: "get" })).toMatchTypeOf<
+      Promise<"Index get">
+    >();
+    expectTypeOf($fetch("/api/methods", { method: "post" })).toMatchTypeOf<
+      Promise<"Index post">
+    >();
+    expectTypeOf(
+      $fetch("/api/methods/default", { method: "get" })
+    ).toMatchTypeOf<Promise<"Default route">>();
+    expectTypeOf(
+      $fetch("/api/methods/default", { method: "put" })
+    ).toMatchTypeOf<Promise<"Default route">>();
+    expectTypeOf(
+      $fetch("/api/methods/default", { method: "post" })
+    ).toMatchTypeOf<Promise<"Default override">>();
   });
 });

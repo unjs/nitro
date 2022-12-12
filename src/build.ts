@@ -9,6 +9,7 @@ import { debounce } from "perfect-debounce";
 import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
+import type { RouterMethod } from "h3";
 import { printFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
@@ -60,7 +61,10 @@ export async function build(nitro: Nitro) {
 }
 
 export async function writeTypes(nitro: Nitro) {
-  const routeTypes: Record<string, string[]> = {};
+  const routeTypes: Record<
+    string,
+    Partial<Record<RouterMethod | "default", string[]>>
+  > = {};
 
   const middleware = [...nitro.scannedHandlers, ...nitro.options.handlers];
 
@@ -72,8 +76,16 @@ export async function writeTypes(nitro: Nitro) {
       join(nitro.options.buildDir, "types"),
       mw.handler
     ).replace(/\.[a-z]+$/, "");
-    routeTypes[mw.route] = routeTypes[mw.route] || [];
-    routeTypes[mw.route].push(
+
+    if (!routeTypes[mw.route]) {
+      routeTypes[mw.route] = {};
+    }
+
+    const method = mw.method || "default";
+    if (!routeTypes[mw.route][method]) {
+      routeTypes[mw.route][method] = [];
+    }
+    routeTypes[mw.route][method].push(
       `Awaited<ReturnType<typeof import('${relativePath}').default>>`
     );
   }
@@ -101,8 +113,14 @@ export async function writeTypes(nitro: Nitro) {
     "declare module 'nitropack' {",
     "  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T",
     "  interface InternalApi {",
-    ...Object.entries(routeTypes).map(
-      ([path, types]) => `    '${path}': ${types.join(" | ")}`
+    ...Object.entries(routeTypes).map(([path, methods]) =>
+      [
+        `    '${path}': {`,
+        ...Object.entries(methods).map(
+          ([method, types]) => `      '${method}': ${types.join(" | ")}`
+        ),
+        "    }",
+      ].join("\n")
     ),
     "  }",
     "}",

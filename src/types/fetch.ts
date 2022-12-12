@@ -1,3 +1,4 @@
+import type { RouterMethod } from "h3";
 import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
 import type { MatchedRoutes } from "./utils";
 
@@ -9,39 +10,82 @@ export type NitroFetchRequest =
   | Exclude<FetchRequest, string>
   | (string & {});
 
-export type MiddlewareOf<Route extends string> = Exclude<
-  InternalApi[MatchedRoutes<Route>],
-  Error | void
->;
+export type MiddlewareOf<
+  Route extends string,
+  Method extends RouterMethod | "default"
+> = Method extends keyof InternalApi[MatchedRoutes<Route>]
+  ? Exclude<InternalApi[MatchedRoutes<Route>][Method], Error | void>
+  : never;
 
-export type TypedInternalResponse<Route, Default = unknown> = Default extends
-  | string
-  | boolean
-  | number
-  | null
-  | void
-  | object
+export type TypedInternalResponse<
+  Route,
+  Default = unknown,
+  Method extends RouterMethod = RouterMethod
+> = Default extends string | boolean | number | null | void | object
   ? // Allow user overrides
     Default
   : Route extends string
-  ? MiddlewareOf<Route> extends never
-    ? // Bail if only types are Error or void (for example, from middleware)
-      Default
-    : MiddlewareOf<Route>
+  ? MiddlewareOf<Route, Method> extends never
+    ? MiddlewareOf<Route, "default"> extends never
+      ? // Bail if only types are Error or void (for example, from middleware)
+        Default
+      : MiddlewareOf<Route, "default">
+    : MiddlewareOf<Route, Method>
   : Default;
+
+// Extracts the available http methods based on the route.
+// Defaults to all methods if there aren't any methods available or if there is a catch-all route.
+export type AvailableRouterMethod<R extends NitroFetchRequest> =
+  R extends string
+    ? keyof InternalApi[MatchedRoutes<R>] extends undefined
+      ? RouterMethod
+      : Extract<
+          keyof InternalApi[MatchedRoutes<R>],
+          "default"
+        > extends undefined
+      ? Extract<RouterMethod, keyof InternalApi[MatchedRoutes<R>]>
+      : RouterMethod
+    : RouterMethod;
+
+// Argumented fetch options to include the correct request methods.
+// This overrides the default, which is only narrowed to a string.
+export interface NitroFetchOptions<R extends NitroFetchRequest>
+  extends FetchOptions {
+  method?: AvailableRouterMethod<R>;
+}
+
+// Extract the route method from options which might be undefined or without a method parameter.
+export type ExtractedRouteMethod<
+  R extends NitroFetchRequest,
+  O extends NitroFetchOptions<R>
+> = O extends undefined
+  ? "get"
+  : O["method"] extends RouterMethod
+  ? O["method"]
+  : "get";
 
 export interface $Fetch<
   DefaultT = unknown,
   DefaultR extends NitroFetchRequest = NitroFetchRequest
 > {
-  <T = DefaultT, R extends NitroFetchRequest = DefaultR>(
+  <
+    T = DefaultT,
+    R extends NitroFetchRequest = DefaultR,
+    O extends NitroFetchOptions<R> = NitroFetchOptions<R>
+  >(
     request: R,
-    opts?: FetchOptions
-  ): Promise<TypedInternalResponse<R, T>>;
-  raw<T = DefaultT, R extends NitroFetchRequest = DefaultR>(
+    opts?: O
+  ): Promise<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>;
+  raw<
+    T = DefaultT,
+    R extends NitroFetchRequest = DefaultR,
+    O extends NitroFetchOptions<R> = NitroFetchOptions<R>
+  >(
     request: R,
-    opts?: FetchOptions
-  ): Promise<FetchResponse<TypedInternalResponse<R, T>>>;
+    opts?: O
+  ): Promise<
+    FetchResponse<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>
+  >;
   create<T = DefaultT, R extends NitroFetchRequest = DefaultR>(
     defaults: FetchOptions
   ): $Fetch<T, R>;
