@@ -130,6 +130,7 @@ export interface ResponseCacheEntry<T = any> {
 
 export interface CachedEventHandlerOptions<T = any>
   extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
+  getKey?: (event: H3Event) => string;
   headersOnly?: boolean;
 }
 
@@ -139,16 +140,16 @@ export function defineCachedEventHandler<T = any>(
 ): EventHandler<T> {
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
-    getKey:
-      opts.getKey ||
-      ((event) => {
-        const url = event.req.originalUrl || event.req.url;
-        const friendlyName = decodeURI(parseURL(url).pathname)
-          .replace(/[^\dA-Za-z]/g, "")
-          .slice(0, 16);
-        const urlHash = hash(url);
-        return `${friendlyName}.${urlHash}`;
-      }),
+    getKey: (event) => {
+      const key = opts.getKey?.(event)
+      if (key) { return key }
+      const url = event.req.originalUrl || event.req.url;
+      const friendlyName = decodeURI(parseURL(url).pathname)
+        .replace(/[^\dA-Za-z]/g, "")
+        .slice(0, 16);
+      const urlHash = hash(url);
+      return `${friendlyName}.${urlHash}`;
+    },
     validate: (entry) => {
       if (entry.value.code >= 400) {
         return false;
