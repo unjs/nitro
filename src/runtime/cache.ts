@@ -145,10 +145,15 @@ export function defineCachedEventHandler<T = any>(
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: (event) => {
-      const key = opts.getKey?.(event)
-      if (key) { return escapeKey(key) }
+      const key = opts.getKey?.(event);
+      if (key) {
+        return escapeKey(key);
+      }
       const url = event.req.originalUrl || event.req.url;
-      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(0, 16);
+      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
+        0,
+        16
+      );
       const urlHash = hash(url);
       return `${friendlyName}.${urlHash}`;
     },
