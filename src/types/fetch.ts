@@ -51,7 +51,7 @@ export type AvailableRouterMethod<R extends NitroFetchRequest> =
 // This overrides the default, which is only narrowed to a string.
 export interface NitroFetchOptions<R extends NitroFetchRequest>
   extends FetchOptions {
-  method?: AvailableRouterMethod<R>;
+  method?: Uppercase<AvailableRouterMethod<R>> | AvailableRouterMethod<R>;
 }
 
 // Extract the route method from options which might be undefined or without a method parameter.
@@ -60,8 +60,8 @@ export type ExtractedRouteMethod<
   O extends NitroFetchOptions<R>
 > = O extends undefined
   ? "get"
-  : O["method"] extends RouterMethod
-  ? O["method"]
+  : Lowercase<O["method"]> extends RouterMethod
+  ? Lowercase<O["method"]>
   : "get";
 
 export interface $Fetch<
