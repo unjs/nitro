@@ -201,6 +201,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const tracedPackages = new Map(); // name => pkgDir
       const ignoreDirs = [];
       const ignoreWarns = new Set();
+      const conflictingPackages = [];
       for (const file of tracedFiles) {
         const { baseDir, pkgName } = parseNodeModulePath(file);
         if (!pkgName) {
@@ -230,6 +231,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
               consola.warn(warn);
               ignoreWarns.add(warn);
             }
+            conflictingPackages.push(pkgName)
           }
 
           const [newerDir, olderDir] = isNewer
@@ -242,7 +244,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             );
           }
           // Exclude older version files
-          ignoreDirs.push(olderDir + "/");
+          // if (false) { // check nitro options to determain if pacakge needs to be excluded
+          //   ignoreDirs.push(olderDir + '/')
+          // }
           pkgDir = newerDir; // Update for tracedPackages
         }
 
@@ -269,8 +273,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           return;
         }
         const src = resolve(opts.traceOptions.base, file);
-        const { pkgName, subpath } = parseNodeModulePath(file);
-        const dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`);
+        const { pkgName, subpath, baseDir } = parseNodeModulePath(file)
+        const version = await getPackageJson(resolve(baseDir, pkgName)).then(r => r.version)
+        const fullName = conflictingPackages.includes(pkgName) ? `${pkgName}@${version}` : pkgName
+        const dst = resolve(opts.outDir, `node_modules/${fullName + subpath}`)
         await fsp.mkdir(dirname(dst), { recursive: true });
         try {
           await fsp.copyFile(src, dst);
