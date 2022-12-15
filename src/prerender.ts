@@ -78,27 +78,36 @@ export async function prerender(nitro: Nitro) {
   const generatedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route: string = "/") => {
+    // Skip if route is already generated
     if (generatedRoutes.has(route)) {
       return false;
     }
-    if (route.length > 250) {
+
+    // Ensure length is not too long for filesystem
+    const segments = route.split("/");
+    if (segments.some((s) => s.length > 255)) {
       if (!displayedLengthWarns.has(route)) {
         displayedLengthWarns.add(route);
         const _route = route.slice(0, 60);
         nitro.logger.warn(
-          `Skipping prerender of route "${_route}..." since it exceeds 250 characters.`
+          `Skipping prerender of route "${_route}..." since it exceeds 255 characters in one of the segments and can cause filesystem issues.`
         );
       }
       return false;
     }
+
+    // Check for explicitly ignored routes
     for (const ignore of nitro.options.prerender.ignore) {
       if (route.startsWith(ignore)) {
         return false;
       }
     }
+
+    // Check for route rules explicitly disabling prerender
     if (_getRouteRules(route).prerender === false) {
       return false;
     }
+
     return true;
   };
 
