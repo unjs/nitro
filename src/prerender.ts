@@ -88,9 +88,9 @@ export async function prerender(nitro: Nitro) {
     if (segments.some((s) => s.length > 255)) {
       if (!displayedLengthWarns.has(route)) {
         displayedLengthWarns.add(route);
-        const _route = route.slice(0, 60);
+        const _route = route.slice(0, 60) + "...";
         nitro.logger.warn(
-          `Skipping prerender of route "${_route}..." since it exceeds 255 characters in one of the segments and can cause filesystem issues.`
+          `Skipping prerender of the route "${_route}" since it exceeds the 255-character limit in one of the path segments and can cause filesystem issues.`
         );
       }
       return false;
