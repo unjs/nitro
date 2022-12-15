@@ -100,7 +100,7 @@ export async function prerender(nitro: Nitro) {
       const _route = route.slice(0, 60) + "...";
       if (route.length >= FS_MAX_PATH_PUBLIC_HTML) {
         nitro.logger.warn(
-          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to ${nitro.options.output.publicDir} and can cause filesystem issues.`
+          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`
         );
       } else {
         nitro.logger.warn(
