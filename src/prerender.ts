@@ -84,16 +84,27 @@ export async function prerender(nitro: Nitro) {
     }
 
     // Ensure length is not too long for filesystem
-    const segments = route.split("/");
-    if (segments.some((s) => s.length > 255)) {
-      if (!displayedLengthWarns.has(route)) {
-        displayedLengthWarns.add(route);
-        const _route = route.slice(0, 60) + "...";
+    // 1024 is the max path length on APFS (undocumented)
+    const FS_MAX_PATH = 1024 - (nitro.options.output.publicDir.length + 10);
+    // https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
+    const FS_MAX_SEGMENT = 255;
+    if (
+      (route.length >= FS_MAX_PATH ||
+        route.split("/").some((s) => s.length > FS_MAX_SEGMENT)) &&
+      !displayedLengthWarns.has(route)
+    ) {
+      displayedLengthWarns.add(route);
+      const _route = route.slice(0, 60) + "...";
+      if (route.length >= FS_MAX_PATH) {
         nitro.logger.warn(
-          `Skipping prerender of the route "${_route}" since it exceeds the 255-character limit in one of the path segments and can cause filesystem issues.`
+          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH}-character limit and can cause filesystem issues.`
         );
+      } else {
+        nitro.logger.warn(
+          `Skipping prerender of the route "${_route}" since it exceeds the ${FS_MAX_SEGMENT}-character limit in one of the path segments and can cause filesystem issues.`
+        );
+        return false;
       }
-      return false;
     }
 
     // Check for explicitly ignored routes
