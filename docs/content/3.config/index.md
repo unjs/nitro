@@ -340,3 +340,18 @@ Rollup specific option.
 ## `commonJS`
 
 Rollup specific option. Specifies additional configuration for the rollup CommonJS plugin.
+
+## `optimizeExternals`
+
+**⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
+
+Options to give you control over optimization of externalized packages.
+
+```js
+{
+  optimizeExternals: {
+    include: [''],
+    exclude: [''], // Handled by default if version difference is major
+  }
+}
+```
