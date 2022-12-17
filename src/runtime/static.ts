@@ -92,11 +92,10 @@ export default eventHandler((event) => {
     event.res.setHeader("Content-Length", asset.size);
   }
 
-  // TODO: Asset dir cache control
-  // if (isBuildAsset) {
-  // const TWO_DAYS = 2 * 60 * 60 * 24
-  // event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
-  // }
+  if (isPublicAssetURL(id) && !event.res.getHeader("Cache-Control")) {
+    const ONE_YEAR = 365 * 24 * 60 * 60;
+    event.res.setHeader('Cache-Control', `max-age=${ONE_YEAR}, immutable`)
+  }
 
   return readAsset(id);
 });
