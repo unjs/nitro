@@ -345,7 +345,7 @@ Rollup specific option. Specifies additional configuration for the rollup Common
 
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
-Options to give you control over optimization of externalized packages.
+Options to give you control over the optimization of externalized packages.
 
 ```js
 {
