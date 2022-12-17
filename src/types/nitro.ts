@@ -216,6 +216,10 @@ export interface NitroOptions extends PresetOptions {
   };
   noExternals: boolean;
   externals: NodeExternalsOptions;
+  optimizeExternals?: {
+    include?: string[];
+    exclude?: string[];
+  };
   analyze: false | PluginVisualizerOptions;
   replace: Record<string, string | ((id: string) => string)>;
   commonJS?: RollupCommonJSOptions;

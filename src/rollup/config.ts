@@ -336,6 +336,7 @@ export const plugins = [
             "node",
             "import",
           ],
+          optimizeDeps: nitro.options.optimizeExternals,
         })
       )
     );

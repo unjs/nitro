@@ -16,6 +16,10 @@ export interface NodeExternalsOptions {
   moduleDirectories?: string[];
   exportConditions?: string[];
   traceInclude?: string[];
+  optimizeExternals?: {
+    include?: string[];
+    exclude?: string[];
+  };
 }
 
 export function externals(opts: NodeExternalsOptions): Plugin {
@@ -200,8 +204,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Keep track of npm packages
       const tracedPackages = new Map(); // name => pkgDir
       const ignoreDirs = [];
-      const ignoreWarns = new Set();
-      const conflictingPackages = [];
+      const ignoreLogs = new Set();
+      const excludeOptimization = new Set(opts.optimizeExternals?.exclude ?? []);
+      const includeOptimization = new Set(opts.optimizeExternals?.include ?? [])
       for (const file of tracedFiles) {
         const { baseDir, pkgName } = parseNodeModulePath(file);
         if (!pkgName) {
@@ -220,18 +225,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
           // Warn about major version differences
           const getMajor = (v: string) => v.split(".").find((s) => s !== "0");
-          if (getMajor(v1) !== getMajor(v2)) {
-            const warn =
-              `Multiple major versions of package \`${pkgName}\` are being externalized. Picking latest version:\n\n` +
-              [
-                `  ${isNewer ? "-" : "+"} ` + existingPkgDir + "@" + v1,
-                `  ${isNewer ? "+" : "-"} ` + pkgDir + "@" + v2,
-              ].join("\n");
-            if (!ignoreWarns.has(warn)) {
-              consola.warn(warn);
-              ignoreWarns.add(warn);
+          if (getMajor(v1) !== getMajor(v2) && !includeOptimization.has(pkgName)) {
+            const log = `Multiple major versions of package \`${pkgName}\` are being externalized. Skipping optimization...`;
+            if (!ignoreLogs.has(log)) {
+              consola.info(log);
+              ignoreLogs.add(log);
             }
-            conflictingPackages.push(pkgName)
+            excludeOptimization.add(pkgName)
           }
 
           const [newerDir, olderDir] = isNewer
@@ -244,9 +244,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             );
           }
           // Exclude older version files
-          // if (false) { // check nitro options to determain if pacakge needs to be excluded
-          //   ignoreDirs.push(olderDir + '/')
-          // }
+          if (!includeOptimization.has(pkgName) && excludeOptimization.has(pkgName)) {
+            ignoreDirs.push(olderDir + '/')
+          }
           pkgDir = newerDir; // Update for tracedPackages
         }
 
@@ -275,7 +275,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const src = resolve(opts.traceOptions.base, file);
         const { pkgName, subpath, baseDir } = parseNodeModulePath(file)
         const version = await getPackageJson(resolve(baseDir, pkgName)).then(r => r.version)
-        const fullName = conflictingPackages.includes(pkgName) ? `${pkgName}@${version}` : pkgName
+        const fullName = excludeOptimization.has(pkgName) ? `${pkgName}@${version}` : pkgName
         const dst = resolve(opts.outDir, `node_modules/${fullName + subpath}`)
         await fsp.mkdir(dirname(dst), { recursive: true });
         try {
