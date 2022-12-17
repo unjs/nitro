@@ -71,7 +71,6 @@ function isTextMime(mimeType: string) {
   return /text|javascript|json|xml/.test(mimeType);
 }
 
-function isCompressableMime(mimeType: string) {
   const compressibleMimeTypes = [
     'atom',
     'css',
@@ -91,5 +90,6 @@ function isCompressableMime(mimeType: string) {
     'xml',
   ];
 
+function isCompressableMime(mimeType: string) {
   return compressibleMimeTypes.includes(mimeType);
 }
