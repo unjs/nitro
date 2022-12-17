@@ -71,25 +71,8 @@ function isTextMime(mimeType: string) {
   return /text|javascript|json|xml/.test(mimeType);
 }
 
-  const compressibleMimeTypes = [
-    'atom',
-    'css',
-    'eot',
-    'htc',
-    'html',
-    'ico',
-    'js',
-    'json',
-    'mjs',
-    'otf',
-    'rss',
-    'svg',
-    'text',
-    'ttf',
-    'webmanifest',
-    'xml',
-  ];
+const compressibleMimeTypesRegex = /atom|css|eot|htc|html|ico|js|json|mjs|otf|rss|svg|text|ttf|webmanifest|xml/
 
 function isCompressableMime(mimeType: string) {
-  return compressibleMimeTypes.includes(mimeType);
+  return compressibleMimeTypesRegex.test(mimeType);
 }
