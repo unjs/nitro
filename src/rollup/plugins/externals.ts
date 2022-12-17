@@ -251,10 +251,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             );
           }
           // Exclude older version files
-          if (
-            includeOptimization.has(pkgName) &&
-            !excludeOptimization.has(pkgName)
-          ) {
+          if (!excludeOptimization.has(pkgName)) {
             ignoreDirs.push(olderDir + "/");
           }
           pkgDir = newerDir; // Update for tracedPackages
