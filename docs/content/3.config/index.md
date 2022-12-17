@@ -92,6 +92,35 @@ If a `public/` directory is detected, it will be added by default, but you can a
 If enabled, Nitro will generate a pre-compressed (gzip and/or brotli) version of supported types of public assets and prerendered routes
 larger than 1024 bytes into the public directory. The best compression level is used. Using this option you can support zero overhead asset compression without using a CDN.
 
+The compressible MIME types are:
+
+- text/html - `.html`
+- text/plain - `.txt`
+- text/css - `.css`
+- text/xml - `.xml`
+- text/x-component - `.htc`
+- text/javascript - `.js`
+- application/javascript - `.js`
+- application/x-javascript - `.js`
+- application/json - `.json`
+- application/vnd.api+json - `.json`
+- application/manifest+json - `.webmanifest`
+- application/xml - `.xml`
+- application/xhtml+xml - `.xhtml`
+- application/rss+xml - `.rss`
+- application/atom+xml - `.atom`
+- image/svg+xml - `.svg`
+- image/x-icon - `.ico`
+- image/vnd.microsoft.icon - `.ico`
+- font/ttf - `.ttf`
+- application/x-font-ttf - `.ttf`
+- application/x-font-truetype - `.ttf`
+- font/eot - `.eot`
+- application/vnd.ms-fontobject - `.eot`
+- font/otf - `.otf`
+- font/opentype - `.otf`
+- application/x-font-opentype - `.otf`
+
 ## `serverAssets`
 
 Assets can be accessed in server logic and bundled in production.
