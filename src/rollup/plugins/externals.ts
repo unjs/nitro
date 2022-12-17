@@ -205,8 +205,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const tracedPackages = new Map(); // name => pkgDir
       const ignoreDirs = [];
       const ignoreLogs = new Set();
-      const excludeOptimization = new Set(opts.optimizeExternals?.exclude ?? []);
-      const includeOptimization = new Set(opts.optimizeExternals?.include ?? [])
+      const excludeOptimization = new Set(
+        opts.optimizeExternals?.exclude ?? []
+      );
+      const includeOptimization = new Set(
+        opts.optimizeExternals?.include ?? []
+      );
       for (const file of tracedFiles) {
         const { baseDir, pkgName } = parseNodeModulePath(file);
         if (!pkgName) {
@@ -225,13 +229,16 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
           // Warn about major version differences
           const getMajor = (v: string) => v.split(".").find((s) => s !== "0");
-          if (getMajor(v1) !== getMajor(v2) && !includeOptimization.has(pkgName)) {
+          if (
+            getMajor(v1) !== getMajor(v2) &&
+            !includeOptimization.has(pkgName)
+          ) {
             const log = `Multiple major versions of package \`${pkgName}\` are being externalized. Skipping optimization...`;
             if (!ignoreLogs.has(log)) {
               consola.info(log);
               ignoreLogs.add(log);
             }
-            excludeOptimization.add(pkgName)
+            excludeOptimization.add(pkgName);
           }
 
           const [newerDir, olderDir] = isNewer
@@ -244,8 +251,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             );
           }
           // Exclude older version files
-          if (includeOptimization.has(pkgName) && !excludeOptimization.has(pkgName)) {
-            ignoreDirs.push(olderDir + '/')
+          if (
+            includeOptimization.has(pkgName) &&
+            !excludeOptimization.has(pkgName)
+          ) {
+            ignoreDirs.push(olderDir + "/");
           }
           pkgDir = newerDir; // Update for tracedPackages
         }
@@ -273,10 +283,14 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           return;
         }
         const src = resolve(opts.traceOptions.base, file);
-        const { pkgName, subpath, baseDir } = parseNodeModulePath(file)
-        const version = await getPackageJson(resolve(baseDir, pkgName)).then(r => r.version)
-        const fullName = excludeOptimization.has(pkgName) ? `${pkgName}@${version}` : pkgName
-        const dst = resolve(opts.outDir, `node_modules/${fullName + subpath}`)
+        const { pkgName, subpath, baseDir } = parseNodeModulePath(file);
+        const version = await getPackageJson(resolve(baseDir, pkgName)).then(
+          (r) => r.version
+        );
+        const fullName = excludeOptimization.has(pkgName)
+          ? `${pkgName}@${version}`
+          : pkgName;
+        const dst = resolve(opts.outDir, `node_modules/${fullName + subpath}`);
         await fsp.mkdir(dirname(dst), { recursive: true });
         try {
           await fsp.copyFile(src, dst);
