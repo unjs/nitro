@@ -43,11 +43,10 @@ export const vercel = defineNitroPreset({
       );
 
       // Write prerender functions
-      for (const [key, value] of Object.entries(
-        nitro.options.routeRules
-      ).filter(
-        ([_, value]) => value.cache && (value.cache.swr || value.cache.static)
-      )) {
+      const rules = Object.entries(nitro.options.routeRules)
+        .filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))
+
+      for (const [key, value] of rules) {
         if (!value.cache) {
           continue;
         } // for type support
@@ -134,6 +133,7 @@ function generateBuildConfig(nitro: Nitro) {
     routes: [
       ...Object.entries(nitro.options.routeRules)
         .filter(([_, routeRules]) => routeRules.redirect || routeRules.headers)
+        .sort((a, b) => b[0].split("/").length - a[0].split("/").length)
         .map(([path, routeRules]) => {
           let route = {
             src: path.replace("/**", "/.*"),
@@ -159,9 +159,7 @@ function generateBuildConfig(nitro: Nitro) {
           },
           continue: true,
         })),
-      {
-        handle: "filesystem",
-      },
+      { handle: "filesystem" },
       ...Object.entries(nitro.options.routeRules)
         .filter(
           ([key, value]) =>
@@ -169,14 +167,17 @@ function generateBuildConfig(nitro: Nitro) {
             (value.cache.swr || value.cache.static) &&
             key.includes("/**")
         )
+        .sort((a, b) => b[0].split("/").length - a[0].split("/").length)
         .map(([key]) => ({
           src: key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)"),
           dest: generateEndpoint(key) + "?url=$url",
         })),
-      {
-        src: "/(.*)",
-        dest: "/__nitro",
-      },
+      ...(!nitro.options.routeRules['/**']?.cache || !(nitro.options.routeRules['/**'].cache.swr || nitro.options.routeRules['/**']?.cache.static)
+        ? [{
+            src: "/(.*)",
+            dest: "/__nitro",
+          }]
+        : []),
     ],
   });
 }
