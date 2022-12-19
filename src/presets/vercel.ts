@@ -120,6 +120,9 @@ export const vercelEdge = defineNitroPreset({
 });
 
 function generateBuildConfig(nitro: Nitro) {
+  const rules = Object.entries(nitro.options.routeRules)
+    .sort((a, b) => b[0].split("/").length - a[0].split("/").length)
+
   return defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
     version: 3,
     overrides: Object.fromEntries(
@@ -131,9 +134,8 @@ function generateBuildConfig(nitro: Nitro) {
       ])
     ),
     routes: [
-      ...Object.entries(nitro.options.routeRules)
+      ...rules
         .filter(([_, routeRules]) => routeRules.redirect || routeRules.headers)
-        .sort((a, b) => b[0].split("/").length - a[0].split("/").length)
         .map(([path, routeRules]) => {
           let route = {
             src: path.replace("/**", "/.*"),
@@ -160,14 +162,13 @@ function generateBuildConfig(nitro: Nitro) {
           continue: true,
         })),
       { handle: "filesystem" },
-      ...Object.entries(nitro.options.routeRules)
+      ...rules
         .filter(
           ([key, value]) =>
             value.cache &&
             (value.cache.swr || value.cache.static) &&
             key.includes("/**")
         )
-        .sort((a, b) => b[0].split("/").length - a[0].split("/").length)
         .map(([key]) => ({
           src: key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)"),
           dest: generateEndpoint(key) + "?url=$url",
