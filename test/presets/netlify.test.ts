@@ -58,15 +58,15 @@ describe("nitro:preset:netlify", async () => {
     );
     /* eslint-disable no-tabs */
     expect(headers).toMatchInlineSnapshot(`
-      "/rules/headers
+      "/rules/nested/*
+        x-test: test
+      /rules/headers
         cache-control: s-maxage=60
       /rules/cors
         access-control-allow-origin: *
         access-control-allowed-methods: GET
         access-control-allow-headers: *
         access-control-max-age: 0
-      /rules/nested/*
-        x-test: test
       "
     `);
     /* eslint-enable no-tabs */

@@ -45,28 +45,6 @@ describe("nitro:preset:vercel", async () => {
         "routes": [
           {
             "headers": {
-              "cache-control": "s-maxage=60",
-            },
-            "src": "/rules/headers",
-          },
-          {
-            "headers": {
-              "access-control-allow-headers": "*",
-              "access-control-allow-origin": "*",
-              "access-control-allowed-methods": "GET",
-              "access-control-max-age": "0",
-            },
-            "src": "/rules/cors",
-          },
-          {
-            "headers": {
-              "Location": "/base",
-            },
-            "src": "/rules/redirect",
-            "status": 307,
-          },
-          {
-            "headers": {
               "Location": "https://nitro.unjs.io/",
             },
             "src": "/rules/redirect/obj",
@@ -85,6 +63,28 @@ describe("nitro:preset:vercel", async () => {
               "Location": "/other",
             },
             "src": "/rules/nested/override",
+            "status": 307,
+          },
+          {
+            "headers": {
+              "cache-control": "s-maxage=60",
+            },
+            "src": "/rules/headers",
+          },
+          {
+            "headers": {
+              "access-control-allow-headers": "*",
+              "access-control-allow-origin": "*",
+              "access-control-allowed-methods": "GET",
+              "access-control-max-age": "0",
+            },
+            "src": "/rules/cors",
+          },
+          {
+            "headers": {
+              "Location": "/base",
+            },
+            "src": "/rules/redirect",
             "status": 307,
           },
           {
