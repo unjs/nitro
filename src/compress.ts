@@ -71,9 +71,57 @@ function isTextMime(mimeType: string) {
   return /text|javascript|json|xml/.test(mimeType);
 }
 
-const COMPRESSIBLE_MIMES_RE =
-  /atom|css|eot|htc|html|ico|js|json|mjs|otf|rss|svg|text|ttf|webmanifest|xml/;
+// Reference list of compressible MIME types from AWS
+// https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html#compressed-content-cloudfront-file-types
+const COMPRESSIBLE_MIMES_RE = new Set([
+  "application/dash+xml",
+  "application/eot",
+  "application/font",
+  "application/font-sfnt",
+  "application/javascript",
+  "application/json",
+  "application/opentype",
+  "application/otf",
+  "application/pkcs7-mime",
+  "application/protobuf",
+  "application/rss+xml",
+  "application/truetype",
+  "application/ttf",
+  "application/vnd.apple.mpegurl",
+  "application/vnd.mapbox-vector-tile",
+  "application/vnd.ms-fontobject",
+  "application/xhtml+xml",
+  "application/xml",
+  "application/x-font-opentype",
+  "application/x-font-truetype",
+  "application/x-font-ttf",
+  "application/x-httpd-cgi",
+  "application/x-javascript",
+  "application/x-mpegurl",
+  "application/x-opentype",
+  "application/x-otf",
+  "application/x-perl",
+  "application/x-ttf",
+  "font/eot",
+  "font/opentype",
+  "font/otf",
+  "font/ttf",
+  "image/svg+xml",
+  "text/css",
+  "text/csv",
+  "text/html",
+  "text/javascript",
+  "text/js",
+  "text/plain",
+  "text/richtext",
+  "text/tab-separated-values",
+  "text/xml",
+  "text/x-component",
+  "text/x-java-source",
+  "text/x-script",
+  "vnd.apple.mpegurl"
+]);
 
 function isCompressableMime(mimeType: string) {
-  return COMPRESSIBLE_MIMES_RE.test(mimeType);
+  return COMPRESSIBLE_MIMES_RE.has(mimeType);
 }
