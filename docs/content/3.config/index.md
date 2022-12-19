@@ -94,32 +94,52 @@ larger than 1024 bytes into the public directory. The best compression level is 
 
 The compressible MIME types are:
 
-- text/html - `.html`
-- text/plain - `.txt`
-- text/css - `.css`
-- text/xml - `.xml`
-- text/x-component - `.htc`
-- text/javascript - `.js`
-- application/javascript - `.js`
-- application/x-javascript - `.js`
-- application/json - `.json`
-- application/vnd.api+json - `.json`
-- application/manifest+json - `.webmanifest`
-- application/xml - `.xml`
-- application/xhtml+xml - `.xhtml`
-- application/rss+xml - `.rss`
-- application/atom+xml - `.atom`
-- image/svg+xml - `.svg`
-- image/x-icon - `.ico`
-- image/vnd.microsoft.icon - `.ico`
-- font/ttf - `.ttf`
-- application/x-font-ttf - `.ttf`
-- application/x-font-truetype - `.ttf`
-- font/eot - `.eot`
-- application/vnd.ms-fontobject - `.eot`
-- font/otf - `.otf`
-- font/opentype - `.otf`
-- application/x-font-opentype - `.otf`
+- application/dash+xml
+- application/eot
+- application/font
+- application/font-sfnt
+- application/javascript
+- application/json
+- application/opentype
+- application/otf
+- application/pkcs7-mime
+- application/protobuf
+- application/rss+xml
+- application/truetype
+- application/ttf
+- application/vnd.apple.mpegurl
+- application/vnd.mapbox-vector-tile
+- application/vnd.ms-fontobject
+- application/xhtml+xml
+- application/xml
+- application/x-font-opentype
+- application/x-font-truetype
+- application/x-font-ttf
+- application/x-httpd-cgi
+- application/x-javascript
+- application/x-mpegurl
+- application/x-opentype
+- application/x-otf
+- application/x-perl
+- application/x-ttf
+- font/eot
+- font/opentype
+- font/otf
+- font/ttf
+- image/svg+xml
+- text/css
+- text/csv
+- text/html
+- text/javascript
+- text/js
+- text/plain
+- text/richtext
+- text/tab-separated-values
+- text/xml
+- text/x-component
+- text/x-java-source
+- text/x-script
+- vnd.apple.mpegurl
 
 ## `serverAssets`
 
