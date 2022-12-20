@@ -235,9 +235,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             return null;
           }
 
-          const v1 = semver.parse(
-            version.replace("^", "").replace("~", "")
-          ).major;
+          const v1 = semver.parse(version.replace(/\^|~/, "")).major;
           const v2 = semver.parse(pkgVersion).major;
           if (v1 === v2) {
             return currentPkgName;
