@@ -323,14 +323,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           return;
         }
         const src = resolve(opts.traceOptions.base, file);
-        const { pkgName, subpath, baseDir } = parseNodeModulePath(file);
-        const version = await getPackageJson(resolve(baseDir, pkgName)).then(
-          (r) => r.version
-        );
-        const fullName = excludeOptimization.has(pkgName)
-          ? `${pkgName}@${version}`
-          : pkgName;
-        const dst = resolve(opts.outDir, `node_modules/${fullName + subpath}`);
+        const { pkgName, subpath } = parseNodeModulePath(file);
+        const dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`);
         await fsp.mkdir(dirname(dst), { recursive: true });
         try {
           await fsp.copyFile(src, dst);
