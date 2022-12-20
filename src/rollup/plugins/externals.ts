@@ -270,12 +270,16 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           const v2 = await getPackageJson(pkgDir).then((r) => r.version);
           const isNewer = semver.gt(v2, v1);
 
+          const [newerDir, olderDir] = isNewer
+            ? [pkgDir, existingPkgDir]
+            : [existingPkgDir, pkgDir];
+
           // Warn about major version differences
           const getMajor = (v: string) => v.split(".").find((s) => s !== "0");
-          if (
-            getMajor(v1) !== getMajor(v2) &&
-            !includeOptimization.has(pkgName)
-          ) {
+          const shouldOptimize =
+            getMajor(v1) !== getMajor(v2) && !includeOptimization.has(pkgName);
+
+          if (shouldOptimize) {
             const log = `Multiple major versions of package \`${pkgName}\` are being externalized. Skipping optimization...`;
             if (!ignoreLogs.has(log)) {
               consola.info(log);
@@ -283,18 +287,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             }
             excludeOptimization.add(pkgName);
           }
-
-          const [newerDir, olderDir] = isNewer
-            ? [pkgDir, existingPkgDir]
-            : [existingPkgDir, pkgDir];
           // Try to map traced files from one package to another for minor/patch versions
-          if (getMajor(v1) === getMajor(v2)) {
+          if (!shouldOptimize && !excludeOptimization.has(pkgName)) {
             tracedFiles = tracedFiles.map((f) =>
               f.startsWith(olderDir + "/") ? f.replace(olderDir, newerDir) : f
             );
-          }
-          // Exclude older version files
-          if (!excludeOptimization.has(pkgName)) {
+
+            // Exclude older version files
             ignoreDirs.push(olderDir + "/");
             pkgDir = newerDir; // Update for tracedPackages
           }
