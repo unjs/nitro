@@ -174,14 +174,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Trace files
-      let tracedFiles = await nodeFileTrace(
+      const fileTrace = await nodeFileTrace(
         [...trackedExternals],
         opts.traceOptions
-      )
-        .then((r) =>
-          [...r.fileList].map((f) => resolve(opts.traceOptions.base, f))
-        )
-        .then((r) => r.filter((file) => file.includes("node_modules")));
+      );
+      let tracedFiles = [...fileTrace.fileList]
+        .map((f) => resolve(opts.traceOptions.base, f))
+        .filter((file) => file.includes("node_modules"));
 
       // Resolve symlinks
       tracedFiles = await Promise.all(
@@ -199,6 +198,52 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         );
         packageJSONCache.set(pkgDir, pkgJSON);
         return pkgJSON;
+      };
+
+      // Find parent base on file path
+      const getParent = async (pkgPath: string) => {
+        const { pkgName, baseDir } = parseNodeModulePath(pkgPath);
+        const pkgVersion = await getPackageJson(resolve(baseDir, pkgName)).then(
+          (r) => r.version
+        );
+
+        const possibleParents = [
+          ...new Set(
+            [...fileTrace.reasons]
+              .filter((r) => !r[1].ignored)
+              .filter((r) => parseNodeModulePath(r[0]).pkgName === pkgName)
+              .flatMap((r) =>
+                [...r[1].parents].filter(
+                  (v) => parseNodeModulePath(v).pkgName !== pkgName
+                )
+              ) // Remove self-refrencing
+          ),
+        ];
+
+        // Find the currect parent base on package.json dependency version
+        for (const possible of possibleParents) {
+          const thePath = resolve(opts.traceOptions.base, possible);
+          const { pkgName: currentPkgName, baseDir: currentBaseDir } =
+            parseNodeModulePath(await fsp.realpath(thePath));
+
+          const packageJson = await getPackageJson(
+            resolve(currentBaseDir, currentPkgName)
+          );
+          const version = packageJson.dependencies[pkgName];
+
+          if (!version) {
+            return null;
+          }
+
+          const v1 = semver.parse(
+            version.replace("^", "").replace("~", "")
+          ).major;
+          const v2 = semver.parse(pkgVersion).major;
+          if (v1 === v2) {
+            return currentPkgName;
+          }
+        }
+        return null;
       };
 
       // Keep track of npm packages
