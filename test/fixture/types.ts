@@ -68,22 +68,22 @@ describe("API routes", () => {
         | { internalApiKey: "/api/typed/user/:userId" }
       >
     >();
-    // expectTypeOf(
-    //   $fetch(`/api/typed/user/john/post/${dynamicString}`)
-    // ).toEqualTypeOf<
-    //   Promise<
-    //     | { internalApiKey: "/api/typed/user/john/post/coffee" }
-    //     | { internalApiKey: "/api/typed/user/john/post/:postId" }
-    //   >
-    // >();
-    // expectTypeOf(
-    //   $fetch(`/api/typed/user/{someUserId}/post/${dynamicString}`)
-    // ).toEqualTypeOf<
-    //   Promise<
-    //     | { internalApiKey: "/api/typed/user/:userId/post/:postId" }
-    //     | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
-    //   >
-    // >();
+    expectTypeOf(
+      $fetch(`/api/typed/user/john/post/${dynamicString}`)
+    ).toEqualTypeOf<
+      Promise<
+        | { internalApiKey: "/api/typed/user/john/post/coffee" }
+        | { internalApiKey: "/api/typed/user/john/post/:postId" }
+      >
+    >();
+    expectTypeOf(
+      $fetch(`/api/typed/user/{someUserId}/post/${dynamicString}`)
+    ).toEqualTypeOf<
+      Promise<
+        | { internalApiKey: "/api/typed/user/:userId/post/:postId" }
+        | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
+      >
+    >();
     expectTypeOf(
       $fetch(`/api/typed/user/${dynamicString}/post/${dynamicString}`)
     ).toEqualTypeOf<
