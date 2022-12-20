@@ -223,11 +223,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Find the currect parent base on package.json dependency version
         for (const possible of possibleParents) {
           const thePath = resolve(opts.traceOptions.base, possible);
-          const { pkgName: currentPkgName, baseDir: currentBaseDir } =
+          const { pkgName: existingPkgName, baseDir: existingBaseDir } =
             parseNodeModulePath(await fsp.realpath(thePath));
 
           const packageJson = await getPackageJson(
-            resolve(currentBaseDir, currentPkgName)
+            resolve(existingBaseDir, existingPkgName)
           );
           const version = packageJson.dependencies[pkgName];
 
@@ -238,7 +238,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           const v1 = semver.parse(version.replace(/\^|~/, "")).major;
           const v2 = semver.parse(pkgVersion).major;
           if (v1 === v2) {
-            return currentPkgName;
+            return existingPkgName;
           }
         }
         return null;
@@ -296,8 +296,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           // Exclude older version files
           if (!excludeOptimization.has(pkgName)) {
             ignoreDirs.push(olderDir + "/");
+            pkgDir = newerDir; // Update for tracedPackages
           }
-          pkgDir = newerDir; // Update for tracedPackages
         }
 
         // Add to traced packages
