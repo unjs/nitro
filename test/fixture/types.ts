@@ -10,7 +10,7 @@ const $fetch = {} as $Fetch;
 
 describe("API routes", () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dynamicString: string = "";
+  const dynamicString = "";
 
   it("generates types for middleware, unknown and manual typed routes", () => {
     expectTypeOf($fetch("/")).toMatchTypeOf<Promise<unknown>>(); // middleware

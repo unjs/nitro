@@ -33,7 +33,9 @@ export function getRouteRules(event: H3Event): NitroRouteRules {
   event.context._nitro = event.context._nitro || {};
   if (!event.context._nitro.routeRules) {
     const path = new URL(event.req.url, "http://localhost").pathname;
-    event.context._nitro.routeRules = getRouteRulesForPath(withoutBase(path, useRuntimeConfig().app.baseURL));
+    event.context._nitro.routeRules = getRouteRulesForPath(
+      withoutBase(path, useRuntimeConfig().app.baseURL)
+    );
   }
   return event.context._nitro.routeRules;
 }

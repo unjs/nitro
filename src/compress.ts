@@ -119,7 +119,7 @@ const COMPRESSIBLE_MIMES_RE = new Set([
   "text/x-component",
   "text/x-java-source",
   "text/x-script",
-  "vnd.apple.mpegurl"
+  "vnd.apple.mpegurl",
 ]);
 
 function isCompressableMime(mimeType: string) {
