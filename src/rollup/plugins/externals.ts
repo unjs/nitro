@@ -274,7 +274,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             ? [pkgDir, existingPkgDir]
             : [existingPkgDir, pkgDir];
 
-          // Warn about major version differences
+          // Warn about major version differences and exclude the package from being optimized
           const getMajor = (v: string) => v.split(".").find((s) => s !== "0");
           const shouldOptimize =
             getMajor(v1) !== getMajor(v2) && !includeOptimization.has(pkgName);
@@ -323,7 +323,22 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         }
         const src = resolve(opts.traceOptions.base, file);
         const { pkgName, subpath } = parseNodeModulePath(file);
-        const dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`);
+        let dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`);
+
+        if (excludeOptimization.has(pkgName)) {
+          const parent = await getParent(file);
+
+          if (parent) {
+            dst = resolve(
+              opts.outDir,
+              "node_modules",
+              parent,
+              'node_modules',
+              pkgName + subpath
+            );
+          }
+        }
+
         await fsp.mkdir(dirname(dst), { recursive: true });
         try {
           await fsp.copyFile(src, dst);
