@@ -9,8 +9,8 @@ interface TestResponse {
 const $fetch = {} as $Fetch;
 
 describe("API routes", () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dynamicString = "";
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+  const dynamicString: string = "";
 
   it("generates types for middleware, unknown and manual typed routes", () => {
     expectTypeOf($fetch("/")).toMatchTypeOf<Promise<unknown>>(); // middleware
@@ -68,22 +68,22 @@ describe("API routes", () => {
         | { internalApiKey: "/api/typed/user/:userId" }
       >
     >();
-    // expectTypeOf(
-    //   $fetch(`/api/typed/user/john/post/${dynamicString}`)
-    // ).toEqualTypeOf<
-    //   Promise<
-    //     | { internalApiKey: "/api/typed/user/john/post/coffee" }
-    //     | { internalApiKey: "/api/typed/user/john/post/:postId" }
-    //   >
-    // >();
-    // expectTypeOf(
-    //   $fetch(`/api/typed/user/{someUserId}/post/${dynamicString}`)
-    // ).toEqualTypeOf<
-    //   Promise<
-    //     | { internalApiKey: "/api/typed/user/:userId/post/:postId" }
-    //     | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
-    //   >
-    // >();
+    expectTypeOf(
+      $fetch(`/api/typed/user/john/post/${dynamicString}`)
+    ).toEqualTypeOf<
+      Promise<
+        | { internalApiKey: "/api/typed/user/john/post/coffee" }
+        | { internalApiKey: "/api/typed/user/john/post/:postId" }
+      >
+    >();
+    expectTypeOf(
+      $fetch(`/api/typed/user/{someUserId}/post/${dynamicString}`)
+    ).toEqualTypeOf<
+      Promise<
+        | { internalApiKey: "/api/typed/user/:userId/post/:postId" }
+        | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
+      >
+    >();
     expectTypeOf(
       $fetch(`/api/typed/user/${dynamicString}/post/${dynamicString}`)
     ).toEqualTypeOf<
