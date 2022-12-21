@@ -13,10 +13,7 @@ async function main() {
   const rootDir = resolve(args._[1] || ".");
 
   if (command === "prepare") {
-    const nitro = await createNitro({
-      rootDir,
-      dev: true,
-    });
+    const nitro = await createNitro({ rootDir });
     await writeTypes(nitro);
     return;
   }
