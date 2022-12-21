@@ -3,7 +3,7 @@
 import mri from "mri";
 import { resolve } from "pathe";
 import { createNitro } from "./nitro";
-import { build, prepare, copyPublicAssets } from "./build";
+import { build, prepare, copyPublicAssets, writeTypes } from "./build";
 import { prerender } from "./prerender";
 import { createDevServer } from "./dev/server";
 
@@ -11,6 +11,15 @@ async function main() {
   const args = mri(process.argv.slice(2));
   const command = args._[0];
   const rootDir = resolve(args._[1] || ".");
+
+  if (command === "prepare") {
+    const nitro = await createNitro({
+      rootDir,
+      dev: true,
+    });
+    await writeTypes(nitro);
+    return;
+  }
 
   if (command === "dev") {
     const nitro = await createNitro({
