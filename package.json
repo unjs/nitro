@@ -50,7 +50,7 @@
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-replace": "^5.0.2",
-    "@rollup/plugin-terser": "^0.2.0",
+    "@rollup/plugin-terser": "^0.2.1",
     "@rollup/plugin-wasm": "^6.1.1",
     "@rollup/pluginutils": "^5.0.2",
     "@vercel/nft": "^0.22.6",
