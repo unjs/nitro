@@ -43,11 +43,11 @@ export const vercel = defineNitroPreset({
       );
 
       // Write prerender functions
-      for (const [key, value] of Object.entries(
-        nitro.options.routeRules
-      ).filter(
+      const rules = Object.entries(nitro.options.routeRules).filter(
         ([_, value]) => value.cache && (value.cache.swr || value.cache.static)
-      )) {
+      );
+
+      for (const [key, value] of rules) {
         if (!value.cache) {
           continue;
         } // for type support
@@ -121,6 +121,10 @@ export const vercelEdge = defineNitroPreset({
 });
 
 function generateBuildConfig(nitro: Nitro) {
+  const rules = Object.entries(nitro.options.routeRules).sort(
+    (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
+  );
+
   return defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
     version: 3,
     overrides: Object.fromEntries(
@@ -132,7 +136,7 @@ function generateBuildConfig(nitro: Nitro) {
       ])
     ),
     routes: [
-      ...Object.entries(nitro.options.routeRules)
+      ...rules
         .filter(([_, routeRules]) => routeRules.redirect || routeRules.headers)
         .map(([path, routeRules]) => {
           let route = {
@@ -159,10 +163,8 @@ function generateBuildConfig(nitro: Nitro) {
           },
           continue: true,
         })),
-      {
-        handle: "filesystem",
-      },
-      ...Object.entries(nitro.options.routeRules)
+      { handle: "filesystem" },
+      ...rules
         .filter(
           ([key, value]) =>
             value.cache &&
@@ -173,10 +175,20 @@ function generateBuildConfig(nitro: Nitro) {
           src: key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)"),
           dest: generateEndpoint(key) + "?url=$url",
         })),
-      {
-        src: "/(.*)",
-        dest: "/__nitro",
-      },
+      // If we are using a prerender function as a fallback, then we do not need to output
+      // the below fallback route as well
+      ...(!nitro.options.routeRules["/**"]?.cache ||
+      !(
+        nitro.options.routeRules["/**"].cache.swr ||
+        nitro.options.routeRules["/**"]?.cache.static
+      )
+        ? [
+            {
+              src: "/(.*)",
+              dest: "/__nitro",
+            },
+          ]
+        : []),
     ],
   });
 }
