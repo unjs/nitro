@@ -43,8 +43,9 @@ export const vercel = defineNitroPreset({
       );
 
       // Write prerender functions
-      const rules = Object.entries(nitro.options.routeRules)
-        .filter(([_, value]) => value.cache && (value.cache.swr || value.cache.static))
+      const rules = Object.entries(nitro.options.routeRules).filter(
+        ([_, value]) => value.cache && (value.cache.swr || value.cache.static)
+      );
 
       for (const [key, value] of rules) {
         if (!value.cache) {
@@ -120,8 +121,9 @@ export const vercelEdge = defineNitroPreset({
 });
 
 function generateBuildConfig(nitro: Nitro) {
-  const rules = Object.entries(nitro.options.routeRules)
-    .sort((a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length)
+  const rules = Object.entries(nitro.options.routeRules).sort(
+    (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
+  );
 
   return defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
     version: 3,
@@ -175,11 +177,17 @@ function generateBuildConfig(nitro: Nitro) {
         })),
       // If we are using a prerender function as a fallback, then we do not need to output
       // the below fallback route as well
-      ...(!nitro.options.routeRules['/**']?.cache || !(nitro.options.routeRules['/**'].cache.swr || nitro.options.routeRules['/**']?.cache.static)
-        ? [{
-            src: "/(.*)",
-            dest: "/__nitro",
-          }]
+      ...(!nitro.options.routeRules["/**"]?.cache ||
+      !(
+        nitro.options.routeRules["/**"].cache.swr ||
+        nitro.options.routeRules["/**"]?.cache.static
+      )
+        ? [
+            {
+              src: "/(.*)",
+              dest: "/__nitro",
+            },
+          ]
         : []),
     ],
   });
