@@ -259,6 +259,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         if (!pkgName) {
           continue;
         }
+        let pkgFullName = pkgName;
         let pkgDir = resolve(baseDir, pkgName);
 
         // Check for duplicate versions
@@ -297,10 +298,22 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             ignoreDirs.push(olderDir + "/");
             pkgDir = newerDir; // Update for tracedPackages
           }
+
+          // Make the package name unique if there are multiple versions
+          if (excludeOptimization.has(pkgName)) {
+            pkgFullName = `${pkgName}#${v2}`;
+
+            // Add the version to previous dependency
+            const previousPkg = tracedPackages.get(pkgName);
+            if (previousPkg) {
+              tracedPackages.delete(pkgName);
+              tracedPackages.set(`${pkgName}#${v1}`, previousPkg);
+            }
+          }
         }
 
         // Add to traced packages
-        tracedPackages.set(pkgName, pkgDir);
+        tracedPackages.set(pkgFullName, pkgDir);
       }
 
       // Filter out files from ignored packages and dedup
@@ -353,6 +366,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       );
 
       // Write an informative package.json
+      const bundledDependencies = [
+        ...new Set([...tracedPackages.keys()].map((p) => p.split("#")[0])), // Merge duplicated dependencies
+      ];
       await fsp.writeFile(
         resolve(opts.outDir, "package.json"),
         JSON.stringify(
@@ -360,7 +376,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             name: "nitro-output",
             version: "0.0.0",
             private: true,
-            bundledDependencies: [...tracedPackages.keys()],
+            bundledDependencies,
           },
           null,
           2
