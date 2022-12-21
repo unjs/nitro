@@ -173,6 +173,8 @@ function generateBuildConfig(nitro: Nitro) {
           src: key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)"),
           dest: generateEndpoint(key) + "?url=$url",
         })),
+      // If we are using a prerender function as a fallback, then we do not need to output
+      // the below fallback route as well
       ...(!nitro.options.routeRules['/**']?.cache || !(nitro.options.routeRules['/**'].cache.swr || nitro.options.routeRules['/**']?.cache.static)
         ? [{
             src: "/(.*)",
