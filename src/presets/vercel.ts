@@ -121,7 +121,7 @@ export const vercelEdge = defineNitroPreset({
 
 function generateBuildConfig(nitro: Nitro) {
   const rules = Object.entries(nitro.options.routeRules)
-    .sort((a, b) => b[0].split("/").length - a[0].split("/").length)
+    .sort((a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length)
 
   return defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
     version: 3,

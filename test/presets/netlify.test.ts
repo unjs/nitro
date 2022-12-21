@@ -41,8 +41,8 @@ describe("nitro:preset:netlify", async () => {
     /* eslint-disable no-tabs */
     expect(redirects).toMatchInlineSnapshot(`
       "/rules/nested/override	/other	302
-      /rules/nested/*	/base	302
       /rules/redirect/obj	https://nitro.unjs.io/	301
+      /rules/nested/*	/base	302
       /rules/redirect	/base	302
       /rules/swr-ttl/*	/.netlify/builders/server 200
       /rules/swr/*	/.netlify/builders/server 200
@@ -58,15 +58,15 @@ describe("nitro:preset:netlify", async () => {
     );
     /* eslint-disable no-tabs */
     expect(headers).toMatchInlineSnapshot(`
-      "/rules/nested/*
-        x-test: test
-      /rules/headers
+      "/rules/headers
         cache-control: s-maxage=60
       /rules/cors
         access-control-allow-origin: *
         access-control-allowed-methods: GET
         access-control-allow-headers: *
         access-control-max-age: 0
+      /rules/nested/*
+        x-test: test
       "
     `);
     /* eslint-enable no-tabs */

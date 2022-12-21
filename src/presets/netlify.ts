@@ -85,7 +85,7 @@ async function writeRedirects(nitro: Nitro) {
   let contents = "/* /.netlify/functions/server 200";
 
   const rules = Object.entries(nitro.options.routeRules)
-    .sort((a, b) => a[0].split("/").length - b[0].split("/").length)
+    .sort((a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length)
 
   // Rewrite static cached paths to builder functions
   for (const [key] of rules.filter(
@@ -127,7 +127,7 @@ async function writeHeaders(nitro: Nitro) {
   let contents = "";
 
   const rules = Object.entries(nitro.options.routeRules)
-    .sort((a, b) => b[0].split("/").length - a[0].split("/").length)
+    .sort((a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length)
 
   for (const [path, routeRules] of rules.filter(([_, routeRules]) => routeRules.headers)) {
     const headers = [

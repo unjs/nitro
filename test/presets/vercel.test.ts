@@ -52,14 +52,6 @@ describe("nitro:preset:vercel", async () => {
           },
           {
             "headers": {
-              "Location": "/base",
-              "x-test": "test",
-            },
-            "src": "/rules/nested/.*",
-            "status": 307,
-          },
-          {
-            "headers": {
               "Location": "/other",
             },
             "src": "/rules/nested/override",
@@ -85,6 +77,14 @@ describe("nitro:preset:vercel", async () => {
               "Location": "/base",
             },
             "src": "/rules/redirect",
+            "status": 307,
+          },
+          {
+            "headers": {
+              "Location": "/base",
+              "x-test": "test",
+            },
+            "src": "/rules/nested/.*",
             "status": 307,
           },
           {
