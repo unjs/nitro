@@ -3,11 +3,13 @@ import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
 import type { MatchedRoutes } from "./utils";
 
 // An interface to extend in a local project
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InternalApi {}
 
 export type NitroFetchRequest =
   | Exclude<keyof InternalApi, `/_${string}` | `/api/_${string}`>
   | Exclude<FetchRequest, string>
+  // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
 export type MiddlewareOf<
@@ -92,11 +94,10 @@ export interface $Fetch<
 }
 
 declare global {
-  // eslint-disable-next-line no-var, no-unused-vars
+  // eslint-disable-next-line no-var
   var $fetch: $Fetch;
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
-    // eslint-disable-next-line no-unused-vars
     interface Global {
       $fetch: $Fetch;
     }

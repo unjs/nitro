@@ -7,7 +7,6 @@ description: 'Discover Cloudflare preset for Nitro!'
 
 **Preset:** `cloudflare` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-
 ::alert{type="info"}
 **Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
 ::

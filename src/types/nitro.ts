@@ -142,6 +142,7 @@ export interface NitroOptions extends PresetOptions {
 
   // General
   debug: boolean;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   preset: KebabCase<keyof typeof _PRESETS> | (string & {});
   logLevel: LogLevel;
   runtimeConfig: {

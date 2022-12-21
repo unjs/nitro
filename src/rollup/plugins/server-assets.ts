@@ -9,7 +9,7 @@ import type { Nitro } from "../../types";
 import { virtual } from "./virtual";
 
 export interface ServerAssetOptions {
-  inline: Boolean;
+  inline: boolean;
   dirs: {
     [assetdir: string]: {
       dir: string;

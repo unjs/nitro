@@ -77,7 +77,7 @@ export async function prerender(nitro: Nitro) {
   // Start prerendering
   const generatedRoutes = new Set();
   const displayedLengthWarns = new Set();
-  const canPrerender = (route: string = "/") => {
+  const canPrerender = (route = "/") => {
     // Skip if route is already generated
     if (generatedRoutes.has(route)) {
       return false;

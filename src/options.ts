@@ -119,7 +119,7 @@ export async function loadOptions(
     },
     defaults: NitroDefaults,
     resolve(id: string) {
-      const presets = _PRESETS as any as Map<String, NitroConfig>;
+      const presets = _PRESETS as any as Map<string, NitroConfig>;
       let matchedPreset = presets[camelCase(id)] || presets[id];
       if (!matchedPreset) {
         return null;
