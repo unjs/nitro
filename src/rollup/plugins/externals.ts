@@ -237,7 +237,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
           const v1 = semver.parse(version.replace(/\^|~/, "")).version;
           const v2 = semver.parse(pkgVersion).version;
-          console.log(v1, v2);
           if (v1 === v2) {
             return existingPkgName;
           }
