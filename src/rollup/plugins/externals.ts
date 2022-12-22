@@ -254,59 +254,79 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const includeOptimization = new Set(
         opts.optimizeExternals?.include ?? []
       );
+
+      // Get's every tracked version of a conflicting dependency
+      const getAllVersions = (pkgName: string) => {
+        return [...tracedPackages]
+          .filter((p) => p[0][0] === pkgName)
+          .map((p) => p[0][1]);
+      };
+      const hasConflict = (pkgName: string, pkgVersion: string) => {
+        const allVersions = getAllVersions(pkgName);
+        const shouldOptimize = allVersions.filter(
+          (v1) => semver.parse(v1).major !== semver.parse(pkgVersion).major
+        );
+
+        return shouldOptimize.length > 0 && !includeOptimization.has(pkgName);
+      };
+
       for (const file of tracedFiles) {
         const { baseDir, pkgName } = parseNodeModulePath(file);
         if (!pkgName) {
           continue;
         }
-        let pkgFullName = pkgName;
-        let pkgDir = resolve(baseDir, pkgName);
+        const pkgDir = resolve(baseDir, pkgName);
+        const pkgVersion = await getPackageJson(pkgDir).then((r) => r.version);
 
-        // Check for duplicate versions
+        // Exclude duplicate packages with major version differance
+        if (hasConflict(pkgName, pkgVersion)) {
+          const log = `Multiple major versions of package \`${pkgName}\` are being externalized. Skipping optimization...`;
+          if (!ignoreLogs.has(log)) {
+            consola.info(log);
+            ignoreLogs.add(log);
+          }
+          excludeOptimization.add(pkgName);
+        }
+
+        // Add to traced packages
+        tracedPackages.set([pkgName, pkgVersion], pkgDir);
+      }
+
+      for (const file of tracedFiles) {
+        const { baseDir, pkgName } = parseNodeModulePath(file);
+        if (!pkgName) {
+          continue;
+        }
+        const pkgDir = resolve(baseDir, pkgName);
+
         const existingPkgDir = tracedPackages.get(pkgName);
         if (existingPkgDir && existingPkgDir !== pkgDir) {
           const v1 = await getPackageJson(existingPkgDir).then(
             (r) => r.version
           );
           const v2 = await getPackageJson(pkgDir).then((r) => r.version);
-          const isNewer = semver.gt(v2, v1);
-
-          const [newerDir, olderDir] = isNewer
-            ? [pkgDir, existingPkgDir]
-            : [existingPkgDir, pkgDir];
-
-          // Warn about major version differences and exclude the package from being optimized
           const getMajor = (v: string) => v.split(".").find((s) => s !== "0");
-          const shouldOptimize =
-            getMajor(v1) !== getMajor(v2) && !includeOptimization.has(pkgName);
 
-          if (shouldOptimize) {
-            const log = `Multiple major versions of package \`${pkgName}\` are being externalized. Skipping optimization...`;
-            if (!ignoreLogs.has(log)) {
-              consola.info(log);
-              ignoreLogs.add(log);
-            }
-            excludeOptimization.add(pkgName);
-          }
           // Try to map traced files from one package to another for minor/patch versions
-          if (!shouldOptimize && !excludeOptimization.has(pkgName)) {
+          if (
+            getMajor(v1) === getMajor(v2) &&
+            !excludeOptimization.has(pkgName)
+          ) {
+            const isNewer = semver.gt(v2, v1);
+
+            const [newerDir, olderDir] = isNewer
+              ? [pkgDir, existingPkgDir]
+              : [existingPkgDir, pkgDir];
+
             tracedFiles = tracedFiles.map((f) =>
               f.startsWith(olderDir + "/") ? f.replace(olderDir, newerDir) : f
             );
 
             // Exclude older version files
             ignoreDirs.push(olderDir + "/");
-            pkgDir = newerDir; // Update for tracedPackages
-          }
-
-          // Make the package name unique if there are multiple versions
-          if (excludeOptimization.has(pkgName)) {
-            pkgFullName = `${pkgName}#${v2}`;
+            tracedPackages.delete([pkgName, v2]); // Remove the older package
           }
         }
-
-        // Add to traced packages
-        tracedPackages.set(pkgFullName, pkgDir);
       }
 
       // Filter out files from ignored packages and dedup
@@ -360,7 +380,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Write an informative package.json
       const bundledDependencies = [
-        ...new Set([...tracedPackages.keys()].map((p) => p.split("#")[0])), // Merge duplicated dependencies
+        ...new Set([...tracedPackages.keys()].map((p) => p[0])), // Dedup conflicting packages
       ];
       await fsp.writeFile(
         resolve(opts.outDir, "package.json"),
