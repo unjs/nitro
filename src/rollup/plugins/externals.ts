@@ -298,8 +298,14 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           continue;
         }
         const pkgDir = resolve(baseDir, pkgName);
+        const pkgVersion = await getPackageJson(resolve(baseDir, pkgName)).then(
+          (r) => r.version
+        );
 
-        const existingPkgDir = tracedPackages.get(pkgName);
+        const existingPkgVersion = getAllVersions(pkgName).find(
+          (v) => v !== pkgVersion
+        );
+        const existingPkgDir = tracedPackages.get([pkgName, existingPkgVersion]);
         if (existingPkgDir && existingPkgDir !== pkgDir) {
           const v1 = await getPackageJson(existingPkgDir).then(
             (r) => r.version
