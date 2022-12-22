@@ -6,7 +6,7 @@ import { gzipSize } from "gzip-size";
 import chalk from "chalk";
 import { isTest } from "std-env";
 
-export async function printFSTree(dir: string) {
+export async function generateFSTree(dir: string) {
   if (isTest) {
     return;
   }
@@ -31,6 +31,8 @@ export async function printFSTree(dir: string) {
   let totalNodeModulesSize = 0;
   let totalNodeModulesGzip = 0;
 
+  let treeText = ''
+
   for (const [index, item] of items.entries()) {
     let dir = dirname(item.file);
     if (dir === ".") {
@@ -47,7 +49,7 @@ export async function printFSTree(dir: string) {
       continue;
     }
 
-    process.stdout.write(
+    treeText += (
       chalk.gray(
         `  ${treeChar} ${rpath} (${prettyBytes(item.size)}) (${prettyBytes(
           item.gzip
@@ -58,9 +60,11 @@ export async function printFSTree(dir: string) {
     totalGzip += item.gzip;
   }
 
-  process.stdout.write(
+  treeText += (
     `${chalk.cyan("Σ Total size:")} ${prettyBytes(
       totalSize + totalNodeModulesSize
     )} (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)\n`
   );
+
+  return treeText;
 }
