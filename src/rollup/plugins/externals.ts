@@ -302,13 +302,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           // Make the package name unique if there are multiple versions
           if (excludeOptimization.has(pkgName)) {
             pkgFullName = `${pkgName}#${v2}`;
-
-            // Add the version to previous dependency
-            const previousPkg = tracedPackages.get(pkgName);
-            if (previousPkg) {
-              tracedPackages.delete(pkgName);
-              tracedPackages.set(`${pkgName}#${v1}`, previousPkg);
-            }
           }
         }
 
