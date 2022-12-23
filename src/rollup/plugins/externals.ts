@@ -245,7 +245,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       };
 
       // Keep track of npm packages
-      const tracedPackages = new Map(); // name => pkgDir
+      const tracedPackages = new Map(); // name#version => pkgDir
       const ignoreDirs = [];
       const ignoreLogs = new Set();
       const excludeOptimization = new Set(
