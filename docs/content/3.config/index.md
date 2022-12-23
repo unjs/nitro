@@ -1,16 +1,17 @@
 ---
 title: Configuration
 aside: false
-description: "Customize your Nitro app with a configuration file!"
+description: 'Customize your Nitro app with a configuration file!'
 ---
 
 In order to customize nitro's behavior, we create a file named `nitro.config.ts`.
 
 ```js
 // nitro.config.ts
-import { defineNitroConfig } from "nitropack";
+import { defineNitroConfig } from 'nitropack'
 
-export default defineNitroConfig({});
+export default defineNitroConfig({
+})
 ```
 
 ## Config Reference
@@ -38,6 +39,7 @@ Log verbosity level. See [unjs/consola#level](https://github.com/unjs/consola/#l
 Server runtime configuration.
 
 **Note:**: `nitro` namespace is reserved.
+
 
 <!-- Features -->
 
@@ -169,6 +171,8 @@ An array of paths to nitro plugins. They will be executed by order on the first 
 
 A map from dynamic virtual import names to their contents or an (async) function that returns it.
 
+
+
 <!-- Routing -->
 
 ## `baseURL`
@@ -215,11 +219,11 @@ Path to a custom runtime error handler. Replacing nitro's built-in error page.
 **Example:**
 
 ```js [nitro.config]
-import { defineNitroConfig } from "nitropack";
+import { defineNitroConfig } from 'nitropack'
 
 export default defineNitroConfig({
-  errorHandler: "~/error",
-});
+  errorHandler: '~/error'
+})
 ```
 
 ```js [error.ts]
@@ -237,6 +241,7 @@ export default <NitroErrorHandler> function (error, event) {
 Route options. It is a map from route pattern (following [unjs/radix3](https://github.com/unjs/radix3#route-matcher)) to route options.
 
 When `cache` option is set, handlers matching pattern will be automatically wrapped with `defineCachedEventHandler`. See [Cache API](/guide/introduction/cache) for all available cache options. (`swr: true|number` is shortcut for `cache: { swr: true, maxAge: number }`.)
+
 
 **Example:**
 
@@ -261,6 +266,8 @@ Default: `{ crawlLinks: false, routes: [] }`
 Prerendered options. Any route specified will be fetched during the build and copied to the `.output/public` directory as a static asset.
 
 If `crawlLinks` option is set to `true`, nitro starts with `/` by default (or all routes in `routes` array) and for HTML pages extracts `<a href="">` tags and prerender them as well.
+
+
 
 <!-- Directories -->
 
@@ -289,6 +296,8 @@ nitro's temporary working directory for generating build-related files.
 - Default: `{ dir: '.output', serverDir: '.output/server', publicDir: '.output/public' }`
 
 Output directories for production bundle.
+
+
 
 <!-- Advanced -->
 
@@ -325,6 +334,7 @@ Preview and deploy command hints are usually filled by deployment presets.
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
 A custom error handler function for development errors.
+
 
 <!-- Rollup -->
 
