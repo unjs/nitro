@@ -31,7 +31,7 @@ export async function generateFSTree(dir: string) {
   let totalNodeModulesSize = 0;
   let totalNodeModulesGzip = 0;
 
-  let treeText = ''
+  let treeText = "";
 
   for (const [index, item] of items.entries()) {
     let dir = dirname(item.file);
@@ -49,22 +49,18 @@ export async function generateFSTree(dir: string) {
       continue;
     }
 
-    treeText += (
-      chalk.gray(
-        `  ${treeChar} ${rpath} (${prettyBytes(item.size)}) (${prettyBytes(
-          item.gzip
-        )} gzip)\n`
-      )
+    treeText += chalk.gray(
+      `  ${treeChar} ${rpath} (${prettyBytes(item.size)}) (${prettyBytes(
+        item.gzip
+      )} gzip)\n`
     );
     totalSize += item.size;
     totalGzip += item.gzip;
   }
 
-  treeText += (
-    `${chalk.cyan("Σ Total size:")} ${prettyBytes(
-      totalSize + totalNodeModulesSize
-    )} (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)\n`
-  );
+  treeText += `${chalk.cyan("Σ Total size:")} ${prettyBytes(
+    totalSize + totalNodeModulesSize
+  )} (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)\n`;
 
   return treeText;
 }

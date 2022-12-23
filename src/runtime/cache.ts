@@ -129,11 +129,13 @@ export interface ResponseCacheEntry<T = any> {
 }
 
 export interface CachedEventHandlerOptions<T = any>
-  extends Omit<
-    CacheOptions<ResponseCacheEntry<T>>,
-    "getKey" | "transform" | "validate"
-  > {
+  extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
+  getKey?: (event: H3Event) => string;
   headersOnly?: boolean;
+}
+
+function escapeKey(key: string) {
+  return key.replace(/[^\dA-Za-z]/g, "");
 }
 
 export function defineCachedEventHandler<T = any>(
@@ -143,10 +145,15 @@ export function defineCachedEventHandler<T = any>(
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: (event) => {
+      const key = opts.getKey?.(event);
+      if (key) {
+        return escapeKey(key);
+      }
       const url = event.req.originalUrl || event.req.url;
-      const friendlyName = decodeURI(parseURL(url).pathname)
-        .replace(/[^\dA-Za-z]/g, "")
-        .slice(0, 16);
+      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
+        0,
+        16
+      );
       const urlHash = hash(url);
       return `${friendlyName}.${urlHash}`;
     },
