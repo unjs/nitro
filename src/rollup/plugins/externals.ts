@@ -16,10 +16,6 @@ export interface NodeExternalsOptions {
   moduleDirectories?: string[];
   exportConditions?: string[];
   traceInclude?: string[];
-  optimizeExternals?: {
-    include?: string[];
-    exclude?: string[];
-  };
 }
 
 export function externals(opts: NodeExternalsOptions): Plugin {
