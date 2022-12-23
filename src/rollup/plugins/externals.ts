@@ -308,7 +308,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const existingPkgDir = tracedPackages.get(
           `${pkgName}#${existingPkgVersion}`
         );
-        if (existingPkgDir && existingPkgDir !== pkgDir && !excludeOptimization.has(pkgName)) {
+        if (
+          existingPkgDir &&
+          existingPkgDir !== pkgDir &&
+          !excludeOptimization.has(pkgName)
+        ) {
           const v1 = await getPackageJson(existingPkgDir).then(
             (r) => r.version
           );
