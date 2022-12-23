@@ -10,7 +10,7 @@ import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
-import { printFSTree } from "./utils/tree";
+import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
@@ -234,7 +234,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
 
   nitro.logger.success("Nitro server built");
   if (nitro.options.logLevel > 1) {
-    await printFSTree(nitro.options.output.serverDir);
+    process.stdout.write(await generateFSTree(nitro.options.output.serverDir));
   }
   await nitro.hooks.callHook("compiled", nitro);
 
