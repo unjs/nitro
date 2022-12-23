@@ -229,6 +229,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           const packageJson = await getPackageJson(
             resolve(existingBaseDir, existingPkgName)
           );
+          const existingPkgVersion = packageJson.version;
           const version = packageJson.dependencies[pkgName];
 
           if (!version) {
@@ -238,10 +239,39 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           const v1 = semver.parse(version.replace(/\^|~/, "")).version;
           const v2 = semver.parse(pkgVersion).version;
           if (v1 === v2) {
-            return existingPkgName;
+            return {
+              name: existingPkgName,
+              version: existingPkgVersion,
+            };
           }
         }
         return null;
+      };
+      // Get a flat array of all parents
+      const getParentList = async (
+        pkgPath: string,
+        tracedPackages: Map<any, string>
+      ) => {
+        let list = [];
+        const parent = await getParent(pkgPath);
+
+        if (parent) {
+          list.push(parent.name);
+          const parentDir = tracedPackages.get(
+            `${parent.name}#${parent.version}`
+          );
+
+          const parentList = await getParentList(
+            tracedFiles.find((f) => f.startsWith(parentDir)),
+            tracedPackages
+          );
+
+          if (parentList.length > 0) {
+            list = [...list, parentList];
+          }
+        }
+
+        return list.flat().reverse();
       };
 
       // Keep track of npm packages
@@ -286,6 +316,14 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             ignoreLogs.add(log);
           }
           excludeOptimization.add(pkgName);
+
+          // Exclude parent list
+          const parentList = await getParentList(file, tracedPackages);
+          if (parentList.length > 0) {
+            for (const parent of parentList) {
+              excludeOptimization.add(parent);
+            }
+          }
         }
 
         // Add to traced packages
@@ -360,13 +398,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         let dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`);
 
         if (excludeOptimization.has(pkgName)) {
-          const parent = await getParent(file);
+          const parent = await getParentList(file, tracedPackages);
 
-          if (parent) {
+          if (parent.length > 0) {
             dst = resolve(
               opts.outDir,
               "node_modules",
-              parent,
+              parent.join("/node_modules/"),
               "node_modules",
               pkgName + subpath
             );
