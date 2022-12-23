@@ -88,7 +88,7 @@
     "pkg-types": "^1.0.1",
     "pretty-bytes": "^6.0.0",
     "radix3": "^1.0.0",
-    "rollup": "^3.8.0",
+    "rollup": "^3.8.1",
     "rollup-plugin-visualizer": "^5.8.3",
     "scule": "^1.0.0",
     "semver": "^7.3.8",
