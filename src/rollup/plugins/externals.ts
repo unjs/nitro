@@ -258,8 +258,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Get's every tracked version of a conflicting dependency
       const getAllVersions = (pkgName: string) => {
         return [...tracedPackages]
-          .filter((p) => p[0][0] === pkgName)
-          .map((p) => p[0][1]);
+          .filter((p) => p[0].split("#")[0] === pkgName)
+          .map((p) => p[0].split("#")[1]);
       };
       const hasConflict = (pkgName: string, pkgVersion: string) => {
         const allVersions = getAllVersions(pkgName);
@@ -289,7 +289,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         }
 
         // Add to traced packages
-        tracedPackages.set([pkgName, pkgVersion], pkgDir);
+        tracedPackages.set(`${pkgName}#${pkgVersion}`, pkgDir);
       }
 
       for (const file of tracedFiles) {
@@ -305,33 +305,31 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const existingPkgVersion = getAllVersions(pkgName).find(
           (v) => v !== pkgVersion
         );
-        const existingPkgDir = tracedPackages.get([pkgName, existingPkgVersion]);
-        if (existingPkgDir && existingPkgDir !== pkgDir) {
+        const existingPkgDir = tracedPackages.get(
+          `${pkgName}#${existingPkgVersion}`
+        );
+        if (existingPkgDir && existingPkgDir !== pkgDir && !excludeOptimization.has(pkgName)) {
           const v1 = await getPackageJson(existingPkgDir).then(
             (r) => r.version
           );
           const v2 = await getPackageJson(pkgDir).then((r) => r.version);
           const getMajor = (v: string) => v.split(".").find((s) => s !== "0");
 
+          const isNewer = semver.gt(v2, v1);
+          const [newerDir, olderDir] = isNewer
+            ? [pkgDir, existingPkgDir]
+            : [existingPkgDir, pkgDir];
+
           // Try to map traced files from one package to another for minor/patch versions
-          if (
-            getMajor(v1) === getMajor(v2) &&
-            !excludeOptimization.has(pkgName)
-          ) {
-            const isNewer = semver.gt(v2, v1);
-
-            const [newerDir, olderDir] = isNewer
-              ? [pkgDir, existingPkgDir]
-              : [existingPkgDir, pkgDir];
-
+          if (getMajor(v1) === getMajor(v2)) {
             tracedFiles = tracedFiles.map((f) =>
               f.startsWith(olderDir + "/") ? f.replace(olderDir, newerDir) : f
             );
-
-            // Exclude older version files
-            ignoreDirs.push(olderDir + "/");
-            tracedPackages.delete([pkgName, v2]); // Remove the older package
           }
+
+          // Exclude older version files
+          ignoreDirs.push(olderDir + "/");
+          tracedPackages.delete(`${pkgName}#${isNewer ? v1 : v2}`); // Remove the older package
         }
       }
 
@@ -386,7 +384,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Write an informative package.json
       const bundledDependencies = [
-        ...new Set([...tracedPackages.keys()].map((p) => p[0])), // Dedup conflicting packages
+        ...new Set([...tracedPackages.keys()].map((p) => p.split("#")[0])), // Dedup conflicting packages
       ];
       await fsp.writeFile(
         resolve(opts.outDir, "package.json"),
