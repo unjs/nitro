@@ -276,6 +276,7 @@ function extractLinks(
 
 const EXT_REGEX = /\.[\da-z]+$/;
 
-function getExtension(path: string): string {
-  return (path.match(EXT_REGEX) || [])[0] || "";
+function getExtension(link: string): string {
+  const pathname = parseURL(link).pathname;
+  return (pathname.match(EXT_REGEX) || [])[0] || "";
 }
