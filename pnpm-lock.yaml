@@ -71,7 +71,7 @@ importers:
       pretty-bytes: ^6.0.0
       radix3: ^1.0.0
       rollup: ^3.9.0
-      rollup-plugin-visualizer: ^5.8.3
+      rollup-plugin-visualizer: ^5.9.0
       scule: ^1.0.0
       semver: ^7.3.8
       serve-placeholder: ^2.0.1
@@ -133,7 +133,7 @@ importers:
       pretty-bytes: 6.0.0
       radix3: 1.0.0
       rollup: 3.9.0
-      rollup-plugin-visualizer: 5.8.3_rollup@3.9.0
+      rollup-plugin-visualizer: 5.9.0_rollup@3.9.0
       scule: 1.0.0
       semver: 7.3.8
       serve-placeholder: 2.0.1
@@ -4497,8 +4497,8 @@ packages:
       '@babel/code-frame': 7.18.6
     dev: true
 
-  /rollup-plugin-visualizer/5.8.3_rollup@3.9.0:
-    resolution: {integrity: sha512-QGJk4Bqe4AOat5AjipOh8esZH1nck5X2KFpf4VytUdSUuuuSwvIQZjMGgjcxe/zXexltqaXp5Vx1V3LmnQH15Q==}
+  /rollup-plugin-visualizer/5.9.0_rollup@3.9.0:
+    resolution: {integrity: sha512-bbDOv47+Bw4C/cgs0czZqfm8L82xOZssk4ayZjG40y9zbXclNk7YikrZTDao6p7+HDiGxrN0b65SgZiVm9k1Cg==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
@@ -4508,6 +4508,7 @@ packages:
         optional: true
     dependencies:
       open: 8.4.0
+      picomatch: 2.3.1
       rollup: 3.9.0
       source-map: 0.7.4
       yargs: 17.5.1
