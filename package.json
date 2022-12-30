@@ -89,7 +89,7 @@
     "pretty-bytes": "^6.0.0",
     "radix3": "^1.0.0",
     "rollup": "^3.9.0",
-    "rollup-plugin-visualizer": "^5.8.3",
+    "rollup-plugin-visualizer": "^5.9.0",
     "scule": "^1.0.0",
     "semver": "^7.3.8",
     "serve-placeholder": "^2.0.1",
