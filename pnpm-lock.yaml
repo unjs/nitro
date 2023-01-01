@@ -26,7 +26,7 @@ importers:
       '@types/semver': ^7.3.13
       '@types/serve-static': ^1.15.0
       '@vercel/nft': ^0.22.6
-      '@vitest/coverage-c8': ^0.26.2
+      '@vitest/coverage-c8': ^0.26.3
       archiver: ^5.3.1
       c12: ^1.1.0
       c8: ^7.12.0
@@ -84,7 +84,7 @@ importers:
       unenv: ^1.0.0
       unimport: ^1.1.0
       unstorage: ^1.0.1
-      vitest: ^0.26.2
+      vitest: ^0.26.3
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
       '@netlify/functions': 1.3.0
@@ -152,7 +152,7 @@ importers:
       '@types/node-fetch': 2.6.2
       '@types/semver': 7.3.13
       '@types/serve-static': 1.15.0
-      '@vitest/coverage-c8': 0.26.2
+      '@vitest/coverage-c8': 0.26.3
       c8: 7.12.0
       changelogen: 0.4.0
       edge-runtime: 2.0.2
@@ -164,7 +164,7 @@ importers:
       prettier: 2.8.1
       typescript: 4.9.4
       unbuild: 1.0.2
-      vitest: 0.26.2
+      vitest: 0.26.3
 
   examples/api-routes:
     specifiers:
@@ -1372,11 +1372,11 @@ packages:
       - supports-color
     dev: false
 
-  /@vitest/coverage-c8/0.26.2:
-    resolution: {integrity: sha512-h7RZ7trUUsq+yixiXhBaGboap7pjee+x59HE9rsz/JbY/evJhgk+biLY5lOgjpyUonPN0Ymz3mxlrXW9Da54SQ==}
+  /@vitest/coverage-c8/0.26.3:
+    resolution: {integrity: sha512-sjmVYPozajWY2DawzuvhYX6hEe/LD6p2xv9VmPvh1zzDeNNVCAnyLcvXoaSMQD522x9bqciuyPrlrnh2iNkE/w==}
     dependencies:
       c8: 7.12.0
-      vitest: 0.26.2
+      vitest: 0.26.3
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -5190,8 +5190,8 @@ packages:
       builtins: 5.0.1
     dev: true
 
-  /vite-node/0.26.2:
-    resolution: {integrity: sha512-4M/zlatItZAyvrQG+82zQBhgDjRZRhVJYFW4T9wcAKh7eMmSiPOVSeI5zsV9UzHXgCcIDKX0o0r3s4OxExTHqg==}
+  /vite-node/0.26.3:
+    resolution: {integrity: sha512-Te2bq0Bfvq6XiO718I+1EinMjpNYKws6SNHKOmVbILAQimKoZKDd+IZLlkaYcBXPpK3HFe2U80k8Zw+m3w/a2w==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     dependencies:
@@ -5236,8 +5236,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.26.2:
-    resolution: {integrity: sha512-Jvqxh6SDy9SsuslkDjts0iDewDIdq4rveEt69YgDuAb1tVDGV0lDepVaeAFraoySWqneJmOt4TngFFNhlw7GfA==}
+  /vitest/0.26.3:
+    resolution: {integrity: sha512-FmHxU9aUCxTi23keF3vxb/Qp0lYXaaJ+jRLGOUmMS3qVTOJvgGE+f1VArupA6pEhaG2Ans4X+zV9dqM5WISMbg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -5272,7 +5272,7 @@ packages:
       tinypool: 0.3.0
       tinyspy: 1.0.2
       vite: 3.1.6
-      vite-node: 0.26.2
+      vite-node: 0.26.3
     transitivePeerDependencies:
       - less
       - sass
