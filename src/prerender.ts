@@ -257,7 +257,10 @@ function extractLinks(
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get("x-nitro-prerender") || "";
-  _links.push(...header.split(",").map((i) => i.trim()));
+  _links.push(...header.split(",")
+      .map((i) => i.trim())
+      .map((i) => decodeURIComponent(i));
+
 
   for (const link of _links.filter(Boolean)) {
     const parsed = parseURL(link);
