@@ -100,7 +100,9 @@ const editorTemplate = (options: Record<string, any>) => `
 
   require(['vs/editor/editor.main'], function () {
     setTimeout(() => {
-      monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(options)})
+      monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(
+        options
+      )})
     }, 0)
   })
 </script>
