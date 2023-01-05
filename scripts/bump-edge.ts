@@ -13,7 +13,7 @@ async function loadPackage(dir: string) {
   const save = () =>
     fsp.writeFile(pkgPath, JSON.stringify(data, null, 2) + "\n");
 
-  const updateDeps = (reviver: Function) => {
+  const updateDeps = (reviver: (dep: any) => any) => {
     for (const type of [
       "dependencies",
       "devDependencies",

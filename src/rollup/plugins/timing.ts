@@ -1,6 +1,8 @@
 import { extname } from "pathe";
 import type { Plugin, RenderedChunk } from "rollup";
 
+// TODO
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Options {}
 
 const TIMING = "globalThis.__timing__";

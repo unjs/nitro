@@ -29,7 +29,7 @@ export function scanMiddleware(nitro: Nitro) {
   }));
 }
 
-export function scanRoutes(nitro: Nitro, dir: string, prefix: string = "/") {
+export function scanRoutes(nitro: Nitro, dir: string, prefix = "/") {
   return scanServerDir(nitro, dir, (file) => {
     let route = file.path
       .replace(/\.[A-Za-z]+$/, "")

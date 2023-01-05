@@ -18,7 +18,7 @@ const getEnv = (key: string) => {
 function isObject(input: unknown) {
   return typeof input === "object" && !Array.isArray(input);
 }
-function overrideConfig(obj: object, parentKey: string = "") {
+function overrideConfig(obj: object, parentKey = "") {
   for (const key in obj) {
     const subKey = parentKey ? `${parentKey}_${key}` : key;
     const envValue = getEnv(subKey);

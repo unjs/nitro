@@ -76,21 +76,52 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
-  const canPrerender = (route: string = "/") => {
+  const displayedLengthWarns = new Set();
+  const canPrerender = (route = "/") => {
+    // Skip if route is already generated
     if (generatedRoutes.has(route)) {
       return false;
     }
-    if (route.length > 250) {
-      return false;
+
+    // Ensure length is not too long for filesystem
+    // https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
+    const FS_MAX_SEGMENT = 255;
+    // 1024 is the max path length on APFS (undocumented)
+    const FS_MAX_PATH = 1024;
+    const FS_MAX_PATH_PUBLIC_HTML =
+      FS_MAX_PATH - (nitro.options.output.publicDir.length + 10);
+
+    if (
+      (route.length >= FS_MAX_PATH_PUBLIC_HTML ||
+        route.split("/").some((s) => s.length > FS_MAX_SEGMENT)) &&
+      !displayedLengthWarns.has(route)
+    ) {
+      displayedLengthWarns.add(route);
+      const _route = route.slice(0, 60) + "...";
+      if (route.length >= FS_MAX_PATH_PUBLIC_HTML) {
+        nitro.logger.warn(
+          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`
+        );
+      } else {
+        nitro.logger.warn(
+          `Skipping prerender of the route "${_route}" since it exceeds the ${FS_MAX_SEGMENT}-character limit in one of the path segments and can cause filesystem issues.`
+        );
+        return false;
+      }
     }
+
+    // Check for explicitly ignored routes
     for (const ignore of nitro.options.prerender.ignore) {
       if (route.startsWith(ignore)) {
         return false;
       }
     }
+
+    // Check for route rules explicitly disabling prerender
     if (_getRouteRules(route).prerender === false) {
       return false;
     }
+
     return true;
   };
 
@@ -226,7 +257,12 @@ function extractLinks(
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get("x-nitro-prerender") || "";
-  _links.push(...header.split(",").map((i) => i.trim()));
+  _links.push(
+    ...header
+      .split(",")
+      .map((i) => i.trim())
+      .map((i) => decodeURIComponent(i))
+  );
 
   for (const link of _links.filter(Boolean)) {
     const parsed = parseURL(link);
