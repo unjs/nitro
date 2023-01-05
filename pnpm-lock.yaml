@@ -8,7 +8,7 @@ importers:
   .:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.3.0
-      '@netlify/functions': ^1.3.0
+      '@netlify/functions': ^1.4.0
       '@rollup/plugin-alias': ^4.0.2
       '@rollup/plugin-commonjs': ^24.0.0
       '@rollup/plugin-inject': ^5.0.3
@@ -87,7 +87,7 @@ importers:
       vitest: ^0.26.3
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
-      '@netlify/functions': 1.3.0
+      '@netlify/functions': 1.4.0
       '@rollup/plugin-alias': 4.0.2_rollup@3.9.1
       '@rollup/plugin-commonjs': 24.0.0_rollup@3.9.1
       '@rollup/plugin-inject': 5.0.3_rollup@3.9.1
@@ -929,8 +929,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@netlify/functions/1.3.0:
-    resolution: {integrity: sha512-hN/Fgpz8XIOBfsBPLYUMxVKBlCopgeqGB0popayicnmkFLnvKByTTMYgF01wcF9DBtBQdV0H2h1kPFpMl34I8w==}
+  /@netlify/functions/1.4.0:
+    resolution: {integrity: sha512-gy7ULTIRroc2/jyFVGx1djCmmBMVisIwrvkqggq5B6iDcInRSy2Tpkm+V5C63hKJVkNRskKWtLQKm9ecCaQTjA==}
     engines: {node: '>=8.3.0'}
     dependencies:
       is-promise: 4.0.0
