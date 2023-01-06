@@ -8,12 +8,14 @@ export function createVFSHandler(nitro: Nitro) {
       ...nitro.options.virtual,
     };
 
-    const url = event.node.req.url || '';
-    const isJson = event.node.req.headers.accept?.includes("application/json") || url.startsWith('.json')
-    const id = decodeURIComponent(url.replace(/^(\.json)?\/?/, '') || "");
+    const url = event.node.req.url || "";
+    const isJson =
+      event.node.req.headers.accept?.includes("application/json") ||
+      url.startsWith(".json");
+    const id = decodeURIComponent(url.replace(/^(\.json)?\/?/, "") || "");
 
-    if (id && !(id in vfsEntries)) { 
-      throw createError({ message: "File not found", statusCode: 404 }); 
+    if (id && !(id in vfsEntries)) {
+      throw createError({ message: "File not found", statusCode: 404 });
     }
 
     let content = id ? vfsEntries[id] : undefined;
@@ -24,17 +26,17 @@ export function createVFSHandler(nitro: Nitro) {
     if (isJson) {
       return {
         rootDir: nitro.options.rootDir,
-        entries: Object.keys(vfsEntries).map(id => ({
+        entries: Object.keys(vfsEntries).map((id) => ({
           id,
-          path: '/_vfs.json/' + encodeURIComponent(id)
+          path: "/_vfs.json/" + encodeURIComponent(id),
         })),
         current: id
           ? {
               id,
-              content
+              content,
             }
-          : null
-      }
+          : null,
+      };
     }
 
     const items = Object.keys(vfsEntries)
@@ -59,16 +61,15 @@ export function createVFSHandler(nitro: Nitro) {
       </div>
       `;
 
-    let file = "";
-    file = id in vfsEntries
+    const file = id
       ? editorTemplate({
-        readOnly: true,
-        language: id.endsWith("html") ? "html" : "javascript",
-        theme: "vs-dark",
-        value: content,
-        wordWrap: "wordWrapColumn",
-        wordWrapColumn: 80,
-      })
+          readOnly: true,
+          language: id.endsWith("html") ? "html" : "javascript",
+          theme: "vs-dark",
+          value: content,
+          wordWrap: "wordWrapColumn",
+          wordWrapColumn: 80,
+        })
       : `
         <div class="m-2">
           <h1 class="text-white">Select a virtual file to inspect</h1>
