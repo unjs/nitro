@@ -17,7 +17,9 @@ export async function scanHandlers(nitro: Nitro) {
     scanRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
 
-  nitro.scannedHandlers = handlers.flatMap((h) => h.handlers);
+  nitro.scannedHandlers = handlers.flatMap((h) => h.handlers).filter(({ route, method }, index, array) => {
+    return array.findIndex((h) => h.route === route && h.method === method) === index;
+  });
 
   return handlers;
 }
