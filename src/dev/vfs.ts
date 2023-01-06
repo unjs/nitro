@@ -8,10 +8,39 @@ export function createVFSHandler(nitro: Nitro) {
       ...nitro.options.virtual,
     };
 
+    const url = event.node.req.url || '';
+    const isJson = event.node.req.headers.accept?.includes("application/json") || url.startsWith('.json')
+    const id = decodeURIComponent(url.replace(/^(\.json)?\/?/, '') || "");
+
+    if (id && !(id in vfsEntries)) { 
+      throw createError({ message: "File not found", statusCode: 404 }); 
+    }
+
+    let content = id ? vfsEntries[id] : undefined;
+    if (typeof content === "function") {
+      content = await content();
+    }
+
+    if (isJson) {
+      return {
+        rootDir: nitro.options.rootDir,
+        entries: Object.keys(vfsEntries).map(id => ({
+          id,
+          path: '/_vfs.json/' + encodeURIComponent(id)
+        })),
+        current: id
+          ? {
+              id,
+              content
+            }
+          : null
+      }
+    }
+
     const items = Object.keys(vfsEntries)
       .map((key) => {
         const linkClass =
-          event.req.url === `/${encodeURIComponent(key)}`
+          url === `/${encodeURIComponent(key)}`
             ? "bg-gray-700 text-white"
             : "hover:bg-gray-800 text-gray-200";
         return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(
@@ -22,6 +51,7 @@ export function createVFSHandler(nitro: Nitro) {
         )}</a></li>`;
       })
       .join("\n");
+
     const files = `
       <div>
         <p class="bg-gray-700 text-white text-bold border-b border-gray-500 text-center">virtual files</p>
@@ -29,31 +59,22 @@ export function createVFSHandler(nitro: Nitro) {
       </div>
       `;
 
-    const id = decodeURIComponent(event.req.url?.slice(1) || "");
-
     let file = "";
-    if (id in vfsEntries) {
-      let contents = vfsEntries[id];
-      if (typeof contents === "function") {
-        contents = await contents();
-      }
-      file = editorTemplate({
+    file = id in vfsEntries
+      ? editorTemplate({
         readOnly: true,
         language: id.endsWith("html") ? "html" : "javascript",
         theme: "vs-dark",
-        value: contents,
+        value: content,
         wordWrap: "wordWrapColumn",
         wordWrapColumn: 80,
-      });
-    } else if (id) {
-      throw createError({ message: "File not found", statusCode: 404 });
-    } else {
-      file = `
+      })
+      : `
         <div class="m-2">
           <h1 class="text-white">Select a virtual file to inspect</h1>
         </div>
       `;
-    }
+
     return `
 <!doctype html>
 <html>
