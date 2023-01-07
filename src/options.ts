@@ -44,7 +44,7 @@ const NitroDefaults: NitroConfig = {
   serverAssets: [],
   plugins: [],
   imports: {
-    exclude: [/[/\\]node_modules[/\\]/, /[/\\]\.git[/\\]/],
+    exclude: [],
     presets: nitroImports,
   },
   virtual: {},
@@ -192,6 +192,10 @@ export async function loadOptions(
   }
 
   if (options.imports && Array.isArray(options.imports.exclude)) {
+    if (options.imports.exclude.length === 0) {
+      options.imports.exclude.push(/[/\\]node_modules[/\\]/, /[/\\]\.git[/\\]/);
+    }
+
     options.imports.exclude.push(options.buildDir);
   }
 
