@@ -40,7 +40,8 @@ export async function copyPublicAssets(nitro: Nitro) {
     if (await isDirectory(asset.dir)) {
       await fse.copy(
         asset.dir,
-        join(nitro.options.output.publicDir, asset.baseURL!)
+        join(nitro.options.output.publicDir, asset.baseURL!),
+        { overwrite: false }
       );
     }
   }
