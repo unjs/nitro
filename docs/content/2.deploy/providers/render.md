@@ -21,4 +21,24 @@ Nitro supports deploying on [Render](https://render.com/) with minimal configura
 
 1. Click 'Create Web Service'.
 
+## Infrastructure as Code (IaC)
+
+1. Create a file called `render.yaml` with following content at the root of your repository.
+> This file followed by [Infrastructure as Code](https://render.com/docs/infrastructure-as-code) on Render
+
+```
+services:
+  - type: web
+    name: <PROJECTNAME>
+    env: node
+    branch: main
+    startCommand: node .output/server/index.mjs
+    buildCommand: npm install && npm run build
+    envVars:
+    - key: NITRO_PRESET
+      value: render-com
+```
+2. [Create a new Blueprint Instance](https://dashboard.render.com/select-repo?type=blueprint) and select the repository containing your `render.yaml` file.
+
+
 You should be good to go!
