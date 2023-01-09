@@ -36,12 +36,11 @@ export async function copyPublicAssets(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
     return;
   }
-  for (const asset of nitro.options.publicAssets) {
+  for (const asset of [...nitro.options.publicAssets].reverse()) {
     if (await isDirectory(asset.dir)) {
       await fse.copy(
         asset.dir,
-        join(nitro.options.output.publicDir, asset.baseURL!),
-        { overwrite: false }
+        join(nitro.options.output.publicDir, asset.baseURL!)
       );
     }
   }
