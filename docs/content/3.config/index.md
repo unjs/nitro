@@ -58,7 +58,9 @@ Storage configuration.
 
 - Default: `false`
 
-Enable bundle files loading time log.
+Enable timing information:
+
+- Bundle files loading time log
 
 ## `renderer`
 
