@@ -60,7 +60,7 @@ Storage configuration.
 
 Enable timing information:
 
-- Bundle files loading time log
+- Nitro startup time log
 
 ## `renderer`
 
