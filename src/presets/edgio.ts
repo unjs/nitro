@@ -1,65 +1,84 @@
 import { promises as fsp } from "node:fs";
 import { resolve, dirname } from "pathe";
-import type { PackageJson } from "pkg-types";
 import { defineNitroPreset } from "../preset";
 
 export const edgio = defineNitroPreset({
   extends: "node",
+  output: {
+    dir: "{{ rootDir }}/.edgio_temp",
+    serverDir: "{{ output.dir }}/serverless",
+    publicDir: "{{ output.dir }}/static",
+  },
   commands: {
-    deploy: "cd ./ && npm run edgio:deploy",
+    deploy: "cd ./ && npx @edgio/cli deploy",
+    preview: "cd ./ && npx @edgio/cli build && npx @edgio/cli run --production",
   },
   hooks: {
     async compiled(nitro) {
-      // Write Edgio config, router, and connector files
+      // npx @edgio/cli dev, build and deploy will use the .edgio directory
+      // Update .gitignore to have .edgio, .edgio_temp, edgio.config.js
+      await fsp.appendFile(
+        resolve(nitro.options.rootDir, ".gitignore"),
+        "\n.edgio_temp\n.edgio\nedgio.config.js\n",
+        "utf8"
+      );
+
+      // Write Edgio config at the rootDir, everything else goes to the .edgio_temp folder
       const edgioConfig = {
-        connector: "./edgio",
+        connector: "./.edgio_temp",
+        routes: "./.edgio_temp/routes.js",
         includeFiles: {
-          [`${nitro.options.output.serverDir}/**/*`]: true,
+          ".edgio_temp/serverless": true,
         },
       };
 
-      // .output/edgio.config.js
-      const configPath = resolve(nitro.options.output.dir, "edgio.config.js");
+      // rootDir/edgio.config.js
+      const configPath = resolve(nitro.options.rootDir, "edgio.config.js");
       await writeFile(
         configPath,
         `module.exports = ${JSON.stringify(edgioConfig, null, 2)}`
       );
 
-      // .output/routes.js
+      // rootDir/.edgio_temp/routes.js
       const routerPath = resolve(nitro.options.output.dir, "routes.js");
       await writeFile(
         routerPath,
-        routesTemplate(nitro.options.output.publicDir)
+        `
+      import { Router } from '@edgio/core/router'
+      import { isProductionBuild } from '@edgio/core/environment'
+
+      const router = new Router()
+
+      if (isProductionBuild()) {
+        router.static('.edgio_temp/static')
+      }
+
+      router.fallback(({ renderWithApp }) => { renderWithApp() })
+
+      export defaulr router
+      `
       );
 
-      // .output/edgio/prod.js
-      const edgioServerlessPath = resolve(
-        nitro.options.output.dir,
-        "edgio",
-        "prod.js"
-      );
+      // rootDir/.edgio_temp/prod.js
+      const edgioServerlessPath = resolve(nitro.options.output.dir, "prod.js");
       await writeFile(
         edgioServerlessPath,
-        serverlessTemplate(nitro.options.output.serverDir)
-      );
+        `
+      import { join } from 'path'
+      import { existsSync } from 'fs'
 
-      // .output/package.json
-      const pkgJSON: PackageJson & { scripts: Record<string, string> } = {
-        private: true,
-        scripts: {
-          "edgio:dev": "edgio dev",
-          "edgio:build": "edgio build",
-          "edgio:deploy": "edgio deploy",
-          "edgio:preview": "edgio build && edgio run --production",
-        },
-        devDependencies: {
-          "@edgio/cli": "^6",
-          "@edgio/core": "^6",
-        },
-      };
-      await writeFile(
-        resolve(nitro.options.output.dir, "package.json"),
-        JSON.stringify(pkgJSON, null, 2)
+      module.exports = async (port) => {
+        const appFilePath = join(process.cwd(), '.edgio_temp', 'serverless')
+        // If .edgio_temp/serverless/index.mjs exist, run it
+        if (existsSync(appFilePath)) {
+          process.env.PORT = port.toString()
+          // Set the NITRO_PORT per
+          // https://github.com/nuxt/framework/discussions/4972#:~:text=the%20PORT%20or-,NITRO_PORT,-environment%20variables
+          process.env.NITRO_PORT = port.toString()
+          await import(appFilePath)
+        }
+      }
+      `
       );
     },
   },
@@ -68,39 +87,4 @@ export const edgio = defineNitroPreset({
 async function writeFile(path: string, contents: string) {
   await fsp.mkdir(dirname(path), { recursive: true });
   await fsp.writeFile(path, contents, "utf8");
-}
-
-function routesTemplate(publicDir) {
-  return `
-import { Router } from '@edgio/core/router'
-import { isProductionBuild } from '@edgio/core/environment'
-
-const router = new Router()
-
-if (isProductionBuild()) {
-  router.static('${publicDir}')
-}
-
-router.fallback(({ renderWithApp }) => { renderWithApp() })
-
-export defaulr router
-`.trim();
-}
-
-function serverlessTemplate(serverDir) {
-  return `
-import { join } from 'path'
-import { existsSync } from 'fs'
-
-module.exports = async (port) => {
-  const appFilePath = join(process.cwd(), ${serverDir})
-  // If ${serverDir}/index.mjs exist, run it
-  if (existsSync(appFilePath)) {
-    // Set the NITRO_PORT per
-    // https://github.com/nuxt/framework/discussions/4972#:~:text=the%20PORT%20or-,NITRO_PORT,-environment%20variables
-    process.env.NITRO_PORT = port.toString()
-    await import(appFilePath)
-  }
-}
-`.trim();
 }
