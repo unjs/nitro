@@ -40,7 +40,9 @@ function createNitroApp(): NitroApp {
     onError: errorHandler,
   });
 
-  h3App.use(config.app.baseURL, timingMiddleware);
+  if(config.timing) {
+    h3App.use(config.app.baseURL, timingMiddleware);
+  }
 
   const router = createRouter();
 

@@ -61,6 +61,7 @@ Storage configuration.
 Enable timing information:
 
 - Nitro startup time log
+- `Server-Timing` header on HTTP responses
 
 ## `renderer`
 
