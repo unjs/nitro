@@ -17,21 +17,13 @@ If this is your first time deploying to Edgio, the interactive CLI as part of th
 npm i -g @edgio/cli
 ```
 
-## Initialize your project for use with Edgio
-
-```bash
-edgio init --connector=@edgio/nitropack
-```
-
-## Testing locally
+## Testing production build locally with Edgio
 
 You can use Nitropack to test your app's developement experience locally:
 
 ```bash
-npx nitropack dev
+NITRO_PRESET=edgio npx nitropack build
 ```
-
-Under the hood, `edgio dev` also runs `npx nitropack dev` on the port 3001.
 
 To simulate on local how your app would run in production with Edgio, run the following command:
 
