@@ -59,7 +59,7 @@ importers:
       listhen: ^1.0.1
       mime: ^3.0.0
       miniflare: ^2.11.0
-      mlly: ^1.0.0
+      mlly: ^1.1.0
       mri: ^1.2.0
       node-fetch-native: ^1.0.1
       ofetch: ^1.0.0
@@ -122,7 +122,7 @@ importers:
       knitwork: 1.0.0
       listhen: 1.0.1
       mime: 3.0.0
-      mlly: 1.0.0
+      mlly: 1.1.0
       mri: 1.2.0
       node-fetch-native: 1.0.1
       ofetch: 1.0.0
@@ -1658,7 +1658,7 @@ packages:
       dotenv: 16.0.3
       giget: 1.0.0
       jiti: 1.16.1
-      mlly: 1.0.0
+      mlly: 1.1.0
       pathe: 1.0.0
       pkg-types: 1.0.1
       rc9: 2.0.0
@@ -3931,8 +3931,8 @@ packages:
       ufo: 1.0.1
     dev: true
 
-  /mlly/1.0.0:
-    resolution: {integrity: sha512-QL108Hwt+u9bXdWgOI0dhzZfACovn5Aen4Xvc8Jasd9ouRH4NjnrXEiyP3nVvJo91zPlYjVRckta0Nt2zfoR6g==}
+  /mlly/1.1.0:
+    resolution: {integrity: sha512-cwzBrBfwGC1gYJyfcy8TcZU1f+dbH/T+TuOhtYP2wLv/Fb51/uV7HJQfBPtEupZ2ORLRU1EKFS/QfS3eo9+kBQ==}
     dependencies:
       acorn: 8.8.1
       pathe: 1.0.0
@@ -4297,7 +4297,7 @@ packages:
     resolution: {integrity: sha512-jHv9HB+Ho7dj6ItwppRDDl0iZRYBD0jsakHXtFgoLr+cHSF6xC+QL54sJmWxyGxOLYSHm0afhXhXcQDQqH9z8g==}
     dependencies:
       jsonc-parser: 3.2.0
-      mlly: 1.0.0
+      mlly: 1.1.0
       pathe: 1.0.0
 
   /pluralize/8.0.0:
@@ -5062,7 +5062,7 @@ packages:
       magic-string: 0.27.0
       mkdirp: 1.0.4
       mkdist: 1.0.0_typescript@4.9.4
-      mlly: 1.0.0
+      mlly: 1.1.0
       mri: 1.2.0
       pathe: 1.0.0
       pkg-types: 1.0.1
@@ -5100,7 +5100,7 @@ packages:
       fast-glob: 3.2.12
       local-pkg: 0.4.2
       magic-string: 0.27.0
-      mlly: 1.0.0
+      mlly: 1.1.0
       pathe: 1.0.0
       pkg-types: 1.0.1
       scule: 1.0.0
@@ -5209,7 +5209,7 @@ packages:
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
-      mlly: 1.0.0
+      mlly: 1.1.0
       pathe: 0.2.0
       picocolors: 1.0.0
       source-map: 0.6.1
