@@ -5,7 +5,7 @@ import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
 import { resolveModuleExportNames, resolvePath as resolveModule } from "mlly";
-// import escapeRE from 'escape-string-regexp'
+import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
@@ -35,7 +35,7 @@ const NitroDefaults: NitroConfig = {
     publicDir: "{{ output.dir }}/public",
   },
 
-  // Featueres
+  // Features
   experimental: {},
   storage: {},
   devStorage: {},
@@ -190,13 +190,30 @@ export async function loadOptions(
   if (options.scanDirs.length === 0) {
     options.scanDirs = [options.srcDir];
   }
+  options.scanDirs = options.scanDirs.map((dir) =>
+    resolve(options.srcDir, dir)
+  );
 
   if (options.imports && Array.isArray(options.imports.exclude)) {
     if (options.imports.exclude.length === 0) {
-      options.imports.exclude.push(/[/\\]node_modules[/\\]/, /[/\\]\.git[/\\]/);
-    }
+      // Exclude .git and buildDir by default
+      options.imports.exclude.push(/[/\\]\.git[/\\]/);
+      options.imports.exclude.push(options.buildDir);
 
-    options.imports.exclude.push(options.buildDir);
+      // Exclude all node modules that are not a scanDir
+      const scanDirsInNodeModules = options.scanDirs
+        .map((dir) => dir.match(/(?<=\/)node_modules\/(.+)$/)?.[1])
+        .filter(Boolean);
+      options.imports.exclude.push(
+        scanDirsInNodeModules.length
+          ? new RegExp(
+              `node_modules\\/(?!${scanDirsInNodeModules
+                .map((dir) => escapeRE(dir))
+                .join("|")})`
+            )
+          : /[/\\]node_modules[/\\]/
+      );
+    }
   }
 
   // Normalise absolute auto-import paths for windows machines
