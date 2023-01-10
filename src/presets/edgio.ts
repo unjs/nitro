@@ -1,4 +1,5 @@
-import { promises as fsp } from "node:fs";
+import { exec } from "node:child_process";
+import { promises as fsp, existsSync } from "node:fs";
 import { resolve, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 
@@ -44,19 +45,19 @@ export const edgio = defineNitroPreset({
       await writeFile(
         routerPath,
         `
-      import { Router } from '@edgio/core/router'
-      import { isProductionBuild } from '@edgio/core/environment'
+import { Router } from '@edgio/core/router'
+import { isProductionBuild } from '@edgio/core/environment'
 
-      const router = new Router()
+const router = new Router()
 
-      if (isProductionBuild()) {
-        router.static('.edgio_temp/static')
-      }
+if (isProductionBuild()) {
+  router.static('.edgio_temp/static')
+}
 
-      router.fallback(({ renderWithApp }) => { renderWithApp() })
+router.fallback(({ renderWithApp }) => { renderWithApp() })
 
-      export defaulr router
-      `
+export defaulr router
+      `.trim()
       );
 
       // rootDir/.edgio_temp/prod.js
@@ -64,22 +65,40 @@ export const edgio = defineNitroPreset({
       await writeFile(
         edgioServerlessPath,
         `
-      import { join } from 'path'
-      import { existsSync } from 'fs'
+import { join } from 'path'
+import { existsSync } from 'fs'
 
-      module.exports = async (port) => {
-        const appFilePath = join(process.cwd(), '.edgio_temp', 'serverless')
-        // If .edgio_temp/serverless/index.mjs exist, run it
-        if (existsSync(appFilePath)) {
-          process.env.PORT = port.toString()
-          // Set the NITRO_PORT per
-          // https://github.com/nuxt/framework/discussions/4972#:~:text=the%20PORT%20or-,NITRO_PORT,-environment%20variables
-          process.env.NITRO_PORT = port.toString()
-          await import(appFilePath)
-        }
-      }
-      `
+module.exports = async (port) => {
+  const appFilePath = join(process.cwd(), '.edgio_temp', 'serverless')
+  // If .edgio_temp/serverless/index.mjs exist, run it
+  if (existsSync(appFilePath)) {
+    process.env.PORT = port.toString()
+    // Set the NITRO_PORT per
+    // https://github.com/nuxt/framework/discussions/4972#:~:text=the%20PORT%20or-,NITRO_PORT,-environment%20variables
+    process.env.NITRO_PORT = port.toString()
+    await import(appFilePath)
+  }
+}
+      `.trim()
       );
+
+      // To use the Edgio CLI (via npx @edgio/cli or directly with edgio), the two packages need to be installed in the rootDir
+      const edgioPackageJSON = resolve(nitro.options.rootDir, "package.json");
+      if (!existsSync(edgioPackageJSON)) {
+        await writeFile(
+          edgioPackageJSON,
+          `
+{
+  "name": "nitropack-edgio",
+  "devDependencies": {
+    "@edgio/cli": "^6",
+    "@edgio/core": "^6"
+  }
+}
+`.trim()
+        );
+      }
+      await installEdgioDeps();
     },
   },
 });
@@ -87,4 +106,15 @@ export const edgio = defineNitroPreset({
 async function writeFile(path: string, contents: string) {
   await fsp.mkdir(dirname(path), { recursive: true });
   await fsp.writeFile(path, contents, "utf8");
+}
+
+async function installEdgioDeps() {
+  console.log("> Installing Edgio devDependencies...\n");
+  const { stdout, stderr } = await exec("npm i -D @edgio/core @edgio/cli");
+  if (stderr) {
+    console.error("> Edgio devDependencies failed with the following error:\n");
+    console.error(stderr);
+  } else {
+    console.log("> Installed Edgio devDependencies succesfully!\n");
+  }
 }
