@@ -46,6 +46,7 @@ export async function setupTest(preset: string) {
         cors: true,
         headers: { "access-control-allowed-methods": "GET" },
       },
+      "/rules/dynamic": { cache: false },
       "/rules/redirect": { redirect: "/base" },
       "/rules/static": { static: true },
       "/rules/swr/**": { swr: true },

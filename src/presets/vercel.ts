@@ -167,14 +167,29 @@ function generateBuildConfig(nitro: Nitro) {
       ...rules
         .filter(
           ([key, value]) =>
-            value.cache &&
-            (value.cache.swr || value.cache.static) &&
-            key.includes("/**")
+            value.cache === false ||
+            (value.cache && value.cache.swr === false) ||
+            (value.cache &&
+              (value.cache.swr || value.cache.static) &&
+              key.includes("/**"))
         )
-        .map(([key]) => ({
-          src: key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)"),
-          dest: generateEndpoint(key) + "?url=$url",
-        })),
+        .map(([key, value]) => {
+          const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
+          if (
+            value.cache === false ||
+            (value.cache && value.cache.swr === false)
+          ) {
+            // we need to write a rule to avoid route being shadowed by another cache rule elsewhere
+            return {
+              src,
+              dest: "/__nitro",
+            };
+          }
+          return {
+            src,
+            dest: generateEndpoint(key) + "?url=$url",
+          };
+        }),
       // If we are using a prerender function as a fallback, then we do not need to output
       // the below fallback route as well
       ...(!nitro.options.routeRules["/**"]?.cache ||
