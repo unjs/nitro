@@ -199,6 +199,15 @@ export function testNitro(
     expect(data.hasEnv).toBe(true);
   });
 
+  it("handles custom server assets", async () => {
+    const { data: html, status: htmlStatus } = await callHandler({ url: "/file?filename=index.html" });
+    const { data: txtFile, status: txtStatus } = await callHandler({ url: "/file?filename=test.txt" });
+    expect(htmlStatus).toBe(200);
+    expect(html).toMatch('<h1>nitro is amazing!</h1>\n');
+    expect(txtStatus).toBe(200);
+    expect(txtFile).toMatch('this is an asset from a text file from nitro\n');
+  });
+
   if (ctx.nitro!.options.serveStatic) {
     it("serve static asset /favicon.ico", async () => {
       const { status, headers } = await callHandler({ url: "/favicon.ico" });

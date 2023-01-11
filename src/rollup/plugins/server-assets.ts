@@ -28,6 +28,14 @@ interface ResolvedAsset {
 }
 
 export function serverAssets(nitro: Nitro): Plugin {
+  // Resolve dir option at the plugin level for maximum flexibility
+  const resolveSrcPath = (...path: string[]) =>
+    resolve(nitro.options.srcDir, ...path);
+
+  for (const asset of nitro.options.serverAssets) {
+    asset.dir = resolveSrcPath(asset.dir);
+  }
+
   // Development: Use filesystem
   if (nitro.options.dev || nitro.options.preset === "nitro-prerender") {
     return virtual(
