@@ -109,7 +109,7 @@
     "@types/node-fetch": "^2.6.2",
     "@types/semver": "^7.3.13",
     "@types/serve-static": "^1.15.0",
-    "@vitest/coverage-c8": "^0.27.0",
+    "@vitest/coverage-c8": "^0.27.1",
     "c8": "^7.12.0",
     "changelogen": "^0.4.0",
     "edge-runtime": "2.0.2",
@@ -121,7 +121,7 @@
     "prettier": "^2.8.2",
     "typescript": "^4.9.4",
     "unbuild": "^1.0.2",
-    "vitest": "^0.27.0"
+    "vitest": "^0.27.1"
   },
   "packageManager": "pnpm@7.24.3",
   "engines": {
