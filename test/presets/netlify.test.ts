@@ -47,6 +47,7 @@ describe("nitro:preset:netlify", async () => {
       /rules/swr-ttl/*	/.netlify/builders/server 200
       /rules/swr/*	/.netlify/builders/server 200
       /rules/static	/.netlify/builders/server 200
+      /rules/dynamic	/.netlify/functions/server 200
       /* /.netlify/functions/server 200"
     `);
     /* eslint-enable no-tabs */

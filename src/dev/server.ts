@@ -223,8 +223,8 @@ function createProxy(defaults: HTTPProxyOptions = {}) {
   const handle = (event: H3Event, opts: HTTPProxyOptions = {}) => {
     return new Promise<void>((resolve, reject) => {
       proxy.web(
-        event.req,
-        event.res,
+        event.node.req,
+        event.node.res,
         { ...defaults, ...opts },
         (error: any) => {
           if (error.code !== "ECONNRESET") {
