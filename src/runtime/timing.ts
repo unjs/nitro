@@ -34,5 +34,9 @@ export const timingMiddleware = eventHandler((event) => {
 });
 
 export const timingPlugin = defineNitroPlugin((nitro) => {
-  nitro.h3App.use(timingMiddleware);
+  // Always add timing middleware to the beginning of handler stack
+  nitro.h3App.stack.unshift({
+    route: "/",
+    handler: timingMiddleware,
+  });
 });
