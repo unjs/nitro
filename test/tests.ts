@@ -57,7 +57,7 @@ export async function setupTest(preset: string) {
       "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
       "/rules/nested/override": { redirect: { to: "/other" } },
     },
-    timing: true,
+    timing: preset !== "cloudflare" && preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {
