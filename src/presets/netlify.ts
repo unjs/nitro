@@ -89,12 +89,18 @@ async function writeRedirects(nitro: Nitro) {
   );
 
   // Rewrite static cached paths to builder functions
-  for (const [key] of rules.filter(
-    ([_, routeRules]) =>
-      routeRules.cache && (routeRules.cache?.static || routeRules.cache?.swr)
+  for (const [key, value] of rules.filter(
+    ([_, value]) =>
+      value.cache === false ||
+      (value.cache && value.cache.swr === false) ||
+      (value.cache && (value.cache?.static || value.cache?.swr))
   )) {
     contents =
-      `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` + contents;
+      value.cache === false || value.cache.swr === false
+        ? `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
+          contents
+        : `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
+          contents;
   }
 
   for (const [key, routeRules] of rules.filter(

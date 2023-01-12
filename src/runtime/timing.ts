@@ -13,8 +13,8 @@ export const timingPlugin = defineNitroPlugin((nitro) => {
     eventHandler((event) => {
       const start = globalTiming.start();
 
-      const _end = event.res.end;
-      event.res.end = function (
+      const _end = event.node.res.end;
+      event.node.res.end = function (
         chunk: any,
         encoding: BufferEncoding,
         cb?: () => void
@@ -26,12 +26,12 @@ export const timingPlugin = defineNitroPlugin((nitro) => {
         const serverTiming = metrics
           .map((m) => `-;dur=${m[1]};desc="${encodeURIComponent(m[0])}"`)
           .join(", ");
-        if (!event.res.headersSent) {
-          event.res.setHeader("Server-Timing", serverTiming);
+        if (!event.node.res.headersSent) {
+          event.node.res.setHeader("Server-Timing", serverTiming);
         }
-        _end.call(event.res, chunk, encoding, cb);
+        _end.call(event.node.res, chunk, encoding, cb);
         return this;
-      }.bind(event.res);
+      }.bind(event.node.res);
     })
   );
 });
