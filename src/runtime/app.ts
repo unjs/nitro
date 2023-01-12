@@ -14,7 +14,6 @@ import {
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
 import { useRuntimeConfig } from "./config";
-import { timingMiddleware } from "./timing";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
 import { plugins } from "#internal/nitro/virtual/plugins";
@@ -39,10 +38,6 @@ function createNitroApp(): NitroApp {
     debug: destr(process.env.DEBUG),
     onError: errorHandler,
   });
-
-  if (config.timing) {
-    h3App.use(config.app.baseURL, timingMiddleware);
-  }
 
   const router = createRouter();
 
