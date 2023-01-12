@@ -2,14 +2,14 @@ import { eventHandler } from "h3";
 
 import { defineNitroPlugin } from "./plugin";
 
-export const globalTiming = globalThis.__timing__ || {
+const globalTiming = globalThis.__timing__ || {
   start: () => 0,
   end: () => 0,
   metrics: [],
 };
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing
-export const timingMiddleware = eventHandler((event) => {
+const timingMiddleware = eventHandler((event) => {
   const start = globalTiming.start();
 
   const _end = event.node.res.end;
@@ -33,7 +33,7 @@ export const timingMiddleware = eventHandler((event) => {
   }.bind(event.node.res);
 });
 
-export const timingPlugin = defineNitroPlugin((nitro) => {
+export default defineNitroPlugin((nitro) => {
   // Always add timing middleware to the beginning of handler stack
   nitro.h3App.stack.unshift({
     route: "/",
