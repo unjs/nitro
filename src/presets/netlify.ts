@@ -21,8 +21,14 @@ export const netlify = defineNitroPreset({
       await writeHeaders(nitro);
       await writeRedirects(nitro);
 
-      const functionConfig = { config: { nodeModuleFormat: 'esm' }, version: 1 }
-      const functionConfigPath = join(nitro.options.output.serverDir, "server.json");
+      const functionConfig = {
+        config: { nodeModuleFormat: "esm" },
+        version: 1,
+      };
+      const functionConfigPath = join(
+        nitro.options.output.serverDir,
+        "server.json"
+      );
       await fsp.writeFile(functionConfigPath, JSON.stringify(functionConfig));
     },
   },
