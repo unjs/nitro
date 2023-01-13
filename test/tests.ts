@@ -3,6 +3,7 @@ import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch } from "ofetch";
 import { expect, it, afterAll } from "vitest";
+import { isWindows } from "std-env";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -197,7 +198,7 @@ export function testNitro(
   it("universal import.meta", async () => {
     const { status, data } = await callHandler({ url: "/api/import-meta" });
     expect(status).toBe(200);
-    expect(data.testFile).toMatch(/\/test.txt$/);
+    expect(data.testFile).toMatch(/[/\\]test.txt$/);
     expect(data.hasEnv).toBe(true);
   });
 
@@ -227,15 +228,18 @@ export function testNitro(
       expect(status).toBe(404);
     });
 
-    it("resolve module version conflicts", async () => {
-      const { data } = await callHandler({ url: "/modules" });
-      expect(data).toMatchObject({
-        depA: "2.0.1",
-        depB: "2.0.1",
-        depLib: "2.0.1",
-        subpathLib: "2.0.1",
+    // TODO: Enable test after https://github.com/unjs/nitro/pull/782
+    if (!isWindows) {
+      it("resolve module version conflicts", async () => {
+        const { data } = await callHandler({ url: "/modules" });
+        expect(data).toMatchObject({
+          depA: "2.0.1",
+          depB: "2.0.1",
+          depLib: "2.0.1",
+          subpathLib: "2.0.1",
+        });
       });
-    });
+    }
 
     if (additionalTests) {
       additionalTests(ctx, callHandler);
