@@ -44,7 +44,7 @@ export const netlifyEdge = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      entryFileNames: "server.js",
+      entryFileNames: "server.mjs",
       format: "esm",
     },
   },
