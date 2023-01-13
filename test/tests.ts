@@ -197,7 +197,7 @@ export function testNitro(
   it("universal import.meta", async () => {
     const { status, data } = await callHandler({ url: "/api/import-meta" });
     expect(status).toBe(200);
-    expect(data.testFile).toMatch(/\/test.txt$/);
+    expect(data.testFile).toMatch(/[/\\]test.txt$/);
     expect(data.hasEnv).toBe(true);
   });
 
