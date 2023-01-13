@@ -59,7 +59,7 @@ export async function handler(
     return {
       cookies,
       statusCode: r.status,
-      headers: normalizeOutgoingHeaders(r.headers),
+      headers: normalizeOutgoingHeaders(r.headers, true),
       body: r.body.toString(),
     };
   }
@@ -81,11 +81,14 @@ function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
 }
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | string[] | undefined>,
+  stripCookies = false
 ) {
+  const entries = stripCookies
+    ? Object.entries(headers).filter(([key]) => !["set-cookie"].includes(key))
+    : Object.entries(headers);
+
   return Object.fromEntries(
-    Object.entries(headers)
-      .filter(([key]) => !["set-cookie"].includes(key))
-      .map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
+    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
   );
 }
