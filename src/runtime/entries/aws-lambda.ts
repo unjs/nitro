@@ -13,18 +13,15 @@ import { nitroApp } from "../app";
 export async function handler(
   event: APIGatewayProxyEvent,
   context: Context
-): Promise<Exclude<APIGatewayProxyResult, string>>;
+): Promise<APIGatewayProxyResult>;
 export async function handler(
   event: APIGatewayProxyEventV2,
   context: Context
-): Promise<Exclude<APIGatewayProxyResultV2, string>>;
+): Promise<APIGatewayProxyResultV2>;
 export async function handler(
   event: APIGatewayProxyEvent | APIGatewayProxyEventV2,
   context: Context
-): Promise<
-  | Exclude<APIGatewayProxyResult, string>
-  | Exclude<APIGatewayProxyResultV2, string>
-> {
+): Promise<APIGatewayProxyResult | APIGatewayProxyResultV2> {
   const query = {
     ...event.queryStringParameters,
     ...(event as APIGatewayProxyEvent).multiValueQueryStringParameters,
