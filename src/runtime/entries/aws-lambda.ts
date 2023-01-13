@@ -57,17 +57,20 @@ export const handler = async function handler(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  const outgoingCookies = r.headers["set-cookie"];
-  const cookies = Array.isArray(outgoingCookies)
-    ? outgoingCookies
-    : outgoingCookies?.split(",") || [];
-
-  return {
-    cookies,
+  const response: Result = {
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
     body: r.body.toString(),
   };
+
+  if ("cookies" in event || 'rawPath' in event) {
+    const outgoingCookies = r.headers["set-cookie"];
+    (response as Exclude<APIGatewayProxyResultV2, string>).cookies = Array.isArray(outgoingCookies)
+      ? outgoingCookies
+      : outgoingCookies?.split(",") || [];
+  }
+
+  return response
 };
 
 function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
