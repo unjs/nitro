@@ -304,8 +304,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const src = join(opts.outDir, "node_modules", from);
         const dst = join(opts.outDir, "node_modules", to);
         await fsp.mkdir(dirname(dst), { recursive: true });
-        // TODO: Windows workaround with junctions?
-        await fsp.symlink(src, dst);
+        // TODO: Warn for windows output which is not portable with junctions or find another solution
+        await fsp.symlink(src, dst, "junction");
       };
 
       // Write traced packages
