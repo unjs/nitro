@@ -57,6 +57,7 @@ export async function setupTest(preset: string) {
       "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
       "/rules/nested/override": { redirect: { to: "/other" } },
     },
+    timing: preset !== "cloudflare" && preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {
@@ -239,5 +240,15 @@ export function testNitro(
     if (additionalTests) {
       additionalTests(ctx, callHandler);
     }
+  }
+
+  if (ctx.nitro!.options.timing) {
+    it("set server timing header", async () => {
+      const { data, status, headers } = await callHandler({
+        url: "/api/hello",
+      });
+      expect(status).toBe(200);
+      expect(headers["server-timing"]).toMatch(/-;dur=\d+;desc="Generate"/);
+    });
   }
 }
