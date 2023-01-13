@@ -10,25 +10,21 @@ import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 
-// Compatibility types that work with AWS v1, AWS v2 & Netlify
-type Event =
-  | Omit<
-      APIGatewayProxyEvent,
-      "pathParameters" | "stageVariables" | "requestContext" | "resource"
-    >
-  | Omit<
-      APIGatewayProxyEventV2,
-      "pathParameters" | "stageVariables" | "requestContext" | "resource"
-    >;
-type Result = Exclude<
-  APIGatewayProxyResult | APIGatewayProxyResultV2,
-  string
-> & { statusCode: number };
-
-export const handler = async function handler(
-  event: Event,
+export async function handler(
+  event: APIGatewayProxyEvent,
   context: Context
-): Promise<Result> {
+): Promise<Exclude<APIGatewayProxyResult, string>>;
+export async function handler(
+  event: APIGatewayProxyEventV2,
+  context: Context
+): Promise<Exclude<APIGatewayProxyResultV2, string>>;
+export async function handler(
+  event: APIGatewayProxyEvent | APIGatewayProxyEventV2,
+  context: Context
+): Promise<
+  | Exclude<APIGatewayProxyResult, string>
+  | Exclude<APIGatewayProxyResultV2, string>
+> {
   const query = {
     ...event.queryStringParameters,
     ...(event as APIGatewayProxyEvent).multiValueQueryStringParameters,
@@ -57,21 +53,26 @@ export const handler = async function handler(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  const response: Result = {
+  if ("cookies" in event || "rawPath" in event) {
+    const outgoingCookies = r.headers["set-cookie"];
+    const cookies = Array.isArray(outgoingCookies)
+      ? outgoingCookies
+      : outgoingCookies?.split(",") || [];
+
+    return {
+      cookies,
+      statusCode: r.status,
+      headers: normalizeOutgoingHeaders(r.headers),
+      body: r.body.toString(),
+    };
+  }
+
+  return {
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
     body: r.body.toString(),
   };
-
-  if ("cookies" in event || 'rawPath' in event) {
-    const outgoingCookies = r.headers["set-cookie"];
-    (response as Exclude<APIGatewayProxyResultV2, string>).cookies = Array.isArray(outgoingCookies)
-      ? outgoingCookies
-      : outgoingCookies?.split(",") || [];
-  }
-
-  return response
-};
+}
 
 function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
   return Object.fromEntries(
