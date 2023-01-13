@@ -9,6 +9,20 @@ on:
       - main
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: corepack enable
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm lint
+
   ci:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -25,8 +39,6 @@ jobs:
           node-version: "16"
           cache: pnpm
       - run: pnpm install
-      - run: pnpm lint
-        if: ${{ matrix.os == 'ubuntu-latest' }}
       - run: pnpm test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
