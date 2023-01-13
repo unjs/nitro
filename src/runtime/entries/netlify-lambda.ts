@@ -50,8 +50,9 @@ function normalizeOutgoingHeaders(
   headers: Record<string, string | string[] | undefined>
 ) {
   return Object.fromEntries(
-    Object.entries(headers)
-      .filter(([key]) => !["set-cookie"].includes(key))
-      .map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
+    Object.entries(headers).map(([k, v]) => [
+      k,
+      Array.isArray(v) ? v.join(",") : v!,
+    ])
   );
 }
