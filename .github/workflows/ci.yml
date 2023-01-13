@@ -26,6 +26,7 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm lint
+        if: ${{ matrix.os == 'ubuntu-latest' }}
       - run: pnpm test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
