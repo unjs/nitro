@@ -35,6 +35,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
     return resolved;
   };
 
+  // Normalize options
+  opts.inline = (opts.inline || []).map((p) => normalize(p));
+  opts.external = (opts.external || []).map((p) => normalize(p));
+
   return {
     name: "node-externals",
     async resolveId(originalId, importer, options) {
