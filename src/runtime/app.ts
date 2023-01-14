@@ -93,6 +93,7 @@ export const $fetch = createFetch({
   defaults: { baseURL: config.app.baseURL },
 });
 
+// @ts-ignore
 globalThis.$fetch = $fetch;
 
 export const useNitroApp = () => nitroApp;
