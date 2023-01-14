@@ -9,7 +9,7 @@ describe("nitro:preset:netlify", async () => {
   const ctx = await setupTest("netlify");
   testNitro(ctx, async () => {
     const { handler } = (await import(
-      resolve(ctx.outDir, "server/server.js")
+      resolve(ctx.outDir, "server/server.mjs")
     )) as { handler: Handler };
     return async ({ url: rawRelativeUrl, headers, method, body }) => {
       // creating new URL object to parse query easier
@@ -41,12 +41,13 @@ describe("nitro:preset:netlify", async () => {
     /* eslint-disable no-tabs */
     expect(redirects).toMatchInlineSnapshot(`
       "/rules/nested/override	/other	302
-      /rules/nested/*	/base	302
       /rules/redirect/obj	https://nitro.unjs.io/	301
+      /rules/nested/*	/base	302
       /rules/redirect	/base	302
       /rules/swr-ttl/*	/.netlify/builders/server 200
       /rules/swr/*	/.netlify/builders/server 200
       /rules/static	/.netlify/builders/server 200
+      /rules/dynamic	/.netlify/functions/server 200
       /* /.netlify/functions/server 200"
     `);
     /* eslint-enable no-tabs */

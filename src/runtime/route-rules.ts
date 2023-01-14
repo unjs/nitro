@@ -1,6 +1,7 @@
 import { eventHandler, H3Event, sendRedirect, setHeaders } from "h3";
 import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
+import { withoutBase } from "ufo";
 import { useRuntimeConfig } from "./config";
 import type { NitroRouteRules } from "nitropack";
 
@@ -31,8 +32,10 @@ export function createRouteRulesHandler() {
 export function getRouteRules(event: H3Event): NitroRouteRules {
   event.context._nitro = event.context._nitro || {};
   if (!event.context._nitro.routeRules) {
-    const path = new URL(event.req.url, "http://localhost").pathname;
-    event.context._nitro.routeRules = getRouteRulesForPath(path);
+    const path = new URL(event.node.req.url, "http://localhost").pathname;
+    event.context._nitro.routeRules = getRouteRulesForPath(
+      withoutBase(path, useRuntimeConfig().app.baseURL)
+    );
   }
   return event.context._nitro.routeRules;
 }

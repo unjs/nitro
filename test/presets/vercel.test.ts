@@ -45,6 +45,20 @@ describe("nitro:preset:vercel", async () => {
         "routes": [
           {
             "headers": {
+              "Location": "https://nitro.unjs.io/",
+            },
+            "src": "/rules/redirect/obj",
+            "status": 308,
+          },
+          {
+            "headers": {
+              "Location": "/other",
+            },
+            "src": "/rules/nested/override",
+            "status": 307,
+          },
+          {
+            "headers": {
               "cache-control": "s-maxage=60",
             },
             "src": "/rules/headers",
@@ -67,24 +81,10 @@ describe("nitro:preset:vercel", async () => {
           },
           {
             "headers": {
-              "Location": "https://nitro.unjs.io/",
-            },
-            "src": "/rules/redirect/obj",
-            "status": 308,
-          },
-          {
-            "headers": {
               "Location": "/base",
               "x-test": "test",
             },
             "src": "/rules/nested/.*",
-            "status": 307,
-          },
-          {
-            "headers": {
-              "Location": "/other",
-            },
-            "src": "/rules/nested/override",
             "status": 307,
           },
           {
@@ -96,6 +96,10 @@ describe("nitro:preset:vercel", async () => {
           },
           {
             "handle": "filesystem",
+          },
+          {
+            "dest": "/__nitro",
+            "src": "/rules/dynamic",
           },
           {
             "dest": "/__nitro--rules-swr?url=$url",

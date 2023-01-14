@@ -40,7 +40,6 @@ Server runtime configuration.
 
 **Note:**: `nitro` namespace is reserved.
 
-
 <!-- Features -->
 
 ## `experimental`
@@ -59,7 +58,10 @@ Storage configuration.
 
 - Default: `false`
 
-Enable timing information.
+Enable timing information:
+
+- Nitro startup time log
+- `Server-Timing` header on HTTP responses
 
 ## `renderer`
 
@@ -92,6 +94,55 @@ If a `public/` directory is detected, it will be added by default, but you can a
 If enabled, Nitro will generate a pre-compressed (gzip and/or brotli) version of supported types of public assets and prerendered routes
 larger than 1024 bytes into the public directory. The best compression level is used. Using this option you can support zero overhead asset compression without using a CDN.
 
+The compressible MIME types are:
+
+- application/dash+xml
+- application/eot
+- application/font
+- application/font-sfnt
+- application/javascript
+- application/json
+- application/opentype
+- application/otf
+- application/pkcs7-mime
+- application/protobuf
+- application/rss+xml
+- application/truetype
+- application/ttf
+- application/vnd.apple.mpegurl
+- application/vnd.mapbox-vector-tile
+- application/vnd.ms-fontobject
+- application/xhtml+xml
+- application/xml
+- application/x-font-opentype
+- application/x-font-truetype
+- application/x-font-ttf
+- application/x-httpd-cgi
+- application/x-javascript
+- application/x-mpegurl
+- application/x-opentype
+- application/x-otf
+- application/x-perl
+- application/x-ttf
+- font/eot
+- font/opentype
+- font/otf
+- font/ttf
+- image/svg+xml
+- text/css
+- text/csv
+- text/html
+- text/javascript
+- text/js
+- text/plain
+- text/richtext
+- text/tab-separated-values
+- text/xml
+- text/x-component
+- text/x-java-source
+- text/x-script
+- vnd.apple.mpegurl
+
 ## `serverAssets`
 
 Assets can be accessed in server logic and bundled in production.
@@ -121,8 +172,6 @@ An array of paths to nitro plugins. They will be executed by order on the first 
 - Default: `{}`
 
 A map from dynamic virtual import names to their contents or an (async) function that returns it.
-
-
 
 <!-- Routing -->
 
@@ -193,7 +242,6 @@ Route options. It is a map from route pattern (following [unjs/radix3](https://g
 
 When `cache` option is set, handlers matching pattern will be automatically wrapped with `defineCachedEventHandler`. See [Cache API](/guide/introduction/cache) for all available cache options. (`swr: true|number` is shortcut for `cache: { swr: true, maxAge: number }`.)
 
-
 **Example:**
 
 ```js
@@ -217,8 +265,6 @@ Default: `{ crawlLinks: false, routes: [] }`
 Prerendered options. Any route specified will be fetched during the build and copied to the `.output/public` directory as a static asset.
 
 If `crawlLinks` option is set to `true`, nitro starts with `/` by default (or all routes in `routes` array) and for HTML pages extracts `<a href="">` tags and prerender them as well.
-
-
 
 <!-- Directories -->
 
@@ -247,8 +293,6 @@ nitro's temporary working directory for generating build-related files.
 - Default: `{ dir: '.output', serverDir: '.output/server', publicDir: '.output/public' }`
 
 Output directories for production bundle.
-
-
 
 <!-- Advanced -->
 
@@ -285,7 +329,6 @@ Preview and deploy command hints are usually filled by deployment presets.
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
 A custom error handler function for development errors.
-
 
 <!-- Rollup -->
 

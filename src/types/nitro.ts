@@ -80,9 +80,10 @@ type DeepPartial<T> = T extends Record<string, any>
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
 export interface NitroConfig
-  extends DeepPartial<Omit<NitroOptions, "routeRules">> {
+  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">> {
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
+  rollupConfig?: Partial<RollupConfig>;
 }
 
 export interface PublicAssetDir {
@@ -141,6 +142,7 @@ export interface NitroOptions extends PresetOptions {
 
   // General
   debug: boolean;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   preset: KebabCase<keyof typeof _PRESETS> | (string & {});
   logLevel: LogLevel;
   runtimeConfig: {
