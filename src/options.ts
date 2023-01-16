@@ -1,5 +1,4 @@
-import { pathToFileURL } from "node:url";
-import { resolve, join, isAbsolute } from "pathe";
+import { resolve, join, normalize } from "pathe";
 import { loadConfig } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
@@ -218,16 +217,6 @@ export async function loadOptions(
     );
   }
 
-  // Normalise absolute auto-import paths for windows machines
-  if (options.imports && options.dev) {
-    options.imports.imports = options.imports.imports || [];
-    for (const entry of options.imports.imports) {
-      if (isAbsolute(entry.from)) {
-        entry.from = pathToFileURL(entry.from).href;
-      }
-    }
-  }
-
   // Add h3 auto imports preset
   if (options.imports) {
     const h3Exports = await resolveModuleExportNames("h3", {
@@ -333,13 +322,7 @@ export async function loadOptions(
   }
 
   // Resolve plugin paths
-  options.plugins = options.plugins.map((p) => {
-    const path = resolvePath(p, options);
-    if (options.dev && isAbsolute(path)) {
-      return pathToFileURL(path).href;
-    }
-    return path;
-  });
+  options.plugins = options.plugins.map((p) => resolvePath(p, options));
 
   return options;
 }

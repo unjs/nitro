@@ -34,6 +34,10 @@ export async function createNitro(config: NitroConfig = {}): Promise<Nitro> {
     nitro.options.plugins.push("#internal/nitro/debug");
   }
 
+  if (nitro.options.timing) {
+    nitro.options.plugins.push("#internal/nitro/timing");
+  }
+
   // Logger config
   if (nitro.options.logLevel !== undefined) {
     nitro.logger.level = nitro.options.logLevel;

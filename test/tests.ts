@@ -3,6 +3,7 @@ import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch } from "ofetch";
 import { expect, it, afterAll } from "vitest";
+import { isWindows } from "std-env";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -57,6 +58,7 @@ export async function setupTest(preset: string) {
       "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
       "/rules/nested/override": { redirect: { to: "/other" } },
     },
+    timing: preset !== "cloudflare" && preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {
@@ -196,7 +198,7 @@ export function testNitro(
   it("universal import.meta", async () => {
     const { status, data } = await callHandler({ url: "/api/import-meta" });
     expect(status).toBe(200);
-    expect(data.testFile).toMatch(/\/test.txt$/);
+    expect(data.testFile).toMatch(/[/\\]test.txt$/);
     expect(data.hasEnv).toBe(true);
   });
 
@@ -238,15 +240,25 @@ export function testNitro(
     it("resolve module version conflicts", async () => {
       const { data } = await callHandler({ url: "/modules" });
       expect(data).toMatchObject({
-        depA: "2.0.1",
-        depB: "2.0.1",
-        depLib: "2.0.1",
-        subpathLib: "2.0.1",
+        depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
+        depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
+        depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
+        subpathLib: "nitro-lib@2.0.0",
       });
     });
 
     if (additionalTests) {
       additionalTests(ctx, callHandler);
     }
+  }
+
+  if (ctx.nitro!.options.timing) {
+    it("set server timing header", async () => {
+      const { data, status, headers } = await callHandler({
+        url: "/api/hello",
+      });
+      expect(status).toBe(200);
+      expect(headers["server-timing"]).toMatch(/-;dur=\d+;desc="Generate"/);
+    });
   }
 }

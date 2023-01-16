@@ -25,6 +25,7 @@ import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { externals } from "./plugins/externals";
+import { externals as legacyExternals } from "./plugins/externals-legacy";
 import { timing } from "./plugins/timing";
 import { publicAssets } from "./plugins/public-assets";
 import { serverAssets } from "./plugins/server-assets";
@@ -305,8 +306,11 @@ export const plugins = [
 
   // Externals Plugin
   if (!nitro.options.noExternals) {
+    const externalsPlugin = nitro.options.experimental.legacyExternals
+      ? legacyExternals
+      : externals;
     rollupConfig.plugins.push(
-      externals(
+      externalsPlugin(
         defu(nitro.options.externals, {
           outDir: nitro.options.output.serverDir,
           moduleDirectories: nitro.options.nodeModulesDirs,
