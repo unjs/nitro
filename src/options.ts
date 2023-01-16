@@ -301,11 +301,15 @@ export async function loadOptions(
     },
   });
 
-  for (const asset of options.publicAssets) {
-    asset.dir = resolve(options.srcDir, asset.dir);
-    asset.baseURL = withLeadingSlash(
-      withoutTrailingSlash(asset.baseURL || "/")
+  for (const publicAsset of options.publicAssets) {
+    publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
+    publicAsset.baseURL = withLeadingSlash(
+      withoutTrailingSlash(publicAsset.baseURL || "/")
     );
+  }
+
+  for (const serverAsset of options.serverAssets) {
+    serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
   }
 
   for (const pkg of ["defu", "h3", "radix3"]) {
