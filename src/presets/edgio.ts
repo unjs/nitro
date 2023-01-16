@@ -35,16 +35,19 @@ export const edgio = defineNitroPreset({
 
       // rootDir/edgio.config.js
       const configPath = resolve(nitro.options.rootDir, "edgio.config.js");
-      await writeFile(
-        configPath,
-        `module.exports = ${JSON.stringify(edgioConfig, null, 2)}`
-      );
+      if (!existsSync(configPath)) {
+        await writeFile(
+          configPath,
+          `module.exports = ${JSON.stringify(edgioConfig, null, 2)}`
+        );
+      }
 
       // rootDir/.edgio_temp/routes.js
       const routerPath = resolve(nitro.options.output.dir, "routes.js");
-      await writeFile(
-        routerPath,
-        `
+      if (!existsSync(routerPath)) {
+        await writeFile(
+          routerPath,
+          `
 import { Router } from '@edgio/core/router'
 import { isProductionBuild } from '@edgio/core/environment'
 
@@ -58,13 +61,15 @@ router.fallback(({ renderWithApp }) => { renderWithApp() })
 
 export defaulr router
       `.trim()
-      );
+        );
+      }
 
       // rootDir/.edgio_temp/prod.js
       const edgioServerlessPath = resolve(nitro.options.output.dir, "prod.js");
-      await writeFile(
-        edgioServerlessPath,
-        `
+      if (!existsSync(edgioServerlessPath)) {
+        await writeFile(
+          edgioServerlessPath,
+          `
 import { join } from 'path'
 import { existsSync } from 'fs'
 
@@ -80,7 +85,8 @@ module.exports = async (port) => {
   }
 }
       `.trim()
-      );
+        );
+      }
 
       // To use the Edgio CLI (via npx @edgio/cli or directly with edgio), the two packages need to be installed in the rootDir
       const edgioPackageJSON = resolve(nitro.options.rootDir, "package.json");
