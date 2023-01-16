@@ -231,10 +231,10 @@ export function testNitro(
     it("resolve module version conflicts", async () => {
       const { data } = await callHandler({ url: "/modules" });
       expect(data).toMatchObject({
-        depA: "1.0.0",
-        depB: "2.0.1",
-        depLib: "2.0.0",
-        subpathLib: "2.0.0",
+        depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
+        depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
+        depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
+        subpathLib: "nitro-lib@2.0.0",
       });
     });
 
