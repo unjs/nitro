@@ -62,6 +62,7 @@ importers:
       mlly: ^1.1.0
       mri: ^1.2.0
       node-fetch-native: ^1.0.1
+      nypm: ^0.1.0
       ofetch: ^1.0.0
       ohash: ^1.0.0
       pathe: ^1.0.0
@@ -125,6 +126,7 @@ importers:
       mlly: 1.1.0
       mri: 1.2.0
       node-fetch-native: 1.0.1
+      nypm: 0.1.0
       ofetch: 1.0.0
       ohash: 1.0.0
       pathe: 1.0.0
@@ -4103,6 +4105,11 @@ packages:
       semver: 7.3.8
       validate-npm-package-name: 4.0.0
     dev: true
+
+  /nypm/0.1.0:
+    resolution: {integrity: sha512-q+/Hl9SWeLsH5moeaZEZFFYqmosoCYN/WU4vckznuCEw95EBG/z4NT1eOkABhh3pvQdHkc3QsiBWHBfIGptBMw==}
+    engines: {node: ^14.16.0 || ^16.10.0 || ^17.0.0 || ^18.0.0 || ^19.0.0}
+    dev: false
 
   /object-assign/4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}

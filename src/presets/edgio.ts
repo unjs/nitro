@@ -1,6 +1,7 @@
 import { exec } from "node:child_process";
 import { promises as fsp, existsSync } from "node:fs";
 import { resolve, dirname } from "pathe";
+import { addDependency } from "nypm";
 import { defineNitroPreset } from "../preset";
 
 export const edgio = defineNitroPreset({
@@ -138,11 +139,14 @@ async function writeFile(path: string, contents: string) {
 
 async function installEdgioDeps() {
   console.log("> Installing Edgio devDependencies...\n");
-  const { stdout, stderr } = await exec("npm i -D @edgio/core @edgio/cli");
-  if (stderr) {
-    console.error("> Edgio devDependencies failed with the following error:\n");
-    console.error(stderr);
-  } else {
+  try {
+    await addDependency("@edgio/core");
+    await addDependency("@edgio/cli");
     console.log("> Installed Edgio devDependencies succesfully!\n");
+  } catch (e) {
+    console.log(
+      "> Installing Edgio devDependencies failed with the following error:\n"
+    );
+    console.log(e.message || e.toString());
   }
 }
