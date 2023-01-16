@@ -93,4 +93,15 @@ export interface $Fetch<
   ): $Fetch<T, R>;
 }
 
+declare global {
+  // eslint-disable-next-line no-var
+  var $fetch: $Fetch;
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    interface Global {
+      $fetch: $Fetch;
+    }
+  }
+}
+
 export {};
