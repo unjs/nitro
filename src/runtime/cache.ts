@@ -154,7 +154,7 @@ export function defineCachedEventHandler<T = any>(
       if (key) {
         return escapeKey(key);
       }
-      const url = event.req.originalUrl || event.req.url;
+      const url = event.node.req.originalUrl || event.node.req.url;
       const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
         0,
         16
@@ -178,10 +178,10 @@ export function defineCachedEventHandler<T = any>(
   const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
     async (incomingEvent: H3Event) => {
       // Create proxies to avoid sharing state with user request
-      const reqProxy = cloneWithProxy(incomingEvent.req, { headers: {} });
+      const reqProxy = cloneWithProxy(incomingEvent.node.req, { headers: {} });
       const resHeaders: Record<string, number | string | string[]> = {};
       let _resSendBody;
-      const resProxy = cloneWithProxy(incomingEvent.res, {
+      const resProxy = cloneWithProxy(incomingEvent.node.res, {
         statusCode: 200,
         getHeader(name) {
           return resHeaders[name];
@@ -243,7 +243,7 @@ export function defineCachedEventHandler<T = any>(
       const body = (await handler(event)) || _resSendBody;
 
       // Collect cachable headers
-      const headers = event.res.getHeaders();
+      const headers = event.node.res.getHeaders();
       headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`;
       headers["last-modified"] =
         headers["Last-Modified"] ||
@@ -268,7 +268,7 @@ export function defineCachedEventHandler<T = any>(
 
       // Create cache entry for response
       const cacheEntry: ResponseCacheEntry<T> = {
-        code: event.res.statusCode,
+        code: event.node.res.statusCode,
         headers,
         body,
       };
@@ -292,7 +292,7 @@ export function defineCachedEventHandler<T = any>(
     const response = await _cachedHandler(event);
 
     // Don't continue if response is already handled by user
-    if (event.res.headersSent || event.res.writableEnded) {
+    if (event.node.res.headersSent || event.node.res.writableEnded) {
       return response.body;
     }
 
@@ -308,9 +308,9 @@ export function defineCachedEventHandler<T = any>(
     }
 
     // Send status and headers
-    event.res.statusCode = response.code;
+    event.node.res.statusCode = response.code;
     for (const name in response.headers) {
-      event.res.setHeader(name, response.headers[name]);
+      event.node.res.setHeader(name, response.headers[name]);
     }
 
     // Send body

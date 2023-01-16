@@ -1,11 +1,10 @@
-import { pathToFileURL } from "node:url";
-import { resolve, join, isAbsolute } from "pathe";
+import { resolve, join, normalize } from "pathe";
 import { loadConfig } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
 import { resolveModuleExportNames, resolvePath as resolveModule } from "mlly";
-// import escapeRE from 'escape-string-regexp'
+import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
@@ -35,7 +34,7 @@ const NitroDefaults: NitroConfig = {
     publicDir: "{{ output.dir }}/public",
   },
 
-  // Featueres
+  // Features
   experimental: {},
   storage: {},
   devStorage: {},
@@ -44,7 +43,7 @@ const NitroDefaults: NitroConfig = {
   serverAssets: [],
   plugins: [],
   imports: {
-    exclude: [/[/\\]node_modules[/\\]/, /[/\\]\.git[/\\]/],
+    exclude: [],
     presets: nitroImports,
   },
   virtual: {},
@@ -190,19 +189,32 @@ export async function loadOptions(
   if (options.scanDirs.length === 0) {
     options.scanDirs = [options.srcDir];
   }
+  options.scanDirs = options.scanDirs.map((dir) =>
+    resolve(options.srcDir, dir)
+  );
 
-  if (options.imports && Array.isArray(options.imports.exclude)) {
+  if (
+    options.imports &&
+    Array.isArray(options.imports.exclude) &&
+    options.imports.exclude.length === 0
+  ) {
+    // Exclude .git and buildDir by default
+    options.imports.exclude.push(/[/\\]\.git[/\\]/);
     options.imports.exclude.push(options.buildDir);
-  }
 
-  // Normalise absolute auto-import paths for windows machines
-  if (options.imports && options.dev) {
-    options.imports.imports = options.imports.imports || [];
-    for (const entry of options.imports.imports) {
-      if (isAbsolute(entry.from)) {
-        entry.from = pathToFileURL(entry.from).href;
-      }
-    }
+    // Exclude all node modules that are not a scanDir
+    const scanDirsInNodeModules = options.scanDirs
+      .map((dir) => dir.match(/(?<=\/)node_modules\/(.+)$/)?.[1])
+      .filter(Boolean);
+    options.imports.exclude.push(
+      scanDirsInNodeModules.length > 0
+        ? new RegExp(
+            `node_modules\\/(?!${scanDirsInNodeModules
+              .map((dir) => escapeRE(dir))
+              .join("|")})`
+          )
+        : /[/\\]node_modules[/\\]/
+    );
   }
 
   // Add h3 auto imports preset
@@ -306,13 +318,7 @@ export async function loadOptions(
   }
 
   // Resolve plugin paths
-  options.plugins = options.plugins.map((p) => {
-    const path = resolvePath(p, options);
-    if (options.dev && isAbsolute(path)) {
-      return pathToFileURL(path).href;
-    }
-    return path;
-  });
+  options.plugins = options.plugins.map((p) => resolvePath(p, options));
 
   return options;
 }

@@ -15,9 +15,9 @@ export type RenderHandler = (
 export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder
-    if (event.req.url.endsWith("/favicon.ico")) {
-      event.res.setHeader("Content-Type", "image/x-icon");
-      event.res.end(
+    if (event.node.req.url.endsWith("/favicon.ico")) {
+      event.node.res.setHeader("Content-Type", "image/x-icon");
+      event.node.res.end(
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
       );
       return;
@@ -25,11 +25,11 @@ export function defineRenderHandler(handler: RenderHandler) {
 
     const response = await handler(event);
     if (!response) {
-      if (!event.res.writableEnded) {
-        event.res.statusCode =
-          event.res.statusCode === 200 ? 500 : event.res.statusCode;
-        event.res.end(
-          "No response returned from render handler: " + event.req.url
+      if (!event.node.res.writableEnded) {
+        event.node.res.statusCode =
+          event.node.res.statusCode === 200 ? 500 : event.node.res.statusCode;
+        event.node.res.end(
+          "No response returned from render handler: " + event.node.req.url
         );
       }
       return;
@@ -44,15 +44,15 @@ export function defineRenderHandler(handler: RenderHandler) {
     // TODO: Caching support
 
     // Send headers
-    if (!event.res.headersSent && response.headers) {
+    if (!event.node.res.headersSent && response.headers) {
       for (const header in response.headers) {
-        event.res.setHeader(header, response.headers[header]);
+        event.node.res.setHeader(header, response.headers[header]);
       }
       if (response.statusCode) {
-        event.res.statusCode = response.statusCode;
+        event.node.res.statusCode = response.statusCode;
       }
       if (response.statusMessage) {
-        event.res.statusMessage = response.statusMessage;
+        event.node.res.statusMessage = response.statusMessage;
       }
     }
 
