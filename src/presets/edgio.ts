@@ -1,4 +1,3 @@
-import { exec } from "node:child_process";
 import { promises as fsp, existsSync } from "node:fs";
 import { resolve, dirname } from "pathe";
 import { addDependency } from "nypm";
