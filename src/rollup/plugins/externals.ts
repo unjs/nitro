@@ -248,13 +248,14 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       await Promise.all(
         Object.values(tracedFiles).map(async (tracedFile) => {
           const pkgJSON = await getPackageJson(tracedFile.pkgPath);
-          let tracedPackage = tracedPackages[pkgJSON.name];
+          const pkgName = tracedFile.pkgName; // Use file path as name to support aliases
+          let tracedPackage = tracedPackages[pkgName];
           if (!tracedPackage) {
             tracedPackage = {
-              name: pkgJSON.name,
+              name: pkgName,
               versions: {},
             };
-            tracedPackages[pkgJSON.name] = tracedPackage;
+            tracedPackages[pkgName] = tracedPackage;
           }
           let tracedPackageVersion = tracedPackage.versions[pkgJSON.version];
           if (!tracedPackageVersion) {
@@ -262,7 +263,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             tracedPackage.versions[pkgJSON.version] = tracedPackageVersion;
           }
           tracedPackageVersion.files.push(tracedFile.path);
-          tracedFile.pkgName = pkgJSON.name;
+          tracedFile.pkgName = pkgName;
           tracedFile.pkgVersion = pkgJSON.version;
         })
       );
