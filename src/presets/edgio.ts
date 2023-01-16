@@ -18,11 +18,33 @@ export const edgio = defineNitroPreset({
     async compiled(nitro) {
       // npx @edgio/cli dev, build and deploy will use the .edgio directory
       // Update .gitignore to have .edgio, .edgio_temp, edgio.config.js
-      await fsp.appendFile(
-        resolve(nitro.options.rootDir, ".gitignore"),
-        "\n.edgio_temp\n.edgio\nedgio.config.js\n",
-        "utf8"
-      );
+
+      // rootDir/edgio.config.js
+      const gitIgnorePath = resolve(nitro.options.rootDir, ".gitignore");
+      if (existsSync(gitIgnorePath)) {
+        const gitIgnoreContent = await fsp.readFile(gitIgnorePath, "utf8");
+        if (!gitIgnoreContent.includes(".edgio")) {
+          await fsp.appendFile(
+            resolve(nitro.options.rootDir, ".gitignore"),
+            "\n# Edgio specific directory\n.edgio\n",
+            "utf8"
+          );
+        }
+        if (!gitIgnoreContent.includes(".edgio_temp")) {
+          await fsp.appendFile(
+            resolve(nitro.options.rootDir, ".gitignore"),
+            "\n# Edgio specific directory\n.edgio_temp\n",
+            "utf8"
+          );
+        }
+        if (!gitIgnoreContent.includes("edgio.config.js")) {
+          await fsp.appendFile(
+            resolve(nitro.options.rootDir, ".gitignore"),
+            "\n# Edgio specific file\nedgio.config.js\n",
+            "utf8"
+          );
+        }
+      }
 
       // Write Edgio config at the rootDir, everything else goes to the .edgio_temp folder
       const edgioConfig = {
