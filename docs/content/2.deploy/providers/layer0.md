@@ -1,0 +1,3 @@
+---
+redirect: /deploy/providers/edgio
+---

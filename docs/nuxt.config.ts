@@ -6,8 +6,5 @@ export default defineNuxtConfig({
     head: {
       title: '⚗️ Nitro'
     }
-  },
-  routeRules: {
-    '/deploy/providers/layer0': { redirect: '/deploy/providers/edgio' }
   }
 })
