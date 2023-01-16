@@ -306,7 +306,7 @@ export const plugins = [
 
   // Externals Plugin
   if (!nitro.options.noExternals) {
-    let externalsPlugin = nitro.options.experimental.legacyExternals
+    const externalsPlugin = nitro.options.experimental.legacyExternals
       ? legacyExternals
       : externals;
     rollupConfig.plugins.push(
