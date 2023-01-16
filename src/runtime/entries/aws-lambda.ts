@@ -10,25 +10,18 @@ import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 
-// Compatibility types that work with AWS v1, AWS v2 & Netlify
-type Event =
-  | Omit<
-      APIGatewayProxyEvent,
-      "pathParameters" | "stageVariables" | "requestContext" | "resource"
-    >
-  | Omit<
-      APIGatewayProxyEventV2,
-      "pathParameters" | "stageVariables" | "requestContext" | "resource"
-    >;
-type Result = Exclude<
-  APIGatewayProxyResult | APIGatewayProxyResultV2,
-  string
-> & { statusCode: number };
-
-export const handler = async function handler(
-  event: Event,
+export async function handler(
+  event: APIGatewayProxyEvent,
   context: Context
-): Promise<Result> {
+): Promise<APIGatewayProxyResult>;
+export async function handler(
+  event: APIGatewayProxyEventV2,
+  context: Context
+): Promise<APIGatewayProxyResultV2>;
+export async function handler(
+  event: APIGatewayProxyEvent | APIGatewayProxyEventV2,
+  context: Context
+): Promise<APIGatewayProxyResult | APIGatewayProxyResultV2> {
   const query = {
     ...event.queryStringParameters,
     ...(event as APIGatewayProxyEvent).multiValueQueryStringParameters,
@@ -57,18 +50,26 @@ export const handler = async function handler(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  const outgoingCookies = r.headers["set-cookie"];
-  const cookies = Array.isArray(outgoingCookies)
-    ? outgoingCookies
-    : outgoingCookies?.split(",") || [];
+  if ("cookies" in event || "rawPath" in event) {
+    const outgoingCookies = r.headers["set-cookie"];
+    const cookies = Array.isArray(outgoingCookies)
+      ? outgoingCookies
+      : outgoingCookies?.split(",") || [];
+
+    return {
+      cookies,
+      statusCode: r.status,
+      headers: normalizeOutgoingHeaders(r.headers, true),
+      body: r.body.toString(),
+    };
+  }
 
   return {
-    cookies,
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
     body: r.body.toString(),
   };
-};
+}
 
 function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
   return Object.fromEntries(
@@ -80,11 +81,14 @@ function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
 }
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | string[] | undefined>,
+  stripCookies = false
 ) {
+  const entries = stripCookies
+    ? Object.entries(headers).filter(([key]) => !["set-cookie"].includes(key))
+    : Object.entries(headers);
+
   return Object.fromEntries(
-    Object.entries(headers)
-      .filter(([key]) => !["set-cookie"].includes(key))
-      .map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
+    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
   );
 }
