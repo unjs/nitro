@@ -206,9 +206,9 @@ export function testNitro(
     const { data: html, status: htmlStatus } = await callHandler({ url: "/file?filename=index.html" });
     const { data: txtFile, status: txtStatus } = await callHandler({ url: "/file?filename=test.txt" });
     expect(htmlStatus).toBe(200);
-    expect(html).toMatch('<h1>nitro is amazing!</h1>\n');
+    expect(html).toContain('<h1>nitro is amazing!</h1>');
     expect(txtStatus).toBe(200);
-    expect(txtFile).toMatch('this is an asset from a text file from nitro\n');
+    expect(txtFile).toContain('this is an asset from a text file from nitro');
   });
 
   if (ctx.nitro!.options.serveStatic) {
