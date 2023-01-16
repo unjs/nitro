@@ -228,18 +228,15 @@ export function testNitro(
       expect(status).toBe(404);
     });
 
-    // TODO: Enable test after https://github.com/unjs/nitro/pull/782
-    if (!isWindows) {
-      it("resolve module version conflicts", async () => {
-        const { data } = await callHandler({ url: "/modules" });
-        expect(data).toMatchObject({
-          depA: "2.0.1",
-          depB: "2.0.1",
-          depLib: "2.0.1",
-          subpathLib: "2.0.1",
-        });
+    it("resolve module version conflicts", async () => {
+      const { data } = await callHandler({ url: "/modules" });
+      expect(data).toMatchObject({
+        depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
+        depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
+        depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
+        subpathLib: "nitro-lib@2.0.0",
       });
-    }
+    });
 
     if (additionalTests) {
       additionalTests(ctx, callHandler);

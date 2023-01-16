@@ -1,10 +1,8 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, dirname, normalize, join, isAbsolute } from "pathe";
-import consola from "consola";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
-import semver from "semver";
 import { isDirectory, retry } from "../../utils";
 
 export interface NodeExternalsOptions {
@@ -165,7 +163,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         return;
       }
 
-      // Force trace paths
+      // Manually traced paths
       for (const pkgName of opts.traceInclude || []) {
         const path = await this.resolve(pkgName);
         if (path?.id) {
@@ -173,19 +171,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         }
       }
 
-      // Trace files
-      let tracedFiles = await nodeFileTrace(
+      // Trace used files using nft
+      const _fileTrace = await nodeFileTrace(
         [...trackedExternals],
         opts.traceOptions
-      )
-        .then((r) =>
-          [...r.fileList].map((f) => resolve(opts.traceOptions.base, f))
-        )
-        .then((r) => r.filter((file) => file.includes("node_modules")));
-
-      // Resolve symlinks
-      tracedFiles = await Promise.all(
-        tracedFiles.map((file) => fsp.realpath(file))
       );
 
       // Read package.json with cache
@@ -201,94 +190,199 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         return pkgJSON;
       };
 
-      // Keep track of npm packages
-      const tracedPackages = new Map(); // name => pkgDir
-      const ignoreDirs = [];
-      const ignoreWarns = new Set();
-      for (const file of tracedFiles) {
-        const { baseDir, pkgName } = parseNodeModulePath(file);
-        if (!pkgName) {
-          continue;
-        }
-        let pkgDir = resolve(baseDir, pkgName);
+      // Resolve traced files
+      type TracedFile = {
+        path: string;
+        subpath: string;
+        parents: string[];
 
-        // Check for duplicate versions
-        const existingPkgDir = tracedPackages.get(pkgName);
-        if (existingPkgDir && existingPkgDir !== pkgDir) {
-          const v1 = await getPackageJson(existingPkgDir).then(
-            (r) => r.version
-          );
-          const v2 = await getPackageJson(pkgDir).then((r) => r.version);
-          const isNewer = semver.gt(v2, v1);
-
-          // Warn about major version differences
-          const getMajor = (v: string) => v.split(".").find((s) => s !== "0");
-          if (getMajor(v1) !== getMajor(v2)) {
-            const warn =
-              `Multiple major versions of package \`${pkgName}\` are being externalized. Picking latest version:\n\n` +
-              [
-                `  ${isNewer ? "-" : "+"} ` + existingPkgDir + "@" + v1,
-                `  ${isNewer ? "+" : "-"} ` + pkgDir + "@" + v2,
-              ].join("\n");
-            if (!ignoreWarns.has(warn)) {
-              consola.warn(warn);
-              ignoreWarns.add(warn);
+        pkgPath: string;
+        pkgName: string;
+        pkgVersion: string;
+      };
+      const _resolveTracedPath = (p) =>
+        fsp.realpath(resolve(opts.traceOptions.base, p));
+      const tracedFiles: Record<string, TracedFile> = Object.fromEntries(
+        await Promise.all(
+          [..._fileTrace.reasons.entries()].map(async ([_path, reasons]) => {
+            if (reasons.ignored) {
+              return;
             }
-          }
-
-          const [newerDir, olderDir] = isNewer
-            ? [pkgDir, existingPkgDir]
-            : [existingPkgDir, pkgDir];
-          // Try to map traced files from one package to another for minor/patch versions
-          if (getMajor(v1) === getMajor(v2)) {
-            tracedFiles = tracedFiles.map((f) =>
-              f.startsWith(olderDir + "/") ? f.replace(olderDir, newerDir) : f
+            const path = await _resolveTracedPath(_path);
+            if (!path.includes("node_modules")) {
+              return;
+            }
+            if (!(await isFile(path))) {
+              return;
+            }
+            const { baseDir, pkgName, subpath } = parseNodeModulePath(path);
+            const pkgPath = join(baseDir, pkgName);
+            const parents = await Promise.all(
+              [...reasons.parents].map((p) => _resolveTracedPath(p))
             );
-          }
-          // Exclude older version files
-          ignoreDirs.push(olderDir + "/");
-          pkgDir = newerDir; // Update for tracedPackages
-        }
+            const tracedFile = <TracedFile>{
+              path,
+              parents,
 
-        // Add to traced packages
-        tracedPackages.set(pkgName, pkgDir);
-      }
-
-      // Filter out files from ignored packages and dedup
-      tracedFiles = tracedFiles.filter(
-        (f) => !ignoreDirs.some((d) => f.startsWith(d))
+              subpath,
+              pkgName,
+              pkgPath,
+            };
+            return [path, tracedFile];
+          })
+        ).then((r) => r.filter(Boolean))
       );
-      tracedFiles = [...new Set(tracedFiles)];
 
-      // Ensure all package.json files are traced
-      for (const pkgDir of tracedPackages.values()) {
-        const pkgJSON = join(pkgDir, "package.json");
-        if (!tracedFiles.includes(pkgJSON)) {
-          tracedFiles.push(pkgJSON);
-        }
-      }
+      // Resolve traced packages
+      type TracedPackage = {
+        name: string;
+        versions: Record<
+          string,
+          {
+            path: string;
+            files: string[];
+          }
+        >;
+      };
+      const tracedPackages: Record<string, TracedPackage> = {};
+      await Promise.all(
+        Object.values(tracedFiles).map(async (tracedFile) => {
+          const pkgJSON = await getPackageJson(tracedFile.pkgPath);
+          const pkgName = tracedFile.pkgName; // Use file path as name to support aliases
+          let tracedPackage = tracedPackages[pkgName];
+          if (!tracedPackage) {
+            tracedPackage = {
+              name: pkgName,
+              versions: {},
+            };
+            tracedPackages[pkgName] = tracedPackage;
+          }
+          let tracedPackageVersion = tracedPackage.versions[pkgJSON.version];
+          if (!tracedPackageVersion) {
+            tracedPackageVersion = { path: tracedFile.pkgPath, files: [] };
+            tracedPackage.versions[pkgJSON.version] = tracedPackageVersion;
+          }
+          tracedPackageVersion.files.push(tracedFile.path);
+          tracedFile.pkgName = pkgName;
+          tracedFile.pkgVersion = pkgJSON.version;
+        })
+      );
 
-      const writeFile = async (file: string) => {
-        if (!(await isFile(file))) {
-          return;
-        }
-        const src = resolve(opts.traceOptions.base, file);
-        const { pkgName, subpath } = parseNodeModulePath(file);
-        const dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`);
-        await fsp.mkdir(dirname(dst), { recursive: true });
-        try {
+      const writePackage = async (
+        name: string,
+        version: string,
+        outputName?: string
+      ) => {
+        // Find pkg
+        const pkg = tracedPackages[name];
+
+        // Copy files
+        for (const src of pkg.versions[version].files) {
+          const { subpath } = parseNodeModulePath(src);
+          const dst = join(
+            opts.outDir,
+            "node_modules",
+            outputName || pkg.name,
+            subpath
+          );
+          await fsp.mkdir(dirname(dst), { recursive: true });
           await fsp.copyFile(src, dst);
-        } catch {
-          consola.warn(`Could not resolve \`${src}\`. Skipping.`);
         }
+
+        // Copy package.json
+        const pkgJSONPath = join(
+          opts.outDir,
+          "node_modules",
+          outputName || pkg.name,
+          "package.json"
+        );
+        await fsp.mkdir(dirname(pkgJSONPath), { recursive: true });
+        await fsp.copyFile(
+          join(pkg.versions[version].path, "package.json"),
+          pkgJSONPath
+        );
       };
 
-      // Write traced files
+      const linkPackage = async (from: string, to: string) => {
+        const src = join(opts.outDir, "node_modules", from);
+        const dst = join(opts.outDir, "node_modules", to);
+        if (existsSync(dst)) {
+          return; // TODO: Warn?
+        }
+        await fsp.mkdir(dirname(dst), { recursive: true });
+        // TODO: Use copy for windows for portable output?
+        await fsp.symlink(src, dst, "junction").catch((err) => {
+          console.error("Cannot link", src, "to", dst, ":", err.message);
+        });
+      };
+
+      // Utility to find package parents
+      const findPackageParents = (pkg: TracedPackage, version: string) => {
+        // Try to find parent packages
+        const versionFiles: TracedFile[] = pkg.versions[version].files.map(
+          (path) => tracedFiles[path]
+        );
+        const parentPkgs = [
+          ...new Set(
+            versionFiles.flatMap((file) =>
+              file.parents.flatMap(
+                (parentPath) =>
+                  tracedFiles[parentPath].pkgName +
+                  "@" +
+                  tracedFiles[parentPath].pkgVersion
+              )
+            )
+          ),
+        ];
+        return parentPkgs;
+      };
+
+      // Write traced packages
       await Promise.all(
-        tracedFiles.map((file) => retry(() => writeFile(file), 3))
+        Object.values(tracedPackages).map(async (tracedPackage) => {
+          const versions = Object.keys(tracedPackage.versions); // TODO: sort by semver
+          if (versions.length === 1) {
+            // Write the only version into node_modules/{name}
+            await writePackage(tracedPackage.name, versions[0]);
+          } else {
+            for (const version of versions) {
+              const parentPkgs = findPackageParents(tracedPackage, version);
+              if (parentPkgs.length === 0) {
+                // No parent packages, assume as the hoisted version
+                await writePackage(tracedPackage.name, version);
+              } else {
+                // Write alternative version into node_modules/{name}@{version}
+                await writePackage(
+                  tracedPackage.name,
+                  version,
+                  `${tracedPackage.name}@${version}`
+                );
+                // For each parent, link into node_modules/{parent}/node_modules/{name}
+                for (const parentPath of parentPkgs) {
+                  await linkPackage(
+                    `${tracedPackage.name}@${version}`,
+                    `${parentPath}/node_modules/${tracedPackage.name}`
+                  );
+                  await linkPackage(
+                    `${tracedPackage.name}@${version}`,
+                    `${parentPath.split("@")[0]}/node_modules/${
+                      tracedPackage.name
+                    }`
+                  );
+                }
+              }
+            }
+          }
+        })
       );
 
       // Write an informative package.json
+      const bundledDependencies = Object.fromEntries(
+        Object.values(tracedPackages).map((pkg) => [
+          pkg.name,
+          Object.keys(pkg.versions).join(" | "),
+        ])
+      );
       await fsp.writeFile(
         resolve(opts.outDir, "package.json"),
         JSON.stringify(
@@ -296,7 +390,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             name: "nitro-output",
             version: "0.0.0",
             private: true,
-            bundledDependencies: [...tracedPackages.keys()],
+            bundledDependencies,
           },
           null,
           2
