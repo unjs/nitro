@@ -67,7 +67,7 @@ export async function createNitro(config: NitroConfig = {}): Promise<Nitro> {
   // Server assets
   nitro.options.serverAssets.push({
     baseName: "server",
-    dir: resolve(nitro.options.srcDir, "assets"),
+    dir: "assets",
   });
 
   // Plugins
