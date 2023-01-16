@@ -305,9 +305,35 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const linkPackage = async (from: string, to: string) => {
         const src = join(opts.outDir, "node_modules", from);
         const dst = join(opts.outDir, "node_modules", to);
+        if (existsSync(dst)) {
+          return; // TODO: Warn?
+        }
         await fsp.mkdir(dirname(dst), { recursive: true });
-        // TODO: Warn for windows output which is not portable with junctions or find another solution
-        await fsp.symlink(src, dst, "junction");
+        // TODO: Use copy for windows for portable output?
+        await fsp.symlink(src, dst, "junction").catch((err) => {
+          console.error("Cannot link", src, "to", dst, ":", err.message);
+        });
+      };
+
+      // Utility to find package parents
+      const findPackageParents = (pkg: TracedPackage, version: string) => {
+        // Try to find parent packages
+        const versionFiles: TracedFile[] = pkg.versions[version].files.map(
+          (path) => tracedFiles[path]
+        );
+        const parentPkgs = [
+          ...new Set(
+            versionFiles.flatMap((file) =>
+              file.parents.flatMap(
+                (parentPath) =>
+                  tracedFiles[parentPath].pkgName +
+                  "@" +
+                  tracedFiles[parentPath].pkgVersion
+              )
+            )
+          ),
+        ];
+        return parentPkgs;
       };
 
       // Write traced packages
@@ -319,20 +345,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             await writePackage(tracedPackage.name, versions[0]);
           } else {
             for (const version of versions) {
-              // Try to find parent packages
-              const versionFiles: TracedFile[] = tracedPackage.versions[
-                version
-              ].files.map((path) => tracedFiles[path]);
-              const parentPkgs = [
-                ...new Set(
-                  versionFiles.flatMap((file) =>
-                    file.parents.flatMap(
-                      (parentPath) => tracedFiles[parentPath].pkgName
-                    )
-                  )
-                ),
-              ];
-
+              const parentPkgs = findPackageParents(tracedPackage, version);
               if (parentPkgs.length === 0) {
                 // No parent packages, assume as the hoisted version
                 await writePackage(tracedPackage.name, version);
@@ -348,6 +361,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
                   await linkPackage(
                     `${tracedPackage.name}@${version}`,
                     `${parentPath}/node_modules/${tracedPackage.name}`
+                  );
+                  await linkPackage(
+                    `${tracedPackage.name}@${version}`,
+                    `${parentPath.split("@")[0]}/node_modules/${
+                      tracedPackage.name
+                    }`
                   );
                 }
               }
