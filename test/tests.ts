@@ -3,6 +3,7 @@ import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch } from "ofetch";
 import { expect, it, afterAll } from "vitest";
+import { isWindows } from "std-env";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -46,6 +47,7 @@ export async function setupTest(preset: string) {
         cors: true,
         headers: { "access-control-allowed-methods": "GET" },
       },
+      "/rules/dynamic": { cache: false },
       "/rules/redirect": { redirect: "/base" },
       "/rules/static": { static: true },
       "/rules/swr/**": { swr: true },
@@ -56,6 +58,7 @@ export async function setupTest(preset: string) {
       "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
       "/rules/nested/override": { redirect: { to: "/other" } },
     },
+    timing: preset !== "cloudflare" && preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {
@@ -195,7 +198,7 @@ export function testNitro(
   it("universal import.meta", async () => {
     const { status, data } = await callHandler({ url: "/api/import-meta" });
     expect(status).toBe(200);
-    expect(data.testFile).toMatch(/\/test.txt$/);
+    expect(data.testFile).toMatch(/[/\\]test.txt$/);
     expect(data.hasEnv).toBe(true);
   });
 
@@ -238,5 +241,15 @@ export function testNitro(
     if (additionalTests) {
       additionalTests(ctx, callHandler);
     }
+  }
+
+  if (ctx.nitro!.options.timing) {
+    it("set server timing header", async () => {
+      const { data, status, headers } = await callHandler({
+        url: "/api/hello",
+      });
+      expect(status).toBe(200);
+      expect(headers["server-timing"]).toMatch(/-;dur=\d+;desc="Generate"/);
+    });
   }
 }

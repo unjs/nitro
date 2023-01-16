@@ -18,7 +18,7 @@ export default <NitroErrorHandler>function (error, event) {
   const showDetails = isDev && statusCode !== 404;
 
   const errorObject = {
-    url: event.req.url || "",
+    url: event.node.req.url || "",
     statusCode,
     statusMessage,
     message,
@@ -41,17 +41,17 @@ export default <NitroErrorHandler>function (error, event) {
     );
   }
 
-  event.res.statusCode = statusCode;
+  event.node.res.statusCode = statusCode;
   if (statusMessage) {
-    event.res.statusMessage = statusMessage;
+    event.node.res.statusMessage = statusMessage;
   }
 
   if (isJsonRequest(event)) {
-    event.res.setHeader("Content-Type", "application/json");
-    event.res.end(JSON.stringify(errorObject));
+    event.node.res.setHeader("Content-Type", "application/json");
+    event.node.res.end(JSON.stringify(errorObject));
   } else {
-    event.res.setHeader("Content-Type", "text/html");
-    event.res.end(renderHTMLError(errorObject));
+    event.node.res.setHeader("Content-Type", "text/html");
+    event.node.res.end(renderHTMLError(errorObject));
   }
 };
 
