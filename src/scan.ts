@@ -17,7 +17,15 @@ export async function scanHandlers(nitro: Nitro) {
     scanRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
 
-  nitro.scannedHandlers = handlers.flatMap((h) => h.handlers);
+  nitro.scannedHandlers = handlers
+    .flatMap((h) => h.handlers)
+    .filter((h, index, array) => {
+      return (
+        array.findIndex(
+          (h2) => h.route === h2.route && h.method === h2.method
+        ) === index
+      );
+    });
 
   return handlers;
 }
