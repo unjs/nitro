@@ -8,7 +8,7 @@
 <h1 align="center">⚗️ Nitro</h1>
 <p align="center">Build and Deploy Universal JavaScript Servers</p>
 
-## Why using Nitro?
+## Why use Nitro?
 
 Nitro provides a powerful toolchain and a runtime framework from the [UnJS](https://github.com/unjs) ecosystem to build and deploy **any JavaScript server, anywhere!**
 

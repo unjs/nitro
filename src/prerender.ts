@@ -257,7 +257,12 @@ function extractLinks(
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get("x-nitro-prerender") || "";
-  _links.push(...header.split(",").map((i) => i.trim()));
+  _links.push(
+    ...header
+      .split(",")
+      .map((i) => i.trim())
+      .map((i) => decodeURIComponent(i))
+  );
 
   for (const link of _links.filter(Boolean)) {
     const parsed = parseURL(link);
@@ -276,6 +281,7 @@ function extractLinks(
 
 const EXT_REGEX = /\.[\da-z]+$/;
 
-function getExtension(path: string): string {
-  return (path.match(EXT_REGEX) || [])[0] || "";
+function getExtension(link: string): string {
+  const pathname = parseURL(link).pathname;
+  return (pathname.match(EXT_REGEX) || [])[0] || "";
 }

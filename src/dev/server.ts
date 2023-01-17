@@ -172,7 +172,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   app.use(
     eventHandler(async (event) => {
       await reloadPromise;
-      const address = currentWorker?.address;
+      const address = currentWorker && currentWorker.address;
       if (!address || (address.socketPath && !existsSync(address.socketPath))) {
         return errorHandler(lastError, event);
       }
@@ -223,8 +223,8 @@ function createProxy(defaults: HTTPProxyOptions = {}) {
   const handle = (event: H3Event, opts: HTTPProxyOptions = {}) => {
     return new Promise<void>((resolve, reject) => {
       proxy.web(
-        event.req,
-        event.res,
+        event.node.req,
+        event.node.res,
         { ...defaults, ...opts },
         (error: any) => {
           if (error.code !== "ECONNRESET") {
