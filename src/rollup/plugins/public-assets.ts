@@ -95,7 +95,7 @@ ${
     ? `export * from "#internal/nitro/virtual/public-assets-${
         nitro.options.serveStatic === "deno" ? "deno" : "node"
       }"`
-    : "export const readAsset = () => new Promise(resolve => resolve(null))"
+    : "export const readAsset = () => Promise.resolve(null)"
 }
 
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
