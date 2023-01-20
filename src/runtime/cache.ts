@@ -89,8 +89,8 @@ export function defineCachedFunction<T = any>(
 
       entry.value = await pending[key];
 
-      if (!isPending) { 
-        // Update mtime, integrity + validate and set the value in cache only the first time the request is made. 
+      if (!isPending) {
+        // Update mtime, integrity + validate and set the value in cache only the first time the request is made.
         entry.mtime = Date.now();
         entry.integrity = integrity;
         delete pending[key];
@@ -99,7 +99,7 @@ export function defineCachedFunction<T = any>(
             .setItem(cacheKey, entry)
             .catch((error) => console.error("[nitro] [cache]", error));
         }
-    }
+      }
     };
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
