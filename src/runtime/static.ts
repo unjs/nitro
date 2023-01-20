@@ -96,11 +96,5 @@ export default eventHandler((event) => {
     event.node.res.setHeader("Content-Length", asset.size);
   }
 
-  // TODO: Asset dir cache control
-  // if (isBuildAsset) {
-  // const TWO_DAYS = 2 * 60 * 60 * 24
-  // event.node.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
-  // }
-
   return readAsset(id);
 });

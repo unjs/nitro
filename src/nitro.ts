@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "pathe";
 import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
+import defu from "defu";
 import consola from "consola";
 import type { NitroConfig, Nitro } from "./types";
 import { loadOptions } from "./options";
@@ -61,7 +62,17 @@ export async function createNitro(config: NitroConfig = {}): Promise<Nitro> {
     asset.baseURL = asset.baseURL || "/";
     const isTopLevel = asset.baseURL === "/";
     asset.fallthrough = asset.fallthrough ?? isTopLevel;
-    asset.maxAge = asset.maxAge ?? (isTopLevel ? 0 : 60);
+    asset.maxAge = asset.maxAge ?? 0;
+    if (asset.maxAge && !asset.fallthrough) {
+      options.routeRules[asset.baseURL + "/**"] = defu(
+        options.routeRules[asset.baseURL + "/**"],
+        {
+          headers: {
+            "cache-control": `public, max-age=${asset.maxAge}, immutable`,
+          },
+        }
+      );
+    }
   }
 
   // Server assets

@@ -285,10 +285,9 @@ export async function loadOptions(
     app: {
       baseURL: options.baseURL,
     },
-    nitro: {
-      routeRules: options.routeRules,
-    },
+    nitro: {},
   });
+  options.runtimeConfig.nitro.routeRules = options.routeRules;
 
   for (const publicAsset of options.publicAssets) {
     publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
