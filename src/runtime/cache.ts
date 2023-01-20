@@ -37,7 +37,7 @@ const defaultCacheOptions = {
   base: "/cache",
   swr: true,
   maxAge: 1,
-  allowStale: false
+  allowStale: false,
 };
 
 export function defineCachedFunction<T = any>(
