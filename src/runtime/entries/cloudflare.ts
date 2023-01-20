@@ -71,7 +71,7 @@ function normalizeOutgoingHeaders (headers: Record<string, string | string[] | u
 function toNodeListener (app: App, context: H3EventContext): NodeListener {
   const toNodeHandle: NodeListener = async function (req, res) {
     const event = createEvent(req, res)
-    event.context = { ...event.context, ...context }
+    event.context.cloudflare = context
     try {
       await app.handler(event)
     } catch (_error: any) {
