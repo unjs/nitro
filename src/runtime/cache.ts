@@ -77,7 +77,8 @@ export function defineCachedFunction<T = any>(
       !validate(entry);
 
     const _resolve = async () => {
-      if (!pending[key]) {
+      const isPending = pending[key];
+      if (!isPending) {
         // Remove cached entry to prevent using expired cache on concurrent requests
         entry.value = undefined;
         entry.integrity = undefined;
@@ -85,15 +86,20 @@ export function defineCachedFunction<T = any>(
         entry.expires = undefined;
         pending[key] = Promise.resolve(resolver());
       }
+
       entry.value = await pending[key];
-      entry.mtime = Date.now();
-      entry.integrity = integrity;
-      delete pending[key];
-      if (validate(entry)) {
-        useStorage()
-          .setItem(cacheKey, entry)
-          .catch((error) => console.error("[nitro] [cache]", error));
-      }
+
+      if (!isPending) { 
+        // Update mtime, integrity + validate and set the value in cache only the first time the request is made. 
+        entry.mtime = Date.now();
+        entry.integrity = integrity;
+        delete pending[key];
+        if (validate(entry)) {
+          useStorage()
+            .setItem(cacheKey, entry)
+            .catch((error) => console.error("[nitro] [cache]", error));
+        }
+    }
     };
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
