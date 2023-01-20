@@ -29,6 +29,7 @@ export interface CacheOptions<T = any> {
   swr?: boolean;
   staleMaxAge?: number;
   base?: string;
+  allowStale?: boolean;
 }
 
 const defaultCacheOptions = {
@@ -36,6 +37,7 @@ const defaultCacheOptions = {
   base: "/cache",
   swr: true,
   maxAge: 1,
+  allowStale: false
 };
 
 export function defineCachedFunction<T = any>(
@@ -78,11 +80,13 @@ export function defineCachedFunction<T = any>(
 
     const _resolve = async () => {
       if (!pending[key]) {
-        // Remove cached entry to prevent using expired cache on concurrent requests
-        entry.value = undefined;
-        entry.integrity = undefined;
-        entry.mtime = undefined;
-        entry.expires = undefined;
+        if (entry.value && !opts.allowStale) {
+          // Remove cached entry to prevent using expired cache on concurrent requests
+          entry.value = undefined;
+          entry.integrity = undefined;
+          entry.mtime = undefined;
+          entry.expires = undefined;
+        }
         pending[key] = Promise.resolve(resolver());
       }
       entry.value = await pending[key];
