@@ -134,15 +134,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
     const url = joinURL(nitro.options.runtimeConfig.app.baseURL, asset.baseURL);
-    app.use(
-      url,
-      fromNodeMiddleware(
-        serveStatic(asset.dir, {
-          maxAge: asset.fallthrough ? undefined : asset.maxAge * 1000,
-          immutable: asset.fallthrough ? undefined : true,
-        })
-      )
-    );
+    app.use(url, fromNodeMiddleware(serveStatic(asset.dir)));
     if (!asset.fallthrough) {
       app.use(url, fromNodeMiddleware(servePlaceholder()));
     }
