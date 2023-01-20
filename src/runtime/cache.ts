@@ -78,7 +78,7 @@ export function defineCachedFunction<T = any>(
 
     const _resolve = async () => {
       if (!pending[key]) {
-        if (entry.value && (opts.staleMaxAge ?? 0) > 0) {
+        if (entry.value && (opts.staleMaxAge ?? 0) >= 0) {
           // Remove cached entry to prevent using expired cache on concurrent requests
           entry.value = undefined;
           entry.integrity = undefined;
