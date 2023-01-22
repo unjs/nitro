@@ -325,12 +325,15 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const parentPkgs = [
           ...new Set(
             versionFiles.flatMap((file) =>
-              file.parents.flatMap(
-                (parentPath) =>
-                  tracedFiles[parentPath].pkgName +
-                  "@" +
-                  tracedFiles[parentPath].pkgVersion
-              )
+              file.parents
+                .map((parentPath) => {
+                  const parentFile = tracedFiles[parentPath];
+                  if (parentFile.pkgName === pkg.name) {
+                    return null;
+                  }
+                  return `${parentFile.pkgName}@${parentFile.pkgVersion}`;
+                })
+                .filter(Boolean)
             )
           ),
         ];
