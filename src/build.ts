@@ -11,6 +11,7 @@ import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
+import { i } from "vitest/dist/index-50755efe";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
@@ -97,10 +98,10 @@ export async function writeTypes(nitro: Nitro) {
   if (nitro.unimport) {
     await nitro.unimport.modifyDynamicImports(async () => {
       const { dirs } = nitro.options.imports as { dirs: string[] };
-      return (await scanDirExports(dirs)).map((i) => {
-        i.from = i.from.replace(/\.ts$/, "");
-        return i;
-      });
+      return (await scanDirExports(dirs)).map((i) => ({
+        ...i,
+        from: i.from.replace(/\.ts$/, ""),
+      }));
     });
     autoImportedTypes = [
       (
