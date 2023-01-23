@@ -1,5 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, dirname, normalize, join, isAbsolute } from "pathe";
+import type { PackageJson } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
@@ -181,13 +182,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const packageJSONCache = new Map(); // pkgDir => contents
       const getPackageJson = async (pkgDir: string) => {
         if (packageJSONCache.has(pkgDir)) {
-          return packageJSONCache.get(pkgDir);
+          return packageJSONCache.get(pkgDir) as PackageJson;
         }
         const pkgJSON = JSON.parse(
           await fsp.readFile(resolve(pkgDir, "package.json"), "utf8")
         );
         packageJSONCache.set(pkgDir, pkgJSON);
-        return pkgJSON;
+        return pkgJSON as PackageJson;
       };
 
       // Resolve traced files
@@ -239,7 +240,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         versions: Record<
           string,
           {
-            pkgJSON: Record<string, any>;
+            pkgJSON: PackageJson;
             path: string;
             files: string[];
           }
@@ -256,7 +257,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           () => {} // TODO: Only catch ENOENT
         );
         if (!pkgJSON) {
-          pkgJSON = { name: pkgName, version: "0.0.0" };
+          pkgJSON = <PackageJson>{ name: pkgName, version: "0.0.0" };
         }
         if (!tracedPackage) {
           tracedPackage = {
@@ -301,6 +302,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         }
 
         // Copy package.json
+        const pkgJSON = pkg.versions[version].pkgJSON;
+        applyProductionCondition(pkgJSON.exports);
         const pkgJSONPath = join(
           opts.outDir,
           "node_modules",
@@ -310,7 +313,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         await fsp.mkdir(dirname(pkgJSONPath), { recursive: true });
         await fsp.writeFile(
           pkgJSONPath,
-          JSON.stringify(pkg.versions[version].pkgJSON, null, 2),
+          JSON.stringify(pkgJSON, null, 2),
           "utf8"
         );
       };
@@ -432,6 +435,22 @@ function parseNodeModulePath(path: string) {
     pkgName,
     subpath,
   };
+}
+
+export function applyProductionCondition(exports: PackageJson["exports"]) {
+  if (!exports || typeof exports === "string") {
+    return;
+  }
+  if (exports.production) {
+    if (typeof exports.production === "string") {
+      exports.default = exports.production;
+    } else {
+      Object.assign(exports, exports.production);
+    }
+  }
+  for (const key in exports) {
+    applyProductionCondition(exports[key]);
+  }
 }
 
 async function isFile(file: string) {
