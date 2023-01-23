@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.0.0-rc.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.0.0-rc.0...v2.0.0-rc.1)
+
+
+### 🚀 Enhancements
+
+  - **externals:** Apply `production` condition to package.exports ([#867](https://github.com/unjs/nitro/pull/867))
+  - Enable auto imports from `utils` dir ([#866](https://github.com/unjs/nitro/pull/866))
+
+### 🩹 Fixes
+
+  - **prerender:** Update preview command to serve matching routes ([#864](https://github.com/unjs/nitro/pull/864))
+  - **externals:** Support orphan files in `node_modules` ([#865](https://github.com/unjs/nitro/pull/865))
+  - Avoid hiding original rollup error message ([a5586f8](https://github.com/unjs/nitro/commit/a5586f8))
+  - **cache:** Only update cache in storage once per pending request ([#861](https://github.com/unjs/nitro/pull/861))
+
+### 🏡 Chore
+
+  - Lint with `eslint --cache` and improve types in `.eslintrc` ([#863](https://github.com/unjs/nitro/pull/863))
+  - Update dependencies ([c52d256](https://github.com/unjs/nitro/commit/c52d256))
+  - Remove random import ([246b726](https://github.com/unjs/nitro/commit/246b726))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Yasser Lahbibi <yasser.lahbibi@apenhet.com>
+- O-az <github@omaraziz.dev>
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.0.0-rc.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v1.0.0...v2.0.0-rc.0)
