@@ -239,34 +239,45 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         versions: Record<
           string,
           {
+            pkgJSON: Record<string, any>;
             path: string;
             files: string[];
           }
         >;
       };
       const tracedPackages: Record<string, TracedPackage> = {};
-      await Promise.all(
-        Object.values(tracedFiles).map(async (tracedFile) => {
-          const pkgJSON = await getPackageJson(tracedFile.pkgPath);
-          const pkgName = tracedFile.pkgName; // Use file path as name to support aliases
-          let tracedPackage = tracedPackages[pkgName];
-          if (!tracedPackage) {
-            tracedPackage = {
-              name: pkgName,
-              versions: {},
-            };
-            tracedPackages[pkgName] = tracedPackage;
-          }
-          let tracedPackageVersion = tracedPackage.versions[pkgJSON.version];
-          if (!tracedPackageVersion) {
-            tracedPackageVersion = { path: tracedFile.pkgPath, files: [] };
-            tracedPackage.versions[pkgJSON.version] = tracedPackageVersion;
-          }
-          tracedPackageVersion.files.push(tracedFile.path);
-          tracedFile.pkgName = pkgName;
-          tracedFile.pkgVersion = pkgJSON.version;
-        })
-      );
+      for (const tracedFile of Object.values(tracedFiles)) {
+        // Use `node_modules/{name}` in path as name to support aliases
+        const pkgName = tracedFile.pkgName;
+        let tracedPackage = tracedPackages[pkgName];
+
+        // Read package.json for file
+        let pkgJSON = await getPackageJson(tracedFile.pkgPath).catch(
+          () => {} // TODO: Only catch ENOENT
+        );
+        if (!pkgJSON) {
+          pkgJSON = { name: pkgName, version: "0.0.0" };
+        }
+        if (!tracedPackage) {
+          tracedPackage = {
+            name: pkgName,
+            versions: {},
+          };
+          tracedPackages[pkgName] = tracedPackage;
+        }
+        let tracedPackageVersion = tracedPackage.versions[pkgJSON.version];
+        if (!tracedPackageVersion) {
+          tracedPackageVersion = {
+            path: tracedFile.pkgPath,
+            files: [],
+            pkgJSON,
+          };
+          tracedPackage.versions[pkgJSON.version] = tracedPackageVersion;
+        }
+        tracedPackageVersion.files.push(tracedFile.path);
+        tracedFile.pkgName = pkgName;
+        tracedFile.pkgVersion = pkgJSON.version;
+      }
 
       const writePackage = async (
         name: string,
@@ -297,9 +308,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           "package.json"
         );
         await fsp.mkdir(dirname(pkgJSONPath), { recursive: true });
-        await fsp.copyFile(
-          join(pkg.versions[version].path, "package.json"),
-          pkgJSONPath
+        await fsp.writeFile(
+          pkgJSONPath,
+          JSON.stringify(pkg.versions[version].pkgJSON, null, 2),
+          "utf8"
         );
       };
 
