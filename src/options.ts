@@ -233,7 +233,7 @@ export async function loadOptions(
   // Auto imports from utils dirs
   if (options.imports) {
     options.imports.dirs.push(
-      ...options.scanDirs.map((dir) => join(dir, "utils"))
+      ...options.scanDirs.map((dir) => join(dir, "utils/*"))
     );
   }
 

@@ -5,6 +5,7 @@ import * as rollup from "rollup";
 import fse from "fs-extra";
 import { defu } from "defu";
 import { watch } from "chokidar";
+import { scanDirExports } from "unimport";
 import { debounce } from "perfect-debounce";
 import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
@@ -93,7 +94,15 @@ export async function writeTypes(nitro: Nitro) {
 
   let autoImportedTypes: string[] = [];
 
-  if (nitro.unimport) {
+  if (nitro.unimport && nitro.options.imports !== false) {
+    await nitro.unimport.modifyDynamicImports(async (imports) => {
+      const importDirs: string[] = (nitro.options.imports as any).dirs;
+      const dirImports = (await scanDirExports(importDirs)).map((i) => {
+        i.from = i.from.replace(/\.ts$/, "");
+        return i;
+      });
+      return dirImports;
+    });
     autoImportedTypes = [
       (
         await nitro.unimport.generateTypeDeclarations({
