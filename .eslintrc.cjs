@@ -1,15 +1,16 @@
-{
-  "extends": ["eslint-config-unjs"],
-  "rules": {
+/** @type {import('eslint').Linter.Config} */
+module.exports = {
+  extends: ["eslint-config-unjs"],
+  rules: {
     "space-before-function-paren": 0,
     "arrow-parens": 0,
     "comma-dangle": 0,
-    "semi": 0,
+    semi: 0,
     "unicorn/prevent-abbreviations": 0,
-    "quotes": 0,
+    quotes: 0,
     "keyword-spacing": 0,
     "no-undef": 0,
-    "indent": 0,
+    indent: 0,
     "unicorn/catch-error-name": 0,
     "unicorn/no-null": 0,
     "unicorn/no-useless-undefined": 0,
@@ -17,6 +18,6 @@
     "unicorn/no-array-push-push": 0,
     "unicorn/filename-case": 0,
     "@typescript-eslint/no-unused-vars": 0,
-    "@typescript-eslint/no-non-null-assertion": 0
-  }
-}
+    "@typescript-eslint/no-non-null-assertion": 0,
+  },
+};
