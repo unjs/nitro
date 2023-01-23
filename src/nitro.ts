@@ -89,6 +89,7 @@ export async function createNitro(config: NitroConfig = {}): Promise<Nitro> {
     }
   }
 
+  // Auto imports
   if (nitro.options.imports) {
     nitro.unimport = createUnimport(nitro.options.imports);
     // Support for importing from '#imports'
