@@ -6,7 +6,10 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./dist/index.mjs",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
     "./cli": "./dist/cli.mjs",
     "./runtime/*": "./dist/runtime/*.mjs",
     "./dist/runtime/*": "./dist/runtime/*.mjs",
