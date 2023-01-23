@@ -94,14 +94,13 @@ export async function writeTypes(nitro: Nitro) {
 
   let autoImportedTypes: string[] = [];
 
-  if (nitro.unimport && nitro.options.imports !== false) {
-    await nitro.unimport.modifyDynamicImports(async (imports) => {
-      const importDirs: string[] = (nitro.options.imports as any).dirs;
-      const dirImports = (await scanDirExports(importDirs)).map((i) => {
+  if (nitro.unimport) {
+    await nitro.unimport.modifyDynamicImports(async () => {
+      const { dirs } = nitro.options.imports as { dirs: string[] };
+      return (await scanDirExports(dirs)).map((i) => {
         i.from = i.from.replace(/\.ts$/, "");
         return i;
       });
-      return dirImports;
     });
     autoImportedTypes = [
       (
