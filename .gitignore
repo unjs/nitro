@@ -66,3 +66,4 @@ Temporary Items
 .netlify
 .vercel
 staticwebapp.config.json
+.eslintcache
