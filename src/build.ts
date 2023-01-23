@@ -11,7 +11,6 @@ import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
-import { i } from "vitest/dist/index-50755efe";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
