@@ -203,12 +203,16 @@ export function testNitro(
   });
 
   it("handles custom server assets", async () => {
-    const { data: html, status: htmlStatus } = await callHandler({ url: "/file?filename=index.html" });
-    const { data: txtFile, status: txtStatus } = await callHandler({ url: "/file?filename=test.txt" });
+    const { data: html, status: htmlStatus } = await callHandler({
+      url: "/file?filename=index.html",
+    });
+    const { data: txtFile, status: txtStatus } = await callHandler({
+      url: "/file?filename=test.txt",
+    });
     expect(htmlStatus).toBe(200);
-    expect(html).toContain('<h1>nitro is amazing!</h1>');
+    expect(html).toContain("<h1>nitro is amazing!</h1>");
     expect(txtStatus).toBe(200);
-    expect(txtFile).toContain('this is an asset from a text file from nitro');
+    expect(txtFile).toContain("this is an asset from a text file from nitro");
   });
 
   if (ctx.nitro!.options.serveStatic) {
@@ -235,6 +239,15 @@ export function testNitro(
     it("shows 404 for /build/non-file", async () => {
       const { status } = await callHandler({ url: "/build/non-file" });
       expect(status).toBe(404);
+    });
+
+    it("find auto imported utils", async () => {
+      const res = await callHandler({ url: "/imports" });
+      expect(res.data).toMatchInlineSnapshot(`
+        {
+          "testUtil": 123,
+        }
+      `);
     });
 
     it("resolve module version conflicts", async () => {

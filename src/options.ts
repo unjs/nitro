@@ -1,4 +1,4 @@
-import { resolve, join, normalize } from "pathe";
+import { resolve, join } from "pathe";
 import { loadConfig } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
@@ -44,6 +44,7 @@ const NitroDefaults: NitroConfig = {
   plugins: [],
   imports: {
     exclude: [],
+    dirs: [],
     presets: nitroImports,
   },
   virtual: {},
@@ -186,12 +187,12 @@ export async function loadOptions(
     ),
   ];
 
-  if (options.scanDirs.length === 0) {
-    options.scanDirs = [options.srcDir];
-  }
+  // Resolve scanDirs
+  options.scanDirs.unshift(options.srcDir);
   options.scanDirs = options.scanDirs.map((dir) =>
     resolve(options.srcDir, dir)
   );
+  options.scanDirs = [...new Set(options.scanDirs)];
 
   if (
     options.imports &&
@@ -226,6 +227,13 @@ export async function loadOptions(
       from: "h3",
       imports: h3Exports.filter((n) => !/^[A-Z]/.test(n) && n !== "use"),
     });
+  }
+
+  // Auto imports from utils dirs
+  if (options.imports) {
+    options.imports.dirs.push(
+      ...options.scanDirs.map((dir) => join(dir, "utils"))
+    );
   }
 
   // Backward compatibility for options.routes
