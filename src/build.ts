@@ -337,7 +337,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
 
 function formatRollupError(_error: RollupError | OnResolveResult) {
   try {
-    const logs: string[] = [];
+    const logs: string[] = [_error.toString()];
     for (const error of "errors" in _error
       ? _error.errors
       : [_error as RollupError]) {
@@ -354,7 +354,7 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
         `Rollup error while processing \`${path}\`` + text ? "\n\n" + text : ""
       );
     }
-    return logs.join("\n\n");
+    return logs.join("\n");
   } catch {
     return _error?.toString();
   }
