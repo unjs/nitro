@@ -46,6 +46,7 @@ const NitroDefaults: NitroConfig = {
     exclude: [],
     dirs: [],
     presets: nitroImports,
+    virtualImports: ["#imports"],
   },
   virtual: {},
   compressPublicAssets: false,
