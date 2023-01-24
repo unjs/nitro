@@ -4,7 +4,7 @@ import type { PackageJson } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
-import semver from "semver";
+// import semver from "semver";
 import { isDirectory } from "../../utils";
 
 export interface NodeExternalsOptions {
@@ -359,7 +359,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Write traced packages
       await Promise.all(
         Object.values(tracedPackages).map(async (tracedPackage) => {
-          const versions = sortVersions(Object.keys(tracedPackage.versions));
+          // TODO: Sort versions
+          // const versions = sortVersions(Object.keys(tracedPackage.versions));
+          const versions = Object.keys(tracedPackage.versions);
           if (versions.length === 1) {
             // Write the only version into node_modules/{name}
             await writePackage(tracedPackage.name, versions[0]);
@@ -385,7 +387,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
                 for (const parentPath of parentPkgs) {
                   await linkPackage(
                     `.nitro/${tracedPackage.name}@${version}`,
-                    `${parentPath}/node_modules/${tracedPackage.name}`
+                    `.nitro/${parentPath}/node_modules/${tracedPackage.name}`
                   );
                   await linkPackage(
                     `.nitro/${tracedPackage.name}@${version}`,
@@ -425,15 +427,15 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 }
 
-function sortVersions(versions: string[]) {
-  return versions.sort((v1 = "0.0.0", v2 = "0.0.0") => {
-    try {
-      return semver.lt(v1, v2, { loose: true }) ? 1 : -1;
-    } catch {
-      return v1.localeCompare(v2);
-    }
-  });
-}
+// function sortVersions(versions: string[]) {
+//   return versions.sort((v1 = "0.0.0", v2 = "0.0.0") => {
+//     try {
+//       return semver.lt(v1, v2, { loose: true }) ? 1 : -1;
+//     } catch {
+//       return v1.localeCompare(v2);
+//     }
+//   });
+// }
 
 function parseNodeModulePath(path: string) {
   if (!path) {
