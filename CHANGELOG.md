@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.0.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.0.0-rc.1...v2.0.0)
+
+
+### 🩹 Fixes
+
+  - Add node16 compatible type declaration ([#868](https://github.com/unjs/nitro/pull/868))
+  - **externals:** Improve multi version handling ([#871](https://github.com/unjs/nitro/pull/871))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pyapar@gmail.com>
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.0.0-rc.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.0.0-rc.0...v2.0.0-rc.1)
