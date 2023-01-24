@@ -4,7 +4,8 @@ import type { PackageJson } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
-import { isDirectory, retry } from "../../utils";
+import semver from "semver";
+import { isDirectory } from "../../utils";
 
 export interface NodeExternalsOptions {
   inline?: string[];
@@ -358,7 +359,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Write traced packages
       await Promise.all(
         Object.values(tracedPackages).map(async (tracedPackage) => {
-          const versions = Object.keys(tracedPackage.versions); // TODO: sort by semver
+          const versions = sortVersions(Object.keys(tracedPackage.versions));
           if (versions.length === 1) {
             // Write the only version into node_modules/{name}
             await writePackage(tracedPackage.name, versions[0]);
@@ -373,16 +374,21 @@ export function externals(opts: NodeExternalsOptions): Plugin {
                 await writePackage(
                   tracedPackage.name,
                   version,
-                  `${tracedPackage.name}@${version}`
+                  `.nitro/${tracedPackage.name}@${version}`
+                );
+                // Link one version to the top level (for indirect bundle deps)
+                await linkPackage(
+                  `.nitro/${tracedPackage.name}@${version}`,
+                  `${tracedPackage.name}`
                 );
                 // For each parent, link into node_modules/{parent}/node_modules/{name}
                 for (const parentPath of parentPkgs) {
                   await linkPackage(
-                    `${tracedPackage.name}@${version}`,
+                    `.nitro/${tracedPackage.name}@${version}`,
                     `${parentPath}/node_modules/${tracedPackage.name}`
                   );
                   await linkPackage(
-                    `${tracedPackage.name}@${version}`,
+                    `.nitro/${tracedPackage.name}@${version}`,
                     `${parentPath.split("@")[0]}/node_modules/${
                       tracedPackage.name
                     }`
@@ -417,6 +423,16 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       );
     },
   };
+}
+
+function sortVersions(versions: string[]) {
+  return versions.sort((v1 = "0.0.0", v2 = "0.0.0") => {
+    try {
+      return semver.lt(v1, v2, { loose: true }) ? 1 : -1;
+    } catch {
+      return v1.localeCompare(v2);
+    }
+  });
 }
 
 function parseNodeModulePath(path: string) {
