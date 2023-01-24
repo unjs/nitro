@@ -82,7 +82,7 @@ importers:
       ufo: ^1.0.1
       unbuild: ^1.1.1
       unenv: ^1.0.1
-      unimport: ^1.3.0
+      unimport: ^2.0.1
       unstorage: ^1.0.1
       vitest: ^0.28.1
     dependencies:
@@ -142,7 +142,7 @@ importers:
       std-env: 3.3.1
       ufo: 1.0.1
       unenv: 1.0.1
-      unimport: 1.3.0_rollup@3.10.1
+      unimport: 2.0.1_rollup@3.10.1
       unstorage: 1.0.1
     devDependencies:
       '@types/aws-lambda': 8.10.109
@@ -5146,8 +5146,8 @@ packages:
       pathe: 1.1.0
     dev: false
 
-  /unimport/1.3.0_rollup@3.10.1:
-    resolution: {integrity: sha512-fOkrdxglsHd428yegH0wPH/6IfaSdDeMXtdRGn6en/ccyzc2aaoxiUTMrJyc6Bu+xoa18RJRPMfLUHEzjz8atw==}
+  /unimport/2.0.1_rollup@3.10.1:
+    resolution: {integrity: sha512-hMeDspGrEcocahicTr0AQYUGes24FvJtOxk9QEjeEOGv+n1EdpsDiT6z8t209PWhemPg0T5w/ooTVhup2GdrFA==}
     dependencies:
       '@rollup/pluginutils': 5.0.2_rollup@3.10.1
       escape-string-regexp: 5.0.0
