@@ -42,12 +42,6 @@ Nitro supports deploying on the [Digital Ocean App Platform](https://docs.digita
    }
    ```
    
-1. Finally, you'll need to add this start script to your Digital Ocean app's run command. Go to `Components > Settings > Commands`, click "Edit", then add one of the following depending on what package manager you use:
-
-    ```npm run start```
-    
-    ```yarn start```
-    
-    ```pnpm run start```
+1. Finally, you'll need to add this start script to your Digital Ocean app's run command. Go to `Components > Settings > Commands`, click "Edit", then add `npm run start`
 
 Your app should be live at a Digital Ocean generated URL and you can now follow [the rest of the Digital Ocean deployment guide](https://docs.digitalocean.com/products/app-platform/how-to/manage-deployments/).
