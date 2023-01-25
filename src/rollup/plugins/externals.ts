@@ -1,5 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { resolve, dirname, normalize, join, isAbsolute } from "pathe";
+import { platform } from "node:os";
+import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
 import type { PackageJson } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
@@ -319,17 +320,23 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         );
       };
 
+      const isWindows = platform() === "win32";
       const linkPackage = async (from: string, to: string) => {
         const src = join(opts.outDir, "node_modules", from);
         const dst = join(opts.outDir, "node_modules", to);
         if (existsSync(dst)) {
-          return; // TODO: Warn?
+          return;
         }
         await fsp.mkdir(dirname(dst), { recursive: true });
-        // TODO: Use copy for windows for portable output?
-        await fsp.symlink(src, dst, "junction").catch((err) => {
-          console.error("Cannot link", src, "to", dst, ":", err.message);
-        });
+        await fsp
+          .symlink(
+            relative(dirname(dst), src),
+            dst,
+            isWindows ? "junction" : "dir"
+          )
+          .catch((err) => {
+            console.error("Cannot link", src, "to", dst, ":", err.message);
+          });
       };
 
       // Utility to find package parents
