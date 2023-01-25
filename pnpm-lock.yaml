@@ -15,7 +15,7 @@ importers:
       '@rollup/plugin-json': ^6.0.0
       '@rollup/plugin-node-resolve': ^15.0.1
       '@rollup/plugin-replace': ^5.0.2
-      '@rollup/plugin-terser': ^0.3.0
+      '@rollup/plugin-terser': ^0.4.0
       '@rollup/plugin-wasm': ^6.1.2
       '@rollup/pluginutils': ^5.0.2
       '@types/aws-lambda': ^8.10.109
@@ -26,7 +26,7 @@ importers:
       '@types/semver': ^7.3.13
       '@types/serve-static': ^1.15.0
       '@vercel/nft': ^0.22.6
-      '@vitest/coverage-c8': ^0.28.1
+      '@vitest/coverage-c8': ^0.28.2
       archiver: ^5.3.1
       c12: ^1.1.0
       c8: ^7.12.0
@@ -35,7 +35,7 @@ importers:
       chokidar: ^3.5.3
       consola: ^2.15.3
       cookie-es: ^0.5.0
-      defu: ^6.1.1
+      defu: ^6.1.2
       destr: ^1.2.2
       dot-prop: ^7.2.0
       edge-runtime: 2.0.3
@@ -49,14 +49,14 @@ importers:
       fs-extra: ^11.1.0
       globby: ^13.1.3
       gzip-size: ^7.0.0
-      h3: ^1.0.2
+      h3: ^1.1.0
       hookable: ^5.4.2
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
       jiti: ^1.16.2
       klona: ^2.0.6
       knitwork: ^1.0.0
-      listhen: ^1.0.1
+      listhen: ^1.0.2
       mime: ^3.0.0
       miniflare: ^2.11.0
       mlly: ^1.1.0
@@ -81,10 +81,10 @@ importers:
       typescript: ^4.9.4
       ufo: ^1.0.1
       unbuild: ^1.1.1
-      unenv: ^1.0.1
+      unenv: ^1.0.2
       unimport: ^2.0.1
       unstorage: ^1.0.1
-      vitest: ^0.28.1
+      vitest: ^0.28.2
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
       '@netlify/functions': 1.4.0
@@ -94,7 +94,7 @@ importers:
       '@rollup/plugin-json': 6.0.0_rollup@3.10.1
       '@rollup/plugin-node-resolve': 15.0.1_rollup@3.10.1
       '@rollup/plugin-replace': 5.0.2_rollup@3.10.1
-      '@rollup/plugin-terser': 0.3.0_rollup@3.10.1
+      '@rollup/plugin-terser': 0.4.0_rollup@3.10.1
       '@rollup/plugin-wasm': 6.1.2_rollup@3.10.1
       '@rollup/pluginutils': 5.0.2_rollup@3.10.1
       '@vercel/nft': 0.22.6
@@ -104,7 +104,7 @@ importers:
       chokidar: 3.5.3
       consola: 2.15.3
       cookie-es: 0.5.0
-      defu: 6.1.1
+      defu: 6.1.2
       destr: 1.2.2
       dot-prop: 7.2.0
       esbuild: 0.17.4
@@ -113,14 +113,14 @@ importers:
       fs-extra: 11.1.0
       globby: 13.1.3
       gzip-size: 7.0.0
-      h3: 1.0.2
+      h3: 1.1.0
       hookable: 5.4.2
       http-proxy: 1.18.1
       is-primitive: 3.0.1
       jiti: 1.16.2
       klona: 2.0.6
       knitwork: 1.0.0
-      listhen: 1.0.1
+      listhen: 1.0.2
       mime: 3.0.0
       mlly: 1.1.0
       mri: 1.2.0
@@ -141,7 +141,7 @@ importers:
       source-map-support: 0.5.21
       std-env: 3.3.1
       ufo: 1.0.1
-      unenv: 1.0.1
+      unenv: 1.0.2
       unimport: 2.0.1_rollup@3.10.1
       unstorage: 1.0.1
     devDependencies:
@@ -152,7 +152,7 @@ importers:
       '@types/node-fetch': 2.6.2
       '@types/semver': 7.3.13
       '@types/serve-static': 1.15.0
-      '@vitest/coverage-c8': 0.28.1
+      '@vitest/coverage-c8': 0.28.2
       c8: 7.12.0
       changelogen: 0.4.1
       edge-runtime: 2.0.3
@@ -164,7 +164,7 @@ importers:
       prettier: 2.8.3
       typescript: 4.9.4
       unbuild: 1.1.1
-      vitest: 0.28.1
+      vitest: 0.28.2
 
   examples/api-routes:
     specifiers:
@@ -1236,8 +1236,8 @@ packages:
       magic-string: 0.27.0
       rollup: 3.10.1
 
-  /@rollup/plugin-terser/0.3.0_rollup@3.10.1:
-    resolution: {integrity: sha512-mYTkNW9KjOscS/3QWU5LfOKsR3/fAAVDaqcAe2TZ7ng6pN46f+C7FOZbITuIW/neA+PhcjoKl7yMyB3XcmA4gw==}
+  /@rollup/plugin-terser/0.4.0_rollup@3.10.1:
+    resolution: {integrity: sha512-Ipcf3LPNerey1q9ZMjiaWHlNPEHNU/B5/uh9zXLltfEQ1lVSLLeZSgAtTPWGyw8Ip1guOeq+mDtdOlEj/wNxQw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.x || ^3.x
@@ -1532,13 +1532,13 @@ packages:
       - supports-color
     dev: false
 
-  /@vitest/coverage-c8/0.28.1:
-    resolution: {integrity: sha512-h/5Te9wX/GFz5/8ett9bpDqMtV71XwbLc9kFafHBkM8zi5EixdmcTWl5h9JzzGMfdEQfmqIff3C0wzbMldDn7w==}
+  /@vitest/coverage-c8/0.28.2:
+    resolution: {integrity: sha512-BWiOUk+d5LvK/9pKaYbL8eLng2EFXgTQMH9QN5nOoizWWKXGNO6LjduVpoz8ZQfb8/6tMVhae7SAS+w0zkRkNw==}
     dependencies:
       c8: 7.12.0
       picocolors: 1.0.0
       std-env: 3.3.1
-      vitest: 0.28.1
+      vitest: 0.28.2
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -1553,30 +1553,30 @@ packages:
       - terser
     dev: true
 
-  /@vitest/expect/0.28.1:
-    resolution: {integrity: sha512-BOvWjBoocKrrTTTC0opIvzOEa7WR/Ovx4++QYlbjYKjnQJfWRSEQkTpAIEfOURtZ/ICcaLk5jvsRshXvjarZew==}
+  /@vitest/expect/0.28.2:
+    resolution: {integrity: sha512-syEAK7I24/aGR2lXma98WNnvMwAJ+fMx32yPcj8eLdCEWjZI3SH8ozMaKQMy65B/xZCZAl6MXmfjtJb2CpWPMg==}
     dependencies:
-      '@vitest/spy': 0.28.1
-      '@vitest/utils': 0.28.1
+      '@vitest/spy': 0.28.2
+      '@vitest/utils': 0.28.2
       chai: 4.3.7
     dev: true
 
-  /@vitest/runner/0.28.1:
-    resolution: {integrity: sha512-kOdmgiNe+mAxZhvj2eUTqKnjfvzzknmrcS+SZXV7j6VgJuWPFAMCv3TWOe03nF9dkqDfVLCDRw/hwFuCzmzlQg==}
+  /@vitest/runner/0.28.2:
+    resolution: {integrity: sha512-BJ9CtfPwWM8uc5p7Ty0OprwApyh8RIaSK7QeQPhwfDYA59AAE009OytqA3aX0yj1Qy5+k/mYFJS8RJZgsueSGA==}
     dependencies:
-      '@vitest/utils': 0.28.1
+      '@vitest/utils': 0.28.2
       p-limit: 4.0.0
       pathe: 1.1.0
     dev: true
 
-  /@vitest/spy/0.28.1:
-    resolution: {integrity: sha512-XGlD78cG3IxXNnGwEF121l0MfTNlHSdI25gS2ik0z6f/D9wWUOru849QkJbuNl4CMlZCtNkx3b5IS6MRwKGKuA==}
+  /@vitest/spy/0.28.2:
+    resolution: {integrity: sha512-KlLzTzi5E6tHcI12VT+brlY1Pdi7sUzLf9+YXgh80+CfLu9DqPZi38doBBAUhqEnW/emoLCMinPMMoJlNAQZXA==}
     dependencies:
       tinyspy: 1.0.2
     dev: true
 
-  /@vitest/utils/0.28.1:
-    resolution: {integrity: sha512-a7cV1fs5MeU+W+8sn8gM9gV+q7V/wYz3/4y016w/icyJEKm9AMdSHnrzxTWaElJ07X40pwU6m5353Jlw6Rbd8w==}
+  /@vitest/utils/0.28.2:
+    resolution: {integrity: sha512-wcVTNnVdr22IGxZHDgiXrxWYcXsNg0iX2iBuOH3tVs9eme6fXJ0wxjn0/gCpp0TofQSoUwo3tX8LNACFVseDuA==}
     dependencies:
       cli-truncate: 3.1.0
       diff: 5.1.0
@@ -1858,7 +1858,7 @@ packages:
   /c12/1.1.0:
     resolution: {integrity: sha512-9KRFWEng+TH8sGST4NNdiKzZGw1Z1CHnPGAmNqAyVP7suluROmBjD8hsiR34f94DdlrvtGvvmiGDsoFXlCBWIw==}
     dependencies:
-      defu: 6.1.1
+      defu: 6.1.2
       dotenv: 16.0.3
       giget: 1.0.0
       jiti: 1.16.2
@@ -2207,8 +2207,8 @@ packages:
       object-keys: 1.1.1
     dev: true
 
-  /defu/6.1.1:
-    resolution: {integrity: sha512-aA964RUCsBt0FGoNIlA3uFgo2hO+WWC0fiC6DBps/0SFzkKcYoM/3CzVLIa5xSsrFjdioMdYgAIbwo80qp2MoA==}
+  /defu/6.1.2:
+    resolution: {integrity: sha512-+uO4+qr7msjNNWKYPHqN/3+Dx3NFkmIzayk2L1MyZQlvgZb/J1A0fo410dpKrN2SnqFjt8n4JL8fDJE0wIgjFQ==}
 
   /delayed-stream/1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
@@ -3029,10 +3029,6 @@ packages:
       jsonfile: 6.1.0
       universalify: 2.0.0
 
-  /fs-memo/1.2.0:
-    resolution: {integrity: sha512-YEexkCpL4j03jn5SxaMHqcO6IuWuqm8JFUYhyCep7Ao89JIYmB8xoKhK7zXXJ9cCaNXpyNH5L3QtAmoxjoHW2w==}
-    dev: false
-
   /fs-minipass/2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
     engines: {node: '>= 8'}
@@ -3102,10 +3098,8 @@ packages:
       has-symbols: 1.0.3
     dev: true
 
-  /get-port-please/2.6.1:
-    resolution: {integrity: sha512-4PDSrL6+cuMM1xs6w36ZIkaKzzE0xzfVBCfebHIJ3FE8iB9oic/ECwPw3iNiD4h1AoJ5XLLBhEviFAVrZsDC5A==}
-    dependencies:
-      fs-memo: 1.2.0
+  /get-port-please/3.0.1:
+    resolution: {integrity: sha512-R5pcVO8Z1+pVDu8Ml3xaJCEkBiiy1VQN9za0YqH8GIi1nIqD4IzQhzY6dDzMRtdS1lyiGlucRzm8IN8wtLIXng==}
     dev: false
 
   /get-stream/6.0.1:
@@ -3129,7 +3123,7 @@ packages:
     hasBin: true
     dependencies:
       colorette: 2.0.19
-      defu: 6.1.1
+      defu: 6.1.2
       https-proxy-agent: 5.0.1
       mri: 1.2.0
       node-fetch-native: 1.0.1
@@ -3240,8 +3234,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/1.0.2:
-    resolution: {integrity: sha512-25QqjQMz8pX1NI2rZ/ziNT9B8Aog7jmu2a0o8Qm9kKoH3zOhE+2icVs069h6DEp0g1Dst1+zKfRdRYcK0MogJA==}
+  /h3/1.1.0:
+    resolution: {integrity: sha512-kx3u+RMzY963fU8NNT2ePWgsryAn9DNztPqbHia/M7HgA+rtXKjHjED9/uidcYPmImNwAfJsCachCzh2T3QH2A==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.2.2
@@ -3733,13 +3727,13 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: true
 
-  /listhen/1.0.1:
-    resolution: {integrity: sha512-RBzBGHMCc5wP8J5Vf8WgF4CAJH8dWHi9LaKB7vfzZt54CiH/0dp01rudy2hFD9wCrTM+UfxFVnn5wTIiY+Qhiw==}
+  /listhen/1.0.2:
+    resolution: {integrity: sha512-yXz0NIYfVJDBQK2vlCpD/OjSzYkur2mR44boUtlg0eES4holn7oYZf439y5JxP55EOzFtClZ8eZlMJ8a++FwlQ==}
     dependencies:
       clipboardy: 3.0.0
       colorette: 2.0.19
-      defu: 6.1.1
-      get-port-please: 2.6.1
+      defu: 6.1.2
+      get-port-please: 3.0.1
       http-shutdown: 1.2.2
       ip-regex: 5.0.0
       node-forge: 1.3.1
@@ -3977,7 +3971,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      defu: 6.1.1
+      defu: 6.1.2
       esbuild: 0.16.17
       fs-extra: 11.1.0
       globby: 13.1.3
@@ -4403,7 +4397,7 @@ packages:
   /rc9/2.0.0:
     resolution: {integrity: sha512-yVeYJHOpJLOhs3V6RKwz7RPPwPurrx3JjwK264sPgvo/lFdhuUrLien7iSvAO6STVkN0gSMk/MehQNHQhflqZw==}
     dependencies:
-      defu: 6.1.1
+      defu: 6.1.2
       destr: 1.2.2
       flat: 5.0.2
 
@@ -4657,7 +4651,7 @@ packages:
   /serve-placeholder/2.0.1:
     resolution: {integrity: sha512-rUzLlXk4uPFnbEaIz3SW8VISTxMuONas88nYWjAWaM2W9VDbt9tyFOr3lq8RhVOFrT3XISoBw8vni5una8qMnQ==}
     dependencies:
-      defu: 6.1.1
+      defu: 6.1.2
     dev: false
 
   /serve-static/1.15.0:
@@ -5109,7 +5103,7 @@ packages:
       '@rollup/pluginutils': 5.0.2_rollup@3.10.1
       chalk: 5.2.0
       consola: 2.15.3
-      defu: 6.1.1
+      defu: 6.1.2
       esbuild: 0.16.17
       globby: 13.1.3
       hookable: 5.4.2
@@ -5137,10 +5131,10 @@ packages:
     engines: {node: '>=12.18'}
     dev: true
 
-  /unenv/1.0.1:
-    resolution: {integrity: sha512-08MoQ5+Edg9ckEP5y6vT8R6sOgCsNPxwPA1mKIOyergTtPOOuSyyJnbmF8CdnUplO2TUqSm0s1IysCkylxmndw==}
+  /unenv/1.0.2:
+    resolution: {integrity: sha512-senf7HmOHW3TuVCdhnrJcgVWabKnaU38oTRpppwWF0L6dJyfedY4MCiJeuwtrziqURZHuI2xxUoM90VLwG+e2Q==}
     dependencies:
-      defu: 6.1.1
+      defu: 6.1.2
       mime: 3.0.0
       node-fetch-native: 1.0.1
       pathe: 1.1.0
@@ -5183,9 +5177,9 @@ packages:
       anymatch: 3.1.3
       chokidar: 3.5.3
       destr: 1.2.2
-      h3: 1.0.2
+      h3: 1.1.0
       ioredis: 5.2.5
-      listhen: 1.0.1
+      listhen: 1.0.2
       mkdir: 0.0.2
       mri: 1.2.0
       ofetch: 1.0.0
@@ -5256,8 +5250,8 @@ packages:
       builtins: 5.0.1
     dev: true
 
-  /vite-node/0.28.1_@types+node@18.11.18:
-    resolution: {integrity: sha512-Mmab+cIeElkVn4noScCRjy8nnQdh5LDIR4QCH/pVWtY15zv5Z1J7u6/471B9JZ2r8CEIs42vTbngaamOVkhPLA==}
+  /vite-node/0.28.2_@types+node@18.11.18:
+    resolution: {integrity: sha512-zyiJ3DLs9zXign4P2MD4PQk+7rdT+JkHukgmmS0KuImbCQ7WnCdea5imQVeT6OtUsBwsLztJxQODUsinVr91tg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     dependencies:
@@ -5313,8 +5307,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.28.1:
-    resolution: {integrity: sha512-F6wAO3K5+UqJCCGt0YAl3Ila2f+fpBrJhl9n7qWEhREwfzQeXlMkkCqGqGtzBxCSa8kv5QHrkshX8AaPTXYACQ==}
+  /vitest/0.28.2:
+    resolution: {integrity: sha512-HJBlRla4Mng0OiZ8aWunCecJ6BzLDA4yuzuxiBuBU2MXjGB6I4zT7QgIBL/UrwGKlNxLwaDC5P/4OpeuTlW8yQ==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -5338,10 +5332,10 @@ packages:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
       '@types/node': 18.11.18
-      '@vitest/expect': 0.28.1
-      '@vitest/runner': 0.28.1
-      '@vitest/spy': 0.28.1
-      '@vitest/utils': 0.28.1
+      '@vitest/expect': 0.28.2
+      '@vitest/runner': 0.28.2
+      '@vitest/spy': 0.28.2
+      '@vitest/utils': 0.28.2
       acorn: 8.8.2
       acorn-walk: 8.2.0
       cac: 6.7.14
@@ -5357,7 +5351,7 @@ packages:
       tinypool: 0.3.0
       tinyspy: 1.0.2
       vite: 4.0.4_@types+node@18.11.18
-      vite-node: 0.28.1_@types+node@18.11.18
+      vite-node: 0.28.2_@types+node@18.11.18
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
