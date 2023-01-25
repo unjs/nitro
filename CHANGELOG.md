@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.1.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.0.0...v2.1.0)
+
+
+### 🚀 Enhancements
+
+  - Add `shouldBypassCache` option to cache utils ([#874](https://github.com/unjs/nitro/pull/874))
+  - **cache:** Allow async `getKey` option ([#878](https://github.com/unjs/nitro/pull/878))
+
+### 🩹 Fixes
+
+  - **scan:** Do not dedup middleware handlers ([#880](https://github.com/unjs/nitro/pull/880))
+  - **externals:** Use portable symlinks ([#882](https://github.com/unjs/nitro/pull/882))
+
+### 📖 Documentation
+
+  - **deployment:** Heroku with nginx ([#873](https://github.com/unjs/nitro/pull/873))
+  - **netlify:** Clarify placement of `_redirects` file ([#870](https://github.com/unjs/nitro/pull/870))
+  - **digitalocean:** Update deployment guide ([#862](https://github.com/unjs/nitro/pull/862))
+
+### 🏡 Chore
+
+  - Update dependencies ([963c587](https://github.com/unjs/nitro/commit/963c587))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Daniel Roe <daniel@roe.dev>
+- MiniDigger  < Martin>
+- Christopher Lis 
+- Ola Alsaker <ola.alsaker@gmail.com>
+- Adeyemi Adetayo <adeyemiadetayo07@gmail.com>
+
 ## v2.0.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.0.0-rc.1...v2.0.0)
