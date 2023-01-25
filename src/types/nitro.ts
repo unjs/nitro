@@ -174,6 +174,7 @@ export interface NitroOptions extends PresetOptions {
   noPublicDir: boolean;
   experimental?: {
     wasm?: boolean | RollupWasmOptions;
+    legacyExternals?: boolean;
   };
   serverAssets: ServerAssetDir[];
   publicAssets: PublicAssetDir[];

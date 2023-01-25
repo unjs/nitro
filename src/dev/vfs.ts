@@ -8,52 +8,74 @@ export function createVFSHandler(nitro: Nitro) {
       ...nitro.options.virtual,
     };
 
+    const url = event.node.req.url || "";
+    const isJson =
+      event.node.req.headers.accept?.includes("application/json") ||
+      url.startsWith(".json");
+    const id = decodeURIComponent(url.replace(/^(\.json)?\/?/, "") || "");
+
+    if (id && !(id in vfsEntries)) {
+      throw createError({ message: "File not found", statusCode: 404 });
+    }
+
+    let content = id ? vfsEntries[id] : undefined;
+    if (typeof content === "function") {
+      content = await content();
+    }
+
+    if (isJson) {
+      return {
+        rootDir: nitro.options.rootDir,
+        entries: Object.keys(vfsEntries).map((id) => ({
+          id,
+          path: "/_vfs.json/" + encodeURIComponent(id),
+        })),
+        current: id
+          ? {
+              id,
+              content,
+            }
+          : null,
+      };
+    }
+
     const items = Object.keys(vfsEntries)
       .map((key) => {
         const linkClass =
-          event.req.url === `/${encodeURIComponent(key)}`
+          url === `/${encodeURIComponent(key)}`
             ? "bg-gray-700 text-white"
             : "hover:bg-gray-800 text-gray-200";
         return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(
           key
-        )}" class="w-full text-sm px-2 py-1 border-b border-gray-500 ${linkClass}">${key.replace(
+        )}" class="w-full text-sm px-2 py-1 border-b border-gray-10 ${linkClass}">${key.replace(
           nitro.options.rootDir,
           ""
         )}</a></li>`;
       })
       .join("\n");
+
     const files = `
-      <div>
-        <p class="bg-gray-700 text-white text-bold border-b border-gray-500 text-center">virtual files</p>
+      <div class="h-full overflow-auto border-r border-gray:10">
+        <p class="text-white text-bold text-center py-1 opacity-50">Virtual Files</p>
         <ul class="flex flex-col">${items}</ul>
       </div>
       `;
 
-    const id = decodeURIComponent(event.req.url?.slice(1) || "");
-
-    let file = "";
-    if (id in vfsEntries) {
-      let contents = vfsEntries[id];
-      if (typeof contents === "function") {
-        contents = await contents();
-      }
-      file = editorTemplate({
-        readOnly: true,
-        language: id.endsWith("html") ? "html" : "javascript",
-        theme: "vs-dark",
-        value: contents,
-        wordWrap: "wordWrapColumn",
-        wordWrapColumn: 80,
-      });
-    } else if (id) {
-      throw createError({ message: "File not found", statusCode: 404 });
-    } else {
-      file = `
-        <div class="m-2">
-          <h1 class="text-white">Select a virtual file to inspect</h1>
+    const file = id
+      ? editorTemplate({
+          readOnly: true,
+          language: id.endsWith("html") ? "html" : "javascript",
+          theme: "vs-dark",
+          value: content,
+          wordWrap: "wordWrapColumn",
+          wordWrapColumn: 80,
+        })
+      : `
+        <div class="w-full h-full flex opacity-50">
+          <h1 class="text-white m-auto">Select a virtual file to inspect</h1>
         </div>
       `;
-    }
+
     return `
 <!doctype html>
 <html>
@@ -61,9 +83,18 @@ export function createVFSHandler(nitro: Nitro) {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css" />
   <link rel="stylesheet" data-name="vs/editor/editor.main" href="${vsUrl}/editor/editor.main.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <style>
+    html {
+      background: #1E1E1E;
+      color: white;
+    }
+    [un-cloak] {
+      display: none;
+    }
+  </style>
 </head>
 <body class="bg-[#1E1E1E]">
-  <div class="flex">
+  <div un-cloak class="h-screen h-screen grid grid-cols-[300px_1fr]">
     ${files}
     ${file}
   </div>
@@ -77,7 +108,7 @@ const monacoUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${monaco
 const vsUrl = `${monacoUrl}/vs`;
 
 const editorTemplate = (options: Record<string, any>) => `
-<div id="editor" class="min-h-screen flex-1"></div>
+<div id="editor" class="min-h-screen w-full h-full"></div>
 <script src="${vsUrl}/loader.min.js"></script>
 <script>
   require.config({ paths: { vs: '${vsUrl}' } })
@@ -88,10 +119,12 @@ const editorTemplate = (options: Record<string, any>) => `
   \`], { type: 'text/javascript' }))
   window.MonacoEnvironment = { getWorkerUrl: () => proxy }
 
-  require(['vs/editor/editor.main'], function () {
-    monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(
-      options
-    )})
-  })
+  setTimeout(() => {
+    require(['vs/editor/editor.main'], function () {
+      monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(
+        options
+      )})
+    })
+  }, 0);
 </script>
 `;

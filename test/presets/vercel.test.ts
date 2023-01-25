@@ -98,6 +98,10 @@ describe("nitro:preset:vercel", async () => {
             "handle": "filesystem",
           },
           {
+            "dest": "/__nitro",
+            "src": "/rules/dynamic",
+          },
+          {
             "dest": "/__nitro--rules-swr?url=$url",
             "src": "(?<url>/rules/swr/.*)",
           },

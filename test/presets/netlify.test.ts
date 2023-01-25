@@ -9,7 +9,7 @@ describe("nitro:preset:netlify", async () => {
   const ctx = await setupTest("netlify");
   testNitro(ctx, async () => {
     const { handler } = (await import(
-      resolve(ctx.outDir, "server/server.js")
+      resolve(ctx.outDir, "server/server.mjs")
     )) as { handler: Handler };
     return async ({ url: rawRelativeUrl, headers, method, body }) => {
       // creating new URL object to parse query easier
@@ -47,6 +47,7 @@ describe("nitro:preset:netlify", async () => {
       /rules/swr-ttl/*	/.netlify/builders/server 200
       /rules/swr/*	/.netlify/builders/server 200
       /rules/static	/.netlify/builders/server 200
+      /rules/dynamic	/.netlify/functions/server 200
       /* /.netlify/functions/server 200"
     `);
     /* eslint-enable no-tabs */

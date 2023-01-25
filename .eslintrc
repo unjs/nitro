@@ -9,6 +9,7 @@
     "quotes": 0,
     "keyword-spacing": 0,
     "no-undef": 0,
+    "indent": 0,
     "unicorn/catch-error-name": 0,
     "unicorn/no-null": 0,
     "unicorn/no-useless-undefined": 0,

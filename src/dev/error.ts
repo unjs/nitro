@@ -1,14 +1,14 @@
 import { NitroErrorHandler } from "../types";
 
 function errorHandler(error, event) {
-  event.res.setHeader("Content-Type", "text/html; charset=UTF-8");
-  event.res.statusCode = 503;
-  event.res.statusMessage = "Server Unavailable";
+  event.node.res.setHeader("Content-Type", "text/html; charset=UTF-8");
+  event.node.res.statusCode = 503;
+  event.node.res.statusMessage = "Server Unavailable";
 
   let body;
   let title;
   if (error) {
-    title = `${event.res.statusCode} ${event.res.statusMessage}`;
+    title = `${event.node.res.statusCode} ${event.node.res.statusMessage}`;
     body = `<code><pre>${error.stack}</pre></code>`;
   } else {
     title = "Reloading server...";
@@ -16,7 +16,7 @@ function errorHandler(error, event) {
       "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
   }
 
-  event.res.end(`<!DOCTYPE html>
+  event.node.res.end(`<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="utf-8">
