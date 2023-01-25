@@ -18,12 +18,13 @@ export default defineNitroConfig({
     {
       baseName: "files",
       dir: "files",
-    }
+    },
   ],
   publicAssets: [
     {
       baseURL: "build",
       dir: "public/build",
+      maxAge: 3600,
     },
   ],
   nodeModulesDirs: ["./_/node_modules"],

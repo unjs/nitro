@@ -88,6 +88,12 @@ describe("nitro:preset:vercel", async () => {
             "status": 307,
           },
           {
+            "headers": {
+              "cache-control": "public, max-age=3600, immutable",
+            },
+            "src": "/build/.*",
+          },
+          {
             "continue": true,
             "headers": {
               "cache-control": "public,max-age=31536000,immutable",
