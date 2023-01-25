@@ -22,6 +22,7 @@ export interface CacheOptions<T = any> {
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   validate?: (entry: CacheEntry<T>) => boolean;
   shouldInvalidateCache?: (...args: any[]) => boolean;
+  shouldBypassCache?: (...args: any[]) => boolean;
   group?: string;
   integrity?: any;
   maxAge?: number;
@@ -117,6 +118,10 @@ export function defineCachedFunction<T = any>(
   }
 
   return async (...args) => {
+    const shouldBypassCache = opts.shouldBypassCache?.(...args);
+    if (shouldBypassCache) {
+      return fn(...args);
+    }
     const key = (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
     const entry = await get(key, () => fn(...args), shouldInvalidateCache);
@@ -143,6 +148,7 @@ export interface ResponseCacheEntry<T = any> {
 export interface CachedEventHandlerOptions<T = any>
   extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
   shouldInvalidateCache?: (event: H3Event) => boolean;
+  shouldBypassCache?: (event: H3Event) => boolean;
   getKey?: (event: H3Event) => string;
   headersOnly?: boolean;
 }
