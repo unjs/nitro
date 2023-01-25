@@ -18,7 +18,7 @@ export interface CacheEntry<T = any> {
 
 export interface CacheOptions<T = any> {
   name?: string;
-  getKey?: (...args: any[]) => string;
+  getKey?: (...args: any[]) => string | Promise<string>;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   validate?: (entry: CacheEntry<T>) => boolean;
   shouldInvalidateCache?: (...args: any[]) => boolean;
@@ -122,7 +122,7 @@ export function defineCachedFunction<T = any>(
     if (shouldBypassCache) {
       return fn(...args);
     }
-    const key = (opts.getKey || getKey)(...args);
+    const key = await (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
     const entry = await get(key, () => fn(...args), shouldInvalidateCache);
     let value = entry.value;
@@ -149,7 +149,7 @@ export interface CachedEventHandlerOptions<T = any>
   extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
   shouldInvalidateCache?: (event: H3Event) => boolean;
   shouldBypassCache?: (event: H3Event) => boolean;
-  getKey?: (event: H3Event) => string;
+  getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
 }
 
@@ -163,8 +163,8 @@ export function defineCachedEventHandler<T = any>(
 ): EventHandler<T> {
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
-    getKey: (event) => {
-      const key = opts.getKey?.(event);
+    getKey: async (event) => {
+      const key = await opts.getKey?.(event);
       if (key) {
         return escapeKey(key);
       }
