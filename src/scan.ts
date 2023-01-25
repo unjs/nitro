@@ -21,6 +21,7 @@ export async function scanHandlers(nitro: Nitro) {
     .flatMap((h) => h.handlers)
     .filter((h, index, array) => {
       return (
+        h.middleware ||
         array.findIndex(
           (h2) => h.route === h2.route && h.method === h2.method
         ) === index
