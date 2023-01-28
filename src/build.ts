@@ -67,6 +67,10 @@ export async function writeTypes(nitro: Nitro) {
     string,
     Partial<Record<RouterMethod | "default", string[]>>
   > = {};
+  const routeInputTypes: Record<
+    string,
+    Partial<Record<RouterMethod | "default", string[]>>
+  > = {};
 
   const middleware = [...nitro.scannedHandlers, ...nitro.options.handlers];
 
@@ -82,13 +86,22 @@ export async function writeTypes(nitro: Nitro) {
     if (!routeTypes[mw.route]) {
       routeTypes[mw.route] = {};
     }
+    if (!routeInputTypes[mw.route]) {
+      routeInputTypes[mw.route] = {};
+    }
 
     const method = mw.method || "default";
     if (!routeTypes[mw.route][method]) {
       routeTypes[mw.route][method] = [];
     }
+    if (!routeInputTypes[mw.route][method]) {
+      routeInputTypes[mw.route][method] = [];
+    }
     routeTypes[mw.route][method].push(
       `Awaited<ReturnType<typeof import('${relativePath}').default>>`
+    );
+    routeInputTypes[mw.route][method].push(
+      `import('${relativePath}').Input`
     );
   }
 
@@ -123,6 +136,17 @@ export async function writeTypes(nitro: Nitro) {
     "  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T",
     "  interface InternalApi {",
     ...Object.entries(routeTypes).map(([path, methods]) =>
+      [
+        `    '${path}': {`,
+        ...Object.entries(methods).map(
+          ([method, types]) => `      '${method}': ${types.join(" | ")}`
+        ),
+        "    }",
+      ].join("\n")
+    ),
+    "  }",
+    "  interface InternalApiInputs {",
+    ...Object.entries(routeInputTypes).map(([path, methods]) =>
       [
         `    '${path}': {`,
         ...Object.entries(methods).map(
