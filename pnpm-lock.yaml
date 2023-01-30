@@ -81,7 +81,7 @@ importers:
       typescript: ^4.9.4
       ufo: ^1.0.1
       unbuild: ^1.1.1
-      unenv: ^1.0.2
+      unenv: ^1.0.3
       unimport: ^2.1.0
       unstorage: ^1.0.1
       vitest: ^0.28.3
@@ -141,7 +141,7 @@ importers:
       source-map-support: 0.5.21
       std-env: 3.3.1
       ufo: 1.0.1
-      unenv: 1.0.2
+      unenv: 1.0.3
       unimport: 2.1.0_rollup@3.12.0
       unstorage: 1.0.1
     devDependencies:
@@ -5131,8 +5131,8 @@ packages:
     engines: {node: '>=12.18'}
     dev: true
 
-  /unenv/1.0.2:
-    resolution: {integrity: sha512-senf7HmOHW3TuVCdhnrJcgVWabKnaU38oTRpppwWF0L6dJyfedY4MCiJeuwtrziqURZHuI2xxUoM90VLwG+e2Q==}
+  /unenv/1.0.3:
+    resolution: {integrity: sha512-4T+7NTvVEPE3wvvVDpV9rk/UNDOil0OboLzPqHT1/t88B/nwSs41ClQg/NeA/+UvYEVxf/6V+5Opk9SIrrkPvg==}
     dependencies:
       defu: 6.1.2
       mime: 3.0.0
