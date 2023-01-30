@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.1.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.1.0...v2.1.1)
+
+
+### 🩹 Fixes
+
+  - Resolve server assets dir relative to `srcDir` ([#893](https://github.com/unjs/nitro/pull/893))
+  - **prerender:** Encode urls passed to local fetch ([#891](https://github.com/unjs/nitro/pull/891))
+
+### 🏡 Chore
+
+  - Update unenv ([b77f082](https://github.com/unjs/nitro/commit/b77f082))
+  - Format code ([50e1a8f](https://github.com/unjs/nitro/commit/50e1a8f))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Manh-gntvn 
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.1.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.0.0...v2.1.0)
