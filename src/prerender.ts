@@ -139,10 +139,13 @@ export async function prerender(nitro: Nitro) {
     const _route: PrerenderGenerateRoute = { route };
 
     // Fetch the route
-    const encodedRoute = encodeURI(route)
-    const res = await (localFetch(withBase(encodedRoute, nitro.options.baseURL), {
-      headers: { "x-nitro-prerender": encodedRoute },
-    }) as ReturnType<typeof fetch>);
+    const encodedRoute = encodeURI(route);
+    const res = await (localFetch(
+      withBase(encodedRoute, nitro.options.baseURL),
+      {
+        headers: { "x-nitro-prerender": encodedRoute },
+      }
+    ) as ReturnType<typeof fetch>);
     _route.data = await res.arrayBuffer();
     Object.defineProperty(_route, "contents", {
       get: () => {
