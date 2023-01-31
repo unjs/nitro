@@ -158,16 +158,14 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   // Main worker proxy
   const proxy = createProxy();
   proxy.proxy.on("proxyReq", (proxyReq, req) => {
-    if (req.socket.remoteAddress && !proxyReq.getHeaders()["x-forwarded-for"]) {
+    const proxyRequestHeaders = proxyReq.getHeaders();
+    if (req.socket.remoteAddress && !proxyRequestHeaders["x-forwarded-for"]) {
       proxyReq.setHeader("X-Forwarded-For", req.socket.remoteAddress);
     }
-    if (req.socket.remotePort && !proxyReq.getHeaders()["x-forwarded-port"]) {
+    if (req.socket.remotePort && !proxyRequestHeaders["x-forwarded-port"]) {
       proxyReq.setHeader("X-Forwarded-Port", req.socket.remotePort);
     }
-    if (
-      req.socket.remoteFamily &&
-      !proxyReq.getHeaders()["x-forwarded-proto"]
-    ) {
+    if (req.socket.remoteFamily && !proxyRequestHeaders["x-forwarded-proto"]) {
       proxyReq.setHeader("X-Forwarded-Proto", req.socket.remoteFamily);
     }
   });
