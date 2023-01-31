@@ -55,9 +55,7 @@ export interface NitroFetchOptions<
   R extends NitroFetchRequest,
   M extends AvailableRouterMethod<R> = AvailableRouterMethod<R>
 > extends FetchOptions {
-  method?:
-    | Uppercase<AvailableRouterMethod<R> & M>
-    | (AvailableRouterMethod<R> & M);
+  method?: Uppercase<M> | M;
 }
 
 // Extract the route method from options which might be undefined or without a method parameter.
