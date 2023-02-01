@@ -67,14 +67,14 @@ export function defineCachedFunction<T = any>(
       ((await useStorage().getItem(cacheKey)) as any) || {};
 
     const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000;
-    if (ttl) {
+    if (ttl && !entry.expires) {
       entry.expires = Date.now() + ttl;
     }
 
     const expired =
       shouldInvalidateCache ||
       entry.integrity !== integrity ||
-      (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
+      (entry.expires && Date.now() > entry.expires) ||
       !validate(entry);
 
     const _resolve = async () => {
