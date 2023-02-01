@@ -47,7 +47,9 @@ export function isJsonRequest(event: H3Event) {
 }
 
 export function normalizeError(error: any) {
-  const cwd = process.cwd();
+  // temp fix for https://github.com/unjs/nitro/issues/759
+  // TODO: investigate vercel-edge not using unenv pollyfill
+  const cwd = typeof process.cwd === "function" ? process.cwd() : "/";
   const stack = ((error.stack as string) || "")
     .split("\n")
     .splice(1)
