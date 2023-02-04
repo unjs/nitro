@@ -363,51 +363,53 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         return parentPkgs;
       };
 
-      // Write traced packages
-      await Promise.all(
-        Object.values(tracedPackages).map(async (tracedPackage) => {
-          // TODO: Sort versions
-          // const versions = sortVersions(Object.keys(tracedPackage.versions));
-          const versions = Object.keys(tracedPackage.versions);
-          if (versions.length === 1) {
-            // Write the only version into node_modules/{name}
-            await writePackage(tracedPackage.name, versions[0]);
-          } else {
-            for (const version of versions) {
-              const parentPkgs = findPackageParents(tracedPackage, version);
-              if (parentPkgs.length === 0) {
-                // No parent packages, assume as the hoisted version
-                await writePackage(tracedPackage.name, version);
-              } else {
-                // Write alternative version into node_modules/{name}@{version}
-                await writePackage(
-                  tracedPackage.name,
-                  version,
-                  `.nitro/${tracedPackage.name}@${version}`
-                );
-                // Link one version to the top level (for indirect bundle deps)
-                await linkPackage(
-                  `.nitro/${tracedPackage.name}@${version}`,
-                  `${tracedPackage.name}`
-                );
-                // For each parent, link into node_modules/{parent}/node_modules/{name}
-                for (const parentPath of parentPkgs) {
-                  await linkPackage(
-                    `.nitro/${tracedPackage.name}@${version}`,
-                    `.nitro/${parentPath}/node_modules/${tracedPackage.name}`
-                  );
-                  await linkPackage(
-                    `.nitro/${tracedPackage.name}@${version}`,
-                    `${parentPath.split("@")[0]}/node_modules/${
-                      tracedPackage.name
-                    }`
-                  );
-                }
-              }
-            }
+      const writeTracedPackage = async (tracedPackage: TracedPackage) => {
+        const versions = Object.keys(tracedPackage.versions);
+        if (versions.length === 1) {
+          // Write the only version into node_modules/{name}
+          await writePackage(tracedPackage.name, versions[0]);
+          return;
+        }
+        for (const version of versions) {
+          const parentPkgs = findPackageParents(tracedPackage, version);
+          if (parentPkgs.length === 0) {
+            // No parent packages, assume as the hoisted version
+            await writePackage(tracedPackage.name, version);
+            continue;
           }
-        })
-      );
+          // Write alternative version into node_modules/{name}@{version}
+          await writePackage(
+            tracedPackage.name,
+            version,
+            `.nitro/${tracedPackage.name}@${version}`
+          );
+          // Link one version to the top level (for indirect bundle deps)
+          await linkPackage(
+            `.nitro/${tracedPackage.name}@${version}`,
+            `${tracedPackage.name}`
+          );
+          // For each parent, link into node_modules/{parent}/node_modules/{name}
+          for (const parentPath of parentPkgs) {
+            await linkPackage(
+              `.nitro/${tracedPackage.name}@${version}`,
+              `.nitro/${parentPath}/node_modules/${tracedPackage.name}`
+            );
+            await linkPackage(
+              `.nitro/${tracedPackage.name}@${version}`,
+              `${parentPath.split("@")[0]}/node_modules/${tracedPackage.name}`
+            );
+          }
+        }
+      };
+      // Write traced packages
+      // await Promise.all(
+      //   Object.values(tracedPackages).map(async (tracedPackage) => {
+      //     await writeTracedPackage(tracedPackage);
+      //   })
+      // );
+      for (const tracedPackage of Object.values(tracedPackages)) {
+        await writeTracedPackage(tracedPackage);
+      }
 
       // Write an informative package.json
       const bundledDependencies = Object.fromEntries(
