@@ -8,7 +8,7 @@ import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
-import { resolvePath, detectTarget } from "./utils";
+import { resolvePath, detectTarget, provideFallbackValues } from "./utils";
 import type {
   NitroConfig,
   NitroOptions,
@@ -290,6 +290,8 @@ export async function loadOptions(
   options.routeRules = normalizedRules;
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
+
+  provideFallbackValues(options.runtimeConfig);
   options.runtimeConfig = defu(options.runtimeConfig, {
     app: {
       baseURL: options.baseURL,
