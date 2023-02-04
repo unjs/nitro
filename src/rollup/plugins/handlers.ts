@@ -26,10 +26,20 @@ export function handlers(nitro: Nitro) {
         }
 
         // If this handler would render a cached route rule then we can also inject a cached event handler
-        for (const rule in nitro.options.routeRules) {
-          // We can ignore this rule
-          if (!nitro.options.routeRules[rule].cache) {
-            continue;
+        const rules = Object.entries(nitro.options.routeRules);
+        for (const [path, rule] of rules) {
+          // We can ignore this rule if it is not cached and it isn't nested in a cached route
+          if (!rule.cache) {
+            // If we are nested 'within' a cached route, we want to inject a non-cached event handler
+            const isNested = rules.some(
+              ([p, r]) =>
+                r.cache &&
+                p.endsWith("/**") &&
+                path.startsWith(p.replace("/**", ""))
+            );
+            if (!isNested) {
+              continue;
+            }
           }
           for (const [index, handler] of handlers.entries()) {
             // skip middleware
@@ -37,7 +47,7 @@ export function handlers(nitro: Nitro) {
               continue;
             }
             // we will correctly register this rule as a cached route anyway
-            if (handler.route === rule) {
+            if (handler.route === path) {
               break;
             }
             // We are looking for handlers that will render a route _despite_ not
@@ -45,12 +55,12 @@ export function handlers(nitro: Nitro) {
             if (!handler.route.endsWith("/**")) {
               continue;
             }
-            if (!rule.startsWith(handler.route.replace("/**", ""))) {
+            if (!path.startsWith(handler.route.replace("/**", ""))) {
               continue;
             }
             handlers.splice(index, 0, {
               ...handler,
-              route: rule,
+              route: path,
             });
             break;
           }
