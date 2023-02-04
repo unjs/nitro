@@ -25,6 +25,37 @@ export function handlers(nitro: Nitro) {
           });
         }
 
+        // If this handler would render a cached route rule then we can also inject a cached event handler
+        for (const rule in nitro.options.routeRules) {
+          // We can ignore this rule
+          if (!nitro.options.routeRules[rule].cache) {
+            continue;
+          }
+          for (const [index, handler] of handlers.entries()) {
+            // skip middleware
+            if (!handler.route) {
+              continue;
+            }
+            // we will correctly register this rule as a cached route anyway
+            if (handler.route === rule) {
+              break;
+            }
+            // We are looking for handlers that will render a route _despite_ not
+            // having an identical path to it
+            if (!handler.route.endsWith("/**")) {
+              continue;
+            }
+            if (!rule.startsWith(handler.route.replace("/**", ""))) {
+              continue;
+            }
+            handlers.splice(index, 0, {
+              ...handler,
+              route: rule,
+            });
+            break;
+          }
+        }
+
         // Imports take priority
         const imports = unique(
           handlers.filter((h) => !h.lazy).map((h) => h.handler)
