@@ -5,7 +5,7 @@ import type { PackageJson } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
-// import semver from "semver";
+import semver from "semver";
 import { isDirectory } from "../../utils";
 
 export interface NodeExternalsOptions {
@@ -324,7 +324,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const linkPackage = async (from: string, to: string) => {
         const src = join(opts.outDir, "node_modules", from);
         const dst = join(opts.outDir, "node_modules", to);
-        if (existsSync(dst)) {
+        const dstStat = await fsp.lstat(dst).catch(() => null);
+        const exists = dstStat && dstStat.isSymbolicLink();
+        // console.log("Linking", from, "to", to, exists ? "!!!!" : "");
+        if (exists) {
           return;
         }
         await fsp.mkdir(dirname(dst), { recursive: true });
@@ -335,7 +338,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             isWindows ? "junction" : "dir"
           )
           .catch((err) => {
-            console.error("Cannot link", src, "to", dst, ":", err.message);
+            console.error("Cannot link", from, "to", to, err);
           });
       };
 
@@ -363,51 +366,69 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         return parentPkgs;
       };
 
-      // Write traced packages
+      // Analyze dependency tree
+      const multiVersionPkgs: Record<string, { [version: string]: string[] }> =
+        {};
+      const singleVersionPackages: string[] = [];
+      for (const tracedPackage of Object.values(tracedPackages)) {
+        const versions = Object.keys(tracedPackage.versions);
+        if (versions.length === 1) {
+          singleVersionPackages.push(tracedPackage.name);
+          continue;
+        }
+        multiVersionPkgs[tracedPackage.name] = {};
+        for (const version of versions) {
+          multiVersionPkgs[tracedPackage.name][version] = findPackageParents(
+            tracedPackage,
+            version
+          );
+        }
+      }
+
+      // Directly write single version packages
       await Promise.all(
-        Object.values(tracedPackages).map(async (tracedPackage) => {
-          // TODO: Sort versions
-          // const versions = sortVersions(Object.keys(tracedPackage.versions));
-          const versions = Object.keys(tracedPackage.versions);
-          if (versions.length === 1) {
-            // Write the only version into node_modules/{name}
-            await writePackage(tracedPackage.name, versions[0]);
-          } else {
-            for (const version of versions) {
-              const parentPkgs = findPackageParents(tracedPackage, version);
-              if (parentPkgs.length === 0) {
-                // No parent packages, assume as the hoisted version
-                await writePackage(tracedPackage.name, version);
-              } else {
-                // Write alternative version into node_modules/{name}@{version}
-                await writePackage(
-                  tracedPackage.name,
-                  version,
-                  `.nitro/${tracedPackage.name}@${version}`
-                );
-                // Link one version to the top level (for indirect bundle deps)
-                await linkPackage(
-                  `.nitro/${tracedPackage.name}@${version}`,
-                  `${tracedPackage.name}`
-                );
-                // For each parent, link into node_modules/{parent}/node_modules/{name}
-                for (const parentPath of parentPkgs) {
-                  await linkPackage(
-                    `.nitro/${tracedPackage.name}@${version}`,
-                    `.nitro/${parentPath}/node_modules/${tracedPackage.name}`
-                  );
-                  await linkPackage(
-                    `.nitro/${tracedPackage.name}@${version}`,
-                    `${parentPath.split("@")[0]}/node_modules/${
-                      tracedPackage.name
-                    }`
-                  );
-                }
-              }
-            }
-          }
+        singleVersionPackages.map((pkgName) => {
+          const pkg = tracedPackages[pkgName];
+          const version = Object.keys(pkg.versions)[0];
+          return writePackage(pkgName, version);
         })
       );
+
+      // Write packages with multiple versions
+      for (const [pkgName, pkgVersions] of Object.entries(multiVersionPkgs)) {
+        const versionEntires = Object.entries(pkgVersions).sort(
+          ([v1, p1], [v2, p2]) => {
+            // 1. Packege with no parent packages to be hoisted
+            if (p1.length === 0) {
+              return -1;
+            }
+            if (p2.length === 0) {
+              return 1;
+            }
+            // 2. Newest version to be hoisted
+            return compareVersions(v1, v2);
+          }
+        );
+        for (const [version, parentPkgs] of versionEntires) {
+          // Write each version into node_modules/.nitro/{name}@{version}
+          await writePackage(pkgName, version, `.nitro/${pkgName}@${version}`);
+          // Link one version to the top level (for indirect bundle deps)
+          await linkPackage(`.nitro/${pkgName}@${version}`, `${pkgName}`);
+          // Link to parent packages
+          for (const parentPkg of parentPkgs) {
+            const parentPkgName = parentPkg.replace(/@[^@]+$/, "");
+            await (multiVersionPkgs[parentPkgName]
+              ? linkPackage(
+                  `.nitro/${pkgName}@${version}`,
+                  `.nitro/${parentPkg}/node_modules/${pkgName}`
+                )
+              : linkPackage(
+                  `.nitro/${pkgName}@${version}`,
+                  `${parentPkgName}/node_modules/${pkgName}`
+                ));
+          }
+        }
+      }
 
       // Write an informative package.json
       const bundledDependencies = Object.fromEntries(
@@ -416,6 +437,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           Object.keys(pkg.versions).join(" | "),
         ])
       );
+
       await fsp.writeFile(
         resolve(opts.outDir, "package.json"),
         JSON.stringify(
@@ -434,15 +456,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 }
 
-// function sortVersions(versions: string[]) {
-//   return versions.sort((v1 = "0.0.0", v2 = "0.0.0") => {
-//     try {
-//       return semver.lt(v1, v2, { loose: true }) ? 1 : -1;
-//     } catch {
-//       return v1.localeCompare(v2);
-//     }
-//   });
-// }
+function compareVersions(v1 = "0.0.0", v2 = "0.0.0") {
+  try {
+    return semver.lt(v1, v2, { loose: true }) ? 1 : -1;
+  } catch {
+    return v1.localeCompare(v2);
+  }
+}
 
 function parseNodeModulePath(path: string) {
   if (!path) {
