@@ -6,6 +6,8 @@ const unique = (arr: any[]) => [...new Set(arr)];
 const getImportId = (p: string, lazy?: boolean) =>
   (lazy ? "_lazy_" : "_") + hash(p).slice(0, 6);
 
+const GLOB_RE = /\/\*\*.*$/;
+
 export function handlers(nitro: Nitro) {
   return virtual(
     {
@@ -34,8 +36,8 @@ export function handlers(nitro: Nitro) {
             const isNested = rules.some(
               ([p, r]) =>
                 r.cache &&
-                p.endsWith("/**") &&
-                path.startsWith(p.replace("/**", ""))
+                GLOB_RE.test(p) &&
+                path.startsWith(p.replace(GLOB_RE, ""))
             );
             if (!isNested) {
               continue;
@@ -52,10 +54,10 @@ export function handlers(nitro: Nitro) {
             }
             // We are looking for handlers that will render a route _despite_ not
             // having an identical path to it
-            if (!handler.route.endsWith("/**")) {
+            if (!GLOB_RE.test(handler.route)) {
               continue;
             }
-            if (!path.startsWith(handler.route.replace("/**", ""))) {
+            if (!path.startsWith(handler.route.replace(GLOB_RE, ""))) {
               continue;
             }
             handlers.splice(index, 0, {
