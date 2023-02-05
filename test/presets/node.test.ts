@@ -1,5 +1,5 @@
 import { resolve } from "pathe";
-import { describe } from "vitest";
+import { describe, it, expect } from "vitest";
 import { startServer, setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:node", async () => {
@@ -11,5 +11,18 @@ describe("nitro:preset:node", async () => {
       const res = await ctx.fetch(url);
       return res;
     };
+  });
+  it("should handle nested cached route rules", async () => {
+    const cached = await ctx.fetch("/rules/_/noncached/cached");
+    expect(cached.headers.get("etag")).toBeDefined();
+
+    const noncached = await ctx.fetch("/rules/_/noncached/noncached");
+    expect(noncached.headers.get("etag")).toBeNull();
+
+    const cached2 = await ctx.fetch("/rules/_/cached/cached");
+    expect(cached2.headers.get("etag")).toBeDefined();
+
+    const noncached2 = await ctx.fetch("/rules/_/cached/noncached");
+    expect(noncached2.headers.get("etag")).toBeNull();
   });
 });
