@@ -5,8 +5,9 @@ import {
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
-import { nitroApp } from "../app";
+import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
+import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
@@ -48,13 +49,14 @@ async function handleEvent(event: FetchEvent) {
 }
 
 function assetsCacheControl(_request) {
-  // TODO: Detect public asset bases
-  // if (request.url.startsWith(buildAssetsURL())) {
-  //   return {
-  //     browserTTL: 31536000,
-  //     edgeTTL: 31536000
-  //   }
-  // }
+  const url = new URL(_request.url);
+
+  if (isPublicAssetURL(url.pathname)) {
+    return {
+      browserTTL: 31_536_000,
+      edgeTTL: 31_536_000
+    }
+  }
   return {};
 }
 
