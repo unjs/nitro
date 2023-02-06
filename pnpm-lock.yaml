@@ -83,7 +83,7 @@ importers:
       unbuild: ^1.1.1
       unenv: ^1.0.3
       unimport: ^2.1.0
-      unstorage: ^1.0.1
+      unstorage: ^1.1.0
       vitest: ^0.28.4
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
@@ -143,7 +143,7 @@ importers:
       ufo: 1.0.1
       unenv: 1.0.3
       unimport: 2.1.0_rollup@3.13.0
-      unstorage: 1.0.1
+      unstorage: 1.1.0
     devDependencies:
       '@types/aws-lambda': 8.10.110
       '@types/etag': 1.8.1
@@ -1149,6 +1149,13 @@ packages:
       tiny-glob: 0.2.9
       tslib: 2.5.0
     dev: true
+
+  /@planetscale/database/1.5.0:
+    resolution: {integrity: sha512-Qwh7Or1W5dB5mZ9EQqDkgvkDKhBBmQe58KIVUy0SGocNtr5fP4JAWtvZ6EdLAV6C6hVpzNlCA2xIg9lKTswm1Q==}
+    engines: {node: '>=16'}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /@rollup/plugin-alias/4.0.3_rollup@3.13.0:
     resolution: {integrity: sha512-ZuDWE1q4PQDhvm/zc5Prun8sBpLJy41DMptYrS6MhAy9s9kL/doN1613BWfEchGVfKxzliJ3BjbOPizXX38DbQ==}
@@ -3803,6 +3810,11 @@ packages:
     dependencies:
       yallist: 4.0.0
 
+  /lru-cache/7.14.1:
+    resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
+    engines: {node: '>=12'}
+    dev: false
+
   /magic-string/0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
     engines: {node: '>=12'}
@@ -5164,8 +5176,8 @@ packages:
       webpack-virtual-modules: 0.5.0
     dev: false
 
-  /unstorage/1.0.1:
-    resolution: {integrity: sha512-J1c4b8K2KeihHrQtdgl/ybIapArUbPaPb+TyJy/nGSauDwDYqciZsEKdkee568P3c8SSH4TIgnGRHDWMPGw+Lg==}
+  /unstorage/1.1.0:
+    resolution: {integrity: sha512-g0mjGglYRe5JF8dsXcitzAtBYQegP/C2svawm25QEKlfl3YSp6BHQuD5at9dWi9Btnfw6rwrIuP2xnpGYdkMQQ==}
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.5.3
@@ -5173,11 +5185,15 @@ packages:
       h3: 1.1.0
       ioredis: 5.3.0
       listhen: 1.0.2
+      lru-cache: 7.14.1
       mkdir: 0.0.2
       mri: 1.2.0
+      node-fetch-native: 1.0.1
       ofetch: 1.0.0
       ufo: 1.0.1
       ws: 8.12.0
+    optionalDependencies:
+      '@planetscale/database': 1.5.0
     transitivePeerDependencies:
       - bufferutil
       - supports-color
