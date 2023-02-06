@@ -327,6 +327,7 @@ export async function loadOptions(
   for (const p in fsMounts) {
     options.devStorage[p] = options.devStorage[p] || {
       driver: "fs",
+      readOnly: p === "root" || p === "src",
       base: fsMounts[p],
     };
   }
