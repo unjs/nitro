@@ -29,7 +29,7 @@ export interface NitroApp {
   localFetch: ReturnType<typeof createLocalFetch>;
 }
 
-function createNitroApp(): NitroApp {
+async function createNitroApp(): NitroApp {
   const config = useRuntimeConfig();
 
   const hooks = createHooks();
@@ -87,12 +87,12 @@ function createNitroApp(): NitroApp {
   };
 
   for (const plugin of plugins) {
-    plugin(app);
+    await plugin(app);
   }
 
   return app;
 }
 
-export const nitroApp: NitroApp = createNitroApp();
+export const nitroApp: NitroApp = await createNitroApp();
 
 export const useNitroApp = () => nitroApp;
