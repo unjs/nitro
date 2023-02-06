@@ -1,12 +1,12 @@
-import { isAbsolute } from "node:path";
 import { builtinModules } from "node:module";
 
+import { isAbsolute } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
 import inject from "@rollup/plugin-inject";
 import { defineNitroPreset } from "../preset";
 
-export const deno = defineNitroPreset({
+export const denoDeploy = defineNitroPreset({
   entry: "#internal/nitro/entries/deno-deploy",
   node: false,
   noExternals: true,
@@ -26,6 +26,8 @@ export const deno = defineNitroPreset({
     },
   },
 });
+
+export const deno = denoDeploy;
 
 export const denoServer = defineNitroPreset({
   extends: "node-server",

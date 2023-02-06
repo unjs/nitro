@@ -12,9 +12,9 @@ const port = destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3e3;
 // @ts-expect-error unknown global Deno
 const hostname = Deno.env.get("NITRO_HOST") || Deno.env.get("HOST");
 
-function onListen({ port, hostname }) {
+function onListen(opts) {
   const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-  const url = `${hostname}:${port}${baseURL}`;
+  const url = `${opts.hostname}:$opts.{port}${baseURL}`;
   console.log(`Listening ${url}`);
 }
 
