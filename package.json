@@ -92,7 +92,7 @@
     "pkg-types": "^1.0.1",
     "pretty-bytes": "^6.1.0",
     "radix3": "^1.0.0",
-    "rollup": "^3.13.0",
+    "rollup": "^3.14.0",
     "rollup-plugin-visualizer": "^5.9.0",
     "scule": "^1.0.0",
     "semver": "^7.3.8",
@@ -103,7 +103,7 @@
     "ufo": "^1.0.1",
     "unenv": "^1.0.3",
     "unimport": "^2.1.0",
-    "unstorage": "^1.1.0"
+    "unstorage": "^1.1.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.110",
@@ -127,7 +127,7 @@
     "unbuild": "^1.1.1",
     "vitest": "^0.28.4"
   },
-  "packageManager": "pnpm@7.26.2",
+  "packageManager": "pnpm@7.26.3",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
