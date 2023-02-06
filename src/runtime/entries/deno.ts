@@ -1,15 +1,8 @@
 import "#internal/nitro/virtual/polyfill";
-// @ts-ignore
-import { serve } from "https://deno.land/std/http/server.ts";
-
-import { requestHasBody, useRequestBody } from "../utils";
 import { nitroApp } from "../app";
+import { requestHasBody, useRequestBody } from "../utils";
 
-serve((request: Request) => {
-  return handleRequest(request);
-});
-
-async function handleRequest(request: Request) {
+export async function handler(request: Request) {
   const url = new URL(request.url);
   let body;
   if (requestHasBody(request)) {
@@ -26,7 +19,9 @@ async function handleRequest(request: Request) {
     body,
   });
 
-  return new Response(r.body || undefined, {
+  // TODO: fix in runtime/static
+  const responseBody = r.status !== 304 ? r.body : null;
+  return new Response(responseBody, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
