@@ -101,7 +101,7 @@
     "source-map-support": "^0.5.21",
     "std-env": "^3.3.2",
     "ufo": "^1.0.1",
-    "unenv": "^1.0.3",
+    "unenv": "^1.1.0",
     "unimport": "^2.1.0",
     "unstorage": "^1.1.3"
   },
