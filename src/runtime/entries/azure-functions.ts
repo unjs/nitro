@@ -1,12 +1,12 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
 
-const higherOrderLog = (name: string, context) => {
-  const logFn = (params) => {
-    if (context[name]) {
-      context[name](...params)
-    } else if (context.log[name]) {
+const higherOrderLog = (name, context) => {
+  const logFn = (...params) => {
+    if (context.log[name]) {
       context.log[name](...params)
+    } else {
+      context.log.info(...params)
     }
   }
 
