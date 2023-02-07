@@ -105,6 +105,18 @@ describe("nitro:preset:vercel", async () => {
           },
           {
             "dest": "/__nitro",
+            "src": "/rules/_/cached/noncached",
+          },
+          {
+            "dest": "/__nitro",
+            "src": "(?<url>/rules/_/noncached/.*)",
+          },
+          {
+            "dest": "/__nitro--rules---cached?url=$url",
+            "src": "(?<url>/rules/_/cached/.*)",
+          },
+          {
+            "dest": "/__nitro",
             "src": "/rules/dynamic",
           },
           {
