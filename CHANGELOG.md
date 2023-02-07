@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.1.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.1.1...v2.1.2)
+
+
+### 🩹 Fixes
+
+  - **types:** Allow narrowing of the method option in `NitroFetchOptions` ([#883](https://github.com/unjs/nitro/pull/883))
+  - **vercel-edge:** Add temporary workaround for ‍`process.cwd‍` usage ([#898](https://github.com/unjs/nitro/pull/898))
+  - **dev:** Don't overwrite proxy headers if already set ([#896](https://github.com/unjs/nitro/pull/896))
+  - Provide fallback string values for undefined `runtimeConfig` ([#907](https://github.com/unjs/nitro/pull/907))
+  - **vercel:** Allow non-glob cache rules to apply to `/` ([#908](https://github.com/unjs/nitro/pull/908))
+  - **externals:** Use stable dependency tree ([#909](https://github.com/unjs/nitro/pull/909))
+  - **dev:** Mount `src` and `root` as read-only by default ([#920](https://github.com/unjs/nitro/pull/920))
+
+### 📖 Documentation
+
+  - Fix heroku typo ([#900](https://github.com/unjs/nitro/pull/900))
+  - Fix stormkit images path ([#903](https://github.com/unjs/nitro/pull/903))
+  - Fix path for server assets ([#917](https://github.com/unjs/nitro/pull/917))
+
+### 🏡 Chore
+
+  - Update dependencies ([dbb89a1](https://github.com/unjs/nitro/commit/dbb89a1))
+  - Update unenv ([91c32c9](https://github.com/unjs/nitro/commit/91c32c9))
+
+### ✅ Tests
+
+  - Update fixture ([e7209cb](https://github.com/unjs/nitro/commit/e7209cb))
+  - Fix type test only ([e1e686f](https://github.com/unjs/nitro/commit/e1e686f))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- SerKo 
+- Daniel Roe <daniel@roe.dev>
+- Renato Lacerda <renato.ac.lacerda@gmail.com>
+- Chad Lew 
+- Mike Laumann Bellika 
+- Harlan Wilton <harlan@harlanzw.com>
+- Dany Sluijk <me@dany.dev>
+
 ## v2.1.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.1.0...v2.1.1)
