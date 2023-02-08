@@ -7,7 +7,7 @@ import {
 } from "h3";
 import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
-import { withoutBase } from "ufo";
+import { joinURL, withoutBase } from "ufo";
 import { useRuntimeConfig } from "./config";
 import type { NitroRouteRules } from "nitropack";
 
@@ -34,7 +34,11 @@ export function createRouteRulesHandler() {
     }
     // Apply proxy options
     if (routeRules.proxy) {
-      return proxyRequest(event, routeRules.proxy.to, {
+      let target = routeRules.proxy.to;
+      if (target.endsWith("/**")) {
+        target = joinURL(target.slice(0, -3), event.path);
+      }
+      return proxyRequest(event, target, {
         fetch: $fetch.raw as any,
         ...routeRules.proxy,
       });
