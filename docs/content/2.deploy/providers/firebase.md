@@ -1,6 +1,6 @@
 ---
 title: Firebase
-description: 'Discover Firebase preset for Nitro!'
+description: "Discover Firebase preset for Nitro!"
 ---
 
 **Preset:** `firebase` ([switch to this preset](/deploy/#changing-the-deployment-preset))
@@ -45,6 +45,7 @@ yarn global add firebase-tools
 npm install -g firebase-tools
 ```
 
+**Note**: You need to be on [^11.18.0](https://github.com/firebase/firebase-tools/releases/tag/v11.18.0) to deploy a nodejs18 function.
 
 #### Initialize your Firebase project
 

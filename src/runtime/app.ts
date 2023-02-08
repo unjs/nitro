@@ -2,9 +2,12 @@ import {
   App as H3App,
   createApp,
   createRouter,
+  eventHandler,
+  H3Event,
   lazyEventHandler,
   Router,
   toNodeListener,
+  fetchWithEvent,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -43,6 +46,33 @@ function createNitroApp(): NitroApp {
 
   h3App.use(createRouteRulesHandler());
 
+  // Create local fetch callers
+  const localCall = createCall(toNodeListener(h3App) as any);
+  const localFetch = createLocalFetch(localCall, globalThis.fetch);
+  const $fetch = createFetch({
+    fetch: localFetch,
+    Headers,
+    defaults: { baseURL: config.app.baseURL },
+  });
+  // @ts-ignore
+  globalThis.$fetch = $fetch;
+
+  // A generic event handler give nitro acess to the requests
+  h3App.use(
+    eventHandler((event) => {
+      // Support platform context provided by local fetch
+      const envContext = (event.node.req as any).__unenv__;
+      if (envContext) {
+        Object.assign(event.context, envContext);
+      }
+      // Assign bound fetch to context
+      event.fetch = (req, init) =>
+        fetchWithEvent(event, req as any, init, { fetch: localFetch });
+      event.$fetch = (req, init) =>
+        fetchWithEvent(event, req as any, init, { fetch: $fetch });
+    })
+  );
+
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler;
     if (h.middleware || !h.route) {
@@ -66,17 +96,6 @@ function createNitroApp(): NitroApp {
   }
 
   h3App.use(config.app.baseURL, router);
-
-  const localCall = createCall(toNodeListener(h3App) as any);
-  const localFetch = createLocalFetch(localCall, globalThis.fetch);
-
-  const $fetch = createFetch({
-    fetch: localFetch,
-    Headers,
-    defaults: { baseURL: config.app.baseURL },
-  });
-  // @ts-ignore
-  globalThis.$fetch = $fetch;
 
   const app: NitroApp = {
     hooks,

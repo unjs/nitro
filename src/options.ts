@@ -8,7 +8,7 @@ import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
-import { resolvePath, detectTarget } from "./utils";
+import { resolvePath, detectTarget, provideFallbackValues } from "./utils";
 import type {
   NitroConfig,
   NitroOptions,
@@ -247,6 +247,7 @@ export async function loadOptions(
     const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined,
+      proxy: undefined,
     };
     // Redirect
     if (routeConfig.redirect) {
@@ -257,6 +258,17 @@ export async function loadOptions(
           ? { to: routeConfig.redirect }
           : routeConfig.redirect),
       };
+    }
+    // Proxy
+    if (routeConfig.proxy) {
+      routeRules.proxy =
+        typeof routeConfig.proxy === "string"
+          ? { to: routeConfig.proxy }
+          : routeConfig.proxy;
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.proxy as any)._proxyStripBase = path.slice(0, -3);
+      }
     }
     // CORS
     if (routeConfig.cors) {
@@ -290,6 +302,8 @@ export async function loadOptions(
   options.routeRules = normalizedRules;
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
+
+  provideFallbackValues(options.runtimeConfig);
   options.runtimeConfig = defu(options.runtimeConfig, {
     app: {
       baseURL: options.baseURL,
@@ -325,6 +339,7 @@ export async function loadOptions(
   for (const p in fsMounts) {
     options.devStorage[p] = options.devStorage[p] || {
       driver: "fs",
+      readOnly: p === "root" || p === "src",
       base: fsMounts[p],
     };
   }

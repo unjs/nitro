@@ -57,6 +57,10 @@ export async function setupTest(preset: string) {
       },
       "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
       "/rules/nested/override": { redirect: { to: "/other" } },
+      "/rules/_/noncached/cached": { swr: true },
+      "/rules/_/noncached/**": { swr: false, cache: false },
+      "/rules/_/cached/noncached": { cache: false, swr: false },
+      "/rules/_/cached/**": { swr: true },
     },
     timing: preset !== "cloudflare" && preset !== "vercel-edge",
   }));

@@ -5,8 +5,9 @@ import {
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
-import { nitroApp } from "../app";
+import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
+import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
@@ -30,6 +31,10 @@ async function handleEvent(event: FetchEvent) {
 
   const r = await nitroApp.localCall({
     event,
+    context: {
+      // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
+      cf: (event.request as any).cf,
+    },
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
@@ -48,13 +53,14 @@ async function handleEvent(event: FetchEvent) {
 }
 
 function assetsCacheControl(_request) {
-  // TODO: Detect public asset bases
-  // if (request.url.startsWith(buildAssetsURL())) {
-  //   return {
-  //     browserTTL: 31536000,
-  //     edgeTTL: 31536000
-  //   }
-  // }
+  const url = new URL(_request.url);
+  const meta = getPublicAssetMeta(url.pathname);
+  if (meta.maxAge) {
+    return {
+      browserTTL: meta.maxAge,
+      edgeTTL: meta.maxAge,
+    };
+  }
   return {};
 }
 
