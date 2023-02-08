@@ -1,4 +1,10 @@
-import { eventHandler, H3Event, sendRedirect, setHeaders } from "h3";
+import {
+  eventHandler,
+  H3Event,
+  sendRedirect,
+  setHeaders,
+  proxyRequest,
+} from "h3";
 import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { withoutBase } from "ufo";
@@ -25,6 +31,13 @@ export function createRouteRulesHandler() {
         routeRules.redirect.to,
         routeRules.redirect.statusCode
       );
+    }
+    // Apply proxy options
+    if (routeRules.proxy) {
+      return proxyRequest(event, routeRules.proxy.to, {
+        // fetch: $fetch.raw as any, TODO: Support local fetch as well
+        ...routeRules.proxy,
+      });
     }
   });
 }
