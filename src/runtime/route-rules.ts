@@ -1,7 +1,13 @@
-import { eventHandler, H3Event, sendRedirect, setHeaders } from "h3";
+import {
+  eventHandler,
+  H3Event,
+  sendRedirect,
+  setHeaders,
+  proxyRequest,
+} from "h3";
 import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
-import { withoutBase } from "ufo";
+import { joinURL, withoutBase } from "ufo";
 import { useRuntimeConfig } from "./config";
 import type { NitroRouteRules } from "nitropack";
 
@@ -25,6 +31,22 @@ export function createRouteRulesHandler() {
         routeRules.redirect.to,
         routeRules.redirect.statusCode
       );
+    }
+    // Apply proxy options
+    if (routeRules.proxy) {
+      let target = routeRules.proxy.to;
+      if (target.endsWith("/**")) {
+        let targetPath = event.path;
+        const strpBase = (routeRules.proxy as any)._proxyStripBase;
+        if (strpBase) {
+          targetPath = withoutBase(targetPath, strpBase);
+        }
+        target = joinURL(target.slice(0, -3), targetPath);
+      }
+      return proxyRequest(event, target, {
+        fetch: $fetch.raw as any,
+        ...routeRules.proxy,
+      });
     }
   });
 }

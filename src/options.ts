@@ -247,6 +247,7 @@ export async function loadOptions(
     const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined,
+      proxy: undefined,
     };
     // Redirect
     if (routeConfig.redirect) {
@@ -257,6 +258,17 @@ export async function loadOptions(
           ? { to: routeConfig.redirect }
           : routeConfig.redirect),
       };
+    }
+    // Proxy
+    if (routeConfig.proxy) {
+      routeRules.proxy =
+        typeof routeConfig.proxy === "string"
+          ? { to: routeConfig.proxy }
+          : routeConfig.proxy;
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.proxy as any)._proxyStripBase = path.slice(0, -3);
+      }
     }
     // CORS
     if (routeConfig.cors) {

@@ -10,6 +10,7 @@ import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
+import type { ProxyOptions } from "h3";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -124,6 +125,7 @@ export interface NitroRouteConfig {
   headers?: Record<string, string>;
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
+  proxy?: string | ({ to: string } & ProxyOptions);
 
   // Shortcuts
   cors?: boolean;
@@ -134,6 +136,7 @@ export interface NitroRouteConfig {
 export interface NitroRouteRules
   extends Omit<NitroRouteConfig, "redirect" | "cors" | "swr" | "static"> {
   redirect?: { to: string; statusCode: HTTPStatusCode };
+  proxy?: { to: string } & ProxyOptions;
 }
 
 export interface NitroOptions extends PresetOptions {
