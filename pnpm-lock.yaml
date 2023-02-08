@@ -49,7 +49,7 @@ importers:
       fs-extra: ^11.1.0
       globby: ^13.1.3
       gzip-size: ^7.0.0
-      h3: ^1.3.0
+      h3: ^1.4.0
       hookable: ^5.4.2
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
@@ -67,7 +67,7 @@ importers:
       pathe: ^1.1.0
       perfect-debounce: ^0.1.3
       pkg-types: ^1.0.1
-      prettier: ^2.8.3
+      prettier: ^2.8.4
       pretty-bytes: ^6.1.0
       radix3: ^1.0.0
       rollup: ^3.14.0
@@ -83,7 +83,7 @@ importers:
       unbuild: ^1.1.1
       unenv: ^1.1.1
       unimport: ^2.2.4
-      unstorage: ^1.1.3
+      unstorage: ^1.1.4
       vitest: ^0.28.4
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
@@ -113,7 +113,7 @@ importers:
       fs-extra: 11.1.0
       globby: 13.1.3
       gzip-size: 7.0.0
-      h3: 1.3.0
+      h3: 1.4.0
       hookable: 5.4.2
       http-proxy: 1.18.1
       is-primitive: 3.0.1
@@ -143,7 +143,7 @@ importers:
       ufo: 1.0.1
       unenv: 1.1.1
       unimport: 2.2.4_rollup@3.14.0
-      unstorage: 1.1.3
+      unstorage: 1.1.4
     devDependencies:
       '@types/aws-lambda': 8.10.110
       '@types/etag': 1.8.1
@@ -161,7 +161,7 @@ importers:
       execa: 6.1.0
       expect-type: 0.15.0
       miniflare: 2.11.0
-      prettier: 2.8.3
+      prettier: 2.8.4
       typescript: 4.9.5
       unbuild: 1.1.1
       vitest: 0.28.4
@@ -3218,8 +3218,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3/1.3.0:
-    resolution: {integrity: sha512-nuEQOgMmdVl5wJYGoGnMwd048j004IcPcNdPmSrIjjPSbgusM4+ObSQ2b5SWqXAV7rspxjdG5+Er1ORmJOVbaQ==}
+  /h3/1.4.0:
+    resolution: {integrity: sha512-FWG+FUdW6XQnf/54L4AXzZs1KUYwSJk5cbdFvTM4EG96bEQiWDJ5003xW4S3UGgXI0VJJgyY6KCaDmAL75kjbA==}
     dependencies:
       cookie-es: 0.5.0
       destr: 1.2.2
@@ -4324,8 +4324,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier/2.8.3:
-    resolution: {integrity: sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==}
+  /prettier/2.8.4:
+    resolution: {integrity: sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -5163,13 +5163,13 @@ packages:
       webpack-virtual-modules: 0.5.0
     dev: false
 
-  /unstorage/1.1.3:
-    resolution: {integrity: sha512-39GhA+Q/S53zEEnCdnAP6BpNFX5emGe65cK2LzOl84OVJKjlvtBGCZzRUSYZ1dZj2/01V4PKY5NCjDtZ3CG8dw==}
+  /unstorage/1.1.4:
+    resolution: {integrity: sha512-nrnCoWN8ewaZrwz5yf7QGkMn0FDoVer6yGIR56wvocNzAmZi1vXOnCaBxueB3Uu/SqNSH5N/ww41t6jNT8XccA==}
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.5.3
       destr: 1.2.2
-      h3: 1.3.0
+      h3: 1.4.0
       ioredis: 5.3.0
       listhen: 1.0.2
       lru-cache: 7.14.1
