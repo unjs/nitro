@@ -35,7 +35,7 @@ export function createRouteRulesHandler() {
     // Apply proxy options
     if (routeRules.proxy) {
       return proxyRequest(event, routeRules.proxy.to, {
-        // fetch: $fetch.raw as any, TODO: Support local fetch as well
+        fetch: $fetch.raw as any,
         ...routeRules.proxy,
       });
     }
