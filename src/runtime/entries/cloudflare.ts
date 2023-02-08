@@ -31,6 +31,9 @@ async function handleEvent(event: FetchEvent) {
 
   const r = await nitroApp.localCall({
     event,
+    context: {
+      cf: (event.request as any).cf,
+    },
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
