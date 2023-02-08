@@ -27,12 +27,14 @@ export const vercel = defineNitroPreset({
       const buildConfig = generateBuildConfig(nitro);
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2));
 
+      const systemNodeVersion = process.versions.node.split('.')[0];
+      const runtimeVersion = `nodejs${systemNodeVersion}.x`;
       const functionConfigPath = resolve(
         nitro.options.output.serverDir,
         ".vc-config.json"
       );
       const functionConfig = {
-        runtime: "nodejs16.x",
+        runtime: runtimeVersion,
         handler: "index.mjs",
         launcherType: "Nodejs",
         shouldAddHelpers: false,
