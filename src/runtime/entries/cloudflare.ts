@@ -7,7 +7,7 @@ import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
-import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
@@ -50,11 +50,11 @@ async function handleEvent(event: FetchEvent) {
 
 function assetsCacheControl(_request) {
   const url = new URL(_request.url);
-
-  if (isPublicAssetURL(url.pathname)) {
+  const meta = getPublicAssetMeta(url.pathname);
+  if (meta.maxAge) {
     return {
-      browserTTL: 31_536_000,
-      edgeTTL: 31_536_000,
+      browserTTL: meta.maxAge,
+      edgeTTL: meta.maxAge,
     };
   }
   return {};
