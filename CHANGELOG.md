@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.2.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.1.2...v2.2.0)
+
+
+### 🚀 Enhancements
+
+  - Support runtime proxy using route rules ([#926](https://github.com/unjs/nitro/pull/926))
+  - **cloudflare:** `cacheControl` support for public assets with with `maxAge` ([#922](https://github.com/unjs/nitro/pull/922))
+  - **cloudflare:** Expose `event.context.cf` ([#927](https://github.com/unjs/nitro/pull/927))
+  - **firebase:** Use nodejs 18 as default runtime ([#925](https://github.com/unjs/nitro/pull/925))
+  - Support `event.fetch` and `event.$fetch` ([#930](https://github.com/unjs/nitro/pull/930))
+  - **vercel:** Auto-detect runtime version ([#879](https://github.com/unjs/nitro/pull/879))
+
+### 🩹 Fixes
+
+  - Apply cached rules to overlaping wildcard patterns ([#906](https://github.com/unjs/nitro/pull/906))
+  - **cloudflare:** Use full mime db ([#933](https://github.com/unjs/nitro/pull/933))
+
+### 🏡 Chore
+
+  - Fix lint issue ([cf4d661](https://github.com/unjs/nitro/commit/cf4d661))
+  - Update dependencies ([ab03de1](https://github.com/unjs/nitro/commit/ab03de1))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Shohei Maeda 
+- Luke Nelson <luke@nelson.zone>
+- Oleg Khalin 
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.1.2
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.1.1...v2.1.2)
