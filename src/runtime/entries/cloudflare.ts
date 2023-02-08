@@ -54,8 +54,8 @@ function assetsCacheControl(_request) {
   if (isPublicAssetURL(url.pathname)) {
     return {
       browserTTL: 31_536_000,
-      edgeTTL: 31_536_000
-    }
+      edgeTTL: 31_536_000,
+    };
   }
   return {};
 }
