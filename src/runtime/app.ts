@@ -7,6 +7,7 @@ import {
   lazyEventHandler,
   Router,
   toNodeListener,
+  fetchWithEvent,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -55,19 +56,6 @@ function createNitroApp(): NitroApp {
   });
   // @ts-ignore
   globalThis.$fetch = $fetch;
-  const fetchByEvent = (event: H3Event, path: string, init?: RequestInit) =>
-    localFetch(path, {
-      headers: event.node.req.headers as any,
-      context: event.context,
-      init,
-    });
-  const $fetchByEvent = (event: H3Event, path: string, init?: RequestInit) =>
-    $fetch(path, {
-      headers: event.node.req.headers as any,
-      // @ts-ignore
-      context: event.context,
-      init,
-    });
 
   // A generic event handler give nitro acess to the requests
   h3App.use(
@@ -78,8 +66,10 @@ function createNitroApp(): NitroApp {
         Object.assign(event.context, envContext);
       }
       // Assign bound fetch to context
-      event.fetch = (path, init) => fetchByEvent(event, path, init);
-      event.$fetch = (path, init) => $fetchByEvent(event, path, init);
+      event.fetch = (req, init) =>
+        fetchWithEvent(event, req as any, init, { fetch: localFetch });
+      event.fetch = (req, init) =>
+        fetchWithEvent(event, req as any, init, { fetch: $fetch });
     })
   );
 
