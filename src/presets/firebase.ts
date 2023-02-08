@@ -66,18 +66,18 @@ async function writeRoutes(nitro: Nitro) {
   }, {} as Record<string, string>);
 
   let nodeVersion = "18";
-  const supportedNodeVersions = ["18", "16", "14", "12", "10"];
+  const supportedNodeVersions = new Set(["18", "16", "14", "12", "10"]);
   //    ^ See https://cloud.google.com/functions/docs/concepts/nodejs-runtime
   try {
     const currentNodeVersion = JSON.parse(
       await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
     ).engines.node;
-    if (supportedNodeVersions.includes(currentNodeVersion)) {
+    if (supportedNodeVersions.has(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
     }
   } catch {
     const currentNodeVersion = process.versions.node.slice(0, 2);
-    if (supportedNodeVersions.includes(currentNodeVersion)) {
+    if (supportedNodeVersions.has(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
     }
   }
