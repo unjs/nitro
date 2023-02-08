@@ -48,7 +48,7 @@ function createNitroApp(): NitroApp {
   h3App.use(
     eventHandler((event) => {
       // Support platform context provided by local fetch
-      const envContext = (event.node.req as any).__unenv__?.context;
+      const envContext = (event.node.req as any).__unenv__;
       if (envContext) {
         Object.assign(event.context, envContext);
       }
