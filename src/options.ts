@@ -265,6 +265,10 @@ export async function loadOptions(
         typeof routeConfig.proxy === "string"
           ? { to: routeConfig.proxy }
           : routeConfig.proxy;
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.proxy as any)._proxyStripBase = path.slice(0, -3);
+      }
     }
     // CORS
     if (routeConfig.cors) {

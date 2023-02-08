@@ -36,7 +36,12 @@ export function createRouteRulesHandler() {
     if (routeRules.proxy) {
       let target = routeRules.proxy.to;
       if (target.endsWith("/**")) {
-        target = joinURL(target.slice(0, -3), event.path);
+        let targetPath = event.path;
+        const strpBase = (routeRules.proxy as any)._proxyStripBase;
+        if (strpBase) {
+          targetPath = withoutBase(targetPath, strpBase);
+        }
+        target = joinURL(target.slice(0, -3), targetPath);
       }
       return proxyRequest(event, target, {
         fetch: $fetch.raw as any,

@@ -254,7 +254,7 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
     '/api/v1/**': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
     '/old-page': { redirect: '/new-page' },
     '/proxy/example': { proxy: 'https://example.com' },
-    "/proxy/api/**": { proxy: '/api/proxied/**' },
+    "/proxy/**": { proxy: '/api/**' },
   }
 }
 ```
