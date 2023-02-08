@@ -27,7 +27,7 @@ export const vercel = defineNitroPreset({
       const buildConfig = generateBuildConfig(nitro);
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2));
 
-      const systemNodeVersion = process.versions.node.split('.')[0];
+      const systemNodeVersion = process.versions.node.split(".")[0];
       const runtimeVersion = `nodejs${systemNodeVersion}.x`;
       const functionConfigPath = resolve(
         nitro.options.output.serverDir,
