@@ -2,6 +2,7 @@ import {
   App as H3App,
   createApp,
   createRouter,
+  eventHandler,
   lazyEventHandler,
   Router,
   toNodeListener,
@@ -42,6 +43,17 @@ function createNitroApp(): NitroApp {
   const router = createRouter();
 
   h3App.use(createRouteRulesHandler());
+
+  // A generic event handler give nitro acess to the requests
+  h3App.use(
+    eventHandler((event) => {
+      // Support platform context provided by local fetch
+      const envContext = (event.node.req as any).__unenv__;
+      if (envContext) {
+        Object.assign(event.context, envContext);
+      }
+    })
+  );
 
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler;

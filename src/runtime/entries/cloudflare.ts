@@ -31,6 +31,10 @@ async function handleEvent(event: FetchEvent) {
 
   const r = await nitroApp.localCall({
     event,
+    context: {
+      // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
+      cf: (event.request as any).cf,
+    },
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
