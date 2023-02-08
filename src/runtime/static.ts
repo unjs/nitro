@@ -50,6 +50,7 @@ export default eventHandler((event) => {
 
   if (!asset) {
     if (isPublicAssetURL(id)) {
+      event.node.res.removeHeader("cache-control");
       throw createError({
         statusMessage: "Cannot find static asset " + id,
         statusCode: 404,
