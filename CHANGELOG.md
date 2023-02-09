@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.2.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.2.0...v2.2.1)
+
+
+### 🩹 Fixes
+
+  - **static:** Remove `cache-control` headers when asset is not found ([e3d57fc](https://github.com/unjs/nitro/commit/e3d57fc))
+  - Avoid circular imports ([#936](https://github.com/unjs/nitro/pull/936))
+
+### 🏡 Chore
+
+  - Update changelog ([8dde296](https://github.com/unjs/nitro/commit/8dde296))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pyapar@gmail.com>
+
 ## v2.2.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.1.2...v2.2.0)
