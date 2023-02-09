@@ -7,7 +7,7 @@ import {
 } from "h3";
 import type { H3Event } from "h3";
 import { parseURL } from "ufo";
-import { useStorage } from "#internal/nitro";
+import { useStorage } from "#internal/nitro/virtual/storage";
 
 export interface CacheEntry<T = any> {
   value?: T;
