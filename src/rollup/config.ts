@@ -329,7 +329,7 @@ export const plugins = [
               .filter((i) => typeof i === "string"),
           ],
           traceOptions: {
-            base: "/",
+            base: process.cwd(),
             processCwd: nitro.options.rootDir,
             exportsOnly: true,
           },
