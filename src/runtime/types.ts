@@ -5,7 +5,7 @@ export type {
   ResponseCacheEntry,
   CachedEventHandlerOptions,
 } from "./cache";
-export type { NitroAppPlugin } from "./plugin";
+export type { NitroAppPlugin, defineNitroPlugin } from "./plugin";
 export type { RenderResponse, RenderHandler } from "./renderer";
 
 declare module "h3" {
