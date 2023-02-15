@@ -274,7 +274,7 @@ export async function loadOptions(
     if (routeConfig.cors) {
       routeRules.headers = {
         "access-control-allow-origin": "*",
-        "access-control-allowed-methods": "*",
+        "access-control-allow-methods": "*",
         "access-control-allow-headers": "*",
         "access-control-max-age": "0",
         ...routeRules.headers,
