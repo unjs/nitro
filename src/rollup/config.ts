@@ -359,6 +359,7 @@ export const plugins = [
         });
         if (!resolved) {
           const _resolved = await resolvePath(id, {
+            url: nitro.options.nodeModulesDirs,
             conditions: [
               "default",
               nitro.options.dev ? "development" : "production",
@@ -366,7 +367,6 @@ export const plugins = [
               "node",
               "import",
             ],
-            url: nitro.options.nodeModulesDirs,
           }).catch(() => null);
           if (_resolved) {
             return { id: _resolved, external: false };
