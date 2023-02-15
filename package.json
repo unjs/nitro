@@ -119,7 +119,7 @@
     "edge-runtime": "^2.0.6",
     "eslint": "^8.34.0",
     "eslint-config-unjs": "^0.1.0",
-    "execa": "^6.1.0",
+    "execa": "^7.0.0",
     "expect-type": "^0.15.0",
     "miniflare": "^2.11.0",
     "prettier": "^2.8.4",
