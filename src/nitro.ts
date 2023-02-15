@@ -62,16 +62,15 @@ export async function createNitro(config: NitroConfig = {}): Promise<Nitro> {
     asset.baseURL = asset.baseURL || "/";
     const isTopLevel = asset.baseURL === "/";
     asset.fallthrough = asset.fallthrough ?? isTopLevel;
-    asset.maxAge = asset.maxAge ?? 0;
+    const routeRule = options.routeRules[asset.baseURL + "/**"];
+    asset.maxAge =
+      (routeRule?.cache as { maxAge: number })?.maxAge ?? asset.maxAge ?? 0;
     if (asset.maxAge && !asset.fallthrough) {
-      options.routeRules[asset.baseURL + "/**"] = defu(
-        options.routeRules[asset.baseURL + "/**"],
-        {
-          headers: {
-            "cache-control": `public, max-age=${asset.maxAge}, immutable`,
-          },
-        }
-      );
+      options.routeRules[asset.baseURL + "/**"] = defu(routeRule, {
+        headers: {
+          "cache-control": `public, max-age=${asset.maxAge}, immutable`,
+        },
+      });
     }
   }
 
