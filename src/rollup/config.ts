@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import { createRequire } from "node:module";
+import { createRequire, builtinModules } from "node:module";
 import { dirname, join, normalize, relative, resolve } from "pathe";
 import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
@@ -15,7 +15,7 @@ import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
 import type { Preset } from "unenv";
-import { sanitizeFilePath } from "mlly";
+import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
 import type { Nitro } from "../types";
@@ -347,10 +347,31 @@ export const plugins = [
     rollupConfig.plugins.push({
       name: "no-externals",
       async resolveId(id, from, options) {
+        if (
+          nitro.options.node &&
+          (id.startsWith("node:") || builtinModules.includes(id))
+        ) {
+          return { id, external: true };
+        }
         const resolved = await this.resolve(id, from, {
           ...options,
           skipSelf: true,
         });
+        if (!resolved) {
+          const _resolved = await resolvePath(id, {
+            conditions: [
+              "default",
+              nitro.options.dev ? "development" : "production",
+              "module",
+              "node",
+              "import",
+            ],
+            url: nitro.options.nodeModulesDirs,
+          }).catch(() => null);
+          if (_resolved) {
+            return { id: _resolved, external: false };
+          }
+        }
         if (!resolved || resolved.external) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
