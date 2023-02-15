@@ -175,6 +175,7 @@ export interface NitroOptions extends PresetOptions {
   renderer: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
+  ignorePublic: string[];
   experimental?: {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;

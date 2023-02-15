@@ -11,6 +11,7 @@ import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
+import { globby } from "globby";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
@@ -39,10 +40,32 @@ export async function copyPublicAssets(nitro: Nitro) {
   }
   for (const asset of nitro.options.publicAssets) {
     if (await isDirectory(asset.dir)) {
+      const publicAssets = await globby("**", {
+        cwd: asset.dir,
+        absolute: false,
+        dot: true,
+        ignore: nitro.options.ignorePublic,
+        onlyFiles: false,
+      });
+
+      const publicAssetsMap: { [path: string]: true } = {};
+      for (const path of publicAssets) {
+        const pathWithPrefix = `/${path}`;
+        publicAssetsMap[pathWithPrefix] = true;
+      }
+
       await fse.copy(
         asset.dir,
         join(nitro.options.output.publicDir, asset.baseURL!),
-        { overwrite: false }
+        {
+          overwrite: false,
+          filter: (src: string, _dest: string) => {
+            const removeDirString = src.replace(asset.dir, "");
+            const passCopy =
+              removeDirString === "" || removeDirString in publicAssetsMap;
+            return passCopy;
+          },
+        }
       );
     }
   }
