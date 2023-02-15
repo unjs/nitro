@@ -251,7 +251,7 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
     '/blog/**': { static: true },
     '/blog/**': { cache: { /* cache options*/ } },
     '/assets/**': { headers: { 'cache-control': 's-maxage=0' } },
-    '/api/v1/**': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
+    '/api/v1/**': { cors: true, headers: { 'access-control-allow-methods': 'GET' } },
     '/old-page': { redirect: '/new-page' },
     '/proxy/example': { proxy: 'https://example.com' },
     "/proxy/**": { proxy: '/api/**' },
