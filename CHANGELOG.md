@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.2.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.2.1...v2.2.2)
+
+
+### 🩹 Fixes
+
+  - Correct `access-control-allow-methods` cors header name ([#944](https://github.com/unjs/nitro/pull/944))
+  - Allow overriding assets `maxAge` using route rules ([db6e6c2](https://github.com/unjs/nitro/commit/db6e6c2))
+  - **rollup:** Use mlly as fallback resolver when externals disabled ([#948](https://github.com/unjs/nitro/pull/948))
+  - Don't render json response if url contains `/api/` ([#951](https://github.com/unjs/nitro/pull/951))
+
+### 🏡 Chore
+
+  - Update unjs dependencies ([b852c23](https://github.com/unjs/nitro/commit/b852c23))
+  - Update jiti dependency ([716dc1a](https://github.com/unjs/nitro/commit/716dc1a))
+  - Updare unbuild ([044bb6a](https://github.com/unjs/nitro/commit/044bb6a))
+
+### ✅ Tests
+
+  - **vercel:** Move custom test to additional tests ([fb361f8](https://github.com/unjs/nitro/commit/fb361f8))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.2.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.2.0...v2.2.1)
