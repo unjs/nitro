@@ -52,7 +52,7 @@ importers:
       hookable: ^5.4.2
       http-proxy: ^1.18.1
       is-primitive: ^3.0.1
-      jiti: ^1.17.0
+      jiti: ^1.17.1
       klona: ^2.0.6
       knitwork: ^1.0.0
       listhen: ^1.0.2
@@ -116,7 +116,7 @@ importers:
       hookable: 5.4.2
       http-proxy: 1.18.1
       is-primitive: 3.0.1
-      jiti: 1.17.0
+      jiti: 1.17.1
       klona: 2.0.6
       knitwork: 1.0.0
       listhen: 1.0.3
@@ -1845,7 +1845,7 @@ packages:
       defu: 6.1.2
       dotenv: 16.0.3
       giget: 1.1.0
-      jiti: 1.17.0
+      jiti: 1.17.1
       mlly: 1.1.1
       pathe: 1.1.0
       pkg-types: 1.0.2
@@ -3638,8 +3638,8 @@ packages:
       istanbul-lib-report: 3.0.0
     dev: true
 
-  /jiti/1.17.0:
-    resolution: {integrity: sha512-CByzPgFqYoB9odEeef7GNmQ3S5THIBOtzRYoSCya2Sv27AuQxy2jgoFjQ6VTF53xsq1MXRm+YWNvOoDHUAteOw==}
+  /jiti/1.17.1:
+    resolution: {integrity: sha512-NZIITw8uZQFuzQimqjUxIrIcEdxYDFIe/0xYfIlVXTkiBjjyBEvgasj5bb0/cHtPRD/NziPbT312sFrkI5ALpw==}
     hasBin: true
 
   /js-sdsl/4.3.0:
@@ -3989,7 +3989,7 @@ packages:
       esbuild: 0.17.8
       fs-extra: 11.1.0
       globby: 13.1.3
-      jiti: 1.17.0
+      jiti: 1.17.1
       mri: 1.2.0
       pathe: 1.1.0
       typescript: 4.9.5
@@ -5121,7 +5121,7 @@ packages:
       esbuild: 0.16.17
       globby: 13.1.3
       hookable: 5.4.2
-      jiti: 1.17.0
+      jiti: 1.17.1
       magic-string: 0.27.0
       mkdirp: 1.0.4
       mkdist: 1.1.1_typescript@4.9.5
