@@ -140,7 +140,7 @@ jobs:
 **Note:** This preset uses [module syntax](https://developers.cloudflare.com/workers/learning/migrating-to-module-workers/) for deployment.
 ::
 
-The module syntax allows you to use [service bindings](https://developers.cloudflare.com/workers/platform/bindings/about-service-bindings/), [Durable Objects](https://developers.cloudflare.com/workers/learning/using-durable-objects/), and [D1](https://developers.cloudflare.com/d1/). You can access the module bindings and context via `event.context`.
+The module syntax allows you to use [Durable Objects](https://developers.cloudflare.com/workers/learning/using-durable-objects/), [D1](https://developers.cloudflare.com/d1/), and `waitUntil`. You can access the module bindings and context via `event.context`.
 
 For example, with the following additions to your `wrangler.toml`:
 
@@ -163,6 +163,20 @@ const res = await event.context.env.WORKER.fetch('<worker URL>')
 // D1
 const stmt = await event.context.env.D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
+```
+
+### Using with TypeScript
+
+Running `wrangler types` will generate a `worker-configuration.d.ts` file alongside your `wrangler.toml`.
+
+You can then add this file to your `tsconfig.json` for improved developer experience:
+
+```json
+"compilerOptions": {
+  "types": [
+    "./worker-configuration"
+  ]
+}
 ```
 
 ## Cloudflare Pages
