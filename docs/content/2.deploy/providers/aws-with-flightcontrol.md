@@ -47,7 +47,6 @@ On a high-level, the steps you'll need to follow in order to deploy a project fo
           "name": "My Nitro site",
           "type": "fargate",
           "domain": "www.yourdomain.com",
-          "outputDirectory": ".output",
           "startCommand": "node .output/server/index.mjs",
           "cpu": 0.25,
           "memory": 0.5
