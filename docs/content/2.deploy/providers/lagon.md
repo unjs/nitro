@@ -15,7 +15,7 @@ Nitro supports deploying on [Lagon](https://lagon.app/) with minimal configurati
 
 1. Build your Nitro app with `NITRO_PRESET=lagon`
 
-1. Install [Lagon CLI](https://docs.lagon.app/cli) and login using [`npx @lagon/cli login`]
+1. Install [Lagon CLI](https://docs.lagon.app/cli) and login using `npx @lagon/cli login`.
 
 1. Deploy with `lagon deploy .output/server/index.mjs -p .output/public`. Lagon will ask if you want to link to an existing function or create a new one.
 
