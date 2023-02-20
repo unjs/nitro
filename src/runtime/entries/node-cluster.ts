@@ -3,7 +3,7 @@ import cluster from "node:cluster";
 
 if (cluster.isPrimary) {
   const numberOfWorkers =
-    Number.parseInt(process.env.NITRO_CLUSTER_WORKERS) || os.cpus().length > 0;
+    Number.parseInt(process.env.NITRO_CLUSTER_WORKERS) || os.cpus().length;
   for (let i = 0; i < numberOfWorkers; i++) {
     cluster.fork();
   }
