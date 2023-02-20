@@ -33,6 +33,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
       {
         "exclude": [
           "/build/*",
+          "/favicon.ico",
         ],
         "include": [
           "/*",

@@ -1,6 +1,7 @@
-import { resolve } from "pathe";
+import { join, resolve } from "pathe";
 import fse from "fs-extra";
-import { joinURL } from "ufo";
+import { joinURL, withLeadingSlash } from "ufo";
+import { globby } from "globby";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -62,9 +63,33 @@ export const cloudflarePages = defineNitroPreset({
         include: ["/*"],
         exclude: [],
       };
+      // Push prefixed static assets to exclude, for most reliability
       for (const path of nitro.options.publicAssets) {
         if (path.baseURL && path.baseURL !== "/") {
           routes.exclude.push(joinURL(path.baseURL, "*"));
+        }
+      }
+      // Push unprefixed static assets to exclude, up to the 100 limit
+      const roots = nitro.options.publicAssets
+        .filter((p) => p.baseURL !== "/")
+        .map((p) => p.dir);
+      for (const path of nitro.options.publicAssets) {
+        if (!path.baseURL || path.baseURL === "/") {
+          const files = await globby("**", {
+            cwd: path.dir,
+            absolute: false,
+            dot: true,
+          });
+          for (const file of files) {
+            const fullPath = join(path.dir, file);
+            // Skip assets already scanned in a more deeply nested asset directory
+            if (roots.some((r) => fullPath.startsWith(r))) {
+              continue;
+            }
+            if (routes.exclude.length < 99) {
+              routes.exclude.push(withLeadingSlash(file));
+            }
+          }
         }
       }
       await fse.writeFile(
