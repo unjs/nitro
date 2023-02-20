@@ -1,5 +1,6 @@
 import { resolve } from "pathe";
 import fse from "fs-extra";
+import { joinURL } from "ufo";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -55,6 +56,20 @@ export const cloudflarePages = defineNitroPreset({
       await fse.move(
         resolve(nitro.options.output.serverDir, "path.js.map"),
         resolve(nitro.options.output.serverDir, "[[path]].js.map")
+      );
+      const routes = {
+        version: 1,
+        include: ["/*"],
+        exclude: [],
+      };
+      for (const path of nitro.options.publicAssets) {
+        if (path.baseURL && path.baseURL !== "/") {
+          routes.exclude.push(joinURL(path.baseURL, "*"));
+        }
+      }
+      await fse.writeFile(
+        resolve(nitro.options.output.publicDir, "_routes.json"),
+        JSON.stringify(routes)
       );
     },
   },
