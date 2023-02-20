@@ -1,6 +1,7 @@
+import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
 import { Miniflare } from "miniflare";
-import { describe } from "vitest";
+import { describe, it, expect } from "vitest";
 
 import { setupTest, testNitro } from "../tests";
 
@@ -18,5 +19,26 @@ describe("nitro:preset:cloudflare", async () => {
       });
       return res as unknown as Response;
     };
+  });
+});
+
+describe("nitro:preset:cloudflare-pages", async () => {
+  const ctx = await setupTest("cloudflare-pages");
+
+  it("should generate a _routes.json", async () => {
+    const config = await fsp
+      .readFile(resolve(ctx.outDir, "public/_routes.json"), "utf8")
+      .then((r) => JSON.parse(r));
+    expect(config).toMatchInlineSnapshot(`
+      {
+        "exclude": [
+          "/build/*",
+        ],
+        "include": [
+          "/*",
+        ],
+        "version": 1,
+      }
+    `);
   });
 });
