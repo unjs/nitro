@@ -11,6 +11,10 @@ description: 'Discover Cloudflare preset for Nitro!'
 **Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
 ::
 
+::alert{type="warning"}
+**Warning:** Please be aware that `runtimeConfig` cannot be updated via Cloudflare's environment variables (see [#272](https://github.com/unjs/nitro/issues/272) for more). As a workaround, you can use the Cloudflare env variables as constants in the code.
+::
+
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
 
 Create a `wrangler.toml` in your root directory:
