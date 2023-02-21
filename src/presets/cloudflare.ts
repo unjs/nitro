@@ -1,6 +1,6 @@
 import { join, resolve } from "pathe";
 import fse from "fs-extra";
-import { joinURL, withLeadingSlash } from "ufo";
+import { joinURL, withLeadingSlash, withoutLeadingSlash } from "ufo";
 import { globby } from "globby";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
@@ -67,23 +67,36 @@ export const cloudflarePages = defineNitroPreset({
         resolve(nitro.options.output.serverDir, "path.js.map"),
         resolve(nitro.options.output.serverDir, "[[path]].js.map")
       );
+
       const routes: CloudflarePagesRoutes = {
         version: 1,
         include: ["/*"],
         exclude: [],
       };
-      // Push prefixed static assets to exclude, for most reliability
-      for (const path of nitro.options.publicAssets) {
-        if (path.baseURL && path.baseURL !== "/") {
-          routes.exclude.push(joinURL(path.baseURL, "*"));
-        }
-      }
 
+      // Exclude public assets from hitting the worker
+      const explicitPublicAssets = nitro.options.publicAssets.filter(
+        (i) => !i.fallthrough
+      );
+
+      // Explicit prefixes
+      routes.exclude.push(
+        ...explicitPublicAssets.map((dir) => joinURL(dir.baseURL, "*"))
+      );
+
+      // Unprefixed assets
       const publicAssetFiles = await globby("**", {
         cwd: nitro.options.output.publicDir,
         absolute: false,
         dot: true,
-        ignore: [".output/**"], // TODO!
+        ignore: [
+          ...explicitPublicAssets.map((dir) =>
+            withoutLeadingSlash(joinURL(dir.baseURL, "**"))
+          ),
+          // TODO!
+          ".nitro/**",
+          ".output/**",
+        ],
       });
 
       for (const file of publicAssetFiles) {
