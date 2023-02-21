@@ -17,7 +17,7 @@ On a high-level, the steps you'll need to follow in order to deploy a project fo
 
 ### Node.js Server
 
-Nitro can be deployed to AWS via Flightcontrol as a Node.js server. To deploy your application as a Node.js server, create a Flightcontrol project with configuration via the Dashboard or with configuration via `flightcontrol.json`.
+Nitro applications can be deployed to AWS via Flightcontrol as a Node.js server. To deploy your application as a Node.js server, create a Flightcontrol project with configuration via the Dashboard or with configuration via `flightcontrol.json`.
 
 #### Create a Project with Configuration via the Dashboard
 
@@ -65,7 +65,7 @@ Nitro can be deployed to AWS via Flightcontrol as a Node.js server. To deploy yo
 
 ### Static Hosting
 
-Nitro can be deployed to AWS via Flightcontrol as a static site. To deploy your application as a static site, create a Flightcontrol project with configuration via the Dashboard or with configuration via `flightcontrol.json`.
+Nitro applications can be deployed to AWS via Flightcontrol as a static site. To deploy your application as a static site, create a Flightcontrol project with configuration via the Dashboard or with configuration via `flightcontrol.json`.
 
 #### Create a Static Project with Configuration via the Dashboard
 
