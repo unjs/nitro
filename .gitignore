@@ -67,3 +67,5 @@ Temporary Items
 .vercel
 staticwebapp.config.json
 .eslintcache
+
+test/fixture/functions
