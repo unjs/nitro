@@ -98,12 +98,10 @@ export const cloudflarePages = defineNitroPreset({
           ".output/**",
         ],
       });
+      routes.exclude.push(...publicAssetFiles.map((i) => withLeadingSlash(i)));
 
-      for (const file of publicAssetFiles) {
-        if (routes.exclude.length < 99) {
-          routes.exclude.push(withLeadingSlash(file));
-        }
-      }
+      // Only allow 100 routes
+      routes.exclude.splice(100);
 
       await fse.writeFile(
         resolve(nitro.options.output.publicDir, "_routes.json"),
