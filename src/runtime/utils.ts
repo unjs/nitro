@@ -42,7 +42,8 @@ export function isJsonRequest(event: H3Event) {
     hasReqHeader(event, "user-agent", "curl/") ||
     hasReqHeader(event, "user-agent", "httpie/") ||
     hasReqHeader(event, "sec-fetch-mode", "cors") ||
-    event.node.req.url?.endsWith(".json")
+    event.path.startsWith("/api/") ||
+    event.path.endsWith(".json")
   );
 }
 
