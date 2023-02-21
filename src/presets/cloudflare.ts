@@ -78,32 +78,23 @@ export const cloudflarePages = defineNitroPreset({
           routes.exclude.push(joinURL(path.baseURL, "*"));
         }
       }
-      // Push unprefixed static assets to exclude, up to the 100 limit
-      const roots = nitro.options.publicAssets
-        .filter((p) => p.baseURL !== "/")
-        .map((p) => p.dir);
-      for (const path of nitro.options.publicAssets) {
-        if (!path.baseURL || path.baseURL === "/") {
-          const files = await globby("**", {
-            cwd: path.dir,
-            absolute: false,
-            dot: true,
-          });
-          for (const file of files) {
-            const fullPath = join(path.dir, file);
-            // Skip assets already scanned in a more deeply nested asset directory
-            if (roots.some((r) => fullPath.startsWith(r))) {
-              continue;
-            }
-            if (routes.exclude.length < 99) {
-              routes.exclude.push(withLeadingSlash(file));
-            }
-          }
+
+      const publicAssetFiles = await globby("**", {
+        cwd: nitro.options.output.publicDir,
+        absolute: false,
+        dot: true,
+        ignore: [".output/**"], // TODO!
+      });
+
+      for (const file of publicAssetFiles) {
+        if (routes.exclude.length < 99) {
+          routes.exclude.push(withLeadingSlash(file));
         }
       }
+
       await fse.writeFile(
         resolve(nitro.options.output.publicDir, "_routes.json"),
-        JSON.stringify(routes)
+        JSON.stringify(routes, undefined, 2)
       );
     },
   },
