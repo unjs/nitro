@@ -27,6 +27,15 @@ export const cloudflare = defineNitroPreset({
   },
 });
 
+/**
+ * https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
+ */
+interface CloudflarePagesRoutes {
+  version: 1;
+  include: string[];
+  exclude: string[];
+}
+
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
   entry: "#internal/nitro/entries/cloudflare-pages",
@@ -58,7 +67,7 @@ export const cloudflarePages = defineNitroPreset({
         resolve(nitro.options.output.serverDir, "path.js.map"),
         resolve(nitro.options.output.serverDir, "[[path]].js.map")
       );
-      const routes = {
+      const routes: CloudflarePagesRoutes = {
         version: 1,
         include: ["/*"],
         exclude: [],
