@@ -5,6 +5,7 @@ import * as rollup from "rollup";
 import fse from "fs-extra";
 import { defu } from "defu";
 import { watch } from "chokidar";
+import { scanDirExports } from "unimport";
 import { debounce } from "perfect-debounce";
 import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
@@ -94,6 +95,13 @@ export async function writeTypes(nitro: Nitro) {
   let autoImportedTypes: string[] = [];
 
   if (nitro.unimport) {
+    await nitro.unimport.modifyDynamicImports(async () => {
+      const { dirs } = nitro.options.imports as { dirs: string[] };
+      return (await scanDirExports(dirs)).map((i) => ({
+        ...i,
+        from: i.from.replace(/\.ts$/, ""),
+      }));
+    });
     autoImportedTypes = [
       (
         await nitro.unimport.generateTypeDeclarations({
@@ -337,7 +345,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
 
 function formatRollupError(_error: RollupError | OnResolveResult) {
   try {
-    const logs: string[] = [];
+    const logs: string[] = [_error.toString()];
     for (const error of "errors" in _error
       ? _error.errors
       : [_error as RollupError]) {
@@ -354,7 +362,7 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
         `Rollup error while processing \`${path}\`` + text ? "\n\n" + text : ""
       );
     }
-    return logs.join("\n\n");
+    return logs.join("\n");
   } catch {
     return _error?.toString();
   }

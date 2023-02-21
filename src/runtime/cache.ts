@@ -7,7 +7,7 @@ import {
 } from "h3";
 import type { H3Event } from "h3";
 import { parseURL } from "ufo";
-import { useStorage } from "#internal/nitro";
+import { useStorage } from "#internal/nitro/virtual/storage";
 
 export interface CacheEntry<T = any> {
   value?: T;
@@ -18,10 +18,11 @@ export interface CacheEntry<T = any> {
 
 export interface CacheOptions<T = any> {
   name?: string;
-  getKey?: (...args: any[]) => string;
+  getKey?: (...args: any[]) => string | Promise<string>;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   validate?: (entry: CacheEntry<T>) => boolean;
   shouldInvalidateCache?: (...args: any[]) => boolean;
+  shouldBypassCache?: (...args: any[]) => boolean;
   group?: string;
   integrity?: any;
   maxAge?: number;
@@ -77,22 +78,30 @@ export function defineCachedFunction<T = any>(
       !validate(entry);
 
     const _resolve = async () => {
-      if (!pending[key]) {
-        // Remove cached entry to prevent using expired cache on concurrent requests
-        entry.value = undefined;
-        entry.integrity = undefined;
-        entry.mtime = undefined;
-        entry.expires = undefined;
+      const isPending = pending[key];
+      if (!isPending) {
+        if (entry.value !== undefined && (opts.staleMaxAge || 0) >= 0) {
+          // Remove cached entry to prevent using expired cache on concurrent requests
+          entry.value = undefined;
+          entry.integrity = undefined;
+          entry.mtime = undefined;
+          entry.expires = undefined;
+        }
         pending[key] = Promise.resolve(resolver());
       }
+
       entry.value = await pending[key];
-      entry.mtime = Date.now();
-      entry.integrity = integrity;
-      delete pending[key];
-      if (validate(entry)) {
-        useStorage()
-          .setItem(cacheKey, entry)
-          .catch((error) => console.error("[nitro] [cache]", error));
+
+      if (!isPending) {
+        // Update mtime, integrity + validate and set the value in cache only the first time the request is made.
+        entry.mtime = Date.now();
+        entry.integrity = integrity;
+        delete pending[key];
+        if (validate(entry)) {
+          useStorage()
+            .setItem(cacheKey, entry)
+            .catch((error) => console.error("[nitro] [cache]", error));
+        }
       }
     };
 
@@ -109,7 +118,11 @@ export function defineCachedFunction<T = any>(
   }
 
   return async (...args) => {
-    const key = (opts.getKey || getKey)(...args);
+    const shouldBypassCache = opts.shouldBypassCache?.(...args);
+    if (shouldBypassCache) {
+      return fn(...args);
+    }
+    const key = await (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
     const entry = await get(key, () => fn(...args), shouldInvalidateCache);
     let value = entry.value;
@@ -135,7 +148,8 @@ export interface ResponseCacheEntry<T = any> {
 export interface CachedEventHandlerOptions<T = any>
   extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
   shouldInvalidateCache?: (event: H3Event) => boolean;
-  getKey?: (event: H3Event) => string;
+  shouldBypassCache?: (event: H3Event) => boolean;
+  getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
 }
 
@@ -149,8 +163,8 @@ export function defineCachedEventHandler<T = any>(
 ): EventHandler<T> {
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
-    getKey: (event) => {
-      const key = opts.getKey?.(event);
+    getKey: async (event) => {
+      const key = await opts.getKey?.(event);
       if (key) {
         return escapeKey(key);
       }

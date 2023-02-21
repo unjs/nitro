@@ -84,9 +84,11 @@ export function readAsset (id) {
       },
       // #internal/nitro/virtual/public-assets
       "#internal/nitro/virtual/public-assets": () => {
-        const publicAssetBases = nitro.options.publicAssets
-          .filter((dir) => !dir.fallthrough && dir.baseURL !== "/")
-          .map((dir) => dir.baseURL);
+        const publicAssetBases = Object.fromEntries(
+          nitro.options.publicAssets
+            .filter((dir) => !dir.fallthrough && dir.baseURL !== "/")
+            .map((dir) => [dir.baseURL, { maxAge: dir.maxAge }])
+        );
 
         return `
 import assets from '#internal/nitro/virtual/public-assets-data'
@@ -95,7 +97,7 @@ ${
     ? `export * from "#internal/nitro/virtual/public-assets-${
         nitro.options.serveStatic === "deno" ? "deno" : "node"
       }"`
-    : "export const readAsset = () => Promise(null)"
+    : "export const readAsset = () => Promise.resolve(null)"
 }
 
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
@@ -104,10 +106,17 @@ export function isPublicAssetURL(id = '') {
   if (assets[id]) {
     return true
   }
-  for (const base of publicAssetBases) {
+  for (const base in publicAssetBases) {
     if (id.startsWith(base)) { return true }
   }
   return false
+}
+
+export function getPublicAssetMeta(id = '') {
+  for (const base in publicAssetBases) {
+    if (id.startsWith(base)) { return publicAssetBases[base] }
+  }
+  return {}
 }
 
 export function getAsset (id) {

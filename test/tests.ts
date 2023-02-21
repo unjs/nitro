@@ -45,7 +45,7 @@ export async function setupTest(preset: string) {
       "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
       "/rules/cors": {
         cors: true,
-        headers: { "access-control-allowed-methods": "GET" },
+        headers: { "access-control-allow-methods": "GET" },
       },
       "/rules/dynamic": { cache: false },
       "/rules/redirect": { redirect: "/base" },
@@ -57,6 +57,10 @@ export async function setupTest(preset: string) {
       },
       "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
       "/rules/nested/override": { redirect: { to: "/other" } },
+      "/rules/_/noncached/cached": { swr: true },
+      "/rules/_/noncached/**": { swr: false, cache: false },
+      "/rules/_/cached/noncached": { cache: false, swr: false },
+      "/rules/_/cached/**": { swr: true },
     },
     timing: preset !== "cloudflare" && preset !== "vercel-edge",
   }));
@@ -165,7 +169,7 @@ export function testNitro(
   it("handles route rules - cors", async () => {
     const expectedHeaders = {
       "access-control-allow-origin": "*",
-      "access-control-allowed-methods": "GET",
+      "access-control-allow-methods": "GET",
       "access-control-allow-headers": "*",
       "access-control-max-age": "0",
     };
@@ -203,12 +207,16 @@ export function testNitro(
   });
 
   it("handles custom server assets", async () => {
-    const { data: html, status: htmlStatus } = await callHandler({ url: "/file?filename=index.html" });
-    const { data: txtFile, status: txtStatus } = await callHandler({ url: "/file?filename=test.txt" });
+    const { data: html, status: htmlStatus } = await callHandler({
+      url: "/file?filename=index.html",
+    });
+    const { data: txtFile, status: txtStatus } = await callHandler({
+      url: "/file?filename=test.txt",
+    });
     expect(htmlStatus).toBe(200);
-    expect(html).toContain('<h1>nitro is amazing!</h1>');
+    expect(html).toContain("<h1>nitro is amazing!</h1>");
     expect(txtStatus).toBe(200);
-    expect(txtFile).toContain('this is an asset from a text file from nitro');
+    expect(txtFile).toContain("this is an asset from a text file from nitro");
   });
 
   if (ctx.nitro!.options.serveStatic) {
@@ -235,6 +243,15 @@ export function testNitro(
     it("shows 404 for /build/non-file", async () => {
       const { status } = await callHandler({ url: "/build/non-file" });
       expect(status).toBe(404);
+    });
+
+    it("find auto imported utils", async () => {
+      const res = await callHandler({ url: "/imports" });
+      expect(res.data).toMatchInlineSnapshot(`
+        {
+          "testUtil": 123,
+        }
+      `);
     });
 
     it("resolve module version conflicts", async () => {

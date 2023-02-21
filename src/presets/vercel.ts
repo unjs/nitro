@@ -27,12 +27,14 @@ export const vercel = defineNitroPreset({
       const buildConfig = generateBuildConfig(nitro);
       await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2));
 
+      const systemNodeVersion = process.versions.node.split(".")[0];
+      const runtimeVersion = `nodejs${systemNodeVersion}.x`;
       const functionConfigPath = resolve(
         nitro.options.output.serverDir,
         ".vc-config.json"
       );
       const functionConfig = {
-        runtime: "nodejs16.x",
+        runtime: runtimeVersion,
         handler: "index.mjs",
         launcherType: "Nodejs",
         shouldAddHelpers: false,
@@ -190,6 +192,15 @@ function generateBuildConfig(nitro: Nitro) {
             dest: generateEndpoint(key) + "?url=$url",
           };
         }),
+      // If we are using a prerender function for /, then we need to write this explicitly
+      ...(nitro.options.routeRules["/"]?.cache
+        ? [
+            {
+              src: "(?<url>/)",
+              dest: "/__nitro-index",
+            },
+          ]
+        : []),
       // If we are using a prerender function as a fallback, then we do not need to output
       // the below fallback route as well
       ...(!nitro.options.routeRules["/**"]?.cache ||
@@ -209,6 +220,9 @@ function generateBuildConfig(nitro: Nitro) {
 }
 
 function generateEndpoint(url: string) {
+  if (url === "/") {
+    return "/__nitro-index";
+  }
   return url.includes("/**")
     ? "/__nitro-" +
         withoutLeadingSlash(url.replace(/\/\*\*.*/, "").replace(/[^a-z]/g, "-"))

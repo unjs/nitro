@@ -1,4 +1,4 @@
-import { resolve, join, normalize } from "pathe";
+import { resolve, join } from "pathe";
 import { loadConfig } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
@@ -8,7 +8,7 @@ import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
-import { resolvePath, detectTarget } from "./utils";
+import { resolvePath, detectTarget, provideFallbackValues } from "./utils";
 import type {
   NitroConfig,
   NitroOptions,
@@ -44,7 +44,9 @@ const NitroDefaults: NitroConfig = {
   plugins: [],
   imports: {
     exclude: [],
+    dirs: [],
     presets: nitroImports,
+    virtualImports: ["#imports"],
   },
   virtual: {},
   compressPublicAssets: false,
@@ -186,12 +188,12 @@ export async function loadOptions(
     ),
   ];
 
-  if (options.scanDirs.length === 0) {
-    options.scanDirs = [options.srcDir];
-  }
+  // Resolve scanDirs
+  options.scanDirs.unshift(options.srcDir);
   options.scanDirs = options.scanDirs.map((dir) =>
     resolve(options.srcDir, dir)
   );
+  options.scanDirs = [...new Set(options.scanDirs)];
 
   if (
     options.imports &&
@@ -228,6 +230,13 @@ export async function loadOptions(
     });
   }
 
+  // Auto imports from utils dirs
+  if (options.imports) {
+    options.imports.dirs.push(
+      ...options.scanDirs.map((dir) => join(dir, "utils/*"))
+    );
+  }
+
   // Backward compatibility for options.routes
   options.routeRules = defu(options.routeRules, (options as any).routes || {});
 
@@ -238,6 +247,7 @@ export async function loadOptions(
     const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined,
+      proxy: undefined,
     };
     // Redirect
     if (routeConfig.redirect) {
@@ -249,11 +259,22 @@ export async function loadOptions(
           : routeConfig.redirect),
       };
     }
+    // Proxy
+    if (routeConfig.proxy) {
+      routeRules.proxy =
+        typeof routeConfig.proxy === "string"
+          ? { to: routeConfig.proxy }
+          : routeConfig.proxy;
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.proxy as any)._proxyStripBase = path.slice(0, -3);
+      }
+    }
     // CORS
     if (routeConfig.cors) {
       routeRules.headers = {
         "access-control-allow-origin": "*",
-        "access-control-allowed-methods": "*",
+        "access-control-allow-methods": "*",
         "access-control-allow-headers": "*",
         "access-control-max-age": "0",
         ...routeRules.headers,
@@ -281,14 +302,15 @@ export async function loadOptions(
   options.routeRules = normalizedRules;
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
+
+  provideFallbackValues(options.runtimeConfig);
   options.runtimeConfig = defu(options.runtimeConfig, {
     app: {
       baseURL: options.baseURL,
     },
-    nitro: {
-      routeRules: options.routeRules,
-    },
+    nitro: {},
   });
+  options.runtimeConfig.nitro.routeRules = options.routeRules;
 
   for (const publicAsset of options.publicAssets) {
     publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
@@ -317,6 +339,7 @@ export async function loadOptions(
   for (const p in fsMounts) {
     options.devStorage[p] = options.devStorage[p] || {
       driver: "fs",
+      readOnly: p === "root" || p === "src",
       base: fsMounts[p],
     };
   }

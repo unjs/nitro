@@ -1,17 +1,16 @@
 ---
 title: Configuration
 aside: false
-description: 'Customize your Nitro app with a configuration file!'
+description: "Customize your Nitro app with a configuration file!"
 ---
 
 In order to customize nitro's behavior, we create a file named `nitro.config.ts`.
 
 ```js
 // nitro.config.ts
-import { defineNitroConfig } from 'nitropack'
+import { defineNitroConfig } from "nitropack";
 
-export default defineNitroConfig({
-})
+export default defineNitroConfig({});
 ```
 
 ## Config Reference
@@ -219,11 +218,11 @@ Path to a custom runtime error handler. Replacing nitro's built-in error page.
 **Example:**
 
 ```js [nitro.config]
-import { defineNitroConfig } from 'nitropack'
+import { defineNitroConfig } from "nitropack";
 
 export default defineNitroConfig({
-  errorHandler: '~/error'
-})
+  errorHandler: "~/error",
+});
 ```
 
 ```js [error.ts]
@@ -252,8 +251,10 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
     '/blog/**': { static: true },
     '/blog/**': { cache: { /* cache options*/ } },
     '/assets/**': { headers: { 'cache-control': 's-maxage=0' } },
-    '/api/v1/**': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
-    '/old-page': { redirect: '/new-page' }
+    '/api/v1/**': { cors: true, headers: { 'access-control-allow-methods': 'GET' } },
+    '/old-page': { redirect: '/new-page' },
+    '/proxy/example': { proxy: 'https://example.com' },
+    "/proxy/**": { proxy: '/api/**' },
   }
 }
 ```

@@ -35,6 +35,11 @@ export const cloudflarePages = defineNitroPreset({
   output: {
     serverDir: "{{ rootDir }}/functions",
   },
+  alias: {
+    // Hotfix: Cloudflare appends /index.html if mime is not found and things like ico are not in standard lite.js!
+    // https://github.com/unjs/nitro/pull/933
+    _mime: "mime/index.js",
+  },
   rollupConfig: {
     output: {
       entryFileNames: "path.js",
