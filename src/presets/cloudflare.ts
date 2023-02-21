@@ -81,7 +81,7 @@ export const cloudflarePages = defineNitroPreset({
 
       // Explicit prefixes
       routes.exclude.push(
-        ...explicitPublicAssets.map((dir) => joinURL(dir.baseURL, "*"))
+        ...explicitPublicAssets.map((dir) => joinURL(dir.baseURL, "*")).sort()
       );
 
       // Unprefixed assets
@@ -98,7 +98,11 @@ export const cloudflarePages = defineNitroPreset({
           ".output/**",
         ],
       });
-      routes.exclude.push(...publicAssetFiles.map((i) => withLeadingSlash(i)));
+      routes.exclude.push(
+        ...publicAssetFiles
+          .map((i) => withLeadingSlash(i))
+          .sort((a, b) => a.length - b.length)
+      );
 
       // Only allow 100 routes
       routes.exclude.splice(100);
