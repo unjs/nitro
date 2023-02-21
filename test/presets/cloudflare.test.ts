@@ -34,6 +34,16 @@ describe("nitro:preset:cloudflare-pages", async () => {
         "exclude": [
           "/build/*",
           "/favicon.ico",
+          "/icon.png",
+          "/api/hello",
+          "/prerender/index.html",
+          "/prerender/index.html.br",
+          "/prerender/index.html.gz",
+          "/api/hey/index.html",
+          "/api/param/foo.json/index.html",
+          "/api/param/prerender3/index.html",
+          "/api/param/prerender4/index.html",
+          "/api/param/prerender1/index.html",
         ],
         "include": [
           "/*",
