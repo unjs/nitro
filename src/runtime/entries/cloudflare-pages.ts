@@ -21,9 +21,11 @@ interface CFRequestContext {
 export async function onRequest(ctx: CFRequestContext) {
   try {
     // const asset = await env.ASSETS.fetch(request, { cacheControl: assetsCacheControl })
-    const asset = await ctx.next();
-    if (asset.status < 400) {
-      return asset;
+    if (ctx.request.method === "GET") {
+      const asset = await ctx.next();
+      if (asset.status !== 404) {
+        return asset;
+      }
     }
   } catch {
     // Ignore
