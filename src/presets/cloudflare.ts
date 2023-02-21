@@ -81,7 +81,9 @@ export const cloudflarePages = defineNitroPreset({
 
       // Explicit prefixes
       routes.exclude.push(
-        ...explicitPublicAssets.map((dir) => joinURL(dir.baseURL, "*")).sort()
+        ...explicitPublicAssets
+          .map((dir) => joinURL(dir.baseURL, "*"))
+          .sort(comparePaths)
       );
 
       // Unprefixed assets
@@ -99,9 +101,7 @@ export const cloudflarePages = defineNitroPreset({
         ],
       });
       routes.exclude.push(
-        ...publicAssetFiles
-          .map((i) => withLeadingSlash(i))
-          .sort((a, b) => a.length - b.length)
+        ...publicAssetFiles.map((i) => withLeadingSlash(i)).sort(comparePaths)
       );
 
       // Only allow 100 routes
@@ -114,3 +114,7 @@ export const cloudflarePages = defineNitroPreset({
     },
   },
 });
+
+function comparePaths(a: string, b: string) {
+  return a.split("/").length - b.split("/").length || a.localeCompare(b);
+}
