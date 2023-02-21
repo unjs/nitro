@@ -95,9 +95,6 @@ export const cloudflarePages = defineNitroPreset({
           ...explicitPublicAssets.map((dir) =>
             withoutLeadingSlash(joinURL(dir.baseURL, "**"))
           ),
-          // TODO!
-          ".nitro/**",
-          ".output/**",
         ],
       });
       routes.exclude.push(
