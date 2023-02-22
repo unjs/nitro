@@ -33,28 +33,28 @@ Build and Deploy Universal JavaScript Servers, everywhere.
   #title
   Rapid Development
   #description
-  Zero config setup with hot module replacement
+  Zero config setup with hot module replacement.
   ::
 
   ::card{icon=😌}
   #title
   Multi-Provider
   #description
-  Deploy same codebase to any provider without extra config
+  Deploy sthe ame codebase to any [deployment provider](/deploy) without extra config.
   ::
 
   ::card{icon=💼}
   #title
   Portable and Compact
   #description
-  Say goodbye to node_modules
+  Say goodbye to `node_modules`, output size is less than 1MB.
   ::
 
   ::card{icon=📁}
   #title
   Filesystem Routing
   #description
-  Automatically registers Server and API routes
+  Automatically registers Server and API routes.
   ::
 
   ::card{icon=🤏}
@@ -68,7 +68,7 @@ Build and Deploy Universal JavaScript Servers, everywhere.
   #title
   Code-Splitting
   #description
-  Async chunk loading for fast server startup time
+  Async chunk loading for fast server startup time and answer.
   ::
 
   ::card{icon=👕}
