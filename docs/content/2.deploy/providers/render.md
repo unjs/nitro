@@ -1,7 +1,6 @@
----
-title: Render.com
-description: 'Discover Render.com preset for Nitro!'
----
+# Render.com
+
+Deploy Nitro apps to Render.
 
 **Preset:** `render-com` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

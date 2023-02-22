@@ -1,9 +1,6 @@
----
-title: Cleavr
-description: 'Discover Cleavr preset for Nitro!'
----
+# Cleavr
 
-## Cleavr
+Deploy Nitro apps to Cleavr.
 
 **Preset:** `cleavr` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

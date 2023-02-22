@@ -1,7 +1,6 @@
----
-title: Lagon
-description: "Discover Lagon preset for Nitro!"
----
+# Lagon
+
+Deploy Nitro apps to Lagon.
 
 > Lagon is an open source platform that allows you to run TypeScript and JavaScript close to your users.
 

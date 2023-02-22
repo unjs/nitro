@@ -1,7 +1,6 @@
----
-title: Edgio
-description: 'Discover Edgio (formerly Layer0) preset for Nitro!'
----
+# Edgio
+
+Deploy Nitro apps to Edgio (formerly Layer0).
 
 **Preset:** `edgio` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

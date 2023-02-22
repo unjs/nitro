@@ -1,7 +1,6 @@
----
-title: Firebase
-description: "Discover Firebase preset for Nitro!"
----
+# Firebase
+
+Deploy Nitro apps to Firebase.
 
 **Preset:** `firebase` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
