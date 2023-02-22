@@ -41,7 +41,7 @@ export const vercel = defineNitroPreset({
         launcherType: "Nodejs",
         shouldAddHelpers: false,
         ...(customMemory && { memory: customMemory }),
-        ...(customMaxDuration && {maxDuration: customMaxDuration}),
+        ...(customMaxDuration && { maxDuration: customMaxDuration }),
       };
       await writeFile(
         functionConfigPath,
