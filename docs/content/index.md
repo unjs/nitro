@@ -13,17 +13,19 @@ cta:
 secondary:
   - Star on GitHub
   - https://github.com/unjs/nitro
-snippet: "-"
+snippet:
+  - npx tiged unjs/nitro#starter
+  - npx nitropack dev
 ---
 
-#top
+#extra
 :ellipsis
 
 #title
 ⚗️ Nitro
 
 #description
-Build and Deploy Universal JavaScript Servers
+Build and Deploy Universal JavaScript Servers, everywhere.
 ::
 
 ::card-grid
