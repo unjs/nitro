@@ -29,6 +29,8 @@ export const vercel = defineNitroPreset({
 
       const systemNodeVersion = process.versions.node.split(".")[0];
       const runtimeVersion = `nodejs${systemNodeVersion}.x`;
+      const customMemory = nitro.options.vercel?.functions?.memory;
+      const customMaxDuration = nitro.options.vercel?.functions?.maxDuration;
       const functionConfigPath = resolve(
         nitro.options.output.serverDir,
         ".vc-config.json"
@@ -38,6 +40,8 @@ export const vercel = defineNitroPreset({
         handler: "index.mjs",
         launcherType: "Nodejs",
         shouldAddHelpers: false,
+        ...(customMemory && { memory: customMemory }),
+        ...(customMaxDuration && {maxDuration: customMaxDuration}),
       };
       await writeFile(
         functionConfigPath,

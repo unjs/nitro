@@ -45,5 +45,9 @@ export interface VercelBuildConfigV3 {
 export interface PresetOptions {
   vercel: {
     config: VercelBuildConfigV3;
+    functions?: {
+      memory: number;
+      maxDuration: number;
+    }
   };
 }
