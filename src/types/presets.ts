@@ -48,6 +48,6 @@ export interface PresetOptions {
     functions?: {
       memory: number;
       maxDuration: number;
-    }
+    };
   };
 }
