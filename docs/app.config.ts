@@ -3,7 +3,8 @@ export default defineAppConfig({
     title: '⚗️ Nitro',
     header: {
       title: false,
-      logo: true
+      logo: true,
+      fluid: true
     },
     description: 'Build and Deploy Universal JavaScript Servers.',
     url: 'https://nitro.unjs.io',
@@ -19,10 +20,14 @@ export default defineAppConfig({
       dir: 'docs/content',
       edit: true
     },
+    main: {
+      fluid: true
+    },
     aside: {
       level: 1
     },
     footer: {
+      fluid: true,
       credits: {
         icon: '',
         text: 'Made with 💛',
