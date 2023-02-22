@@ -1,7 +1,6 @@
----
-title: Vercel
-description: 'Discover Vercel preset for Nitro!'
----
+# Vercel
+
+Deploy Nitro apps to Vercel.
 
 **Preset:** `vercel` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

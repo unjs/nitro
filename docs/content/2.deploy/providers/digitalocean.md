@@ -1,7 +1,6 @@
----
-title: DigitalOcean
-description: 'Discover DigitalOcean preset for Nitro!'
----
+# DigitalOcean
+
+Deploy Nitro apps to DigitalOcean.
 
 **Preset:** `digital-ocean` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -30,7 +29,7 @@ Nitro supports deploying on the [Digital Ocean App Platform](https://docs.digita
    ```
 
    [See more information](https://docs.digitalocean.com/products/app-platform/languages-frameworks/nodejs/#node-version).
-   
+
 
 1. You'll also need to add a run command so Digital Ocean knows what command to run after a build. You can do so by adding a start script to your `package.json`:
 
@@ -41,7 +40,7 @@ Nitro supports deploying on the [Digital Ocean App Platform](https://docs.digita
       }
    }
    ```
-   
+
 1. Finally, you'll need to add this start script to your Digital Ocean app's run command. Go to `Components > Settings > Commands`, click "Edit", then add `npm run start`
 
 Your app should be live at a Digital Ocean generated URL and you can now follow [the rest of the Digital Ocean deployment guide](https://docs.digitalocean.com/products/app-platform/how-to/manage-deployments/).

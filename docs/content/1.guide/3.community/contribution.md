@@ -1,7 +1,6 @@
----
-title: Contribution
-description: Thank you for all your contributions! 💛
----
+# Contribution
+
+Thank you for all your contributions! 💛
 
 **Before everything, please make sure there is an option issue either confirming issue/bug 🐛 and there is already a dicussion with 👍 to add an enhancement.**
 

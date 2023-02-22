@@ -1,7 +1,6 @@
----
-title: Cloudflare
-description: 'Discover Cloudflare preset for Nitro!'
----
+# Cloudflare
+
+Deploy Nitro apps to CloudFlare.
 
 ## Cloudflare Workers
 
