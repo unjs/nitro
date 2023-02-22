@@ -75,41 +75,41 @@ Build and Deploy Universal JavaScript Servers, everywhere.
   #title
   TypeScript
   #description
-  TypeScript support out of the box with few more goodies
+  TypeScript support out of the box with few more goodies.
   ::
 
   ::card{icon=💾}
   #title
   Storage Layer
   #description
-  Multi driver and platform-agnostic storage system
+  Multi driver and platform-agnostic storage system.
   ::
 
   ::card{icon=💰}
   #title
   Cache API
   #description
-  Powerful built-in caching API
+  Powerful built-in caching API.
   ::
 
   ::card{icon=🐱}
   #title
   Hackable
   #description
-  Built to be customized
+  Built to be customized.
   ::
 
   ::card{icon=✨}
   #title
   Auto Imports
   #description
-  Automatically import utilities for the lazy folks and a minimal codebase
+  Automatically import utilities for the lazy folks and a minimal codebase.
   ::
 
   ::card{icon=🏛️}
   #title
   Backward compatible
   #description
-  Best-effort compatibility for using legacy npm packages, CommonJS and mocking Node.js modules for workers
+  Best-effort compatibility for using legacy npm packages, CommonJS and mocking Node.js modules for workers.
   ::
 ::
