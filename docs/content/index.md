@@ -25,7 +25,7 @@ snippet:
 ⚗️ Nitro
 
 #description
-Build and Deploy Universal JavaScript Servers, everywhere.
+Build and Deploy Universal JavaScript Servers, everywhere. :br The engine powering [Nuxt 3](https://nuxt.com) and open to anyone.
 ::
 
 ::card-grid
@@ -33,14 +33,14 @@ Build and Deploy Universal JavaScript Servers, everywhere.
   #title
   Rapid Development
   #description
-  Zero config setup with hot module replacement.
+  Zero config setup with hot module replacement for server code.
   ::
 
   ::card{icon=😌}
   #title
-  Multi-Provider
+  Deploy Everywhere
   #description
-  Deploy sthe ame codebase to any [deployment provider](/deploy) without extra config.
+  Deploy the same codebase to any [deployment provider](/deploy) with no extra config.
   ::
 
   ::card{icon=💼}
@@ -54,7 +54,7 @@ Build and Deploy Universal JavaScript Servers, everywhere.
   #title
   Filesystem Routing
   #description
-  Automatically registers Server and API routes.
+  [Automatically registers](/guide/introduction/routing) server and API routes.
   ::
 
   ::card{icon=🤏}
@@ -96,20 +96,20 @@ Build and Deploy Universal JavaScript Servers, everywhere.
   #title
   Hackable
   #description
-  Built to be customized.
+  Built to be customized with the [plugins](/guide/advanced/plugins) hooks system.
   ::
 
   ::card{icon=✨}
   #title
   Auto Imports
   #description
-  Automatically import utilities for the lazy folks and a minimal codebase.
+  Automatically import utilities for a minimal and clean codebase. Only the used ones will be added to the final bundle.
   ::
 
   ::card{icon=🏛️}
   #title
-  Backward compatible
+  Backward Compatible
   #description
-  Best-effort compatibility for using legacy npm packages, CommonJS and mocking Node.js modules for workers.
+  So you can use legacy npm packages, CommonJS and mocking Node.js modules for workers.
   ::
 ::
