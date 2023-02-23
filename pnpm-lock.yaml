@@ -183,6 +183,9 @@ importers:
       serve-static:
         specifier: ^1.15.0
         version: 1.15.0
+      set-cookie-parser:
+        specifier: ^2.5.1
+        version: 2.5.1
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -4985,6 +4988,10 @@ packages:
 
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
+    dev: false
+
+  /set-cookie-parser@2.5.1:
+    resolution: {integrity: sha512-1jeBGaKNGdEq4FgIrORu/N570dwoPYio8lSoYLWmX7sQ//0JY08Xh9o5pBcgmHQ/MbsYp/aZnOe1s1lIsbLprQ==}
     dev: false
 
   /set-cookie-parser@2.6.0:

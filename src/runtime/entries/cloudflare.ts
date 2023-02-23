@@ -4,6 +4,7 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
+import { splitCookiesString } from "set-cookie-parser"
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
@@ -44,9 +45,10 @@ async function handleEvent(event: FetchEvent) {
     body,
   });
 
+  const headers = normalizeOutgoingHeaders(r.headers);
   return new Response(r.body, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-    headers: normalizeOutgoingHeaders(r.headers),
+    headers,
     status: r.status,
     statusText: r.statusText,
   });
@@ -71,9 +73,20 @@ const baseURLModifier = (request: Request) => {
 
 function normalizeOutgoingHeaders(
   headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
+): Headers {
+  const result = new Headers();
+
+  for (const [k, v] of Object.entries(headers)) {
+    if(k === 'set-cookie') {
+      for (const cookie of splitCookiesString(v)) {
+        result.append('set-cookie', cookie)
+      }
+
+      continue;
+    }
+
+    result.append(k, Array.isArray(v) ? v.join(',') : v)
+  }
+
+  return result;
 }

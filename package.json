@@ -107,6 +107,7 @@
     "semver": "^7.5.3",
     "serve-placeholder": "^2.0.1",
     "serve-static": "^1.15.0",
+    "set-cookie-parser": "^2.5.1",
     "source-map-support": "^0.5.21",
     "std-env": "^3.3.3",
     "ufo": "^1.1.2",
