@@ -4,7 +4,7 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
-import { splitCookiesString } from "set-cookie-parser"
+import { splitCookiesString } from "set-cookie-parser";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
@@ -77,15 +77,15 @@ function normalizeOutgoingHeaders(
   const result = new Headers();
 
   for (const [k, v] of Object.entries(headers)) {
-    if(k === 'set-cookie') {
+    if (k === "set-cookie") {
       for (const cookie of splitCookiesString(v)) {
-        result.append('set-cookie', cookie)
+        result.append("set-cookie", cookie);
       }
 
       continue;
     }
 
-    result.append(k, Array.isArray(v) ? v.join(',') : v)
+    result.append(k, Array.isArray(v) ? v.join(",") : v);
   }
 
   return result;
