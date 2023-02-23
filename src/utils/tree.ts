@@ -23,7 +23,7 @@ export async function generateFSTree(dir: string) {
         return { file, path, size, gzip };
       })
     )
-  ).sort((a, b) => b.path.localeCompare(a.path));
+  ).sort((a, b) => a.path.localeCompare(b.path));
 
   let totalSize = 0;
   let totalGzip = 0;
