@@ -95,7 +95,7 @@ export async function writeTypes(nitro: Nitro) {
   let autoImportedTypes: string[] = [];
 
   if (nitro.unimport) {
-    await nitro.unimport.init()
+    await nitro.unimport.init();
     autoImportedTypes = [
       (
         await nitro.unimport.generateTypeDeclarations({
