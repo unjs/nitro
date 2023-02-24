@@ -81,7 +81,7 @@ importers:
       ufo: ^1.1.0
       unbuild: ^1.1.2
       unenv: ^1.2.1
-      unimport: ^3.0.1
+      unimport: ^3.0.2
       unstorage: ^1.1.5
       vitest: ^0.28.5
     dependencies:
@@ -141,7 +141,7 @@ importers:
       std-env: 3.3.2
       ufo: 1.1.0
       unenv: 1.2.1
-      unimport: 3.0.1_rollup@3.17.2
+      unimport: 3.0.2_rollup@3.17.2
       unstorage: 1.1.5
     devDependencies:
       '@types/aws-lambda': 8.10.110
@@ -165,6 +165,12 @@ importers:
       vitest: 0.28.5
 
   examples/api-routes:
+    specifiers:
+      nitropack: link:../..
+    devDependencies:
+      nitropack: link:../..
+
+  examples/auto-imports:
     specifiers:
       nitropack: link:../..
     devDependencies:
@@ -5167,8 +5173,8 @@ packages:
       pathe: 1.1.0
     dev: false
 
-  /unimport/3.0.1_rollup@3.17.2:
-    resolution: {integrity: sha512-agdjfSLRp0Yi7qyRm3bwTdQR3NTN1JmuQmTj2b8hNZWTnphq5k4NugOad12t21ukD1uXvnYu1Tji7aNmzmCZGQ==}
+  /unimport/3.0.2_rollup@3.17.2:
+    resolution: {integrity: sha512-OQ0hShpcerS1PSsISsyn/NV2dGe5xfdUn4p5nwOodq0iqq5xxYQrTidHqlFGjxIliPDtDJp80OeySzyPTjYHmA==}
     dependencies:
       '@rollup/pluginutils': 5.0.2_rollup@3.17.2
       escape-string-regexp: 5.0.0
