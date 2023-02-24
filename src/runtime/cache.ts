@@ -104,10 +104,12 @@ export function defineCachedFunction<T = any>(
               .catch((error) => console.error("[nitro] [cache]", error));
           }
         }
-      } catch {
-        // Make sure entries that reject get removed
+      } catch (error) {
+        // Make sure entries that reject get removed.
         delete pending[key];
-        useStorage().removeItem(cacheKey);
+
+        // Re-throw error to make sure the caller knows the task failed.
+        throw error;
       }
     };
 
