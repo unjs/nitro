@@ -44,8 +44,9 @@ export async function onRequest(ctx: CFRequestContext) {
     host: url.hostname,
     protocol: url.protocol,
     body,
-    // TODO: Allow passing custom context
-    // cf: ctx,
+    context: {
+      cf: ctx,
+    },
     // TODO: Handle redirects?
     // redirect: ctx.request.redirect
   });
