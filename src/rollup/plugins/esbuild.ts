@@ -14,7 +14,7 @@ const defaultLoaders: { [ext: string]: Loader } = {
 export type Options = {
   include?: FilterPattern;
   exclude?: FilterPattern;
-  sourceMap?: boolean;
+  sourceMap?: boolean | "inline" | "hidden";
   minify?: boolean;
   target: string | string[];
   jsxFactory?: string;
@@ -82,7 +82,8 @@ export function esbuild(options: Options): Plugin {
         loader,
         target: options.target,
         define: options.define,
-        sourcemap: options.sourceMap,
+        sourcemap:
+          options.sourceMap === "hidden" ? "external" : options.sourceMap,
         sourcefile: id,
       });
 
