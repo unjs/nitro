@@ -1,5 +1,3 @@
 import { defineNitroConfig } from "../src";
 
-export default defineNitroConfig({
-  sourceMap: "hidden",
-});
+export default defineNitroConfig({});
