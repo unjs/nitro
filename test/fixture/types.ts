@@ -191,4 +191,32 @@ describe("API routes", () => {
       $fetch("/api/methods/default", { method: "POST" })
     ).toMatchTypeOf<Promise<"Default override">>();
   });
+
+  it("generates types matching JSON serialization output", () => {
+    expectTypeOf($fetch("/api/serialized/date")).toMatchTypeOf<
+      Promise<{
+        createdAt: string;
+      }>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/function")).toMatchTypeOf<
+      Promise<object>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/map")).toMatchTypeOf<
+      Promise<{
+        foo: object;
+      }>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/set")).toMatchTypeOf<
+      Promise<{
+        foo: object;
+      }>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/tuple")).toMatchTypeOf<
+      Promise<[string, string]>
+    >();
+  });
 });
