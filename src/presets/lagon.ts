@@ -3,6 +3,18 @@ import { resolve, relative } from "pathe";
 import { defineNitroPreset } from "../preset";
 import { writeFile } from "../utils";
 
+/**
+ * Both function_id and organization_id fields are required but only used when deploying the function
+ * Ref: https://github.com/lagonapp/lagon/blob/06093d051898d7603f356b9cae5e3f14078d480a/crates/cli/src/utils/deployments.rs#L34
+ */
+export interface LagonFunctionConfig {
+  function_id: string;
+  organization_id: string;
+  index: string;
+  client?: string;
+  assets?: string;
+}
+
 export const lagon = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/lagon",
@@ -29,9 +41,7 @@ export const lagon = defineNitroPreset({
 
       await writeFile(
         resolve(root, ".lagon", "config.json"),
-        JSON.stringify({
-          // Boths fields are required but only
-          // used when deploying the function
+        JSON.stringify(<LagonFunctionConfig>{
           function_id: "",
           organization_id: "",
           index: indexPath,
