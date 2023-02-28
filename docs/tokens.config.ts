@@ -2,6 +2,7 @@ import { defineTheme } from 'pinceau'
 
 export default defineTheme({
   color: {
+    // https://www.tints.dev/primary/F09043
     primary: {
       50: '#FDF4EC',
       100: '#FCE9D9',

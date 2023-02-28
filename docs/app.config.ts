@@ -28,7 +28,13 @@ export default defineAppConfig({
         text: 'Made with 💛',
         href: 'https://github.com/unjs/nitro'
       },
-      icons: []
+      iconLinks: [
+        {
+          href: 'https://unjs.io',
+          icon: 'vscode-icons:file-type-js-official',
+          label: 'UnJS'
+        }
+      ]
     }
   }
 })
