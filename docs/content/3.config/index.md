@@ -361,7 +361,8 @@ Avoid creating chunks.
 
 ### `sourceMap`
 
-Enable source-map generation
+Enable source-map generation. See [options](https://rollupjs.org/configuration-options/#output-sourcemap)
+- Default: `true`
 
 ### `node`
 
