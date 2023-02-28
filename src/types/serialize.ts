@@ -29,7 +29,7 @@ type FilterKeys<TObj extends object, TFilter> = {
 export type Serialize<T> =
  IsAny<T> extends true ? any :
  T extends JsonPrimitive ? T :
- T extends Map<any,any> | Set<any> ? object :
+ T extends Map<any,any> | Set<any> ? Record<string, never> :
  T extends NonJsonPrimitive ? never :
  T extends { toJSON(): infer U } ? U :
  T extends [] ? [] :
