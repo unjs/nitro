@@ -205,13 +205,13 @@ describe("API routes", () => {
 
     expectTypeOf($fetch("/api/serialized/map")).toMatchTypeOf<
       Promise<{
-        foo: object;
+        foo: Record<string, never>;
       }>
     >();
 
     expectTypeOf($fetch("/api/serialized/set")).toMatchTypeOf<
       Promise<{
-        foo: object;
+        foo: Record<string, never>;
       }>
     >();
 
