@@ -628,14 +628,14 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nuxt-themes/docus@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@nuxt-themes/docus/-/docus-1.9.0.tgz#10ef7d9e0dffe46648799b34c2d6bc85d4494897"
-  integrity sha512-pScPfeI5553dY1jODqRUGtrKJtc1rynygWdV5qVux7sfibEWJL7FzoWJ80wl/xOaU/Wd9lF/E8ywhO6vs6vmqA==
+"@nuxt-themes/docus@^1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@nuxt-themes/docus/-/docus-1.9.1.tgz#7759be05ae9722bac6693810ae7c91b11702ef5d"
+  integrity sha512-g3W1bkOWVUEV3hs2hJg/kHWc2NL0IPw75HmBFr12k+eG5wddSvWLJcdJZnfbPTLy9M9A4C71TvZIFWcg1qpm4A==
   dependencies:
     "@nuxt-themes/elements" "^0.9.0"
     "@nuxt-themes/tokens" "^1.9.0"
-    "@nuxt-themes/typography" "^0.9.0"
+    "@nuxt-themes/typography" "^0.9.1"
     "@nuxt/content" "^2.4.3"
     "@nuxthq/studio" "^0.7.7"
     "@vueuse/nuxt" "^9.13.0"
@@ -657,16 +657,16 @@
     "@vueuse/core" "^9.13.0"
     pinceau "^0.18.0"
 
-"@nuxt-themes/typography@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@nuxt-themes/typography/-/typography-0.9.0.tgz#d957cafe4394c2a1cb09145293b8c1cd699c1a11"
-  integrity sha512-bxprKQU8IbShQ436nFGsUWLkPIyZdSdnq+4HeIQGs6teannXAX4LoOkOwRFQOYHmeR9ZEGwLlzLckWyvSkwVuw==
+"@nuxt-themes/typography@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@nuxt-themes/typography/-/typography-0.9.1.tgz#fda7c96ce9e0bbb24879c5a492a1ad9059551570"
+  integrity sha512-J6uBewdVAJveDFuZrt5o9zgXAIJrLMsocN+AbPItKiO1X9gkNMHOEc/FCSRYWqGpXK03bxsDLiHOc7t4V18B7A==
   dependencies:
     "@nuxtjs/color-mode" "^3.2.0"
     nuxt-config-schema "^0.4.4"
     nuxt-icon "^0.3.2"
-    pinceau "^0.18.0"
-    ufo "^1.1.0"
+    pinceau "^0.18.1"
+    ufo "^1.1.1"
 
 "@nuxt/content@^2.4.3":
   version "2.4.3"
@@ -4653,7 +4653,7 @@ pify@^2.3.0:
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
   integrity sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==
 
-pinceau@^0.18.0:
+pinceau@^0.18.0, pinceau@^0.18.1:
   version "0.18.1"
   resolved "https://registry.yarnpkg.com/pinceau/-/pinceau-0.18.1.tgz#c5519c9167cc3c4278f199fe04ac2bc0b55877a9"
   integrity sha512-2JcRT5sLg52Aq1il28VlUdS59i4gtGwLfO9Q92o+eX098zGI0VkvrRhvN+NmxQl5xxkdQF185x8CMkEQeuMmMw==
