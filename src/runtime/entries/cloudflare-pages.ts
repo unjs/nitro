@@ -32,11 +32,19 @@ export default {
     }
 
     let body;
-    if (requestHasBody(request)) {
+    if (requestHasBody(request as unknown as Request)) {
       body = Buffer.from(await request.arrayBuffer());
     }
 
     return nitroApp.localFetch(url.pathname + url.search, {
+      context: {
+        cf: request.cf,
+        cloudflare: {
+          request,
+          env,
+          context,
+        },
+      },
       host: url.hostname,
       protocol: url.protocol,
       method: request.method,
