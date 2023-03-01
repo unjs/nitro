@@ -71,6 +71,7 @@ async function writeCFRoutes(nitro: Nitro) {
     ignore: [
       "_worker.js",
       "_worker.js.map",
+      "nitro.json",
       ...explicitPublicAssets.map((dir) =>
         withoutLeadingSlash(joinURL(dir.baseURL, "**"))
       ),

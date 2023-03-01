@@ -27,7 +27,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
 
   it("should generate a _routes.json", async () => {
     const config = await fsp
-      .readFile(resolve(ctx.outDir, "public/_routes.json"), "utf8")
+      .readFile(resolve(ctx.outDir, "_routes.json"), "utf8")
       .then((r) => JSON.parse(r));
     expect(config).toMatchInlineSnapshot(`
       {
