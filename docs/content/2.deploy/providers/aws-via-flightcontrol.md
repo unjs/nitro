@@ -3,7 +3,9 @@ title: AWS via Flightcontrol
 description: "Deploy your Nitro apps to AWS via Flightcontrol"
 ---
 
-The deployment to AWS via Flightcontrol does not require any configuration. [Flightcontrol](https://flightcontrol.dev?ref=nitro) has support for deploying Nitro based applications to AWS.
+**Preset:** `flightcontrol` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+Nitro supports deploying to [AWS via Flightcontrol](https://flightcontrol.dev?ref=nitro) with minimal configuration.
 
 ### Set Up your Flightcontrol account
 
