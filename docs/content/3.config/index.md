@@ -1,8 +1,10 @@
 ---
-title: Configuration
 aside: false
-description: "Customize your Nitro app with a configuration file!"
 ---
+
+# Configuration
+
+Customize your Nitro app with a configuration file.
 
 In order to customize nitro's behavior, we create a file named `nitro.config.ts`.
 
@@ -13,11 +15,9 @@ import { defineNitroConfig } from "nitropack";
 export default defineNitroConfig({});
 ```
 
-## Config Reference
+## General
 
-<!-- General -->
-
-## `preset`
+### `preset`
 
 Use `preset` option `NITRO_PRESET` environment variable for custom **production** preset.
 
@@ -25,13 +25,13 @@ Preset for development mode is always `nitro-dev` and default `node-server` for 
 
 The preset will automatically be detected when the `preset` option is not set and running in known environments.
 
-## `logLevel`
+### `logLevel`
 
 - Default: `3` (`1` when the testing environment is detected)
 
 Log verbosity level. See [unjs/consola#level](https://github.com/unjs/consola/#level) for more information.
 
-## `runtimeConfig`
+### `runtimeConfig`
 
 - Default: `{ nitro: { ... }, ...yourOptions }`
 
@@ -41,19 +41,19 @@ Server runtime configuration.
 
 <!-- Features -->
 
-## `experimental`
+### `experimental`
 
 - Default: `{}`
 
 Enable experimental features. Currently, none are available!
 
-## `storage`
+### `storage`
 
 - Default: `{}`
 
 Storage configuration.
 
-## `timing`
+### `timing`
 
 - Default: `false`
 
@@ -62,11 +62,11 @@ Enable timing information:
 - Nitro startup time log
 - `Server-Timing` header on HTTP responses
 
-## `renderer`
+### `renderer`
 
 Path to main render (file should export an event handler as default)
 
-## `serveStatic`
+### `serveStatic`
 
 - Default: `false`
 
@@ -74,19 +74,19 @@ Serve `public/` assets in production.
 
 **Note:** It is highly recommended that your edge CDN (nginx, apache, cloud) serves the `public/` directory instead.
 
-## `noPublicDir`
+### `noPublicDir`
 
 - Default: `false`
 
 If enabled, disabled `.output/public` directory creation. Skipping to copy `public/` dir and also disables prerenderer.
 
-## `publicAssets`
+### `publicAssets`
 
 Public asset directories to serve in development and bundle in production.
 
 If a `public/` directory is detected, it will be added by default, but you can add more by yourself too!
 
-## `compressPublicAssets`
+### `compressPublicAssets`
 
 - Default: `{ gzip: false, brotli: false }`
 
@@ -142,31 +142,31 @@ The compressible MIME types are:
 - text/x-script
 - vnd.apple.mpegurl
 
-## `serverAssets`
+### `serverAssets`
 
 Assets can be accessed in server logic and bundled in production.
 
-## `devServer`
+### `devServer`
 
 - Default: `{ watch: [] }`
 
 Dev server options. You can use `watch` to make the dev server reload if any file changes in specified paths.
 
-## `watchOptions`
+### `watchOptions`
 
 Watch options for development mode. See [chokidar](https://github.com/paulmillr/chokidar) for more information.
 
-## `imports`
+### `imports`
 
 Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for more information.
 
-## `plugins`
+### `plugins`
 
 - Default: `[]`
 
 An array of paths to nitro plugins. They will be executed by order on the first initialization.
 
-## `virtual`
+### `virtual`
 
 - Default: `{}`
 
@@ -174,19 +174,19 @@ A map from dynamic virtual import names to their contents or an (async) function
 
 <!-- Routing -->
 
-## `baseURL`
+### `baseURL`
 
 Default: `/` (or `NITRO_APP_BASE_URL` environment variable if provided)
 
 Server's main base URL.
 
-## `handlers`
+### `handlers`
 
 Server handlers and routes.
 
 If `routes/`, `api/` or `middleware/` directories exist, they will be automatically added to the handlers array.
 
-## `devHandlers`
+### `devHandlers`
 
 Regular handlers refer to the path of handlers to be imported and transformed by rollup.
 
@@ -194,7 +194,7 @@ There are situations in that we directly want to provide a handler instance with
 
 We can use `devHandlers` but note that they are **only available in development mode** and **not in production build**.
 
-## `devProxy`
+### `devProxy`
 
 Proxy configuration for development server.
 
@@ -211,7 +211,7 @@ You can use this option to override development server routes and proxy-pass req
 
 See [https://github.com/http-party/node-http-proxy#options](https://github.com/http-party/node-http-proxy#options) for all available target options.
 
-## `errorHandler`
+### `errorHandler`
 
 Path to a custom runtime error handler. Replacing nitro's built-in error page.
 
@@ -233,7 +233,7 @@ export default <NitroErrorHandler> function (error, event) {
 }
 ```
 
-## `routeRules`
+### `routeRules`
 
 **🧪 Experimental!**
 
@@ -251,7 +251,7 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
     '/blog/**': { static: true },
     '/blog/**': { cache: { /* cache options*/ } },
     '/assets/**': { headers: { 'cache-control': 's-maxage=0' } },
-    '/api/v1/**': { cors: true, headers: { 'access-control-allowed-methods': 'GET' } },
+    '/api/v1/**': { cors: true, headers: { 'access-control-allow-methods': 'GET' } },
     '/old-page': { redirect: '/new-page' },
     '/proxy/example': { proxy: 'https://example.com' },
     "/proxy/**": { proxy: '/api/**' },
@@ -259,7 +259,7 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
 }
 ```
 
-## `prerender`
+### `prerender`
 
 Default: `{ crawlLinks: false, routes: [] }`
 
@@ -269,27 +269,27 @@ If `crawlLinks` option is set to `true`, nitro starts with `/` by default (or al
 
 <!-- Directories -->
 
-## `rootDir`
+### `rootDir`
 
 Project main directory
 
-## `srcDir`
+### `srcDir`
 
 Project source directory. Same as `rootDir` unless specified. Helpful to move code into `src/`.
 
-## `scanDirs`
+### `scanDirs`
 
 - Default: (source directory when empty array)
 
 List of directories to scan and auto-register files, such as API routes.
 
-## `buildDir`
+### `buildDir`
 
 - Default: `.nitro`
 
 nitro's temporary working directory for generating build-related files.
 
-## `output`
+### `output`
 
 - Default: `{ dir: '.output', serverDir: '.output/server', publicDir: '.output/public' }`
 
@@ -297,90 +297,91 @@ Output directories for production bundle.
 
 <!-- Advanced -->
 
-## `dev`
+### `dev`
 
 - Default: `true` for development and `false` for production.
 
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
-## `typescript`
+### `typescript`
 
 Default: `{ generateTsConfig: true }`
 
-## `nodeModulesDirs`
+### `nodeModulesDirs`
 
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
 Additional `node_modules` to search when resolving a module. By default user directory is added.
 
-## `hooks`
+### `hooks`
 
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
 nitro hooks. See [unjs/hookable](https://github.com/unjs/hookable) for more information.
 
-## `commands`
+### `commands`
 
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
 Preview and deploy command hints are usually filled by deployment presets.
 
-## `devErrorHandler`
+### `devErrorHandler`
 
 **⚠️ Caution! This is an advanced configuration. things can go wrong if misconfigured.**
 
 A custom error handler function for development errors.
 
-<!-- Rollup -->
+## Rollup
 
-## `rollupConfig`
+### `rollupConfig`
 
 Additional rollup configuration.
 
-## `entry`
+### `entry`
 
 Rollup entry.
 
-## `unenv`
+### `unenv`
 
 Options for [unjs/unenv](https://github.com/unjs/unenv/) preset.
 
-## `alias`
+### `alias`
 
 Rollup aliases options.
 
-## `minify`
+### `minify`
 
 - Default: `false`
 
 Minify bundle.
 
-## `inlineDynamicImports`
+### `inlineDynamicImports`
 
 Avoid creating chunks.
 
-## `sourceMap`
+### `sourceMap`
 
-Enable source-map generation
+Enable source-map generation. See [options](https://rollupjs.org/configuration-options/#output-sourcemap)
+- Default: `true`
 
-## `node`
+### `node`
 
 Specify whether the build is used for Node.js or not. If set to `false`, nitro tried to mock Node.js dependencies using [unjs/unenv](https://github.com/unjs/unenv) and adjust its behavior.
 
-## `analyze`
+### `analyze`
 
 If enabled, will analyze server bundle after build using [rollup-plugin-visualizer](https://github.com/btd/rollup-plugin-visualizer). You can also pass your custom options.
 
-## `moduleSideEffects`
+### `moduleSideEffects`
 
 Default: `['unenv/runtime/polyfill/', 'node-fetch-native/polyfill']`
 
 Rollup specific option. Specifies module imports that have side-effects
 
-## `replace`
+### `replace`
 
 Rollup specific option.
 
-## `commonJS`
+### `commonJS`
 
 Rollup specific option. Specifies additional configuration for the rollup CommonJS plugin.

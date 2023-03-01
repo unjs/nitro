@@ -213,7 +213,7 @@ export interface NitroOptions extends PresetOptions {
   alias: Record<string, string>;
   minify: boolean;
   inlineDynamicImports: boolean;
-  sourceMap: boolean;
+  sourceMap: boolean | "inline" | "hidden";
   node: boolean;
   moduleSideEffects: string[];
   esbuild?: {

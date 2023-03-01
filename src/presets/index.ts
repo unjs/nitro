@@ -21,3 +21,4 @@ export * from "./vercel";
 export * from "./cleavr";
 export * from "./layer0";
 export * from './flightcontrol';
+export * from "./lagon";

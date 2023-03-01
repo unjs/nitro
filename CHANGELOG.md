@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.2.3
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.2.2...v2.2.3)
+
+
+### 🚀 Enhancements
+
+  - Add lagon preset ([#964](https://github.com/unjs/nitro/pull/964))
+
+### 🩹 Fixes
+
+  - **node-cluster:** Default number of workers ([#963](https://github.com/unjs/nitro/pull/963))
+  - **cloudflare-pages:** Exclude assets from function call ([#965](https://github.com/unjs/nitro/pull/965))
+  - **cloudflare-pages:** Handle assets only for get requests ([#968](https://github.com/unjs/nitro/pull/968))
+  - Render json errors for cors requests ([#969](https://github.com/unjs/nitro/pull/969))
+  - Use json response for  errors in `/api/` routes ([#971](https://github.com/unjs/nitro/pull/971))
+
+### 💅 Refactors
+
+  - **externals:** Sort `bundledDependencies` keys in output `package.json` ([#967](https://github.com/unjs/nitro/pull/967))
+
+### 📖 Documentation
+
+  - **cloudflare:** Add info regarding `runtimeConfig` and environment variables ([#958](https://github.com/unjs/nitro/pull/958))
+  - Prevent ellipsis overflow on small screens ([#956](https://github.com/unjs/nitro/pull/956))
+  - **deploy:** Add workers page for edge limitations ([#953](https://github.com/unjs/nitro/pull/953))
+
+### 🏡 Chore
+
+  - **cli:** Mention `prepare` command in usage ([#959](https://github.com/unjs/nitro/pull/959))
+  - Update dependencies ([2658072](https://github.com/unjs/nitro/commit/2658072))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+- Jan-Henrik Damaschke <jdamaschke@outlook.de>
+- Bogdan Kostyuk <bogdankostyuk12@gmail.com>
+- Hminghe ([@hminghe](http://github.com/hminghe))
+- Alexander Lichter ([@manniL](http://github.com/manniL))
+
+## v2.2.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.2.1...v2.2.2)
+
+
+### 🩹 Fixes
+
+  - Correct `access-control-allow-methods` cors header name ([#944](https://github.com/unjs/nitro/pull/944))
+  - Allow overriding assets `maxAge` using route rules ([db6e6c2](https://github.com/unjs/nitro/commit/db6e6c2))
+  - **rollup:** Use mlly as fallback resolver when externals disabled ([#948](https://github.com/unjs/nitro/pull/948))
+  - Don't render json response if url contains `/api/` ([#951](https://github.com/unjs/nitro/pull/951))
+
+### 🏡 Chore
+
+  - Update unjs dependencies ([b852c23](https://github.com/unjs/nitro/commit/b852c23))
+  - Update jiti dependency ([716dc1a](https://github.com/unjs/nitro/commit/716dc1a))
+  - Updare unbuild ([044bb6a](https://github.com/unjs/nitro/commit/044bb6a))
+
+### ✅ Tests
+
+  - **vercel:** Move custom test to additional tests ([fb361f8](https://github.com/unjs/nitro/commit/fb361f8))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.2.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.2.0...v2.2.1)

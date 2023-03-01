@@ -296,7 +296,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             name: "nitro-output",
             version: "0.0.0",
             private: true,
-            bundledDependencies: [...tracedPackages.keys()],
+            bundledDependencies: [...tracedPackages.keys()].sort(),
           },
           null,
           2

@@ -39,13 +39,22 @@ export async function setupTest(preset: string) {
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
     serveStatic:
-      preset !== "cloudflare" && preset !== "vercel-edge" && !ctx.isDev,
-    output: { dir: ctx.outDir },
+      preset !== "cloudflare" &&
+      preset !== "cloudflare-pages" &&
+      preset !== "vercel-edge" &&
+      !ctx.isDev,
+    output: {
+      dir: ctx.outDir,
+      serverDir:
+        preset === "cloudflare-pages"
+          ? "{{ output.dir }}/functions"
+          : undefined,
+    },
     routeRules: {
       "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
       "/rules/cors": {
         cors: true,
-        headers: { "access-control-allowed-methods": "GET" },
+        headers: { "access-control-allow-methods": "GET" },
       },
       "/rules/dynamic": { cache: false },
       "/rules/redirect": { redirect: "/base" },
@@ -169,7 +178,7 @@ export function testNitro(
   it("handles route rules - cors", async () => {
     const expectedHeaders = {
       "access-control-allow-origin": "*",
-      "access-control-allowed-methods": "GET",
+      "access-control-allow-methods": "GET",
       "access-control-allow-headers": "*",
       "access-control-max-age": "0",
     };
