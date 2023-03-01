@@ -8,6 +8,7 @@ importers:
   .:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.3.0
+      '@cloudflare/workers-types': ^4.20230228.0
       '@netlify/functions': ^1.4.0
       '@rollup/plugin-alias': ^4.0.3
       '@rollup/plugin-commonjs': ^24.0.1
@@ -144,6 +145,7 @@ importers:
       unimport: 3.0.2_rollup@3.17.3
       unstorage: 1.1.5
     devDependencies:
+      '@cloudflare/workers-types': 4.20230228.0
       '@types/aws-lambda': 8.10.111
       '@types/etag': 1.8.1
       '@types/fs-extra': 11.0.1
@@ -425,6 +427,10 @@ packages:
     dependencies:
       mime: 3.0.0
     dev: false
+
+  /@cloudflare/workers-types/4.20230228.0:
+    resolution: {integrity: sha512-tDaqH3DrKmDoe/YrCnzVSqjNH6GnUOOajv2Ztj2h7BPLFyYTb81iCkARgb+G4bpxhn7y4f1KxxDT2+Yp4rt7Hg==}
+    dev: true
 
   /@edge-runtime/format/2.0.0:
     resolution: {integrity: sha512-y0KPyCwbIiuRDc8qZ9JHJZp+SFqeHOTEpbAFwmXtEhK1sJsKhF3j+R8zn2TtpW3TKMb7d62RWbiqo3gZWwWkMQ==}
