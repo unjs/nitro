@@ -3,12 +3,13 @@ import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
-import { withoutBase } from "ufo";
+import { parseURL, withLeadingSlash, withoutBase, withoutTrailingSlash } from "ufo";
 import { splitCookiesString } from "set-cookie-parser";
+import { createError } from "h3";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import { getPublicAssetMeta, isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
@@ -23,6 +24,7 @@ async function handleEvent(event: FetchEvent) {
   } catch {
     // Ignore
   }
+
 
   const url = new URL(event.request.url);
   let body;
@@ -46,6 +48,17 @@ async function handleEvent(event: FetchEvent) {
   });
 
   const headers = normalizeOutgoingHeaders(r.headers);
+
+  const id = decodeURIComponent(
+      withLeadingSlash(
+          withoutTrailingSlash(url.pathname)
+      )
+  );
+
+  if (r.status === 404 && isPublicAssetURL(id)) {
+    headers.delete('cache-control')
+  }
+
   return new Response(r.body, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers,
