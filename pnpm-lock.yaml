@@ -81,6 +81,7 @@ importers:
       typescript: ^4.9.5
       ufo: ^1.1.1
       unbuild: ^1.1.2
+      undici: ^5.20.0
       unenv: ^1.2.1
       unimport: ^3.0.2
       unstorage: ^1.2.0
@@ -164,6 +165,7 @@ importers:
       prettier: 2.8.4
       typescript: 4.9.5
       unbuild: 1.1.2
+      undici: 5.20.0
       vitest: 0.29.2
 
   examples/api-routes:
