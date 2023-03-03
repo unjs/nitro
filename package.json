@@ -38,7 +38,8 @@
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
-    "test": "pnpm lint && NODE_OPTIONS=--experimental-vm-modules vitest run --silent",
+    "vitest-es": "NODE_OPTIONS=--experimental-vm-modules vitest",
+    "test": "pnpm lint && pnpm vitest-es run --silent",
     "test:types": "tsc --noEmit && pnpm test:fixture:types",
     "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit"
   },
