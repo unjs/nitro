@@ -281,7 +281,6 @@ export function testNitro(
         method: 'PUT',
         body: { key: 'hello', value: 'world' }
       });
-      console.log('result', res)
       expect(res.key).toBe('hello');
       const { data: keys } = await callHandler({ url: "/api/storage/test" });
       expect(data).toMatchObject(['hello']);
