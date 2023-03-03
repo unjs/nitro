@@ -277,7 +277,7 @@ export function testNitro(
 
     it("useStorage (with base)", async () => {
       const putRes = await callHandler({
-        url: "/api/storage/item?key=base:hello",
+        url: "/api/storage/item?key=test:hello",
         method: "PUT",
         body: "world",
       });
@@ -289,12 +289,12 @@ export function testNitro(
             url: "/api/storage/item?key=:",
           })
         ).data
-      ).toMatchObject(["base:hello"]);
+      ).toMatchObject(["test:hello"]);
 
       expect(
         (
           await callHandler({
-            url: "/api/storage/item?base=base&key=:",
+            url: "/api/storage/item?base=test&key=:",
           })
         ).data
       ).toMatchObject(["hello"]);
@@ -302,7 +302,7 @@ export function testNitro(
       expect(
         (
           await callHandler({
-            url: "/api/storage/item?key=base:hello",
+            url: "/api/storage/item?base=test&key=hello",
           })
         ).data
       ).toBe("world");
