@@ -927,6 +927,19 @@
     socket.io-client "^4.5.4"
     ufo "^1.0.1"
 
+"@nuxthq/studio@^0.7.8":
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/@nuxthq/studio/-/studio-0.7.8.tgz#8a617cc8bc23b70b871de15492f74e72b9661de3"
+  integrity sha512-xgmZdxl88YSKvoDar48F9Npy+xJ5Rvud8KVpl+0P9FVP+wzgfIIVqlV2YWykmGXLVEcMoLi+OLpfElzzcenjNg==
+  dependencies:
+    "@nuxt/kit" "^3.0.0"
+    "@nuxt/schema" "^3.0.0"
+    defu "^6.1.1"
+    nuxt-component-meta "^0.4.3"
+    nuxt-config-schema "^0.4.2"
+    socket.io-client "^4.5.4"
+    ufo "^1.0.1"
+
 "@nuxtjs/color-mode@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@nuxtjs/color-mode/-/color-mode-3.2.0.tgz#b5b6a3931a6ddd9646c3aad121d357c635792eb7"
