@@ -13,8 +13,8 @@ describe("nitro:preset:vercel", async () => {
         resolve(ctx.outDir, "functions/__nitro.func/index.mjs")
       ).then((r) => r.default || r);
       await startServer(ctx, handle);
-      return async ({ url }) => {
-        const res = await ctx.fetch(url);
+      return async ({ url, ...options }) => {
+        const res = await ctx.fetch(url, options);
         return res;
       };
     },
