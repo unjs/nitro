@@ -273,6 +273,19 @@ export function testNitro(
       });
     });
 
+    it("supports useStorage(base)", async () => {
+      const { data } = await callHandler({ url: "/api/storage/test" });
+      expect(data).toMatchObject([]);
+      const { data: res } = await callHandler({
+        url: '/api/storage/test',
+        method: 'PUT',
+        body: { key: 'hello', value: 'world' }
+      });
+      expect(res.key).toBe('hello');
+      const { data: keys } = await callHandler({ url: "/api/storage/test" });
+      expect(data).toMatchObject(['hello']);
+    });
+
     if (additionalTests) {
       additionalTests(ctx, callHandler);
     }
