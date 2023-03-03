@@ -9,7 +9,7 @@ import { setupTest, testNitro } from "../tests";
 describe("nitro:preset:cloudflare-pages", async () => {
   const ctx = await setupTest("cloudflare-pages");
 
-  testNitro(ctx, async () => {
+  testNitro(ctx, () => {
     const mf = new Miniflare({
       modules: true,
       scriptPath: resolve(ctx.outDir, "_worker.js"),
