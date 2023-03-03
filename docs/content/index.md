@@ -11,21 +11,25 @@ cta:
   - Get Started
   - /guide/introduction/getting-started
 secondary:
-  - Star on GitHub
+  - View on GitHub
   - https://github.com/unjs/nitro
 snippet:
-  - npx tiged unjs/nitro#starter
-  - npx nitropack dev
+  - npx giget@latest nitro
+  - cd nitro-app
+  - npm install
+  - npm run dev
 ---
 
 #extra
 :ellipsis
 
 #title
-⚗️ Nitro
+Nitro
 
 #description
-Build and Deploy Universal JavaScript Servers, everywhere. :br The engine powering [Nuxt 3](https://nuxt.com) and open to anyone.
+Build and deploy universal web servers. :br
+
+The open engine powering [Nuxt](https://nuxt.com) and [open to everyone](https://github.com/unjs/nitro/discussions/1015).
 ::
 
 ::card-grid
