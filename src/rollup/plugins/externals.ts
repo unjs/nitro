@@ -434,7 +434,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const bundledDependencies = Object.fromEntries(
         Object.values(tracedPackages)
           .sort((a, b) => a.name.localeCompare(b.name))
-          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" | ")])
+          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
       );
 
       await fsp.writeFile(
