@@ -67,7 +67,7 @@ export default eventHandler((event) => {
   }
 
   const ifModifiedSinceH = event.node.req.headers["if-modified-since"];
-  const mtimeDate = new Date(asset.mtime)
+  const mtimeDate = new Date(asset.mtime);
   if (
     ifModifiedSinceH &&
     asset.mtime &&
