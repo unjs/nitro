@@ -1,9 +1,8 @@
 import { resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
-import { fetch } from "ofetch";
+import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll } from "vitest";
-import { isWindows } from "std-env";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -17,7 +16,7 @@ export interface Context {
   nitro?: Nitro;
   rootDir: string;
   outDir: string;
-  fetch: (url: string) => Promise<any>;
+  fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
 }
@@ -30,8 +29,11 @@ export async function setupTest(preset: string) {
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, ".output", preset),
-    fetch: (url) =>
-      fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: "manual" }),
+    fetch: (url, opts) =>
+      fetch(joinURL(ctx.server!.url, url.slice(1)), {
+        redirect: "manual",
+        ...opts,
+      }),
   };
 
   const nitro = (ctx.nitro = await createNitro({
@@ -273,17 +275,37 @@ export function testNitro(
       });
     });
 
-    it("supports useStorage(base)", async () => {
-      const { data } = await callHandler({ url: "/api/storage/test" });
-      expect(data).toMatchObject([]);
-      const { data: res } = await callHandler({
-        url: '/api/storage/test',
-        method: 'PUT',
-        body: { key: 'hello', value: 'world' }
+    it("useStorage (with base)", async () => {
+      const putRes = await callHandler({
+        url: "/api/storage/item?key=base:hello",
+        method: "PUT",
+        body: "world",
       });
-      expect(res.key).toBe('hello');
-      const { data: keys } = await callHandler({ url: "/api/storage/test" });
-      expect(data).toMatchObject(['hello']);
+      expect(putRes.data).toMatchObject("world");
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?key=:",
+          })
+        ).data
+      ).toMatchObject(["base:hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?base=base&key=:",
+          })
+        ).data
+      ).toMatchObject(["hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?key=base:hello",
+          })
+        ).data
+      ).toBe("world");
     });
 
     if (additionalTests) {
