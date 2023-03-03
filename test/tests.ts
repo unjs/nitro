@@ -32,7 +32,7 @@ export async function setupTest(preset: string) {
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
         redirect: "manual",
-        ...opts,
+        ...(opts as any),
       }),
   };
 
