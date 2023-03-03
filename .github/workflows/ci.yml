@@ -42,6 +42,8 @@ jobs:
       - run: pnpm test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
       - uses: codecov/codecov-action@v3
       - name: Release Edge
         if: |

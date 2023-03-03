@@ -24,11 +24,15 @@ export interface Context {
 export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
 
+  const presetTempDir = fileURLToPath(
+    new URL(`presets/.tmp/${preset}`, import.meta.url).href
+  );
+
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
-    outDir: resolve(fixtureDir, ".output", preset),
+    outDir: resolve(fixtureDir, presetTempDir, ".output"),
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
         redirect: "manual",
@@ -40,6 +44,7 @@ export async function setupTest(preset: string) {
     preset: ctx.preset,
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
+    buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
       preset !== "cloudflare" &&
       preset !== "cloudflare-pages" &&
@@ -47,10 +52,6 @@ export async function setupTest(preset: string) {
       !ctx.isDev,
     output: {
       dir: ctx.outDir,
-      serverDir:
-        preset === "cloudflare-pages"
-          ? "{{ output.dir }}/functions"
-          : undefined,
     },
     routeRules: {
       "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
@@ -73,7 +74,10 @@ export async function setupTest(preset: string) {
       "/rules/_/cached/noncached": { cache: false, swr: false },
       "/rules/_/cached/**": { swr: true },
     },
-    timing: preset !== "cloudflare" && preset !== "vercel-edge",
+    timing:
+      preset !== "cloudflare" &&
+      preset !== "cloudflare-pages" &&
+      preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {

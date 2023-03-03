@@ -38,7 +38,8 @@
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
-    "test": "pnpm lint && vitest run --silent",
+    "vitest-es": "NODE_OPTIONS=--experimental-vm-modules vitest",
+    "test": "pnpm lint && pnpm vitest-es run --silent",
     "test:types": "tsc --noEmit && pnpm test:fixture:types",
     "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit"
   },
@@ -106,6 +107,7 @@
     "unstorage": "^1.2.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230228.0",
     "@types/aws-lambda": "^8.10.111",
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^11.0.1",
@@ -124,6 +126,7 @@
     "prettier": "^2.8.4",
     "typescript": "^4.9.5",
     "unbuild": "^1.1.2",
+    "undici": "^5.20.0",
     "vitest": "^0.29.2"
   },
   "packageManager": "pnpm@7.28.0",
