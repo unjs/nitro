@@ -41,14 +41,14 @@ const defaultCacheOptions = {
 
 export function defineCachedFunction<T = any>(
   fn: (...args) => T | Promise<T>,
-  opts: CacheOptions<T>
+  opts: CacheOptions<T> = {}
 ) {
   opts = { ...defaultCacheOptions, ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
 
   // Normalize cache params
-  const group = opts.group || "nitro";
+  const group = opts.group || "nitro/functions";
   const name = opts.name || fn.name || "_";
   const integrity = hash([opts.integrity, fn, opts]);
   const validate = opts.validate || (() => true);

@@ -1,9 +1,8 @@
 import { resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
-import { fetch } from "ofetch";
+import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll } from "vitest";
-import { isWindows } from "std-env";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -17,7 +16,7 @@ export interface Context {
   nitro?: Nitro;
   rootDir: string;
   outDir: string;
-  fetch: (url: string) => Promise<any>;
+  fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
 }
@@ -25,19 +24,27 @@ export interface Context {
 export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
 
+  const presetTempDir = fileURLToPath(
+    new URL(`presets/.tmp/${preset}`, import.meta.url).href
+  );
+
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
-    outDir: resolve(fixtureDir, ".output", preset),
-    fetch: (url) =>
-      fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: "manual" }),
+    outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    fetch: (url, opts) =>
+      fetch(joinURL(ctx.server!.url, url.slice(1)), {
+        redirect: "manual",
+        ...(opts as any),
+      }),
   };
 
   const nitro = (ctx.nitro = await createNitro({
     preset: ctx.preset,
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
+    buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
       preset !== "cloudflare" &&
       preset !== "cloudflare-pages" &&
@@ -45,10 +52,6 @@ export async function setupTest(preset: string) {
       !ctx.isDev,
     output: {
       dir: ctx.outDir,
-      serverDir:
-        preset === "cloudflare-pages"
-          ? "{{ output.dir }}/functions"
-          : undefined,
     },
     routeRules: {
       "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
@@ -71,7 +74,10 @@ export async function setupTest(preset: string) {
       "/rules/_/cached/noncached": { cache: false, swr: false },
       "/rules/_/cached/**": { swr: true },
     },
-    timing: preset !== "cloudflare" && preset !== "vercel-edge",
+    timing:
+      preset !== "cloudflare" &&
+      preset !== "cloudflare-pages" &&
+      preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {
@@ -271,6 +277,39 @@ export function testNitro(
         depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
         subpathLib: "nitro-lib@2.0.0",
       });
+    });
+
+    it("useStorage (with base)", async () => {
+      const putRes = await callHandler({
+        url: "/api/storage/item?key=test:hello",
+        method: "PUT",
+        body: "world",
+      });
+      expect(putRes.data).toMatchObject("world");
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?key=:",
+          })
+        ).data
+      ).toMatchObject(["test:hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?base=test&key=:",
+          })
+        ).data
+      ).toMatchObject(["hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?base=test&key=hello",
+          })
+        ).data
+      ).toBe("world");
     });
 
     if (additionalTests) {

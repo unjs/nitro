@@ -19,9 +19,9 @@ package-lock.json
 # Generated dirs
 dist
 .nuxt
-.nuxt-*
 .output
 .gen
+.tmp
 nuxt.d.ts
 
 # Junit reports
