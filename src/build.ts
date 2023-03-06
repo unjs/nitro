@@ -5,7 +5,7 @@ import * as rollup from "rollup";
 import fse from "fs-extra";
 import { defu } from "defu";
 import { watch } from "chokidar";
-import { scanDirExports } from "unimport";
+import { genTypeImport } from "knitwork";
 import { debounce } from "perfect-debounce";
 import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
@@ -128,6 +128,26 @@ export async function writeTypes(nitro: Nitro) {
     "  }",
     "}",
     ...autoImportedTypes,
+    `
+// App Config
+import type { Defu } from 'defu'
+
+${nitro.options.appConfigFiles
+  .map((file, index) =>
+    genTypeImport(file.replace(/\.\w+$/, ""), [
+      { name: "default", as: `appConfig${index}` },
+    ])
+  )
+  .join("\n")}
+
+type UserAppConfig = Defu<{}, [${nitro.options.appConfigFiles
+      .map((_, index: number) => `typeof appConfig${index}`)
+      .join(", ")}]>
+
+declare module 'nitropack' {
+  interface AppConfig extends UserAppConfig {}
+}
+    `,
     // Makes this a module for augmentation purposes
     "export {}",
   ];

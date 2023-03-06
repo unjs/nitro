@@ -34,6 +34,7 @@ import { esbuild } from "./plugins/esbuild";
 import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
 import { importMeta } from "./plugins/import-meta";
+import { appConfig } from "./plugins/app-config";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -244,6 +245,9 @@ export const getRollupConfig = (nitro: Nitro) => {
 
   // Storage
   rollupConfig.plugins.push(storage(nitro));
+
+  // App.config
+  rollupConfig.plugins.push(appConfig(nitro));
 
   // Handlers
   rollupConfig.plugins.push(handlers(nitro));

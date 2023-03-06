@@ -87,6 +87,10 @@ export interface NitroConfig
   rollupConfig?: Partial<RollupConfig>;
 }
 
+export interface AppConfig {
+  [key: string]: any;
+}
+
 export interface PublicAssetDir {
   baseURL?: string;
   fallthrough?: boolean;
@@ -154,6 +158,8 @@ export interface NitroOptions extends PresetOptions {
     };
     [key: string]: any;
   };
+  appConfig: AppConfig;
+  appConfigFiles: string[];
 
   // Dirs
   workspaceDir: string;

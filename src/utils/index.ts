@@ -77,6 +77,23 @@ export function resolvePath(
   return resolve(base || nitroOptions.srcDir, path);
 }
 
+export function resolveFile(
+  path: string,
+  base = ".",
+  extensions = [".js", ".ts", ".mjs", ".cjs", ".json"]
+): string | undefined {
+  path = resolve(base, path);
+  if (existsSync(path)) {
+    return path;
+  }
+  for (const ext of extensions) {
+    const p = path + ext;
+    if (existsSync(p)) {
+      return p;
+    }
+  }
+}
+
 export function replaceAll(input: string, from: string, to: string) {
   return input.replace(new RegExp(from, "g"), to);
 }

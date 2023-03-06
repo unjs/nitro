@@ -20,6 +20,10 @@ export default defineNitroConfig({
       dir: "files",
     },
   ],
+  appConfig: {
+    "nitro-config": true,
+  },
+  appConfigFiles: ["~/server.config.ts"],
   publicAssets: [
     {
       baseURL: "build",
