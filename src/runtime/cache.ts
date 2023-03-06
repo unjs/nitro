@@ -90,7 +90,16 @@ export function defineCachedFunction<T = any>(
         pending[key] = Promise.resolve(resolver());
       }
 
-      entry.value = await pending[key];
+      try {
+        entry.value = await pending[key];
+      } catch (error) {
+        // Make sure entries that reject get removed.
+        if (!isPending) {
+          delete pending[key];
+        }
+        // Re-throw error to make sure the caller knows the task failed.
+        throw error;
+      }
 
       if (!isPending) {
         // Update mtime, integrity + validate and set the value in cache only the first time the request is made.
