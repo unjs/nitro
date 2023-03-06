@@ -14,7 +14,8 @@ export default runtimeConfig; // TODO: Remove in next major version
 export const useRuntimeConfig = () => runtimeConfig;
 
 // App config
-export const useAppConfig = () => _appConfig;
+const appConfig = deepFreeze(_appConfig);
+export const useAppConfig = () => appConfig;
 
 // --- Utils ---
 
