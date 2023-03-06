@@ -8,7 +8,12 @@ import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
-import { resolvePath, detectTarget, provideFallbackValues } from "./utils";
+import {
+  resolvePath,
+  resolveFile,
+  detectTarget,
+  provideFallbackValues,
+} from "./utils";
 import type {
   NitroConfig,
   NitroOptions,
@@ -24,6 +29,8 @@ const NitroDefaults: NitroConfig = {
   debug: isDebug,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
+  appConfig: {},
+  appConfigFiles: [],
 
   // Dirs
   scanDirs: [],
@@ -236,6 +243,19 @@ export async function loadOptions(
     options.imports.dirs.push(
       ...options.scanDirs.map((dir) => join(dir, "utils/*"))
     );
+  }
+
+  // Normalize app.config file paths
+  options.appConfigFiles = options.appConfigFiles
+    .map((file) => resolveFile(resolvePath(file, options)))
+    .filter(Boolean);
+
+  // Detect app.config from scanDirs
+  for (const dir of options.scanDirs) {
+    const configFile = resolveFile("app.config", dir);
+    if (configFile && !options.appConfigFiles.includes(configFile)) {
+      options.appConfigFiles.push(configFile);
+    }
   }
 
   // Backward compatibility for options.routes
