@@ -317,6 +317,21 @@ export function testNitro(
     }
   }
 
+  it("app config", async () => {
+    const { data } = await callHandler({
+      url: "/app-config",
+    });
+    expect(data).toMatchInlineSnapshot(`
+      {
+        "appConfig": {
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+      }
+    `);
+  });
+
   if (ctx.nitro!.options.timing) {
     it("set server timing header", async () => {
       const { data, status, headers } = await callHandler({
