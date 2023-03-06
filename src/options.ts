@@ -87,6 +87,7 @@ const NitroDefaults: NitroConfig = {
   // Advanced
   typescript: {
     generateTsConfig: true,
+    tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
   },
   nodeModulesDirs: [],
