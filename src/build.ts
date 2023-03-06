@@ -175,7 +175,7 @@ export async function writeTypes(nitro: Nitro) {
       ],
     };
     await writeFile(
-      join(nitro.options.buildDir, nitro.options.typescript.tsconfigPath),
+      resolve(nitro.options.buildDir, nitro.options.typescript.tsconfigPath),
       JSON.stringify(tsConfig, null, 2)
     );
   }
