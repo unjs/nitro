@@ -92,24 +92,25 @@ export function defineCachedFunction<T = any>(
 
       try {
         entry.value = await pending[key];
-
-        if (!isPending) {
-          // Update mtime, integrity + validate and set the value in cache only the first time the request is made.
-          entry.mtime = Date.now();
-          entry.integrity = integrity;
-          delete pending[key];
-          if (validate(entry)) {
-            useStorage()
-              .setItem(cacheKey, entry)
-              .catch((error) => console.error("[nitro] [cache]", error));
-          }
-        }
       } catch (error) {
         // Make sure entries that reject get removed.
-        delete pending[key];
-
+        if (!isPending) {
+          delete pending[key];
+        }
         // Re-throw error to make sure the caller knows the task failed.
         throw error;
+      }
+
+      if (!isPending) {
+        // Update mtime, integrity + validate and set the value in cache only the first time the request is made.
+        entry.mtime = Date.now();
+        entry.integrity = integrity;
+        delete pending[key];
+        if (validate(entry)) {
+          useStorage()
+            .setItem(cacheKey, entry)
+            .catch((error) => console.error("[nitro] [cache]", error));
+        }
       }
     };
 
