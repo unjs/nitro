@@ -229,6 +229,8 @@ export interface NitroOptions extends PresetOptions {
   typescript: {
     internalPaths?: boolean;
     generateTsConfig?: boolean;
+    /** the path of the generated `tsconfig.json`, relative to buildDir */
+    tsconfigPath: string;
   };
   hooks: NestedHooks<NitroHooks>;
   nodeModulesDirs: string[];
