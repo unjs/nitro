@@ -1,23 +1,34 @@
 import destr from "destr";
 import { snakeCase } from "scule";
+import { appConfig as _appConfig } from "#internal/nitro/virtual/app-config";
 
-// Bundled runtime config (injected by nitro)
+// Runtime config
 const _runtimeConfig = process.env.RUNTIME_CONFIG as any;
-
 const ENV_PREFIX = "NITRO_";
 const ENV_PREFIX_ALT =
   _runtimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_";
+overrideConfig(_runtimeConfig);
 
-// Allow override from process.env and deserialize
-const getEnv = (key: string) => {
+const runtimeConfig = deepFreeze(_runtimeConfig);
+export default runtimeConfig; // TODO: Remove in next major version
+export const useRuntimeConfig = () => runtimeConfig;
+
+// App config
+export const useAppConfig = () => _appConfig;
+
+// --- Utils ---
+
+function getEnv(key: string) {
   const envKey = snakeCase(key).toUpperCase();
   return destr(
     process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey]
   );
-};
+}
+
 function isObject(input: unknown) {
   return typeof input === "object" && !Array.isArray(input);
 }
+
 function overrideConfig(obj: object, parentKey = "") {
   for (const key in obj) {
     const subKey = parentKey ? `${parentKey}_${key}` : key;
@@ -32,14 +43,7 @@ function overrideConfig(obj: object, parentKey = "") {
     }
   }
 }
-overrideConfig(_runtimeConfig);
 
-// Named exports
-const config = deepFreeze(_runtimeConfig);
-export const useRuntimeConfig = () => config;
-export default config;
-
-// Utils
 function deepFreeze(object: Record<string, any>) {
   const propNames = Object.getOwnPropertyNames(object);
   for (const name of propNames) {

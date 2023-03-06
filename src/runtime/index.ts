@@ -1,5 +1,5 @@
 export { useStorage } from "#internal/nitro/virtual/storage";
-export { useRuntimeConfig } from "./config";
+export { useRuntimeConfig, useAppConfig } from "./config";
 export * from "./cache";
 export { useNitroApp } from "./app";
 export * from "./plugin";

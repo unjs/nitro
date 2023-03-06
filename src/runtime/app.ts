@@ -20,7 +20,6 @@ import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
 import { plugins } from "#internal/nitro/virtual/plugins";
-import { appConfig } from "#internal/nitro/virtual/app-config";
 import errorHandler from "#internal/nitro/virtual/error-handler";
 import { handlers } from "#internal/nitro/virtual/server-handlers";
 
@@ -116,5 +115,3 @@ function createNitroApp(): NitroApp {
 export const nitroApp: NitroApp = createNitroApp();
 
 export const useNitroApp = () => nitroApp;
-
-export const useAppConfig = () => appConfig;
