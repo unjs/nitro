@@ -239,7 +239,7 @@ export async function prerender(nitro: Nitro) {
   }
 }
 
-const LINK_REGEX = /href=["']?([^ "'>]+)/g;
+const LINK_REGEX = /href=["']?([^"'>]+)/g;
 
 function extractLinks(
   html: string,
