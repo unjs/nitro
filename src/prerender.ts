@@ -112,7 +112,11 @@ export async function prerender(nitro: Nitro) {
 
     // Check for explicitly ignored routes
     for (const ignore of nitro.options.prerender.ignore) {
-      if (route.startsWith(ignore)) {
+      if (typeof ignore === "string") {
+        if (route.startsWith(ignore)) {
+          return false;
+        }
+      } else if (ignore.test(route)) {
         return false;
       }
     }

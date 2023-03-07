@@ -208,7 +208,7 @@ export interface NitroOptions extends PresetOptions {
   devErrorHandler: NitroErrorHandler;
   prerender: {
     crawlLinks: boolean;
-    ignore: string[];
+    ignore: (string | RegExp)[];
     routes: string[];
   };
 
