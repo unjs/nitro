@@ -261,9 +261,11 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
 
 ### `prerender`
 
-Default: `{ crawlLinks: false, routes: [] }`
+Default: `{ crawlLinks: false, ignore: [], routes: [] }`
 
 Prerendered options. Any route specified will be fetched during the build and copied to the `.output/public` directory as a static asset.
+
+Any route that starts with a prefix listed in `ignore` will be ignored.
 
 If `crawlLinks` option is set to `true`, nitro starts with `/` by default (or all routes in `routes` array) and for HTML pages extracts `<a href="">` tags and prerender them as well.
 
