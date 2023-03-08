@@ -21,21 +21,22 @@ export const cloudflare = defineNitroPreset({
         JSON.stringify({ lockfileVersion: 1 }, null, 2)
       );
     },
-  });
+  },
+});
 
 export const cloudflareEsm = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/cloudflare-esm",
   commands: {
     preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
-    deploy: "npx wrangler publish"
+    deploy: "npx wrangler publish",
   },
   rollupConfig: {
     external: "__STATIC_CONTENT_MANIFEST",
     output: {
       format: "esm",
-      exports: "named"
-    }
+      exports: "named",
+    },
   },
   hooks: {
     async compiled(nitro: Nitro) {
