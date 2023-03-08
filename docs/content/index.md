@@ -27,7 +27,7 @@ snippet:
 Nitro
 
 #description
-Build and deploy universal web servers. :br
+Create, build and deploy universal web servers everywhere. :br
 
 The open engine powering [Nuxt](https://nuxt.com) and [open to everyone](https://github.com/unjs/nitro/discussions/1015).
 ::
