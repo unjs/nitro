@@ -261,13 +261,23 @@ When `cache` option is set, handlers matching pattern will be automatically wrap
 
 ### `prerender`
 
-Default: `{ crawlLinks: false, ignore: [], routes: [] }`
+Pre-rendering options used when building your application with Nitro.
 
-Prerendered options. Any route specified will be fetched during the build and copied to the `.output/public` directory as a static asset.
+Default:
 
-The `ignore` option accepts an array of string or regex to specify routes to ignore. Routes that starts with the string or matches the regex will be ignored.
+```ts
+{
+  crawlLinks: false,
+  ignore: [],
+  routes: []
+}
+```
 
-If `crawlLinks` option is set to `true`, nitro starts with `/` by default (or all routes in `routes` array) and for HTML pages extracts `<a href="">` tags and prerender them as well.
+Any route specified in `routes` will be fetched during the build and copied to the `.output/public` directory as a static asset.
+
+If `crawlLinks` option is set to `true`, nitro starts crawling `/` by default (or all routes in `routes` array) and for HTML pages extracts `<a href="">` tags and prerender them as well. Nitro also reads from the `x-nitro-prerender` header send back to crawl extra routes.
+
+The `ignore` option accepts an array of string or regex to specify the routes to ignore. Routes that starts with the string or matches the regex will be ignored.
 
 <!-- Directories -->
 
