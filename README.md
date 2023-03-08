@@ -12,7 +12,7 @@
 
 # Nitro
 
-> Build and deploy universal web servers
+> Create, build and deploy universal web servers everywhere.
 > The open engine powering [Nuxt](https://nuxt.com) and [open to everyone](https://github.com/unjs/nitro/discussions/1015).
 
 - 🐇 Rapid development with HMR
