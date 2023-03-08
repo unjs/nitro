@@ -27,11 +27,11 @@
 - 🐱 Hackable
 - ✨ Auto Imports
 
-📖 Read [the documentation](https://nitro.unjs.io) to learn more or directly jump to the [getting started](https://nitro.unjs.io/guide/introduction/getting-started).
+📖 Read [the documentation](https://nitro.unjs.io) to learn more or directly jump to the [getting started](https://nitro.unjs.io/guide/getting-started).
 
 ## Contribution
 
-See [contribution guide](https://nitro.unjs.io/guide/community/contribution).
+See [contribution guide](https://nitro.unjs.io/guide/community/contributing).
 
 ## License
 
