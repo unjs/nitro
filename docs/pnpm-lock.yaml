@@ -5,12 +5,12 @@ importers:
   .:
     specifiers:
       '@nuxt-themes/docus': ^1.9.1
-      '@nuxthq/studio': ^0.7.8
+      '@nuxthq/studio': ^0.8.2
       '@nuxtjs/plausible': ^0.2.0
       nuxt: 3.2.3
     devDependencies:
       '@nuxt-themes/docus': 1.9.1_nuxt@3.2.3
-      '@nuxthq/studio': 0.7.8
+      '@nuxthq/studio': 0.8.2
       '@nuxtjs/plausible': 0.2.0
       nuxt: 3.2.3
 
@@ -1551,6 +1551,22 @@ packages:
     dependencies:
       '@nuxt/kit': 3.2.3
       '@nuxt/schema': 3.2.3
+      defu: 6.1.2
+      nuxt-component-meta: 0.4.3
+      nuxt-config-schema: 0.4.5
+      socket.io-client: 4.6.1
+      ufo: 1.1.1
+    transitivePeerDependencies:
+      - bufferutil
+      - rollup
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /@nuxthq/studio/0.8.2:
+    resolution: {integrity: sha512-XQA6j3udN0B7R0vD9KNvCGdCI1Uv6UPHoO8mMWnse73yd8KuUxAeYXibgzMJF2xKndVlUR4Sv2Gzmb9MKpLbJQ==}
+    dependencies:
+      '@nuxt/kit': 3.2.3
       defu: 6.1.2
       nuxt-component-meta: 0.4.3
       nuxt-config-schema: 0.4.5
