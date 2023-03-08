@@ -4,12 +4,12 @@ importers:
 
   .:
     specifiers:
-      '@nuxt-themes/docus': ^1.9.4
+      '@nuxt-themes/docus': ^1.9.6
       '@nuxthq/studio': ^0.8.2
       '@nuxtjs/plausible': ^0.2.0
       nuxt: 3.2.3
     devDependencies:
-      '@nuxt-themes/docus': 1.9.4_nuxt@3.2.3
+      '@nuxt-themes/docus': 1.9.6_nuxt@3.2.3
       '@nuxthq/studio': 0.8.2
       '@nuxtjs/plausible': 0.2.0
       nuxt: 3.2.3
@@ -1190,8 +1190,8 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@nuxt-themes/docus/1.9.4_nuxt@3.2.3:
-    resolution: {integrity: sha512-kyft1/vcxkYn0JJP0VXTDQWhJgzK9deIMp2ScaD3dhUm4HessLUIV7keY6ha9cnhOHx0pwcCwQGve9M4FfSJLQ==}
+  /@nuxt-themes/docus/1.9.6_nuxt@3.2.3:
+    resolution: {integrity: sha512-ZMZbKgBo9RLX0NNcNTmG+irwCdSRkJao2JNk22gRawZqrGEgRKAGoHzzi9GI1uC1AclD22xXkwXqj/zXCp+MrQ==}
     dependencies:
       '@nuxt-themes/elements': 0.9.0
       '@nuxt-themes/tokens': 1.9.0
