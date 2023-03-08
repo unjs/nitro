@@ -6,14 +6,24 @@ aside: false
 
 Customize your Nitro app with a configuration file.
 
-In order to customize nitro's behavior, we create a file named `nitro.config.ts`.
+In order to customize Nitro's behavior, we create a file named `nitro.config.ts`.
 
-```js
-// nitro.config.ts
+::code-group
+```ts [nitro.config.ts]
 import { defineNitroConfig } from "nitropack";
 
-export default defineNitroConfig({});
+export default defineNitroConfig({
+  // options
+});
 ```
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    // options
+  }
+})
+```
+::
 
 ## General
 
@@ -27,19 +37,19 @@ The preset will automatically be detected when the `preset` option is not set an
 
 ### `logLevel`
 
-- Default: `3` (`1` when the testing environment is detected)
+- Default: `3`{lang=ts} (`1`{lang=ts} when the testing environment is detected)
 
 Log verbosity level. See [unjs/consola#level](https://github.com/unjs/consola/#level) for more information.
 
 ### `runtimeConfig`
 
-- Default: `{ nitro: { ... }, ...yourOptions }`
+- Default: `{ nitro: { ... }, ...yourOptions }`{lang=ts}
 
 Server runtime configuration.
 
 **Note:**: `nitro` namespace is reserved.
 
-<!-- Features -->
+## Features
 
 ### `experimental`
 
@@ -51,11 +61,11 @@ Enable experimental features. Currently, none are available!
 
 - Default: `{}`
 
-Storage configuration.
+Storage configuration, read more in the [Storage Layer](/guide/introduction/storage) section.
 
 ### `timing`
 
-- Default: `false`
+- Default: `false`{lang=ts}
 
 Enable timing information:
 
@@ -68,17 +78,18 @@ Path to main render (file should export an event handler as default)
 
 ### `serveStatic`
 
-- Default: `false`
+- Type: `boolean` | `'node'`{lang=ts} | `'deno'`{lang=ts}
+- Default: depends of the deployment preset used.
 
 Serve `public/` assets in production.
 
-**Note:** It is highly recommended that your edge CDN (nginx, apache, cloud) serves the `public/` directory instead.
+**Note:** It is highly recommended that your edge CDN (nginx, apache, cloud) serves the `.output/public/` directory instead to enable compression and higher lever caching.
 
 ### `noPublicDir`
 
-- Default: `false`
+- Default: `false`{lang=ts}
 
-If enabled, disabled `.output/public` directory creation. Skipping to copy `public/` dir and also disables prerenderer.
+If enabled, disabled `.output/public` directory creation. Skipping to copy `public/` dir and also disables pre-renderering.
 
 ### `publicAssets`
 
@@ -88,67 +99,70 @@ If a `public/` directory is detected, it will be added by default, but you can a
 
 ### `compressPublicAssets`
 
-- Default: `{ gzip: false, brotli: false }`
+- Default: `{ gzip: false, brotli: false }`{lang=ts}
 
 If enabled, Nitro will generate a pre-compressed (gzip and/or brotli) version of supported types of public assets and prerendered routes
 larger than 1024 bytes into the public directory. The best compression level is used. Using this option you can support zero overhead asset compression without using a CDN.
 
-The compressible MIME types are:
-
-- application/dash+xml
-- application/eot
-- application/font
-- application/font-sfnt
-- application/javascript
-- application/json
-- application/opentype
-- application/otf
-- application/pkcs7-mime
-- application/protobuf
-- application/rss+xml
-- application/truetype
-- application/ttf
-- application/vnd.apple.mpegurl
-- application/vnd.mapbox-vector-tile
-- application/vnd.ms-fontobject
-- application/xhtml+xml
-- application/xml
-- application/x-font-opentype
-- application/x-font-truetype
-- application/x-font-ttf
-- application/x-httpd-cgi
-- application/x-javascript
-- application/x-mpegurl
-- application/x-opentype
-- application/x-otf
-- application/x-perl
-- application/x-ttf
-- font/eot
-- font/opentype
-- font/otf
-- font/ttf
-- image/svg+xml
-- text/css
-- text/csv
-- text/html
-- text/javascript
-- text/js
-- text/plain
-- text/richtext
-- text/tab-separated-values
-- text/xml
-- text/x-component
-- text/x-java-source
-- text/x-script
-- vnd.apple.mpegurl
+::callout
+#summary
+List of compressible MIME types:
+#content
+- `application/dash+xml`
+- `application/eot`
+- `application/font`
+- `application/font-sfnt`
+- `application/javascript`
+- `application/json`
+- `application/opentype`
+- `application/otf`
+- `application/pkcs7-mime`
+- `application/protobuf`
+- `application/rss+xml`
+- `application/truetype`
+- `application/ttf`
+- `application/vnd.apple.mpegurl`
+- `application/vnd.mapbox-vector-tile`
+- `application/vnd.ms-fontobject`
+- `application/xhtml+xml`
+- `application/xml`
+- `application/x-font-opentype`
+- `application/x-font-truetype`
+- `application/x-font-ttf`
+- `application/x-httpd-cgi`
+- `application/x-javascript`
+- `application/x-mpegurl`
+- `application/x-opentype`
+- `application/x-otf`
+- `application/x-perl`
+- `application/x-ttf`
+- `font/eot`
+- `font/opentype`
+- `font/otf`
+- `font/ttf`
+- `image/svg+xml`
+- `text/css`
+- `text/csv`
+- `text/html`
+- `text/javascript`
+- `text/js`
+- `text/plain`
+- `text/richtext`
+- `text/tab-separated-values`
+- `text/xml`
+- `text/x-component`
+- `text/x-java-source`
+- `text/x-script`
+- `vnd.apple.mpegurl`
+::
 
 ### `serverAssets`
 
-Assets can be accessed in server logic and bundled in production.
+Assets can be accessed in server logic and bundled in production. [Read more](/guide/introduction/assets#server-assets).
 
 ### `devServer`
 
-- Default: `{ watch: [] }`
+- Default: `{ watch: [] }`{lang=ts}
 
 Dev server options. You can use `watch` to make the dev server reload if any file changes in specified paths.
 
@@ -172,11 +186,11 @@ An array of paths to nitro plugins. They will be executed by order on the first 
 
 A map from dynamic virtual import names to their contents or an (async) function that returns it.
 
-<!-- Routing -->
+## Routing
 
 ### `baseURL`
 
-Default: `/` (or `NITRO_APP_BASE_URL` environment variable if provided)
+Default: `/`{lang=ts} (or `NITRO_APP_BASE_URL` environment variable if provided)
 
 Server's main base URL.
 
@@ -239,23 +253,27 @@ export default <NitroErrorHandler> function (error, event) {
 
 Route options. It is a map from route pattern (following [unjs/radix3](https://github.com/unjs/radix3#route-matcher)) to route options.
 
-When `cache` option is set, handlers matching pattern will be automatically wrapped with `defineCachedEventHandler`. See [Cache API](/guide/introduction/cache) for all available cache options. (`swr: true|number` is shortcut for `cache: { swr: true, maxAge: number }`.)
+When `cache` option is set, handlers matching pattern will be automatically wrapped with `defineCachedEventHandler`.
+
+ See the [Cache API](/guide/introduction/cache) for all available cache options.
+ 
+ ::alert
+ `swr: true|number` is shortcut for `cache: { swr: true, maxAge: number }`
+ ::
 
 **Example:**
 
 ```js
-{
-  routeRules: {
-    '/blog/**': { swr: true },
-    '/blog/**': { swr: 600 },
-    '/blog/**': { static: true },
-    '/blog/**': { cache: { /* cache options*/ } },
-    '/assets/**': { headers: { 'cache-control': 's-maxage=0' } },
-    '/api/v1/**': { cors: true, headers: { 'access-control-allow-methods': 'GET' } },
-    '/old-page': { redirect: '/new-page' },
-    '/proxy/example': { proxy: 'https://example.com' },
-    "/proxy/**": { proxy: '/api/**' },
-  }
+routeRules: {
+  '/blog/**': { swr: true },
+  '/blog/**': { swr: 600 },
+  '/blog/**': { static: true },
+  '/blog/**': { cache: { /* cache options*/ } },
+  '/assets/**': { headers: { 'cache-control': 's-maxage=0' } },
+  '/api/v1/**': { cors: true, headers: { 'access-control-allow-methods': 'GET' } },
+  '/old-page': { redirect: '/new-page' },
+  '/proxy/example': { proxy: 'https://example.com' },
+  "/proxy/**": { proxy: '/api/**' },
 }
 ```
 
@@ -279,7 +297,7 @@ If `crawlLinks` option is set to `true`, nitro starts crawling `/` by default (o
 
 The `ignore` option accepts an array of string or regex to specify the routes to ignore. Routes that starts with the string or matches the regex will be ignored.
 
-<!-- Directories -->
+## Directories
 
 ### `rootDir`
 
@@ -307,7 +325,7 @@ nitro's temporary working directory for generating build-related files.
 
 Output directories for production bundle.
 
-<!-- Advanced -->
+## Advanced
 
 ### `dev`
 
