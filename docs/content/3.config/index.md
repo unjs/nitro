@@ -180,6 +180,8 @@ Auto import options. See [unjs/unimport](https://github.com/unjs/unimport) for m
 
 An array of paths to nitro plugins. They will be executed by order on the first initialization.
 
+Note that Nitro auto-register the plugins in the `plugins/` directory, [learn more](/guide/advanced/plugins).
+
 ### `virtual`
 
 - Default: `{}`
