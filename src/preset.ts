@@ -1,6 +1,5 @@
+import type { NitroPreset } from "./types";
 
-import type { NitroPreset } from './types'
-
-export function defineNitroPreset (preset: NitroPreset) {
-  return preset
+export function defineNitroPreset(preset: NitroPreset) {
+  return preset;
 }

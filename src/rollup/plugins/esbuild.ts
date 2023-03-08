@@ -1,134 +1,136 @@
 // Based on https://github.com/egoist/rollup-plugin-esbuild (MIT)
 
-import { extname, relative } from 'pathe'
-import type { Plugin, PluginContext } from 'rollup'
-import { Loader, TransformResult, transform } from 'esbuild'
-import { createFilter } from '@rollup/pluginutils'
-import type { FilterPattern } from '@rollup/pluginutils'
+import { extname, relative } from "pathe";
+import type { Plugin, PluginContext } from "rollup";
+import { Loader, TransformResult, transform } from "esbuild";
+import { createFilter } from "@rollup/pluginutils";
+import type { FilterPattern } from "@rollup/pluginutils";
 
 const defaultLoaders: { [ext: string]: Loader } = {
-  '.ts': 'ts',
-  '.js': 'js'
-}
+  ".ts": "ts",
+  ".js": "js",
+};
 
 export type Options = {
-  include?: FilterPattern
-  exclude?: FilterPattern
-  sourceMap?: boolean
-  minify?: boolean
-  target: string | string[]
-  jsxFactory?: string
-  jsxFragment?: string
+  include?: FilterPattern;
+  exclude?: FilterPattern;
+  sourceMap?: boolean | "inline" | "hidden";
+  minify?: boolean;
+  target: string | string[];
+  jsxFactory?: string;
+  jsxFragment?: string;
   define?: {
-    [k: string]: string
-  }
+    [k: string]: string;
+  };
   /**
    * Use this tsconfig file instead
    * Disable it by setting to `false`
    */
-  tsconfig?: string | false
+  tsconfig?: string | false;
   /**
    * Map extension to esbuild loader
    * Note that each entry (the extension) needs to start with a dot
    */
   loaders?: {
-    [ext: string]: Loader | false
-  }
-}
+    [ext: string]: Loader | false;
+  };
+};
 
-export function esbuild (options: Options): Plugin {
+export function esbuild(options: Options): Plugin {
   const loaders = {
-    ...defaultLoaders
-  }
+    ...defaultLoaders,
+  };
 
   if (options.loaders) {
     for (const key of Object.keys(options.loaders)) {
-      const value = options.loaders[key]
-      if (typeof value === 'string') {
-        loaders[key] = value
+      const value = options.loaders[key];
+      if (typeof value === "string") {
+        loaders[key] = value;
       } else if (value === false) {
-        delete loaders[key]
+        delete loaders[key];
       }
     }
   }
 
-  const extensions: string[] = Object.keys(loaders)
+  const extensions: string[] = Object.keys(loaders);
   const INCLUDE_REGEXP = new RegExp(
-    `\\.(${extensions.map(ext => ext.slice(1)).join('|')})$`
-  )
-  const EXCLUDE_REGEXP = /node_modules/
+    `\\.(${extensions.map((ext) => ext.slice(1)).join("|")})$`
+  );
+  const EXCLUDE_REGEXP = /node_modules/;
 
   const filter = createFilter(
     options.include || INCLUDE_REGEXP,
     options.exclude || EXCLUDE_REGEXP
-  )
+  );
 
   return {
-    name: 'esbuild',
+    name: "esbuild",
 
-    async transform (code, id) {
+    async transform(code, id) {
       if (!filter(id)) {
-        return null
+        return null;
       }
 
-      const ext = extname(id)
-      const loader = loaders[ext]
+      const ext = extname(id);
+      const loader = loaders[ext];
 
       if (!loader) {
-        return null
+        return null;
       }
 
       const result = await transform(code, {
         loader,
         target: options.target,
         define: options.define,
-        sourcemap: options.sourceMap,
-        sourcefile: id
-      })
+        sourcemap:
+          options.sourceMap === "hidden" ? "external" : options.sourceMap,
+        sourcefile: id,
+      });
 
-      printWarnings(id, result, this)
+      printWarnings(id, result, this);
 
       return (
         result.code && {
           code: result.code,
-          map: result.map || null
+          map: result.map || null,
         }
-      )
+      );
     },
 
-    async renderChunk (code) {
+    async renderChunk(code) {
       if (options.minify) {
         const result = await transform(code, {
-          loader: 'js',
+          loader: "js",
           minify: true,
-          target: options.target
-        })
+          target: options.target,
+        });
         if (result.code) {
           return {
             code: result.code,
-            map: result.map || null
-          }
+            map: result.map || null,
+          };
         }
       }
-      return null
-    }
-  }
+      return null;
+    },
+  };
 }
 
-function printWarnings (
+function printWarnings(
   id: string,
   result: TransformResult,
   plugin: PluginContext
 ) {
   if (result.warnings) {
     for (const warning of result.warnings) {
-      let message = '[esbuild]'
+      let message = "[esbuild]";
       if (warning.location) {
-        message += ` (${relative(process.cwd(), id)}:${warning.location.line}:${warning.location.column
-          })`
+        message += ` (${relative(process.cwd(), id)}:${warning.location.line}:${
+          warning.location.column
+        })`;
       }
-      message += ` ${warning.text}`
-      plugin.warn(message)
+      message += ` ${warning.text}`;
+      plugin.warn(message);
     }
   }
 }

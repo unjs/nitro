@@ -1,7 +1,6 @@
----
-title: Azure
-description: 'Discover Azure preset for Nitro!'
----
+# Azure
+
+Deploy Nitro apps to Azure.
 
 ## Azure Static Web Apps
 

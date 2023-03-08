@@ -9,8 +9,25 @@ on:
       - main
 
 jobs:
-  ci:
+  lint:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: corepack enable
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm lint
+
+  ci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -19,13 +36,14 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
           cache: pnpm
       - run: pnpm install
-      - run: pnpm lint
       - run: pnpm test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
       - uses: codecov/codecov-action@v3
       - name: Release Edge
         if: |

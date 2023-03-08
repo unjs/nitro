@@ -1,4 +1,3 @@
-import { defineNitroConfig } from '../src'
+import { defineNitroConfig } from "../src";
 
-export default defineNitroConfig({
-})
+export default defineNitroConfig({});

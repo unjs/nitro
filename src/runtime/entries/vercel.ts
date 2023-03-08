@@ -1,17 +1,17 @@
-import '#internal/nitro/virtual/polyfill'
-import { toNodeListener, NodeListener } from 'h3'
-import { parseQuery } from 'ufo'
-import { nitroApp } from '../app'
+import "#internal/nitro/virtual/polyfill";
+import { toNodeListener, NodeListener } from "h3";
+import { parseQuery } from "ufo";
+import { nitroApp } from "../app";
 
-const handler = toNodeListener(nitroApp.h3App)
+const handler = toNodeListener(nitroApp.h3App);
 
-export default <NodeListener> function (req, res) {
-  const query = req.headers['x-now-route-matches'] as string
+export default <NodeListener>function (req, res) {
+  const query = req.headers["x-now-route-matches"] as string;
   if (query) {
-    const { url } = parseQuery(query)
+    const { url } = parseQuery(query);
     if (url) {
-      req.url = url as string
+      req.url = url as string;
     }
   }
-  return handler(req, res)
-}
+  return handler(req, res);
+};

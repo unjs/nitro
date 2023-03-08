@@ -1,7 +1,6 @@
----
-title: Netlify
-description: 'Discover Netlify preset for Nitro!'
----
+# Netlify
+
+Deploy Nitro apps to Netlify.
 
 **Preset:** `netlify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -18,7 +17,7 @@ For new sites, Netlify will detect that you are using Nitro and set the publish 
 
 If you are upgrading an existing site you should check these and update them if needed.
 
-If you want to add custom redirects, you can do so with [`routeRules`](/config#routerules) or by adding a [`_redirects`](https://docs.netlify.com/routing/redirects/#syntax-for-the-redirects-file) file.
+If you want to add custom redirects, you can do so with [`routeRules`](/config#routerules) or by adding a [`_redirects`](https://docs.netlify.com/routing/redirects/#syntax-for-the-redirects-file) file to your `public` directory.
 
 For deployment, just push to your git repository [as you would normally do for Netlify](https://docs.netlify.com/configure-builds/get-started/).
 

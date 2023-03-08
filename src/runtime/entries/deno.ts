@@ -1,19 +1,19 @@
-import '#internal/nitro/virtual/polyfill'
+import "#internal/nitro/virtual/polyfill";
 // @ts-ignore
-import { serve } from 'https://deno.land/std/http/server.ts'
+import { serve } from "https://deno.land/std/http/server.ts";
 
-import { requestHasBody, useRequestBody } from '../utils'
-import { nitroApp } from '../app'
+import { requestHasBody, useRequestBody } from "../utils";
+import { nitroApp } from "../app";
 
 serve((request: Request) => {
-  return handleRequest(request)
-})
+  return handleRequest(request);
+});
 
-async function handleRequest (request: Request) {
-  const url = new URL(request.url)
-  let body
+async function handleRequest(request: Request) {
+  const url = new URL(request.url);
+  let body;
   if (requestHasBody(request)) {
-    body = await useRequestBody(request)
+    body = await useRequestBody(request);
   }
 
   const r = await nitroApp.localCall({
@@ -23,17 +23,22 @@ async function handleRequest (request: Request) {
     headers: Object.fromEntries(request.headers.entries()),
     method: request.method,
     redirect: request.redirect,
-    body
-  })
+    body,
+  });
 
   return new Response(r.body || undefined, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
-    statusText: r.statusText
-  })
+    statusText: r.statusText,
+  });
 }
 
-function normalizeOutgoingHeaders (headers: Record<string, string | string[] | undefined>) {
-  return Object.entries(headers).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v])
+function normalizeOutgoingHeaders(
+  headers: Record<string, string | string[] | undefined>
+) {
+  return Object.entries(headers).map(([k, v]) => [
+    k,
+    Array.isArray(v) ? v.join(",") : v,
+  ]);
 }
