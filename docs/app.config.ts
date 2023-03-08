@@ -2,10 +2,9 @@ export default defineAppConfig({
   docus: {
     title: "Nitro",
     header: {
-      title: false,
       logo: true,
     },
-    description: "Build and Deploy Universal JavaScript Servers.",
+    description: "Create, build and deploy universal web servers everywhere.",
     url: "https://nitro.unjs.io",
     image: "/cover.png",
     socials: {
