@@ -3,9 +3,8 @@ import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
-import { parseURL, withLeadingSlash, withoutBase, withoutTrailingSlash } from "ufo";
+import { withLeadingSlash, withoutBase, withoutTrailingSlash } from "ufo";
 import { splitCookiesString } from "set-cookie-parser";
-import { createError } from "h3";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
@@ -16,17 +15,22 @@ addEventListener("fetch", (event: any) => {
 });
 
 async function handleEvent(event: FetchEvent) {
-  try {
+  const url = new URL(event.request.url);
+  const id = decodeURIComponent(
+      withLeadingSlash(
+          withoutTrailingSlash(url.pathname)
+      )
+  );
+
+  // Fetch public assets from KV only
+  if (isPublicAssetURL(id)) {
     return await getAssetFromKV(event, {
       cacheControl: assetsCacheControl,
       mapRequestToAsset: baseURLModifier,
     });
-  } catch {
-    // Ignore
   }
 
 
-  const url = new URL(event.request.url);
   let body;
   if (requestHasBody(event.request)) {
     body = Buffer.from(await event.request.arrayBuffer());
@@ -48,16 +52,6 @@ async function handleEvent(event: FetchEvent) {
   });
 
   const headers = normalizeOutgoingHeaders(r.headers);
-
-  const id = decodeURIComponent(
-      withLeadingSlash(
-          withoutTrailingSlash(url.pathname)
-      )
-  );
-
-  if (r.status === 404 && isPublicAssetURL(id)) {
-    headers.delete('cache-control')
-  }
 
   return new Response(r.body, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
