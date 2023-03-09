@@ -8,7 +8,10 @@ import { splitCookiesString } from "set-cookie-parser";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta, isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import {
+  getPublicAssetMeta,
+  isPublicAssetURL,
+} from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
@@ -17,9 +20,7 @@ addEventListener("fetch", (event: any) => {
 async function handleEvent(event: FetchEvent) {
   const url = new URL(event.request.url);
   const id = decodeURIComponent(
-      withLeadingSlash(
-          withoutTrailingSlash(url.pathname)
-      )
+    withLeadingSlash(withoutTrailingSlash(url.pathname))
   );
 
   // Fetch public assets from KV only
@@ -29,7 +30,6 @@ async function handleEvent(event: FetchEvent) {
       mapRequestToAsset: baseURLModifier,
     });
   }
-
 
   let body;
   if (requestHasBody(event.request)) {
