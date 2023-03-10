@@ -205,7 +205,10 @@ declare module 'nitropack' {
           : {},
       },
       include: [
-        "./nitro.d.ts",
+        relative(
+          typesDir,
+          join(nitro.options.buildDir, "types/nitro.d.ts")
+        ).replace(/^(?=[^.])/, "./"),
         join(relative(typesDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir !== nitro.options.rootDir
           ? [join(relative(typesDir, nitro.options.srcDir), "**/*")]
