@@ -68,16 +68,20 @@ export async function writeTypes(nitro: Nitro) {
     Partial<Record<RouterMethod | "default", string[]>>
   > = {};
 
+  const typesDir = dirname(
+    resolve(nitro.options.buildDir, nitro.options.typescript.tsconfigPath)
+  );
+
   const middleware = [...nitro.scannedHandlers, ...nitro.options.handlers];
 
   for (const mw of middleware) {
     if (typeof mw.handler !== "string" || !mw.route) {
       continue;
     }
-    const relativePath = relative(
-      join(nitro.options.buildDir, "types"),
-      mw.handler
-    ).replace(/\.[a-z]+$/, "");
+    const relativePath = relative(typesDir, mw.handler).replace(
+      /\.[a-z]+$/,
+      ""
+    );
 
     if (!routeTypes[mw.route]) {
       routeTypes[mw.route] = {};
@@ -202,23 +206,9 @@ declare module 'nitropack' {
       },
       include: [
         "./nitro.d.ts",
-        join(
-          relative(
-            join(nitro.options.buildDir, "types"),
-            nitro.options.rootDir
-          ),
-          "**/*"
-        ),
+        join(relative(typesDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir !== nitro.options.rootDir
-          ? [
-              join(
-                relative(
-                  join(nitro.options.buildDir, "types"),
-                  nitro.options.srcDir
-                ),
-                "**/*"
-              ),
-            ]
+          ? [join(relative(typesDir, nitro.options.srcDir), "**/*")]
           : []),
       ],
     };
