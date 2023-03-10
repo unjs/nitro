@@ -4,12 +4,12 @@ importers:
 
   .:
     specifiers:
-      '@nuxt-themes/docus': ^1.9.1
+      '@nuxt-themes/docus': ^1.9.6
       '@nuxthq/studio': ^0.8.2
       '@nuxtjs/plausible': ^0.2.0
       nuxt: 3.2.3
     devDependencies:
-      '@nuxt-themes/docus': 1.9.1_nuxt@3.2.3
+      '@nuxt-themes/docus': 1.9.6_nuxt@3.2.3
       '@nuxthq/studio': 0.8.2
       '@nuxtjs/plausible': 0.2.0
       nuxt: 3.2.3
@@ -1190,14 +1190,14 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@nuxt-themes/docus/1.9.1_nuxt@3.2.3:
-    resolution: {integrity: sha512-g3W1bkOWVUEV3hs2hJg/kHWc2NL0IPw75HmBFr12k+eG5wddSvWLJcdJZnfbPTLy9M9A4C71TvZIFWcg1qpm4A==}
+  /@nuxt-themes/docus/1.9.6_nuxt@3.2.3:
+    resolution: {integrity: sha512-ZMZbKgBo9RLX0NNcNTmG+irwCdSRkJao2JNk22gRawZqrGEgRKAGoHzzi9GI1uC1AclD22xXkwXqj/zXCp+MrQ==}
     dependencies:
       '@nuxt-themes/elements': 0.9.0
       '@nuxt-themes/tokens': 1.9.0
       '@nuxt-themes/typography': 0.9.1
-      '@nuxt/content': 2.5.0
-      '@nuxthq/studio': 0.7.8
+      '@nuxt/content': 2.5.2
+      '@nuxthq/studio': 0.8.2
       '@vueuse/nuxt': 9.13.0_nuxt@3.2.3
     transitivePeerDependencies:
       - '@vue/composition-api'
@@ -1257,8 +1257,8 @@ packages:
       - vue
     dev: true
 
-  /@nuxt/content/2.5.0:
-    resolution: {integrity: sha512-ra0IlLYn4UsxYRyAVZeER5e9JlfUaMfOhjgEJSnJd5owCiYsKWJEKSaRKQT8oo6yho09FE4iozgxyFtmYm9FrA==}
+  /@nuxt/content/2.5.2:
+    resolution: {integrity: sha512-bSO4g2aNk7AT5abAIJtHLTN+FZFYMvwP6MH9oP6XAo/SsIowvFq7g38in3jK/OMDR+dZq3Nt1z8GrMDGipzsfQ==}
     dependencies:
       '@nuxt/kit': 3.2.3
       consola: 2.15.3
@@ -1495,23 +1495,6 @@ packages:
       - vls
       - vti
       - vue-tsc
-    dev: true
-
-  /@nuxthq/studio/0.7.8:
-    resolution: {integrity: sha512-xgmZdxl88YSKvoDar48F9Npy+xJ5Rvud8KVpl+0P9FVP+wzgfIIVqlV2YWykmGXLVEcMoLi+OLpfElzzcenjNg==}
-    dependencies:
-      '@nuxt/kit': 3.2.3
-      '@nuxt/schema': 3.2.3
-      defu: 6.1.2
-      nuxt-component-meta: 0.4.3
-      nuxt-config-schema: 0.4.5
-      socket.io-client: 4.6.1
-      ufo: 1.1.1
-    transitivePeerDependencies:
-      - bufferutil
-      - rollup
-      - supports-color
-      - utf-8-validate
     dev: true
 
   /@nuxthq/studio/0.8.2:
