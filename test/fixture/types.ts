@@ -1,6 +1,7 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
 import { $Fetch } from "../..";
+import { defineNitroConfig } from "../../src/options";
 
 interface TestResponse {
   message: string;
@@ -218,5 +219,22 @@ describe("API routes", () => {
     expectTypeOf($fetch("/api/serialized/tuple")).toMatchTypeOf<
       Promise<[string, string]>
     >();
+  });
+});
+
+describe("defineNitroConfig", () => {
+  it("should not accept functions to routeRules.cache", () => {
+    defineNitroConfig({
+      routeRules: {
+        "/**": {
+          cache: {
+            // @ts-expect-error
+            shouldBypassCache(event) {
+              return false;
+            },
+          },
+        },
+      },
+    });
   });
 });
