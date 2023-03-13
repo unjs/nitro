@@ -125,7 +125,19 @@ type IntRange<F extends number, T extends number> = Exclude<
 type HTTPStatusCode = IntRange<100, 600>;
 
 export interface NitroRouteConfig {
-  cache?: CachedEventHandlerOptions | false;
+  cache?:
+    | Exclude<
+        CachedEventHandlerOptions,
+        | "getKey"
+        | "transform"
+        | "validate"
+        | "shouldInvalidateCache"
+        | "shouldBypassCache"
+        | "shouldInvalidateCache"
+        | "shouldBypassCache"
+        | "getKey"
+      >
+    | false;
   headers?: Record<string, string>;
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
