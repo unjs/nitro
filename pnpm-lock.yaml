@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 overrides:
   nitropack: link:.
+  undici: ^5.21.0
 
 importers:
 
@@ -1292,7 +1293,7 @@ packages:
       '@miniflare/core': 2.12.1
       '@miniflare/shared': 2.12.1
       http-cache-semantics: 4.1.1
-      undici: 5.20.0
+      undici: 5.21.0
     dev: true
 
   /@miniflare/cli-parser/2.12.1:
@@ -1315,7 +1316,7 @@ packages:
       dotenv: 10.0.0
       kleur: 4.1.5
       set-cookie-parser: 2.5.1
-      undici: 5.20.0
+      undici: 5.21.0
       urlpattern-polyfill: 4.0.3
     dev: true
 
@@ -1334,7 +1335,7 @@ packages:
       '@miniflare/core': 2.12.1
       '@miniflare/shared': 2.12.1
       '@miniflare/storage-memory': 2.12.1
-      undici: 5.20.0
+      undici: 5.21.0
     dev: true
 
   /@miniflare/html-rewriter/2.12.1:
@@ -1344,7 +1345,7 @@ packages:
       '@miniflare/core': 2.12.1
       '@miniflare/shared': 2.12.1
       html-rewriter-wasm: 0.4.1
-      undici: 5.20.0
+      undici: 5.21.0
     dev: true
 
   /@miniflare/http-server/2.12.1:
@@ -1356,7 +1357,7 @@ packages:
       '@miniflare/web-sockets': 2.12.1
       kleur: 4.1.5
       selfsigned: 2.1.1
-      undici: 5.20.0
+      undici: 5.21.0
       ws: 8.13.0
       youch: 2.2.2
     transitivePeerDependencies:
@@ -1383,7 +1384,7 @@ packages:
     engines: {node: '>=16.13'}
     dependencies:
       '@miniflare/shared': 2.12.1
-      undici: 5.20.0
+      undici: 5.21.0
     dev: true
 
   /@miniflare/runner-vm/2.12.1:
@@ -1449,7 +1450,7 @@ packages:
     dependencies:
       '@miniflare/core': 2.12.1
       '@miniflare/shared': 2.12.1
-      undici: 5.20.0
+      undici: 5.21.0
       ws: 8.13.0
     transitivePeerDependencies:
       - bufferutil
@@ -4410,7 +4411,7 @@ packages:
       kleur: 4.1.5
       semiver: 1.1.0
       source-map-support: 0.5.21
-      undici: 5.20.0
+      undici: 5.21.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -5694,13 +5695,6 @@ packages:
   /uncrypto/0.1.2:
     resolution: {integrity: sha512-kuZwRKV615lEw/Xx3Iz56FKk3nOeOVGaVmw0eg+x4Mne28lCotNFbBhDW7dEBCBKyKbRQiCadEZeNAFPVC5cgw==}
     dev: false
-
-  /undici/5.20.0:
-    resolution: {integrity: sha512-J3j60dYzuo6Eevbawwp1sdg16k5Tf768bxYK4TUJRH7cBM4kFCbf3mOnM/0E3vQYXvpxITbbWmBafaDbxLDz3g==}
-    engines: {node: '>=12.18'}
-    dependencies:
-      busboy: 1.6.0
-    dev: true
 
   /undici/5.21.0:
     resolution: {integrity: sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==}

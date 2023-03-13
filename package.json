@@ -41,7 +41,8 @@
     "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit"
   },
   "resolutions": {
-    "nitropack": "link:."
+    "nitropack": "link:.",
+    "undici": "^5.21.0"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.0",
