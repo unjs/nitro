@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.3.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.3.0...v2.3.1)
+
+
+### 🩹 Fixes
+
+  - **types:** Don't simplify type of serialized return ([#1050](https://github.com/unjs/nitro/pull/1050))
+
+### 🏡 Chore
+
+  - Add `codecov.yml` ([6fe7f64](https://github.com/unjs/nitro/commit/6fe7f64))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.3.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.2.3...v2.3.0)
