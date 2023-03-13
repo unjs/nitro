@@ -124,20 +124,14 @@ type IntRange<F extends number, T extends number> = Exclude<
 >;
 type HTTPStatusCode = IntRange<100, 600>;
 
+type ExcludeFunctions<G extends Record<string, any>> = Pick<
+  G,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  { [P in keyof G]: NonNullable<G[P]> extends Function ? never : P }[keyof G]
+>;
+
 export interface NitroRouteConfig {
-  cache?:
-    | Exclude<
-        CachedEventHandlerOptions,
-        | "getKey"
-        | "transform"
-        | "validate"
-        | "shouldInvalidateCache"
-        | "shouldBypassCache"
-        | "shouldInvalidateCache"
-        | "shouldBypassCache"
-        | "getKey"
-      >
-    | false;
+  cache?: ExcludeFunctions<CachedEventHandlerOptions> | false;
   headers?: Record<string, string>;
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
