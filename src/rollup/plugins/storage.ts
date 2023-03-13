@@ -24,6 +24,7 @@ export function storage(nitro: Nitro) {
   const driverImports = [...new Set(mounts.map((m) => m.driver))];
 
   const bundledStorageCode = `
+import { prefixStorage } from 'unstorage'
 import overlay from 'unstorage/drivers/overlay'
 import memory from 'unstorage/drivers/memory'
 
@@ -42,7 +43,7 @@ for (const base of bundledStorage) {
   return virtual(
     {
       "#internal/nitro/virtual/storage": `
-import { createStorage, prefixStorage } from 'unstorage'
+import { createStorage } from 'unstorage'
 import { assets } from '#internal/nitro/virtual/server-assets'
 
 ${driverImports.map((i) => genImport(i, genSafeVariableName(i))).join("\n")}
