@@ -200,6 +200,16 @@ describe("API routes", () => {
       }>
     >();
 
+    expectTypeOf($fetch("/api/serialized/error")).toEqualTypeOf<
+      Promise<unknown>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/void")).toEqualTypeOf<
+      Promise<unknown>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/null")).toEqualTypeOf<Promise<null>>();
+
     expectTypeOf($fetch("/api/serialized/function")).toEqualTypeOf<
       Promise<object>
     >();
