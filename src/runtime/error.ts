@@ -1,4 +1,5 @@
 // import ansiHTML from 'ansi-html'
+import { setResponseStatus } from "h3";
 import type { NitroErrorHandler } from "../types";
 import { normalizeError, isJsonRequest } from "./utils";
 
@@ -41,15 +42,7 @@ export default <NitroErrorHandler>function (error, event) {
     );
   }
 
-  event.node.res.statusCode = statusCode;
-  if (statusMessage) {
-    // Allowed characters: horizontal tabs, spaces or visible ascii characters: https://www.rfc-editor.org/rfc/rfc7230#section-3.1.2
-    event.node.res.statusMessage = statusMessage.replace(
-      // eslint-disable-next-line no-control-regex
-      /[^\u0009\u0020-\u007E]/g,
-      ""
-    );
-  }
+  setResponseStatus(event, statusCode, statusMessage);
 
   if (isJsonRequest(event)) {
     event.node.res.setHeader("Content-Type", "application/json");
