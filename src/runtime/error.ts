@@ -43,7 +43,12 @@ export default <NitroErrorHandler>function (error, event) {
 
   event.node.res.statusCode = statusCode;
   if (statusMessage) {
-    event.node.res.statusMessage = statusMessage;
+    // Allowed characters: horizontal tabs, spaces or visible ascii characters: https://www.rfc-editor.org/rfc/rfc7230#section-3.1.2
+    event.node.res.statusMessage = statusMessage.replace(
+      // eslint-disable-next-line no-control-regex
+      /[^\u0009\u0020-\u007E]/g,
+      ""
+    );
   }
 
   if (isJsonRequest(event)) {
