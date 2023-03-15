@@ -12,7 +12,6 @@ export type NitroFetchRequest =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
-// TODO: re-enable Simplify
 export type MiddlewareOf<
   Route extends string,
   Method extends RouterMethod | "default"
