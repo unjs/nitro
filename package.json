@@ -106,7 +106,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230307.0",
-    "@types/aws-lambda": "^8.10.111",
+    "@types/aws-lambda": "^8.10.112",
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^11.0.1",
     "@types/http-proxy": "^1.17.10",
@@ -118,7 +118,7 @@
     "edge-runtime": "^2.1.2",
     "eslint": "^8.36.0",
     "eslint-config-unjs": "^0.1.0",
-    "execa": "^7.1.0",
+    "execa": "^7.1.1",
     "expect-type": "^0.15.0",
     "miniflare": "^2.12.1",
     "prettier": "^2.8.4",
