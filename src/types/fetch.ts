@@ -1,6 +1,5 @@
 import type { RouterMethod } from "h3";
 import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
-import type { Serialize } from "./serialize";
 import type { MatchedRoutes } from "./utils";
 
 // An interface to extend in a local project
@@ -18,7 +17,7 @@ export type MiddlewareOf<
   Route extends string,
   Method extends RouterMethod | "default"
 > = Method extends keyof InternalApi[MatchedRoutes<Route>]
-  ? Exclude<Serialize<InternalApi[MatchedRoutes<Route>][Method]>, Error | void>
+  ? Exclude<InternalApi[MatchedRoutes<Route>][Method], Error | void>
   : never;
 
 export type TypedInternalResponse<
