@@ -12,7 +12,7 @@ export const handler = async function handler(
   context: Context
 ): Promise<CloudFrontResultResponse> {
   const request = event.Records[0].cf.request;
-  const url = request.uri + "?" + request.querystring;
+  const url = getFullUrl(request.uri, request.querystring);
 
   const r = await nitroApp.localCall({
     event,
@@ -49,4 +49,8 @@ function normalizeOutgoingHeaders(
       Array.isArray(v) ? v.map((value) => ({ value })) : [{ value: v }],
     ])
   );
+}
+
+function getFullUrl(uri: string, querystring: string | undefined) {
+  return uri + (querystring ? "?" + querystring : "");
 }

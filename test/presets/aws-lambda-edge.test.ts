@@ -22,9 +22,6 @@ describe("nitro:preset:aws-lambda-edge", async () => {
           Array.isArray(v) ? v.map((value) => ({ value })) : [{ value: v }],
         ])
       );
-      const queryStringParameters = Object.fromEntries(
-        url.searchParams.entries()
-      );
 
       const event: CloudFrontRequestEvent = {
         Records: [
