@@ -126,12 +126,33 @@ export const vercelEdge = defineNitroPreset({
   },
 });
 
+export const vercelStatic = defineNitroPreset({
+  extends: "node",
+  entry: "#internal/nitro/entries/nitro-prerenderer",
+  output: {
+    dir: "{{ rootDir }}/.vercel/output",
+    publicDir: "{{ output.dir }}/static",
+    serverDir: "{{ buildDir }}/prerender",
+  },
+  commands: {
+    preview: "npx serve ./static",
+  },
+  externals: { trace: false },
+  hooks: {
+    async compiled(nitro: Nitro) {
+      const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
+      const buildConfig = generateBuildConfig(nitro);
+      await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2));
+    },
+  },
+});
+
 function generateBuildConfig(nitro: Nitro) {
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
   );
 
-  return defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
+  const config = defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
     version: 3,
     overrides: Object.fromEntries(
       (
@@ -170,57 +191,70 @@ function generateBuildConfig(nitro: Nitro) {
           continue: true,
         })),
       { handle: "filesystem" },
-      ...rules
-        .filter(
-          ([key, value]) =>
-            value.cache === false ||
-            (value.cache && value.cache.swr === false) ||
-            (value.cache &&
-              (value.cache.swr || value.cache.static) &&
-              key.includes("/**"))
-        )
-        .map(([key, value]) => {
-          const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
-          if (
-            value.cache === false ||
-            (value.cache && value.cache.swr === false)
-          ) {
-            // we need to write a rule to avoid route being shadowed by another cache rule elsewhere
-            return {
-              src,
-              dest: "/__nitro",
-            };
-          }
-          return {
-            src,
-            dest: generateEndpoint(key) + "?url=$url",
-          };
-        }),
-      // If we are using a prerender function for /, then we need to write this explicitly
-      ...(nitro.options.routeRules["/"]?.cache
-        ? [
-            {
-              src: "(?<url>/)",
-              dest: "/__nitro-index",
-            },
-          ]
-        : []),
-      // If we are using a prerender function as a fallback, then we do not need to output
-      // the below fallback route as well
-      ...(!nitro.options.routeRules["/**"]?.cache ||
-      !(
-        nitro.options.routeRules["/**"].cache.swr ||
-        nitro.options.routeRules["/**"]?.cache.static
-      )
-        ? [
-            {
-              src: "/(.*)",
-              dest: "/__nitro",
-            },
-          ]
-        : []),
     ],
   });
+
+  // Early return without serverless functions if we are using a static preset
+  if (
+    nitro.options.preset === "vercel-static" ||
+    nitro.options.preset === "nitro-prerender"
+  ) {
+    return config;
+  }
+
+  config.routes.push(
+    ...rules
+      .filter(
+        ([key, value]) =>
+          value.cache === false ||
+          (value.cache && value.cache.swr === false) ||
+          (value.cache &&
+            (value.cache.swr || value.cache.static) &&
+            key.includes("/**"))
+      )
+      .map(([key, value]) => {
+        const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
+        if (
+          value.cache === false ||
+          (value.cache && value.cache.swr === false)
+        ) {
+          // we need to write a rule to avoid route being shadowed by another cache rule elsewhere
+          return {
+            src,
+            dest: "/__nitro",
+          };
+        }
+        return {
+          src,
+          dest: generateEndpoint(key) + "?url=$url",
+        };
+      }),
+    // If we are using a prerender function for /, then we need to write this explicitly
+    ...(nitro.options.routeRules["/"]?.cache
+      ? [
+          {
+            src: "(?<url>/)",
+            dest: "/__nitro-index",
+          },
+        ]
+      : []),
+    // If we are using a prerender function as a fallback, then we do not need to output
+    // the below fallback route as well
+    ...(!nitro.options.routeRules["/**"]?.cache ||
+    !(
+      nitro.options.routeRules["/**"].cache.swr ||
+      nitro.options.routeRules["/**"]?.cache.static
+    )
+      ? [
+          {
+            src: "/(.*)",
+            dest: "/__nitro",
+          },
+        ]
+      : [])
+  );
+
+  return config;
 }
 
 function generateEndpoint(url: string) {
