@@ -107,8 +107,17 @@ const autodetectableProviders = {
   cleavr: "cleavr",
 };
 
+const autodetectableStaticProviders = {
+  vercel: "vercel-static",
+};
+
 export function detectTarget() {
   return autodetectableProviders[provider];
+}
+
+// TODO: update when https://github.com/unjs/nitro/pull/1072 merges
+export function detectStaticTarget() {
+  return autodetectableStaticProviders[provider];
 }
 
 export async function isDirectory(path: string) {
