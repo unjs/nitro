@@ -106,7 +106,7 @@ export async function loadOptions(
   configOverrides: NitroConfig = {}
 ): Promise<NitroOptions> {
   // Preset
-  let presetOverride = configOverrides.preset || process.env.NITRO_PRESET;
+  let presetOverride = configOverrides.preset as string || process.env.NITRO_PRESET;
   const defaultPreset = detectTarget() || "node-server";
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
@@ -146,7 +146,7 @@ export async function loadOptions(
 
   options.preset =
     presetOverride ||
-    layers.find((l) => l.config.preset)?.config.preset ||
+    layers.find((l) => l.config.preset)?.config.preset as string ||
     defaultPreset;
 
   options.rootDir = resolve(options.rootDir || ".");
