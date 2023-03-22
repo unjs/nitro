@@ -9,7 +9,7 @@ importers:
   .:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.3.0
-      '@cloudflare/workers-types': ^4.20230307.0
+      '@cloudflare/workers-types': ^4.20230321.0
       '@netlify/functions': ^1.4.0
       '@rollup/plugin-alias': ^4.0.3
       '@rollup/plugin-commonjs': ^24.0.1
@@ -28,7 +28,7 @@ importers:
       '@types/semver': ^7.3.13
       '@types/serve-static': ^1.15.1
       '@vercel/nft': ^0.22.6
-      '@vitest/coverage-c8': ^0.29.3
+      '@vitest/coverage-c8': ^0.29.7
       archiver: ^5.3.1
       c12: ^1.2.0
       chalk: ^5.2.0
@@ -47,7 +47,7 @@ importers:
       etag: ^1.8.1
       execa: ^7.1.1
       expect-type: ^0.15.0
-      fs-extra: ^11.1.0
+      fs-extra: ^11.1.1
       globby: ^13.1.3
       gzip-size: ^7.0.0
       h3: ^1.6.2
@@ -59,7 +59,7 @@ importers:
       knitwork: ^1.0.0
       listhen: ^1.0.4
       mime: ^3.0.0
-      miniflare: ^2.12.1
+      miniflare: ^2.12.2
       mlly: ^1.2.0
       mri: ^1.2.0
       node-fetch-native: ^1.0.2
@@ -68,7 +68,7 @@ importers:
       pathe: ^1.1.0
       perfect-debounce: ^0.1.3
       pkg-types: ^1.0.2
-      prettier: ^2.8.5
+      prettier: ^2.8.6
       pretty-bytes: ^6.1.0
       radix3: ^1.0.0
       rollup: ^3.20.0
@@ -86,7 +86,7 @@ importers:
       unenv: ^1.2.2
       unimport: ^3.0.3
       unstorage: ^1.4.1
-      vitest: ^0.29.3
+      vitest: ^0.29.7
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
       '@netlify/functions': 1.4.0
@@ -112,7 +112,7 @@ importers:
       esbuild: 0.17.12
       escape-string-regexp: 5.0.0
       etag: 1.8.1
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       globby: 13.1.3
       gzip-size: 7.0.0
       h3: 1.6.2
@@ -147,7 +147,7 @@ importers:
       unimport: 3.0.3_rollup@3.20.0
       unstorage: 1.4.1
     devDependencies:
-      '@cloudflare/workers-types': 4.20230307.0
+      '@cloudflare/workers-types': 4.20230321.0
       '@types/aws-lambda': 8.10.114
       '@types/etag': 1.8.1
       '@types/fs-extra': 11.0.1
@@ -155,19 +155,19 @@ importers:
       '@types/node-fetch': 2.6.2
       '@types/semver': 7.3.13
       '@types/serve-static': 1.15.1
-      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
+      '@vitest/coverage-c8': 0.29.7_vitest@0.29.7
       changelogen: 0.5.1
       edge-runtime: 2.1.2
       eslint: 8.36.0
       eslint-config-unjs: 0.1.0_j4766f7ecgqbon3u7zlxn5zszu
       execa: 7.1.1
       expect-type: 0.15.0
-      miniflare: 2.12.1
-      prettier: 2.8.5
+      miniflare: 2.12.2
+      prettier: 2.8.6
       typescript: 5.0.2
       unbuild: 1.1.2
       undici: 5.21.0
-      vitest: 0.29.3
+      vitest: 0.29.7
 
   examples/api-routes:
     specifiers:
@@ -431,8 +431,8 @@ packages:
       mime: 3.0.0
     dev: false
 
-  /@cloudflare/workers-types/4.20230307.0:
-    resolution: {integrity: sha512-Go968aDDcqONHQcUdgIiPRkPdT4QTzD0ecHJsI1u7ZiHPMOoZn+Dy7hYsdUJ5ldX9wTZDrICBM1rDKTRaDUitg==}
+  /@cloudflare/workers-types/4.20230321.0:
+    resolution: {integrity: sha512-zyRFz9AUS0tbg3/kJ+3zxvp9fl/O9yOJlChih/o86hhOqRMcZVbWefYAvFPidRvYUHM5YTG1wjU1bF9FFckRVg==}
     dev: true
 
   /@edge-runtime/format/2.0.1:
@@ -954,32 +954,32 @@ packages:
       - supports-color
     dev: false
 
-  /@miniflare/cache/2.12.1:
-    resolution: {integrity: sha512-6Pj5avy53qULTa13gWxGTDBuwX0yAzr4Zkzb0ZBh40bcbHp4vRkOk7PvHBoxV0M76JxQDHotGaW+ik510z5Xrg==}
+  /@miniflare/cache/2.12.2:
+    resolution: {integrity: sha512-jyNCkj49TuZI23aEQlQ88ZWpkoA+/bHYarq+2cq6Ll8Kz5QVmeytJL16ZtlU+YSMz/SXhAaoVx4OrJe0r30v0g==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/core': 2.12.1
-      '@miniflare/shared': 2.12.1
+      '@miniflare/core': 2.12.2
+      '@miniflare/shared': 2.12.2
       http-cache-semantics: 4.1.1
       undici: 5.21.0
     dev: true
 
-  /@miniflare/cli-parser/2.12.1:
-    resolution: {integrity: sha512-iCh4wEyQow8Dha+zpKhjCCXEp6QWbsvE18H5CgeUFT1pX4B+akYIHzdn47Cr5zpuYyjenoL78bAz0IIHIeyeWw==}
+  /@miniflare/cli-parser/2.12.2:
+    resolution: {integrity: sha512-BlfpDlgPq5kBCxP4ECkoSmZXcEOAHV4ote1xIzgMdP9L3AGz2RY9Y+Ra19dWnD8xEoyax1LMvMw/xKFRDl+USA==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/shared': 2.12.1
+      '@miniflare/shared': 2.12.2
       kleur: 4.1.5
     dev: true
 
-  /@miniflare/core/2.12.1:
-    resolution: {integrity: sha512-729xXL6uoMgtja5J7B2WdWAjFfxb74Pk2QqM3VqkWqY3XNlKWI7+ofvb8S6kI6uFEPGj4ma263uYkEAgsvzBWg==}
+  /@miniflare/core/2.12.2:
+    resolution: {integrity: sha512-yGxP3NnIFG/LUKTKvJikeFHGp4j2CdaPcwqx92kmX4YMMcmirr/LLImIJByD3pvK9xMxU32d3KQRpGFhhV38dg==}
     engines: {node: '>=16.13'}
     dependencies:
       '@iarna/toml': 2.2.5
-      '@miniflare/queues': 2.12.1
-      '@miniflare/shared': 2.12.1
-      '@miniflare/watcher': 2.12.1
+      '@miniflare/queues': 2.12.2
+      '@miniflare/shared': 2.12.2
+      '@miniflare/watcher': 2.12.2
       busboy: 1.6.0
       dotenv: 10.0.0
       kleur: 4.1.5
@@ -988,41 +988,41 @@ packages:
       urlpattern-polyfill: 4.0.3
     dev: true
 
-  /@miniflare/d1/2.12.1:
-    resolution: {integrity: sha512-2ldT7xEC7KxoaEJ7nCY9/AB/xwPjbm3mrmpiIspT0b5OgS640Pe9EU4c5bSmzGoUbLvwF+jb+LhLE1QaEbWkBw==}
+  /@miniflare/d1/2.12.2:
+    resolution: {integrity: sha512-PW+2GZ9C8d6pIBss5SPipdtN7d5lHO3+JxxNm9/gKWm76Qg6if8KYMHejMZ8Cq/wSv3EOArSb82x8R0Eojo1Rw==}
     engines: {node: '>=16.7'}
     dependencies:
-      '@miniflare/core': 2.12.1
-      '@miniflare/shared': 2.12.1
+      '@miniflare/core': 2.12.2
+      '@miniflare/shared': 2.12.2
     dev: true
 
-  /@miniflare/durable-objects/2.12.1:
-    resolution: {integrity: sha512-/n9WIxvHavVUgT+Nf280wNOcmJQBG+eZuqOlORWW9RmXXbAzqzS2Mk2lmRDCzbq3xTXAcsndx6cdarQLNRUzBg==}
+  /@miniflare/durable-objects/2.12.2:
+    resolution: {integrity: sha512-A923C+LO8GWzjaYma5rcWcAnu8sopuKX9LmoO/wgv/ZWrjCtY+iMl+R2mdSom74DT3uM4FutkDwjkVQt9hTW9A==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/core': 2.12.1
-      '@miniflare/shared': 2.12.1
-      '@miniflare/storage-memory': 2.12.1
+      '@miniflare/core': 2.12.2
+      '@miniflare/shared': 2.12.2
+      '@miniflare/storage-memory': 2.12.2
       undici: 5.21.0
     dev: true
 
-  /@miniflare/html-rewriter/2.12.1:
-    resolution: {integrity: sha512-yezYzGRBxy7d/oomAUEftdnL4fq6YIek82LtQlXgzcdcbBDnkYADj8WqGV41tAI+V2+rjrFEc1RuCXx/I1yISw==}
+  /@miniflare/html-rewriter/2.12.2:
+    resolution: {integrity: sha512-XY3gR3uaB0odrrSWhdOgZutqo9gAj8dbV5uty7M3Wge/roKfOrlTUUfmJgZEsZYZnfNWbgwk7DgMYXmq9HAXag==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/core': 2.12.1
-      '@miniflare/shared': 2.12.1
+      '@miniflare/core': 2.12.2
+      '@miniflare/shared': 2.12.2
       html-rewriter-wasm: 0.4.1
       undici: 5.21.0
     dev: true
 
-  /@miniflare/http-server/2.12.1:
-    resolution: {integrity: sha512-nC6POgDKFHxnyXbKCdR9FGZSsu5frXQUETvSVcoETd5RP+Iws0xZ+XkzVMqiiIZk3ifUC9LzdGUOD0J2PlhHJw==}
+  /@miniflare/http-server/2.12.2:
+    resolution: {integrity: sha512-HS+XZ9YZOBenne+DcLkVWHPoHU0AqdPegllhPusGAJEVFbThfBww8OXkaWYuwdAcAWtASamVbsy9/udUfiLyvQ==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/core': 2.12.1
-      '@miniflare/shared': 2.12.1
-      '@miniflare/web-sockets': 2.12.1
+      '@miniflare/core': 2.12.2
+      '@miniflare/shared': 2.12.2
+      '@miniflare/web-sockets': 2.12.2
       kleur: 4.1.5
       selfsigned: 2.1.1
       undici: 5.21.0
@@ -1033,46 +1033,46 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@miniflare/kv/2.12.1:
-    resolution: {integrity: sha512-8h8wLDMEaWaKAqYTwrckOcNjAz52bzDyLmU4t/lh1/AQOE9eSg/T+H6xQCv0fPGrWPeHmG8iXaFI1JQ+CtkcHw==}
+  /@miniflare/kv/2.12.2:
+    resolution: {integrity: sha512-HdGUONF8vZx+NVd/Oi5c+e/AQFVREGabiW3cUYk6GJ4BY1J3Md/QKhf30kSwLydny2NLoLTcid7LfVBKR7iw2Q==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/shared': 2.12.1
+      '@miniflare/shared': 2.12.2
     dev: true
 
-  /@miniflare/queues/2.12.1:
-    resolution: {integrity: sha512-L/YJkWWvg1RS3sCB5DLZOsf/kAmkwhvshpl+LmGQT7z/PYXlplbBmuhPwVBXaHqZdYE7063XfTzgAIhVPoo72Q==}
+  /@miniflare/queues/2.12.2:
+    resolution: {integrity: sha512-Zt7FL4AThWR7aju1Ij+szXEtoTMUyfNhM1kdM8CjPGQAbVQvaykurNeuDdMmC2lj/Eye7IZKVQNypnFgF3nDLA==}
     engines: {node: '>=16.7'}
     dependencies:
-      '@miniflare/shared': 2.12.1
+      '@miniflare/shared': 2.12.2
     dev: true
 
-  /@miniflare/r2/2.12.1:
-    resolution: {integrity: sha512-xp8fSSap6o5xSAWp9BtOGgZ4tuf5iHTqrfbAH66LF151j8y69eQtQJ5pxpSvrDJok/F1VOLGc4ihSLmUqxyXhw==}
+  /@miniflare/r2/2.12.2:
+    resolution: {integrity: sha512-ZRwK7uCcOHTnW1G1Qcfur8xPkzzRgDMphEWNEAohsF8JJhszEOH+M9bNt+DEiq2+SAOKnGp2vrVEr/mv6KuU5g==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/shared': 2.12.1
+      '@miniflare/shared': 2.12.2
       undici: 5.21.0
     dev: true
 
-  /@miniflare/runner-vm/2.12.1:
-    resolution: {integrity: sha512-pGY/aoQzbvyXOGR6/d3hv5/QsyUXGGbOxAyXdvjlz8h7ZiKOX4dBRS5TUAPS0kb/ofUWCyoYJi8dCVwRGdTYRw==}
+  /@miniflare/runner-vm/2.12.2:
+    resolution: {integrity: sha512-yDDrX3EVn1bWvqDYjJVT4yEL4i0JcIni5+RWf1VarZQF53IVOCHGIir/0/AUGvXx3GdFneRMmTt0iPZN03mFRQ==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/shared': 2.12.1
+      '@miniflare/shared': 2.12.2
     dev: true
 
-  /@miniflare/scheduler/2.12.1:
-    resolution: {integrity: sha512-AbOP8YpWNqR/t7zMuTmn6q27USCDBQaYaULRVaNNfCsxMTXAUjYfM85iFvnV9mshw+K0HIEU4zR4Xjd2FeJubg==}
+  /@miniflare/scheduler/2.12.2:
+    resolution: {integrity: sha512-8Bwz9kJFoFbPLswRt8XHmlOztN77sxOHMwuygMzaMpa729FkGN+nSuo1LhznQF95i49Qu2Ea/IA3yvTKh2jp/A==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/core': 2.12.1
-      '@miniflare/shared': 2.12.1
+      '@miniflare/core': 2.12.2
+      '@miniflare/shared': 2.12.2
       cron-schedule: 3.0.6
     dev: true
 
-  /@miniflare/shared/2.12.1:
-    resolution: {integrity: sha512-N8sHNM5vcvjvO+znQ7Mbqf0FChRlWxy/svUpQf1GGpii9aTXzOTWB+WkFvJrJNx44SUReEGxUAzxpdeWnHahmA==}
+  /@miniflare/shared/2.12.2:
+    resolution: {integrity: sha512-/vB5vy+WfgaaGgWoeEv007dLiuN3Ti+AUpsCPPpidI01JMkkhT4+CoIkeSVPsUfu5K4PNvkWNN7NwlFN7H4KqA==}
     engines: {node: '>=16.13'}
     dependencies:
       '@types/better-sqlite3': 7.6.3
@@ -1081,43 +1081,43 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@miniflare/sites/2.12.1:
-    resolution: {integrity: sha512-LW4r82cfGJvmJFwoBdXfsRcdDggVf8ppjMZGU3zk7xo+u5yD1uHzO2Arf3XbKNiOp7f9WyC/mXxs4zxF605iLA==}
+  /@miniflare/sites/2.12.2:
+    resolution: {integrity: sha512-hpK7cnkxXD3EWjpJDeGjFowEWsi5Isqq6+3gp9bXlR5Yd9yuvKPW93nIBQ1TsaEd3PvWrhTVF72W46uTjvt8Jw==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/kv': 2.12.1
-      '@miniflare/shared': 2.12.1
-      '@miniflare/storage-file': 2.12.1
+      '@miniflare/kv': 2.12.2
+      '@miniflare/shared': 2.12.2
+      '@miniflare/storage-file': 2.12.2
     dev: true
 
-  /@miniflare/storage-file/2.12.1:
-    resolution: {integrity: sha512-eq5wzBwxQC5GVxBfji9svb9FRdSOlA8D8DTgzL29DDjuOYtG9j8ydOlo0J7/2MB/Gq0HYFUHYWHhrklzzwdKQQ==}
+  /@miniflare/storage-file/2.12.2:
+    resolution: {integrity: sha512-A9gAbyz/C8f55+hhkGM9cuRR+ye8ZgQkIFR4Fy2lvm+K10xawwWb31i5giCOznxkEUz/eyBqk7uFV6YI+aFqrw==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/shared': 2.12.1
-      '@miniflare/storage-memory': 2.12.1
+      '@miniflare/shared': 2.12.2
+      '@miniflare/storage-memory': 2.12.2
     dev: true
 
-  /@miniflare/storage-memory/2.12.1:
-    resolution: {integrity: sha512-E9jbrX0L9N7YIHXj2G4td1EKboVLBdHkwh7RvKEZBwOhxDze5h+jMOou57NIbfC5kLOZPOC1fGXjzpp7xUUE6w==}
+  /@miniflare/storage-memory/2.12.2:
+    resolution: {integrity: sha512-6qsial1w8hTpcxsPIP5evoNvX4bvALpaN2dQQD1V0/LE79oYPx7SVxEnYQpo8D9Kbf6OxxVdEmlnuiLr52aVfg==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/shared': 2.12.1
+      '@miniflare/shared': 2.12.2
     dev: true
 
-  /@miniflare/watcher/2.12.1:
-    resolution: {integrity: sha512-3IG/6g38id5ppbZHB/gMfEvoIEFYdmTTLRsHaPNyWIk/r3LMhHLluVsMcs+Lr/fphkPk6Diou4cBLD2GeeoP7A==}
+  /@miniflare/watcher/2.12.2:
+    resolution: {integrity: sha512-Y0QTWiXw7bL7gdDTI24tGPmREXoEbewkQr8JJNSdqW48fbWpcCjuhMhr8QGv77tI1gq5R0zNAN5KwJDQr+vmVg==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/shared': 2.12.1
+      '@miniflare/shared': 2.12.2
     dev: true
 
-  /@miniflare/web-sockets/2.12.1:
-    resolution: {integrity: sha512-Z+zqZqhVdrbmTQf+ETP5H1TPdXC2tUiYPiHRLWTHUks6VVkuwnUtIKxNPBEBXjCjKYYEm8VLclUAt+0yTucLWA==}
+  /@miniflare/web-sockets/2.12.2:
+    resolution: {integrity: sha512-+8zlUqhn+Ew+EuitzKbvZNjdDS2HzjoHr2k23IjBqhgiSqNh/h8j63wNObRavVQzToxNM44urNjt5jktplv1Yw==}
     engines: {node: '>=16.13'}
     dependencies:
-      '@miniflare/core': 2.12.1
-      '@miniflare/shared': 2.12.1
+      '@miniflare/core': 2.12.2
+      '@miniflare/shared': 2.12.2
       undici: 5.21.0
       ws: 8.13.0
     transitivePeerDependencies:
@@ -1545,41 +1545,41 @@ packages:
       - supports-color
     dev: false
 
-  /@vitest/coverage-c8/0.29.3_vitest@0.29.3:
-    resolution: {integrity: sha512-VMhCCkkd9E2J1U3OVQop2fT7PRutqNA+kjaiXkYKz6+ap5TcH+m5+61oE6bJNGn/pN6i5cL6nDqzrbl9wixFng==}
+  /@vitest/coverage-c8/0.29.7_vitest@0.29.7:
+    resolution: {integrity: sha512-TSubtP9JFBuI/wuApxwknHe40VDkX8hFbBak0OXj4/jCeXrEu5B5GPWcxzyk9YvzXgCaDvoiZV79I7AvhNI9YQ==}
     peerDependencies:
       vitest: '>=0.29.0 <1'
     dependencies:
       c8: 7.13.0
       picocolors: 1.0.0
       std-env: 3.3.2
-      vitest: 0.29.3
+      vitest: 0.29.7
     dev: true
 
-  /@vitest/expect/0.29.3:
-    resolution: {integrity: sha512-z/0JqBqqrdtrT/wzxNrWC76EpkOHdl+SvuNGxWulLaoluygntYyG5wJul5u/rQs5875zfFz/F+JaDf90SkLUIg==}
+  /@vitest/expect/0.29.7:
+    resolution: {integrity: sha512-UtG0tW0DP6b3N8aw7PHmweKDsvPv4wjGvrVZW7OSxaFg76ShtVdMiMcUkZJgCE8QWUmhwaM0aQhbbVLo4F4pkA==}
     dependencies:
-      '@vitest/spy': 0.29.3
-      '@vitest/utils': 0.29.3
+      '@vitest/spy': 0.29.7
+      '@vitest/utils': 0.29.7
       chai: 4.3.7
     dev: true
 
-  /@vitest/runner/0.29.3:
-    resolution: {integrity: sha512-XLi8ctbvOWhUWmuvBUSIBf8POEDH4zCh6bOuVxm/KGfARpgmVF1ku+vVNvyq85va+7qXxtl+MFmzyXQ2xzhAvw==}
+  /@vitest/runner/0.29.7:
+    resolution: {integrity: sha512-Yt0+csM945+odOx4rjZSjibQfl2ymxqVsmYz6sO2fiO5RGPYDFCo60JF6tLL9pz4G/kjY4irUxadeB1XT+H1jg==}
     dependencies:
-      '@vitest/utils': 0.29.3
+      '@vitest/utils': 0.29.7
       p-limit: 4.0.0
       pathe: 1.1.0
     dev: true
 
-  /@vitest/spy/0.29.3:
-    resolution: {integrity: sha512-LLpCb1oOCOZcBm0/Oxbr1DQTuKLRBsSIHyLYof7z4QVE8/v8NcZKdORjMUq645fcfX55+nLXwU/1AQ+c2rND+w==}
+  /@vitest/spy/0.29.7:
+    resolution: {integrity: sha512-IalL0iO6A6Xz8hthR8sctk6ZS//zVBX48EiNwQguYACdgdei9ZhwMaBFV70mpmeYAFCRAm+DpoFHM5470Im78A==}
     dependencies:
       tinyspy: 1.1.1
     dev: true
 
-  /@vitest/utils/0.29.3:
-    resolution: {integrity: sha512-hg4Ff8AM1GtUnLpUJlNMxrf9f4lZr/xRJjh3uJ0QFP+vjaW82HAxKrmeBmLnhc8Os2eRf+f+VBu4ts7TafPPkA==}
+  /@vitest/utils/0.29.7:
+    resolution: {integrity: sha512-vNgGadp2eE5XKCXtZXL5UyNEDn68npSct75OC9AlELenSK0DiV1Mb9tfkwJHKjRb69iek+e79iipoJx8+s3SdA==}
     dependencies:
       cli-truncate: 3.1.0
       diff: 5.1.0
@@ -3050,8 +3050,8 @@ packages:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
     dev: false
 
-  /fs-extra/11.1.0:
-    resolution: {integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw==}
+  /fs-extra/11.1.1:
+    resolution: {integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==}
     engines: {node: '>=14.14'}
     dependencies:
       graceful-fs: 4.2.10
@@ -3928,12 +3928,12 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /miniflare/2.12.1:
-    resolution: {integrity: sha512-pym6gzg8AQZ1NRChRV1hC4K55N49wndoaDEVRMvZPJrFsmGkNnXkWmlvmZ7SB3BN5UkP5MZwKhLqiJ49Ry8tFA==}
+  /miniflare/2.12.2:
+    resolution: {integrity: sha512-yVO/jPm0iNPOJHoGfPXbaFSh/Xy5jc/EcWStDYxE/kn4TjYJvw6yuq2/Q6O+iWlH2ZJGjQyZ358ja6eD/jgCmw==}
     engines: {node: '>=16.13'}
     hasBin: true
     peerDependencies:
-      '@miniflare/storage-redis': 2.12.1
+      '@miniflare/storage-redis': 2.12.2
       cron-schedule: ^3.0.4
       ioredis: ^4.27.9
     peerDependenciesMeta:
@@ -3944,23 +3944,23 @@ packages:
       ioredis:
         optional: true
     dependencies:
-      '@miniflare/cache': 2.12.1
-      '@miniflare/cli-parser': 2.12.1
-      '@miniflare/core': 2.12.1
-      '@miniflare/d1': 2.12.1
-      '@miniflare/durable-objects': 2.12.1
-      '@miniflare/html-rewriter': 2.12.1
-      '@miniflare/http-server': 2.12.1
-      '@miniflare/kv': 2.12.1
-      '@miniflare/queues': 2.12.1
-      '@miniflare/r2': 2.12.1
-      '@miniflare/runner-vm': 2.12.1
-      '@miniflare/scheduler': 2.12.1
-      '@miniflare/shared': 2.12.1
-      '@miniflare/sites': 2.12.1
-      '@miniflare/storage-file': 2.12.1
-      '@miniflare/storage-memory': 2.12.1
-      '@miniflare/web-sockets': 2.12.1
+      '@miniflare/cache': 2.12.2
+      '@miniflare/cli-parser': 2.12.2
+      '@miniflare/core': 2.12.2
+      '@miniflare/d1': 2.12.2
+      '@miniflare/durable-objects': 2.12.2
+      '@miniflare/html-rewriter': 2.12.2
+      '@miniflare/http-server': 2.12.2
+      '@miniflare/kv': 2.12.2
+      '@miniflare/queues': 2.12.2
+      '@miniflare/r2': 2.12.2
+      '@miniflare/runner-vm': 2.12.2
+      '@miniflare/scheduler': 2.12.2
+      '@miniflare/shared': 2.12.2
+      '@miniflare/sites': 2.12.2
+      '@miniflare/storage-file': 2.12.2
+      '@miniflare/storage-memory': 2.12.2
+      '@miniflare/web-sockets': 2.12.2
       kleur: 4.1.5
       semiver: 1.1.0
       source-map-support: 0.5.21
@@ -4021,7 +4021,7 @@ packages:
     dependencies:
       defu: 6.1.2
       esbuild: 0.17.12
-      fs-extra: 11.1.0
+      fs-extra: 11.1.1
       globby: 13.1.3
       jiti: 1.18.2
       mlly: 1.2.0
@@ -4384,8 +4384,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier/2.8.5:
-    resolution: {integrity: sha512-3gzuxrHbKUePRBB4ZeU08VNkUcqEHaUaouNt0m7LGP4Hti/NuB07C7PPTM/LkWqXoJYJn2McEo5+kxPNrtQkLQ==}
+  /prettier/2.8.6:
+    resolution: {integrity: sha512-mtuzdiBbHwPEgl7NxWlqOkithPyp4VN93V7VeHVWBF+ad3I5avc0RVDT4oImXQy9H/AqxA2NSQH8pSxHW6FYbQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -5033,8 +5033,8 @@ packages:
     resolution: {integrity: sha512-iyziEiyFxX4kyxSp+MtY1oCH/lvjH3PxFN8PGCDeqcZWAJ/i+9y+nL85w99PxVzrIvew/GSkSbDYtiGVa85Afg==}
     dev: true
 
-  /tinypool/0.3.1:
-    resolution: {integrity: sha512-zLA1ZXlstbU2rlpA4CIeVaqvWq41MTWqLY3FfsAXgC8+f7Pk7zroaJQxDgxn1xNudKW6Kmj4808rPFShUlIRmQ==}
+  /tinypool/0.4.0:
+    resolution: {integrity: sha512-2ksntHOKf893wSAH4z/+JbPpi92esw8Gn9N2deXX+B0EO92hexAVI9GIZZPx7P5aYo5KULfeOSt3kMOmSOy6uA==}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -5339,8 +5339,8 @@ packages:
       builtins: 5.0.1
     dev: true
 
-  /vite-node/0.29.3_@types+node@18.15.1:
-    resolution: {integrity: sha512-QYzYSA4Yt2IiduEjYbccfZQfxKp+T1Do8/HEpSX/G5WIECTFKJADwLs9c94aQH4o0A+UtCKU61lj1m5KvbxxQA==}
+  /vite-node/0.29.7_@types+node@18.15.1:
+    resolution: {integrity: sha512-PakCZLvz37yFfUPWBnLa1OYHPCGm5v4pmRrTcFN4V/N/T3I6tyP3z07S//9w+DdeL7vVd0VSeyMZuAh+449ZWw==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     dependencies:
@@ -5394,8 +5394,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.29.3:
-    resolution: {integrity: sha512-muMsbXnZsrzDGiyqf/09BKQsGeUxxlyLeLK/sFFM4EXdURPQRv8y7dco32DXaRORYP0bvyN19C835dT23mL0ow==}
+  /vitest/0.29.7:
+    resolution: {integrity: sha512-aWinOSOu4jwTuZHkb+cCyrqQ116Q9TXaJrNKTHudKBknIpR0VplzeaOUuDF9jeZcrbtQKZQt6yrtd+eakbaxHg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -5404,6 +5404,8 @@ packages:
       '@vitest/ui': '*'
       happy-dom: '*'
       jsdom: '*'
+      safaridriver: '*'
+      webdriverio: '*'
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -5415,14 +5417,18 @@ packages:
         optional: true
       jsdom:
         optional: true
+      safaridriver:
+        optional: true
+      webdriverio:
+        optional: true
     dependencies:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
       '@types/node': 18.15.1
-      '@vitest/expect': 0.29.3
-      '@vitest/runner': 0.29.3
-      '@vitest/spy': 0.29.3
-      '@vitest/utils': 0.29.3
+      '@vitest/expect': 0.29.7
+      '@vitest/runner': 0.29.7
+      '@vitest/spy': 0.29.7
+      '@vitest/utils': 0.29.7
       acorn: 8.8.2
       acorn-walk: 8.2.0
       cac: 6.7.14
@@ -5435,10 +5441,10 @@ packages:
       std-env: 3.3.2
       strip-literal: 1.0.1
       tinybench: 2.4.0
-      tinypool: 0.3.1
+      tinypool: 0.4.0
       tinyspy: 1.1.1
       vite: 4.1.4_@types+node@18.15.1
-      vite-node: 0.29.3_@types+node@18.15.1
+      vite-node: 0.29.7_@types+node@18.15.1
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

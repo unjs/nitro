@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@nuxt-themes/docus": "^1.9.9",
-    "@nuxthq/studio": "^0.8.5",
+    "@nuxthq/studio": "^0.9.0",
     "@nuxtjs/plausible": "^0.2.0",
     "nuxt": "3.3.1"
   }
