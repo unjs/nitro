@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.3.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.3.1...v2.3.2)
+
+
+### 🩹 Fixes
+
+  - Sanitize `statusMessage` of disallowed chars ([#1057](https://github.com/unjs/nitro/pull/1057))
+  - **types:** Sync vercel build config types ([#1056](https://github.com/unjs/nitro/pull/1056))
+  - **azure:** Support custom baseURL ([#1062](https://github.com/unjs/nitro/pull/1062))
+  - **vercel-edge:** Fix route generation ([#1071](https://github.com/unjs/nitro/pull/1071))
+  - Mark `options.renderer` as optional ([#1069](https://github.com/unjs/nitro/pull/1069))
+  - **types:** Make $Fetch types less complex ([#1059](https://github.com/unjs/nitro/pull/1059))
+
+### 💅 Refactors
+
+  - Add type safety to auto-detected providers ([#1072](https://github.com/unjs/nitro/pull/1072))
+
+### 📖 Documentation
+
+  - Fixed link path ([#1053](https://github.com/unjs/nitro/pull/1053))
+  - Fix typo ([#1068](https://github.com/unjs/nitro/pull/1068))
+  - **routing:** Add `$fetch` usage note ([#1070](https://github.com/unjs/nitro/pull/1070))
+
+### ❤️  Contributors
+
+- Mahdi Boomeri <mahdi@boomeri.dev>
+- Daniel Roe <daniel@roe.dev>
+- Shohei Maeda 
+- Lucas ([@Draichi](http://github.com/Draichi))
+- Nobkd 
+- Honza Pobořil <honza@poboril.cz>
+
 ## v2.3.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.3.0...v2.3.1)
