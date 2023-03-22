@@ -1,4 +1,4 @@
-import { H3Event, eventHandler } from "h3";
+import { H3Event, eventHandler, setResponseStatus } from "h3";
 import { useNitroApp } from "./app";
 
 export interface RenderResponse {
@@ -48,12 +48,7 @@ export function defineRenderHandler(handler: RenderHandler) {
       for (const header in response.headers) {
         event.node.res.setHeader(header, response.headers[header]);
       }
-      if (response.statusCode) {
-        event.node.res.statusCode = response.statusCode;
-      }
-      if (response.statusMessage) {
-        event.node.res.statusMessage = response.statusMessage;
-      }
+      setResponseStatus(event, response.statusCode, response.statusMessage);
     }
 
     // Send response body

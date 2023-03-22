@@ -193,7 +193,10 @@ function generateBuildConfig(nitro: Nitro) {
           }
           return {
             src,
-            dest: generateEndpoint(key) + "?url=$url",
+            dest:
+              nitro.options.preset === "vercel-edge"
+                ? "/__nitro?url=$url"
+                : generateEndpoint(key) + "?url=$url",
           };
         }),
       // If we are using a prerender function for /, then we need to write this explicitly
