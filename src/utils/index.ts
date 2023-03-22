@@ -7,7 +7,9 @@ import consola from "consola";
 import chalk from "chalk";
 import { getProperty } from "dot-prop";
 import { provider } from "std-env";
-import { Nitro } from "../types";
+import type { ProviderName } from "std-env";
+import { KebabCase, Nitro } from "../types";
+import type * as _PRESETS from "../presets";
 
 export function hl(str: string) {
   return chalk.cyan(str);
@@ -98,9 +100,11 @@ export function replaceAll(input: string, from: string, to: string) {
   return input.replace(new RegExp(from, "g"), to);
 }
 
-const autodetectableProviders = {
+const autodetectableProviders: Partial<
+  Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
+> = {
   azure_static: "azure",
-  cloudflare_pages: "cloudflare_pages",
+  cloudflare_pages: "cloudflare-pages",
   netlify: "netlify",
   stormkit: "stormkit",
   vercel: "vercel",
