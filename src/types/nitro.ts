@@ -184,7 +184,7 @@ export interface NitroOptions extends PresetOptions {
   devStorage: StorageMounts;
   bundledStorage: string[];
   timing: boolean;
-  renderer: string;
+  renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
   experimental?: {
