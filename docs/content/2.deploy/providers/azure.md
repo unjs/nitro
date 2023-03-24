@@ -19,7 +19,8 @@ Azure Static Web Apps are designed to be deployed continuously in a [GitHub Acti
 You can invoke a development environment to preview before deploying.
 
 ```bash
-NITRO_PRESET=azure yarn build
+NITRO_PRESET=azure 
+yarn build
 npx @azure/static-web-apps-cli start .output/public --api-location .output/server
 ```
 
