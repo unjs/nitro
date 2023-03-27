@@ -7,9 +7,9 @@
     "preview": "nuxi preview"
   },
   "devDependencies": {
-    "@nuxt-themes/docus": "^1.9.10",
+    "@nuxt-themes/docus": "^1.10.1",
     "@nuxthq/studio": "^0.9.2",
     "@nuxtjs/plausible": "^0.2.0",
-    "nuxt": "3.3.1"
+    "nuxt": "3.3.2"
   }
 }
