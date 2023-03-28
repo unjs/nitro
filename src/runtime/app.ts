@@ -16,6 +16,10 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
+import { dirname, join } from "pathe";
+import { globby } from "globby";
+import { pkgDir } from "../dirs";
+import { GLOB_SCAN_PATTERN } from "../scan";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
@@ -23,13 +27,34 @@ import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
 import { handlers } from "#internal/nitro/virtual/server-handlers";
 
+
 export interface NitroApp {
   h3App: H3App;
   router: Router;
   // TODO: Type hooks and allow extending
   hooks: Hookable;
+  getRoutes: (dirs: string[]) => Promise<{ dir: string; routes: string[] }[]>;
   localCall: ReturnType<typeof createCall>;
   localFetch: ReturnType<typeof createLocalFetch>;
+}
+
+async function getRoutes(dirs: string[]) {
+  const projectDir = dirname(pkgDir);
+  const files = [];
+  await Promise.all(
+    dirs.map(async (dir) => {
+      try {
+        const routes = await globby(GLOB_SCAN_PATTERN, {
+          cwd: join(projectDir, dir),
+          dot: true,
+        });
+        files.push({ dir, routes });
+      } catch (err) {
+        console.error(`Error while scanning ${dir}: ${err}`);
+      }
+    })
+  );
+  return files
 }
 
 function createNitroApp(): NitroApp {
@@ -101,6 +126,7 @@ function createNitroApp(): NitroApp {
     hooks,
     h3App,
     router,
+    getRoutes,
     localCall,
     localFetch,
   };
