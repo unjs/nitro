@@ -179,9 +179,12 @@ export async function prerender(nitro: Nitro) {
 
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
 
+    // Measure actual time taken for generating route
+    _route.generateTimeMS = Date.now() - start;
+
     // Check if route skipped or has errors
     if (_route.skip || _route.error) {
-      return;
+      return _route;
     }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName);
@@ -203,7 +206,6 @@ export async function prerender(nitro: Nitro) {
       }
     }
 
-    _route.generateTimeMS = Date.now() - start;
     return _route;
   };
 
@@ -215,22 +217,28 @@ export async function prerender(nitro: Nitro) {
   for (let i = 0; i < 100 && routes.size > 0; i++) {
     for (const route of routes) {
       const _route = await generateRoute(route).catch(
-        (error) => ({ route, error } as PrerenderRoute)
+        (error) => ({ route, error } as PrerenderGenerateRoute)
       );
 
-      // Skipped (not allowed or duplicate)
-      if (!_route) {
+      if (!_route || _route.skip) {
         continue;
       }
 
       await nitro.hooks.callHook("prerender:route", _route);
-      nitro.logger.log(
-        chalk[_route.error ? "yellow" : "gray"](
-          `  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${
-            _route.error ? `(${_route.error})` : ""
-          }`
-        )
-      );
+
+      if (_route.error) {
+        nitro.logger.log(
+          chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
+            `  ├─ ${_route.route} (${
+              _route.generateTimeMS
+            }ms) ${`(${_route.error})`}`
+          )
+        );
+      } else {
+        nitro.logger.log(
+          chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
+        );
+      }
     }
   }
 
