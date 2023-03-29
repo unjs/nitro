@@ -79,7 +79,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
         )
       ) {
-        return { id, external: true };
+        return {
+          id: isAbsolute(id) ? normalizeid(id) : id,
+          external: true,
+        };
       }
 
       // Resolve id using rollup resolver
