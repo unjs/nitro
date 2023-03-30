@@ -4,7 +4,7 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 import { withLeadingSlash, withoutBase, withoutTrailingSlash } from "ufo";
-import { splitCookiesString } from "set-cookie-parser";
+import { splitCookiesString } from "h3";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
@@ -25,10 +25,14 @@ async function handleEvent(event: FetchEvent) {
 
   // Fetch public assets from KV only
   if (isPublicAssetURL(id)) {
-    return await getAssetFromKV(event, {
-      cacheControl: assetsCacheControl,
-      mapRequestToAsset: baseURLModifier,
-    });
+    try {
+      return await getAssetFromKV(event, {
+        cacheControl: assetsCacheControl,
+        mapRequestToAsset: baseURLModifier,
+      });
+    } catch (e) {
+      return new Response(e.message || e.toString(), { status: 404 });
+    }
   }
 
   let body;
@@ -85,7 +89,7 @@ function normalizeOutgoingHeaders(
 
   for (const [k, v] of Object.entries(headers)) {
     if (k === "set-cookie") {
-      for (const cookie of splitCookiesString(v)) {
+      for (const cookie of splitCookiesString(Array.isArray(v) ? v.join(',') : v)) {
         result.append("set-cookie", cookie);
       }
 
