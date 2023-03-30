@@ -89,7 +89,9 @@ function normalizeOutgoingHeaders(
 
   for (const [k, v] of Object.entries(headers)) {
     if (k === "set-cookie") {
-      for (const cookie of splitCookiesString(Array.isArray(v) ? v.join(',') : v)) {
+      for (const cookie of splitCookiesString(
+        Array.isArray(v) ? v.join(",") : v
+      )) {
         result.append("set-cookie", cookie);
       }
 
