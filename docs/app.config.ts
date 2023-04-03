@@ -30,7 +30,7 @@ export default defineAppConfig({
       iconLinks: [
         {
           href: "https://unjs.io",
-          icon: "vscode-icons:file-type-js-official",
+          icon: "IconUnJS",
           label: "UnJS",
         },
       ],
