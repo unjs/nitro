@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import { resolve, join } from "pathe";
+import { resolve, join, relative } from "pathe";
 import { joinURL, parseURL, withBase, withoutBase } from "ufo";
 import chalk from "chalk";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
@@ -58,6 +58,13 @@ export async function prerender(nitro: Nitro) {
     logLevel: 0,
     preset: "nitro-prerender",
   });
+
+  // Set path to preview prerendered routes relative to the "host" nitro preset
+  let path = relative(nitro.options.output.dir, nitro.options.output.publicDir)
+  if (!path.startsWith('.')) { path = `./${path}` }
+  nitroRenderer.options.commands.preview = `npx serve ${path}`
+  nitroRenderer.options.output.dir = nitro.options.output.dir
+
   await build(nitroRenderer);
 
   // Import renderer entry
