@@ -60,10 +60,12 @@ export async function prerender(nitro: Nitro) {
   });
 
   // Set path to preview prerendered routes relative to the "host" nitro preset
-  let path = relative(nitro.options.output.dir, nitro.options.output.publicDir)
-  if (!path.startsWith('.')) { path = `./${path}` }
-  nitroRenderer.options.commands.preview = `npx serve ${path}`
-  nitroRenderer.options.output.dir = nitro.options.output.dir
+  let path = relative(nitro.options.output.dir, nitro.options.output.publicDir);
+  if (!path.startsWith(".")) {
+    path = `./${path}`;
+  }
+  nitroRenderer.options.commands.preview = `npx serve ${path}`;
+  nitroRenderer.options.output.dir = nitro.options.output.dir;
 
   await build(nitroRenderer);
 
