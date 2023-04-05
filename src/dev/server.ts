@@ -173,7 +173,14 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     eventHandler(async (event) => {
       await reloadPromise;
       const address = currentWorker && currentWorker.address;
-      if (!address || (address.socketPath && !existsSync(address.socketPath))) {
+      if (
+        !address ||
+        (address.socketPath &&
+          !(await fsp.access(address.socketPath).then(
+            () => true,
+            () => false
+          )))
+      ) {
         return errorHandler(lastError, event);
       }
       await proxy.handle(event, { target: address }).catch((err) => {
