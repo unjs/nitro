@@ -2,6 +2,151 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.3.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.3.1...v2.3.2)
+
+
+### 🩹 Fixes
+
+  - Sanitize `statusMessage` of disallowed chars ([#1057](https://github.com/unjs/nitro/pull/1057))
+  - **types:** Sync vercel build config types ([#1056](https://github.com/unjs/nitro/pull/1056))
+  - **azure:** Support custom baseURL ([#1062](https://github.com/unjs/nitro/pull/1062))
+  - **vercel-edge:** Fix route generation ([#1071](https://github.com/unjs/nitro/pull/1071))
+  - Mark `options.renderer` as optional ([#1069](https://github.com/unjs/nitro/pull/1069))
+  - **types:** Make $Fetch types less complex ([#1059](https://github.com/unjs/nitro/pull/1059))
+
+### 💅 Refactors
+
+  - Add type safety to auto-detected providers ([#1072](https://github.com/unjs/nitro/pull/1072))
+
+### 📖 Documentation
+
+  - Fixed link path ([#1053](https://github.com/unjs/nitro/pull/1053))
+  - Fix typo ([#1068](https://github.com/unjs/nitro/pull/1068))
+  - **routing:** Add `$fetch` usage note ([#1070](https://github.com/unjs/nitro/pull/1070))
+
+### ❤️  Contributors
+
+- Mahdi Boomeri <mahdi@boomeri.dev>
+- Daniel Roe <daniel@roe.dev>
+- Shohei Maeda 
+- Lucas ([@Draichi](http://github.com/Draichi))
+- Nobkd 
+- Honza Pobořil <honza@poboril.cz>
+
+## v2.3.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.3.0...v2.3.1)
+
+
+### 🩹 Fixes
+
+  - **types:** Don't simplify type of serialized return ([#1050](https://github.com/unjs/nitro/pull/1050))
+
+### 🏡 Chore
+
+  - Add `codecov.yml` ([6fe7f64](https://github.com/unjs/nitro/commit/6fe7f64))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+
+## v2.3.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.2.3...v2.3.0)
+
+
+### 🚀 Enhancements
+
+  - **vercel:** Add functions config ([#976](https://github.com/unjs/nitro/pull/976))
+  - Add support for `sourceMap` values `hidden`  and `inline` ([#998](https://github.com/unjs/nitro/pull/998))
+  - **lagon:** Write `.lagon/config.json` on build ([#996](https://github.com/unjs/nitro/pull/996))
+  - **types:** Type $fetch to match json serialization output ([#1002](https://github.com/unjs/nitro/pull/1002))
+  - Support base in `useStorage(base?: string)` and improve docs ([#1012](https://github.com/unjs/nitro/pull/1012))
+  - **cloudflare-pages:** Rewrite with module syntax ([#1004](https://github.com/unjs/nitro/pull/1004))
+  - Allow customising generated tsconfig path ([#1021](https://github.com/unjs/nitro/pull/1021))
+  - Support app config ([#1022](https://github.com/unjs/nitro/pull/1022))
+
+### 🩹 Fixes
+
+  - **cloudflare-pages:** Only allow 100 rules combined ([#973](https://github.com/unjs/nitro/pull/973))
+  - Only mock `debug` in production ([#990](https://github.com/unjs/nitro/pull/990))
+  - Scan middleware and print tree list in ascending alphabetical order ([#981](https://github.com/unjs/nitro/pull/981))
+  - **externals:** Correctly specify multiple external dependencies in package.json ([#1013](https://github.com/unjs/nitro/pull/1013))
+  - **static:** Use correct format for last modified ([#1017](https://github.com/unjs/nitro/pull/1017))
+  - **cache:** Remove rejected cache promise from pending list. ([#995](https://github.com/unjs/nitro/pull/995))
+  - Expose `useStorage` with types ([#1026](https://github.com/unjs/nitro/pull/1026))
+  - **prerender:** Allow spaces in `href` value regex ([#1030](https://github.com/unjs/nitro/pull/1030))
+  - **cache:** Use stale value by default when `swr` is enabled ([#1038](https://github.com/unjs/nitro/pull/1038))
+  - Resolve types relative to custom tsconfig path ([#1041](https://github.com/unjs/nitro/pull/1041))
+  - Remove duplicate import in generated code ([#1043](https://github.com/unjs/nitro/pull/1043))
+  - **types:** Exclude non serializable options from route rules ([#1047](https://github.com/unjs/nitro/pull/1047))
+
+### 💅 Refactors
+
+  - Use unimport built-in type gen for dirs ([#994](https://github.com/unjs/nitro/pull/994))
+  - Split out api types ([#1027](https://github.com/unjs/nitro/pull/1027))
+
+### 📖 Documentation
+
+  - Update to latest docus and various improvements ([#975](https://github.com/unjs/nitro/pull/975))
+  - Up docus and add back ellipsis ([38b1f34](https://github.com/unjs/nitro/commit/38b1f34))
+  - Remove tailwind module ([b3b7e87](https://github.com/unjs/nitro/commit/b3b7e87))
+  - **lock:** Update ([7efa31f](https://github.com/unjs/nitro/commit/7efa31f))
+  - More improvements ([#985](https://github.com/unjs/nitro/pull/985))
+  - Remove fluid layout ([d83f2b6](https://github.com/unjs/nitro/commit/d83f2b6))
+  - Update color ([18674c5](https://github.com/unjs/nitro/commit/18674c5))
+  - Add unjs icon in footer ([6d36ceb](https://github.com/unjs/nitro/commit/6d36ceb))
+  - Update docus ([5fcc127](https://github.com/unjs/nitro/commit/5fcc127))
+  - Add button to open on CodeSandBox ([ad120ac](https://github.com/unjs/nitro/commit/ad120ac))
+  - Update deployment example for configuration ([#972](https://github.com/unjs/nitro/pull/972))
+  - Update dependencies ([c923fed](https://github.com/unjs/nitro/commit/c923fed))
+  - **cache:** Improve documentation and `cachedFunction` default options ([#1011](https://github.com/unjs/nitro/pull/1011))
+  - Improve readme and getting started ([94d95fa](https://github.com/unjs/nitro/commit/94d95fa))
+  - Fix on mobile long path ([1d2f57e](https://github.com/unjs/nitro/commit/1d2f57e))
+  - Improvements ([f78619f](https://github.com/unjs/nitro/commit/f78619f))
+  - Add `prerender.ignore` description ([#1032](https://github.com/unjs/nitro/pull/1032))
+  - Improve configuration page ([554b358](https://github.com/unjs/nitro/commit/554b358))
+  - Improve plugins section ([f36a6e0](https://github.com/unjs/nitro/commit/f36a6e0))
+  - Update readme ([c58a764](https://github.com/unjs/nitro/commit/c58a764))
+  - Update homepage hero ([b848e5a](https://github.com/unjs/nitro/commit/b848e5a))
+  - Update meta tags ([70f00e5](https://github.com/unjs/nitro/commit/70f00e5))
+  - More improvements ([#1039](https://github.com/unjs/nitro/pull/1039))
+  - Update docus version ([f31240b](https://github.com/unjs/nitro/commit/f31240b))
+  - Upgrade docus ([a6ce587](https://github.com/unjs/nitro/commit/a6ce587))
+  - **deploy/workers:** Fix typo of bundle ([#1046](https://github.com/unjs/nitro/pull/1046))
+
+### 🏡 Chore
+
+  - **readme:** Various improvements ([#1009](https://github.com/unjs/nitro/pull/1009))
+  - Fix tests ([#1014](https://github.com/unjs/nitro/pull/1014))
+  - **docs:** Use pnpm ([39f117a](https://github.com/unjs/nitro/commit/39f117a))
+  - Add autofix-ci action ([8f9c3e2](https://github.com/unjs/nitro/commit/8f9c3e2))
+  - Remove old docs commands ([#1042](https://github.com/unjs/nitro/pull/1042))
+  - Update dependencies ([02c48f2](https://github.com/unjs/nitro/commit/02c48f2))
+  - Maintain lockfile ([ac81602](https://github.com/unjs/nitro/commit/ac81602))
+  - Use single undici version for testing ([00743bc](https://github.com/unjs/nitro/commit/00743bc))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+- Felix De Montis <hi@felix.dm>
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Hannes Küttner <kuettner.hannes@gmail.com>
+- Julie Saia 
+- Ted De Koning 
+- Jan Johansen <nizopezo@gmail.com>
+- Tobias Diez <code@tobiasdiez.com>
+- Elian ☕️ <hello@elian.codes>
+- Mahdi Boomeri <mahdi@boomeri.dev>
+- Anthony Fu <anthonyfu117@hotmail.com>
+- Tom Lienard ([@QuiiBz](http://github.com/QuiiBz))
+- Alex Korytskyi ([@alex-key](http://github.com/alex-key))
+- Shohei Maeda
+
 ## v2.2.3
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.2.2...v2.2.3)

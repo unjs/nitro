@@ -8,6 +8,7 @@ export const azure = defineNitroPreset({
   entry: "#internal/nitro/entries/azure",
   output: {
     serverDir: "{{ output.dir }}/server/functions",
+    publicDir: "{{ output.dir }}/public/{{ baseURL }}",
   },
   commands: {
     preview:
@@ -135,6 +136,14 @@ async function writeRoutes(nitro: Nitro) {
     JSON.stringify(config, null, 2)
   );
   if (!indexFileExists) {
-    await writeFile(resolve(nitro.options.output.publicDir, "index.html"), "");
+    const baseURLSegments = nitro.options.baseURL.split("/").filter(Boolean);
+    const relativePrefix = baseURLSegments.map(() => "..").join("/");
+    await writeFile(
+      resolve(
+        nitro.options.output.publicDir,
+        relativePrefix ? `${relativePrefix}/index.html` : "index.html"
+      ),
+      ""
+    );
   }
 }
