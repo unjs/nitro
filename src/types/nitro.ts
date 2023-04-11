@@ -4,7 +4,7 @@ import type { Unimport } from "unimport";
 import type { UnimportPluginOptions } from "unimport/unplugin";
 import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
 import type { NestedHooks, Hookable } from "hookable";
-import type { Consola, LogLevel } from "consola";
+import type { ConsolaInstance, LogLevel } from "consola";
 import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
@@ -30,7 +30,7 @@ export interface Nitro {
   vfs: Record<string, string>;
   hooks: Hookable<NitroHooks>;
   unimport?: Unimport;
-  logger: Consola;
+  logger: ConsolaInstance;
   storage: Storage;
   close: () => Promise<void>;
 
