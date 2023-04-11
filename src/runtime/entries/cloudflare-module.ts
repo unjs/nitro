@@ -1,21 +1,31 @@
 import "#internal/nitro/virtual/polyfill";
-import {
-  getAssetFromKV,
-  mapRequestToAsset,
-} from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
-import type { ExecutionContext } from "@cloudflare/workers-types";
-// @ts-ignore Bundled by Wrangler 2. See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
-import manifest from "__STATIC_CONTENT_MANIFEST";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import type { ExecutionContext } from "@cloudflare/workers-types";
+import {
+  getAssetFromKV,
+  mapRequestToAsset,
+} from "@cloudflare/kv-asset-handler";
+
+// @ts-ignore Bundled by Wrangler
+// See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
+import manifest from "__STATIC_CONTENT_MANIFEST";
+
+interface CFModuleEnv {
+  [key: string]: any;
+}
 
 export default {
-  async fetch(request, env, ctx: ExecutionContext) {
+  async fetch(
+    request: Request, // CFRequest,
+    env: CFModuleEnv,
+    ctx: ExecutionContext
+  ) {
     try {
-      // TODO: Update to new API: https://github.com/cloudflare/kv-asset-handler#es-modules
+      // https://github.com/cloudflare/kv-asset-handler#es-modules
       return await getAssetFromKV(
         {
           request,
@@ -43,10 +53,12 @@ export default {
     const r = await nitroApp.localCall({
       event: { request },
       context: {
-        // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
         cf: (request as any).cf,
-        env,
-        ctx,
+        cloudflare: {
+          request,
+          env,
+          context: ctx,
+        },
       },
       url: url.pathname + url.search,
       host: url.hostname,
