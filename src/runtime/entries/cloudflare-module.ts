@@ -5,14 +5,13 @@ import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
+// @ts-ignore Bundled by Wrangler
+// See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
+import manifest from "__STATIC_CONTENT_MANIFEST";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
-
-// @ts-ignore Bundled by Wrangler
-// See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
-import manifest from "__STATIC_CONTENT_MANIFEST";
 
 interface CFModuleEnv {
   [key: string]: any;
