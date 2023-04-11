@@ -49,6 +49,9 @@ export default {
       body = Buffer.from(await request.arrayBuffer());
     }
 
+    // TODO
+    globalThis.__cf_env__ = env;
+
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: (request as any).cf,

@@ -1,0 +1,12 @@
+name = "nitro-app"
+main = "./.output/server/index.mjs"
+workers_dev = true
+compatibility_date = "2022-04-07"
+
+[site]
+bucket = ".output/public"
+
+[[d1_databases]]
+binding = "NITRO_DB"
+database_name = "NITRO_DB"
+database_id = "<UUID>"

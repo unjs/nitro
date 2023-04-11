@@ -107,6 +107,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230404.0",
     "@types/aws-lambda": "^8.10.114",
+    "@types/better-sqlite3": "^7.6.4",
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^11.0.1",
     "@types/http-proxy": "^1.17.10",
@@ -114,6 +115,7 @@
     "@types/semver": "^7.3.13",
     "@types/serve-static": "^1.15.1",
     "@vitest/coverage-c8": "^0.30.1",
+    "better-sqlite3": "^8.3.0",
     "changelogen": "^0.5.2",
     "edge-runtime": "^2.1.2",
     "eslint": "^8.38.0",
@@ -126,6 +128,14 @@
     "unbuild": "^1.2.0",
     "undici": "^5.21.2",
     "vitest": "^0.30.1"
+  },
+  "peerDependencies": {
+    "better-sqlite3": "^8.3.0"
+  },
+  "peerDependenciesMeta": {
+    "better-sqlite3": {
+      "optional": true
+    }
   },
   "packageManager": "pnpm@8.2.0",
   "engines": {

@@ -1,0 +1,11 @@
+{
+  "name": "example-sqlite",
+  "private": true,
+  "scripts": {
+    "dev": "nitro dev",
+    "build": "nitro build"
+  },
+  "devDependencies": {
+    "nitropack": "latest"
+  }
+}

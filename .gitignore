@@ -69,3 +69,6 @@ staticwebapp.config.json
 .eslintcache
 
 test/fixture/functions
+
+*.sqlite*
+*.db
