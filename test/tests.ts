@@ -47,7 +47,7 @@ export async function setupTest(preset: string) {
     buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
       preset !== "cloudflare" &&
-      preset !== "cloudflare-esm" &&
+      preset !== "cloudflare-module" &&
       preset !== "cloudflare-pages" &&
       preset !== "vercel-edge" &&
       !ctx.isDev,

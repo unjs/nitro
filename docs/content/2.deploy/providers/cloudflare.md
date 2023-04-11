@@ -132,7 +132,7 @@ jobs:
 
 ## Cloudflare Module Workers
 
-**Preset:** `cloudflare-esm` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare-module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
