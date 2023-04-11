@@ -136,6 +136,7 @@ export interface NitroRouteConfig {
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
   proxy?: string | ({ to: string } & ProxyOptions);
+  isr?: number | boolean;
 
   // Shortcuts
   cors?: boolean;

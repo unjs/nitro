@@ -26,7 +26,6 @@ export interface CacheOptions<T = any> {
   group?: string;
   integrity?: any;
   maxAge?: number;
-  static?: boolean; // TODO
   swr?: boolean;
   staleMaxAge?: number;
   base?: string;

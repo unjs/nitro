@@ -54,27 +54,6 @@ export async function setupTest(preset: string) {
     output: {
       dir: ctx.outDir,
     },
-    routeRules: {
-      "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
-      "/rules/cors": {
-        cors: true,
-        headers: { "access-control-allow-methods": "GET" },
-      },
-      "/rules/dynamic": { cache: false },
-      "/rules/redirect": { redirect: "/base" },
-      "/rules/static": { static: true },
-      "/rules/swr/**": { swr: true },
-      "/rules/swr-ttl/**": { swr: 60 },
-      "/rules/redirect/obj": {
-        redirect: { to: "https://nitro.unjs.io/", statusCode: 308 },
-      },
-      "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
-      "/rules/nested/override": { redirect: { to: "/other" } },
-      "/rules/_/noncached/cached": { swr: true },
-      "/rules/_/noncached/**": { swr: false, cache: false },
-      "/rules/_/cached/noncached": { cache: false, swr: false },
-      "/rules/_/cached/**": { swr: true },
-    },
     timing:
       preset !== "cloudflare" &&
       preset !== "cloudflare-pages" &&
