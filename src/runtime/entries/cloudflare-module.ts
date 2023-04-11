@@ -22,7 +22,7 @@ export default {
   async fetch(
     request: Request, // CFRequest,
     env: CFModuleEnv,
-    ctx: ExecutionContext
+    context: ExecutionContext
   ) {
     try {
       // https://github.com/cloudflare/kv-asset-handler#es-modules
@@ -30,7 +30,7 @@ export default {
         {
           request,
           waitUntil(promise) {
-            return ctx.waitUntil(promise);
+            return context.waitUntil(promise);
           },
         },
         {
@@ -50,30 +50,20 @@ export default {
       body = Buffer.from(await request.arrayBuffer());
     }
 
-    const r = await nitroApp.localCall({
-      event: { request },
+    return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: (request as any).cf,
         cloudflare: {
           request,
           env,
-          context: ctx,
+          context,
         },
       },
-      url: url.pathname + url.search,
       host: url.hostname,
       protocol: url.protocol,
-      headers: Object.fromEntries(request.headers.entries()),
       method: request.method,
-      redirect: request.redirect,
+      headers: request.headers,
       body,
-    });
-
-    return new Response(r.body, {
-      // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-      headers: normalizeOutgoingHeaders(r.headers),
-      status: r.status,
-      statusText: r.statusText,
     });
   },
 };
