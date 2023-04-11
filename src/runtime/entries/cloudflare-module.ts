@@ -84,12 +84,3 @@ const baseURLModifier = (request: Request) => {
   const url = withoutBase(request.url, useRuntimeConfig().app.baseURL);
   return mapRequestToAsset(new Request(url, request));
 };
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
-}
