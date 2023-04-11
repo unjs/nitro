@@ -12,7 +12,8 @@ describe("nitro:preset:cloudflare-module", async () => {
   testNitro(ctx, () => {
     const mf = new Miniflare({
       modules: true,
-      scriptPath: resolve(ctx.outDir, "_worker.js"),
+      scriptPath: resolve(ctx.outDir, "server/index.mjs"),
+      sitePath: resolve(ctx.outDir, "public"),
       bindings: {
         ASSETS: {
           fetch: async (request) => {
