@@ -310,11 +310,6 @@ export async function loadOptions(
         routeRules.cache.maxAge = routeConfig.swr;
       }
     }
-    // Cache: static
-    if (routeConfig.static) {
-      routeRules.cache = routeRules.cache || {};
-      routeRules.cache.static = true;
-    }
     // Cache: false
     if (routeConfig.cache === false) {
       routeRules.cache = false;
