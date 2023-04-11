@@ -200,13 +200,16 @@ d1_databases = [
 
 ```js
 // waitUntil allows cache writes, external logging, etc without blocking the event
-event.context.ctx.waitUntil(logRequest(event.node.req))
+const { cloudflare } = event.context
+cloudflare.context.waitUntil(logRequest(event.node.req))
 
 // bindings
-const res = await event.context.env.WORKER.fetch('<worker URL>')
+const { cloudflare } = event.context
+const res = await cloudflare.env.WORKER.fetch('<worker URL>')
 
 // D1
-const stmt = await event.context.env.D1.prepare('SELECT id FROM table')
+const { cloudflare } = event.context
+const stmt = await cloudflare.env.D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
 ```
 
