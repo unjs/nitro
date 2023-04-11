@@ -185,7 +185,7 @@ wrangler pages publish
 **Note:** This preset uses [module syntax](https://developers.cloudflare.com/workers/learning/migrating-to-module-workers/) for deployment.
 ::
 
-The module syntax allows you to use [Durable Objects](https://developers.cloudflare.com/workers/learning/using-durable-objects/), [D1](https://developers.cloudflare.com/d1/), and `waitUntil`. You can access the module bindings and context via `event.context`.
+The module syntax allows you to use [Durable Objects](https://developers.cloudflare.com/workers/learning/using-durable-objects/), [D1](https://developers.cloudflare.com/d1/), and `waitUntil`. You can access the module bindings and context via `event.context.cloudflare`.
 
 For example, with the following additions to your `wrangler.toml`:
 
@@ -198,16 +198,26 @@ d1_databases = [
 ]
 ```
 
-```js
+### Using `waitUntil`
+
+`waitUntil` allows cache writes, external logging, etc without blocking the event.
+
+```ts
 // waitUntil allows cache writes, external logging, etc without blocking the event
 const { cloudflare } = event.context
 cloudflare.context.waitUntil(logRequest(event.node.req))
+```
 
-// bindings
+### Access env and bindings
+
+```js
 const { cloudflare } = event.context
 const res = await cloudflare.env.WORKER.fetch('<worker URL>')
+```
 
-// D1
+### D1 usage
+
+```ts
 const { cloudflare } = event.context
 const stmt = await cloudflare.env.D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
