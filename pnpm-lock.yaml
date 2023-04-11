@@ -57,8 +57,8 @@ importers:
         specifier: ^3.5.3
         version: 3.5.3
       consola:
-        specifier: ^3.0.0-4
-        version: 3.0.0-4
+        specifier: ^3.0.0-5
+        version: 3.0.0-5
       cookie-es:
         specifier: ^0.5.0
         version: 0.5.0
@@ -2022,8 +2022,8 @@ packages:
     resolution: {integrity: sha512-9vAdYbHj6x2fLKC4+oPH0kFzY/orMZyG2Aj+kNylHxKGJ/Ed4dpNyAQYwJOdqO4zdM7XpVHmyejQDcQHrnuXbw==}
     dev: true
 
-  /consola@3.0.0-4:
-    resolution: {integrity: sha512-hVsQab7WQE97Wy8h0gL3WN8eVYMV2t3d4PCFz0OnjJBY7xpkiFlADFaCKSuLoCjLm23X3fVkHj3DAKKWqnluhg==}
+  /consola@3.0.0-5:
+    resolution: {integrity: sha512-4CTMFc1NpcVzpsgM1tF22S1zIlQ+X4eqmybY0lvYiUN5CmJTA8wolR35SJ5eLlvuwMB4jiz6QT5OwlcS7kcvHA==}
     dev: false
 
   /console-control-strings@1.1.0:
