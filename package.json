@@ -1,6 +1,6 @@
 {
   "name": "nitropack",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Build and Deploy Universal JavaScript Servers",
   "repository": "unjs/nitro",
   "license": "MIT",
@@ -35,10 +35,10 @@
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
-    "vitest-es": "NODE_OPTIONS=--experimental-vm-modules vitest",
     "test": "pnpm lint && pnpm vitest-es run --silent",
+    "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit",
     "test:types": "tsc --noEmit && pnpm test:fixture:types",
-    "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit"
+    "vitest-es": "NODE_OPTIONS=--experimental-vm-modules vitest"
   },
   "resolutions": {
     "nitropack": "link:.",
@@ -61,7 +61,7 @@
     "c12": "^1.2.0",
     "chalk": "^5.2.0",
     "chokidar": "^3.5.3",
-    "consola": "^3.0.0",
+    "consola": "^3.0.1",
     "cookie-es": "^0.5.0",
     "defu": "^6.1.2",
     "destr": "^1.2.2",
@@ -100,7 +100,7 @@
     "source-map-support": "^0.5.21",
     "std-env": "^3.3.2",
     "ufo": "^1.1.1",
-    "unenv": "^1.3.0",
+    "unenv": "^1.3.1",
     "unimport": "^3.0.6",
     "unstorage": "^1.4.1"
   },
@@ -113,7 +113,7 @@
     "@types/node-fetch": "^2.6.3",
     "@types/semver": "^7.3.13",
     "@types/serve-static": "^1.15.1",
-    "@vitest/coverage-c8": "^0.30.0",
+    "@vitest/coverage-c8": "^0.30.1",
     "changelogen": "^0.5.2",
     "edge-runtime": "^2.1.2",
     "eslint": "^8.38.0",
@@ -125,7 +125,7 @@
     "typescript": "^5.0.4",
     "unbuild": "^1.2.0",
     "undici": "^5.21.2",
-    "vitest": "^0.30.0"
+    "vitest": "^0.30.1"
   },
   "packageManager": "pnpm@8.2.0",
   "engines": {
