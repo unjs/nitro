@@ -130,7 +130,6 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
 ```
 
-
 ## Cloudflare Pages
 
 **Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
@@ -173,3 +172,54 @@ Publish:
 ```bash
 wrangler pages publish
 ```
+
+## Cloudflare Module Workers
+
+**Preset:** `cloudflare-module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+::alert{type="warning"}
+**Note:** This is an experimental preset.
+::
+
+::alert{type="info"}
+**Note:** This preset uses [module syntax](https://developers.cloudflare.com/workers/learning/migrating-to-module-workers/) for deployment.
+::
+
+The module syntax allows you to use [Durable Objects](https://developers.cloudflare.com/workers/learning/using-durable-objects/), [D1](https://developers.cloudflare.com/d1/), and `waitUntil`. You can access the module bindings and context via `event.context.cloudflare`.
+
+For example, with the following additions to your `wrangler.toml`:
+
+```ini
+services = [
+  { binding = "WORKER", service = "<service name>" }
+]
+d1_databases = [
+  { binding = "D1", database_id = "<database id>" }
+]
+```
+
+### Using `waitUntil`
+
+`waitUntil` allows cache writes, external logging, etc without blocking the event.
+
+```ts
+// waitUntil allows cache writes, external logging, etc without blocking the event
+const { cloudflare } = event.context
+cloudflare.context.waitUntil(logRequest(event.node.req))
+```
+
+### Access env and bindings
+
+```js
+const { cloudflare } = event.context
+const res = await cloudflare.env.WORKER.fetch('<worker URL>')
+```
+
+### D1 usage
+
+```ts
+const { cloudflare } = event.context
+const stmt = await cloudflare.env.D1.prepare('SELECT id FROM table')
+const { results } = await stmt.all()
+```
+
