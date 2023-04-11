@@ -3,7 +3,7 @@ import fsp from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import { relative, dirname, resolve } from "pathe";
 import jiti from "jiti";
-import consola from "consola";
+import { consola } from "consola";
 import chalk from "chalk";
 import { getProperty } from "dot-prop";
 import { provider } from "std-env";

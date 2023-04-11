@@ -6,8 +6,5 @@ export const nitroPrerender = defineNitroPreset({
   output: {
     serverDir: "{{ buildDir }}/prerender",
   },
-  commands: {
-    preview: "npx serve ./public",
-  },
   externals: { trace: false },
 });
