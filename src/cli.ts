@@ -44,7 +44,9 @@ async function main() {
     process.exit(0);
   }
 
-  console.error(`Unknown command ${command}! Usage: nitro dev|build [rootDir]`);
+  console.error(
+    `Unknown command ${command}! Usage: nitro dev|build|prepare [rootDir]`
+  );
   process.exit(1);
 }
 

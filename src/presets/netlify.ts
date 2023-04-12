@@ -83,19 +83,15 @@ async function writeRedirects(nitro: Nitro) {
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
   );
 
-  // Rewrite static cached paths to builder functions
+  // Rewrite static ISR paths to builder functions
   for (const [key, value] of rules.filter(
-    ([_, value]) =>
-      value.cache === false ||
-      (value.cache && value.cache.swr === false) ||
-      (value.cache && (value.cache?.static || value.cache?.swr))
+    ([_, value]) => value.isr !== undefined
   )) {
-    contents =
-      value.cache === false || value.cache.swr === false
-        ? `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
-          contents
-        : `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
-          contents;
+    contents = value.isr
+      ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
+        contents
+      : `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
+        contents;
   }
 
   for (const [key, routeRules] of rules.filter(

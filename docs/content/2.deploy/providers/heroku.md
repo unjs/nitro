@@ -1,7 +1,6 @@
----
-title: Heroku
-description: 'Discover Heroku preset for Nitro!'
----
+# Heroku
+
+Deploy Nitro apps to Heroku.
 
 **Preset:** `heroku` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

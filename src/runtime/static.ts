@@ -50,6 +50,7 @@ export default eventHandler((event) => {
 
   if (!asset) {
     if (isPublicAssetURL(id)) {
+      event.node.res.removeHeader("cache-control");
       throw createError({
         statusMessage: "Cannot find static asset " + id,
         statusCode: 404,
@@ -66,10 +67,11 @@ export default eventHandler((event) => {
   }
 
   const ifModifiedSinceH = event.node.req.headers["if-modified-since"];
+  const mtimeDate = new Date(asset.mtime);
   if (
     ifModifiedSinceH &&
     asset.mtime &&
-    new Date(ifModifiedSinceH) >= new Date(asset.mtime)
+    new Date(ifModifiedSinceH) >= mtimeDate
   ) {
     event.node.res.statusCode = 304;
     event.node.res.end();
@@ -85,7 +87,7 @@ export default eventHandler((event) => {
   }
 
   if (asset.mtime && !event.node.res.getHeader("Last-Modified")) {
-    event.node.res.setHeader("Last-Modified", asset.mtime);
+    event.node.res.setHeader("Last-Modified", mtimeDate.toUTCString());
   }
 
   if (asset.encoding && !event.node.res.getHeader("Content-Encoding")) {

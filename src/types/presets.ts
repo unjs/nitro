@@ -23,6 +23,12 @@ export interface VercelBuildConfigV3 {
   images?: {
     sizes: number[];
     domains: string[];
+    remotePatterns?: {
+      protocol?: "http" | "https";
+      hostname: string;
+      port?: string;
+      pathname?: string;
+    }[];
     minimumCacheTTL?: number;
     formats?: ("image/avif" | "image/webp")[];
     dangerouslyAllowSVG?: boolean;
@@ -40,10 +46,18 @@ export interface VercelBuildConfigV3 {
     }
   >;
   cache?: string[];
+  crons?: {
+    path: string;
+    schedule: string;
+  }[];
 }
 
 export interface PresetOptions {
   vercel: {
     config: VercelBuildConfigV3;
+    functions?: {
+      memory: number;
+      maxDuration: number;
+    };
   };
 }

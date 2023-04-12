@@ -7,3 +7,12 @@ export type {
 } from "./cache";
 export type { NitroAppPlugin } from "./plugin";
 export type { RenderResponse, RenderHandler } from "./renderer";
+
+declare module "h3" {
+  interface H3Event {
+    /** @experimental Calls fetch with same context and request headers */
+    fetch: typeof globalThis.fetch;
+    /** @experimental Calls fetch with same context and request headers */
+    $fetch: typeof globalThis.fetch;
+  }
+}

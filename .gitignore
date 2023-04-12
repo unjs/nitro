@@ -19,9 +19,9 @@ package-lock.json
 # Generated dirs
 dist
 .nuxt
-.nuxt-*
 .output
 .gen
+.tmp
 nuxt.d.ts
 
 # Junit reports
@@ -67,3 +67,5 @@ Temporary Items
 .vercel
 staticwebapp.config.json
 .eslintcache
+
+test/fixture/functions

@@ -8,7 +8,12 @@ import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
-import { resolvePath, detectTarget, provideFallbackValues } from "./utils";
+import {
+  resolvePath,
+  resolveFile,
+  detectTarget,
+  provideFallbackValues,
+} from "./utils";
 import type {
   NitroConfig,
   NitroOptions,
@@ -24,6 +29,8 @@ const NitroDefaults: NitroConfig = {
   debug: isDebug,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
+  appConfig: {},
+  appConfigFiles: [],
 
   // Dirs
   scanDirs: [],
@@ -87,6 +94,7 @@ const NitroDefaults: NitroConfig = {
   // Advanced
   typescript: {
     generateTsConfig: true,
+    tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
   },
   nodeModulesDirs: [],
@@ -98,7 +106,8 @@ export async function loadOptions(
   configOverrides: NitroConfig = {}
 ): Promise<NitroOptions> {
   // Preset
-  let presetOverride = configOverrides.preset || process.env.NITRO_PRESET;
+  let presetOverride =
+    (configOverrides.preset as string) || process.env.NITRO_PRESET;
   const defaultPreset = detectTarget() || "node-server";
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
@@ -138,7 +147,7 @@ export async function loadOptions(
 
   options.preset =
     presetOverride ||
-    layers.find((l) => l.config.preset)?.config.preset ||
+    (layers.find((l) => l.config.preset)?.config.preset as string) ||
     defaultPreset;
 
   options.rootDir = resolve(options.rootDir || ".");
@@ -237,6 +246,19 @@ export async function loadOptions(
     );
   }
 
+  // Normalize app.config file paths
+  options.appConfigFiles = options.appConfigFiles
+    .map((file) => resolveFile(resolvePath(file, options)))
+    .filter(Boolean);
+
+  // Detect app.config from scanDirs
+  for (const dir of options.scanDirs) {
+    const configFile = resolveFile("app.config", dir);
+    if (configFile && !options.appConfigFiles.includes(configFile)) {
+      options.appConfigFiles.push(configFile);
+    }
+  }
+
   // Backward compatibility for options.routes
   options.routeRules = defu(options.routeRules, (options as any).routes || {});
 
@@ -247,6 +269,7 @@ export async function loadOptions(
     const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined,
+      proxy: undefined,
     };
     // Redirect
     if (routeConfig.redirect) {
@@ -258,11 +281,22 @@ export async function loadOptions(
           : routeConfig.redirect),
       };
     }
+    // Proxy
+    if (routeConfig.proxy) {
+      routeRules.proxy =
+        typeof routeConfig.proxy === "string"
+          ? { to: routeConfig.proxy }
+          : routeConfig.proxy;
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.proxy as any)._proxyStripBase = path.slice(0, -3);
+      }
+    }
     // CORS
     if (routeConfig.cors) {
       routeRules.headers = {
         "access-control-allow-origin": "*",
-        "access-control-allowed-methods": "*",
+        "access-control-allow-methods": "*",
         "access-control-allow-headers": "*",
         "access-control-max-age": "0",
         ...routeRules.headers,
@@ -275,11 +309,6 @@ export async function loadOptions(
       if (typeof routeConfig.swr === "number") {
         routeRules.cache.maxAge = routeConfig.swr;
       }
-    }
-    // Cache: static
-    if (routeConfig.static) {
-      routeRules.cache = routeRules.cache || {};
-      routeRules.cache.static = true;
     }
     // Cache: false
     if (routeConfig.cache === false) {

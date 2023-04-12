@@ -104,7 +104,7 @@ function scanDirs(dirs: string[]): Promise<FileInfo[]> {
             fullPath: resolve(dir, fileName),
           };
         })
-        .sort((a, b) => b.path.localeCompare(a.path));
+        .sort((a, b) => a.path.localeCompare(b.path));
     })
   ).then((r) => r.flat());
 }

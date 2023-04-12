@@ -44,9 +44,10 @@ describe("nitro:preset:netlify", async () => {
       /rules/redirect/obj	https://nitro.unjs.io/	301
       /rules/nested/*	/base	302
       /rules/redirect	/base	302
-      /rules/swr-ttl/*	/.netlify/builders/server 200
-      /rules/swr/*	/.netlify/builders/server 200
-      /rules/static	/.netlify/builders/server 200
+      /rules/_/cached/noncached	/.netlify/functions/server 200
+      /rules/_/noncached/*	/.netlify/functions/server 200
+      /rules/isr-ttl/*	/.netlify/builders/server 200
+      /rules/isr/*	/.netlify/builders/server 200
       /rules/dynamic	/.netlify/functions/server 200
       /* /.netlify/functions/server 200"
     `);
@@ -63,7 +64,7 @@ describe("nitro:preset:netlify", async () => {
         cache-control: s-maxage=60
       /rules/cors
         access-control-allow-origin: *
-        access-control-allowed-methods: GET
+        access-control-allow-methods: GET
         access-control-allow-headers: *
         access-control-max-age: 0
       /rules/nested/*

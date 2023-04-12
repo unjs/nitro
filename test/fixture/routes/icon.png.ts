@@ -6,7 +6,7 @@ export default eventHandler((event) => {
   event.res.end(buff);
 });
 
-function base64ToArray(base64) {
+function base64ToArray(base64: string) {
   const str = atob(base64);
   const bytes = new Uint8Array(str.length);
   for (let i = 0; i < str.length; i++) {

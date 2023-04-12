@@ -1,66 +1,55 @@
 import "#internal/nitro/virtual/polyfill";
-import { requestHasBody } from "../utils";
-import { nitroApp } from "../app";
+import type {
+  Request as CFRequest,
+  EventContext,
+} from "@cloudflare/workers-types";
+import { requestHasBody } from "#internal/nitro/utils";
+import { nitroApp } from "#internal/nitro/app";
+import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
-/** @see https://developers.cloudflare.com/pages/platform/functions/#writing-your-first-function */
-interface CFRequestContext {
-  /** same as existing Worker API */
-  request: any;
-  /** same as existing Worker API */
-  env: any;
-  /** if filename includes [id] or [[path]] **/
-  params: any;
-  /** Same as ctx.waitUntil in existing Worker API */
-  waitUntil: any;
-  /** Used for middleware or to fetch assets */
-  next: any;
-  /** Arbitrary space for passing data between middlewares */
-  data: any;
+/**
+ * Reference: https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#parameters
+ */
+
+interface CFPagesEnv {
+  ASSETS: { fetch: (request: CFRequest) => Promise<Response> };
+  CF_PAGES: "1";
+  CF_PAGES_BRANCH: string;
+  CF_PAGES_COMMIT_SHA: string;
+  CF_PAGES_URL: string;
+  [key: string]: any;
 }
 
-export async function onRequest(ctx: CFRequestContext) {
-  try {
-    // const asset = await env.ASSETS.fetch(request, { cacheControl: assetsCacheControl })
-    const asset = await ctx.next();
-    if (asset.status !== 404) {
-      return asset;
+export default {
+  async fetch(
+    request: CFRequest,
+    env: CFPagesEnv,
+    context: EventContext<CFPagesEnv, string, any>
+  ) {
+    const url = new URL(request.url);
+    if (isPublicAssetURL(url.pathname)) {
+      return env.ASSETS.fetch(request);
     }
-  } catch {
-    // Ignore
-  }
 
-  const url = new URL(ctx.request.url);
-  let body;
-  if (requestHasBody(ctx.request)) {
-    body = Buffer.from(await ctx.request.arrayBuffer());
-  }
+    let body;
+    if (requestHasBody(request as unknown as Request)) {
+      body = Buffer.from(await request.arrayBuffer());
+    }
 
-  const r = await nitroApp.localCall({
-    url: url.pathname + url.search,
-    method: ctx.request.method,
-    headers: ctx.request.headers,
-    host: url.hostname,
-    protocol: url.protocol,
-    body,
-    // TODO: Allow passing custom context
-    // cf: ctx,
-    // TODO: Handle redirects?
-    // redirect: ctx.request.redirect
-  });
-
-  return new Response(r.body, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
-  });
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
-}
+    return nitroApp.localFetch(url.pathname + url.search, {
+      context: {
+        cf: request.cf,
+        cloudflare: {
+          request,
+          env,
+          context,
+        },
+      },
+      host: url.hostname,
+      protocol: url.protocol,
+      method: request.method,
+      headers: request.headers,
+      body,
+    });
+  },
+};

@@ -4,12 +4,13 @@ import type { Unimport } from "unimport";
 import type { UnimportPluginOptions } from "unimport/unplugin";
 import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
 import type { NestedHooks, Hookable } from "hookable";
-import type { Consola, LogLevel } from "consola";
+import type { ConsolaInstance, LogLevel } from "consola";
 import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
+import type { ProxyOptions } from "h3";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -29,7 +30,7 @@ export interface Nitro {
   vfs: Record<string, string>;
   hooks: Hookable<NitroHooks>;
   unimport?: Unimport;
-  logger: Consola;
+  logger: ConsolaInstance;
   storage: Storage;
   close: () => Promise<void>;
 
@@ -86,6 +87,10 @@ export interface NitroConfig
   rollupConfig?: Partial<RollupConfig>;
 }
 
+export interface AppConfig {
+  [key: string]: any;
+}
+
 export interface PublicAssetDir {
   baseURL?: string;
   fallthrough?: boolean;
@@ -119,11 +124,19 @@ type IntRange<F extends number, T extends number> = Exclude<
 >;
 type HTTPStatusCode = IntRange<100, 600>;
 
+type ExcludeFunctions<G extends Record<string, any>> = Pick<
+  G,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  { [P in keyof G]: NonNullable<G[P]> extends Function ? never : P }[keyof G]
+>;
+
 export interface NitroRouteConfig {
-  cache?: CachedEventHandlerOptions | false;
+  cache?: ExcludeFunctions<CachedEventHandlerOptions> | false;
   headers?: Record<string, string>;
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
+  proxy?: string | ({ to: string } & ProxyOptions);
+  isr?: number | boolean;
 
   // Shortcuts
   cors?: boolean;
@@ -134,6 +147,7 @@ export interface NitroRouteConfig {
 export interface NitroRouteRules
   extends Omit<NitroRouteConfig, "redirect" | "cors" | "swr" | "static"> {
   redirect?: { to: string; statusCode: HTTPStatusCode };
+  proxy?: { to: string } & ProxyOptions;
 }
 
 export interface NitroOptions extends PresetOptions {
@@ -151,6 +165,8 @@ export interface NitroOptions extends PresetOptions {
     };
     [key: string]: any;
   };
+  appConfig: AppConfig;
+  appConfigFiles: string[];
 
   // Dirs
   workspaceDir: string;
@@ -169,7 +185,7 @@ export interface NitroOptions extends PresetOptions {
   devStorage: StorageMounts;
   bundledStorage: string[];
   timing: boolean;
-  renderer: string;
+  renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
   experimental?: {
@@ -210,7 +226,7 @@ export interface NitroOptions extends PresetOptions {
   alias: Record<string, string>;
   minify: boolean;
   inlineDynamicImports: boolean;
-  sourceMap: boolean;
+  sourceMap: boolean | "inline" | "hidden";
   node: boolean;
   moduleSideEffects: string[];
   esbuild?: {
@@ -226,6 +242,8 @@ export interface NitroOptions extends PresetOptions {
   typescript: {
     internalPaths?: boolean;
     generateTsConfig?: boolean;
+    /** the path of the generated `tsconfig.json`, relative to buildDir */
+    tsconfigPath: string;
   };
   hooks: NestedHooks<NitroHooks>;
   nodeModulesDirs: string[];

@@ -1,9 +1,8 @@
 import { resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
-import { fetch } from "ofetch";
+import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll } from "vitest";
-import { isWindows } from "std-env";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -17,7 +16,7 @@ export interface Context {
   nitro?: Nitro;
   rootDir: string;
   outDir: string;
-  fetch: (url: string) => Promise<any>;
+  fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
 }
@@ -25,40 +24,40 @@ export interface Context {
 export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
 
+  const presetTempDir = fileURLToPath(
+    new URL(`presets/.tmp/${preset}`, import.meta.url).href
+  );
+
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
-    outDir: resolve(fixtureDir, ".output", preset),
-    fetch: (url) =>
-      fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: "manual" }),
+    outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    fetch: (url, opts) =>
+      fetch(joinURL(ctx.server!.url, url.slice(1)), {
+        redirect: "manual",
+        ...(opts as any),
+      }),
   };
 
   const nitro = (ctx.nitro = await createNitro({
     preset: ctx.preset,
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
+    buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
-      preset !== "cloudflare" && preset !== "vercel-edge" && !ctx.isDev,
-    output: { dir: ctx.outDir },
-    routeRules: {
-      "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
-      "/rules/cors": {
-        cors: true,
-        headers: { "access-control-allowed-methods": "GET" },
-      },
-      "/rules/dynamic": { cache: false },
-      "/rules/redirect": { redirect: "/base" },
-      "/rules/static": { static: true },
-      "/rules/swr/**": { swr: true },
-      "/rules/swr-ttl/**": { swr: 60 },
-      "/rules/redirect/obj": {
-        redirect: { to: "https://nitro.unjs.io/", statusCode: 308 },
-      },
-      "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
-      "/rules/nested/override": { redirect: { to: "/other" } },
+      preset !== "cloudflare" &&
+      preset !== "cloudflare-module" &&
+      preset !== "cloudflare-pages" &&
+      preset !== "vercel-edge" &&
+      !ctx.isDev,
+    output: {
+      dir: ctx.outDir,
     },
-    timing: preset !== "cloudflare" && preset !== "vercel-edge",
+    timing:
+      preset !== "cloudflare" &&
+      preset !== "cloudflare-pages" &&
+      preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {
@@ -165,7 +164,7 @@ export function testNitro(
   it("handles route rules - cors", async () => {
     const expectedHeaders = {
       "access-control-allow-origin": "*",
-      "access-control-allowed-methods": "GET",
+      "access-control-allow-methods": "GET",
       "access-control-allow-headers": "*",
       "access-control-max-age": "0",
     };
@@ -260,10 +259,58 @@ export function testNitro(
       });
     });
 
+    it("useStorage (with base)", async () => {
+      const putRes = await callHandler({
+        url: "/api/storage/item?key=test:hello",
+        method: "PUT",
+        body: "world",
+      });
+      expect(putRes.data).toMatchObject("world");
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?key=:",
+          })
+        ).data
+      ).toMatchObject(["test:hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?base=test&key=:",
+          })
+        ).data
+      ).toMatchObject(["hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?base=test&key=hello",
+          })
+        ).data
+      ).toBe("world");
+    });
+
     if (additionalTests) {
       additionalTests(ctx, callHandler);
     }
   }
+
+  it("app config", async () => {
+    const { data } = await callHandler({
+      url: "/app-config",
+    });
+    expect(data).toMatchInlineSnapshot(`
+      {
+        "appConfig": {
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+      }
+    `);
+  });
 
   if (ctx.nitro!.options.timing) {
     it("set server timing header", async () => {
