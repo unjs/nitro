@@ -89,7 +89,7 @@ export const netlifyStatic = defineNitroPreset({
       await writeRedirects(nitro);
     },
   },
-})
+});
 
 async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");

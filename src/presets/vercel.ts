@@ -185,55 +185,53 @@ function generateBuildConfig(nitro: Nitro) {
   });
 
   // Early return without serverless functions if we are using a static preset
-  if (
-    nitro.options.preset === "vercel-static"
-  ) {
+  if (nitro.options.preset === "vercel-static") {
     return config;
   }
 
   config.routes.push(
-      // ISR rules
-      ...rules
-        .filter(
-          ([key, value]) =>
-            // value.isr === false || (value.isr && key.includes("/**"))
-            value.isr !== undefined
-        )
-        .map(([key, value]) => {
-          const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
-          if (value.isr === false) {
-            // we need to write a rule to avoid route being shadowed by another cache rule elsewhere
-            return {
-              src,
-              dest: "/__nitro",
-            };
-          }
+    // ISR rules
+    ...rules
+      .filter(
+        ([key, value]) =>
+          // value.isr === false || (value.isr && key.includes("/**"))
+          value.isr !== undefined
+      )
+      .map(([key, value]) => {
+        const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
+        if (value.isr === false) {
+          // we need to write a rule to avoid route being shadowed by another cache rule elsewhere
           return {
             src,
-            dest:
-              nitro.options.preset === "vercel-edge"
-                ? "/__nitro?url=$url"
-                : generateEndpoint(key) + "?url=$url",
+            dest: "/__nitro",
           };
-        }),
-      // If we are using an ISR function for /, then we need to write this explicitly
-      ...(nitro.options.routeRules["/"]?.isr
-        ? [
-            {
-              src: "(?<url>/)",
-              dest: "/__nitro-index",
-            },
-          ]
-        : []),
-      // If we are using an ISR function as a fallback, then we do not need to output the below fallback route as well
-      ...(!nitro.options.routeRules["/**"]?.isr
-        ? [
-            {
-              src: "/(.*)",
-              dest: "/__nitro",
-            },
-          ]
-        : []),
+        }
+        return {
+          src,
+          dest:
+            nitro.options.preset === "vercel-edge"
+              ? "/__nitro?url=$url"
+              : generateEndpoint(key) + "?url=$url",
+        };
+      }),
+    // If we are using an ISR function for /, then we need to write this explicitly
+    ...(nitro.options.routeRules["/"]?.isr
+      ? [
+          {
+            src: "(?<url>/)",
+            dest: "/__nitro-index",
+          },
+        ]
+      : []),
+    // If we are using an ISR function as a fallback, then we do not need to output the below fallback route as well
+    ...(!nitro.options.routeRules["/**"]?.isr
+      ? [
+          {
+            src: "/(.*)",
+            dest: "/__nitro",
+          },
+        ]
+      : [])
   );
 
   return config;
