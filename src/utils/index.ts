@@ -114,6 +114,7 @@ const autodetectableProviders: Partial<
 const autodetectableStaticProviders: Partial<
   Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
 > = {
+  netlify: "netlify-static",
   vercel: "vercel-static",
 };
 

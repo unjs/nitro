@@ -75,6 +75,22 @@ export const netlifyEdge = defineNitroPreset({
   },
 });
 
+export const netlifyStatic = defineNitroPreset({
+  extends: "static",
+  output: {
+    publicDir: "{{ rootDir }}/dist",
+  },
+  commands: {
+    preview: "npx serve ./static",
+  },
+  hooks: {
+    async compiled(nitro: Nitro) {
+      await writeHeaders(nitro);
+      await writeRedirects(nitro);
+    },
+  },
+})
+
 async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
   let contents = "/* /.netlify/functions/server 200";
