@@ -29,6 +29,7 @@ const NitroDefaults: NitroConfig = {
   // General
   debug: isDebug,
   logLevel: isTest ? 1 : 3,
+  build: true,
   runtimeConfig: { app: {}, nitro: {} },
   appConfig: {},
   appConfigFiles: [],
@@ -107,7 +108,8 @@ export async function loadOptions(
   configOverrides: NitroConfig = {}
 ): Promise<NitroOptions> {
   // Preset
-  let presetOverride = configOverrides.preset || process.env.NITRO_PRESET;
+  let presetOverride =
+    (configOverrides.preset as string) || process.env.NITRO_PRESET;
   const defaultPreset = detectTarget() || "node-server";
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
@@ -148,7 +150,7 @@ export async function loadOptions(
 
   options.preset =
     presetOverride ||
-    layers.find((l) => l.config.preset)?.config.preset ||
+    (layers.find((l) => l.config.preset)?.config.preset as string) ||
     (options.static ? detectStaticTarget() ?? defaultPreset : defaultPreset);
 
   options.rootDir = resolve(options.rootDir || ".");
@@ -170,12 +172,14 @@ export async function loadOptions(
   };
 
   // Resolve possibly template paths
-  if (!options.entry) {
+  if (options.build && !options.entry) {
     throw new Error(
       `Nitro entry is missing! Is "${options.preset}" preset correct?`
     );
   }
-  options.entry = resolvePath(options.entry, options);
+  if (options.entry) {
+    options.entry = resolvePath(options.entry, options);
+  }
   options.output.dir = resolvePath(
     options.output.dir || NitroDefaults.output.dir,
     options
@@ -310,11 +314,6 @@ export async function loadOptions(
       if (typeof routeConfig.swr === "number") {
         routeRules.cache.maxAge = routeConfig.swr;
       }
-    }
-    // Cache: static
-    if (routeConfig.static) {
-      routeRules.cache = routeRules.cache || {};
-      routeRules.cache.static = true;
     }
     // Cache: false
     if (routeConfig.cache === false) {

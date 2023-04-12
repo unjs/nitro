@@ -4,7 +4,7 @@ import type { Unimport } from "unimport";
 import type { UnimportPluginOptions } from "unimport/unplugin";
 import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
 import type { NestedHooks, Hookable } from "hookable";
-import type { Consola, LogLevel } from "consola";
+import type { ConsolaInstance, LogLevel } from "consola";
 import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
@@ -30,7 +30,7 @@ export interface Nitro {
   vfs: Record<string, string>;
   hooks: Hookable<NitroHooks>;
   unimport?: Unimport;
-  logger: Consola;
+  logger: ConsolaInstance;
   storage: Storage;
   close: () => Promise<void>;
 
@@ -136,6 +136,7 @@ export interface NitroRouteConfig {
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
   proxy?: string | ({ to: string } & ProxyOptions);
+  isr?: number | boolean;
 
   // Shortcuts
   cors?: boolean;
@@ -157,7 +158,7 @@ export interface NitroOptions extends PresetOptions {
   debug: boolean;
   // eslint-disable-next-line @typescript-eslint/ban-types
   preset: KebabCase<keyof typeof _PRESETS> | (string & {});
-  static: boolean;
+  build: boolean;
   logLevel: LogLevel;
   runtimeConfig: {
     app: {
@@ -185,7 +186,7 @@ export interface NitroOptions extends PresetOptions {
   devStorage: StorageMounts;
   bundledStorage: string[];
   timing: boolean;
-  renderer: string;
+  renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
   experimental?: {
