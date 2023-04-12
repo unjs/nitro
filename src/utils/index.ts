@@ -118,12 +118,8 @@ const autodetectableStaticProviders: Partial<
   vercel: "vercel-static",
 };
 
-export function detectTarget() {
-  return autodetectableProviders[provider];
-}
-
-export function detectStaticTarget() {
-  return autodetectableStaticProviders[provider];
+export function detectTarget(options: { static?: boolean } = {}) {
+  return options?.static ? autodetectableStaticProviders[provider] : autodetectableProviders[provider];
 }
 
 export async function isDirectory(path: string) {
