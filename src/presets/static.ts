@@ -1,6 +1,6 @@
 import { defineNitroPreset } from "../preset";
 
-export const static = defineNitroPreset({
+export const baseStatic = defineNitroPreset({
   build: false,
   output: {
     dir: "{{ rootDir }}/.output",
