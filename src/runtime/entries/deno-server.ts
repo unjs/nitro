@@ -14,7 +14,7 @@ const hostname = Deno.env.get("NITRO_HOST") || Deno.env.get("HOST");
 
 function onListen(opts) {
   const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-  const url = `${opts.hostname}:$opts.{port}${baseURL}`;
+  const url = `${opts.hostname}:${opts.port}${baseURL}`;
   console.log(`Listening ${url}`);
 }
 
