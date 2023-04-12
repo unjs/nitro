@@ -128,7 +128,6 @@ export async function loadOptions(
     },
     defaultConfig: {
       preset: defaultPreset,
-      static: false,
     },
     defaults: NitroDefaults,
     resolve(id: string) {
@@ -151,7 +150,7 @@ export async function loadOptions(
   options.preset =
     presetOverride ||
     (layers.find((l) => l.config.preset)?.config.preset as string) ||
-    (options.static ? detectStaticTarget() ?? defaultPreset : defaultPreset);
+    (!options.build ? detectStaticTarget() ?? defaultPreset : defaultPreset);
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(
