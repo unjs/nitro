@@ -7,7 +7,7 @@ export const baseStatic = defineNitroPreset({
     publicDir: "{{ output.dir }}/public",
   },
   prerender: {
-    crawlLinks: true
+    crawlLinks: true,
   },
   commands: {
     preview: "npx serve ./public",
