@@ -28,6 +28,7 @@ const NitroDefaults: NitroConfig = {
   // General
   debug: isDebug,
   logLevel: isTest ? 1 : 3,
+  build: true,
   runtimeConfig: { app: {}, nitro: {} },
   appConfig: {},
   appConfigFiles: [],
@@ -169,12 +170,14 @@ export async function loadOptions(
   };
 
   // Resolve possibly template paths
-  if (!options.entry) {
+  if (options.build && !options.entry) {
     throw new Error(
       `Nitro entry is missing! Is "${options.preset}" preset correct?`
     );
   }
-  options.entry = resolvePath(options.entry, options);
+  if (options.entry) {
+    options.entry = resolvePath(options.entry, options);
+  }
   options.output.dir = resolvePath(
     options.output.dir || NitroDefaults.output.dir,
     options

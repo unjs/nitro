@@ -25,7 +25,9 @@ export async function prepare(nitro: Nitro) {
   if (!nitro.options.noPublicDir) {
     await prepareDir(nitro.options.output.publicDir);
   }
-  await prepareDir(nitro.options.output.serverDir);
+  if (nitro.options.build) {
+    await prepareDir(nitro.options.output.serverDir);
+  }
 }
 
 async function prepareDir(dir: string) {
@@ -255,15 +257,17 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   await writeTypes(nitro);
   await _snapshot(nitro);
 
-  nitro.logger.info(
-    `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
-  );
-  const build = await rollup.rollup(rollupConfig).catch((error) => {
-    nitro.logger.error(formatRollupError(error));
-    throw error;
-  });
+  if (nitro.options.build) {
+    nitro.logger.info(
+      `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
+    );
+    const build = await rollup.rollup(rollupConfig).catch((error) => {
+      nitro.logger.error(formatRollupError(error));
+      throw error;
+    });
 
-  await build.write(rollupConfig.output);
+    await build.write(rollupConfig.output);
+  }
 
   // Write build info
   const nitroConfigPath = resolve(nitro.options.output.dir, "nitro.json");
@@ -277,11 +281,15 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   };
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
 
-  nitro.logger.success("Nitro server built");
-  if (nitro.options.logLevel > 1) {
-    process.stdout.write(await generateFSTree(nitro.options.output.serverDir));
+  if (nitro.options.build) {
+    nitro.logger.success("Nitro server built");
+    if (nitro.options.logLevel > 1) {
+      process.stdout.write(
+        await generateFSTree(nitro.options.output.serverDir)
+      );
+    }
+    await nitro.hooks.callHook("compiled", nitro);
   }
-  await nitro.hooks.callHook("compiled", nitro);
 
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
