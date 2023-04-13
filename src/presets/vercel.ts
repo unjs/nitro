@@ -184,8 +184,8 @@ function generateBuildConfig(nitro: Nitro) {
     ],
   });
 
-  // Early return without serverless functions if we are using a static preset
-  if (nitro.options.preset === "vercel-static") {
+  // Early return if we are not building a serverless function
+  if (!nitro.options.build) {
     return config;
   }
 
