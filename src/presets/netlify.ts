@@ -93,11 +93,14 @@ export const netlifyStatic = defineNitroPreset({
 
 async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
-  let contents = nitro.options.build
-    ? "/* /.netlify/functions/server 200"
-    : existsSync(join(nitro.options.output.publicDir, "404.html"))
+  const staticFallback = existsSync(
+    join(nitro.options.output.publicDir, "404.html")
+  )
     ? "/* /404.html 404"
     : "";
+  let contents = nitro.options.build
+    ? "/* /.netlify/functions/server 200"
+    : staticFallback;
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
