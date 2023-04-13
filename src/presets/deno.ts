@@ -5,6 +5,7 @@ import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
 import inject from "@rollup/plugin-inject";
 import { defineNitroPreset } from "../preset";
+import { ImportMetaRe } from "../rollup/plugins/import-meta";
 
 export const denoDeploy = defineNitroPreset({
   entry: "#internal/nitro/entries/deno-deploy",
@@ -110,9 +111,8 @@ export const denoServer = defineNitroPreset({
           order: "post",
           handler(code, chunk) {
             if (
-              !chunk.isEntry ||
-              code.includes("ROLLUP_NO_REPLACE") ||
-              !code.includes("process")
+              !chunk.isEntry &&
+              (!ImportMetaRe.test(code) || code.includes("ROLLUP_NO_REPLACE"))
             ) {
               return;
             }
