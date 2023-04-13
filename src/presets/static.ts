@@ -8,6 +8,7 @@ export const _static = defineNitroPreset({
   },
   prerender: {
     crawlLinks: true,
+    routes: ['/404.html']
   },
   commands: {
     preview: "npx serve ./public",
