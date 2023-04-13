@@ -23,3 +23,4 @@ export * from "./vercel";
 export * from "./cleavr";
 export * from "./layer0";
 export * from "./lagon";
+export { _static as static } from "./static";
