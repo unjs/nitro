@@ -95,7 +95,9 @@ async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
   let contents = nitro.options.build
     ? "/* /.netlify/functions/server 200"
-    : (existsSync(join(nitro.options.output.publicDir, "404.html")) ? "/* /404.html 404" : "");
+    : existsSync(join(nitro.options.output.publicDir, "404.html"))
+    ? "/* /404.html 404"
+    : "";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
