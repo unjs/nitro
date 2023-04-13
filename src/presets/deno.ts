@@ -19,7 +19,7 @@ export const denoDeploy = defineNitroPreset({
   },
   rollupConfig: {
     preserveEntrySignatures: false,
-    // external: ["https://deno.land/std/http/server.ts"],
+    external: ["https://deno.land/std/http/server.ts"],
     output: {
       entryFileNames: "index.ts",
       manualChunks: () => "index",
