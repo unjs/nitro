@@ -93,21 +93,24 @@ export const netlifyStatic = defineNitroPreset({
 
 async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
-  let contents = "/* /.netlify/functions/server 200";
+  // TODO: support 200.html
+  let contents = nitro.options.build ? "/* /.netlify/functions/server 200" : "";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
   );
 
-  // Rewrite static ISR paths to builder functions
-  for (const [key, value] of rules.filter(
-    ([_, value]) => value.isr !== undefined
-  )) {
-    contents = value.isr
-      ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
-        contents
-      : `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
-        contents;
+  if (nitro.options.build) {
+    // Rewrite static ISR paths to builder functions
+    for (const [key, value] of rules.filter(
+      ([_, value]) => value.isr !== undefined
+    )) {
+      contents = value.isr
+        ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
+          contents
+        : `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
+          contents;
+    }
   }
 
   for (const [key, routeRules] of rules.filter(
