@@ -163,6 +163,7 @@ export interface CachedEventHandlerOptions<T = any>
   shouldBypassCache?: (event: H3Event) => boolean;
   getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
+  varies?: string[];
 }
 
 function escapeKey(key: string) {
@@ -180,12 +181,15 @@ export function defineCachedEventHandler<T = any>(
       if (key) {
         return escapeKey(key);
       }
+      const varyParts =
+        opts.varies?.map((varyHeader) => event.node.req.headers[varyHeader]) ??
+        "";
       const url = event.node.req.originalUrl || event.node.req.url;
       const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
         0,
         16
       );
-      const urlHash = hash(url);
+      const urlHash = hash(`${varyParts}${url}`);
       return `${friendlyName}.${urlHash}`;
     },
     validate: (entry) => {
@@ -203,8 +207,15 @@ export function defineCachedEventHandler<T = any>(
 
   const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
     async (incomingEvent: H3Event) => {
+      // Only pass headers which are defined in opts.varies
+      const filteredHeaders = opts.varies?.reduce((obj, key) => {
+        obj[key] = incomingEvent.node.req.headers[key];
+        return obj;
+      }, {});
       // Create proxies to avoid sharing state with user request
-      const reqProxy = cloneWithProxy(incomingEvent.node.req, { headers: {} });
+      const reqProxy = cloneWithProxy(incomingEvent.node.req, {
+        headers: filteredHeaders,
+      });
       const resHeaders: Record<string, number | string | string[]> = {};
       let _resSendBody;
       const resProxy = cloneWithProxy(incomingEvent.node.res, {
