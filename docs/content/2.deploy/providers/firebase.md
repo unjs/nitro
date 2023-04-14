@@ -8,6 +8,8 @@ Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with
 
 **Note**: You need to be on the **Blaze plan** to use Nitro with Cloud Functions.
 
+**Note**: This preset will deploy to firebase functions V1. If you want to deploy to firebase functions V2, please use the [`firebaseV2`](#firebase-functions-v2) preset.
+
 If you don't already have a `firebase.json` in your root directory, Nitro will create one the first time you run it. In this file, you will need to replace `<your_project_id>` with the ID of your Firebase project.
 
 This file should then be committed to version control. You can also create a `.firebaserc` file if you don't want to manually pass your project ID to your `firebase` commands (with `--project <your_project_id>`):
@@ -90,3 +92,34 @@ Deploying to Firebase Hosting is a simple matter of just running the `firebase d
 NITRO_PRESET=firebase yarn build
 firebase deploy
 ```
+
+## Firebase Functions V2
+
+**Preset:** `firebaseV2` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+This preset will deploy to [firebase functions V2](https://firebase.google.com/docs/functions/beta/get-started) - the 2nd generation of cloud functions.
+
+It works the same as the [`firebase`](#firebase) preset above, but uses the V2 functions runtime.
+
+**Note**: Follow the instructions for the `firebase` preset above for setup and deploy.
+
+The `firebaseV2` preset also supports passing options to the firebase function via the nitro runtime config. For example, to set the region and max instances of the function, you can add the following to your `nitro.config.ts`:
+
+```ts
+runtimeConfig: {
+  firebaseV2: {
+    httpRequestOptions: <HttpsOptions>{
+      region: "europe-west1",
+      maxInstances: 3,
+    };
+  }
+}
+```
+
+The type `HttpsOptions` can be imported from the `firebase-functions` package:
+
+```ts
+import { HttpsOptions } from 'firebase-functions/lib/v2/providers/https'`
+```
+
+The documentation for these options can be found in the [firebase functions 2nd gen docs](https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions).
