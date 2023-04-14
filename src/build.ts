@@ -21,13 +21,16 @@ import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
 
 export async function prepare(nitro: Nitro) {
-  await prepareDir(nitro.options.output.dir);
-  if (!nitro.options.noPublicDir) {
-    await prepareDir(nitro.options.output.publicDir);
+  const { dir, publicDir, serverDir } = nitro.options.output;
+  const dirs = [dir];
+  if (!nitro.options.noPublicDir && !dirs.includes(publicDir)) {
+    dirs.push(publicDir);
   }
-  if (nitro.options.build) {
-    await prepareDir(nitro.options.output.serverDir);
+  if (nitro.options.build && !dirs.includes(serverDir)) {
+    dirs.push(serverDir);
   }
+
+  await Promise.all(dirs.map((dir) => prepareDir(dir)));
 }
 
 async function prepareDir(dir: string) {
