@@ -354,14 +354,15 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
 async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
   let rollupWatcher: rollup.RollupWatcher;
 
-  const reload = debounce(async () => {
+  async function load() {
     if (rollupWatcher) {
       await rollupWatcher.close();
     }
     await scanHandlers(nitro);
     rollupWatcher = startRollupWatcher(nitro, rollupConfig);
     await writeTypes(nitro);
-  });
+  }
+  const reload = debounce(load);
 
   const watchPatterns = nitro.options.scanDirs.flatMap((dir) => [
     join(dir, "api"),
@@ -384,7 +385,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     reloadWacher.close();
   });
 
-  await reload();
+  await load();
 }
 
 function formatRollupError(_error: RollupError | OnResolveResult) {
