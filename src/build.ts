@@ -172,25 +172,24 @@ declare module 'nitropack' {
     '/// <reference path="./nitro-imports.d.ts" />',
   ];
 
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro-routes.d.ts"),
-    routes.join("\n")
-  );
-
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro-config.d.ts"),
-    config.join("\n")
-  );
-
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro-imports.d.ts"),
-    [...autoImportedTypes, "export {}"].join("\n")
-  );
-
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro.d.ts"),
-    declarations.join("\n")
-  );
+  const files = [
+    {
+      name: "types/nitro-routes.d.ts",
+      contents: routes.join("\n"),
+    },
+    {
+      name: "types/nitro-config.d.ts",
+      contents: config.join("\n"),
+    },
+    {
+      name: "types/nitro-imports.d.ts",
+      contents: [...autoImportedTypes, "export {}"].join("\n"),
+    },
+    {
+      name: "types/nitro.d.ts",
+      contents: declarations.join("\n"),
+    },
+  ];
 
   if (nitro.options.typescript.generateTsConfig) {
     const tsConfig: TSConfig = {
@@ -218,11 +217,18 @@ declare module 'nitropack' {
           : []),
       ],
     };
-    await writeFile(
-      resolve(nitro.options.buildDir, nitro.options.typescript.tsconfigPath),
-      JSON.stringify(tsConfig, null, 2)
-    );
+    files.push({
+      name: nitro.options.typescript.tsconfigPath,
+      contents: JSON.stringify(tsConfig, null, 2),
+    });
   }
+
+  await Promise.all(
+    files.map(async (file) => {
+      const { name, contents } = file;
+      await writeFile(join(nitro.options.buildDir, name), contents);
+    })
+  );
 }
 
 async function _snapshot(nitro: Nitro) {
