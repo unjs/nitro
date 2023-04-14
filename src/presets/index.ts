@@ -10,6 +10,7 @@ export * from "./deno-deploy";
 export * from "./deno-server";
 export * from "./digital-ocean";
 export * from "./firebase";
+export * from "./firebaseV2";
 export * from "./heroku";
 export * from "./edgio";
 export * from "./netlify";
