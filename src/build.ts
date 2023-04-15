@@ -22,15 +22,17 @@ import { compressPublicAssets } from "./compress";
 
 export async function prepare(nitro: Nitro) {
   const { dir, publicDir, serverDir } = nitro.options.output;
-  const dirs = [dir];
-  if (!nitro.options.noPublicDir && !dirs.includes(publicDir)) {
-    dirs.push(publicDir);
+  const dirs = new Set([dir])
+  if (!nitro.options.noPublicDir) {
+    dirs.add(publicDir)
   }
-  if (nitro.options.build && !dirs.includes(serverDir)) {
-    dirs.push(serverDir);
+  if (nitro.options.build) {
+    dirs.add(serverDir)
   }
 
-  await Promise.all(dirs.map((dir) => prepareDir(dir)));
+  for (const _dir of dirs) {
+    await prepareDir(_dir)
+  }
 }
 
 async function prepareDir(dir: string) {
