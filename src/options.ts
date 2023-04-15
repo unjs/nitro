@@ -147,7 +147,7 @@ export async function loadOptions(
   options.preset =
     presetOverride ||
     (layers.find((l) => l.config.preset)?.config.preset as string) ||
-    (detectTarget({ static: !options.build }) ?? "node-server");
+    (detectTarget({ static: options.static }) ?? "node-server");
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(

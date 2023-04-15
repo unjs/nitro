@@ -98,7 +98,7 @@ async function writeRedirects(nitro: Nitro) {
   )
     ? "/* /404.html 404"
     : "";
-  let contents = nitro.options.build
+  let contents = !nitro.options.static
     ? "/* /.netlify/functions/server 200"
     : staticFallback;
 
