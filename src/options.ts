@@ -168,7 +168,7 @@ export async function loadOptions(
   };
 
   // Resolve possibly template paths
-  if (options.build && !options.entry) {
+  if (!options.static && !options.entry) {
     throw new Error(
       `Nitro entry is missing! Is "${options.preset}" preset correct?`
     );
