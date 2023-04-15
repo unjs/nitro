@@ -94,6 +94,7 @@ const NitroDefaults: NitroConfig = {
 
   // Advanced
   typescript: {
+    strict: false,
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
