@@ -28,7 +28,6 @@ const NitroDefaults: NitroConfig = {
   // General
   debug: isDebug,
   logLevel: isTest ? 1 : 3,
-  build: true,
   runtimeConfig: { app: {}, nitro: {} },
   appConfig: {},
   appConfigFiles: [],

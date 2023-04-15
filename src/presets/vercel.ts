@@ -185,7 +185,7 @@ function generateBuildConfig(nitro: Nitro) {
   });
 
   // Early return if we are not building a serverless function
-  if (!nitro.options.build) {
+  if (nitro.options.static) {
     return config;
   }
 

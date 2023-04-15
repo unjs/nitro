@@ -25,7 +25,7 @@ export async function prepare(nitro: Nitro) {
   if (!nitro.options.noPublicDir) {
     await prepareDir(nitro.options.output.publicDir);
   }
-  if (nitro.options.build) {
+  if (!nitro.options.static) {
     await prepareDir(nitro.options.output.serverDir);
   }
 }
@@ -257,7 +257,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   await writeTypes(nitro);
   await _snapshot(nitro);
 
-  if (nitro.options.build) {
+  if (!nitro.options.static) {
     nitro.logger.info(
       `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
     );
@@ -281,7 +281,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   };
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
 
-  if (nitro.options.build) {
+  if (!nitro.options.static) {
     nitro.logger.success("Nitro server built");
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
