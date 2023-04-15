@@ -288,8 +288,9 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
         await generateFSTree(nitro.options.output.serverDir)
       );
     }
-    await nitro.hooks.callHook("compiled", nitro);
   }
+
+  await nitro.hooks.callHook("compiled", nitro);
 
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
