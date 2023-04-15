@@ -109,7 +109,6 @@ export async function loadOptions(
   // Preset
   let presetOverride =
     (configOverrides.preset as string) || process.env.NITRO_PRESET;
-  const defaultPreset = detectTarget() || "node-server";
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
   }
@@ -126,7 +125,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: defaultPreset,
+      preset: detectTarget() || "node-server",
     },
     defaults: NitroDefaults,
     resolve(id: string) {
@@ -149,7 +148,7 @@ export async function loadOptions(
   options.preset =
     presetOverride ||
     (layers.find((l) => l.config.preset)?.config.preset as string) ||
-    defaultPreset;
+    (detectTarget({ static: !options.build }) ?? "node-server");
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(

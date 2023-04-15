@@ -111,8 +111,17 @@ const autodetectableProviders: Partial<
   cleavr: "cleavr",
 };
 
-export function detectTarget() {
-  return autodetectableProviders[provider];
+const autodetectableStaticProviders: Partial<
+  Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
+> = {
+  netlify: "netlify-static",
+  vercel: "vercel-static",
+};
+
+export function detectTarget(options: { static?: boolean } = {}) {
+  return options?.static
+    ? autodetectableStaticProviders[provider]
+    : autodetectableProviders[provider];
 }
 
 export async function isDirectory(path: string) {
