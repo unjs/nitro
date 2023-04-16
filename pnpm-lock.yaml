@@ -174,8 +174,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       unenv:
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: ^1.4.1
+        version: 1.4.1
       unimport:
         specifier: ^3.0.6
         version: 3.0.6(rollup@3.20.3)
@@ -5106,8 +5106,8 @@ packages:
       busboy: 1.6.0
     dev: true
 
-  /unenv@1.4.0:
-    resolution: {integrity: sha512-sV5eSfCkyVvw7H5u4N6KSg3CAOX3VauUV39aJmQLxuW/UplPwbutT5EMiRlJ8JM4Ofg9DY5YCiyIZCamFNNA3g==}
+  /unenv@1.4.1:
+    resolution: {integrity: sha512-DuFZUDfaBC92zy3fW7QqKTLdYJIPkpwTN0yGZtaxnpOI7HvIfl41NYh9NVv4zcqhT8CGXJ1ELpvO2tecaB6NfA==}
     dependencies:
       defu: 6.1.2
       mime: 3.0.0
