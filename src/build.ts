@@ -70,9 +70,7 @@ export async function writeTypes(nitro: Nitro) {
     Partial<Record<RouterMethod | "default", string[]>>
   > = {};
 
-  const typesDir = dirname(
-    resolve(nitro.options.buildDir, nitro.options.typescript.tsconfigPath)
-  );
+  const typesDir = resolve(nitro.options.buildDir, "types");
 
   const middleware = [...nitro.scannedHandlers, ...nitro.options.handlers];
 
@@ -172,29 +170,26 @@ declare module 'nitropack' {
     '/// <reference path="./nitro-imports.d.ts" />',
   ];
 
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro-routes.d.ts"),
-    routes.join("\n")
-  );
+  await writeFile(join(typesDir, "nitro-routes.d.ts"), routes.join("\n"));
+
+  await writeFile(join(typesDir, "nitro-config.d.ts"), config.join("\n"));
 
   await writeFile(
-    join(nitro.options.buildDir, "types/nitro-config.d.ts"),
-    config.join("\n")
-  );
-
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro-imports.d.ts"),
+    join(typesDir, "nitro-imports.d.ts"),
     [...autoImportedTypes, "export {}"].join("\n")
   );
 
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro.d.ts"),
-    declarations.join("\n")
-  );
-
+  await writeFile(join(typesDir, "nitro.d.ts"), declarations.join("\n"));
   if (nitro.options.typescript.generateTsConfig) {
+    const tsConfigPath = resolve(
+      nitro.options.buildDir,
+      nitro.options.typescript.tsconfigPath
+    );
+    const tsconfigDir = dirname(tsConfigPath);
     const tsConfig: TSConfig = {
       compilerOptions: {
+        forceConsistentCasingInFileNames: true,
+        strict: nitro.options.typescript.strict,
         target: "ESNext",
         module: "ESNext",
         moduleResolution: "Node",
@@ -208,20 +203,17 @@ declare module 'nitropack' {
           : {},
       },
       include: [
-        relative(
-          typesDir,
-          join(nitro.options.buildDir, "types/nitro.d.ts")
-        ).replace(/^(?=[^.])/, "./"),
-        join(relative(typesDir, nitro.options.rootDir), "**/*"),
+        relative(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
+          /^(?=[^.])/,
+          "./"
+        ),
+        join(relative(tsconfigDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir !== nitro.options.rootDir
-          ? [join(relative(typesDir, nitro.options.srcDir), "**/*")]
+          ? [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]
           : []),
       ],
     };
-    await writeFile(
-      resolve(nitro.options.buildDir, nitro.options.typescript.tsconfigPath),
-      JSON.stringify(tsConfig, null, 2)
-    );
+    await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 2));
   }
 }
 
