@@ -301,10 +301,10 @@ export function testNitro(
     const { data } = await callHandler({
       url: "/api/proxy?foo=bar",
       headers: {
-        "x-test": 123,
+        "x-test": "foobar",
       },
     });
-    expect(data.headers["x-test"]).toBe("123");
+    expect(data.headers["x-test"]).toBe("foobar");
     expect(data.url).toBe("/api/echo?foo=bar");
   });
 
