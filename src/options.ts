@@ -342,9 +342,18 @@ export async function loadOptions(
     serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
   }
 
+  // Dedup built-in dependencies
   for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
-    if (!options.alias[pkg]) {
-      options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url });
+    // Resolve enrty path
+    const entryPath = await resolveModule(pkg, { url: import.meta.url });
+    if (!options.alias[pkg + "/"]) {
+      const lastNodeModulesIndex = entryPath.lastIndexOf("node_modules/");
+      if (lastNodeModulesIndex > 0) {
+        options.alias[pkg + "/"] = entryPath.slice(
+          0,
+          Math.max(0, lastNodeModulesIndex)
+        );
+      }
     }
   }
 
