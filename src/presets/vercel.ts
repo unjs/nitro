@@ -22,6 +22,22 @@ export const vercel = defineNitroPreset({
     preview: "",
   },
   hooks: {
+    "rollup:before": (nitro: Nitro) => {
+      let hasLegacyOptions = false
+      for (const [key, value] of Object.entries(nitro.options.routeRules)) {
+        if ('isr' in value) { continue }
+        if (value.cache === false) {
+          value.isr = false
+        }
+        if (value.cache && 'swr' in value.cache) {
+          value.isr = value.cache.swr
+        }
+        hasLegacyOptions = hasLegacyOptions || 'isr' in value
+      }
+      if (hasLegacyOptions) {
+        console.warn('[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in a future release.')
+      }
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
