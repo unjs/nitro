@@ -22,6 +22,10 @@ export default defineNitroConfig({
   ],
   appConfig: {
     "nitro-config": true,
+    dynamic: "initial",
+  },
+  runtimeConfig: {
+    dynamic: "initial",
   },
   appConfigFiles: ["~/server.config.ts"],
   publicAssets: [
