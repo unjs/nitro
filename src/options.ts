@@ -342,7 +342,7 @@ export async function loadOptions(
     serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
   }
 
-  for (const pkg of ["defu", "h3", "radix3"]) {
+  for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
     if (!options.alias[pkg]) {
       options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url });
     }
