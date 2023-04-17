@@ -11,6 +11,12 @@ export default defineNitroConfig({
       },
     ],
   },
+  handlers: [
+    {
+      route: "/api/test/*/foo",
+      handler: "~/api/hello.ts",
+    },
+  ],
   devProxy: {
     "/proxy/example": { target: "https://example.com", changeOrigin: true },
   },
