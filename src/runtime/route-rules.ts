@@ -42,11 +42,9 @@ export function createRouteRulesHandler() {
           targetPath = withoutBase(targetPath, strpBase);
         }
         target = joinURL(target.slice(0, -3), targetPath);
-      } else {
+      } else if (event.path.includes("?")) {
         const query = getQuery(event.path);
-        if (query) {
-          target = withQuery(target, query);
-        }
+        target = withQuery(target, query);
       }
       return proxyRequest(event, target, {
         fetch: $fetch.raw as any,
