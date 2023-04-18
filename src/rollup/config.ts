@@ -38,7 +38,7 @@ import { appConfig } from "./plugins/app-config";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
-export const getRollupConfig = (nitro: Nitro) => {
+export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [".ts", ".mjs", ".js", ".json", ".node"];
 
   const nodePreset = nitro.options.node === false ? unenv.nodeless : unenv.node;
