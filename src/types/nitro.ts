@@ -53,7 +53,7 @@ export interface PrerenderGenerateRoute extends PrerenderRoute {
 
 type HookResult = void | Promise<void>;
 export interface NitroHooks {
-  "rollup:before": (nitro: Nitro) => HookResult;
+  "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
   close: () => HookResult;
@@ -158,7 +158,7 @@ export interface NitroOptions extends PresetOptions {
   debug: boolean;
   // eslint-disable-next-line @typescript-eslint/ban-types
   preset: KebabCase<keyof typeof _PRESETS> | (string & {});
-  build: boolean;
+  static: boolean;
   logLevel: LogLevel;
   runtimeConfig: {
     app: {
@@ -241,6 +241,7 @@ export interface NitroOptions extends PresetOptions {
 
   // Advanced
   typescript: {
+    strict?: boolean;
     internalPaths?: boolean;
     generateTsConfig?: boolean;
     /** the path of the generated `tsconfig.json`, relative to buildDir */

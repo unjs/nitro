@@ -98,7 +98,7 @@ async function writeRedirects(nitro: Nitro) {
   )
     ? "/* /404.html 404"
     : "";
-  let contents = nitro.options.build
+  let contents = !nitro.options.static
     ? "/* /.netlify/functions/server 200"
     : staticFallback;
 
@@ -106,7 +106,7 @@ async function writeRedirects(nitro: Nitro) {
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
   );
 
-  if (nitro.options.build) {
+  if (!nitro.options.static) {
     // Rewrite static ISR paths to builder functions
     for (const [key, value] of rules.filter(
       ([_, value]) => value.isr !== undefined

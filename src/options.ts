@@ -28,7 +28,6 @@ const NitroDefaults: NitroConfig = {
   // General
   debug: isDebug,
   logLevel: isTest ? 1 : 3,
-  build: true,
   runtimeConfig: { app: {}, nitro: {} },
   appConfig: {},
   appConfigFiles: [],
@@ -94,6 +93,7 @@ const NitroDefaults: NitroConfig = {
 
   // Advanced
   typescript: {
+    strict: false,
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
@@ -148,7 +148,7 @@ export async function loadOptions(
   options.preset =
     presetOverride ||
     (layers.find((l) => l.config.preset)?.config.preset as string) ||
-    (detectTarget({ static: !options.build }) ?? "node-server");
+    (detectTarget({ static: options.static }) ?? "node-server");
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(
@@ -169,7 +169,7 @@ export async function loadOptions(
   };
 
   // Resolve possibly template paths
-  if (options.build && !options.entry) {
+  if (!options.static && !options.entry) {
     throw new Error(
       `Nitro entry is missing! Is "${options.preset}" preset correct?`
     );
