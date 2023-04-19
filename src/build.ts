@@ -377,6 +377,8 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     reloadWacher.close();
   });
 
+  nitro.hooks.hook("rollup:reload", () => reload());
+
   await reload();
 }
 

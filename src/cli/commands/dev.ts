@@ -35,16 +35,23 @@ export default defineCommand({
         {
           watch: true,
           c12: {
-            async onUpdate({ getDiff }) {
+            async onUpdate({ getDiff, newConfig }) {
               const diff = getDiff();
+
               if (diff.length === 0) {
                 return; // No changes
               }
+
               consola.info(
                 "Nitro config updated:\n" +
                   diff.map((entry) => `  ${entry.toString()}`).join("\n")
               );
-              await reload();
+
+              await (diff.some((e) =>
+                ["routeRules", "runtimeConfig"].includes(e.key)
+              )
+                ? reload() // Full reload
+                : nitro.updateConfig(newConfig.config)); // Hot reload
             },
           },
         }
