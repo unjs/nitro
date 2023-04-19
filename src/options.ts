@@ -128,6 +128,12 @@ export async function loadOptions(
       preset: detectTarget() || "node-server",
     },
     defaults: NitroDefaults,
+    jitiOptions: {
+      alias: {
+        nitropack: "nitropack/config",
+        "nitropack/config": "nitropack/config",
+      },
+    },
     resolve(id: string) {
       const presets = _PRESETS as any as Map<string, NitroConfig>;
       let matchedPreset = presets[camelCase(id)] || presets[id];
@@ -369,6 +375,9 @@ export async function loadOptions(
   return options;
 }
 
+/**
+ * @deprecated Please import `defineNitroConfig` from nitropack/config instead
+ */
 export function defineNitroConfig(config: NitroConfig): NitroConfig {
   return config;
 }
