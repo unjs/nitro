@@ -1,10 +1,10 @@
 import { defineCommand } from "citty";
 import { resolve } from "pathe";
+import { consola } from "consola";
 import { createNitro } from "../../nitro";
 import { build, prepare } from "../../build";
 import { createDevServer } from "../../dev/server";
 import { commonArgs } from "../common";
-import { consola } from "consola";
 import type { Nitro } from "../../types";
 
 export default defineCommand({
