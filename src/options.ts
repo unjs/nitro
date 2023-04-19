@@ -115,6 +115,7 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
+  globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
   const { config, layers } = await loadConfig({
     name: "nitro",
     cwd: configOverrides.rootDir,

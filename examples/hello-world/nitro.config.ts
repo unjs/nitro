@@ -1,3 +1,3 @@
-import { defineNitroConfig } from "nitropack";
+import { defineNitroConfig } from "nitropack/config";
 
 export default defineNitroConfig({});
