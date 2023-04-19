@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises"
+import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
@@ -30,9 +30,14 @@ export const cloudflareModule = defineNitroPreset({
         resolve(nitro.options.output.dir, "package-lock.json"),
         JSON.stringify({ lockfileVersion: 1 }, null, 2)
       );
-      const wranglerConfig = await readFile(resolve(nitro.options.rootDir, "wrangler.toml"), "utf8").catch(() => null);
+      const wranglerConfig = await readFile(
+        resolve(nitro.options.rootDir, "wrangler.toml"),
+        "utf8"
+      ).catch(() => null);
       if (wranglerConfig && !wranglerConfig.includes("rules")) {
-        console.warn('[nitro] You now need to add a "rules" section to your wrangler.toml enabling dynamic imports on the Cloudflare Workers Module preset. Read more at https://nitro.unjs.io/deploy/providers/cloudflare#cloudflare-module-workers.');
+        console.warn(
+          '[nitro] You now need to add a "rules" section to your wrangler.toml enabling dynamic imports on the Cloudflare Workers Module preset. Read more at https://nitro.unjs.io/deploy/providers/cloudflare#cloudflare-module-workers.'
+        );
       }
     },
   },
