@@ -7,6 +7,8 @@ import { createDevServer } from "../../dev/server";
 import { commonArgs } from "../common";
 import type { Nitro } from "../../types";
 
+const hmrKeyRe = /^runtimeConfig\.|routeRules\./;
+
 export default defineCommand({
   meta: {
     name: "dev",
@@ -47,9 +49,7 @@ export default defineCommand({
                   diff.map((entry) => `  ${entry.toString()}`).join("\n")
               );
 
-              await (diff.some((e) =>
-                ["routeRules", "runtimeConfig"].includes(e.key)
-              )
+              await (!diff.every((e) => hmrKeyRe.test(e.key))
                 ? reload() // Full reload
                 : nitro.updateConfig(newConfig.config)); // Hot reload
             },
