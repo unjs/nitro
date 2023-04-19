@@ -122,7 +122,7 @@ export async function loadOptions(
   // Load configuration and preset
   configOverrides = klona(configOverrides);
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
-  const { config, layers } = await (opts.watch ? watchConfig : loadConfig)(<
+  const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
   >{
     name: "nitro",
@@ -158,12 +158,13 @@ export async function loadOptions(
     },
     ...opts.c12,
   });
-  const options = klona(config) as NitroOptions;
+  const options = klona(c12Config.config) as NitroOptions;
   options._config = configOverrides;
+  options._c12 = c12Config;
 
   options.preset =
     presetOverride ||
-    (layers.find((l) => l.config.preset)?.config.preset as string) ||
+    (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
     (detectTarget({ static: options.static }) ?? "node-server");
 
   options.rootDir = resolve(options.rootDir || ".");

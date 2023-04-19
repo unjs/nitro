@@ -21,6 +21,9 @@ export default defineCommand({
     const reload = async () => {
       if (nitro) {
         consola.info("Restarting dev server...");
+        if ("unwatch" in nitro.options._c12) {
+          await nitro.options._c12.unwatch();
+        }
         await nitro.close();
       }
       nitro = await createNitro(
