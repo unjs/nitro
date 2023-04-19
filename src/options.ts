@@ -1,5 +1,5 @@
 import { resolve, join } from "pathe";
-import { loadConfig } from "c12";
+import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
@@ -103,8 +103,14 @@ const NitroDefaults: NitroConfig = {
   commands: {},
 };
 
+export interface LoadConfigOptions {
+  watch?: boolean;
+  c12?: WatchConfigOptions;
+}
+
 export async function loadOptions(
-  configOverrides: NitroConfig = {}
+  configOverrides: NitroConfig = {},
+  opts: LoadConfigOptions = {}
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
@@ -116,7 +122,9 @@ export async function loadOptions(
   // Load configuration and preset
   configOverrides = klona(configOverrides);
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
-  const { config, layers } = await loadConfig({
+  const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
+    WatchConfigOptions
+  >{
     name: "nitro",
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
@@ -148,13 +156,15 @@ export async function loadOptions(
         config: matchedPreset,
       };
     },
+    ...opts.c12,
   });
-  const options = klona(config) as NitroOptions;
+  const options = klona(c12Config.config) as NitroOptions;
   options._config = configOverrides;
+  options._c12 = c12Config;
 
   options.preset =
     presetOverride ||
-    (layers.find((l) => l.config.preset)?.config.preset as string) ||
+    (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
     (detectTarget({ static: options.static }) ?? "node-server");
 
   options.rootDir = resolve(options.rootDir || ".");

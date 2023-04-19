@@ -11,6 +11,7 @@ import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
 import type { ProxyOptions } from "h3";
+import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -56,6 +57,7 @@ export interface NitroHooks {
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
+  restart: () => HookResult;
   close: () => HookResult;
   "prerender:routes": (routes: Set<string>) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;
@@ -153,6 +155,7 @@ export interface NitroRouteRules
 export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
+  _c12: ResolvedConfig<NitroConfig> | ConfigWatcher<NitroConfig>;
 
   // General
   debug: boolean;
