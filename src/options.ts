@@ -281,10 +281,77 @@ export async function loadOptions(
   // Backward compatibility for options.routes
   options.routeRules = defu(options.routeRules, (options as any).routes || {});
 
-  // Normalize route rules (NitroRouteConfig => NitroRouteRules)
-  const normalizedRules: { [p: string]: NitroRouteRules } = {};
-  for (const path in options.routeRules) {
-    const routeConfig = options.routeRules[path] as NitroRouteConfig;
+  // Normalize route rules
+  options.routeRules = normalizeRouteRules(options);
+
+  options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
+
+  // Normalize runtime config
+  options.runtimeConfig = normalizeRuntimeConfig(options);
+
+  for (const publicAsset of options.publicAssets) {
+    publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
+    publicAsset.baseURL = withLeadingSlash(
+      withoutTrailingSlash(publicAsset.baseURL || "/")
+    );
+  }
+
+  for (const serverAsset of options.serverAssets) {
+    serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
+  }
+
+  for (const pkg of ["defu", "h3", "radix3"]) {
+    if (!options.alias[pkg]) {
+      options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url });
+    }
+  }
+
+  // Build-only storage
+  const fsMounts = {
+    root: resolve(options.rootDir),
+    src: resolve(options.srcDir),
+    build: resolve(options.buildDir),
+    cache: resolve(options.buildDir, "cache"),
+  };
+  for (const p in fsMounts) {
+    options.devStorage[p] = options.devStorage[p] || {
+      driver: "fs",
+      readOnly: p === "root" || p === "src",
+      base: fsMounts[p],
+    };
+  }
+
+  // Resolve plugin paths
+  options.plugins = options.plugins.map((p) => resolvePath(p, options));
+
+  return options;
+}
+
+/**
+ * @deprecated Please import `defineNitroConfig` from nitropack/config instead
+ */
+export function defineNitroConfig(config: NitroConfig): NitroConfig {
+  return config;
+}
+
+export function normalizeRuntimeConfig(config: NitroConfig) {
+  provideFallbackValues(config.runtimeConfig);
+  const runtimeConfig = defu(config.runtimeConfig, {
+    app: {
+      baseURL: config.baseURL,
+    },
+    nitro: {},
+  });
+  runtimeConfig.nitro.routeRules = config.routeRules;
+  return runtimeConfig;
+}
+
+export function normalizeRouteRules(
+  config: NitroConfig
+): Record<string, NitroRouteRules> {
+  const normalizedRules: Record<string, NitroRouteRules> = {};
+  for (const path in config.routeRules) {
+    const routeConfig = config.routeRules[path] as NitroRouteConfig;
     const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined,
@@ -335,60 +402,5 @@ export async function loadOptions(
     }
     normalizedRules[path] = routeRules;
   }
-  options.routeRules = normalizedRules;
-
-  options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
-
-  provideFallbackValues(options.runtimeConfig);
-  options.runtimeConfig = defu(options.runtimeConfig, {
-    app: {
-      baseURL: options.baseURL,
-    },
-    nitro: {},
-  });
-  options.runtimeConfig.nitro.routeRules = options.routeRules;
-
-  for (const publicAsset of options.publicAssets) {
-    publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
-    publicAsset.baseURL = withLeadingSlash(
-      withoutTrailingSlash(publicAsset.baseURL || "/")
-    );
-  }
-
-  for (const serverAsset of options.serverAssets) {
-    serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
-  }
-
-  for (const pkg of ["defu", "h3", "radix3"]) {
-    if (!options.alias[pkg]) {
-      options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url });
-    }
-  }
-
-  // Build-only storage
-  const fsMounts = {
-    root: resolve(options.rootDir),
-    src: resolve(options.srcDir),
-    build: resolve(options.buildDir),
-    cache: resolve(options.buildDir, "cache"),
-  };
-  for (const p in fsMounts) {
-    options.devStorage[p] = options.devStorage[p] || {
-      driver: "fs",
-      readOnly: p === "root" || p === "src",
-      base: fsMounts[p],
-    };
-  }
-
-  // Resolve plugin paths
-  options.plugins = options.plugins.map((p) => resolvePath(p, options));
-
-  return options;
-}
-
-/**
- * @deprecated Please import `defineNitroConfig` from nitropack/config instead
- */
-export function defineNitroConfig(config: NitroConfig): NitroConfig {
-  return config;
+  return normalizedRules;
 }

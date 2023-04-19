@@ -4,8 +4,13 @@ import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
-import type { NitroConfig, Nitro } from "./types";
-import { LoadConfigOptions, loadOptions } from "./options";
+import type { NitroConfig, Nitro, NitroDynamicConfig } from "./types";
+import {
+  LoadConfigOptions,
+  loadOptions,
+  normalizeRouteRules,
+  normalizeRuntimeConfig,
+} from "./options";
 import { scanPlugins } from "./scan";
 import { createStorage } from "./storage";
 
@@ -25,6 +30,16 @@ export async function createNitro(
     scannedHandlers: [],
     close: () => nitro.hooks.callHook("close"),
     storage: undefined,
+    async updateConfig(config: NitroDynamicConfig) {
+      nitro.options.routeRules = normalizeRouteRules(
+        config.routeRules ? config : nitro.options
+      );
+      nitro.options.runtimeConfig = normalizeRuntimeConfig(
+        config.runtimeConfig ? config : nitro.options
+      );
+      await nitro.hooks.callHook("rollup:reload");
+      consola.success("Nitro config hot reloaded!");
+    },
   };
 
   // Storage

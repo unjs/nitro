@@ -25,6 +25,11 @@ import type {
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
 
+export type NitroDynamicConfig = Pick<
+  NitroConfig,
+  "runtimeConfig" | "routeRules"
+>;
+
 export interface Nitro {
   options: NitroOptions;
   scannedHandlers: NitroEventHandler[];
@@ -34,6 +39,7 @@ export interface Nitro {
   logger: ConsolaInstance;
   storage: Storage;
   close: () => Promise<void>;
+  updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
 
   /* @internal */
   _prerenderedRoutes?: PrerenderGenerateRoute[];
@@ -57,6 +63,7 @@ export interface NitroHooks {
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
+  "rollup:reload": () => HookResult;
   restart: () => HookResult;
   close: () => HookResult;
   "prerender:routes": (routes: Set<string>) => HookResult;
