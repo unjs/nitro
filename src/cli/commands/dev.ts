@@ -4,6 +4,8 @@ import { createNitro } from "../../nitro";
 import { build, prepare } from "../../build";
 import { createDevServer } from "../../dev/server";
 import { commonArgs } from "../common";
+import { consola } from "consola";
+import type { Nitro } from "../../types";
 
 export default defineCommand({
   meta: {
@@ -15,19 +17,41 @@ export default defineCommand({
   },
   async run({ args }) {
     const rootDir = resolve((args.dir || args._dir || ".") as string);
-    const nitro = await createNitro(
-      {
-        rootDir,
-        dev: true,
-        preset: "nitro-dev",
-      },
-      {
-        watch: true,
+    let nitro: Nitro;
+    const reload = async () => {
+      if (nitro) {
+        consola.info("Restarting dev server...");
+        await nitro.close();
       }
-    );
-    const server = createDevServer(nitro);
-    await server.listen({});
-    await prepare(nitro);
-    await build(nitro);
+      nitro = await createNitro(
+        {
+          rootDir,
+          dev: true,
+          preset: "nitro-dev",
+        },
+        {
+          watch: true,
+          c12: {
+            async onUpdate({ getDiff }) {
+              const diff = getDiff();
+              if (diff.length === 0) {
+                return; // No changes
+              }
+              consola.info(
+                "Nitro config updated:\n" +
+                  diff.map((entry) => `  ${entry.toString()}`).join("\n")
+              );
+              await reload();
+            },
+          },
+        }
+      );
+      nitro.hooks.hookOnce("restart", reload);
+      const server = createDevServer(nitro);
+      await server.listen({});
+      await prepare(nitro);
+      await build(nitro);
+    };
+    await reload();
   },
 });

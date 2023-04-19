@@ -56,6 +56,7 @@ export interface NitroHooks {
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
+  restart: () => HookResult;
   close: () => HookResult;
   "prerender:routes": (routes: Set<string>) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;

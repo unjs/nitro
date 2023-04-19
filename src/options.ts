@@ -8,7 +8,6 @@ import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
-import { consola } from "consola";
 import {
   resolvePath,
   resolveFile,
@@ -106,6 +105,7 @@ const NitroDefaults: NitroConfig = {
 
 export interface LoadOptionsOptions {
   watch?: boolean;
+  c12?: WatchConfigOptions;
 }
 
 export async function loadOptions(
@@ -156,13 +156,7 @@ export async function loadOptions(
         config: matchedPreset,
       };
     },
-    // onWatch() {},
-    // acceptHMR() { },
-    debounce: false,
-    onUpdate({ getDiff }) {
-      const diff = getDiff();
-      consola.info("Nitro configuration updated:\n" + diff);
-    },
+    ...opts.c12,
   });
   const options = klona(config) as NitroOptions;
   options._config = configOverrides;
