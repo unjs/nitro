@@ -8,6 +8,7 @@ import type { NitroConfig, Nitro, NitroDynamicConfig } from "./types";
 import {
   LoadConfigOptions,
   loadOptions,
+  normalizeRouteRules,
   normalizeRuntimeConfig,
 } from "./options";
 import { scanPlugins } from "./scan";
@@ -30,7 +31,7 @@ export async function createNitro(
     close: () => nitro.hooks.callHook("close"),
     storage: undefined,
     async updateConfig(config: NitroDynamicConfig) {
-      nitro.options.routeRules = normalizeRuntimeConfig(
+      nitro.options.routeRules = normalizeRouteRules(
         config.routeRules ? config : nitro.options
       );
       nitro.options.runtimeConfig = normalizeRuntimeConfig(
