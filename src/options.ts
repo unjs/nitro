@@ -103,14 +103,14 @@ const NitroDefaults: NitroConfig = {
   commands: {},
 };
 
-export interface LoadOptionsOptions {
+export interface LoadConfigOptions {
   watch?: boolean;
   c12?: WatchConfigOptions;
 }
 
 export async function loadOptions(
   configOverrides: NitroConfig = {},
-  opts: LoadOptionsOptions = {}
+  opts: LoadConfigOptions = {}
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =

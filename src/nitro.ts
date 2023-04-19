@@ -5,13 +5,13 @@ import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
 import type { NitroConfig, Nitro } from "./types";
-import { LoadOptionsOptions, loadOptions } from "./options";
+import { LoadConfigOptions, loadOptions } from "./options";
 import { scanPlugins } from "./scan";
 import { createStorage } from "./storage";
 
 export async function createNitro(
   config: NitroConfig = {},
-  opts: LoadOptionsOptions = {}
+  opts: LoadConfigOptions = {}
 ): Promise<Nitro> {
   // Resolve options
   const options = await loadOptions(config, opts);
