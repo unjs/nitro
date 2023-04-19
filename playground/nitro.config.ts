@@ -1,3 +1,5 @@
 import { defineNitroConfig } from "../src";
 
-export default defineNitroConfig({});
+export default defineNitroConfig({
+  foo: "bar",
+});

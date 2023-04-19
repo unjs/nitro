@@ -1,5 +1,5 @@
 import { resolve, join } from "pathe";
-import { loadConfig } from "c12";
+import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
@@ -8,6 +8,7 @@ import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
+import { consola } from "consola";
 import {
   resolvePath,
   resolveFile,
@@ -103,8 +104,13 @@ const NitroDefaults: NitroConfig = {
   commands: {},
 };
 
+export interface LoadOptionsOptions {
+  watch?: boolean;
+}
+
 export async function loadOptions(
-  configOverrides: NitroConfig = {}
+  configOverrides: NitroConfig = {},
+  opts: LoadOptionsOptions = {}
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
@@ -115,7 +121,9 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
-  const { config, layers } = await loadConfig({
+  const { config, layers } = await (opts.watch ? watchConfig : loadConfig)(<
+    WatchConfigOptions
+  >{
     name: "nitro",
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
@@ -140,6 +148,13 @@ export async function loadOptions(
       return {
         config: matchedPreset,
       };
+    },
+    // onWatch() {},
+    // acceptHMR() { },
+    debounce: false,
+    onUpdate({ getDiff }) {
+      const diff = getDiff();
+      consola.info("Nitro configuration updated:\n" + diff);
     },
   });
   const options = klona(config) as NitroOptions;

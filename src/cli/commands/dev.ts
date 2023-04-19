@@ -15,11 +15,16 @@ export default defineCommand({
   },
   async run({ args }) {
     const rootDir = resolve((args.dir || args._dir || ".") as string);
-    const nitro = await createNitro({
-      rootDir,
-      dev: true,
-      preset: "nitro-dev",
-    });
+    const nitro = await createNitro(
+      {
+        rootDir,
+        dev: true,
+        preset: "nitro-dev",
+      },
+      {
+        watch: true,
+      }
+    );
     const server = createDevServer(nitro);
     await server.listen({});
     await prepare(nitro);
