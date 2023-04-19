@@ -7,14 +7,15 @@ export const cloudflareModule = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/cloudflare-module",
   commands: {
-    preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
-    deploy: "npx wrangler publish",
+    preview: "npx wrangler dev ./server/index.mjs --site ./public --local --no-bundle",
+    deploy: "npx wrangler publish --no-bundle",
   },
   rollupConfig: {
     external: "__STATIC_CONTENT_MANIFEST",
     output: {
       format: "esm",
       exports: "named",
+      inlineDynamicImports: false,
     },
   },
   hooks: {
