@@ -1,4 +1,4 @@
-import { defineNitroConfig } from "nitropack";
+import { defineNitroConfig } from "nitropack/config";
 import errorHandler from "./error";
 
 export default defineNitroConfig({
