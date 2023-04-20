@@ -200,6 +200,9 @@ function deprecateSWR(nitro: Nitro) {
     if (value.cache === false) {
       value.isr = false;
     }
+    if ('static' in value) {
+      value.isr = !value.static;
+    }
     if (value.cache && "swr" in value.cache) {
       value.isr = value.cache.swr;
     }
