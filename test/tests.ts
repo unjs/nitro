@@ -2,7 +2,7 @@ import { resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
-import { expect, it, afterAll } from "vitest";
+import { expect, it, afterAll, beforeAll } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -121,7 +121,7 @@ export function testNitro(
     };
   }
 
-  it("setup handler", async () => {
+  beforeAll(async () => {
     _handler = await getHandler();
   });
 
@@ -296,6 +296,17 @@ export function testNitro(
       additionalTests(ctx, callHandler);
     }
   }
+
+  it("runtime proxy", async () => {
+    const { data } = await callHandler({
+      url: "/api/proxy?foo=bar",
+      headers: {
+        "x-test": "foobar",
+      },
+    });
+    expect(data.headers["x-test"]).toBe("foobar");
+    expect(data.url).toBe("/api/echo?foo=bar");
+  });
 
   it("app config", async () => {
     const { data } = await callHandler({

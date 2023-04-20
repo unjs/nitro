@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "paths": {
       "nitropack": ["./src/index"],
+      "nitropack/config": ["./src/config"],
       "#internal/nitro": ["./src/runtime/index"],
       "#internal/nitro/*": ["./src/runtime/*"]
     }

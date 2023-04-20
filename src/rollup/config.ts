@@ -38,7 +38,7 @@ import { appConfig } from "./plugins/app-config";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
-export const getRollupConfig = (nitro: Nitro) => {
+export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [".ts", ".mjs", ".js", ".json", ".node"];
 
   const nodePreset = nitro.options.node === false ? unenv.nodeless : unenv.node;
@@ -169,7 +169,6 @@ export const getRollupConfig = (nitro: Nitro) => {
     server: true,
     client: false,
     dev: String(nitro.options.dev),
-    RUNTIME_CONFIG: nitro.options.runtimeConfig,
     DEBUG: nitro.options.dev,
   };
 
@@ -183,6 +182,8 @@ export const getRollupConfig = (nitro: Nitro) => {
       values: {
         "typeof window": '"undefined"',
         _import_meta_url_: "import.meta.url",
+        "process.env.RUNTIME_CONFIG": () =>
+          JSON.stringify(nitro.options.runtimeConfig, null, 2),
         ...Object.fromEntries(
           [".", ";", ")", "[", "]", "}", " "].map((d) => [
             `import.meta${d}`,

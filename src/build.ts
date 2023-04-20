@@ -25,7 +25,7 @@ export async function prepare(nitro: Nitro) {
   if (!nitro.options.noPublicDir) {
     await prepareDir(nitro.options.output.publicDir);
   }
-  if (nitro.options.build) {
+  if (!nitro.options.static) {
     await prepareDir(nitro.options.output.serverDir);
   }
 }
@@ -58,7 +58,7 @@ export async function copyPublicAssets(nitro: Nitro) {
 
 export async function build(nitro: Nitro) {
   const rollupConfig = getRollupConfig(nitro);
-  await nitro.hooks.callHook("rollup:before", nitro);
+  await nitro.hooks.callHook("rollup:before", nitro, rollupConfig);
   return nitro.options.dev
     ? _watch(nitro, rollupConfig)
     : _build(nitro, rollupConfig);
@@ -70,9 +70,7 @@ export async function writeTypes(nitro: Nitro) {
     Partial<Record<RouterMethod | "default", string[]>>
   > = {};
 
-  const typesDir = dirname(
-    resolve(nitro.options.buildDir, nitro.options.typescript.tsconfigPath)
-  );
+  const typesDir = resolve(nitro.options.buildDir, "types");
 
   const middleware = [...nitro.scannedHandlers, ...nitro.options.handlers];
 
@@ -172,29 +170,26 @@ declare module 'nitropack' {
     '/// <reference path="./nitro-imports.d.ts" />',
   ];
 
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro-routes.d.ts"),
-    routes.join("\n")
-  );
+  await writeFile(join(typesDir, "nitro-routes.d.ts"), routes.join("\n"));
+
+  await writeFile(join(typesDir, "nitro-config.d.ts"), config.join("\n"));
 
   await writeFile(
-    join(nitro.options.buildDir, "types/nitro-config.d.ts"),
-    config.join("\n")
-  );
-
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro-imports.d.ts"),
+    join(typesDir, "nitro-imports.d.ts"),
     [...autoImportedTypes, "export {}"].join("\n")
   );
 
-  await writeFile(
-    join(nitro.options.buildDir, "types/nitro.d.ts"),
-    declarations.join("\n")
-  );
-
+  await writeFile(join(typesDir, "nitro.d.ts"), declarations.join("\n"));
   if (nitro.options.typescript.generateTsConfig) {
+    const tsConfigPath = resolve(
+      nitro.options.buildDir,
+      nitro.options.typescript.tsconfigPath
+    );
+    const tsconfigDir = dirname(tsConfigPath);
     const tsConfig: TSConfig = {
       compilerOptions: {
+        forceConsistentCasingInFileNames: true,
+        strict: nitro.options.typescript.strict,
         target: "ESNext",
         module: "ESNext",
         moduleResolution: "Node",
@@ -208,20 +203,17 @@ declare module 'nitropack' {
           : {},
       },
       include: [
-        relative(
-          typesDir,
-          join(nitro.options.buildDir, "types/nitro.d.ts")
-        ).replace(/^(?=[^.])/, "./"),
-        join(relative(typesDir, nitro.options.rootDir), "**/*"),
+        relative(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
+          /^(?=[^.])/,
+          "./"
+        ),
+        join(relative(tsconfigDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir !== nitro.options.rootDir
-          ? [join(relative(typesDir, nitro.options.srcDir), "**/*")]
+          ? [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]
           : []),
       ],
     };
-    await writeFile(
-      resolve(nitro.options.buildDir, nitro.options.typescript.tsconfigPath),
-      JSON.stringify(tsConfig, null, 2)
-    );
+    await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 2));
   }
 }
 
@@ -257,7 +249,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   await writeTypes(nitro);
   await _snapshot(nitro);
 
-  if (nitro.options.build) {
+  if (!nitro.options.static) {
     nitro.logger.info(
       `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
     );
@@ -281,15 +273,16 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   };
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
 
-  if (nitro.options.build) {
+  if (!nitro.options.static) {
     nitro.logger.success("Nitro server built");
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
         await generateFSTree(nitro.options.output.serverDir)
       );
     }
-    await nitro.hooks.callHook("compiled", nitro);
   }
+
+  await nitro.hooks.callHook("compiled", nitro);
 
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
@@ -383,6 +376,8 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     rollupWatcher.close();
     reloadWacher.close();
   });
+
+  nitro.hooks.hook("rollup:reload", () => reload());
 
   await reload();
 }
