@@ -297,6 +297,17 @@ export function testNitro(
     }
   }
 
+  it("runtime proxy", async () => {
+    const { data } = await callHandler({
+      url: "/api/proxy?foo=bar",
+      headers: {
+        "x-test": "foobar",
+      },
+    });
+    expect(data.headers["x-test"]).toBe("foobar");
+    expect(data.url).toBe("/api/echo?foo=bar");
+  });
+
   it("config", async () => {
     const { data } = await callHandler({
       url: "/config",
