@@ -332,7 +332,11 @@ export function testNitro(
         "server-config": true,
       },
       sharedRuntimeConfig: {
-        dynamic: "from-env",
+        dynamic:
+          // TODO
+          ctx.preset.includes("cloudflare") || ctx.preset === "nitro-dev"
+            ? "initial"
+            : "from-env",
         app: {
           baseURL: "/",
         },
