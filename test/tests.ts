@@ -308,19 +308,40 @@ export function testNitro(
     expect(data.url).toBe("/api/echo?foo=bar");
   });
 
-  it("app config", async () => {
+  it("config", async () => {
     const { data } = await callHandler({
-      url: "/app-config",
+      url: "/config",
     });
-    expect(data).toMatchInlineSnapshot(`
-      {
-        "appConfig": {
-          "app-config": true,
-          "nitro-config": true,
-          "server-config": true,
+    expect(data).toMatchObject({
+      appConfig: {
+        dynamic: "from-middleware",
+        "app-config": true,
+        "nitro-config": true,
+        "server-config": true,
+      },
+      runtimeConfig: {
+        dynamic: "from-env",
+        app: {
+          baseURL: "/",
         },
-      }
-    `);
+      },
+      sharedAppConfig: {
+        dynamic: "initial",
+        "app-config": true,
+        "nitro-config": true,
+        "server-config": true,
+      },
+      sharedRuntimeConfig: {
+        dynamic:
+          // TODO
+          ctx.preset.includes("cloudflare") || ctx.preset === "nitro-dev"
+            ? "initial"
+            : "from-env",
+        app: {
+          baseURL: "/",
+        },
+      },
+    });
   });
 
   if (ctx.nitro!.options.timing) {
