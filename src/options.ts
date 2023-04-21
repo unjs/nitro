@@ -1,5 +1,5 @@
 import { resolve, join } from "pathe";
-import { loadConfig } from "c12";
+import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
@@ -103,8 +103,14 @@ const NitroDefaults: NitroConfig = {
   commands: {},
 };
 
+export interface LoadConfigOptions {
+  watch?: boolean;
+  c12?: WatchConfigOptions;
+}
+
 export async function loadOptions(
-  configOverrides: NitroConfig = {}
+  configOverrides: NitroConfig = {},
+  opts: LoadConfigOptions = {}
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
@@ -115,7 +121,10 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
-  const { config, layers } = await loadConfig({
+  globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
+  const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
+    WatchConfigOptions
+  >{
     name: "nitro",
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
@@ -128,6 +137,12 @@ export async function loadOptions(
       preset: detectTarget() || "node-server",
     },
     defaults: NitroDefaults,
+    jitiOptions: {
+      alias: {
+        nitropack: "nitropack/config",
+        "nitropack/config": "nitropack/config",
+      },
+    },
     resolve(id: string) {
       const presets = _PRESETS as any as Map<string, NitroConfig>;
       let matchedPreset = presets[camelCase(id)] || presets[id];
@@ -141,13 +156,15 @@ export async function loadOptions(
         config: matchedPreset,
       };
     },
+    ...opts.c12,
   });
-  const options = klona(config) as NitroOptions;
+  const options = klona(c12Config.config) as NitroOptions;
   options._config = configOverrides;
+  options._c12 = c12Config;
 
   options.preset =
     presetOverride ||
-    (layers.find((l) => l.config.preset)?.config.preset as string) ||
+    (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
     (detectTarget({ static: options.static }) ?? "node-server");
 
   options.rootDir = resolve(options.rootDir || ".");
@@ -264,72 +281,13 @@ export async function loadOptions(
   // Backward compatibility for options.routes
   options.routeRules = defu(options.routeRules, (options as any).routes || {});
 
-  // Normalize route rules (NitroRouteConfig => NitroRouteRules)
-  const normalizedRules: { [p: string]: NitroRouteRules } = {};
-  for (const path in options.routeRules) {
-    const routeConfig = options.routeRules[path] as NitroRouteConfig;
-    const routeRules: NitroRouteRules = {
-      ...routeConfig,
-      redirect: undefined,
-      proxy: undefined,
-    };
-    // Redirect
-    if (routeConfig.redirect) {
-      routeRules.redirect = {
-        to: "/",
-        statusCode: 307,
-        ...(typeof routeConfig.redirect === "string"
-          ? { to: routeConfig.redirect }
-          : routeConfig.redirect),
-      };
-    }
-    // Proxy
-    if (routeConfig.proxy) {
-      routeRules.proxy =
-        typeof routeConfig.proxy === "string"
-          ? { to: routeConfig.proxy }
-          : routeConfig.proxy;
-      if (path.endsWith("/**")) {
-        // Internal flag
-        (routeRules.proxy as any)._proxyStripBase = path.slice(0, -3);
-      }
-    }
-    // CORS
-    if (routeConfig.cors) {
-      routeRules.headers = {
-        "access-control-allow-origin": "*",
-        "access-control-allow-methods": "*",
-        "access-control-allow-headers": "*",
-        "access-control-max-age": "0",
-        ...routeRules.headers,
-      };
-    }
-    // Cache: swr
-    if (routeConfig.swr) {
-      routeRules.cache = routeRules.cache || {};
-      routeRules.cache.swr = true;
-      if (typeof routeConfig.swr === "number") {
-        routeRules.cache.maxAge = routeConfig.swr;
-      }
-    }
-    // Cache: false
-    if (routeConfig.cache === false) {
-      routeRules.cache = false;
-    }
-    normalizedRules[path] = routeRules;
-  }
-  options.routeRules = normalizedRules;
+  // Normalize route rules
+  options.routeRules = normalizeRouteRules(options);
 
   options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
 
-  provideFallbackValues(options.runtimeConfig);
-  options.runtimeConfig = defu(options.runtimeConfig, {
-    app: {
-      baseURL: options.baseURL,
-    },
-    nitro: {},
-  });
-  options.runtimeConfig.nitro.routeRules = options.routeRules;
+  // Normalize runtime config
+  options.runtimeConfig = normalizeRuntimeConfig(options);
 
   for (const publicAsset of options.publicAssets) {
     publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
@@ -381,6 +339,80 @@ export async function loadOptions(
   return options;
 }
 
+/**
+ * @deprecated Please import `defineNitroConfig` from nitropack/config instead
+ */
 export function defineNitroConfig(config: NitroConfig): NitroConfig {
   return config;
+}
+
+export function normalizeRuntimeConfig(config: NitroConfig) {
+  provideFallbackValues(config.runtimeConfig);
+  const runtimeConfig = defu(config.runtimeConfig, {
+    app: {
+      baseURL: config.baseURL,
+    },
+    nitro: {},
+  });
+  runtimeConfig.nitro.routeRules = config.routeRules;
+  return runtimeConfig;
+}
+
+export function normalizeRouteRules(
+  config: NitroConfig
+): Record<string, NitroRouteRules> {
+  const normalizedRules: Record<string, NitroRouteRules> = {};
+  for (const path in config.routeRules) {
+    const routeConfig = config.routeRules[path] as NitroRouteConfig;
+    const routeRules: NitroRouteRules = {
+      ...routeConfig,
+      redirect: undefined,
+      proxy: undefined,
+    };
+    // Redirect
+    if (routeConfig.redirect) {
+      routeRules.redirect = {
+        to: "/",
+        statusCode: 307,
+        ...(typeof routeConfig.redirect === "string"
+          ? { to: routeConfig.redirect }
+          : routeConfig.redirect),
+      };
+    }
+    // Proxy
+    if (routeConfig.proxy) {
+      routeRules.proxy =
+        typeof routeConfig.proxy === "string"
+          ? { to: routeConfig.proxy }
+          : routeConfig.proxy;
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.proxy as any)._proxyStripBase = path.slice(0, -3);
+      }
+    }
+    // CORS
+    if (routeConfig.cors) {
+      routeRules.headers = {
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "*",
+        "access-control-allow-headers": "*",
+        "access-control-max-age": "0",
+        ...routeRules.headers,
+      };
+    }
+    // Cache: swr
+    if (routeConfig.swr) {
+      routeRules.cache = routeRules.cache || {};
+      routeRules.cache.swr = true;
+      if (typeof routeConfig.swr === "number") {
+        routeRules.cache.maxAge = routeConfig.swr;
+      }
+    }
+    // Cache: false
+    if (routeConfig.cache === false) {
+      routeRules.cache = false;
+    }
+    normalizedRules[path] = routeRules;
+  }
+  return normalizedRules;
 }

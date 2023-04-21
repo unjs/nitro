@@ -2,7 +2,7 @@ import { resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
-import { expect, it, afterAll } from "vitest";
+import { expect, it, afterAll, beforeAll } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -121,7 +121,7 @@ export function testNitro(
     };
   }
 
-  it("setup handler", async () => {
+  beforeAll(async () => {
     _handler = await getHandler();
   });
 
@@ -297,19 +297,51 @@ export function testNitro(
     }
   }
 
-  it("app config", async () => {
+  it("runtime proxy", async () => {
     const { data } = await callHandler({
-      url: "/app-config",
+      url: "/api/proxy?foo=bar",
+      headers: {
+        "x-test": "foobar",
+      },
     });
-    expect(data).toMatchInlineSnapshot(`
-      {
-        "appConfig": {
-          "app-config": true,
-          "nitro-config": true,
-          "server-config": true,
+    expect(data.headers["x-test"]).toBe("foobar");
+    expect(data.url).toBe("/api/echo?foo=bar");
+  });
+
+  it("config", async () => {
+    const { data } = await callHandler({
+      url: "/config",
+    });
+    expect(data).toMatchObject({
+      appConfig: {
+        dynamic: "from-middleware",
+        "app-config": true,
+        "nitro-config": true,
+        "server-config": true,
+      },
+      runtimeConfig: {
+        dynamic: "from-env",
+        app: {
+          baseURL: "/",
         },
-      }
-    `);
+      },
+      sharedAppConfig: {
+        dynamic: "initial",
+        "app-config": true,
+        "nitro-config": true,
+        "server-config": true,
+      },
+      sharedRuntimeConfig: {
+        dynamic:
+          // TODO
+          ctx.preset.includes("cloudflare") || ctx.preset === "nitro-dev"
+            ? "initial"
+            : "from-env",
+        app: {
+          baseURL: "/",
+        },
+      },
+    });
   });
 
   if (ctx.nitro!.options.timing) {

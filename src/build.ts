@@ -58,7 +58,7 @@ export async function copyPublicAssets(nitro: Nitro) {
 
 export async function build(nitro: Nitro) {
   const rollupConfig = getRollupConfig(nitro);
-  await nitro.hooks.callHook("rollup:before", nitro);
+  await nitro.hooks.callHook("rollup:before", nitro, rollupConfig);
   return nitro.options.dev
     ? _watch(nitro, rollupConfig)
     : _build(nitro, rollupConfig);
@@ -376,6 +376,8 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     rollupWatcher.close();
     reloadWacher.close();
   });
+
+  nitro.hooks.hook("rollup:reload", () => reload());
 
   await reload();
 }

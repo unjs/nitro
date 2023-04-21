@@ -1,7 +1,7 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
 import { $Fetch } from "../..";
-import { defineNitroConfig } from "../../src/options";
+import { defineNitroConfig } from "../../src/config";
 
 interface TestResponse {
   message: string;
