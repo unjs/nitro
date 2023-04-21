@@ -324,6 +324,18 @@ export async function loadOptions(
   // Resolve plugin paths
   options.plugins = options.plugins.map((p) => resolvePath(p, options));
 
+  // Add open-api endpoint
+  if (options.dev) {
+    options.handlers.push({
+      route: "/_nitro/openapi.json",
+      handler: "#internal/nitro/routes/openapi",
+    });
+    options.handlers.push({
+      route: "/_nitro/swagger",
+      handler: "#internal/nitro/routes/swagger",
+    });
+  }
+
   return options;
 }
 
