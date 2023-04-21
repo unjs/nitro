@@ -11,11 +11,12 @@ const ENV_PREFIX_ALT =
   _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_";
 
 // Runtime config
-const _sharedRuntimeConfig = klona(_inlineRuntimeConfig);
+const _sharedRuntimeConfig = _deepFreeze(
+  _applyEnv(klona(_inlineRuntimeConfig))
+);
 export function useRuntimeConfig(event?: H3Event) {
   // Backwards compatibility with ambient context
   if (!event) {
-    _overrideConfig(_sharedRuntimeConfig);
     return _sharedRuntimeConfig;
   }
   // Reuse cached runtime config from event context
@@ -24,13 +25,13 @@ export function useRuntimeConfig(event?: H3Event) {
   }
   // Prepare runtime config for event context
   const runtimeConfig = klona(_inlineRuntimeConfig);
-  _overrideConfig(runtimeConfig);
+  _applyEnv(runtimeConfig);
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;
 }
 
 // App config
-const _sharedAppConfig = klona(_inlineAppConfig);
+const _sharedAppConfig = _deepFreeze(klona(_inlineAppConfig));
 export function useAppConfig(event?: H3Event) {
   // Backwards compatibility with ambient context
   if (!event) {
@@ -59,7 +60,7 @@ function _isObject(input: unknown) {
   return typeof input === "object" && !Array.isArray(input);
 }
 
-function _overrideConfig(obj: object, parentKey = "") {
+function _applyEnv(obj: object, parentKey = "") {
   for (const key in obj) {
     const subKey = parentKey ? `${parentKey}_${key}` : key;
     const envValue = _getEnv(subKey);
@@ -67,11 +68,23 @@ function _overrideConfig(obj: object, parentKey = "") {
       if (_isObject(envValue)) {
         obj[key] = { ...obj[key], ...envValue };
       }
-      _overrideConfig(obj[key], subKey);
+      _applyEnv(obj[key], subKey);
     } else {
       obj[key] = envValue ?? obj[key];
     }
   }
+  return obj;
+}
+
+function _deepFreeze(object: Record<string, any>) {
+  const propNames = Object.getOwnPropertyNames(object);
+  for (const name of propNames) {
+    const value = object[name];
+    if (value && typeof value === "object") {
+      _deepFreeze(value);
+    }
+  }
+  return Object.freeze(object);
 }
 
 // --- Deprecated default export ---
