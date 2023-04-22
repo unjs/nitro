@@ -72,8 +72,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       dot-prop:
-        specifier: ^7.2.0
-        version: 7.2.0
+        specifier: ^8.0.0
+        version: 8.0.0
       esbuild:
         specifier: ^0.17.17
         version: 0.17.17
@@ -2226,11 +2226,11 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /dot-prop@7.2.0:
-    resolution: {integrity: sha512-Ol/IPXUARn9CSbkrdV4VJo7uCy1I3VuSiWCaFSg+8BdUOzF9n3jefIpcgAydvUZbTdEBZs2vEiTiS9m61ssiDA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+  /dot-prop@8.0.0:
+    resolution: {integrity: sha512-XHcoBL9YPvqIz6K9m9TLf9+6Iyf2ix6yYN+sZ4AI8JPg+8XQpm05V6qzPFZYzyuHfr496TqKlhzHuEvW4ME7Pw==}
+    engines: {node: '>=16'}
     dependencies:
-      type-fest: 2.19.0
+      type-fest: 3.8.0
     dev: false
 
   /dotenv@10.0.0:
@@ -5053,9 +5053,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /type-fest@2.19.0:
-    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
-    engines: {node: '>=12.20'}
+  /type-fest@3.8.0:
+    resolution: {integrity: sha512-FVNSzGQz9Th+/9R6Lvv7WIAkstylfHN2/JYxkyhhmKFYh9At2DST8t6L6Lref9eYO8PXFTfG9Sg1Agg0K3vq3Q==}
+    engines: {node: '>=14.16'}
     dev: false
 
   /typed-array-length@1.0.4:
