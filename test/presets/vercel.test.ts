@@ -107,12 +107,20 @@ describe("nitro:preset:vercel", async () => {
                 "handle": "filesystem",
               },
               {
+                "dest": "/rules/_/noncached/cached?url=$url",
+                "src": "/rules/_/noncached/cached",
+              },
+              {
                 "dest": "/__nitro",
                 "src": "/rules/_/cached/noncached",
               },
               {
                 "dest": "/__nitro",
                 "src": "(?<url>/rules/_/noncached/.*)",
+              },
+              {
+                "dest": "/__nitro--rules---cached?url=$url",
+                "src": "(?<url>/rules/_/cached/.*)",
               },
               {
                 "dest": "/__nitro",
@@ -125,6 +133,14 @@ describe("nitro:preset:vercel", async () => {
               {
                 "dest": "/__nitro--rules-isr-ttl?url=$url",
                 "src": "(?<url>/rules/isr-ttl/.*)",
+              },
+              {
+                "dest": "/__nitro--rules-swr?url=$url",
+                "src": "(?<url>/rules/swr/.*)",
+              },
+              {
+                "dest": "/__nitro--rules-swr-ttl?url=$url",
+                "src": "(?<url>/rules/swr-ttl/.*)",
               },
               {
                 "dest": "/__nitro",

@@ -45,7 +45,11 @@ describe("nitro:preset:netlify", async () => {
       /rules/nested/*	/base	302
       /rules/redirect	/base	302
       /rules/_/cached/noncached	/.netlify/functions/server 200
+      /rules/_/noncached/cached	/.netlify/builders/server 200
+      /rules/_/cached/*	/.netlify/builders/server 200
       /rules/_/noncached/*	/.netlify/functions/server 200
+      /rules/swr-ttl/*	/.netlify/builders/server 200
+      /rules/swr/*	/.netlify/builders/server 200
       /rules/isr-ttl/*	/.netlify/builders/server 200
       /rules/isr/*	/.netlify/builders/server 200
       /rules/dynamic	/.netlify/functions/server 200

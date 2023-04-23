@@ -1,6 +1,6 @@
 import type { H3EventHandler, LazyEventHandler, RouterMethod } from "h3";
 
-type HandlerDefinition = {
+export type HandlerDefinition = {
   route: string;
   lazy?: boolean;
   middleware?: boolean;
@@ -12,3 +12,10 @@ type HandlerDefinition = {
 };
 
 export const handlers: HandlerDefinition[];
+
+export type HandlerMeta = {
+  route: string;
+  method?: RouterMethod;
+};
+
+export const handlersMeta: HandlerMeta[];
