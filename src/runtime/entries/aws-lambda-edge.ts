@@ -21,7 +21,7 @@ export const handler = async function handler(
     headers: normalizeIncomingHeaders(request.headers),
     method: request.method,
     query: request.querystring,
-    body: request.body,
+    body: normalizeBody(request.body),
   });
 
   return {
@@ -30,6 +30,21 @@ export const handler = async function handler(
     body: r.body.toString(),
   };
 };
+
+function normalizeBody(
+  body: CloudFrontRequestEvent["Records"][0]["cf"]["request"]["body"]
+) {
+  if (typeof body === "undefined") {
+    return body;
+  }
+
+  let bodyString = body.data;
+  if (typeof body.encoding !== "undefined" && body.encoding === "base64") {
+    bodyString = Buffer.from(body.data, "base64").toString("utf8");
+    bodyString = decodeURIComponent(bodyString);
+  }
+  return bodyString;
+}
 
 function normalizeIncomingHeaders(headers: CloudFrontHeaders) {
   return Object.fromEntries(
@@ -43,8 +58,12 @@ function normalizeIncomingHeaders(headers: CloudFrontHeaders) {
 function normalizeOutgoingHeaders(
   headers: Record<string, string | string[] | undefined>
 ): CloudFrontHeaders {
+  const entries = Object.fromEntries(
+    Object.entries(headers).filter(([key]) => !["content-length"].includes(key))
+  );
+
   return Object.fromEntries(
-    Object.entries(headers).map(([k, v]) => [
+    Object.entries(entries).map(([k, v]) => [
       k,
       Array.isArray(v) ? v.map((value) => ({ value })) : [{ value: v }],
     ])
