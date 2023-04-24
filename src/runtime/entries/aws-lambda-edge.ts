@@ -38,10 +38,10 @@ function normalizeBody(
     return body;
   }
 
-  let bodyString = body.data;
+  const bodyString = body;
   if (typeof body.encoding !== "undefined" && body.encoding === "base64") {
-    bodyString = Buffer.from(body.data, "base64").toString("utf8");
-    bodyString = decodeURIComponent(bodyString);
+    bodyString.data = Buffer.from(body.data, "base64").toString("utf8");
+    bodyString.data = decodeURIComponent(bodyString.data);
   }
   return bodyString;
 }
