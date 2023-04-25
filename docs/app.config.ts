@@ -4,7 +4,7 @@ export default defineAppConfig({
     header: {
       logo: true,
     },
-    description: "Create, build and deploy universal web servers everywhere.",
+    description: "Create web servers that run anywhere.",
     url: "https://nitro.unjs.io",
     image: "/cover.png",
     socials: {
