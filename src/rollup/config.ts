@@ -73,7 +73,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       entryFileNames: "index.mjs",
       chunkFileNames(chunkInfo) {
         let prefix = "";
-        const lastModule = normalize(chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1]);
+        const lastModule = normalize(
+          chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1]
+        );
         if (lastModule.startsWith(buildServerDir)) {
           prefix = join("app", relative(buildServerDir, dirname(lastModule)));
         } else if (lastModule.startsWith(runtimeAppDir)) {
