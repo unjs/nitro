@@ -104,10 +104,13 @@ export const vercelEdge = defineNitroPreset({
         nitro.options.output.serverDir,
         ".vc-config.json"
       );
-      const functionConfig = {
+      const functionConfig: Record<string, any> = {
         runtime: "edge",
         entrypoint: "index.mjs",
       };
+      if (nitro.options.vercel?.regions) {
+        functionConfig.regions = nitro.options.vercel.regions;
+      }
       await writeFile(
         functionConfigPath,
         JSON.stringify(functionConfig, null, 2)
