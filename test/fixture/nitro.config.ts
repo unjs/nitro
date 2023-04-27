@@ -11,6 +11,12 @@ export default defineNitroConfig({
       },
     ],
   },
+  handlers: [
+    {
+      route: "/api/test/*/foo",
+      handler: "~/api/hello.ts",
+    },
+  ],
   devProxy: {
     "/proxy/example": { target: "https://example.com", changeOrigin: true },
   },
@@ -22,6 +28,10 @@ export default defineNitroConfig({
   ],
   appConfig: {
     "nitro-config": true,
+    dynamic: "initial",
+  },
+  runtimeConfig: {
+    dynamic: "initial",
   },
   appConfigFiles: ["~/server.config.ts"],
   publicAssets: [
