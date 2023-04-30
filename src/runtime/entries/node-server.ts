@@ -7,33 +7,47 @@ import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
 import { useRuntimeConfig } from "#internal/nitro";
 
-const cert = process.env.NITRO_SSL_CERT;
-const key = process.env.NITRO_SSL_KEY;
-
-const server =
-  cert && key
-    ? new HttpsServer({ key, cert }, toNodeListener(nitroApp.h3App))
-    : new HttpServer(toNodeListener(nitroApp.h3App));
-
-const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
-  3000) as number;
-const host = process.env.NITRO_HOST || process.env.HOST;
-
-// @ts-ignore
-const s = server.listen(port, host, (err) => {
+const listener = (err) => {
   if (err) {
     console.error(err);
     // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   }
-  const protocol = cert && key ? "https" : "http";
-  const i = s.address() as AddressInfo;
-  const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-  const url = `${protocol}://${
-    i.family === "IPv6" ? `[${i.address}]` : i.address
-  }:${i.port}${baseURL}`;
+  if (process.env.NITRO_SOCKET) {
+    const url = `http+unix://${process.env.NITRO_SOCKET}`;
+  } else {
+    const protocol = cert && key ? "https" : "http";
+    const i = s.address();
+    const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
+    const url = `${protocol}://${
+      i.family === "IPv6" ? `[${i.address}]` : i.address
+    }:${i.port}${baseURL}`;
+  }
   console.log(`Listening ${url}`);
-});
+}
+
+if (process.env.NITRO_SOCKET) {
+  // @ts-ignore
+  const s = createServer(toNodeListener(nitroApp.h3App)).listen(
+    process.env.NITRO_SOCKET,
+    listener
+  );
+} else {
+  const cert = process.env.NITRO_SSL_CERT;
+  const key = process.env.NITRO_SSL_KEY;
+
+  const server =
+    cert && key
+      ? new HttpsServer({ key, cert }, toNodeListener(nitroApp.h3App))
+      : new HttpServer(toNodeListener(nitroApp.h3App));
+
+  const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
+    3000) as number;
+  const host = process.env.NITRO_HOST || process.env.HOST;
+
+  // @ts-ignore
+  const s = server.listen(port, host, listener);
+}
 
 if (process.env.DEBUG) {
   process.on("unhandledRejection", (err) =>
