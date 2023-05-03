@@ -181,16 +181,20 @@ export function defineCachedEventHandler<T = any>(
       if (key) {
         return escapeKey(key);
       }
-      const varyParts =
-        opts.varies?.map((varyHeader) => event.node.req.headers[varyHeader]) ??
-        "";
+      const varyParts = opts.varies?.map((varyHeader) => {
+        const key = varyHeader.toLowerCase();
+        const value = event.node.req.headers[key];
+        if (value) {
+          return `${key}_${value}`;
+        }
+      });
       const url = event.node.req.originalUrl || event.node.req.url;
       const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
         0,
         16
       );
       const urlHash = hash(`${varyParts}${url}`);
-      return `${friendlyName}.${urlHash}`;
+      return `${varyParts}_${friendlyName}.${urlHash}`;
     },
     validate: (entry) => {
       if (entry.value.code >= 400) {
@@ -208,7 +212,8 @@ export function defineCachedEventHandler<T = any>(
   const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
     async (incomingEvent: H3Event) => {
       // Only pass headers which are defined in opts.varies
-      const filteredHeaders = opts.varies?.reduce((obj, key) => {
+      const filteredHeaders = opts.varies?.reduce((obj, varyHeader) => {
+        const key = varyHeader.toLowerCase();
         obj[key] = incomingEvent.node.req.headers[key];
         return obj;
       }, {});
