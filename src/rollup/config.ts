@@ -73,7 +73,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       entryFileNames: "index.mjs",
       chunkFileNames(chunkInfo) {
         let prefix = "";
-        const lastModule = chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1];
+        const lastModule = normalize(
+          chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1]
+        );
         if (lastModule.startsWith(buildServerDir)) {
           prefix = join("app", relative(buildServerDir, dirname(lastModule)));
         } else if (lastModule.startsWith(runtimeAppDir)) {
@@ -169,7 +171,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     server: true,
     client: false,
     dev: String(nitro.options.dev),
-    RUNTIME_CONFIG: nitro.options.runtimeConfig,
     DEBUG: nitro.options.dev,
   };
 
@@ -183,6 +184,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       values: {
         "typeof window": '"undefined"',
         _import_meta_url_: "import.meta.url",
+        "process.env.RUNTIME_CONFIG": () =>
+          JSON.stringify(nitro.options.runtimeConfig, null, 2),
         ...Object.fromEntries(
           [".", ";", ")", "[", "]", "}", " "].map((d) => [
             `import.meta${d}`,

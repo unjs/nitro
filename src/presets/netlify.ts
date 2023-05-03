@@ -17,6 +17,7 @@ export const netlify = defineNitroPreset({
     },
   },
   hooks: {
+    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);
@@ -38,6 +39,9 @@ export const netlify = defineNitroPreset({
 export const netlifyBuilder = defineNitroPreset({
   extends: "netlify",
   entry: "#internal/nitro/entries/netlify-builder",
+  hooks: {
+    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+  },
 });
 
 // Netlify edge
@@ -55,6 +59,7 @@ export const netlifyEdge = defineNitroPreset({
     },
   },
   hooks: {
+    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
       const manifest = {
         version: 1,
@@ -84,6 +89,7 @@ export const netlifyStatic = defineNitroPreset({
     preview: "npx serve ./static",
   },
   hooks: {
+    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);
@@ -183,4 +189,28 @@ async function writeHeaders(nitro: Nitro) {
   }
 
   await fsp.writeFile(headersPath, contents);
+}
+
+function deprecateSWR(nitro: Nitro) {
+  let hasLegacyOptions = false;
+  for (const [key, value] of Object.entries(nitro.options.routeRules)) {
+    if ("isr" in value) {
+      continue;
+    }
+    if (value.cache === false) {
+      value.isr = false;
+    }
+    if ("static" in value) {
+      value.isr = !value.static;
+    }
+    if (value.cache && "swr" in value.cache) {
+      value.isr = value.cache.swr;
+    }
+    hasLegacyOptions = hasLegacyOptions || "isr" in value;
+  }
+  if (hasLegacyOptions) {
+    console.warn(
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the next major release."
+    );
+  }
 }

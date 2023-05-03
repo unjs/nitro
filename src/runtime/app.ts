@@ -60,6 +60,8 @@ function createNitroApp(): NitroApp {
   // A generic event handler give nitro acess to the requests
   h3App.use(
     eventHandler((event) => {
+      // Init nitro context
+      event.context.nitro = event.context.nitro || {};
       // Support platform context provided by local fetch
       const envContext = (event.node.req as any).__unenv__;
       if (envContext) {

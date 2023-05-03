@@ -37,4 +37,4 @@ In order to enable this target, please set `NITRO_PRESET` environment variable t
 
 ## Custom Build Output Configuration
 
-You can provide additional [build output configuration](https://vercel.com/docs/build-output-api/v3) using `vercel.config` key inside `nitro.config`. It will be merged with build-in auto generated config.
+You can provide additional [build output configuration](https://vercel.com/docs/build-output-api/v3) using `vercel.config` key inside `nitro.config`. It will be merged with built-in auto generated config.
