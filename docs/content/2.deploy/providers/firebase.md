@@ -103,23 +103,25 @@ It works the same as the [`firebase`](#firebase) preset above, but uses the V2 f
 
 **Note**: Follow the instructions for the `firebase` preset above for setup and deploy.
 
-The `firebaseV2` preset also supports passing options to the firebase function via the nitro runtime config. For example, to set the region and max instances of the function, you can add the following to your `nitro.config.ts`:
+The `firebaseV2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebaseV2.httpRequestOptions`.
+
+The `httpRequestOptions` object is passed to `functions.https.onRequest()` function as the first argument as per the [firebase docs](https://firebase.google.com/docs/functions/beta/http-events#trigger_a_function_with_an_http_request).
+
+For example, to set the region and max instances of the function, you can add the following to your `nitro.config.ts`:
 
 ```ts
-runtimeConfig: {
+import { defineNitroConfig } from 'nitropack/config'
+
+export default defineNitroConfig({
+  // Nitro options...
   firebaseV2: {
-    httpRequestOptions: <HttpsOptions>{
+    httpRequestOptions: {
       region: "europe-west1",
       maxInstances: 3,
+      // etc.
     };
   }
-}
+})
 ```
 
-The type `HttpsOptions` can be imported from the `firebase-functions` package:
-
-```ts
-import { HttpsOptions } from 'firebase-functions/lib/v2/providers/https'`
-```
-
-The documentation for these options can be found in the [firebase functions 2nd gen docs](https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions).
+The documentation for the `httpRequestOptions` option can be found in the [firebase functions 2nd gen docs](https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions).
