@@ -1,3 +1,5 @@
+import { HttpsOptions } from "firebase-functions/lib/v2/providers/https";
+
 /**
  * Vercel Build Output Configuration
  * @see https://vercel.com/docs/build-output-api/v3
@@ -65,5 +67,13 @@ export interface PresetOptions {
       maxDuration: number;
       [key: string]: unknown;
     };
+  };
+  firebaseV2: {
+    /**
+     * Firebase functions v2 (2nd gen) Configuration
+     * @see https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions
+     * @see
+     */
+    httpRequestOptions: HttpsOptions;
   };
 }
