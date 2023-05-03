@@ -15,7 +15,8 @@ export function importMeta(nitro: Nitro): Plugin {
         return;
       }
       const url =
-        nitro.options.node && isEntry
+        (nitro.options.preset === 'bun' ||
+        nitro.options.node) && isEntry
           ? "_import_meta_url_"
           : '"file:///_entry.js"';
       const env = nitro.options.node ? "process.env" : "{}";

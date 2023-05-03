@@ -2,6 +2,7 @@ export * from "./aws-lambda";
 export * from "./azure-functions";
 export * from "./azure";
 export * from "./base-worker";
+export * from "./bun";
 export * from "./cloudflare-module";
 export * from "./cloudflare-pages";
 export * from "./cloudflare";
