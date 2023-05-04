@@ -68,7 +68,7 @@
     "chokidar": "^3.5.3",
     "citty": "^0.1.1",
     "consola": "^3.1.0",
-    "cookie-es": "^0.5.0",
+    "cookie-es": "^1.0.0",
     "defu": "^6.1.2",
     "destr": "^1.2.2",
     "dot-prop": "^7.2.0",
