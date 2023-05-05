@@ -77,14 +77,14 @@ export default defineNuxtConfig({
 ::
 
 ::alert
-You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables or pass `url` and `token` to driver options. Check [unstorage docs](https://unstorage.unjs.io/drivers/vercel-kv) for more information about driver usage.
+You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables or pass `url` and `token` to driver options. Check [driver docs](https://unstorage.unjs.io/drivers/vercel-kv) for more information about usage.
 ::
 
 You can now access data store in any event handler:
 
 ```ts
 export default eventHandler(async (event) => {
-  const dataStorage = await useStorage("data");
+  const dataStorage = useStorage("data");
   await dataStorage.setItem("hello", "world");
   return {
     hello: await dataStorage.getItem("hello"),
