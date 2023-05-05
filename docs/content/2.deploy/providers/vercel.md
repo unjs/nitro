@@ -35,14 +35,15 @@ It is possible to deploy your nitro applications directly on [Vercel Edge Functi
 
 In order to enable this target, please set `NITRO_PRESET` environment variable to `vercel-edge`.
 
-## Vercel Storage
+## Vercel KV Storage
 
-Nitro has built-in support for [Vercel KV storage](https://vercel.com/docs/storage/vercel-kv) and can be integrated with [Storage/Layer](/guide/storage).
+You can easily use [Vercel KV Storage](https://vercel.com/docs/storage/vercel-kv) with [Nitro Storage](/guide/storage).
 
+::alert{type="warning"}
+This feature is currently in beta. Please check [driver docs](https://unstorage.unjs.io/drivers/vercel-kv).
+::
 
-### Usage
-
-1. Install `@vercel/kv` as a dev dependency:
+1. Install `@vercel/kv` dependency:
 
 ```json [package.json]
 {
