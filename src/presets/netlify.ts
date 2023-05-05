@@ -17,7 +17,11 @@ export const netlify = defineNitroPreset({
     },
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      if (!nitro.options.future.nativeSWR) {
+        deprecateSWR(nitro);
+      }
+    },
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);
@@ -210,7 +214,7 @@ function deprecateSWR(nitro: Nitro) {
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the next major release."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions."
     );
   }
 }
