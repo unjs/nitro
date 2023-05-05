@@ -1,11 +1,11 @@
 {
-  "name": "example-hello-world",
-  "private": true,
-  "scripts": {
-    "dev": "nitro dev",
-    "build": "nitro build"
+  name: "example-hello-world",
+  private: true,
+  scripts: {
+    dev: "nitro dev",
+    build: "nitro build"
   },
-  "devDependencies": {
-    "nitropack": "latest"
+  devDependencies: {
+    nitropack: "npm:nitropack-edge@latest"
   }
 }

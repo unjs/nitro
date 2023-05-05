@@ -6,6 +6,6 @@
     "build": "nitro build"
   },
   "devDependencies": {
-    "nitropack": "latest"
+    "nitropack": "npm:nitropack-edge@latest"
   }
 }
