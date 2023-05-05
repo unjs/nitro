@@ -43,6 +43,7 @@ const NitroDefaults: NitroConfig = {
 
   // Features
   experimental: {},
+  future: {},
   storage: {},
   devStorage: {},
   bundledStorage: [],

@@ -17,7 +17,11 @@ export const netlify = defineNitroPreset({
     },
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      if (!nitro.options.future.nativeSWR) {
+        deprecateSWR(nitro);
+      }
+    },
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);

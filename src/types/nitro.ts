@@ -204,6 +204,9 @@ export interface NitroOptions extends PresetOptions {
     legacyExternals?: boolean;
     openAPI?: boolean;
   };
+  future: {
+    nativeSWR: boolean;
+  };
   serverAssets: ServerAssetDir[];
   publicAssets: PublicAssetDir[];
 
