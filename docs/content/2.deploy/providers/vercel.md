@@ -67,14 +67,18 @@ export default defineNitroConfig({
 ```
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
-  storage: {
-    data: { driver: 'vercelKV' }
+  nitro: {
+    storage: {
+      data: { driver: 'vercelKV' }
+    }
   }
 })
 ```
 ::
 
-**Note:** You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables or pass `url` and `token` to driver options. Check [unstorage docs](https://unstorage.unjs.io/drivers/vercel-kv) for more information about driver usage.
+::alert
+You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables or pass `url` and `token` to driver options. Check [unstorage docs](https://unstorage.unjs.io/drivers/vercel-kv) for more information about driver usage.
+::
 
 You can now access data store in any event handler:
 
