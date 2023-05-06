@@ -1,9 +1,3 @@
-export default defineNitroConfig({
-  routeRules: {
-    '/**': {
-      cache: {
-        varies: ['HoST'],
-      }
-    }
-  }
-});
+import { defineNitroConfig } from "nitropack/config";
+
+export default defineNitroConfig({});
