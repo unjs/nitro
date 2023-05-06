@@ -43,6 +43,7 @@ const NitroDefaults: NitroConfig = {
 
   // Features
   experimental: {},
+  future: {},
   storage: {},
   devStorage: {},
   bundledStorage: [],
@@ -325,7 +326,7 @@ export async function loadOptions(
   options.plugins = options.plugins.map((p) => resolvePath(p, options));
 
   // Add open-api endpoint
-  if (options.dev) {
+  if (options.dev && options.experimental.openAPI) {
     options.handlers.push({
       route: "/_nitro/openapi.json",
       handler: "#internal/nitro/routes/openapi",
