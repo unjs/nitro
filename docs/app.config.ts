@@ -4,7 +4,7 @@ export default defineAppConfig({
     header: {
       logo: true,
     },
-    description: "Create, build and deploy universal web servers everywhere.",
+    description: "Nitro is an open source TypeScript framework to build ultra-fast web servers. The open engine powering Nuxt and open to everyone.",
     url: "https://nitro.unjs.io",
     image: "/cover.png",
     socials: {
