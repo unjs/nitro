@@ -4,11 +4,14 @@ Deploy Nitro apps to Lagon.
 
 **Preset:** `lagon` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-> Lagon is an open-source runtime and platform that allows developers to run TypeScript and JavaScript Serverless Functions close to users.
+[Lagon](https://lagon.app/) is an open-source runtime and platform that allows developers to run TypeScript and JavaScript Serverless Functions close to users.
 
-🚧 Lagon is not yet ready for production workloads. Please followup via [unjs/nitro#966](https://github.com/unjs/nitro/issues/966)
+Nitro supports deploying on [Lagon](https://lagon.app/) with minimal configuration ([documentation](https://docs.lagon.app/))
 
-Nitro supports deploying on [Lagon](https://lagon.app/) with minimal configuration - see [documentation](https://docs.lagon.app/).
+::alert{type="warning"}
+Lagon is not yet ready for production workloads
+::
+
 
 ### Testing locally
 
@@ -22,7 +25,7 @@ Nitro supports deploying on [Lagon](https://lagon.app/) with minimal configurati
 lagon dev ./.output
 ```
 
-This is equivalent to `lagon dev ./.output/server/index.mjs -p ./.output/public`
+(this is equivalent to `lagon dev ./.output/server/index.mjs -p ./.output/public`)
 
 ### Deploy from your local machine
 
@@ -36,15 +39,19 @@ This is equivalent to `lagon dev ./.output/server/index.mjs -p ./.output/public`
 lagon deploy .output
 ```
 
-This is equivalent to `lagon deploy ./.output/server/index.mjs -p ./.output/public`
+(this is equivalent to `lagon deploy ./.output/server/index.mjs -p ./.output/public`)
 
 4. To trigger a new deployment, run the same command and append `--prod` if you want to deploy to production:
 
-```bash
-# Deploy to preview
-lagon deploy .output
+Deploy to preview:
 
-# Deploy to production
+```bash
+lagon deploy .output
+```
+
+Deploy to production:
+
+```bash
 lagon deploy .output --prod
 ```
 
