@@ -1,11 +1,14 @@
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
-import { execa } from "execa";
+import { execa, execaCommandSync } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
-import { fetch } from "ofetch";
 import { setupTest, testNitro } from "../tests";
 
-describe("nitro:preset:bun", async () => {
+const hasBun =
+  execaCommandSync("bun --version", { stdio: "ignore", reject: false })
+    .exitCode === 0;
+
+describe.runIf(hasBun)("nitro:preset:bun", async () => {
   const ctx = await setupTest("bun");
   testNitro(ctx, async () => {
     const port = await getRandomPort();
