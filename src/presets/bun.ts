@@ -2,18 +2,16 @@ import { defineNitroPreset } from "../preset";
 
 export const bun = defineNitroPreset({
   entry: "#internal/nitro/entries/bun",
-  node: false,
-  noExternals: true,
+  // https://bun.sh/docs/runtime/nodejs-apis
+  // node: false,
   serveStatic: "bun",
   commands: {
-    preview: "bun run ./server/index.ts",
-    deploy: "",
+    preview: "bun run ./server/index.js",
   },
   rollupConfig: {
     preserveEntrySignatures: false,
     output: {
-      entryFileNames: "index.ts",
-      manualChunks: () => "index",
+      entryFileNames: "index.js",
       format: "esm",
     },
   },
