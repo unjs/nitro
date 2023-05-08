@@ -90,7 +90,7 @@
     "mime": "^3.0.0",
     "mlly": "^1.2.0",
     "mri": "^1.2.0",
-    "node-fetch-native": "^1.1.0",
+    "node-fetch-native": "^1.1.1",
     "ofetch": "^1.0.1",
     "ohash": "^1.1.2",
     "openapi-typescript": "^6.2.4",
