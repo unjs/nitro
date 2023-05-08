@@ -3,43 +3,25 @@ import { requestHasBody, useRequestBody } from "../utils";
 import { nitroApp } from "../app";
 
 // @ts-expect-error: Bun global
-Bun.serve({
-  fetch(request: Request) {
-    return handleRequest(request);
+const server = Bun.serve({
+  port: process.env.NITRO_PORT || process.env.PORT || 3000,
+  async fetch(request: Request) {
+    const url = new URL(request.url);
+
+    let body;
+    if (requestHasBody(request)) {
+      body = await useRequestBody(request);
+    }
+
+    const r = await nitroApp.localFetch(url.pathname + url.search, {
+      ...request,
+      host: url.hostname,
+      protocol: url.protocol,
+      body,
+    });
+
+    return r;
   },
 });
 
-async function handleRequest(request: Request) {
-  const url = new URL(request.url);
-
-  let body;
-  if (requestHasBody(request)) {
-    body = await useRequestBody(request);
-  }
-
-  const r = await nitroApp.localCall({
-    url: url.pathname + url.search,
-    host: url.hostname,
-    protocol: url.protocol,
-    headers: Object.fromEntries(request.headers.entries()),
-    method: request.method,
-    redirect: request.redirect,
-    body,
-  });
-
-  return new Response(r.body || undefined, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
-  });
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
-}
+console.log(`Listening on http://localhost:${server.port}...`);
