@@ -1,9 +1,9 @@
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
-import { setupTest, testNitro } from "../tests";
 import { execa } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
 import { fetch } from "ofetch";
+import { setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:bun", async () => {
   const ctx = await setupTest("bun");
