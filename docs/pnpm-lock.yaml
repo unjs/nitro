@@ -8,8 +8,8 @@ importers:
         specifier: ^1.11.1
         version: 1.11.1(nuxt@3.4.3)(postcss@8.4.23)(rollup@3.21.0)(vue-component-type-helpers@1.3.12)(vue@3.2.47)
       '@nuxthq/studio':
-        specifier: ^0.11.0
-        version: 0.11.0(rollup@3.21.0)(vue-component-type-helpers@1.3.12)
+        specifier: ^0.12.1
+        version: 0.12.1(rollup@3.21.0)(vue-component-type-helpers@1.3.12)
       '@nuxtjs/plausible':
         specifier: ^0.2.0
         version: 0.2.0(rollup@3.21.0)
@@ -1026,7 +1026,24 @@ packages:
   /@nuxthq/studio@0.11.0(rollup@3.21.0)(vue-component-type-helpers@1.3.12):
     resolution: {integrity: sha512-9cIJSguUWvtiFs6/dlZB6f/xQ588HGqWXzRU9logl5THig6X5lYwV4hfleaY4tYoitve3j5OUCXzfFhUQqCxGA==}
     dependencies:
-      '@nuxt/kit': 3.4.2(rollup@3.21.0)
+      '@nuxt/kit': 3.4.3(rollup@3.21.0)
+      defu: 6.1.2
+      nuxt-component-meta: 0.5.1(rollup@3.21.0)(vue-component-type-helpers@1.3.12)
+      nuxt-config-schema: 0.4.6(rollup@3.21.0)
+      socket.io-client: 4.6.1
+      ufo: 1.1.1
+    transitivePeerDependencies:
+      - bufferutil
+      - rollup
+      - supports-color
+      - utf-8-validate
+      - vue-component-type-helpers
+    dev: true
+
+  /@nuxthq/studio@0.12.1(rollup@3.21.0)(vue-component-type-helpers@1.3.12):
+    resolution: {integrity: sha512-g9GV8JkQqqYLtP+gsNtPr4fh49jc3eIdAB2ZfiudZKkFdW0BxtT/xPx8RjNYQwyInKssDDB26zzYrRYH9hhHCQ==}
+    dependencies:
+      '@nuxt/kit': 3.4.3(rollup@3.21.0)
       defu: 6.1.2
       nuxt-component-meta: 0.5.1(rollup@3.21.0)(vue-component-type-helpers@1.3.12)
       nuxt-config-schema: 0.4.6(rollup@3.21.0)
@@ -4383,7 +4400,7 @@ packages:
   /nuxt-component-meta@0.5.1(rollup@3.21.0)(vue-component-type-helpers@1.3.12):
     resolution: {integrity: sha512-vwx5wySyVX+QbFrNb3wLYNMPlADho8E66MO45d5i5fTlEkmhopVpQ9YXwlAvM3pLCPjupxG3R3D5rKpLDeitkw==}
     dependencies:
-      '@nuxt/kit': 3.4.2(rollup@3.21.0)
+      '@nuxt/kit': 3.4.3(rollup@3.21.0)
       scule: 1.0.0
       typescript: 5.0.4
       vue-component-meta: 1.4.4(typescript@5.0.4)(vue-component-type-helpers@1.3.12)
@@ -4396,7 +4413,7 @@ packages:
   /nuxt-config-schema@0.4.6(rollup@3.21.0):
     resolution: {integrity: sha512-kHLWJFynj5QrxVZ1MjY2xmDaTSN1BCMLGExA+hMMLoCb3wn9TJlDVqnE/nSdUJPMRkNn/NQ5WP9NLA9vlAXRUw==}
     dependencies:
-      '@nuxt/kit': 3.4.2(rollup@3.21.0)
+      '@nuxt/kit': 3.4.3(rollup@3.21.0)
       defu: 6.1.2
       jiti: 1.18.2
       pathe: 1.1.0
