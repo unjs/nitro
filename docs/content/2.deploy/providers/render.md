@@ -25,7 +25,7 @@ Nitro supports deploying on [Render](https://render.com/) with minimal configura
 1. Create a file called `render.yaml` with following content at the root of your repository.
 > This file followed by [Infrastructure as Code](https://render.com/docs/infrastructure-as-code) on Render
 
-```
+```yaml
 services:
   - type: web
     name: <PROJECTNAME>
