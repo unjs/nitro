@@ -41,6 +41,9 @@ importers:
       '@rollup/pluginutils':
         specifier: ^5.0.2
         version: 5.0.2(rollup@3.21.5)
+      '@types/http-proxy':
+        specifier: ^1.17.11
+        version: 1.17.11
       '@vercel/nft':
         specifier: ^0.22.6
         version: 0.22.6
@@ -201,9 +204,6 @@ importers:
       '@types/fs-extra':
         specifier: ^11.0.1
         version: 11.0.1
-      '@types/http-proxy':
-        specifier: ^1.17.11
-        version: 1.17.11
       '@types/node-fetch':
         specifier: ^2.6.3
         version: 2.6.3
@@ -1218,7 +1218,7 @@ packages:
     resolution: {integrity: sha512-HC8G7c1WmaF2ekqpnFq626xd3Zz0uvaqFmBJNRZCGEZCXkvSdJoNFn/8Ygbd9fKNQj8UzLdCETaI0UWPAjK7IA==}
     dependencies:
       '@types/node': 20.0.0
-    dev: true
+    dev: false
 
   /@types/istanbul-lib-coverage@2.0.4:
     resolution: {integrity: sha512-z/QT1XN4K4KYuslS23k62yDIDLwLFkzxOuMplDtObz0+y7VqJCaO2o+SPwHCvLFZh7xazvvoor2tA/hPz9ee7g==}
@@ -1251,7 +1251,6 @@ packages:
 
   /@types/node@20.0.0:
     resolution: {integrity: sha512-cD2uPTDnQQCVpmRefonO98/PPijuOnnEy5oytWJFPY1N9aJCz2wJ5kSGWO+zJoed2cY2JxQh6yBuUq4vIn61hw==}
-    dev: true
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
