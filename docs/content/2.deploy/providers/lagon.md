@@ -19,10 +19,10 @@ Nitro supports deploying on [Lagon](https://lagon.app/) with minimal configurati
 3. Launch a local dev server (this will pick the config in `.output/.lagon/config.json`) and open [localhost:1234](http://localhost:1234):
 
 ```bash
-lagon dev .output
-# This is equivalent to
-lagon dev .output/server/index.mjs -p .output/public
+lagon dev ./.output
 ```
+
+This is equivalent to `lagon dev ./.output/server/index.mjs -p ./.output/public`
 
 ### Deploy from your local machine
 
@@ -34,15 +34,16 @@ lagon dev .output/server/index.mjs -p .output/public
 
 ```bash
 lagon deploy .output
-# This is equivalent to
-lagon deploy .output/server/index.mjs -p .output/public
 ```
+
+This is equivalent to `lagon deploy ./.output/server/index.mjs -p ./.output/public`
 
 4. To trigger a new deployment, run the same command and append `--prod` if you want to deploy to production:
 
 ```bash
 # Deploy to preview
 lagon deploy .output
+
 # Deploy to production
 lagon deploy .output --prod
 ```
