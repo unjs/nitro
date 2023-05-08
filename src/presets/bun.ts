@@ -6,12 +6,12 @@ export const bun = defineNitroPreset({
   // node: false,
   serveStatic: "bun",
   commands: {
-    preview: "bun run ./server/index.js",
+    preview: "bun run ./server/index.mjs",
   },
   rollupConfig: {
     preserveEntrySignatures: false,
     output: {
-      entryFileNames: "index.js",
+      entryFileNames: "index.mjs",
       format: "esm",
     },
   },
