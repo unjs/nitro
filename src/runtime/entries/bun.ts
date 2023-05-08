@@ -1,5 +1,4 @@
 import "#internal/nitro/virtual/polyfill";
-import { requestHasBody, useRequestBody } from "../utils";
 import { nitroApp } from "../app";
 
 // @ts-expect-error: Bun global
@@ -9,18 +8,21 @@ const server = Bun.serve({
     const url = new URL(request.url);
 
     let body;
-    if (requestHasBody(request)) {
-      body = await useRequestBody(request);
+    if (request.body) {
+      body = await request.arrayBuffer();
     }
 
-    const r = await nitroApp.localFetch(url.pathname + url.search, {
-      ...request,
+    const response = await nitroApp.localFetch(url.pathname + url.search, {
+      url: url.pathname + url.search,
       host: url.hostname,
       protocol: url.protocol,
+      headers: request.headers,
+      method: request.method,
+      redirect: request.redirect,
       body,
     });
 
-    return r;
+    return response;
   },
 });
 
