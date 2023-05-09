@@ -140,7 +140,7 @@ export async function prerender(nitro: Nitro) {
 
     // Check if we should render route
     if (!canPrerender(route)) {
-      skippedRoutes.add(route)
+      skippedRoutes.add(route);
       return;
     }
     generatedRoutes.add(route);
@@ -225,7 +225,7 @@ export async function prerender(nitro: Nitro) {
       : `Prerendering ${routes.size} routes`
   );
 
-  async function processRoute (route: string) {
+  async function processRoute(route: string) {
     const _route = await generateRoute(route).catch(
       (error) => ({ route, error } as PrerenderGenerateRoute)
     );
@@ -254,27 +254,34 @@ export async function prerender(nitro: Nitro) {
   const tasks = new Set<Promise<void>>();
 
   function refillQueue() {
-    const workers = Math.min(nitro.options.prerender.concurrency  - tasks.size, routes.size)
-    return Promise.all(Array.from({ length: workers }, () => queueNext()))
+    const workers = Math.min(
+      nitro.options.prerender.concurrency - tasks.size,
+      routes.size
+    );
+    return Promise.all(Array.from({ length: workers }, () => queueNext()));
   }
 
-  function queueNext () {
-    const route = routes.values().next().value
-    if (!route) { return }
+  function queueNext() {
+    const route = routes.values().next().value;
+    if (!route) {
+      return;
+    }
 
-    routes.delete(route)
-    const task = new Promise((resolve) => setTimeout(resolve, nitro.options.prerender.interval)).then(() => processRoute(route))
+    routes.delete(route);
+    const task = new Promise((resolve) =>
+      setTimeout(resolve, nitro.options.prerender.interval)
+    ).then(() => processRoute(route));
 
-    tasks.add(task)
+    tasks.add(task);
     return task.then(() => {
-      tasks.delete(task)
+      tasks.delete(task);
       if (routes.size > 0) {
-        return refillQueue()
+        return refillQueue();
       }
-    })
+    });
   }
 
-  await refillQueue()
+  await refillQueue();
 
   if (nitro.options.compressPublicAssets) {
     await compressPublicAssets(nitro);
