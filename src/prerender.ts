@@ -251,41 +251,49 @@ export async function prerender(nitro: Nitro) {
     }
   }
 
-  const tasks = new Set<Promise<void>>();
+  await runParallel(routes, processRoute, {
+    concurrency: nitro.options.prerender.concurrency,
+    interval: nitro.options.prerender.interval,
+  });
 
-  function refillQueue() {
-    const workers = Math.min(
-      nitro.options.prerender.concurrency - tasks.size,
-      routes.size
-    );
-    return Promise.all(Array.from({ length: workers }, () => queueNext()));
+  if (nitro.options.compressPublicAssets) {
+    await compressPublicAssets(nitro);
   }
+}
+
+async function runParallel<T>(
+  inputs: Set<T>,
+  cb: (input: T) => unknown | Promise<unknown>,
+  opts: { concurrency: number; interval: number }
+) {
+  const tasks = new Set<Promise<unknown>>();
 
   function queueNext() {
-    const route = routes.values().next().value;
+    const route = inputs.values().next().value;
     if (!route) {
       return;
     }
 
-    routes.delete(route);
+    inputs.delete(route);
     const task = new Promise((resolve) =>
-      setTimeout(resolve, nitro.options.prerender.interval)
-    ).then(() => processRoute(route));
+      setTimeout(resolve, opts.interval)
+    ).then(() => cb(route));
 
     tasks.add(task);
     return task.then(() => {
       tasks.delete(task);
-      if (routes.size > 0) {
+      if (inputs.size > 0) {
         return refillQueue();
       }
     });
   }
 
-  await refillQueue();
-
-  if (nitro.options.compressPublicAssets) {
-    await compressPublicAssets(nitro);
+  function refillQueue() {
+    const workers = Math.min(opts.concurrency - tasks.size, inputs.size);
+    return Promise.all(Array.from({ length: workers }, () => queueNext()));
   }
+
+  await refillQueue();
 }
 
 const LINK_REGEX = /href=["']?([^"'>]+)/g;
