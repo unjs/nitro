@@ -229,6 +229,8 @@ export interface NitroOptions extends PresetOptions {
   errorHandler: string;
   devErrorHandler: NitroErrorHandler;
   prerender: {
+    concurrency: number;
+    interval: number;
     crawlLinks: boolean;
     ignore: string[];
     routes: string[];

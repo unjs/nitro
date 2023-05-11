@@ -72,6 +72,8 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    concurrency: 1,
+    interval: 0,
     crawlLinks: false,
     ignore: [],
     routes: [],
