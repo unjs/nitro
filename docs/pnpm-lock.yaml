@@ -11,8 +11,8 @@ importers:
         specifier: ^0.12.1
         version: 0.12.1(rollup@3.21.0)(vue-component-type-helpers@1.3.12)
       '@nuxtjs/plausible':
-        specifier: ^0.2.0
-        version: 0.2.0(rollup@3.21.0)
+        specifier: ^0.2.1
+        version: 0.2.1(rollup@3.21.0)
       nuxt:
         specifier: 3.4.3
         version: 3.4.3(@types/node@18.16.0)(rollup@3.21.0)(typescript@5.0.4)
@@ -818,33 +818,6 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxt/kit@3.4.2(rollup@3.21.0):
-    resolution: {integrity: sha512-bFUpkyG2ZF6RYqiW+tXnWssccHQQqMF4kZJJLP/0eKXf+Fkt/Is0R7IY768jy8ylnyqeMBbmpg4Zv5gSZjfZQw==}
-    engines: {node: ^14.18.0 || ^16.10.0 || ^17.0.0 || ^18.0.0 || ^19.0.0}
-    dependencies:
-      '@nuxt/schema': 3.4.2(rollup@3.21.0)
-      c12: 1.4.1
-      consola: 3.1.0
-      defu: 6.1.2
-      globby: 13.1.4
-      hash-sum: 2.0.0
-      ignore: 5.2.4
-      jiti: 1.18.2
-      knitwork: 1.0.0
-      lodash.template: 4.5.0
-      mlly: 1.2.0
-      pathe: 1.1.0
-      pkg-types: 1.0.2
-      scule: 1.0.0
-      semver: 7.5.0
-      unctx: 2.3.0
-      unimport: 3.0.6(rollup@3.21.0)
-      untyped: 1.3.2
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: true
-
   /@nuxt/kit@3.4.3(rollup@3.21.0):
     resolution: {integrity: sha512-aQyzplYFCL292UsVZzlOZOC51ZKYFL0PBihbcPzxTzXQvAfMF8/DQ539kqzqXzxTCcmnUB9ROhIaNUrAeUkFYA==}
     engines: {node: ^14.18.0 || >=16.10.0}
@@ -885,24 +858,6 @@ packages:
       pkg-types: 1.0.2
       postcss-import-resolver: 2.0.0
       scule: 1.0.0
-      std-env: 3.3.2
-      ufo: 1.1.1
-      unimport: 3.0.6(rollup@3.21.0)
-      untyped: 1.3.2
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: true
-
-  /@nuxt/schema@3.4.2(rollup@3.21.0):
-    resolution: {integrity: sha512-DXB/fyjrAssFt9KGXyS+ZSfm1A0NYKhEoc01wyz1lGo//oETzUh3MmwE6X3x65NPqDlYZ6Mnj+IdftRRophv5Q==}
-    engines: {node: ^14.18.0 || ^16.10.0 || ^17.0.0 || ^18.0.0 || ^19.0.0}
-    dependencies:
-      defu: 6.1.2
-      hookable: 5.5.3
-      pathe: 1.1.0
-      pkg-types: 1.0.2
-      postcss-import-resolver: 2.0.0
       std-env: 3.3.2
       ufo: 1.1.1
       unimport: 3.0.6(rollup@3.21.0)
@@ -1068,10 +1023,10 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxtjs/plausible@0.2.0(rollup@3.21.0):
-    resolution: {integrity: sha512-mke+eW94PCca7zK0kNpNA9ULat5JCrBP2JUCmas6ZKpskU3+IaBv2OzWYzWJb/SsungfV9a/dukKbjAJeBTzhQ==}
+  /@nuxtjs/plausible@0.2.1(rollup@3.21.0):
+    resolution: {integrity: sha512-1AyV9woFeZKBhwYy05S7NBk4jeAXzWcF/SIK/S/GZ8C86G8x7f2hR2eJi9FRRQYGwHutBx2guU4tZAW4J71Azg==}
     dependencies:
-      '@nuxt/kit': 3.4.2(rollup@3.21.0)
+      '@nuxt/kit': 3.4.3(rollup@3.21.0)
       defu: 6.1.2
       pathe: 1.1.0
       plausible-tracker: 0.3.8
