@@ -47,11 +47,11 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^5.22.0"
+    "undici": "^5.22.1"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.0",
-    "@netlify/functions": "^1.4.0",
+    "@netlify/functions": "^1.5.0",
     "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-inject": "^5.0.3",
@@ -90,7 +90,7 @@
     "mime": "^3.0.0",
     "mlly": "^1.2.0",
     "mri": "^1.2.0",
-    "node-fetch-native": "^1.1.0",
+    "node-fetch-native": "^1.1.1",
     "ofetch": "^1.0.1",
     "ohash": "^1.1.2",
     "openapi-typescript": "^6.2.4",
@@ -99,7 +99,7 @@
     "pkg-types": "^1.0.3",
     "pretty-bytes": "^6.1.0",
     "radix3": "^1.0.1",
-    "rollup": "^3.21.5",
+    "rollup": "^3.21.6",
     "rollup-plugin-visualizer": "^5.9.0",
     "scule": "^1.0.0",
     "semver": "^7.5.0",
@@ -118,7 +118,7 @@
     "@types/etag": "^1.8.1",
     "@types/fs-extra": "^11.0.1",
     "@types/node-fetch": "^2.6.3",
-    "@types/semver": "^7.3.13",
+    "@types/semver": "^7.5.0",
     "@types/serve-static": "^1.15.1",
     "@vitest/coverage-c8": "^0.31.0",
     "changelogen": "^0.5.3",
@@ -131,10 +131,10 @@
     "prettier": "^2.8.8",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1",
-    "undici": "^5.22.0",
+    "undici": "^5.22.1",
     "vitest": "^0.31.0"
   },
-  "packageManager": "pnpm@8.4.0",
+  "packageManager": "pnpm@8.5.0",
   "engines": {
     "node": "^14.16.0 || ^16.11.0 || >=17.0.0"
   },
