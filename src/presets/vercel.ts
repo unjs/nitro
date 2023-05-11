@@ -97,6 +97,11 @@ export const vercelEdge = defineNitroPreset({
       format: "module",
     },
   },
+  unenv: {
+    inject: {
+      process: undefined,
+    },
+  },
   hooks: {
     "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
