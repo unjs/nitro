@@ -2,6 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
+import { name, version } from "../../package.json";
 
 // Netlify functions
 export const netlify = defineNitroPreset({
@@ -53,24 +54,27 @@ export const netlifyEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/netlify-edge",
   output: {
-    serverDir: "{{ rootDir }}/.netlify/edge-functions",
+    serverDir: "{{ rootDir }}/.netlify/edge-functions/server",
     publicDir: "{{ rootDir }}/dist",
   },
   rollupConfig: {
     output: {
-      entryFileNames: "server.mjs",
+      entryFileNames: "server.js",
       format: "esm",
     },
   },
   hooks: {
     "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
+      // https://docs.netlify.com/edge-functions/create-integration/
       const manifest = {
         version: 1,
         functions: [
           {
+            path: "/*",
+            name: "nitro server handler",
             function: "server",
-            pattern: "^.*$",
+            generator: `${name}@${version}`,
           },
         ],
       };
