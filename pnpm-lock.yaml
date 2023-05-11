@@ -101,6 +101,9 @@ importers:
       hookable:
         specifier: ^5.5.3
         version: 5.5.3
+      http-graceful-shutdown:
+        specifier: ^3.1.13
+        version: 3.1.13
       http-proxy:
         specifier: ^1.18.1
         version: 1.18.1
@@ -272,6 +275,12 @@ importers:
         version: link:../..
 
   examples/custom-error-handler:
+    devDependencies:
+      nitropack:
+        specifier: link:../..
+        version: link:../..
+
+  examples/graceful-shutdown:
     devDependencies:
       nitropack:
         specifier: link:../..
@@ -3261,6 +3270,15 @@ packages:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
+    dev: false
+
+  /http-graceful-shutdown@3.1.13:
+    resolution: {integrity: sha512-Ci5LRufQ8AtrQ1U26AevS8QoMXDOhnAHCJI3eZu1com7mZGHxREmw3dNj85ftpQokQCvak8nI2pnFS8zyM1M+Q==}
+    engines: {node: '>=4.0.0'}
+    dependencies:
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /http-proxy@1.18.1:

@@ -81,6 +81,7 @@
     "gzip-size": "^7.0.0",
     "h3": "^1.6.5",
     "hookable": "^5.5.3",
+    "http-graceful-shutdown": "^3.1.13",
     "http-proxy": "^1.18.1",
     "is-primitive": "^3.0.1",
     "jiti": "^1.18.2",
