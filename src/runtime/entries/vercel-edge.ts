@@ -1,5 +1,4 @@
 import "#internal/nitro/virtual/polyfill";
-import { requestHasBody, useRequestBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
 
 export default async function handleEvent(request, event) {
