@@ -123,8 +123,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       mlly:
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: ^1.2.1
+        version: 1.2.1
       mri:
         specifier: ^1.2.0
         version: 1.2.0
@@ -1782,7 +1782,7 @@ packages:
       dotenv: 16.0.3
       giget: 1.1.2
       jiti: 1.18.2
-      mlly: 1.2.0
+      mlly: 1.2.1
       ohash: 1.1.2
       pathe: 1.1.0
       perfect-debounce: 0.1.3
@@ -3943,14 +3943,14 @@ packages:
       fs-extra: 11.1.1
       globby: 13.1.4
       jiti: 1.18.2
-      mlly: 1.2.0
+      mlly: 1.2.1
       mri: 1.2.0
       pathe: 1.1.0
       typescript: 5.0.4
     dev: true
 
-  /mlly@1.2.0:
-    resolution: {integrity: sha512-+c7A3CV0KGdKcylsI6khWyts/CYrGTrRVo4R/I7u/cUsy0Conxa6LUhiEzVKIw14lc2L5aiO4+SeVe4TeGRKww==}
+  /mlly@1.2.1:
+    resolution: {integrity: sha512-1aMEByaWgBPEbWV2BOPEMySRrzl7rIHXmQxam4DM8jVjalTQDjpN2ZKOLUrwyhfZQO7IXHml2StcHMhooDeEEQ==}
     dependencies:
       acorn: 8.8.2
       pathe: 1.1.0
@@ -4303,7 +4303,7 @@ packages:
     resolution: {integrity: sha512-nN7pYi0AQqJnoLPC9eHFQ8AcyaixBUOwvqc5TDnIKCMEE6I0y8P7OKA7fPexsXGCGxQDl/cmrLAp26LhcwxZ4A==}
     dependencies:
       jsonc-parser: 3.2.0
-      mlly: 1.2.0
+      mlly: 1.2.1
       pathe: 1.1.0
 
   /pluralize@8.0.0:
@@ -5096,7 +5096,7 @@ packages:
       jiti: 1.18.2
       magic-string: 0.30.0
       mkdist: 1.2.0(typescript@5.0.4)
-      mlly: 1.2.0
+      mlly: 1.2.1
       mri: 1.2.0
       pathe: 1.1.0
       pkg-types: 1.0.3
@@ -5138,7 +5138,7 @@ packages:
       fast-glob: 3.2.12
       local-pkg: 0.4.3
       magic-string: 0.30.0
-      mlly: 1.2.0
+      mlly: 1.2.1
       pathe: 1.1.0
       pkg-types: 1.0.3
       scule: 1.0.0
@@ -5283,7 +5283,7 @@ packages:
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
-      mlly: 1.2.0
+      mlly: 1.2.1
       pathe: 1.1.0
       picocolors: 1.0.0
       vite: 4.3.5(@types/node@20.1.0)
