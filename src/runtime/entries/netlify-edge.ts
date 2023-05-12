@@ -3,6 +3,7 @@ import { nitroApp } from "../app";
 import { requestHasBody, useRequestBody } from "../utils";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
+// https://docs.netlify.com/edge-functions/api/
 export default async function (request: Request, _context) {
   const url = new URL(request.url);
 
@@ -11,8 +12,8 @@ export default async function (request: Request, _context) {
   }
 
   let body;
-  if (requestHasBody(request)) {
-    body = await useRequestBody(request);
+  if (request.body) {
+    body = await request.arrayBuffer();
   }
 
   const r = await nitroApp.localCall({
