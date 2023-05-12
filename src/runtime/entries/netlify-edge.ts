@@ -1,9 +1,15 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
 import { requestHasBody, useRequestBody } from "../utils";
+import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 export default async function (request: Request, _context) {
   const url = new URL(request.url);
+
+  if (isPublicAssetURL(url.pathname)) {
+    return;
+  }
+
   let body;
   if (requestHasBody(request)) {
     body = await useRequestBody(request);
