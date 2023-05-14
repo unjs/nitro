@@ -7,7 +7,11 @@ import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta, isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import {
+  getPublicAssetMeta,
+  publicAssetBases,
+} from "#internal/nitro/virtual/public-assets";
+import assets from "#internal/nitro/virtual/public-assets-data";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
@@ -16,16 +20,15 @@ addEventListener("fetch", (event: any) => {
 async function handleEvent(event: FetchEvent) {
   const url = new URL(event.request.url);
   try {
-    if (isPublicAssetURL(url.pathname)) {
+    if (isInKv(url.pathname)) {
       return await getAssetFromKV(event, {
         cacheControl: assetsCacheControl,
         mapRequestToAsset: baseURLModifier,
       });
     }
   } catch {
-    // noop
+    // Ignore
   }
-
 
   let body;
   if (requestHasBody(event.request)) {
@@ -80,3 +83,16 @@ function normalizeOutgoingHeaders(
     Array.isArray(v) ? v.join(",") : v,
   ]);
 }
+
+const keyStartsWith = (literalObj: Record<string, unknown>, needle: string) =>
+  Object.keys(literalObj).some((k) => k.startsWith(needle));
+const isInKv = (id = "") => {
+  if (
+    assets[id] ||
+    keyStartsWith(assets, id) ||
+    keyStartsWith(publicAssetBases, id)
+  ) {
+    return true;
+  }
+  return false;
+};
