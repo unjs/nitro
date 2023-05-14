@@ -203,6 +203,9 @@ export function testNitro(
       },
     });
     expect(status).toBe(503);
+  });
+
+  it("handles html api routes", async () => {
     const { data: heyData } = await callHandler({ url: "/api/hey" });
     expect(heyData).to.have.string("Hey API");
   });
