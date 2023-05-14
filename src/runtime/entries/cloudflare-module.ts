@@ -11,7 +11,7 @@ import manifest from "__STATIC_CONTENT_MANIFEST";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import { getPublicAssetMeta, isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 interface CFModuleEnv {
   [key: string]: any;
@@ -23,27 +23,29 @@ export default {
     env: CFModuleEnv,
     context: ExecutionContext
   ) {
+    const url = new URL(request.url);
     try {
-      // https://github.com/cloudflare/kv-asset-handler#es-modules
-      return await getAssetFromKV(
-        {
-          request,
-          waitUntil(promise) {
-            return context.waitUntil(promise);
+      if (isPublicAssetURL(url.pathname)) {
+        // https://github.com/cloudflare/kv-asset-handler#es-modules
+        return await getAssetFromKV(
+          {
+            request,
+            waitUntil(promise) {
+              return context.waitUntil(promise);
+            },
           },
-        },
-        {
-          cacheControl: assetsCacheControl,
-          mapRequestToAsset: baseURLModifier,
-          ASSET_NAMESPACE: env.__STATIC_CONTENT,
-          ASSET_MANIFEST: JSON.parse(manifest),
-        }
-      );
+          {
+            cacheControl: assetsCacheControl,
+            mapRequestToAsset: baseURLModifier,
+            ASSET_NAMESPACE: env.__STATIC_CONTENT,
+            ASSET_MANIFEST: JSON.parse(manifest),
+          }
+        );
+      }
     } catch {
-      // Ignore
+      // noop
     }
 
-    const url = new URL(request.url);
     let body;
     if (requestHasBody(request)) {
       body = Buffer.from(await request.arrayBuffer());
