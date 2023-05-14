@@ -7,23 +7,26 @@ import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import { getPublicAssetMeta, isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
 });
 
 async function handleEvent(event: FetchEvent) {
+  const url = new URL(event.request.url);
   try {
-    return await getAssetFromKV(event, {
-      cacheControl: assetsCacheControl,
-      mapRequestToAsset: baseURLModifier,
-    });
+    if (isPublicAssetURL(url.pathname)) {
+      return await getAssetFromKV(event, {
+        cacheControl: assetsCacheControl,
+        mapRequestToAsset: baseURLModifier,
+      });
+    }
   } catch {
-    // Ignore
+    // noop
   }
 
-  const url = new URL(event.request.url);
+
   let body;
   if (requestHasBody(event.request)) {
     body = Buffer.from(await event.request.arrayBuffer());
