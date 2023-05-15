@@ -89,6 +89,7 @@ const NitroDefaults: NitroConfig = {
     "unenv/runtime/polyfill/",
     "node-fetch-native/polyfill",
     "node-fetch-native/dist/polyfill",
+    resolve(runtimeDir, "polyfill/"),
   ],
   replace: {},
   node: true,
