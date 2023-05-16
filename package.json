@@ -53,7 +53,7 @@
     "@cloudflare/kv-asset-handler": "^0.3.0",
     "@netlify/functions": "^1.6.0",
     "@rollup/plugin-alias": "^5.0.0",
-    "@rollup/plugin-commonjs": "^24.1.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-inject": "^5.0.3",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
