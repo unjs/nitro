@@ -6,6 +6,7 @@ import { mkdirSync } from "node:fs";
 import { threadId, parentPort } from "node:worker_threads";
 import { isWindows, provider } from "std-env";
 import { toNodeListener } from "h3";
+import gracefulShutdown from "http-graceful-shutdown";
 import { nitroApp } from "../app";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
@@ -25,7 +26,7 @@ function getAddress() {
 }
 
 const listenAddress = getAddress();
-server.listen(listenAddress, () => {
+const listener = server.listen(listenAddress, () => {
   const _address = server.address();
   parentPort.postMessage({
     event: "listen",
@@ -51,3 +52,15 @@ if (process.env.DEBUG) {
     console.error("[nitro] [dev] [uncaughtException] " + err)
   );
 }
+
+// Graceful shutdown
+async function onShutdown(signal?: NodeJS.Signals) {
+  await nitroApp.hooks.callHook("close");
+}
+
+parentPort.on("message", async (msg) => {
+  if (msg && msg.event === "shutdown") {
+    await onShutdown();
+    parentPort.postMessage({ event: "exit" });
+  }
+});

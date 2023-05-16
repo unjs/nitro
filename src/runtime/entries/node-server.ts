@@ -5,6 +5,7 @@ import { Server as HttpsServer } from "node:https";
 import destr from "destr";
 import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
+import { setupGracefulShutdown } from "../shutdown";
 import { useRuntimeConfig } from "#internal/nitro";
 
 const cert = process.env.NITRO_SSL_CERT;
@@ -20,18 +21,20 @@ const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
 const host = process.env.NITRO_HOST || process.env.HOST;
 
 // @ts-ignore
-const s = server.listen(port, host, (err) => {
+const listener = server.listen(port, host, (err) => {
   if (err) {
     console.error(err);
     // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   }
   const protocol = cert && key ? "https" : "http";
-  const i = s.address() as AddressInfo;
+  const addressInfo = listener.address() as AddressInfo;
   const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
   const url = `${protocol}://${
-    i.family === "IPv6" ? `[${i.address}]` : i.address
-  }:${i.port}${baseURL}`;
+    addressInfo.family === "IPv6"
+      ? `[${addressInfo.address}]`
+      : addressInfo.address
+  }:${addressInfo.port}${baseURL}`;
   console.log(`Listening ${url}`);
 });
 
@@ -50,5 +53,8 @@ if (process.env.DEBUG) {
     console.error("[nitro] [dev] [uncaughtException] " + err)
   );
 }
+
+// Graceful shutdown
+setupGracefulShutdown(listener, nitroApp);
 
 export default {};
