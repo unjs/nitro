@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.4.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.4.0...v2.4.1)
+
+
+### 🩹 Fixes
+
+  - **pkg:** Add `http-proxy` types to deps ([#1213](https://github.com/unjs/nitro/pull/1213))
+  - **vercel-edge:** Use platform provided `process` shim ([392ce64](https://github.com/unjs/nitro/commit/392ce64))
+  - **netlify-edge:** Update output format ([41a4a6a](https://github.com/unjs/nitro/commit/41a4a6a))
+  - **netlify-edge:** Support environment variables ([5c85c14](https://github.com/unjs/nitro/commit/5c85c14))
+  - **netlify-edge:** Handle static asset urls ([116874f](https://github.com/unjs/nitro/commit/116874f))
+  - **netlify-edge:** Fix body handling ([4c825b6](https://github.com/unjs/nitro/commit/4c825b6))
+  - **vercel-edge:** Fix body handling ([c75c2f1](https://github.com/unjs/nitro/commit/c75c2f1))
+  - **deno, lagon, sw:** Fix request body handling ([1c88e5e](https://github.com/unjs/nitro/commit/1c88e5e))
+  - **netlify-edge:** Polyfill missing `x-forwarded-proto` header ([4e5f46e](https://github.com/unjs/nitro/commit/4e5f46e))
+
+### 🏡 Chore
+
+  - Update dependencies ([c4fcd78](https://github.com/unjs/nitro/commit/c4fcd78))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.3.3
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.3.2...v2.3.3)
