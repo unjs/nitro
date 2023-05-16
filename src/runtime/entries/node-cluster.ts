@@ -1,6 +1,7 @@
 import os from "node:os";
 import cluster from "node:cluster";
 import { getGracefulShutdownConfig } from "../shutdown";
+import { trapUnhandledNodeErrors } from "../utils";
 
 function runMaster() {
   const numberOfWorkers =
@@ -65,6 +66,9 @@ function runWorker() {
     process.exit(1);
   });
 }
+
+// Trap unhandled errors
+trapUnhandledNodeErrors();
 
 if (cluster.isPrimary) {
   runMaster();

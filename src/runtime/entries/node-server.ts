@@ -6,6 +6,7 @@ import destr from "destr";
 import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
 import { setupGracefulShutdown } from "../shutdown";
+import { trapUnhandledNodeErrors } from "../utils";
 import { useRuntimeConfig } from "#internal/nitro";
 
 const cert = process.env.NITRO_SSL_CERT;
@@ -38,21 +39,8 @@ const listener = server.listen(port, host, (err) => {
   console.log(`Listening ${url}`);
 });
 
-if (process.env.DEBUG) {
-  process.on("unhandledRejection", (err) =>
-    console.error("[nitro] [dev] [unhandledRejection]", err)
-  );
-  process.on("uncaughtException", (err) =>
-    console.error("[nitro] [dev] [uncaughtException]", err)
-  );
-} else {
-  process.on("unhandledRejection", (err) =>
-    console.error("[nitro] [dev] [unhandledRejection] " + err)
-  );
-  process.on("uncaughtException", (err) =>
-    console.error("[nitro] [dev] [uncaughtException] " + err)
-  );
-}
+// Trap unhandled errors
+trapUnhandledNodeErrors();
 
 // Graceful shutdown
 setupGracefulShutdown(listener, nitroApp);
