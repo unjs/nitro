@@ -1,8 +1,7 @@
 import { eventHandler } from "h3";
 
-const delay = (sec: number) => new Promise(resolve => setTimeout(resolve, sec * 1000))
-
 export default eventHandler(async () => {
-  await delay(5)
-  return "You will see the response first, then the shutdown process begins."
+  console.log("Event handler is running...");
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  return { message: "Response took 2 seconds" };
 });
