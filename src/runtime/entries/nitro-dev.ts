@@ -6,8 +6,8 @@ import { mkdirSync } from "node:fs";
 import { threadId, parentPort } from "node:worker_threads";
 import { isWindows, provider } from "std-env";
 import { toNodeListener } from "h3";
-import gracefulShutdown from "http-graceful-shutdown";
 import { nitroApp } from "../app";
+import { trapUnhandledNodeErrors } from "../utils";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
@@ -37,21 +37,8 @@ const listener = server.listen(listenAddress, () => {
   });
 });
 
-if (process.env.DEBUG) {
-  process.on("unhandledRejection", (err) =>
-    console.error("[nitro] [dev] [unhandledRejection]", err)
-  );
-  process.on("uncaughtException", (err) =>
-    console.error("[nitro] [dev] [uncaughtException]", err)
-  );
-} else {
-  process.on("unhandledRejection", (err) =>
-    console.error("[nitro] [dev] [unhandledRejection] " + err)
-  );
-  process.on("uncaughtException", (err) =>
-    console.error("[nitro] [dev] [uncaughtException] " + err)
-  );
-}
+// Trap unhandled errors
+trapUnhandledNodeErrors();
 
 // Graceful shutdown
 async function onShutdown(signal?: NodeJS.Signals) {
