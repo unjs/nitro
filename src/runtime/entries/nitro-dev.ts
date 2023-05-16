@@ -53,20 +53,14 @@ if (process.env.DEBUG) {
   );
 }
 
-// graceful shutdown
-if (process.env.NITRO_SHUTDOWN_DISABLE === "false") {
-  // https://www.gnu.org/software/libc/manual/html_node/Termination-Signals.html
-  const terminationSignals: NodeJS.Signals[] = ["SIGTERM", "SIGINT"];
-  const signals =
-    process.env.NITRO_SHUTDOWN_SIGNALS || terminationSignals.join(" ");
-  const timeout =
-    Number.parseInt(process.env.NITRO_SHUTDOWN_TIMEOUT, 10) || 30 * 1000;
-  const forceExit = process.env.NITRO_SHUTDOWN_FORCE !== "false";
-
-  async function onShutdown(signal?: NodeJS.Signals) {
-    await nitroApp.hooks.callHook("close");
-  }
-
-  // https://github.com/sebhildebrandt/http-graceful-shutdown
-  gracefulShutdown(listener, { signals, timeout, forceExit, onShutdown });
+// Graceful shutdown
+async function onShutdown(signal?: NodeJS.Signals) {
+  await nitroApp.hooks.callHook("close");
 }
+
+parentPort.on("message", async (msg) => {
+  if (msg && msg.event === "shutdown") {
+    await onShutdown();
+    parentPort.postMessage({ event: "exit" });
+  }
+});
