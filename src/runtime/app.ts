@@ -83,6 +83,8 @@ function createNitroApp(): NitroApp {
         "/"
       );
       h3App.use(middlewareBase, handler);
+    } else if (typeof handler === 'object') { // Router
+      h3App.use(h.route, handler)
     } else {
       const routeRules = getRouteRulesForPath(
         h.route.replace(/:\w+|\*\*/g, "_")

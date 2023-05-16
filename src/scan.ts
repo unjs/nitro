@@ -41,6 +41,7 @@ export function scanMiddleware(nitro: Nitro) {
 export function scanRoutes(nitro: Nitro, dir: string, prefix = "/") {
   return scanServerDir(nitro, dir, (file) => {
     let route = file.path
+      .replace(/{(\w+)}/g, "$1")
       .replace(/\.[A-Za-z]+$/, "")
       .replace(/\[\.{3}]/g, "**")
       .replace(/\[\.{3}(\w+)]/g, "**:$1")
@@ -56,9 +57,11 @@ export function scanRoutes(nitro: Nitro, dir: string, prefix = "/") {
 
     route = route.replace(/\/index$/, "") || "/";
 
+    const isRouter = /{(\w+)}/g.test(file.path)
+
     return {
       handler: file.fullPath,
-      lazy: true,
+      lazy: !isRouter,
       route,
       method,
     };
