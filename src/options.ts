@@ -125,6 +125,7 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
+  // @ts-ignore
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
