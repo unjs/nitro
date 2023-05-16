@@ -27,7 +27,21 @@ export function setupGracefulShutdown(
     timeout: shutdownConfig.timeout,
     forceExit: shutdownConfig.forceExit,
     onShutdown: async () => {
-      await nitroApp.hooks.callHook("close");
+      await new Promise<void>((resolve) => {
+        const timeout = setTimeout(() => {
+          console.warn("Graceful shutdown timeout, force exiting...");
+          resolve();
+        }, shutdownConfig.timeout);
+        nitroApp.hooks
+          .callHook("close")
+          .catch((err) => {
+            console.error(err);
+          })
+          .finally(() => {
+            clearTimeout(timeout);
+            resolve();
+          });
+      });
     },
   });
 }
