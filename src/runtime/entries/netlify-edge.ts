@@ -10,6 +10,10 @@ export default async function (request: Request, _context) {
     return;
   }
 
+  if (!request.headers.has("x-forwarded-proto") && url.protocol === "https:") {
+    request.headers.set("x-forwarded-proto", "https");
+  }
+
   let body;
   if (request.body) {
     body = await request.arrayBuffer();
