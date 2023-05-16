@@ -40,11 +40,16 @@ export function createVFSHandler(nitro: Nitro) {
     }
 
     const directories: Record<string, any> = { [nitro.options.rootDir]: {} };
-    const fpaths = Object.keys(vfsEntries)
+    const fpaths = Object.keys(vfsEntries);
 
     for (const item of fpaths) {
-      const segments = item.replace(nitro.options.rootDir, '').split('/').filter(Boolean);
-      let currentDir = item.startsWith(nitro.options.rootDir) ? directories[nitro.options.rootDir] : directories;
+      const segments = item
+        .replace(nitro.options.rootDir, "")
+        .split("/")
+        .filter(Boolean);
+      let currentDir = item.startsWith(nitro.options.rootDir)
+        ? directories[nitro.options.rootDir]
+        : directories;
 
       for (const segment of segments) {
         if (!currentDir[segment]) {
@@ -55,25 +60,31 @@ export function createVFSHandler(nitro: Nitro) {
       }
     }
 
-    const generateHTML = (directory: Record<string, any>, path: string[] = []): string =>
-      Object.entries(directory).map(([fname, value = {}]) => {
-        const subpath = [...path, fname];
-        const key = subpath.join('/');
+    const generateHTML = (
+      directory: Record<string, any>,
+      path: string[] = []
+    ): string =>
+      Object.entries(directory)
+        .map(([fname, value = {}]) => {
+          const subpath = [...path, fname];
+          const key = subpath.join("/");
 
-        const linkClass =
-          url === `/${encodeURIComponent(key)}`
-            ? "bg-gray-700 text-white"
-            : "hover:bg-gray-800 text-gray-200";
+          const linkClass =
+            url === `/${encodeURIComponent(key)}`
+              ? "bg-gray-700 text-white"
+              : "hover:bg-gray-800 text-gray-200";
 
-        return (Object.keys(value).length === 0)
-          ? `
+          return Object.keys(value).length === 0
+            ? `
             <li class="flex flex-nowrap">
-              <a href="/_vfs/${encodeURIComponent(key)}" class="w-full text-sm px-2 py-1 border-b border-gray-10 ${linkClass}">
+              <a href="/_vfs/${encodeURIComponent(
+                key
+              )}" class="w-full text-sm px-2 py-1 border-b border-gray-10 ${linkClass}">
                 ${fname}
               </a>
             </li>
             `
-          : `
+            : `
             <li>
               <details>
                 <summary class="w-full text-sm px-2 py-1 border-b border-gray-10 hover:bg-gray-800 text-gray-200">
@@ -84,13 +95,15 @@ export function createVFSHandler(nitro: Nitro) {
                 </ul>
               </details>
             </li>
-            `
-      }).join('');
-
+            `;
+        })
+        .join("");
 
     const rootDirectory = directories[nitro.options.rootDir];
     delete directories[nitro.options.rootDir];
-    const items = generateHTML(rootDirectory, [nitro.options.rootDir]) + generateHTML(directories);
+    const items =
+      generateHTML(rootDirectory, [nitro.options.rootDir]) +
+      generateHTML(directories);
 
     const files = `
       <div class="h-full overflow-auto border-r border-gray:10">
