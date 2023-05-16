@@ -5,9 +5,9 @@ import type { NitroApp } from "./types";
 export function getGracefulShutdownConfig() {
   return {
     disabled: !!process.env.NITRO_SHUTDOWN_DISABLED,
-    signals: (process.env.NITRO_SHUTDOWN_SIGNALS || "SIGTERM SIGINT").split(
-      " "
-    ),
+    signals: (process.env.NITRO_SHUTDOWN_SIGNALS || "SIGTERM SIGINT")
+      .split(" ")
+      .map((s) => s.trim()),
     timeout: Number.parseInt(process.env.NITRO_SHUTDOWN_TIMEOUT, 10) || 30_000,
     forceExit: !process.env.NITRO_SHUTDOWN_NO_FORCE_EXIT,
   };
