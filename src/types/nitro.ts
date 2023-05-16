@@ -270,3 +270,7 @@ export interface NitroOptions extends PresetOptions {
     deploy: string;
   };
 }
+
+declare global {
+  const defineNitroConfig: (config: NitroConfig) => NitroConfig;
+}
