@@ -23,6 +23,9 @@ function runMaster() {
   const shutdownConfig = getGracefulShutdownConfig();
   if (!shutdownConfig.disabled) {
     async function onShutdown() {
+      if (isShuttingDown) {
+        return;
+      }
       isShuttingDown = true;
       await new Promise<void>((resolve) => {
         const timeout = setTimeout(() => {
