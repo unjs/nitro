@@ -1,66 +1,70 @@
 import os from "node:os";
 import cluster from "node:cluster";
+import { getGracefulShutdownConfig } from "../shutdown";
 
-if (cluster.isPrimary) {
-  let isShuttingDown = false;
+function runMaster() {
   const numberOfWorkers =
     Number.parseInt(process.env.NITRO_CLUSTER_WORKERS) ||
     (os.cpus().length > 0 ? os.cpus().length : 1);
+
   for (let i = 0; i < numberOfWorkers; i++) {
     cluster.fork();
   }
+
+  // Restore worker on exit
+  let isShuttingDown = false;
   cluster.on("exit", () => {
-    if (isShuttingDown) {
-      return;
+    if (!isShuttingDown) {
+      cluster.fork();
     }
-    cluster.fork();
   });
 
-  // graceful shutdown
-  if (process.env.NITRO_SHUTDOWN === "true") {
-    function shutdownWorkers() {
-      return new Promise((resolve) => {
-        const interval = setInterval(() => {
-          for (const worker of Object.values(cluster.workers)) {
-            // some workers is not dead
-            if (!worker.isDead()) {
-              return;
-            }
-          }
-
-          // all workers are dead
-          clearInterval(interval);
-          return resolve(true);
-        }, 3 * 1000);
-      });
-    }
-
-    const terminationSignals: NodeJS.Signals[] = ["SIGTERM", "SIGINT"];
-    const signals = process.env.NITRO_SHUTDOWN_SIGNALS
-      ? (process.env.NITRO_SHUTDOWN_SIGNALS.split(" ").map((str) =>
-          str.trim()
-        ) as NodeJS.Signals[])
-      : terminationSignals;
-    const forceExit = process.env.NITRO_SHUTDOWN_FORCE !== "false";
-
+  // Graceful shutdown
+  const shutdownConfig = getGracefulShutdownConfig();
+  if (!shutdownConfig.disabled) {
     async function onShutdown() {
       isShuttingDown = true;
-      await shutdownWorkers();
-      if (forceExit) {
+      await new Promise<void>((resolve) => {
+        const timeout = setTimeout(() => {
+          console.warn(
+            "[nitro] [cluster] Timeout reached for graceful shutdown. Forcing exit."
+          );
+          resolve();
+        }, shutdownConfig.timeout);
+
+        cluster.on("exit", () => {
+          if (Object.values(cluster.workers).every((w) => w.isDead())) {
+            // eslint-disable-next-line unicorn/no-process-exit
+            clearTimeout(timeout);
+            resolve();
+          } else {
+            // Wait for other workers to die...
+          }
+        });
+      });
+
+      if (shutdownConfig.forceExit) {
         // eslint-disable-next-line unicorn/no-process-exit
-        process.exit(1);
+        process.exit(0);
       }
     }
-
-    for (const signal of signals) {
+    for (const signal of shutdownConfig.signals) {
       process.once(signal, onShutdown);
     }
   }
-} else {
+}
+
+function runWorker() {
   // eslint-disable-next-line unicorn/prefer-top-level-await
   import("./node-server").catch((error) => {
     console.error(error);
     // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   });
+}
+
+if (cluster.isPrimary) {
+  runMaster();
+} else {
+  runWorker();
 }

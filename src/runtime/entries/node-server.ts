@@ -4,8 +4,8 @@ import type { AddressInfo } from "node:net";
 import { Server as HttpsServer } from "node:https";
 import destr from "destr";
 import { toNodeListener } from "h3";
-import gracefulShutdown from "http-graceful-shutdown";
 import { nitroApp } from "../app";
+import { setupGracefulShutdown } from "../shutdown";
 import { useRuntimeConfig } from "#internal/nitro";
 
 const cert = process.env.NITRO_SSL_CERT;
@@ -54,22 +54,7 @@ if (process.env.DEBUG) {
   );
 }
 
-// graceful shutdown
-if (process.env.NITRO_SHUTDOWN === "true") {
-  // https://www.gnu.org/software/libc/manual/html_node/Termination-Signals.html
-  const terminationSignals: NodeJS.Signals[] = ["SIGTERM", "SIGINT"];
-  const signals =
-    process.env.NITRO_SHUTDOWN_SIGNALS || terminationSignals.join(" ");
-  const timeout =
-    Number.parseInt(process.env.NITRO_SHUTDOWN_TIMEOUT, 10) || 30 * 1000;
-  const forceExit = process.env.NITRO_SHUTDOWN_FORCE !== "false";
-
-  async function onShutdown(signal?: NodeJS.Signals) {
-    await nitroApp.hooks.callHook("close");
-  }
-
-  // https://github.com/sebhildebrandt/http-graceful-shutdown
-  gracefulShutdown(listener, { signals, timeout, forceExit, onShutdown });
-}
+// Graceful shutdown
+setupGracefulShutdown(listener, nitroApp);
 
 export default {};
