@@ -12,7 +12,7 @@ const describeIf = (condition, title, factory) =>
         it.skip("skipped", () => {});
       });
 
-describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
+describe.runIf(!isWindows)("nitro:preset:vercel-edge", async () => {
   const ctx = await setupTest("vercel-edge");
   testNitro(ctx, async () => {
     // TODO: Add add-event-listener
