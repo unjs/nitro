@@ -1,26 +1,27 @@
-import { NitroErrorHandler } from '../types'
+import { setResponseStatus } from "h3";
+import { NitroErrorHandler } from "../types";
 
-function errorHandler (error, event) {
-  event.res.setHeader('Content-Type', 'text/html; charset=UTF-8')
-  event.res.statusCode = 503
-  event.res.statusMessage = 'Server Unavailable'
+function errorHandler(error, event) {
+  event.node.res.setHeader("Content-Type", "text/html; charset=UTF-8");
+  setResponseStatus(event, 503, "Server Unavailable");
 
-  let body
-  let title
+  let body;
+  let title;
   if (error) {
-    title = `${event.res.statusCode} ${event.res.statusMessage}`
-    body = `<code><pre>${error.stack}</pre></code>`
+    title = `${event.node.res.statusCode} ${event.node.res.statusMessage}`;
+    body = `<code><pre>${error.stack}</pre></code>`;
   } else {
-    title = 'Reloading server...'
-    body = '<progress></progress><script>document.querySelector(\'progress\').indeterminate=true</script>'
+    title = "Reloading server...";
+    body =
+      "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
   }
 
-  event.res.end(`<!DOCTYPE html>
+  event.node.res.end(`<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    ${error ? '' : '<meta http-equiv="refresh" content="2">'}
+    ${error ? "" : '<meta http-equiv="refresh" content="2">'}
     <title>${title}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico/css/pico.min.css">
   </head>
@@ -38,7 +39,7 @@ function errorHandler (error, event) {
   </main>
   </body>
 </html>
-`)
+`);
 }
 
-export default errorHandler as NitroErrorHandler
+export default errorHandler as NitroErrorHandler;

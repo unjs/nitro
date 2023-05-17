@@ -1,5 +1,5 @@
-import { defineNitroPreset } from '../preset'
+import { defineNitroPreset } from "../preset";
 
 export const heroku = defineNitroPreset({
-  extends: 'node-server'
-})
+  extends: "node-server",
+});

@@ -1,5 +1,5 @@
-import type { NitroErrorHandler } from '../../types'
+import type { NitroErrorHandler } from "../../types";
 
-const errorHandler: NitroErrorHandler
+const errorHandler: NitroErrorHandler;
 
-export default errorHandler
+export default errorHandler;

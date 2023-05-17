@@ -1,9 +1,6 @@
----
-title: Cleavr
-description: 'Discover Cleavr preset for Nitro!'
----
+# Cleavr
 
-## Cleavr
+Deploy Nitro apps to Cleavr.
 
 **Preset:** `cleavr` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -19,7 +16,7 @@ Nitro provides a built-in preset to generate output format compatible with [Clea
 
 In your project, set Nitro preset to `cleavr`.
 
-```
+```js
 export default {
   nitro: {
     preset: 'cleavr'
