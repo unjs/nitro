@@ -78,16 +78,14 @@ export function createVFSHandler(nitro: Nitro) {
           return Object.keys(value).length === 0
             ? `
             <li class="flex flex-nowrap">
-              <a href="/_vfs/${
-                encodedUrl
-              }" class="w-full text-sm px-2 py-1 border-b border-gray-10 ${linkClass}">
+              <a href="/_vfs/${encodedUrl}" class="w-full text-sm px-2 py-1 border-b border-gray-10 ${linkClass}">
                 ${fname}
               </a>
             </li>
             `
             : `
             <li>
-              <details ${url.startsWith(`/${encodedUrl}`) ? 'open' : ''}>
+              <details ${url.startsWith(`/${encodedUrl}`) ? "open" : ""}>
                 <summary class="w-full text-sm px-2 py-1 border-b border-gray-10 hover:bg-gray-800 text-gray-200">
                   ${fname}
                 </summary>
