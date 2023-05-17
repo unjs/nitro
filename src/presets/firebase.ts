@@ -11,28 +11,33 @@ import type { Nitro } from "../types";
 export const firebase = defineNitroPreset({
   entry: "#internal/nitro/entries/firebase",
   externals: {
-    traceInclude: []
+    traceInclude: [],
   },
   commands: {
     deploy: "npx firebase deploy",
   },
   hooks: {
-    'rollup:before'(nitro: Nitro) {
-      const nodeModulesDir = nitro.options.nodeModulesDirs.find(dir => existsSync(join(dir, 'firebase-functions')));
+    "rollup:before"(nitro: Nitro) {
+      const nodeModulesDir = nitro.options.nodeModulesDirs.find((dir) =>
+        existsSync(join(dir, "firebase-functions"))
+      );
       if (existsSync(nodeModulesDir)) {
         nitro.options.externals.traceInclude.push(
-          join(nodeModulesDir, '.bin/firebase-functions'),
-          join(nodeModulesDir, 'firebase-functions/lib/bin/firebase-functions.js'),
-          join(nodeModulesDir, 'firebase-functions/lib/runtime/loader.js'),
-          join(nodeModulesDir, 'firebase-functions/lib/runtime/manifest.js')
-          );
+          join(nodeModulesDir, ".bin/firebase-functions"),
+          join(
+            nodeModulesDir,
+            "firebase-functions/lib/bin/firebase-functions.js"
+          ),
+          join(nodeModulesDir, "firebase-functions/lib/runtime/loader.js"),
+          join(nodeModulesDir, "firebase-functions/lib/runtime/manifest.js")
+        );
       }
     },
     async compiled(ctx) {
       await writeRoutes(ctx);
-    }
-  }
-})
+    },
+  },
+});
 
 async function writeRoutes(nitro: Nitro) {
   if (!existsSync(join(nitro.options.rootDir, "firebase.json"))) {
