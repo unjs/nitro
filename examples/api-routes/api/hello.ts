@@ -1,1 +1,1 @@
-export default defineEventHandler(() => 'Nitro is amazing!')
+export default defineEventHandler(() => "Nitro is amazing!");

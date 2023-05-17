@@ -1,12 +1,22 @@
-import '#internal/nitro/virtual/polyfill'
-import { nitroApp } from '../app'
-import { requestHasBody, useRequestBody } from '../utils'
+import "#internal/nitro/virtual/polyfill";
+import { nitroApp } from "../app";
+import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
+// https://docs.netlify.com/edge-functions/api/
 export default async function (request: Request, _context) {
-  const url = new URL(request.url)
-  let body
-  if (requestHasBody(request)) {
-    body = await useRequestBody(request)
+  const url = new URL(request.url);
+
+  if (isPublicAssetURL(url.pathname)) {
+    return;
+  }
+
+  if (!request.headers.has("x-forwarded-proto") && url.protocol === "https:") {
+    request.headers.set("x-forwarded-proto", "https");
+  }
+
+  let body;
+  if (request.body) {
+    body = await request.arrayBuffer();
   }
 
   const r = await nitroApp.localCall({
@@ -17,12 +27,12 @@ export default async function (request: Request, _context) {
     headers: request.headers,
     method: request.method,
     redirect: request.redirect,
-    body
-  })
+    body,
+  });
 
   return new Response(r.body, {
     headers: r.headers as HeadersInit,
     status: r.status,
-    statusText: r.statusText
-  })
+    statusText: r.statusText,
+  });
 }

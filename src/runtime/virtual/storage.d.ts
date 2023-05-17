@@ -1,3 +1,3 @@
-import type { Storage } from 'unstorage'
+import type { Storage } from "unstorage";
 
-export declare const useStorage: () => Storage
+export declare const storage: Storage;
