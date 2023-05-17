@@ -14,15 +14,15 @@ export type NitroFetchRequest =
 
 export type MiddlewareOf<
   Route extends string,
-  Method extends RouterMethod | "default"
-> = Method extends keyof InternalApi[MatchedRoutes<Route>]
-  ? Exclude<InternalApi[MatchedRoutes<Route>][Method], Error | void>
+  Method extends RouterMethod | Uppercase<RouterMethod> | "default"
+> = Lowercase<Method> extends keyof InternalApi[MatchedRoutes<Route>]
+  ? Exclude<InternalApi[MatchedRoutes<Route>][Lowercase<Method>], Error | void>
   : never;
 
 export type TypedInternalResponse<
   Route,
   Default = unknown,
-  Method extends RouterMethod = RouterMethod
+  Method extends RouterMethod | Uppercase<RouterMethod> = RouterMethod
 > = Default extends string | boolean | number | null | void | object
   ? // Allow user overrides
     Default
@@ -45,7 +45,13 @@ export type AvailableRouterMethod<R extends NitroFetchRequest> =
           keyof InternalApi[MatchedRoutes<R>],
           "default"
         > extends undefined
-      ? Extract<RouterMethod, keyof InternalApi[MatchedRoutes<R>]>
+      ? Extract<
+          RouterMethod,
+          | keyof InternalApi[MatchedRoutes<R>]
+          | (keyof InternalApi[MatchedRoutes<R>] extends string
+              ? Uppercase<keyof InternalApi[MatchedRoutes<R>]>
+              : never)
+        >
       : RouterMethod
     : RouterMethod;
 
