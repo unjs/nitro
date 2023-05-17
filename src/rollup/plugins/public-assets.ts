@@ -89,7 +89,9 @@ import { resolve, dirname } from 'pathe'
 import assets from '#internal/nitro/virtual/public-assets-data'
 const serverDir = dirname(fileURLToPath(import.meta.url))
 export function readAsset (id) {
-  return Bun.file(resolve(serverDir, assets[id].path)).text()
+  return Bun.file(resolve(serverDir, assets[id].path))
+  .arrayBuffer()
+  .then((r) => Buffer.from(r));
 }`;
       },
       // #internal/nitro/virtual/public-assets
