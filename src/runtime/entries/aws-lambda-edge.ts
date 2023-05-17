@@ -15,7 +15,7 @@ export const handler = async function handler(
 
   const r = await nitroApp.localCall({
     event,
-    url: request.uri,
+    url: request.uri + (request.querystring ? `?${request.querystring}` : ""),
     context,
     headers: normalizeIncomingHeaders(request.headers),
     method: request.method,
