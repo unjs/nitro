@@ -82,3 +82,21 @@ export function normalizeError(error: any) {
     message,
   };
 }
+
+export function trapUnhandledNodeErrors() {
+  if (process.env.DEBUG) {
+    process.on("unhandledRejection", (err) =>
+      console.error("[nitro] [unhandledRejection]", err)
+    );
+    process.on("uncaughtException", (err) =>
+      console.error("[nitro] [uncaughtException]", err)
+    );
+  } else {
+    process.on("unhandledRejection", (err) =>
+      console.error("[nitro] [unhandledRejection] " + err)
+    );
+    process.on("uncaughtException", (err) =>
+      console.error("[nitro]  [uncaughtException] " + err)
+    );
+  }
+}
