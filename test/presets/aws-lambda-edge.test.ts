@@ -42,7 +42,7 @@ describe('nitro:preset:aws-lambda-edge', async () => {
 
       return {
         data: destr(res.body),
-        status: parseInt(res.status),
+        status: Number.parseInt(res.status),
         headers: resHeaders
       }
     }

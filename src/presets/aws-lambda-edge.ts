@@ -1,73 +1,85 @@
-import { resolve } from 'pathe'
-import { defineNitroPreset } from '../preset'
-import { Nitro } from '../types'
-import { writeFile } from '../utils'
+import { resolve } from "pathe";
+import { defineNitroPreset } from "../preset";
+import { Nitro } from "../types";
+import { writeFile } from "../utils";
 
 export const awsLambdaEdge = defineNitroPreset({
-  entry: '#internal/nitro/entries/aws-lambda-edge',
+  entry: "#internal/nitro/entries/aws-lambda-edge",
   externals: true,
   commands: {
-    deploy: 'cd ./cdk && APP_ID=<your app id> npm run deploy --all'
+    deploy: "cd ./cdk && APP_ID=<your app id> npm run deploy --all",
   },
   hooks: {
-    async 'compiled' (nitro: Nitro) {
-      await generateCdkApp(nitro)
-    }
-  }
-})
+    async compiled(nitro: Nitro) {
+      await generateCdkApp(nitro);
+    },
+  },
+});
 
-async function generateCdkApp (nitro: Nitro) {
-  const cdkDir = resolve(nitro.options.output.dir, 'cdk')
-  await writeFile(resolve(cdkDir, 'bin/nitro-lambda-edge.ts'), entryTemplate())
-  await writeFile(resolve(cdkDir, 'lib/nitro-lambda-edge-stack.ts'), nitroLambdaEdgeStackTemplate())
-  await writeFile(resolve(cdkDir, 'package.json'), JSON.stringify({
-    private: true,
-    scripts: {
-      cdk: 'cdk',
-      deploy: 'npm install && cdk deploy'
-    },
-    devDependencies: {
-      '@types/node': '18',
-      'aws-cdk': '^2',
-      'ts-node': '^10.7.0',
-      typescript: '~3.9.7'
-    },
-    dependencies: {
-      'aws-cdk-lib': '^2',
-      constructs: '^10.0.0',
-      'nitro-aws-cdk-lib': 'latest',
-      'source-map-support': '^0.5.21'
-    }
-  }))
-  await writeFile(resolve(cdkDir, 'cdk.json'), JSON.stringify({
-    app: 'npx ts-node --prefer-ts-exts bin/nitro-lambda-edge.ts'
-  }))
-  await writeFile(resolve(cdkDir, 'tsconfig.json'), JSON.stringify({
-    compilerOptions: {
-      target: 'ES2018',
-      module: 'commonjs',
-      lib: ['es2018'],
-      declaration: true,
-      strict: true,
-      noImplicitAny: true,
-      strictNullChecks: true,
-      noImplicitThis: true,
-      alwaysStrict: true,
-      noUnusedLocals: false,
-      noUnusedParameters: false,
-      noImplicitReturns: true,
-      noFallthroughCasesInSwitch: false,
-      inlineSourceMap: true,
-      inlineSources: true,
-      experimentalDecorators: true,
-      strictPropertyInitialization: false,
-      typeRoots: ['./node_modules/@types']
-    },
-    exclude: ['node_modules', 'cdk.out']
-  }))
+async function generateCdkApp(nitro: Nitro) {
+  const cdkDir = resolve(nitro.options.output.dir, "cdk");
+  await writeFile(resolve(cdkDir, "bin/nitro-lambda-edge.ts"), entryTemplate());
+  await writeFile(
+    resolve(cdkDir, "lib/nitro-lambda-edge-stack.ts"),
+    nitroLambdaEdgeStackTemplate()
+  );
+  await writeFile(
+    resolve(cdkDir, "package.json"),
+    JSON.stringify({
+      private: true,
+      scripts: {
+        cdk: "cdk",
+        deploy: "npm install && cdk deploy",
+      },
+      devDependencies: {
+        "@types/node": "18",
+        "aws-cdk": "^2",
+        "ts-node": "^10.7.0",
+        typescript: "~3.9.7",
+      },
+      dependencies: {
+        "aws-cdk-lib": "^2",
+        constructs: "^10.0.0",
+        "nitro-aws-cdk-lib": "latest",
+        "source-map-support": "^0.5.21",
+      },
+    })
+  );
+  await writeFile(
+    resolve(cdkDir, "cdk.json"),
+    JSON.stringify({
+      app: "npx ts-node --prefer-ts-exts bin/nitro-lambda-edge.ts",
+    })
+  );
+  await writeFile(
+    resolve(cdkDir, "tsconfig.json"),
+    JSON.stringify({
+      compilerOptions: {
+        target: "ES2018",
+        module: "commonjs",
+        lib: ["es2018"],
+        declaration: true,
+        strict: true,
+        noImplicitAny: true,
+        strictNullChecks: true,
+        noImplicitThis: true,
+        alwaysStrict: true,
+        noUnusedLocals: false,
+        noUnusedParameters: false,
+        noImplicitReturns: true,
+        noFallthroughCasesInSwitch: false,
+        inlineSourceMap: true,
+        inlineSources: true,
+        experimentalDecorators: true,
+        strictPropertyInitialization: false,
+        typeRoots: ["./node_modules/@types"],
+      },
+      exclude: ["node_modules", "cdk.out"],
+    })
+  );
 }
 
-function entryTemplate () {
+function entryTemplate() {
   return `
 #!/usr/bin/env node
 import "source-map-support/register";
@@ -85,10 +97,10 @@ new NitroLambdaEdgeStack(app, process.env.APP_ID, {
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
-`.trim()
+`.trim();
 }
 
-function nitroLambdaEdgeStackTemplate () {
+function nitroLambdaEdgeStackTemplate() {
   return `
 import { CfnOutput, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
@@ -151,5 +163,5 @@ export class NitroLambdaEdgeStack extends Stack {
     });
   }
 }
-`.trim()
+`.trim();
 }
