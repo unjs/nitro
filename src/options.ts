@@ -72,6 +72,8 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    concurrency: 1,
+    interval: 0,
     crawlLinks: false,
     ignore: [],
     routes: [],
@@ -87,6 +89,7 @@ const NitroDefaults: NitroConfig = {
     "unenv/runtime/polyfill/",
     "node-fetch-native/polyfill",
     "node-fetch-native/dist/polyfill",
+    resolve(runtimeDir, "polyfill/"),
   ],
   replace: {},
   node: true,
@@ -122,6 +125,7 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
+  // @ts-ignore
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
