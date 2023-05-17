@@ -8,6 +8,19 @@ Nitro supports deploying on [Koyeb](https://www.koyeb.com/) with minimal configu
 
 ## Using the Control Panel
 
+1. (Optional) Add a `start` command to your `package.json` file to define how to start your application:
+
+   ```json
+   {
+     ...
+     "scripts": {
+       ...
+       "start": "node .output/server/index.mjs"
+     }
+     ...
+   }
+   ```
+
 1. In the [Koyeb control panel](https://app.koyeb.com/), click **Create App**.
 
 1. Choose **GitHub** as your deployment method.
@@ -16,7 +29,7 @@ Nitro supports deploying on [Koyeb](https://www.koyeb.com/) with minimal configu
 
 1. Name your Service, for example `nuxt-service`.
 
-1. Under the **Build and deployment settings**, toggle the override switch associated with the run command field.  In the **Run command** field, enter:
+1. If you did not add a `start` command to your `package.json` file, under the **Build and deployment settings**, toggle the override switch associated with the run command field.  In the **Run command** field, enter:
 
    ```
    node .output/server/index.mjs`
@@ -24,7 +37,7 @@ Nitro supports deploying on [Koyeb](https://www.koyeb.com/) with minimal configu
 
 1. In the **Advanced** section, click **Add Variable** and add a `NITRO_PRESET` variable set to `koyeb`.
 
-1. Name the App, for example `example-nuxt`.
+1. Name the App.
 
 1. Click the **Deploy** button.
 
@@ -48,6 +61,7 @@ Nitro supports deploying on [Koyeb](https://www.koyeb.com/) with minimal configu
    koyeb app init <APPLICATION_NAME> \
      --git github.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPOSITORY_NAME> \
      --git-branch main \
+     --git-run-command "node .output/server/index.mjs" \
      --ports 3000:http \
      --routes /:3000 \
      --env PORT=3000 \
