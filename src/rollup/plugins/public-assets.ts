@@ -82,18 +82,6 @@ export function readAsset (id) {
   return Deno.readFile(path);
 }`;
       },
-      "#internal/nitro/virtual/public-assets-bun": () => {
-        return `
-import { fileURLToPath } from 'node:url'
-import { resolve, dirname } from 'pathe'
-import assets from '#internal/nitro/virtual/public-assets-data'
-const serverDir = dirname(fileURLToPath(import.meta.url))
-export function readAsset (id) {
-  return Bun.file(resolve(serverDir, assets[id].path))
-  .arrayBuffer()
-  .then((r) => Buffer.from(r));
-}`;
-      },
       // #internal/nitro/virtual/public-assets
       "#internal/nitro/virtual/public-assets": () => {
         const publicAssetBases = Object.fromEntries(
