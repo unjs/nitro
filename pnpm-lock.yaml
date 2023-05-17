@@ -237,6 +237,9 @@ importers:
       expect-type:
         specifier: ^0.15.0
         version: 0.15.0
+      get-port-please:
+        specifier: ^3.0.1
+        version: 3.0.1
       miniflare:
         specifier: ^2.14.0
         version: 2.14.0
@@ -3076,7 +3079,6 @@ packages:
 
   /get-port-please@3.0.1:
     resolution: {integrity: sha512-R5pcVO8Z1+pVDu8Ml3xaJCEkBiiy1VQN9za0YqH8GIi1nIqD4IzQhzY6dDzMRtdS1lyiGlucRzm8IN8wtLIXng==}
-    dev: false
 
   /get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
