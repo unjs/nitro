@@ -14,57 +14,65 @@ export async function compressPublicAssets(nitro: Nitro) {
     ignore: ["**/*.gz", "**/*.br"],
   });
 
-  for (const fileName of publicFiles) {
-    const filePath = resolve(nitro.options.output.publicDir, fileName);
-    const fileContents = await fsp.readFile(filePath);
-    if (existsSync(filePath + ".gz") || existsSync(filePath + ".br")) {
-      continue;
-    }
+  await Promise.all(
+    publicFiles.map(async (fileName) => {
+      const filePath = resolve(nitro.options.output.publicDir, fileName);
 
-    const mimeType = mime.getType(fileName) || "text/plain";
-
-    if (
-      fileContents.length < 1024 ||
-      fileName.endsWith(".map") ||
-      !isCompressableMime(mimeType)
-    ) {
-      continue;
-    }
-
-    const { gzip, brotli } = nitro.options.compressPublicAssets || ({} as any);
-
-    const encodings = [
-      gzip !== false && "gzip",
-      brotli !== false && "br",
-    ].filter(Boolean);
-
-    for (const encoding of encodings) {
-      const suffix = "." + (encoding === "gzip" ? "gz" : "br");
-      const compressedPath = filePath + suffix;
-      if (existsSync(compressedPath)) {
-        continue;
+      if (existsSync(filePath + ".gz") || existsSync(filePath + ".br")) {
+        return;
       }
-      const gzipOptions = { level: zlib.constants.Z_BEST_COMPRESSION };
-      const brotliOptions = {
-        [zlib.constants.BROTLI_PARAM_MODE]: isTextMime(mimeType)
-          ? zlib.constants.BROTLI_MODE_TEXT
-          : zlib.constants.BROTLI_MODE_GENERIC,
-        [zlib.constants.BROTLI_PARAM_QUALITY]:
-          zlib.constants.BROTLI_MAX_QUALITY,
-        [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileContents.length,
-      };
-      const compressedBuff: Buffer = await new Promise((resolve, reject) => {
-        const cb = (error, result: Buffer) =>
-          error ? reject(error) : resolve(result);
-        if (encoding === "gzip") {
-          zlib.gzip(fileContents, gzipOptions, cb);
-        } else {
-          zlib.brotliCompress(fileContents, brotliOptions, cb);
-        }
-      });
-      await fsp.writeFile(compressedPath, compressedBuff);
-    }
-  }
+
+      const mimeType = mime.getType(fileName) || "text/plain";
+
+      const fileContents = await fsp.readFile(filePath);
+      if (
+        fileContents.length < 1024 ||
+        fileName.endsWith(".map") ||
+        !isCompressableMime(mimeType)
+      ) {
+        return;
+      }
+
+      const { gzip, brotli } =
+        nitro.options.compressPublicAssets || ({} as any);
+
+      const encodings = [
+        gzip !== false && "gzip",
+        brotli !== false && "br",
+      ].filter(Boolean);
+
+      await Promise.all(
+        encodings.map(async (encoding) => {
+          const suffix = "." + (encoding === "gzip" ? "gz" : "br");
+          const compressedPath = filePath + suffix;
+          if (existsSync(compressedPath)) {
+            return;
+          }
+          const gzipOptions = { level: zlib.constants.Z_BEST_COMPRESSION };
+          const brotliOptions = {
+            [zlib.constants.BROTLI_PARAM_MODE]: isTextMime(mimeType)
+              ? zlib.constants.BROTLI_MODE_TEXT
+              : zlib.constants.BROTLI_MODE_GENERIC,
+            [zlib.constants.BROTLI_PARAM_QUALITY]:
+              zlib.constants.BROTLI_MAX_QUALITY,
+            [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fileContents.length,
+          };
+          const compressedBuff: Buffer = await new Promise(
+            (resolve, reject) => {
+              const cb = (error, result: Buffer) =>
+                error ? reject(error) : resolve(result);
+              if (encoding === "gzip") {
+                zlib.gzip(fileContents, gzipOptions, cb);
+              } else {
+                zlib.brotliCompress(fileContents, brotliOptions, cb);
+              }
+            }
+          );
+          await fsp.writeFile(compressedPath, compressedBuff);
+        })
+      );
+    })
+  );
 }
 
 function isTextMime(mimeType: string) {

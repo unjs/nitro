@@ -170,16 +170,28 @@ declare module 'nitropack' {
     '/// <reference path="./nitro-imports.d.ts" />',
   ];
 
-  await writeFile(join(typesDir, "nitro-routes.d.ts"), routes.join("\n"));
+  const buildFiles: { path: string; contents: string }[] = [];
 
-  await writeFile(join(typesDir, "nitro-config.d.ts"), config.join("\n"));
+  buildFiles.push({
+    path: join(typesDir, "nitro-routes.d.ts"),
+    contents: routes.join("\n"),
+  });
 
-  await writeFile(
-    join(typesDir, "nitro-imports.d.ts"),
-    [...autoImportedTypes, "export {}"].join("\n")
-  );
+  buildFiles.push({
+    path: join(typesDir, "nitro-config.d.ts"),
+    contents: config.join("\n"),
+  });
 
-  await writeFile(join(typesDir, "nitro.d.ts"), declarations.join("\n"));
+  buildFiles.push({
+    path: join(typesDir, "nitro-imports.d.ts"),
+    contents: [...autoImportedTypes, "export {}"].join("\n"),
+  });
+
+  buildFiles.push({
+    path: join(typesDir, "nitro.d.ts"),
+    contents: declarations.join("\n"),
+  });
+
   if (nitro.options.typescript.generateTsConfig) {
     const tsConfigPath = resolve(
       nitro.options.buildDir,
@@ -213,8 +225,20 @@ declare module 'nitropack' {
           : []),
       ],
     };
-    await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 2));
+    buildFiles.push({
+      path: tsConfigPath,
+      contents: JSON.stringify(tsConfig, null, 2),
+    });
   }
+
+  await Promise.all(
+    buildFiles.map(async (file) => {
+      await writeFile(
+        resolve(nitro.options.buildDir, file.path),
+        file.contents
+      );
+    })
+  );
 }
 
 async function _snapshot(nitro: Nitro) {
@@ -347,14 +371,15 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
 async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
   let rollupWatcher: rollup.RollupWatcher;
 
-  const reload = debounce(async () => {
+  async function load() {
     if (rollupWatcher) {
       await rollupWatcher.close();
     }
     await scanHandlers(nitro);
     rollupWatcher = startRollupWatcher(nitro, rollupConfig);
     await writeTypes(nitro);
-  });
+  }
+  const reload = debounce(load);
 
   const watchPatterns = nitro.options.scanDirs.flatMap((dir) => [
     join(dir, "api"),
@@ -379,7 +404,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
 
   nitro.hooks.hook("rollup:reload", () => reload());
 
-  await reload();
+  await load();
 }
 
 function formatRollupError(_error: RollupError | OnResolveResult) {
