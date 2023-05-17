@@ -10,36 +10,29 @@ import type { Nitro } from "../types";
 
 export const firebase = defineNitroPreset({
   entry: "#internal/nitro/entries/firebase",
+  externals: {
+    traceInclude: []
+  },
   commands: {
     deploy: "npx firebase deploy",
   },
   hooks: {
-    async 'compiled' (ctx) {
-      resolveRequiredNodeModules(ctx)
-      await writeRoutes(ctx)
+    'rollup:before'(nitro: Nitro) {
+      const nodeModulesDir = nitro.options.nodeModulesDirs.find(dir => existsSync(join(dir, 'firebase-functions')));
+      if (existsSync(nodeModulesDir)) {
+        nitro.options.externals.traceInclude.push(
+          join(nodeModulesDir, '.bin/firebase-functions'),
+          join(nodeModulesDir, 'firebase-functions/lib/bin/firebase-functions.js'),
+          join(nodeModulesDir, 'firebase-functions/lib/runtime/loader.js'),
+          join(nodeModulesDir, 'firebase-functions/lib/runtime/manifest.js')
+          );
+      }
+    },
+    async compiled(ctx) {
+      await writeRoutes(ctx);
     }
   }
 })
-
-function resolveRequiredNodeModules (nitro: Nitro) {
-  const functionDir = join(nitro.options.output.serverDir, 'node_modules', 'firebase-functions')
-  if (fse.existsSync(functionDir)) {
-    const nodeModulesDir = nitro.options.nodeModulesDirs.find(dir => fse.existsSync(join(dir, 'firebase-functions')))
-    if (nodeModulesDir) {
-      ['firebase-functions', 'semver'].map(name => fse.copySync(join(nodeModulesDir, name), join(nitro.options.output.serverDir, 'node_modules', name)))
-      fse.mkdirSync(join(nitro.options.output.serverDir, 'node_modules', '.bin'))
-      fse.symlinkSync(join(functionDir, 'lib', 'bin', 'firebase-functions.js'), join(nitro.options.output.serverDir, 'node_modules', '.bin', 'firebase-functions'), 'file')
-    }
-  }
-}
-
-async function writeRoutes (nitro: Nitro) {
-  if (!fse.existsSync(join(nitro.options.rootDir, 'firebase.json'))) {
-    async compiled(ctx) {
-      await writeRoutes(ctx);
-    },
-  },
-});
 
 async function writeRoutes(nitro: Nitro) {
   if (!existsSync(join(nitro.options.rootDir, "firebase.json"))) {
@@ -66,7 +59,7 @@ async function writeRoutes(nitro: Nitro) {
     };
     await writeFile(
       resolve(nitro.options.rootDir, "firebase.json"),
-      JSON.stringify(firebase)
+      JSON.stringify(firebase, null, 2)
     );
   }
 
