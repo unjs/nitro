@@ -43,7 +43,7 @@
     "test": "pnpm lint && pnpm vitest-es run --silent",
     "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit",
     "test:types": "tsc --noEmit && pnpm test:fixture:types",
-    "vitest-es": "cross-env NODE_OPTIONS=--experimental-vm-modules vitest"
+    "vitest-es": "NODE_OPTIONS=--experimental-vm-modules vitest"
   },
   "resolutions": {
     "nitropack": "link:.",
@@ -121,11 +121,10 @@
     "@types/node-fetch": "^2.6.4",
     "@types/semver": "^7.5.0",
     "@types/serve-static": "^1.15.1",
-    "@vitest/coverage-c8": "^0.30.1",
-    "changelogen": "^0.5.2",
-    "cross-env": "^7.0.3",
-    "edge-runtime": "^2.1.2",
-    "eslint": "^8.38.0",
+    "@vitest/coverage-c8": "^0.31.0",
+    "changelogen": "^0.5.3",
+    "edge-runtime": "^2.2.0",
+    "eslint": "^8.40.0",
     "eslint-config-unjs": "^0.1.0",
     "execa": "^7.1.1",
     "expect-type": "^0.15.0",

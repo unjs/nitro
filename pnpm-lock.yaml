@@ -217,19 +217,16 @@ importers:
         specifier: ^1.15.1
         version: 1.15.1
       '@vitest/coverage-c8':
-        specifier: ^0.30.1
-        version: 0.30.1(vitest@0.31.0)
+        specifier: ^0.31.0
+        version: 0.31.0(vitest@0.31.0)
       changelogen:
-        specifier: ^0.5.2
+        specifier: ^0.5.3
         version: 0.5.3
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
       edge-runtime:
-        specifier: ^2.1.2
+        specifier: ^2.2.0
         version: 2.2.0
       eslint:
-        specifier: ^8.38.0
+        specifier: ^8.40.0
         version: 8.40.0
       eslint-config-unjs:
         specifier: ^0.1.0
@@ -1460,12 +1457,14 @@ packages:
       - supports-color
     dev: false
 
-  /@vitest/coverage-c8@0.30.1(vitest@0.31.0):
-    resolution: {integrity: sha512-/Wa3dtSuckpdngAmiCwowaEXXgJkqPrtfvrs9HTB9QoEfNbZWPu4E4cjEn4lJZb4qcGf4fxFtUA2f9DnDNAzBA==}
+  /@vitest/coverage-c8@0.31.0(vitest@0.31.0):
+    resolution: {integrity: sha512-h72qN1D962AO7UefQVulm9JFP5ACS7OfhCdBHioXU8f7ohH/+NTZCgAqmgcfRNHHO/8wLFxx+93YVxhodkEJVA==}
     peerDependencies:
       vitest: '>=0.30.0 <1'
     dependencies:
+      '@ampproject/remapping': 2.2.1
       c8: 7.13.0
+      magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.3
       vitest: 0.31.0
@@ -2105,14 +2104,6 @@ packages:
 
   /cron-schedule@3.0.6:
     resolution: {integrity: sha512-izfGgKyzzIyLaeb1EtZ3KbglkS6AKp9cv7LxmiyoOu+fXfol1tQDC0Cof0enVZGNtudTHW+3lfuW9ZkLQss4Wg==}
-    dev: true
-
-  /cross-env@7.0.3:
-    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
-    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
-    hasBin: true
-    dependencies:
-      cross-spawn: 7.0.3
     dev: true
 
   /cross-spawn@7.0.3:
