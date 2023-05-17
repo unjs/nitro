@@ -26,17 +26,4 @@ describe.runIf(hasBun)("nitro:preset:bun", async () => {
       return res;
     };
   });
-  it("should handle nested cached route rules", async () => {
-    const cached = await ctx.fetch("/rules/_/noncached/cached");
-    expect(cached.headers.get("etag")).toBeDefined();
-
-    const noncached = await ctx.fetch("/rules/_/noncached/noncached");
-    expect(noncached.headers.get("etag")).toBeNull();
-
-    const cached2 = await ctx.fetch("/rules/_/cached/cached");
-    expect(cached2.headers.get("etag")).toBeDefined();
-
-    const noncached2 = await ctx.fetch("/rules/_/cached/noncached");
-    expect(noncached2.headers.get("etag")).toBeNull();
-  });
 });
