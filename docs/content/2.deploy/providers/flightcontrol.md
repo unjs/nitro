@@ -6,7 +6,7 @@ The deployment to AWS via Flightcontrol does not require any configuration. [Fli
 
 ### Set Up your Flightcontrol account
 
-On a high-level, the steps you'll need to follow in order to deploy a project for the first time are:
+On a high-level, the steps you will need to follow in order to deploy a project for the first time are:
 
 1. Create an account at [Flightcontrol](https://app.flightcontrol.dev/signup?ref=nitro)
 2. Create an account at [AWS](https://portal.aws.amazon.com/billing/signup) (if you don't already have one)
