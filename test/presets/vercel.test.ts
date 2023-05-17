@@ -1,7 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
-import { EdgeRuntime } from "edge-runtime";
 import { setupTest, startServer, testNitro } from "../tests";
 
 describe("nitro:preset:vercel", async () => {
@@ -107,12 +106,20 @@ describe("nitro:preset:vercel", async () => {
                 "handle": "filesystem",
               },
               {
+                "dest": "/rules/_/noncached/cached?url=$url",
+                "src": "/rules/_/noncached/cached",
+              },
+              {
                 "dest": "/__nitro",
                 "src": "/rules/_/cached/noncached",
               },
               {
                 "dest": "/__nitro",
                 "src": "(?<url>/rules/_/noncached/.*)",
+              },
+              {
+                "dest": "/__nitro--rules---cached?url=$url",
+                "src": "(?<url>/rules/_/cached/.*)",
               },
               {
                 "dest": "/__nitro",
@@ -127,6 +134,14 @@ describe("nitro:preset:vercel", async () => {
                 "src": "(?<url>/rules/isr-ttl/.*)",
               },
               {
+                "dest": "/__nitro--rules-swr?url=$url",
+                "src": "(?<url>/rules/swr/.*)",
+              },
+              {
+                "dest": "/__nitro--rules-swr-ttl?url=$url",
+                "src": "(?<url>/rules/swr-ttl/.*)",
+              },
+              {
                 "dest": "/__nitro",
                 "src": "/(.*)",
               },
@@ -137,18 +152,4 @@ describe("nitro:preset:vercel", async () => {
       });
     }
   );
-});
-
-describe.skip("nitro:preset:vercel-edge", async () => {
-  const ctx = await setupTest("vercel-edge");
-  testNitro(ctx, async () => {
-    // TODO: Add add-event-listener
-    const entry = resolve(ctx.outDir, "functions/__nitro.func/index.mjs");
-    const entryCode = await fsp.readFile(entry, "utf8");
-    const runtime = new EdgeRuntime({ initialCode: entryCode });
-    return async ({ url }) => {
-      const res = await runtime.dispatchFetch("http://localhost" + url);
-      return res;
-    };
-  });
 });

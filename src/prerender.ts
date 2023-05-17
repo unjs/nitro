@@ -85,10 +85,11 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
+  const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
-    // Skip if route is already generated
-    if (generatedRoutes.has(route)) {
+    // Skip if route is already generated or skipped
+    if (generatedRoutes.has(route) || skippedRoutes.has(route)) {
       return false;
     }
 
@@ -139,10 +140,10 @@ export async function prerender(nitro: Nitro) {
 
     // Check if we should render route
     if (!canPrerender(route)) {
+      skippedRoutes.add(route);
       return;
     }
     generatedRoutes.add(route);
-    routes.delete(route);
 
     // Create result object
     const _route: PrerenderGenerateRoute = { route };
@@ -223,37 +224,76 @@ export async function prerender(nitro: Nitro) {
       ? `Prerendering ${routes.size} initial routes with crawler`
       : `Prerendering ${routes.size} routes`
   );
-  for (let i = 0; i < 100 && routes.size > 0; i++) {
-    for (const route of routes) {
-      const _route = await generateRoute(route).catch(
-        (error) => ({ route, error } as PrerenderGenerateRoute)
+
+  async function processRoute(route: string) {
+    const _route = await generateRoute(route).catch(
+      (error) => ({ route, error } as PrerenderGenerateRoute)
+    );
+
+    if (!_route || _route.skip) {
+      return;
+    }
+
+    await nitro.hooks.callHook("prerender:route", _route);
+
+    if (_route.error) {
+      nitro.logger.log(
+        chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
+          `  ├─ ${_route.route} (${
+            _route.generateTimeMS
+          }ms) ${`(${_route.error})`}`
+        )
       );
-
-      if (!_route || _route.skip) {
-        continue;
-      }
-
-      await nitro.hooks.callHook("prerender:route", _route);
-
-      if (_route.error) {
-        nitro.logger.log(
-          chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
-            `  ├─ ${_route.route} (${
-              _route.generateTimeMS
-            }ms) ${`(${_route.error})`}`
-          )
-        );
-      } else {
-        nitro.logger.log(
-          chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
-        );
-      }
+    } else {
+      nitro.logger.log(
+        chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
+      );
     }
   }
+
+  await runParallel(routes, processRoute, {
+    concurrency: nitro.options.prerender.concurrency,
+    interval: nitro.options.prerender.interval,
+  });
 
   if (nitro.options.compressPublicAssets) {
     await compressPublicAssets(nitro);
   }
+}
+
+async function runParallel<T>(
+  inputs: Set<T>,
+  cb: (input: T) => unknown | Promise<unknown>,
+  opts: { concurrency: number; interval: number }
+) {
+  const tasks = new Set<Promise<unknown>>();
+
+  function queueNext() {
+    const route = inputs.values().next().value;
+    if (!route) {
+      return;
+    }
+
+    inputs.delete(route);
+    const task = new Promise((resolve) =>
+      setTimeout(resolve, opts.interval)
+    ).then(() => cb(route));
+
+    tasks.add(task);
+    return task.then(() => {
+      tasks.delete(task);
+      if (inputs.size > 0) {
+        return refillQueue();
+      }
+    });
+  }
+
+  function refillQueue() {
+    const workers = Math.min(opts.concurrency - tasks.size, inputs.size);
+    return Promise.all(Array.from({ length: workers }, () => queueNext()));
+  }
+
+  await refillQueue();
 }
 
 const LINK_REGEX = /href=["']?([^"'>]+)/g;
