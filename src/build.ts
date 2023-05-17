@@ -404,7 +404,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
 
   nitro.hooks.hook("rollup:reload", () => reload());
 
-  await reload();
+  await load();
 }
 
 function formatRollupError(_error: RollupError | OnResolveResult) {
