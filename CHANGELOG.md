@@ -2,6 +2,89 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.4.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.3.3...v2.4.0)
+
+
+### 🚀 Enhancements
+
+  - Add cloudflare module worker support ([#681](https://github.com/unjs/nitro/pull/681))
+  - **vercel, netlify:** Introduce `isr` route rule ([#1124](https://github.com/unjs/nitro/pull/1124))
+  - Add `static` preset ([#1127](https://github.com/unjs/nitro/pull/1127))
+  - Add `vercel-static` and `netlify-static` presets ([#1073](https://github.com/unjs/nitro/pull/1073))
+  - Add `github-pages` preset ([#1133](https://github.com/unjs/nitro/pull/1133))
+  - Pass resolved config to `rollup:before` hook ([#1160](https://github.com/unjs/nitro/pull/1160))
+  - Config reload support for `nitro dev` ([#1173](https://github.com/unjs/nitro/pull/1173))
+  - Config hmr support for `routeRules` and `rutimeConfig` ([#1175](https://github.com/unjs/nitro/pull/1175))
+  - Support dynamic app config and runtime config ([#1154](https://github.com/unjs/nitro/pull/1154))
+  - Experimental `/_nitro/openapi.json` and `/_nitro/swagger` for dev mode ([#1162](https://github.com/unjs/nitro/pull/1162))
+  - **vercel:** Add support for specifying edge regions ([#1192](https://github.com/unjs/nitro/pull/1192))
+  - `future.nativeSWR` ([#1212](https://github.com/unjs/nitro/pull/1212))
+
+### 🔥 Performance
+
+  - Export `defineNitroConfig` from `nitro/config` ([#1174](https://github.com/unjs/nitro/pull/1174))
+
+### 🩹 Fixes
+
+  - Separate `typesDir` from `tsConfigDir` ([#1146](https://github.com/unjs/nitro/pull/1146))
+  - **cloudflare:** Expose env from module context ([#1147](https://github.com/unjs/nitro/pull/1147))
+  - **proxy:** Append request query params for single proxy route rules ([#1163](https://github.com/unjs/nitro/pull/1163))
+  - **vercel, netlify:** Keep default behavior for `static` and `swr` to `isr` mapping ([#1155](https://github.com/unjs/nitro/pull/1155))
+  - Apply `chunkFileNames` on windows ([#1189](https://github.com/unjs/nitro/pull/1189))
+  - **pkg:** Allow installing on node v20 and above ([#1204](https://github.com/unjs/nitro/pull/1204))
+
+### 💅 Refactors
+
+  - Rename `build` option to `static` ([#1144](https://github.com/unjs/nitro/pull/1144))
+  - **cli:** Migrate to citty ([#1157](https://github.com/unjs/nitro/pull/1157))
+  - Move swagger/openapi behind experimental flag ([2079cab](https://github.com/unjs/nitro/commit/2079cab))
+
+### 📖 Documentation
+
+  - Fix typo ([#1131](https://github.com/unjs/nitro/pull/1131))
+  - Update serverAssets example ([#1156](https://github.com/unjs/nitro/pull/1156))
+  - Add edge releases channel ([2793f51](https://github.com/unjs/nitro/commit/2793f51))
+  - **get-started:** H2 instead of h3 ([ff3964e](https://github.com/unjs/nitro/commit/ff3964e))
+  - **routing:** Add route rules ([46740e6](https://github.com/unjs/nitro/commit/46740e6))
+  - **routing:** Add missing import ([30675d4](https://github.com/unjs/nitro/commit/30675d4))
+  - Fix syntax issue in guide > storage ([#1180](https://github.com/unjs/nitro/pull/1180))
+  - Update ([1e5bb86](https://github.com/unjs/nitro/commit/1e5bb86))
+  - Fix typo ([#1185](https://github.com/unjs/nitro/pull/1185))
+  - Fix typo ([#1190](https://github.com/unjs/nitro/pull/1190))
+  - **vercel:** Add vercel kv storage section ([#1210](https://github.com/unjs/nitro/pull/1210))
+  - Update branding ([#1188](https://github.com/unjs/nitro/pull/1188))
+  - Update vercel-storage ([ffff9db](https://github.com/unjs/nitro/commit/ffff9db))
+
+### 🏡 Chore
+
+  - Update dependencies ([39d1f27](https://github.com/unjs/nitro/commit/39d1f27))
+  - **release:** V2.3.3 ([2d55caf](https://github.com/unjs/nitro/commit/2d55caf))
+  - Update dependencies and lockfile ([eea8943](https://github.com/unjs/nitro/commit/eea8943))
+  - Update unenv ([ba81902](https://github.com/unjs/nitro/commit/ba81902))
+  - Update lockfile ([6a4e57e](https://github.com/unjs/nitro/commit/6a4e57e))
+  - Update lockfile ([0793451](https://github.com/unjs/nitro/commit/0793451))
+  - **docs:** Move `vercel.json` ([00502d0](https://github.com/unjs/nitro/commit/00502d0))
+  - **docs:** Update deps ([4a95c96](https://github.com/unjs/nitro/commit/4a95c96))
+  - Update deps ([6b08d37](https://github.com/unjs/nitro/commit/6b08d37))
+
+### ✅ Tests
+
+  - Enable `vercel-edge` test ([7951532](https://github.com/unjs/nitro/commit/7951532))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Daniel Roe <daniel@roe.dev>
+- AaronBeaudoin <aaronjbeaudoin@gmail.com>
+- Oumar Barry ([@oumarbarry](http://github.com/oumarbarry))
+- G-Cyrille 
+- 魔王少年 <q267009886.work@gmail.com>
+- Iho Somnam <ihosomnam4741@gmail.com>
+- Timhanlon <tim@timhanlon.com>
+
 ## v2.3.3
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.3.2...v2.3.3)

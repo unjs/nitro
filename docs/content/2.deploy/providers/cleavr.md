@@ -16,7 +16,7 @@ Nitro provides a built-in preset to generate output format compatible with [Clea
 
 In your project, set Nitro preset to `cleavr`.
 
-```
+```js
 export default {
   nitro: {
     preset: 'cleavr'

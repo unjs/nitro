@@ -1,8 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 // @ts-ignore
 import { serve } from "https://deno.land/std/http/server.ts";
-
-import { requestHasBody, useRequestBody } from "../utils";
 import { nitroApp } from "../app";
 
 serve((request: Request) => {
@@ -11,9 +9,11 @@ serve((request: Request) => {
 
 async function handleRequest(request: Request) {
   const url = new URL(request.url);
+
+  // https://deno.land/api?s=Body
   let body;
-  if (requestHasBody(request)) {
-    body = await useRequestBody(request);
+  if (request.body) {
+    body = await request.arrayBuffer();
   }
 
   const r = await nitroApp.localCall({

@@ -202,6 +202,10 @@ export interface NitroOptions extends PresetOptions {
   experimental?: {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
+    openAPI?: boolean;
+  };
+  future: {
+    nativeSWR: boolean;
   };
   serverAssets: ServerAssetDir[];
   publicAssets: PublicAssetDir[];
@@ -225,6 +229,8 @@ export interface NitroOptions extends PresetOptions {
   errorHandler: string;
   devErrorHandler: NitroErrorHandler;
   prerender: {
+    concurrency: number;
+    interval: number;
     crawlLinks: boolean;
     ignore: string[];
     routes: string[];
@@ -263,4 +269,8 @@ export interface NitroOptions extends PresetOptions {
     preview: string;
     deploy: string;
   };
+}
+
+declare global {
+  const defineNitroConfig: (config: NitroConfig) => NitroConfig;
 }

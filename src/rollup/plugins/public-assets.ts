@@ -95,7 +95,9 @@ import assets from '#internal/nitro/virtual/public-assets-data'
 ${
   nitro.options.serveStatic
     ? `export * from "#internal/nitro/virtual/public-assets-${
-        nitro.options.serveStatic === "deno" ? "deno" : "node"
+        ["deno"].includes(nitro.options.serveStatic as string)
+          ? nitro.options.serveStatic
+          : "node"
       }"`
     : "export const readAsset = () => Promise.resolve(null)"
 }
