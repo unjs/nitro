@@ -42,9 +42,9 @@ export function scanRoutes(nitro: Nitro, dir: string, prefix = "/") {
   return scanServerDir(nitro, dir, (file) => {
     let route = file.path
       .replace(/\.[A-Za-z]+$/, "")
-      .replace(/\[\.{3}]/g, "**")
-      .replace(/\[\.{3}(\w+)]/g, "**:$1")
-      .replace(/\[(\w+)]/g, ":$1");
+      .replaceAll(/\[\.{3}]/g, "**")
+      .replaceAll(/\[\.{3}(\w+)]/g, "**:$1")
+      .replaceAll(/\[(\w+)]/g, ":$1");
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)));
 
     let method;

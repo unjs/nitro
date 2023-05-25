@@ -36,7 +36,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
     name: PLUGIN_NAME,
     transform(code: string, _id: string) {
       return {
-        code: code.replace(
+        code: code.replaceAll(
           DYNAMIC_REQUIRE_RE,
           `import('${HELPER_DYNAMIC}').then(r => r.default || r).then(dynamicRequire => dynamicRequire($1)).then`
         ),
@@ -76,7 +76,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
         await Promise.all(
           files.map(async (id) => ({
             id,
-            src: resolve(dir, id).replace(/\\/g, "/"),
+            src: resolve(dir, id).replaceAll("\\", "/"),
             name: genSafeVariableName(id),
             meta: await getWebpackChunkMeta(resolve(dir, id)),
           }))

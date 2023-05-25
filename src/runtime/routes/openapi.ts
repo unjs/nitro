@@ -30,10 +30,10 @@ export default eventHandler((event) => {
 
           let anonymouseCtr = 0;
           const route = h.route
-            .replace(/:(\w+)/g, (_, name) => `{${name}}`)
-            .replace(/\/(\*)\//g, () => `/{param${++anonymouseCtr}}/`)
+            .replaceAll(/:(\w+)/g, (_, name) => `{${name}}`)
+            .replaceAll(/\/(\*)\//g, () => `/{param${++anonymouseCtr}}/`)
             .replace(/\*\*{/, "{")
-            .replace(/\/(\*\*)$/g, () => `/{*param${++anonymouseCtr}}`);
+            .replaceAll(/\/(\*\*)$/g, () => `/{*param${++anonymouseCtr}}`);
 
           const paramMatches = route.matchAll(/{(\*?\w+)}/g);
           for (const match of paramMatches) {

@@ -7,7 +7,8 @@ export interface Options {}
 
 const TIMING = "globalThis.__timing__";
 
-const iife = (code) => `(function() { ${code.trim()} })();`.replace(/\n/g, "");
+const iife = (code) =>
+  `(function() { ${code.trim()} })();`.replaceAll("\n", "");
 
 const HELPER = iife(`
 const start = () => Date.now();

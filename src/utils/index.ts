@@ -22,7 +22,7 @@ export function prettyPath(p: string, highlight = true) {
 
 export function compileTemplate(contents: string) {
   return (params: Record<string, any>) =>
-    contents.replace(/{{ ?([\w.]+) ?}}/g, (_, match) => {
+    contents.replaceAll(/{{ ?([\w.]+) ?}}/g, (_, match) => {
       const val = getProperty<Record<string, string>, string>(params, match);
       if (!val) {
         consola.warn(
@@ -97,7 +97,7 @@ export function resolveFile(
 }
 
 export function replaceAll(input: string, from: string, to: string) {
-  return input.replace(new RegExp(from, "g"), to);
+  return input.replaceAll(new RegExp(from, "g"), to);
 }
 
 const autodetectableProviders: Partial<
@@ -222,7 +222,7 @@ export async function retry(fn: () => Promise<void>, retries: number) {
 
 export function provideFallbackValues(obj: Record<string, any>) {
   for (const key in obj) {
-    if (typeof obj[key] === "undefined" || obj[key] === null) {
+    if (obj[key] === undefined || obj[key] === null) {
       obj[key] = "";
     } else if (typeof obj[key] === "object") {
       provideFallbackValues(obj[key]);

@@ -220,9 +220,9 @@ declare module 'nitropack' {
           "./"
         ),
         join(relative(tsconfigDir, nitro.options.rootDir), "**/*"),
-        ...(nitro.options.srcDir !== nitro.options.rootDir
-          ? [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]
-          : []),
+        ...(nitro.options.srcDir === nitro.options.rootDir
+          ? []
+          : [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]),
       ],
     };
     buildFiles.push({
@@ -261,7 +261,7 @@ async function _snapshot(nitro: Nitro) {
       if (typeof contents !== "string") {
         contents = JSON.stringify(contents);
       }
-      const fsPath = join(storageDir, path.replace(/:/g, "/"));
+      const fsPath = join(storageDir, path.replaceAll(":", "/"));
       await fsp.mkdir(dirname(fsPath), { recursive: true });
       await fsp.writeFile(fsPath, contents, "utf8");
     })
@@ -311,7 +311,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
   const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/(\S*)/g, ` ${rOutput}/$1`);
+    return input.replaceAll(/\s\.\/(\S*)/g, ` ${rOutput}/$1`);
   };
   if (buildInfo.commands.preview) {
     nitro.logger.success(
@@ -342,16 +342,18 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
   watcher.on("event", (event) => {
     switch (event.code) {
       // The watcher is (re)starting
-      case "START":
+      case "START": {
         return;
+      }
 
       // Building an individual bundle
-      case "BUNDLE_START":
+      case "BUNDLE_START": {
         start = Date.now();
         return;
+      }
 
       // Finished building all bundles
-      case "END":
+      case "END": {
         nitro.hooks.callHook("compiled", nitro);
         nitro.logger.success(
           "Nitro built",
@@ -359,10 +361,12 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
         );
         nitro.hooks.callHook("dev:reload");
         return;
+      }
 
       // Encountered an error while bundling
-      case "ERROR":
+      case "ERROR": {
         nitro.logger.error(formatRollupError(event.error));
+      }
     }
   });
   return watcher;
