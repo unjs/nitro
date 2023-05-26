@@ -101,6 +101,7 @@ const NitroDefaults: NitroConfig = {
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
+    tsConfig: {},
   },
   nodeModulesDirs: [],
   hooks: {},
