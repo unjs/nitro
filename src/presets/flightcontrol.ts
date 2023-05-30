@@ -1,5 +1,5 @@
 import { defineNitroPreset } from "../preset";
 
-export const flightControl = defineNitroPreset({
+export const flightcontrol = defineNitroPreset({
   extends: "node-server",
 });
