@@ -61,7 +61,6 @@ export async function handler(
     };
   }
 
-
   if ("cookies" in event || "rawPath" in event) {
     const outgoingCookies = r.headers["set-cookie"];
     const cookies = Array.isArray(outgoingCookies)
