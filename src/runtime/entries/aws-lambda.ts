@@ -50,6 +50,18 @@ export async function handler(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
+  const headers = normalizeOutgoingHeaders(r.headers);
+  // image buffers must be base64 encoded
+  if (Buffer.isBuffer(r.body) && headers["content-type"].startsWith("image/")) {
+    return {
+      statusCode: r.status,
+      headers,
+      body: (r.body as Buffer).toString("base64"),
+      isBase64Encoded: true,
+    };
+  }
+
+
   if ("cookies" in event || "rawPath" in event) {
     const outgoingCookies = r.headers["set-cookie"];
     const cookies = Array.isArray(outgoingCookies)
@@ -66,7 +78,7 @@ export async function handler(
 
   return {
     statusCode: r.status,
-    headers: normalizeOutgoingHeaders(r.headers),
+    headers,
     body: r.body.toString(),
   };
 }
