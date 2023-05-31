@@ -4,6 +4,7 @@ export type HandlerDefinition = {
   route: string;
   lazy?: boolean;
   middleware?: boolean;
+  path: string;
   handler: H3EventHandler;
   method?: RouterMethod;
 } & {
