@@ -1,4 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
+import { Buffer } from "node:buffer";
 import type {
   Handler,
   HandlerResponse,
@@ -7,7 +8,6 @@ import type {
 } from "@netlify/functions/dist/main";
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
 import { withQuery } from "ufo";
-import { Buffer } from "unenv/runtime/node/buffer";
 import { nitroApp } from "../app";
 
 export async function lambda(
