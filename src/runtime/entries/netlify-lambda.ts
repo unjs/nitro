@@ -7,6 +7,7 @@ import type {
 } from "@netlify/functions/dist/main";
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
 import { withQuery } from "ufo";
+import { Buffer } from "unenv/runtime/node/buffer";
 import { nitroApp } from "../app";
 
 export async function lambda(
@@ -30,9 +31,20 @@ export async function lambda(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
+  const headers = normalizeOutgoingHeaders(r.headers);
+  // image buffers must be base64 encoded
+  if (Buffer.isBuffer(r.body) && headers["content-type"].startsWith("image/")) {
+    return {
+      statusCode: r.status,
+      headers,
+      body: (r.body as Buffer).toString("base64"),
+      isBase64Encoded: true,
+    };
+  }
+
   return {
     statusCode: r.status,
-    headers: normalizeOutgoingHeaders(r.headers),
+    headers,
     body: r.body.toString(),
   };
 }
