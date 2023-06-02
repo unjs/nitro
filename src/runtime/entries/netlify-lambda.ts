@@ -1,4 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
+import { Buffer } from "node:buffer";
 import type {
   Handler,
   HandlerResponse,
