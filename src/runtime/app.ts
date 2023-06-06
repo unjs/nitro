@@ -19,6 +19,7 @@ import type { NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
+import { getHandlersWithFallbacks } from "./fallback-handler";
 import type { $Fetch, NitroFetchRequest } from "nitropack";
 import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
@@ -77,7 +78,7 @@ function createNitroApp(): NitroApp {
     })
   );
 
-  for (const h of handlers) {
+  for (const h of getHandlersWithFallbacks(handlers, config)) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler;
     if (h.middleware || !h.route) {
       const middlewareBase = (config.app.baseURL + (h.route || "/")).replace(
@@ -95,7 +96,15 @@ function createNitroApp(): NitroApp {
           ...routeRules.cache,
         });
       }
-      router.use(h.route, handler, h.method);
+      if (h.fallback === true) {
+        const fallback = handlers.find(({ route }) => route === h.fallbackTo);
+        const fallbackHandler = h.lazy
+          ? lazyEventHandler(fallback.handler)
+          : fallback.handler;
+        router.use(h.route, fallbackHandler, h.fallbackMethod);
+      } else {
+        router.use(h.route, handler, h.method);
+      }
     }
   }
 
