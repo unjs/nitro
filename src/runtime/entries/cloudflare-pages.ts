@@ -31,15 +31,10 @@ export default {
   ) {
     const url = new URL(request.url);
     if (isPublicAssetURL(url.pathname)) {
-      try {
-        const [match] = getPublicAssetMatch(url.pathname);
-        return await env.ASSETS.fetch(
-          new Request(new URL("http://localhost" + match))
-        );
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
+      const [match] = getPublicAssetMatch(url.pathname);
+      return await env.ASSETS.fetch(
+        new Request(new URL("http://localhost" + match))
+      );
     }
 
     let body;
