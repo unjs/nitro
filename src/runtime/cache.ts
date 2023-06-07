@@ -166,7 +166,8 @@ export interface CachedEventHandlerOptions<T = any>
 }
 
 function escapeKey(key: string) {
-  return key.replaceAll(/[^\dA-Za-z]/g, "");
+  // eslint-disable-next-line unicorn/prefer-string-replace-all
+  return key.replace(/[^\dA-Za-z]/g, "");
 }
 
 export function defineCachedEventHandler<T = any>(
