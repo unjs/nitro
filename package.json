@@ -129,7 +129,7 @@
     "execa": "^7.1.1",
     "expect-type": "^0.15.0",
     "get-port-please": "^3.0.1",
-    "miniflare": "^2.14.0",
+    "miniflare": "^3.0.1",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1",
