@@ -208,7 +208,7 @@ function generateBuildConfig(nitro: Nitro) {
       .filter(
         ([key, value]) =>
           // value.isr === false || (value.isr && key.includes("/**"))
-          value.isr !== undefined
+          value.isr !== undefined && key !== "/"
       )
       .map(([key, value]) => {
         const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
@@ -232,7 +232,7 @@ function generateBuildConfig(nitro: Nitro) {
       ? [
           {
             src: "(?<url>/)",
-            dest: "/__nitro-index",
+            dest: "/__nitro-index?url=$url",
           },
         ]
       : []),
