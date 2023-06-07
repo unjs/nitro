@@ -9,7 +9,7 @@ import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import {
   getPublicAssetMeta,
-  isInKv,
+  isPublicAssetURL,
 } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
@@ -19,7 +19,7 @@ addEventListener("fetch", (event: any) => {
 async function handleEvent(event: FetchEvent) {
   const url = new URL(event.request.url);
   try {
-    if (isInKv(url.pathname)) {
+    if (isPublicAssetURL(url.pathname)) {
       return await getAssetFromKV(event, {
         cacheControl: assetsCacheControl,
         mapRequestToAsset: baseURLModifier,

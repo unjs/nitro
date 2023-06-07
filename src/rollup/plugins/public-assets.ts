@@ -104,20 +104,11 @@ ${
 
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 
-export function isPublicAssetURL(id = '') {
-  if (assets[id]) {
-    return true
-  }
-  for (const base in publicAssetBases) {
-    if (id.startsWith(base)) { return true }
-  }
-  return false
-}
 
 const keyStartsWith = (literalObj, needle) => Object.keys(literalObj).some((k) => k.startsWith(needle));
 const findKey = (literalObj, needle) => Object.keys(literalObj).find((k) => k.startsWith(needle));
 
-export const isInKv = (id = "") => {
+export const isPublicAssetURL = (id = "") => {
   if (
     assets[id] ||
     keyStartsWith(assets, id) ||
@@ -128,7 +119,7 @@ export const isInKv = (id = "") => {
   return false
 }
 
-export const getKVMatch = (id = "") => {
+export const getPublicAssetMatch = (id = "") => {
   const assetMatch = findKey(assets, id)
   if(assetMatch) return [assetMatch, assets[assetMatch]]
 

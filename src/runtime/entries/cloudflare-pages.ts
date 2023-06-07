@@ -5,7 +5,10 @@ import type {
 } from "@cloudflare/workers-types";
 import { requestHasBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
-import { isInKv, getKVMatch } from "#internal/nitro/virtual/public-assets";
+import {
+  isPublicAssetURL,
+  getPublicAssetMatch,
+} from "#internal/nitro/virtual/public-assets";
 
 /**
  * Reference: https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#parameters
@@ -27,9 +30,9 @@ export default {
     context: EventContext<CFPagesEnv, string, any>
   ) {
     const url = new URL(request.url);
-    if (isInKv(url.pathname)) {
+    if (isPublicAssetURL(url.pathname)) {
       try {
-        const [match] = getKVMatch(url.pathname);
+        const [match] = getPublicAssetMatch(url.pathname);
         return await env.ASSETS.fetch(
           new Request(new URL("http://localhost" + match))
         );

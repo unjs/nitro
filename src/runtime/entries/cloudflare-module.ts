@@ -12,9 +12,9 @@ import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import {
-  getKVMatch,
+  getPublicAssetMatch,
   getPublicAssetMeta,
-  isInKv,
+  isPublicAssetURL,
 } from "#internal/nitro/virtual/public-assets";
 
 interface CFModuleEnv {
@@ -29,8 +29,8 @@ export default {
   ) {
     const url = new URL(request.url);
     try {
-      if (isInKv(url.pathname)) {
-        const [match] = getKVMatch(url.pathname);
+      if (isPublicAssetURL(url.pathname)) {
+        const [match] = getPublicAssetMatch(url.pathname);
         // https://github.com/cloudflare/kv-asset-handler#es-modules
         return await getAssetFromKV(
           {
