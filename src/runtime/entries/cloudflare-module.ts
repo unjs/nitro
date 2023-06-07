@@ -12,10 +12,10 @@ import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import {
+  getKVMatch,
   getPublicAssetMeta,
-  publicAssetBases,
+  isInKv,
 } from "#internal/nitro/virtual/public-assets";
-import assets from "#internal/nitro/virtual/public-assets-data";
 
 interface CFModuleEnv {
   [key: string]: any;
@@ -30,10 +30,11 @@ export default {
     const url = new URL(request.url);
     try {
       if (isInKv(url.pathname)) {
+        const [match] = getKVMatch(url.pathname);
         // https://github.com/cloudflare/kv-asset-handler#es-modules
         return await getAssetFromKV(
           {
-            request,
+            request: new Request(new URL("http://localhost" + match)),
             waitUntil(promise) {
               return context.waitUntil(promise);
             },
@@ -47,7 +48,8 @@ export default {
         );
       }
     } catch {
-      // Ignore
+      // getAssetFromKV fail to return files with no extensions,
+      // so we can catch here and let Nitro handle it.
     }
 
     let body;
@@ -90,17 +92,4 @@ function assetsCacheControl(_request) {
 const baseURLModifier = (request: Request) => {
   const url = withoutBase(request.url, useRuntimeConfig().app.baseURL);
   return mapRequestToAsset(new Request(url, request));
-};
-
-const keyStartsWith = (literalObj: Record<string, unknown>, needle: string) =>
-  Object.keys(literalObj).some((k) => k.startsWith(needle));
-const isInKv = (id = "") => {
-  if (
-    assets[id] ||
-    keyStartsWith(assets, id) ||
-    keyStartsWith(publicAssetBases, id)
-  ) {
-    return true;
-  }
-  return false;
 };

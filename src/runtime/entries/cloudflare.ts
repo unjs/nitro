@@ -9,9 +9,8 @@ import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import {
   getPublicAssetMeta,
-  publicAssetBases,
+  isInKv,
 } from "#internal/nitro/virtual/public-assets";
-import assets from "#internal/nitro/virtual/public-assets-data";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
@@ -83,16 +82,3 @@ function normalizeOutgoingHeaders(
     Array.isArray(v) ? v.join(",") : v,
   ]);
 }
-
-const keyStartsWith = (literalObj: Record<string, unknown>, needle: string) =>
-  Object.keys(literalObj).some((k) => k.startsWith(needle));
-const isInKv = (id = "") => {
-  if (
-    assets[id] ||
-    keyStartsWith(assets, id) ||
-    keyStartsWith(publicAssetBases, id)
-  ) {
-    return true;
-  }
-  return false;
-};
