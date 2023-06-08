@@ -85,6 +85,7 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
+  const erroredRoutes = new Set<PrerenderGenerateRoute>();
   const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
@@ -175,6 +176,7 @@ export async function prerender(nitro: Nitro) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error.statusCode = res.status;
       _route.error.statusMessage = res.statusText;
+      erroredRoutes.add(_route);
     }
 
     // Write to the file
@@ -255,6 +257,15 @@ export async function prerender(nitro: Nitro) {
     concurrency: nitro.options.prerender.concurrency,
     interval: nitro.options.prerender.interval,
   });
+
+  if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
+    nitro.logger.log('\nErrors prerendering:')
+    for (const route of erroredRoutes) {
+      nitro.logger.log(chalk[route.error.statusCode === 404 ? "yellow" : "red"](`  ├─ ${route.route} (${route.error.statusCode})`))
+    }
+    nitro.logger.log('')
+    throw new Error('Exiting due to prerender errors.')
+  }
 
   if (nitro.options.compressPublicAssets) {
     await compressPublicAssets(nitro);

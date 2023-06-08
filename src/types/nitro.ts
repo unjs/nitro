@@ -232,6 +232,7 @@ export interface NitroOptions extends PresetOptions {
     concurrency: number;
     interval: number;
     crawlLinks: boolean;
+    failOnError: boolean;
     ignore: string[];
     routes: string[];
   };
