@@ -259,12 +259,16 @@ export async function prerender(nitro: Nitro) {
   });
 
   if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
-    nitro.logger.log('\nErrors prerendering:')
+    nitro.logger.log("\nErrors prerendering:");
     for (const route of erroredRoutes) {
-      nitro.logger.log(chalk[route.error.statusCode === 404 ? "yellow" : "red"](`  ├─ ${route.route} (${route.error.statusCode})`))
+      nitro.logger.log(
+        chalk[route.error.statusCode === 404 ? "yellow" : "red"](
+          `  ├─ ${route.route} (${route.error.statusCode})`
+        )
+      );
     }
-    nitro.logger.log('')
-    throw new Error('Exiting due to prerender errors.')
+    nitro.logger.log("");
+    throw new Error("Exiting due to prerender errors.");
   }
 
   if (nitro.options.compressPublicAssets) {
