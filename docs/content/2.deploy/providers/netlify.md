@@ -38,7 +38,7 @@ On-demand Builders are serverless functions used to generate web content as need
 ## Handling atomic deploys
 
 Netlify uses atomic deploys, which means that all old chunk files will become invalid when a deploy occurs.
-This causes errors when existing clients try to load chunk files which no longer exists.
+This causes errors when existing clients try to load chunk files which no longer exist.
 
 Nuxt, for example, has default behaviour to reload the page in some circumstances, but this is not always
 desirable and it is possible to do better by serving Netlify's permanent link to each deploy, which remains valid.
