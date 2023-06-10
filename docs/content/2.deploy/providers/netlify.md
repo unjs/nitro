@@ -57,3 +57,11 @@ Then in the `_redirects` file which Netlify will pick up, proxy it:
 
 Proxying is better than serving the files directly because some security software (e.g. Streamline3)
 will block scripts served from a different domain.
+
+For example, you might be using the custom domain `https://example.com`, and your Netlify account might be
+`example.netlify.app`. In this case, `process.env.DEPLOY_URL` might be something like `https://5b243e66dd6a547b4fee73ae--example.netlify.app`.
+
+Setting the `cdnURL` above will cause Nuxt to load scripts from `https://example.com/netlify/5b243e66dd6a547b4fee73ae--example.netlify.app/*`,
+a non-existent directory within the custom domain.
+[Netlify will proxy](https://docs.netlify.com/routing/redirects/rewrites-proxies/) this back to files under the original `DEPLOY_URL`
+address without the HTTP client being aware of the domain change.
