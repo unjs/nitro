@@ -14,17 +14,17 @@ const ENV_PREFIX_ALT =
 const _sharedRuntimeConfig = _deepFreeze(
   _applyEnv(klona(_inlineRuntimeConfig))
 );
-export function useRuntimeConfig<T extends object>(event?: H3Event): T {
+export function useRuntimeConfig(event?: H3Event) {
   // Backwards compatibility with ambient context
   if (!event) {
-    return _sharedRuntimeConfig as T;
+    return _sharedRuntimeConfig;
   }
   // Reuse cached runtime config from event context
   if (event.context.nitro.runtimeConfig) {
     return event.context.nitro.runtimeConfig;
   }
   // Prepare runtime config for event context
-  const runtimeConfig = klona<T>(_inlineRuntimeConfig);
+  const runtimeConfig = klona(_inlineRuntimeConfig);
   _applyEnv(runtimeConfig);
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;
