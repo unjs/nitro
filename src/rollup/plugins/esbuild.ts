@@ -81,6 +81,8 @@ export function esbuild(options: Options): Plugin {
       const result = await transform(code, {
         loader,
         target: options.target,
+        jsxFactory: options.jsxFactory,
+        jsxFragment: options.jsxFragment,
         define: options.define,
         sourcemap:
           options.sourceMap === "hidden" ? "external" : options.sourceMap,
