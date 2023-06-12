@@ -69,7 +69,7 @@ ${handlers
       `  { route: '${h.route || ""}', handler: ${getImportId(
         h.handler,
         h.lazy
-      )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, method: ${JSON.stringify(
+      )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, formAction: ${!!h.formAction}, method: ${JSON.stringify(
         h.method
       )} }`
   )

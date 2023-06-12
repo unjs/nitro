@@ -29,6 +29,11 @@ export interface NitroEventHandler {
    * Router method matcher
    */
   method?: string;
+
+  /**
+   * Form action handler
+   */
+  formAction?: boolean;
 }
 
 export interface NitroDevEventHandler {

@@ -6,6 +6,7 @@ export type HandlerDefinition = {
   middleware?: boolean;
   handler: H3EventHandler;
   method?: RouterMethod;
+  formAction?: boolean;
 } & {
   lazy: true;
   handler: LazyEventHandler;
