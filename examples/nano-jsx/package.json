@@ -1,0 +1,14 @@
+{
+  "name": "example-nano-jsx",
+  "private": true,
+  "scripts": {
+    "dev": "nitro dev",
+    "build": "nitro build"
+  },
+  "dependencies": {
+    "nano-jsx": "^0.0.37"
+  },
+  "devDependencies": {
+    "nitropack": "latest"
+  }
+}
