@@ -79,23 +79,28 @@ function createNitroApp(): NitroApp {
     })
   );
 
-  const renderer = handlers.find(({ route }) => route === "/**");
-  const rendererHandler = lazyEventHandler(renderer.handler);
-
-  const regularHandlers = handlers.filter((h) => !h.formAction);
   const formActionsHandlers = handlers.filter((h) => h.formAction);
+  const regularHandlers = handlers.filter((h) => !h.formAction);
 
-  for (const h of formActionsHandlers) {
-    let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler;
-    const routeRules = getRouteRulesForPath(h.route.replace(/:\w+|\*\*/g, "_"));
-    if (routeRules.cache) {
-      handler = cachedEventHandler(handler, {
-        group: "nitro/routes",
-        ...routeRules.cache,
-      });
+  if (formActionsHandlers.length > 0) {
+    const renderer = handlers.find(({ route }) => route === "/**");
+    const rendererHandler = lazyEventHandler(renderer.handler);
+
+    for (const h of formActionsHandlers) {
+      let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler;
+      const routeRules = getRouteRulesForPath(
+        h.route.replace(/:\w+|\*\*/g, "_")
+      );
+      if (routeRules.cache) {
+        handler = cachedEventHandler(handler, {
+          group: "nitro/routes",
+          ...routeRules.cache,
+        });
+      }
+      formActionsRouter.use(h.route, handler, "post");
+      formActionsRouter.use(h.route, rendererHandler, "get");
     }
-    formActionsRouter.use(h.route, handler, "post");
-    formActionsRouter.use(h.route, rendererHandler, "get");
+    h3App.use(config.app.baseURL as string, formActionsRouter.handler);
   }
 
   for (const h of regularHandlers) {
@@ -120,7 +125,6 @@ function createNitroApp(): NitroApp {
     }
   }
 
-  h3App.use(config.app.baseURL as string, formActionsRouter.handler);
   h3App.use(config.app.baseURL as string, router.handler);
 
   const app: NitroApp = {

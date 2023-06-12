@@ -53,6 +53,9 @@ export async function setupTest(preset: string) {
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
     buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
+    handlers: [{ route: "/action", handler: "~/actions/action.ts", lazy: true, formAction: true }],
+    renderer: "~/renderer.ts",
+    minify: false,
     serveStatic:
       preset !== "cloudflare" &&
       preset !== "cloudflare-module" &&
@@ -154,6 +157,15 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("Form Action Works", async () => {
+    const { data: actionData } = await callHandler({
+      url: "/action",
+      method: "POST",
+      body: JSON.stringify({ hello: "world" })
+    })
+    expect(actionData).to.toMatchObject({ data: { hello: "world" } });
+  });
+  
   it("handles route rules - redirects", async () => {
     const base = await callHandler({ url: "/rules/redirect" });
     expect(base.status).toBe(307);
