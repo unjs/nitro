@@ -17,11 +17,14 @@ describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
         "globalThis.handleEvent = handleEvent"
       )
     );
-    return async ({ url, headers }) => {
+    return async ({ url, headers, method = "GET", body }) => {
       const res = await runtime.evaluate(
         `handleEvent({
           url: new URL("http://localhost${url}"),
-          headers: new Headers(${JSON.stringify(headers || {})})
+          method: ${JSON.stringify(method)},
+          headers: new Headers(${JSON.stringify(headers || {})}),
+          body: ${JSON.stringify(body)},
+          arrayBuffer: () => Promise.resolve(${JSON.stringify(body)})
         })`
       );
       return res;

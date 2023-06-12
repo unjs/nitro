@@ -42,10 +42,9 @@ async function respondWithResponse(event: H3Event, response: Response) {
 }
 
 function actionResponse(event: H3Event, data: any, action?: any) {
-  // return { data, action };
   return respondWithResponse(
     event,
-    new Response(JSON.stringify({ data, action }))
+    new Response(JSON.stringify({ data, action }), { status: 200 })
   );
 }
 
