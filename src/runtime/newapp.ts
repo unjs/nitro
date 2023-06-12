@@ -15,11 +15,9 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
-import type { NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
-import type { $Fetch, NitroFetchRequest } from "nitropack";
 import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
 import { handlers } from "#internal/nitro/virtual/server-handlers";
@@ -27,8 +25,9 @@ import { handlers } from "#internal/nitro/virtual/server-handlers";
 export interface NitroApp {
   h3App: H3App;
   router: Router;
-  hooks: Hookable<NitroRuntimeHooks>;
   formActionsRouter?: Router;
+  // TODO: Type hooks and allow extending
+  hooks: Hookable;
   localCall: ReturnType<typeof createCall>;
   localFetch: ReturnType<typeof createLocalFetch>;
 }
@@ -36,7 +35,7 @@ export interface NitroApp {
 function createNitroApp(): NitroApp {
   const config = useRuntimeConfig();
 
-  const hooks = createHooks<NitroRuntimeHooks>();
+  const hooks = createHooks();
 
   const h3App = createApp({
     debug: destr(process.env.DEBUG),
@@ -71,14 +70,12 @@ function createNitroApp(): NitroApp {
       }
       // Assign bound fetch to context
       event.fetch = (req, init) =>
-        fetchWithEvent(event, req, init, { fetch: localFetch });
-      event.$fetch = ((req, init) =>
-        fetchWithEvent(event, req, init as RequestInit, {
-          fetch: $fetch,
-        })) as $Fetch<unknown, NitroFetchRequest>;
+        fetchWithEvent(event, req as any, init, { fetch: localFetch });
+      event.$fetch = (req, init) =>
+        fetchWithEvent(event, req as any, init, { fetch: $fetch });
     })
   );
-
+  
   const renderer = handlers.find(({ route }) => route === "/**");
   const rendererHandler = lazyEventHandler(renderer.handler);
 
@@ -87,14 +84,16 @@ function createNitroApp(): NitroApp {
 
   for (const h of formActionsHandlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler;
-    const routeRules = getRouteRulesForPath(h.route.replace(/:\w+|\*\*/g, "_"));
+    const routeRules = getRouteRulesForPath(
+      h.route.replace(/:\w+|\*\*/g, "_")
+    );
     if (routeRules.cache) {
       handler = cachedEventHandler(handler, {
         group: "nitro/routes",
         ...routeRules.cache,
       });
     }
-    formActionsRouter.use(h.route, handler, "post");
+    formActionsRouter.use(h.route, handler, "post")
     formActionsRouter.use(h.route, rendererHandler, "get");
   }
 
@@ -120,8 +119,8 @@ function createNitroApp(): NitroApp {
     }
   }
 
-  h3App.use(config.app.baseURL as string, formActionsRouter.handler);
-  h3App.use(config.app.baseURL as string, router.handler);
+  h3App.use(config.app.baseURL, formActionsRouter);
+  h3App.use(config.app.baseURL, router);
 
   const app: NitroApp = {
     hooks,
