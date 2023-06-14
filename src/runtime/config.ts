@@ -3,6 +3,7 @@ import { snakeCase } from "scule";
 import { klona } from "klona";
 import { H3Event } from "h3";
 import { appConfig as _inlineAppConfig } from "#internal/nitro/virtual/app-config";
+import type { NitroRuntimeConfig } from "nitropack";
 
 // Static runtime config inlined by nitro build
 const _inlineRuntimeConfig = process.env.RUNTIME_CONFIG as any;
@@ -14,17 +15,17 @@ const ENV_PREFIX_ALT =
 const _sharedRuntimeConfig = _deepFreeze(
   _applyEnv(klona(_inlineRuntimeConfig))
 );
-export function useRuntimeConfig<T extends object>(event?: H3Event): T {
+export function useRuntimeConfig(event?: H3Event): NitroRuntimeConfig {
   // Backwards compatibility with ambient context
   if (!event) {
-    return _sharedRuntimeConfig as T;
+    return _sharedRuntimeConfig as NitroRuntimeConfig;
   }
   // Reuse cached runtime config from event context
   if (event.context.nitro.runtimeConfig) {
     return event.context.nitro.runtimeConfig;
   }
   // Prepare runtime config for event context
-  const runtimeConfig = klona<T>(_inlineRuntimeConfig);
+  const runtimeConfig = klona(_inlineRuntimeConfig) as NitroRuntimeConfig;
   _applyEnv(runtimeConfig);
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;
@@ -66,7 +67,7 @@ function _applyEnv(obj: object, parentKey = "") {
     const envValue = _getEnv(subKey);
     if (_isObject(obj[key])) {
       if (_isObject(envValue)) {
-        obj[key] = { ...obj[key], ...envValue };
+        obj[key] = { ...obj[key], ...(envValue as any) };
       }
       _applyEnv(obj[key], subKey);
     } else {
@@ -96,7 +97,7 @@ export default new Proxy(Object.create(null), {
     );
     const runtimeConfig = useRuntimeConfig();
     if (prop in runtimeConfig) {
-      return runtimeConfig[prop];
+      return runtimeConfig[prop as string];
     }
     return undefined;
   },

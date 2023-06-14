@@ -97,7 +97,7 @@ function createNitroApp(): NitroApp {
     }
   }
 
-  h3App.use(config.app.baseURL, router);
+  h3App.use(config.app.baseURL as string, router.handler);
 
   const app: NitroApp = {
     hooks,
