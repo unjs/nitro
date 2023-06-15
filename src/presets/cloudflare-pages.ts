@@ -46,7 +46,6 @@ interface CloudflarePagesRoutes {
 
 async function writeCFRoutes(nitro: Nitro) {
   const routesPath = resolve(nitro.options.output.publicDir, "_routes.json");
-  console.log(routesPath);
   // If _routes.json already exists, don't overwrite it
   if (
     await fsp.access(routesPath).then(
