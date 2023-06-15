@@ -45,6 +45,17 @@ interface CloudflarePagesRoutes {
 }
 
 async function writeCFRoutes(nitro: Nitro) {
+  const routesPath = resolve(nitro.options.output.publicDir, "_routes.json");
+  console.log(routesPath);
+  // If _routes.json already exists, don't overwrite it
+  if (
+    await fsp.access(routesPath).then(
+      () => true,
+      () => false
+    )
+  ) {
+    return;
+  }
   const routes: CloudflarePagesRoutes = {
     version: 1,
     include: ["/*"],
@@ -84,10 +95,7 @@ async function writeCFRoutes(nitro: Nitro) {
   // Only allow 100 rules in total (include + exclude)
   routes.exclude.splice(100 - routes.include.length);
 
-  await fsp.writeFile(
-    resolve(nitro.options.output.publicDir, "_routes.json"),
-    JSON.stringify(routes, undefined, 2)
-  );
+  await fsp.writeFile(routesPath, JSON.stringify(routes, undefined, 2));
 }
 
 function comparePaths(a: string, b: string) {

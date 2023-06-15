@@ -144,6 +144,9 @@ jobs:
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
 ::
 
+### `_routes.json`
+Nitro automatically generates a `_routes.json` that controls which routes get served from files and which are served from the Worker script. Placing a `_routes.json` file in your public folder will replace the auto-generated one.
+
 ### Git integration
 
 If you use the GitHub/GitLab [integration](https://developers.cloudflare.com/pages/get-started/#connect-your-git-provider-to-pages) with Pages, Nitro does not require any configuration. When you push to the repository, Pages will automatically build your project, and Nitro will detect the environment.
