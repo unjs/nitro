@@ -198,7 +198,7 @@ declare module 'nitropack' {
       nitro.options.typescript.tsconfigPath
     );
     const tsconfigDir = dirname(tsConfigPath);
-    const tsConfig: TSConfig = {
+    const tsConfig: TSConfig = defu(nitro.options.typescript.tsConfig, {
       compilerOptions: {
         forceConsistentCasingInFileNames: true,
         strict: nitro.options.typescript.strict,
@@ -224,7 +224,7 @@ declare module 'nitropack' {
           ? []
           : [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]),
       ],
-    };
+    });
     buildFiles.push({
       path: tsConfigPath,
       contents: JSON.stringify(tsConfig, null, 2),
