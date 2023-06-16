@@ -31,6 +31,13 @@ export type NitroDynamicConfig = Pick<
   "runtimeConfig" | "routeRules"
 >;
 
+export interface NitroRuntimeConfig {
+  app: {
+    baseURL: string;
+  };
+  [key: string]: any;
+}
+
 export interface Nitro {
   options: NitroOptions;
   scannedHandlers: NitroEventHandler[];
@@ -171,12 +178,7 @@ export interface NitroOptions extends PresetOptions {
   preset: KebabCase<keyof typeof _PRESETS> | (string & {});
   static: boolean;
   logLevel: LogLevel;
-  runtimeConfig: {
-    app: {
-      baseURL: string;
-    };
-    [key: string]: any;
-  };
+  runtimeConfig: NitroRuntimeConfig;
   appConfig: AppConfig;
   appConfigFiles: string[];
 
