@@ -12,6 +12,7 @@ import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
 import type { ProxyOptions } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { TSConfig } from "pkg-types";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -262,6 +263,7 @@ export interface NitroOptions extends PresetOptions {
     generateTsConfig?: boolean;
     /** the path of the generated `tsconfig.json`, relative to buildDir */
     tsconfigPath: string;
+    tsConfig?: Partial<TSConfig>;
   };
   hooks: NestedHooks<NitroHooks>;
   nodeModulesDirs: string[];
