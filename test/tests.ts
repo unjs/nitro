@@ -131,7 +131,7 @@ export function testNitro(
 
   beforeAll(async () => {
     _handler = await getHandler();
-  });
+  }, 5000);
 
   it("API Works", async () => {
     const { data: helloData } = await callHandler({ url: "/api/hello" });
