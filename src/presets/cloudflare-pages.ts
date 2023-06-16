@@ -22,6 +22,7 @@ export const cloudflarePages = defineNitroPreset({
     // https://github.com/unjs/nitro/pull/933
     _mime: "mime/index.js",
   },
+  node: true,
   rollupConfig: {
     output: {
       entryFileNames: "_worker.js",
