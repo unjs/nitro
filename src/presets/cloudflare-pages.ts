@@ -42,8 +42,7 @@ export const cloudflarePagesStatic = defineNitroPreset({
   },
   commands: {
     preview: "npx wrangler pages dev dist",
-    deploy:
-      "npx wrangler pages project create {{ name }} --production-branch {{ branch }} && npx wrangler pages deploy dist",
+    deploy: "npx wrangler pages deploy dist",
   },
   hooks: {
     async compiled(nitro: Nitro) {
