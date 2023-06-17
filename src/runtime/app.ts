@@ -16,6 +16,7 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
+import { RuntimeNitroHooks } from "../types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
@@ -26,8 +27,7 @@ import { handlers } from "#internal/nitro/virtual/server-handlers";
 export interface NitroApp {
   h3App: H3App;
   router: Router;
-  // TODO: Type hooks and allow extending
-  hooks: Hookable;
+  hooks: Hookable<RuntimeNitroHooks>;
   localCall: ReturnType<typeof createCall>;
   localFetch: ReturnType<typeof createLocalFetch>;
 }
