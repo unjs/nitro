@@ -35,7 +35,7 @@ export interface NitroApp {
 function createNitroApp(): NitroApp {
   const config = useRuntimeConfig();
 
-  const hooks = createHooks();
+  const hooks = createHooks<RuntimeNitroHooks>();
 
   const h3App = createApp({
     debug: destr(process.env.DEBUG),
