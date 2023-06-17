@@ -1,6 +1,6 @@
-import { H3Event } from "h3";
-import { RenderResponse } from "../types";
+import type { H3Event } from "h3";
 
+import type { RenderResponse } from "../types";
 export type { NitroApp } from "./app";
 export type {
   CacheEntry,
