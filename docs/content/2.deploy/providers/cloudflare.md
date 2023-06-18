@@ -145,7 +145,7 @@ Integration with this provider is possible with zero configuration. ([Learn More
 ::
 
 ### `_routes.json`
-Nitro automatically generates a `_routes.json` that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overrided in `nitro.config.cloudflarePages.routes`. 
+Nitro automatically generates a `_routes.json` that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overrided with the config option `cloudflarePages.routes`.
 
 ### Git integration
 
