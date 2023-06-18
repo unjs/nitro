@@ -20,7 +20,7 @@ declare module "h3" {
   }
 }
 
-export interface RuntimeNitroHooks {
+export interface NitroRuntimeHooks {
   "render:response": (
     response: Partial<RenderResponse>,
     context: { event: H3Event }
