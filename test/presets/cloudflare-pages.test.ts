@@ -62,4 +62,19 @@ describe("nitro:preset:cloudflare-pages", async () => {
       }
     `);
   });
+
+  it("should generate the _routes.json set in the config", async () => {
+    const ctx = await setupTest("cloudflare-pages", {
+      cloudflarePages: { testRoutesConfig: true },
+    });
+    const config = await fsp
+      .readFile(resolve(ctx.outDir, "_routes.json"), "utf8")
+      .then((r) => JSON.parse(r));
+    expect(config).toMatchInlineSnapshot(`
+    {
+      include: ["/api/*", "/blog/*"],
+      exclude: ["/blog/static/*"],
+      version: 1,
+    }`);
+  });
 });

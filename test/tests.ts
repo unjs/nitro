@@ -29,7 +29,10 @@ export const describeIf = (condition, title, factory) =>
         it.skip("skipped", () => {});
       });
 
-export async function setupTest(preset: string) {
+export async function setupTest(
+  preset: string,
+  opts?: { cloudflarePages?: { testRoutesConfig?: boolean } }
+) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
 
   const presetTempDir = fileURLToPath(
@@ -59,6 +62,15 @@ export async function setupTest(preset: string) {
       preset !== "cloudflare-pages" &&
       preset !== "vercel-edge" &&
       !ctx.isDev,
+    cloudflarePages:
+      preset === "cloudflare-pages" && opts?.cloudflarePages?.testRoutesConfig
+        ? {
+            routes: {
+              include: ["/api/*", "/blog/*"],
+              exclude: ["/blog/static/*"],
+            },
+          }
+        : undefined,
     output: {
       dir: ctx.outDir,
     },

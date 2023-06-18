@@ -73,7 +73,7 @@ async function writeCFRoutes(nitro: Nitro) {
     exclude: [],
   };
 
-  if (nitro.options.cloudflarePages.routes) {
+  if (nitro.options.cloudflarePages?.routes) {
     // Exclude public assets from hitting the worker
     const explicitPublicAssets = nitro.options.publicAssets.filter(
       (i) => !i.fallthrough
