@@ -12,25 +12,44 @@ const ENV_PREFIX_ALT =
   _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_";
 
 // Runtime config
+let appliedRuntimeConfig = {};
 const _sharedRuntimeConfig = _deepFreeze(
   _applyEnv(klona(_inlineRuntimeConfig))
 );
+const getRuntimeConfig = () => ({
+  ..._sharedRuntimeConfig,
+  ...appliedRuntimeConfig,
+});
+
 export function useRuntimeConfig<
   T extends NitroRuntimeConfig = NitroRuntimeConfig,
 >(event?: H3Event): T {
   // Backwards compatibility with ambient context
   if (!event) {
-    return _sharedRuntimeConfig as T;
+    return getRuntimeConfig() as T;
   }
   // Reuse cached runtime config from event context
   if (event.context.nitro.runtimeConfig) {
     return event.context.nitro.runtimeConfig;
   }
   // Prepare runtime config for event context
-  const runtimeConfig = klona(_inlineRuntimeConfig) as T;
+  const runtimeConfig = klona(getRuntimeConfig()) as T;
   _applyEnv(runtimeConfig);
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;
+}
+
+export function applyEnvToRuntimeConfig(
+  env: Record<string, any>,
+  prefixes = ["NITRO", "NUXT"]
+) {
+  const safeEnv = Object.fromEntries(
+    Object.entries(env).filter(([key]) =>
+      prefixes.some((prefix) => key.startsWith(`${prefix}_`))
+    )
+  );
+  appliedRuntimeConfig = safeEnv;
+  return useRuntimeConfig();
 }
 
 // App config

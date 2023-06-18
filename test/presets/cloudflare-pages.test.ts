@@ -14,6 +14,9 @@ describe("nitro:preset:cloudflare-pages", async () => {
       modules: true,
       scriptPath: resolve(ctx.outDir, "_worker.js"),
       bindings: {
+        NITRO_HELLO: "world",
+        NUXT_HELLO: "world",
+        SECRET: "secret",
         ASSETS: {
           fetch: async (request) => {
             const contents = await fsp.readFile(

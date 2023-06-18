@@ -523,4 +523,19 @@ export function testNitro(
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
   });
+
+  describe("environment variables", () => {
+    it.skipIf(
+      !["cloudflare-module", "cloudflare-pages"].includes(
+        ctx.nitro.options.preset
+      )
+    )("can load environment variables", async () => {
+      const { data } = await callHandler({
+        url: "/config",
+      });
+      expect(data.runtimeConfig.NITRO_HELLO).toBe("world");
+      expect(data.runtimeConfig.NUXT_HELLO).toBe("world");
+      expect(data.runtimeConfig.SECRET).toBeUndefined();
+    });
+  });
 }

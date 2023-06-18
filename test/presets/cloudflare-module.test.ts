@@ -15,6 +15,9 @@ describe("nitro:preset:cloudflare-module", async () => {
       scriptPath: resolve(ctx.outDir, "server/index.mjs"),
       sitePath: resolve(ctx.outDir, "public"),
       bindings: {
+        NITRO_HELLO: "world",
+        NUXT_HELLO: "world",
+        SECRET: "secret",
         ASSETS: {
           fetch: async (request) => {
             const contents = await fsp.readFile(

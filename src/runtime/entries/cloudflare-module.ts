@@ -8,6 +8,7 @@ import {
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from "__STATIC_CONTENT_MANIFEST";
+import { applyEnvToRuntimeConfig } from "../config";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
@@ -51,7 +52,7 @@ export default {
 
     // Expose latest env to the global context
     globalThis.__env__ = env;
-
+    applyEnvToRuntimeConfig(env);
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: (request as any).cf,
