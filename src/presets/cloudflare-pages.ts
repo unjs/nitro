@@ -1,5 +1,5 @@
-import { promises as fsp } from "node:fs";
-import { resolve } from "pathe";
+import { existsSync, promises as fsp } from "node:fs";
+import { resolve, join } from "pathe";
 import { joinURL, withLeadingSlash, withoutLeadingSlash } from "ufo";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
@@ -31,6 +31,23 @@ export const cloudflarePages = defineNitroPreset({
   hooks: {
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
+    },
+  },
+});
+
+export const cloudflarePagesStatic = defineNitroPreset({
+  extends: "static",
+  output: {
+    publicDir: "{{ rootDir }}/dist",
+  },
+  commands: {
+    preview: "npx wrangler pages dev dist",
+    deploy: "npx wrangler pages deploy dist",
+  },
+  hooks: {
+    async compiled(nitro: Nitro) {
+      await writeCFPagesHeaders(nitro);
+      await writeCFPagesRedirects(nitro);
     },
   },
 });
@@ -92,4 +109,81 @@ async function writeCFRoutes(nitro: Nitro) {
 
 function comparePaths(a: string, b: string) {
   return a.split("/").length - b.split("/").length || a.localeCompare(b);
+}
+
+async function writeCFPagesHeaders(nitro: Nitro) {
+  const headersPath = join(nitro.options.output.publicDir, "_headers");
+  let contents = "";
+
+  const rules = Object.entries(nitro.options.routeRules).sort(
+    (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
+  );
+
+  for (const [path, routeRules] of rules.filter(
+    ([_, routeRules]) => routeRules.headers
+  )) {
+    const headers = [
+      path.replace("/**", "/*"),
+      ...Object.entries({ ...routeRules.headers }).map(
+        ([header, value]) => `  ${header}: ${value}`
+      ),
+    ].join("\n");
+
+    contents += headers + "\n";
+  }
+
+  if (existsSync(headersPath)) {
+    const currentHeaders = await fsp.readFile(headersPath, "utf8");
+    if (/^\/\* /m.test(currentHeaders)) {
+      nitro.logger.info(
+        "Not adding Nitro fallback to `_headers` (as an existing fallback was found)."
+      );
+      return;
+    }
+    nitro.logger.info(
+      "Adding Nitro fallback to `_headers` to handle all unmatched routes."
+    );
+    contents = currentHeaders + "\n" + contents;
+  }
+
+  await fsp.writeFile(headersPath, contents);
+}
+
+async function writeCFPagesRedirects(nitro: Nitro) {
+  const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
+  const staticFallback = existsSync(
+    join(nitro.options.output.publicDir, "404.html")
+  )
+    ? "/* /404.html 404"
+    : "";
+  let contents = staticFallback;
+
+  const rules = Object.entries(nitro.options.routeRules).sort(
+    (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
+  );
+
+  for (const [key, routeRules] of rules.filter(
+    ([_, routeRules]) => routeRules.redirect
+  )) {
+    const code = routeRules.redirect.statusCode;
+    contents =
+      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}\n` +
+      contents;
+  }
+
+  if (existsSync(redirectsPath)) {
+    const currentRedirects = await fsp.readFile(redirectsPath, "utf8");
+    if (/^\/\* /m.test(currentRedirects)) {
+      nitro.logger.info(
+        "Not adding Nitro fallback to `_redirects` (as an existing fallback was found)."
+      );
+      return;
+    }
+    nitro.logger.info(
+      "Adding Nitro fallback to `_redirects` to handle all unmatched routes."
+    );
+    contents = currentRedirects + "\n" + contents;
+  }
+
+  await fsp.writeFile(redirectsPath, contents);
 }
