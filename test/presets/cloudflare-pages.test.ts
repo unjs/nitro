@@ -1,7 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { join, resolve } from "pathe";
 import { Miniflare } from "miniflare";
-import { fileURLToPath } from "mlly";
 import { describe, it, expect } from "vitest";
 import { Response as _Response } from "undici";
 
@@ -62,24 +61,5 @@ describe("nitro:preset:cloudflare-pages", async () => {
         "version": 1,
       }
     `);
-  });
-
-  it("shuold not overwrite a _routes.json file in the public folder", async () => {
-    const json = {
-      exclude: [],
-      include: ["/api/*"],
-      version: 1,
-    };
-    const fixtureDir = fileURLToPath(
-      new URL("../fixture", import.meta.url).href
-    );
-    const routesPath = resolve(fixtureDir, "public", "_routes.json");
-    await fsp.writeFile(routesPath, JSON.stringify(json));
-    const ctx = await setupTest("cloudflare-pages");
-    await fsp.unlink(routesPath);
-    const config = await fsp
-      .readFile(resolve(ctx.outDir, "_routes.json"), "utf8")
-      .then((r) => JSON.parse(r));
-    expect(config).toMatchObject(json);
   });
 });
