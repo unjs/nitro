@@ -70,11 +70,10 @@ describe("nitro:preset:cloudflare-pages", async () => {
     const config = await fsp
       .readFile(resolve(ctx.outDir, "_routes.json"), "utf8")
       .then((r) => JSON.parse(r));
-    expect(config).toMatchInlineSnapshot(`
-    {
+    expect(config).toMatchObject({
       include: ["/api/*", "/blog/*"],
       exclude: ["/blog/static/*"],
       version: 1,
-    }`);
+    });
   });
 });

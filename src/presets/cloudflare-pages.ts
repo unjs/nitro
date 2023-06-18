@@ -1,7 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, join } from "pathe";
 import { joinURL, withLeadingSlash, withoutLeadingSlash } from "ufo";
-import { defu } from "defu";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -73,7 +72,7 @@ async function writeCFRoutes(nitro: Nitro) {
     exclude: [],
   };
 
-  if (nitro.options.cloudflarePages?.routes) {
+  if (nitro.options.cloudflarePages?.routes == null) {
     // Exclude public assets from hitting the worker
     const explicitPublicAssets = nitro.options.publicAssets.filter(
       (i) => !i.fallthrough
@@ -107,11 +106,11 @@ async function writeCFRoutes(nitro: Nitro) {
     // Only allow 100 rules in total (include + exclude)
     routes.exclude.splice(100 - routes.include.length);
   } else {
-    routes = defu<CloudflarePagesRoutes, [CloudflarePagesRoutes]>(routes, {
-      version: 1,
-      include: ["/*"],
-      exclude: [],
-    });
+    routes = {
+      version: nitro.options.cloudflarePages.routes!.version ?? 1,
+      include: nitro.options.cloudflarePages.routes!.include ?? ["/*"],
+      exclude: nitro.options.cloudflarePages.routes!.exclude ?? [],
+    };
   }
 
   await fsp.writeFile(routesPath, JSON.stringify(routes, undefined, 2));
