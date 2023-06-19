@@ -15,7 +15,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
       scriptPath: resolve(ctx.outDir, "_worker.js"),
       bindings: {
         NITRO_HELLO: "world",
-        NUXT_HELLO: "world",
+        NUXT_HELLO_THERE: "general",
         SECRET: "secret",
         ASSETS: {
           fetch: async (request) => {

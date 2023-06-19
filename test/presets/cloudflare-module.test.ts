@@ -16,7 +16,7 @@ describe("nitro:preset:cloudflare-module", async () => {
       sitePath: resolve(ctx.outDir, "public"),
       bindings: {
         NITRO_HELLO: "world",
-        NUXT_HELLO: "world",
+        NUXT_HELLO_THERE: "general",
         SECRET: "secret",
         ASSETS: {
           fetch: async (request) => {

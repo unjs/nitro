@@ -533,9 +533,9 @@ export function testNitro(
       const { data } = await callHandler({
         url: "/config",
       });
-      expect(data.runtimeConfig.NITRO_HELLO).toBe("world");
-      expect(data.runtimeConfig.NUXT_HELLO).toBe("world");
-      expect(data.runtimeConfig.SECRET).toBeUndefined();
+      expect(data.runtimeConfig.hello).toBe("world");
+      expect(data.runtimeConfig.helloThere).toBe("general");
+      expect(data.runtimeConfig.secret).toBeUndefined();
     });
   });
 }

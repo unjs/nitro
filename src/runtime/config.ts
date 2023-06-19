@@ -1,5 +1,5 @@
 import destr from "destr";
-import { snakeCase } from "scule";
+import { camelCase, snakeCase } from "scule";
 import { klona } from "klona";
 import { H3Event } from "h3";
 import { appConfig as _inlineAppConfig } from "#internal/nitro/virtual/app-config";
@@ -44,13 +44,18 @@ export function applyEnvToRuntimeConfig(
   prefixes = ["NITRO", "NUXT"]
 ) {
   const safeEnv = Object.fromEntries(
-    Object.entries(env).filter(([key]) =>
-      prefixes.some((prefix) => key.startsWith(`${prefix}_`))
-    )
+    Object.entries(env)
+      .filter(([key]) =>
+        prefixes.some((prefix) => key.startsWith(`${prefix}_`))
+      )
+      .map(([key, value]) => [formatKey(key), value])
   );
   appliedRuntimeConfig = safeEnv;
   return useRuntimeConfig();
 }
+
+const formatKey = (key: string) =>
+  camelCase(key.split("_").slice(1).join("_").toLocaleLowerCase());
 
 // App config
 const _sharedAppConfig = _deepFreeze(klona(_inlineAppConfig));
