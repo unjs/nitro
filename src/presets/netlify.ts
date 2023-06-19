@@ -115,9 +115,9 @@ async function writeRedirects(nitro: Nitro) {
   )
     ? "/* /404.html 404"
     : "";
-  let contents = !nitro.options.static
-    ? "/* /.netlify/functions/server 200"
-    : staticFallback;
+  let contents = nitro.options.static
+    ? staticFallback
+    : "/* /.netlify/functions/server 200";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
