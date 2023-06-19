@@ -11,7 +11,7 @@ Deploy Nitro apps to CloudFlare.
 ::
 
 ::alert{type="warning"}
-**Warning:** Please be aware that `runtimeConfig` cannot be updated via Cloudflare's environment variables (see [#272](https://github.com/unjs/nitro/issues/272) for more). As a workaround, you can use the Cloudflare env variables as constants in the code.
+**Warning:** Please be aware that `runtimeConfig` cannot be updated via Cloudflare's environment variables (see [#272](https://github.com/unjs/nitro/issues/272) for more). As a workaround, you can use the Cloudflare env variables as constants in the code, or the module syntax.
 ::
 
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
@@ -223,3 +223,75 @@ const stmt = await cloudflare.env.D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
 ```
 
+### Environment variables and secrets
+
+You can add environment variables and secret to your project and they will be accessible within your event handlers.
+You can acess them with `event.cloudflare.env`.
+
+When you try out your project locally with `wrangler dev` or `wrangler pages dev`, use a `.dev.vars` file in the root of your project.
+
+::alert{type="info"}
+**Note:** If you are using a `.env` file while developping, your `dev.vars` should be identical to it.
+::
+
+For production, use the cloudflare dashboard or the [`wrangler secret`](https://developers.cloudflare.com/workers/wrangler/commands/#secret) command to set environment variables and secrets.
+
+#### useRuntimeConfig
+
+For your convenience, the `useRuntimeConfig` helper will return a `camelCase` version of your custom cloudflare environment variables and secrets.
+
+::alert{type="info"}
+**Note:** Only the variables prefixed with `NITRO_` or `NUXT` will be applied to `useRuntimeConfig`, and they will override the variables defined within `nitro.options.runtimeConfig`.
+::
+
+```bash
+NITRO_HELLO="world"
+NUXT_HELLO_THERE="general"
+SECRET="secret"
+```
+
+```ts
+export default defineEventHandler((event) => {
+  event.context.cloudflare.env.NITRO_HELLO //world
+  useRuntimeConfig().hello //world
+  event.context.cloudflare.env.NUXT_HELLO //general
+  useRuntimeConfig().helloThere //general
+  event.context.cloudflare.env.SECRET //secret
+  useRuntimeConfig().secret //undefined
+});
+```
+
+#### wrangler.toml
+
+You can specify a custom `wrangler.toml` file and define vars inside.
+Note that this isn't recommend for sensitive data.
+
+```ini
+name = "my-worker-dev"
+main = "dist/.output/server/index.mjs"
+# compatibility_date = "2022-09-10" (optional)
+# account_id = "<the account_id you obtained (optional)>"
+# route = "<mainly useful when you want to setup custom domains (optional too)>"
+
+[site]
+bucket = "dist/.output/public"
+
+# Define top-level environment variables
+# under the `[vars]` block using
+# the `key = "value"` format
+[vars]
+NITRO_HELLO="world"
+NUXT_HELLO_THERE="general"
+SECRET="secret"
+
+# Override values for `--env production` usage
+[env.production]
+name = "my-worker-production"
+[env.production.vars]
+NITRO_HELLO="universe"
+SECRET="top-secret"
+```
+
+::alert{type="info"}
+**Note:** `wrangler.toml` isn't supported by cloudflare pages.
+::
