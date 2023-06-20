@@ -10,6 +10,7 @@ const defaultLoaders: { [ext: string]: Loader } = {
   ".ts": "ts",
   ".js": "js",
   ".tsx": "tsx",
+  ".jsx": "jsx",
 };
 
 export type Options = {
