@@ -122,6 +122,9 @@ importers:
       listhen:
         specifier: ^1.0.4
         version: 1.0.4
+      magic-string:
+        specifier: ^0.30.0
+        version: 0.30.0
       mime:
         specifier: ^3.0.0
         version: 3.0.0
