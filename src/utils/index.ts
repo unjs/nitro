@@ -222,7 +222,7 @@ export async function retry(fn: () => Promise<void>, retries: number) {
 
 export function provideFallbackValues(obj: Record<string, any>) {
   for (const key in obj) {
-    if (typeof obj[key] === "undefined" || obj[key] === null) {
+    if (obj[key] === undefined || obj[key] === null) {
       obj[key] = "";
     } else if (typeof obj[key] === "object") {
       provideFallbackValues(obj[key]);
