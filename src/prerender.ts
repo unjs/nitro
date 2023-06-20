@@ -6,11 +6,7 @@ import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type {
-  Nitro,
-  NitroRouteRules,
-  PrerenderGenerateRoute,
-} from "./types";
+import type { Nitro, NitroRouteRules, PrerenderGenerateRoute } from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
