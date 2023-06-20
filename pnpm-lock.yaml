@@ -307,6 +307,15 @@ importers:
         specifier: link:../..
         version: link:../..
 
+  examples/nano-jsx:
+    devDependencies:
+      nano-jsx:
+        specifier: ^0.0.37
+        version: 0.0.37
+      nitropack:
+        specifier: link:../..
+        version: link:../..
+
   examples/plugins:
     devDependencies:
       nitropack:
@@ -4263,6 +4272,11 @@ packages:
   /mustache@4.2.0:
     resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
     hasBin: true
+    dev: true
+
+  /nano-jsx@0.0.37:
+    resolution: {integrity: sha512-0gVuDCLqKR3t0C4m2vvx8EW5MLxlAB9XAyLfJRhXIX9QfAMBFUn/wwEYT8+t6XgL5cMiuG+a8eZAXA/+wB026w==}
+    engines: {node: '>=12'}
     dev: true
 
   /nanoid@3.3.6:

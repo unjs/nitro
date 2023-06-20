@@ -164,6 +164,11 @@ export function testNitro(
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
   });
 
+  it("render JSX", async () => {
+    const { data } = await callHandler({ url: "/jsx" });
+    expect(data).toMatch("<h1 >Hello JSX!</h1>");
+  });
+
   it("handles route rules - headers", async () => {
     const { headers } = await callHandler({ url: "/rules/headers" });
     expect(headers["cache-control"]).toBe("s-maxage=60");

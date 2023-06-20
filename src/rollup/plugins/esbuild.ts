@@ -9,6 +9,8 @@ import type { FilterPattern } from "@rollup/pluginutils";
 const defaultLoaders: { [ext: string]: Loader } = {
   ".ts": "ts",
   ".js": "js",
+  ".tsx": "tsx",
+  ".jsx": "jsx",
 };
 
 export type Options = {
@@ -81,6 +83,8 @@ export function esbuild(options: Options): Plugin {
       const result = await transform(code, {
         loader,
         target: options.target,
+        jsxFactory: options.jsxFactory,
+        jsxFragment: options.jsxFragment,
         define: options.define,
         sourcemap:
           options.sourceMap === "hidden" ? "external" : options.sourceMap,
