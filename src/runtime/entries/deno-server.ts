@@ -21,21 +21,25 @@ if (Deno.env.get("DEBUG")) {
 }
 
 // @ts-expect-error unknown global Deno
-Deno.serve(handler, {
-  // @ts-expect-error unknown global Deno
-  key: Deno.env.get("NITRO_SSL_KEY"),
-  // @ts-expect-error unknown global Deno
-  cert: Deno.env.get("NITRO_SSL_CERT"),
-  // @ts-expect-error unknown global Deno
-  port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
-  // @ts-expect-error unknown global Deno
-  hostname: Deno.env.get("NITRO_HOST") || Deno.env.get("HOST"),
-  onListen: (opts) => {
-    const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-    const url = `${opts.hostname}:${opts.port}${baseURL}`;
-    console.log(`Listening ${url}`);
+// https://deno.land/api@v1.34.3?s=Deno.serve&unstable=
+Deno.serve(
+  {
+    // @ts-expect-error unknown global Deno
+    key: Deno.env.get("NITRO_SSL_KEY"),
+    // @ts-expect-error unknown global Deno
+    cert: Deno.env.get("NITRO_SSL_CERT"),
+    // @ts-expect-error unknown global Deno
+    port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
+    // @ts-expect-error unknown global Deno
+    hostname: Deno.env.get("NITRO_HOST") || Deno.env.get("HOST"),
+    onListen: (opts) => {
+      const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
+      const url = `${opts.hostname}:${opts.port}${baseURL}`;
+      console.log(`Listening ${url}`);
+    },
   },
-});
+  handler
+);
 
 async function handler(request: Request) {
   const url = new URL(request.url);
