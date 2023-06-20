@@ -308,11 +308,10 @@ importers:
         version: link:../..
 
   examples/nano-jsx:
-    dependencies:
+    devDependencies:
       nano-jsx:
         specifier: ^0.0.37
         version: 0.0.37
-    devDependencies:
       nitropack:
         specifier: link:../..
         version: link:../..
@@ -4278,7 +4277,7 @@ packages:
   /nano-jsx@0.0.37:
     resolution: {integrity: sha512-0gVuDCLqKR3t0C4m2vvx8EW5MLxlAB9XAyLfJRhXIX9QfAMBFUn/wwEYT8+t6XgL5cMiuG+a8eZAXA/+wB026w==}
     engines: {node: '>=12'}
-    dev: false
+    dev: true
 
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
