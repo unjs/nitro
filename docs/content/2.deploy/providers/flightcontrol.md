@@ -1,4 +1,4 @@
-# lightcontrol
+# Flightcontrol
 
 **Preset:** `flightcontrol` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -10,26 +10,26 @@ Flight control has zero config support for [Nuxt](https://nuxt.com/) projects.
 
 ### Set Up your Flightcontrol account
 
-On a high-level, the steps you will need to follow in order to deploy a project for the first time are:
+On a high level, the steps you will need to follow to deploy a project for the first time are:
 
 1. Create an account at [Flightcontrol](https://app.flightcontrol.dev/signup?ref=nitro)
 2. Create an account at [AWS](https://portal.aws.amazon.com/billing/signup) (if you don't already have one)
-3. Link your AWS account to Flightcontrol
-4. Authorize the Flightcontrol Github App to access your chosen repositories, public or private.
+3. Link your AWS account to the FlightControl
+4. Authorize the Flightcontrol GitHub App to access your chosen repositories, public or private.
 5. Create a Flightcontrol project with configuration via the Dashboard or with configuration via `flightcontrol.json`.
 
 ### Create a Project with Configuration via the Dashboard
 
 1. Create a Flightcontrol project from the Dashboard. Select a repository for the source.
-2. Select the `GUI` Config Type.
-3. Select the Nuxt preset. This preset will also work for any Nitro based applications.
+2. Select the `GUI` config type.
+3. Select the Nuxt preset. This preset will also work for any Nitro-based applications.
 4. Select your preferred AWS server size.
 5. Submit the new project form.
 
-### Create a Project with Configuration via "flightcontrol.json"
+### Create a Project with Configuration via `flightcontrol.json`
 
 1. Create a Flightcontrol project from your dashboard. Select a repository for the source.
-2. Select the `flightcontrol.json` Config Type.
+2. Select the `flightcontrol.json` config type.
 3. Add a new file at the root of your repository called `flightcontrol.json`. Here is an example configuration that creates an AWS fargate service for your app:
 
 ```json
