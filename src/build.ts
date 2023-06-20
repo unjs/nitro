@@ -207,6 +207,9 @@ declare module 'nitropack' {
         moduleResolution: "Node",
         allowJs: true,
         resolveJsonModule: true,
+        jsx: "preserve",
+        jsxFactory: "h",
+        jsxFragmentFactory: "Fragment",
         paths: nitro.options.typescript.internalPaths
           ? {
               "#internal/nitro": [join(runtimeDir, "index")],

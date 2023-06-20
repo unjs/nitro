@@ -9,6 +9,7 @@ import type { FilterPattern } from "@rollup/pluginutils";
 const defaultLoaders: { [ext: string]: Loader } = {
   ".ts": "ts",
   ".js": "js",
+  ".tsx": "tsx",
 };
 
 export type Options = {
