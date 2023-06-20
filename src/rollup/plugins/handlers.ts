@@ -66,7 +66,9 @@ export const handlers = [
 ${handlers
   .map(
     (h) =>
-      `  { route: '${h.route || ""}', path: "${h.handler}", handler: ${getImportId(
+      `  { route: '${h.route || ""}', path: "${
+        h.handler
+      }", handler: ${getImportId(
         h.handler,
         h.lazy
       )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, method: ${JSON.stringify(
