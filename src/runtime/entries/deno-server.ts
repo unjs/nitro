@@ -1,7 +1,7 @@
-import destr from "destr";
-import { useRuntimeConfig } from "#internal/nitro";
 import "#internal/nitro/virtual/polyfill";
+import destr from "destr";
 import { nitroApp } from "../app";
+import { useRuntimeConfig } from "#internal/nitro";
 
 // @ts-expect-error unknown global Deno
 if (Deno.env.get("DEBUG")) {
