@@ -24,7 +24,7 @@ export async function handler(request: Request) {
   });
 
   // TODO: fix in runtime/static
-  const responseBody = r.status !== 304 ? r.body : null;
+  const responseBody = r.status === 304 ? null : r.body;
   return new Response(responseBody, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
