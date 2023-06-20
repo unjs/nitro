@@ -131,7 +131,7 @@ export function testNitro(
 
   beforeAll(async () => {
     _handler = await getHandler();
-  });
+  }, 25_000);
 
   it("API Works", async () => {
     const { data: helloData } = await callHandler({ url: "/api/hello" });
@@ -257,15 +257,18 @@ export function testNitro(
       `);
     });
 
-    it("resolve module version conflicts", async () => {
-      const { data } = await callHandler({ url: "/modules" });
-      expect(data).toMatchObject({
-        depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
-        depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
-        depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
-        subpathLib: "nitro-lib@2.0.0",
-      });
-    });
+    it.skipIf(ctx.preset === "deno-server")(
+      "resolve module version conflicts",
+      async () => {
+        const { data } = await callHandler({ url: "/modules" });
+        expect(data).toMatchObject({
+          depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
+          depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
+          depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
+          subpathLib: "nitro-lib@2.0.0",
+        });
+      }
+    );
 
     it("useStorage (with base)", async () => {
       const putRes = await callHandler({

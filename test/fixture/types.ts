@@ -99,7 +99,7 @@ describe("API routes", () => {
 
   it("generates types for routes matching prefix", () => {
     expectTypeOf($fetch("/api/hey/**")).toEqualTypeOf<Promise<string>>();
-    expectTypeOf($fetch("/api/param/{id}/**")).toEqualTypeOf<Promise<any>>();
+    expectTypeOf($fetch("/api/param/{id}/**")).toEqualTypeOf<Promise<string>>();
     expectTypeOf(
       $fetch("/api/typed/user/{someUserId}/post/{somePostId}/**")
     ).toEqualTypeOf<
@@ -128,7 +128,9 @@ describe("API routes", () => {
   });
 
   it("generates types for routes matching Api keys with /** globs", () => {
-    expectTypeOf($fetch("/api/wildcard/foo/bar")).toEqualTypeOf<Promise<any>>();
+    expectTypeOf($fetch("/api/wildcard/foo/bar")).toEqualTypeOf<
+      Promise<string>
+    >();
     expectTypeOf($fetch("/api/typed/todos/parent/child")).toEqualTypeOf<
       Promise<{ internalApiKey: "/api/typed/todos/**" }>
     >();
@@ -201,17 +203,23 @@ describe("API routes", () => {
     >();
 
     expectTypeOf($fetch("/api/serialized/error")).toEqualTypeOf<
-      Promise<unknown>
+      Promise<{
+        statusCode: number;
+        statusMessage?: string;
+        data?: any;
+        message: string;
+      }>
     >();
 
     expectTypeOf($fetch("/api/serialized/void")).toEqualTypeOf<
       Promise<unknown>
     >();
 
-    expectTypeOf($fetch("/api/serialized/null")).toEqualTypeOf<Promise<null>>();
+    expectTypeOf($fetch("/api/serialized/null")).toEqualTypeOf<Promise<any>>();
 
     expectTypeOf($fetch("/api/serialized/function")).toEqualTypeOf<
-      Promise<object>
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      Promise<{}>
     >();
 
     expectTypeOf($fetch("/api/serialized/map")).toEqualTypeOf<

@@ -6,12 +6,7 @@ import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type {
-  Nitro,
-  NitroRouteRules,
-  PrerenderGenerateRoute,
-  PrerenderRoute,
-} from "./types";
+import type { Nitro, NitroRouteRules, PrerenderGenerateRoute } from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
@@ -54,6 +49,7 @@ export async function prerender(nitro: Nitro) {
   nitro._prerenderedRoutes = [];
   const nitroRenderer = await createNitro({
     ...nitro.options._config,
+    static: false,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: "nitro-prerender",
