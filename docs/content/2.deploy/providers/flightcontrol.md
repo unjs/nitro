@@ -1,4 +1,4 @@
-# AWS with Flightcontrol
+# lightcontrol
 
 **Preset:** `flightcontrol` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
