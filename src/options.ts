@@ -74,6 +74,7 @@ const NitroDefaults: NitroConfig = {
   prerender: {
     concurrency: 1,
     interval: 0,
+    failOnError: false,
     crawlLinks: false,
     ignore: [],
     routes: [],
