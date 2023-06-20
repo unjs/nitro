@@ -5,10 +5,8 @@
     "dev": "nitro dev",
     "build": "nitro build"
   },
-  "dependencies": {
-    "nano-jsx": "^0.0.37"
-  },
   "devDependencies": {
+    "nano-jsx": "^0.0.37",
     "nitropack": "latest"
   }
 }
