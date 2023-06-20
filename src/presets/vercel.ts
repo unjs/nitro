@@ -22,7 +22,11 @@ export const vercel = defineNitroPreset({
     preview: "",
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      if (!nitro.options.future.nativeSWR) {
+        deprecateSWR(nitro);
+      }
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
@@ -93,6 +97,11 @@ export const vercelEdge = defineNitroPreset({
       format: "module",
     },
   },
+  unenv: {
+    inject: {
+      process: undefined,
+    },
+  },
   hooks: {
     "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
@@ -107,6 +116,7 @@ export const vercelEdge = defineNitroPreset({
       const functionConfig = {
         runtime: "edge",
         entrypoint: "index.mjs",
+        regions: nitro.options.vercel?.regions,
       };
       await writeFile(
         functionConfigPath,
@@ -227,14 +237,14 @@ function generateBuildConfig(nitro: Nitro) {
         ]
       : []),
     // If we are using an ISR function as a fallback, then we do not need to output the below fallback route as well
-    ...(!nitro.options.routeRules["/**"]?.isr
-      ? [
+    ...(nitro.options.routeRules["/**"]?.isr
+      ? []
+      : [
           {
             src: "/(.*)",
             dest: "/__nitro",
           },
-        ]
-      : [])
+        ])
   );
 
   return config;
@@ -269,7 +279,7 @@ function deprecateSWR(nitro: Nitro) {
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the next major release."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the future versions."
     );
   }
 }

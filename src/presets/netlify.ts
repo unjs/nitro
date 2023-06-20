@@ -2,6 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
+import { name, version } from "../../package.json";
 
 // Netlify functions
 export const netlify = defineNitroPreset({
@@ -17,7 +18,11 @@ export const netlify = defineNitroPreset({
     },
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      if (!nitro.options.future.nativeSWR) {
+        deprecateSWR(nitro);
+      }
+    },
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);
@@ -49,24 +54,30 @@ export const netlifyEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/netlify-edge",
   output: {
-    serverDir: "{{ rootDir }}/.netlify/edge-functions",
+    serverDir: "{{ rootDir }}/.netlify/edge-functions/server",
     publicDir: "{{ rootDir }}/dist",
   },
   rollupConfig: {
     output: {
-      entryFileNames: "server.mjs",
+      entryFileNames: "server.js",
       format: "esm",
     },
+  },
+  unenv: {
+    polyfill: ["#internal/nitro/polyfill/deno-env"],
   },
   hooks: {
     "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
+      // https://docs.netlify.com/edge-functions/create-integration/
       const manifest = {
         version: 1,
         functions: [
           {
+            path: "/*",
+            name: "nitro server handler",
             function: "server",
-            pattern: "^.*$",
+            generator: `${name}@${version}`,
           },
         ],
       };
@@ -104,9 +115,9 @@ async function writeRedirects(nitro: Nitro) {
   )
     ? "/* /404.html 404"
     : "";
-  let contents = !nitro.options.static
-    ? "/* /.netlify/functions/server 200"
-    : staticFallback;
+  let contents = nitro.options.static
+    ? staticFallback
+    : "/* /.netlify/functions/server 200";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
@@ -210,7 +221,7 @@ function deprecateSWR(nitro: Nitro) {
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the next major release."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions."
     );
   }
 }

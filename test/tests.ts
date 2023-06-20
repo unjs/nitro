@@ -2,7 +2,7 @@ import { resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
-import { expect, it, afterAll, beforeAll } from "vitest";
+import { expect, it, afterAll, beforeAll, describe } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -20,6 +20,14 @@ export interface Context {
   server?: Listener;
   isDev: boolean;
 }
+
+// https://github.com/unjs/nitro/pull/1240
+export const describeIf = (condition, title, factory) =>
+  condition
+    ? describe(title, factory)
+    : describe(title, () => {
+        it.skip("skipped", () => {});
+      });
 
 export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
@@ -123,7 +131,7 @@ export function testNitro(
 
   beforeAll(async () => {
     _handler = await getHandler();
-  });
+  }, 5000);
 
   it("API Works", async () => {
     const { data: helloData } = await callHandler({ url: "/api/hello" });
@@ -334,7 +342,9 @@ export function testNitro(
       sharedRuntimeConfig: {
         dynamic:
           // TODO
-          ctx.preset.includes("cloudflare") || ctx.preset === "nitro-dev"
+          ctx.preset.includes("cloudflare") ||
+          ctx.preset === "vercel-edge" ||
+          ctx.preset === "nitro-dev"
             ? "initial"
             : "from-env",
         app: {

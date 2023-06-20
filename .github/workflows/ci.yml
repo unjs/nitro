@@ -38,6 +38,10 @@ jobs:
         with:
           node-version: "16"
           cache: pnpm
+      - uses: oven-sh/setup-bun@v1
+        if: ${{ matrix.os != 'windows-latest' }}
+        with:
+          bun-version: latest
       - run: pnpm install
       - run: pnpm test:types
       - run: pnpm build

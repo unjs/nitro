@@ -81,7 +81,7 @@ Create a token according to [the wrangler action docs](https://github.com/market
 
 Create `.github/workflows/cloudflare.yml`:
 
-```yml
+```yaml
 name: cloudflare
 
 on:

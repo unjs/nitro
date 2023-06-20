@@ -1,3 +1,4 @@
-export default eventHandler(() => {
-  return "<h1>Hello Nitro!</h1>";
+// eslint-disable-next-line require-await
+export default eventHandler(async (event) => {
+  return {};
 });

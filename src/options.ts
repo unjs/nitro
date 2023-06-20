@@ -43,6 +43,7 @@ const NitroDefaults: NitroConfig = {
 
   // Features
   experimental: {},
+  future: {},
   storage: {},
   devStorage: {},
   bundledStorage: [],
@@ -71,6 +72,8 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    concurrency: 1,
+    interval: 0,
     crawlLinks: false,
     ignore: [],
     routes: [],
@@ -86,6 +89,7 @@ const NitroDefaults: NitroConfig = {
     "unenv/runtime/polyfill/",
     "node-fetch-native/polyfill",
     "node-fetch-native/dist/polyfill",
+    resolve(runtimeDir, "polyfill/"),
   ],
   replace: {},
   node: true,
@@ -97,6 +101,7 @@ const NitroDefaults: NitroConfig = {
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
+    tsConfig: {},
   },
   nodeModulesDirs: [],
   hooks: {},
@@ -121,6 +126,7 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
+  // @ts-ignore
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
@@ -134,7 +140,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: detectTarget() || "node-server",
+      preset: detectTarget({ static: configOverrides.static }) || "node-server",
     },
     defaults: NitroDefaults,
     jitiOptions: {
@@ -325,7 +331,7 @@ export async function loadOptions(
   options.plugins = options.plugins.map((p) => resolvePath(p, options));
 
   // Add open-api endpoint
-  if (options.dev) {
+  if (options.dev && options.experimental.openAPI) {
     options.handlers.push({
       route: "/_nitro/openapi.json",
       handler: "#internal/nitro/routes/openapi",

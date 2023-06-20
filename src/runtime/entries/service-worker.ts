@@ -1,5 +1,4 @@
 import "#internal/nitro/virtual/polyfill";
-import { requestHasBody, useRequestBody } from "../utils";
 import { nitroApp } from "../app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
@@ -14,8 +13,8 @@ addEventListener("fetch", (event: any) => {
 
 async function handleEvent(url, event) {
   let body;
-  if (requestHasBody(event.request)) {
-    body = await useRequestBody(event.request);
+  if (event.request.body) {
+    body = await event.request.arrayBuffer();
   }
 
   const r = await nitroApp.localCall({
