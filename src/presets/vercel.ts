@@ -237,14 +237,14 @@ function generateBuildConfig(nitro: Nitro) {
         ]
       : []),
     // If we are using an ISR function as a fallback, then we do not need to output the below fallback route as well
-    ...(!nitro.options.routeRules["/**"]?.isr
-      ? [
+    ...(nitro.options.routeRules["/**"]?.isr
+      ? []
+      : [
           {
             src: "/(.*)",
             dest: "/__nitro",
           },
-        ]
-      : [])
+        ])
   );
 
   return config;

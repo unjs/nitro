@@ -73,9 +73,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       entryFileNames: "index.mjs",
       chunkFileNames(chunkInfo) {
         let prefix = "";
-        const lastModule = normalize(
-          chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1]
-        );
+        const lastModule = normalize(chunkInfo.moduleIds.at(-1));
         if (lastModule.startsWith(buildServerDir)) {
           prefix = join("app", relative(buildServerDir, dirname(lastModule)));
         } else if (lastModule.startsWith(runtimeAppDir)) {
@@ -313,45 +311,7 @@ export const plugins = [
   );
 
   // Externals Plugin
-  if (!nitro.options.noExternals) {
-    const externalsPlugin = nitro.options.experimental.legacyExternals
-      ? legacyExternals
-      : externals;
-    rollupConfig.plugins.push(
-      externalsPlugin(
-        defu(nitro.options.externals, {
-          outDir: nitro.options.output.serverDir,
-          moduleDirectories: nitro.options.nodeModulesDirs,
-          external: [...(nitro.options.dev ? [nitro.options.buildDir] : [])],
-          inline: [
-            "#",
-            "~",
-            "@/",
-            "~~",
-            "@@/",
-            "virtual:",
-            runtimeDir,
-            nitro.options.srcDir,
-            ...nitro.options.handlers
-              .map((m) => m.handler)
-              .filter((i) => typeof i === "string"),
-          ],
-          traceOptions: {
-            base: "/",
-            processCwd: nitro.options.rootDir,
-            exportsOnly: true,
-          },
-          exportConditions: [
-            "default",
-            nitro.options.dev ? "development" : "production",
-            "module",
-            "node",
-            "import",
-          ],
-        })
-      )
-    );
-  } else {
+  if (nitro.options.noExternals) {
     rollupConfig.plugins.push({
       name: "no-externals",
       async resolveId(id, from, options) {
@@ -389,6 +349,44 @@ export const plugins = [
         }
       },
     });
+  } else {
+    const externalsPlugin = nitro.options.experimental.legacyExternals
+      ? legacyExternals
+      : externals;
+    rollupConfig.plugins.push(
+      externalsPlugin(
+        defu(nitro.options.externals, {
+          outDir: nitro.options.output.serverDir,
+          moduleDirectories: nitro.options.nodeModulesDirs,
+          external: [...(nitro.options.dev ? [nitro.options.buildDir] : [])],
+          inline: [
+            "#",
+            "~",
+            "@/",
+            "~~",
+            "@@/",
+            "virtual:",
+            runtimeDir,
+            nitro.options.srcDir,
+            ...nitro.options.handlers
+              .map((m) => m.handler)
+              .filter((i) => typeof i === "string"),
+          ],
+          traceOptions: {
+            base: "/",
+            processCwd: nitro.options.rootDir,
+            exportsOnly: true,
+          },
+          exportConditions: [
+            "default",
+            nitro.options.dev ? "development" : "production",
+            "module",
+            "node",
+            "import",
+          ],
+        })
+      )
+    );
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve
