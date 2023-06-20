@@ -1,37 +1,10 @@
 import { builtinModules } from "node:module";
-
 import { isAbsolute } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
 import inject from "@rollup/plugin-inject";
 import { defineNitroPreset } from "../preset";
 import { ImportMetaRe } from "../rollup/plugins/import-meta";
-
-export const denoDeploy = defineNitroPreset({
-  entry: "#internal/nitro/entries/deno-deploy",
-  node: false,
-  noExternals: true,
-  serveStatic: "deno",
-  commands: {
-    preview: "",
-    deploy:
-      "cd ./ && deployctl deploy --project=<project_name> server/index.ts",
-  },
-  unenv: {
-    polyfill: ["#internal/nitro/polyfill/deno-env"],
-  },
-  rollupConfig: {
-    preserveEntrySignatures: false,
-    external: ["https://deno.land/std/http/server.ts"],
-    output: {
-      entryFileNames: "index.ts",
-      manualChunks: () => "index",
-      format: "esm",
-    },
-  },
-});
-
-export const deno = denoDeploy;
 
 export const denoServer = defineNitroPreset({
   extends: "node-server",

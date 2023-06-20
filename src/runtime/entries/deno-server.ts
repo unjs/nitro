@@ -1,22 +1,7 @@
 import destr from "destr";
-
-import { handler } from "./deno";
 import { useRuntimeConfig } from "#internal/nitro";
-
-// @ts-expect-error unknown global Deno
-const cert = Deno.env.get("NITRO_SSL_CERT");
-// @ts-expect-error unknown global Deno
-const key = Deno.env.get("NITRO_SSL_KEY");
-// @ts-expect-error unknown global Deno
-const port = destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3e3;
-// @ts-expect-error unknown global Deno
-const hostname = Deno.env.get("NITRO_HOST") || Deno.env.get("HOST");
-
-function onListen(opts) {
-  const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-  const url = `${opts.hostname}:${opts.port}${baseURL}`;
-  console.log(`Listening ${url}`);
-}
+import "#internal/nitro/virtual/polyfill";
+import { nitroApp } from "../app";
 
 // @ts-expect-error unknown global Deno
 if (Deno.env.get("DEBUG")) {
@@ -36,6 +21,58 @@ if (Deno.env.get("DEBUG")) {
 }
 
 // @ts-expect-error unknown global Deno
-Deno.serve(handler, { key, cert, port, hostname, onListen });
+Deno.serve(handler, {
+  // @ts-expect-error unknown global Deno
+  key: Deno.env.get("NITRO_SSL_KEY"),
+  // @ts-expect-error unknown global Deno
+  cert: Deno.env.get("NITRO_SSL_CERT"),
+  // @ts-expect-error unknown global Deno
+  port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
+  // @ts-expect-error unknown global Deno
+  hostname: Deno.env.get("NITRO_HOST") || Deno.env.get("HOST"),
+  onListen: (opts) => {
+    const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
+    const url = `${opts.hostname}:${opts.port}${baseURL}`;
+    console.log(`Listening ${url}`);
+  },
+});
+
+async function handler(request: Request) {
+  const url = new URL(request.url);
+
+  // https://deno.land/api?s=Body
+  let body;
+  if (request.body) {
+    body = await request.arrayBuffer();
+  }
+
+  const r = await nitroApp.localCall({
+    url: url.pathname + url.search,
+    host: url.hostname,
+    protocol: url.protocol,
+    headers: Object.fromEntries(request.headers.entries()),
+    method: request.method,
+    redirect: request.redirect,
+    body,
+  });
+
+  // TODO: fix in runtime/static
+  const responseBody = r.status === 304 ? null : r.body;
+  return new Response(responseBody, {
+    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
+    headers: normalizeOutgoingHeaders(r.headers),
+    status: r.status,
+    statusText: r.statusText,
+  });
+}
+
+function normalizeOutgoingHeaders(
+  headers: Record<string, string | string[] | undefined>
+) {
+  return Object.entries(headers).map(([k, v]) => [
+    k,
+    Array.isArray(v) ? v.join(",") : v,
+  ]);
+}
 
 export default {};
