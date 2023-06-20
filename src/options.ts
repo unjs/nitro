@@ -101,6 +101,7 @@ const NitroDefaults: NitroConfig = {
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
+    tsConfig: {},
   },
   nodeModulesDirs: [],
   hooks: {},
@@ -139,7 +140,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: detectTarget() || "node-server",
+      preset: detectTarget({ static: configOverrides.static }) || "node-server",
     },
     defaults: NitroDefaults,
     jitiOptions: {
