@@ -42,6 +42,9 @@ jobs:
         if: ${{ matrix.os != 'windows-latest' }}
         with:
           bun-version: latest
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
       - run: pnpm install
       - run: pnpm test:types
       - run: pnpm build
