@@ -1,17 +1,17 @@
 import { builtinModules } from "node:module";
-import { isAbsolute } from "pathe";
+import { isAbsolute, resolve } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
 import inject from "@rollup/plugin-inject";
 import { defineNitroPreset } from "../preset";
+import { writeFile } from "../utils";
 import { ImportMetaRe } from "../rollup/plugins/import-meta";
 
 export const denoServer = defineNitroPreset({
   extends: "node-server",
   entry: "#internal/nitro/entries/deno-server",
   commands: {
-    preview:
-      "deno run --unstable --allow-net --allow-read --allow-env ./server/index.mjs",
+    preview: "deno task --config ./deno.json start",
   },
   rollupConfig: {
     output: {
@@ -104,6 +104,21 @@ export const denoServer = defineNitroPreset({
         },
       },
     ],
+  },
+  hooks: {
+    async compiled(nitro) {
+      // https://deno.com/manual@v1.34.3/getting_started/configuration_file
+      const denoJSON = {
+        tasks: {
+          start:
+            "deno run --unstable --allow-net --allow-read --allow-env ./server/index.mjs",
+        },
+      };
+      await writeFile(
+        resolve(nitro.options.output.dir, "deno.json"),
+        JSON.stringify(denoJSON, null, 2)
+      );
+    },
   },
 });
 
