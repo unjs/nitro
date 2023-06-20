@@ -1,9 +1,9 @@
+import { setResponseStatus } from "h3";
 import { NitroErrorHandler } from "../types";
 
 function errorHandler(error, event) {
   event.node.res.setHeader("Content-Type", "text/html; charset=UTF-8");
-  event.node.res.statusCode = 503;
-  event.node.res.statusMessage = "Server Unavailable";
+  setResponseStatus(event, 503, "Server Unavailable");
 
   let body;
   let title;

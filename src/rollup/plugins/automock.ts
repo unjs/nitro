@@ -1,4 +1,4 @@
-import consola from "consola";
+import { consola } from "consola";
 
 const internalRegex = /^\.|\?|\.[cm]?js$|.ts$|.json$/;
 

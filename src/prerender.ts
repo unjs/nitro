@@ -1,17 +1,12 @@
 import { pathToFileURL } from "node:url";
-import { resolve, join } from "pathe";
+import { resolve, join, relative } from "pathe";
 import { joinURL, parseURL, withBase, withoutBase } from "ufo";
 import chalk from "chalk";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type {
-  Nitro,
-  NitroRouteRules,
-  PrerenderGenerateRoute,
-  PrerenderRoute,
-} from "./types";
+import type { Nitro, NitroRouteRules, PrerenderGenerateRoute } from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
@@ -54,10 +49,20 @@ export async function prerender(nitro: Nitro) {
   nitro._prerenderedRoutes = [];
   const nitroRenderer = await createNitro({
     ...nitro.options._config,
+    static: false,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: "nitro-prerender",
   });
+
+  // Set path to preview prerendered routes relative to the "host" nitro preset
+  let path = relative(nitro.options.output.dir, nitro.options.output.publicDir);
+  if (!path.startsWith(".")) {
+    path = `./${path}`;
+  }
+  nitroRenderer.options.commands.preview = `npx serve ${path}`;
+  nitroRenderer.options.output.dir = nitro.options.output.dir;
+
   await build(nitroRenderer);
 
   // Import renderer entry
@@ -76,10 +81,11 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
+  const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
-    // Skip if route is already generated
-    if (generatedRoutes.has(route)) {
+    // Skip if route is already generated or skipped
+    if (generatedRoutes.has(route) || skippedRoutes.has(route)) {
       return false;
     }
 
@@ -130,10 +136,10 @@ export async function prerender(nitro: Nitro) {
 
     // Check if we should render route
     if (!canPrerender(route)) {
+      skippedRoutes.add(route);
       return;
     }
     generatedRoutes.add(route);
-    routes.delete(route);
 
     // Create result object
     const _route: PrerenderGenerateRoute = { route };
@@ -179,9 +185,12 @@ export async function prerender(nitro: Nitro) {
 
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
 
+    // Measure actual time taken for generating route
+    _route.generateTimeMS = Date.now() - start;
+
     // Check if route skipped or has errors
     if (_route.skip || _route.error) {
-      return;
+      return _route;
     }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName);
@@ -203,7 +212,6 @@ export async function prerender(nitro: Nitro) {
       }
     }
 
-    _route.generateTimeMS = Date.now() - start;
     return _route;
   };
 
@@ -212,34 +220,79 @@ export async function prerender(nitro: Nitro) {
       ? `Prerendering ${routes.size} initial routes with crawler`
       : `Prerendering ${routes.size} routes`
   );
-  for (let i = 0; i < 100 && routes.size > 0; i++) {
-    for (const route of routes) {
-      const _route = await generateRoute(route).catch(
-        (error) => ({ route, error } as PrerenderRoute)
-      );
 
-      // Skipped (not allowed or duplicate)
-      if (!_route) {
-        continue;
-      }
+  async function processRoute(route: string) {
+    const _route = await generateRoute(route).catch(
+      (error) => ({ route, error } as PrerenderGenerateRoute)
+    );
 
-      await nitro.hooks.callHook("prerender:route", _route);
+    if (!_route || _route.skip) {
+      return;
+    }
+
+    await nitro.hooks.callHook("prerender:route", _route);
+
+    if (_route.error) {
       nitro.logger.log(
-        chalk[_route.error ? "yellow" : "gray"](
-          `  ├─ ${_route.route} (${_route.generateTimeMS}ms) ${
-            _route.error ? `(${_route.error})` : ""
-          }`
+        chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
+          `  ├─ ${_route.route} (${
+            _route.generateTimeMS
+          }ms) ${`(${_route.error})`}`
         )
+      );
+    } else {
+      nitro.logger.log(
+        chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
       );
     }
   }
+
+  await runParallel(routes, processRoute, {
+    concurrency: nitro.options.prerender.concurrency,
+    interval: nitro.options.prerender.interval,
+  });
 
   if (nitro.options.compressPublicAssets) {
     await compressPublicAssets(nitro);
   }
 }
 
-const LINK_REGEX = /href=["']?([^ "'>]+)/g;
+async function runParallel<T>(
+  inputs: Set<T>,
+  cb: (input: T) => unknown | Promise<unknown>,
+  opts: { concurrency: number; interval: number }
+) {
+  const tasks = new Set<Promise<unknown>>();
+
+  function queueNext() {
+    const route = inputs.values().next().value;
+    if (!route) {
+      return;
+    }
+
+    inputs.delete(route);
+    const task = new Promise((resolve) =>
+      setTimeout(resolve, opts.interval)
+    ).then(() => cb(route));
+
+    tasks.add(task);
+    return task.then(() => {
+      tasks.delete(task);
+      if (inputs.size > 0) {
+        return refillQueue();
+      }
+    });
+  }
+
+  function refillQueue() {
+    const workers = Math.min(opts.concurrency - tasks.size, inputs.size);
+    return Promise.all(Array.from({ length: workers }, () => queueNext()));
+  }
+
+  await refillQueue();
+}
+
+const LINK_REGEX = /href=["']?([^"'>]+)/g;
 
 function extractLinks(
   html: string,

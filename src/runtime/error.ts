@@ -1,4 +1,5 @@
 // import ansiHTML from 'ansi-html'
+import { setResponseStatus } from "h3";
 import type { NitroErrorHandler } from "../types";
 import { normalizeError, isJsonRequest } from "./utils";
 
@@ -41,10 +42,7 @@ export default <NitroErrorHandler>function (error, event) {
     );
   }
 
-  event.node.res.statusCode = statusCode;
-  if (statusMessage) {
-    event.node.res.statusMessage = statusMessage;
-  }
+  setResponseStatus(event, statusCode, statusMessage);
 
   if (isJsonRequest(event)) {
     event.node.res.setHeader("Content-Type", "application/json");

@@ -34,10 +34,11 @@ import { esbuild } from "./plugins/esbuild";
 import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
 import { importMeta } from "./plugins/import-meta";
+import { appConfig } from "./plugins/app-config";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
-export const getRollupConfig = (nitro: Nitro) => {
+export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [".ts", ".mjs", ".js", ".json", ".node"];
 
   const nodePreset = nitro.options.node === false ? unenv.nodeless : unenv.node;
@@ -72,7 +73,7 @@ export const getRollupConfig = (nitro: Nitro) => {
       entryFileNames: "index.mjs",
       chunkFileNames(chunkInfo) {
         let prefix = "";
-        const lastModule = chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1];
+        const lastModule = normalize(chunkInfo.moduleIds.at(-1));
         if (lastModule.startsWith(buildServerDir)) {
           prefix = join("app", relative(buildServerDir, dirname(lastModule)));
         } else if (lastModule.startsWith(runtimeAppDir)) {
@@ -168,7 +169,6 @@ export const getRollupConfig = (nitro: Nitro) => {
     server: true,
     client: false,
     dev: String(nitro.options.dev),
-    RUNTIME_CONFIG: nitro.options.runtimeConfig,
     DEBUG: nitro.options.dev,
   };
 
@@ -182,6 +182,8 @@ export const getRollupConfig = (nitro: Nitro) => {
       values: {
         "typeof window": '"undefined"',
         _import_meta_url_: "import.meta.url",
+        "process.env.RUNTIME_CONFIG": () =>
+          JSON.stringify(nitro.options.runtimeConfig, null, 2),
         ...Object.fromEntries(
           [".", ";", ")", "[", "]", "}", " "].map((d) => [
             `import.meta${d}`,
@@ -245,6 +247,9 @@ export const getRollupConfig = (nitro: Nitro) => {
   // Storage
   rollupConfig.plugins.push(storage(nitro));
 
+  // App.config
+  rollupConfig.plugins.push(appConfig(nitro));
+
   // Handlers
   rollupConfig.plugins.push(handlers(nitro));
 
@@ -306,45 +311,7 @@ export const plugins = [
   );
 
   // Externals Plugin
-  if (!nitro.options.noExternals) {
-    const externalsPlugin = nitro.options.experimental.legacyExternals
-      ? legacyExternals
-      : externals;
-    rollupConfig.plugins.push(
-      externalsPlugin(
-        defu(nitro.options.externals, {
-          outDir: nitro.options.output.serverDir,
-          moduleDirectories: nitro.options.nodeModulesDirs,
-          external: [...(nitro.options.dev ? [nitro.options.buildDir] : [])],
-          inline: [
-            "#",
-            "~",
-            "@/",
-            "~~",
-            "@@/",
-            "virtual:",
-            runtimeDir,
-            nitro.options.srcDir,
-            ...nitro.options.handlers
-              .map((m) => m.handler)
-              .filter((i) => typeof i === "string"),
-          ],
-          traceOptions: {
-            base: "/",
-            processCwd: nitro.options.rootDir,
-            exportsOnly: true,
-          },
-          exportConditions: [
-            "default",
-            nitro.options.dev ? "development" : "production",
-            "module",
-            "node",
-            "import",
-          ],
-        })
-      )
-    );
-  } else {
+  if (nitro.options.noExternals) {
     rollupConfig.plugins.push({
       name: "no-externals",
       async resolveId(id, from, options) {
@@ -382,6 +349,44 @@ export const plugins = [
         }
       },
     });
+  } else {
+    const externalsPlugin = nitro.options.experimental.legacyExternals
+      ? legacyExternals
+      : externals;
+    rollupConfig.plugins.push(
+      externalsPlugin(
+        defu(nitro.options.externals, {
+          outDir: nitro.options.output.serverDir,
+          moduleDirectories: nitro.options.nodeModulesDirs,
+          external: [...(nitro.options.dev ? [nitro.options.buildDir] : [])],
+          inline: [
+            "#",
+            "~",
+            "@/",
+            "~~",
+            "@@/",
+            "virtual:",
+            runtimeDir,
+            nitro.options.srcDir,
+            ...nitro.options.handlers
+              .map((m) => m.handler)
+              .filter((i) => typeof i === "string"),
+          ],
+          traceOptions: {
+            base: "/",
+            processCwd: nitro.options.rootDir,
+            exportsOnly: true,
+          },
+          exportConditions: [
+            "default",
+            nitro.options.dev ? "development" : "production",
+            "module",
+            "node",
+            "import",
+          ],
+        })
+      )
+    );
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve

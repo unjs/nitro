@@ -1,6 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, dirname, normalize, join, isAbsolute } from "pathe";
-import consola from "consola";
+import { consola } from "consola";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
