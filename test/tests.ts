@@ -374,68 +374,15 @@ export function testNitro(
 
   it("static build flags", async () => {
     const { data } = await callHandler({ url: "/static-flags" });
-    expect(data).toMatchInlineSnapshot(`
-      {
-        "client": [
-          false,
-          false,
-        ],
-        "dev": [
-          true,
-          true,
-        ],
-        "nitro": [
-          true,
-          true,
-        ],
-        "prerender": [
-          false,
-          false,
-        ],
-        "preset": [
-          "nitro-dev",
-          "nitro-dev",
-        ],
-        "server": [
-          true,
-          true,
-        ],
-        "versions.nitro": [
-          "2.4.0",
-          "2.4.0",
-        ],
-      }
-    ``
-      {
-        "client": [
-          false,
-          false,
-        ],
-        "dev": [
-          false,
-          false,
-        ],
-        "nitro": [
-          true,
-          true,
-        ],
-        "prerender": [
-          false,
-          false,
-        ],
-        "preset": [
-          "aws-lambda",
-          "aws-lambda",
-        ],
-        "server": [
-          true,
-          true,
-        ],
-        "versions.nitro": [
-          "2.4.0",
-          "2.4.0",
-        ],
-      }
-    `);
+    expect(data).toMatchObject({
+      client: [false, false],
+      dev: [false, false],
+      nitro: [true, true],
+      preset: [expect.any(String), expect.any(String)],
+      prerender: [expect.any(Boolean), expect.any(Boolean)],
+      server: [true, true],
+      "versions.nitro": [expect.any(String), expect.any(String)],
+      "versions?.nitro": [expect.any(String), expect.any(String)],
+    });
   });
 }

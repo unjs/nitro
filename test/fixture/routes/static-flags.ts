@@ -8,5 +8,6 @@ export default eventHandler(async (event) => {
     client: [process.client, import.meta.client],
     nitro: [process.nitro, import.meta.nitro],
     "versions.nitro": [process.versions.nitro, import.meta.versions.nitro],
+    "versions?.nitro": [process.versions?.nitro, import.meta.versions?.nitro],
   };
 });
