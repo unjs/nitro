@@ -18,7 +18,7 @@ import type { Preset } from "unenv";
 import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
-import type { Nitro } from "../types";
+import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
 import { version } from "../../package.json";
@@ -174,13 +174,14 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     DEBUG: nitro.options.dev,
   };
 
-  const staticFlags = {
+  const staticFlags: NitroStaticBuildFlags = {
     dev: nitro.options.dev,
     preset: nitro.options.preset,
     prerender: nitro.options.preset === "nitro-prerender",
     server: true,
     client: false,
     nitro: true,
+    // @ts-expect-error
     "versions.nitro": version,
     "versions?.nitro": version,
   };
