@@ -37,7 +37,7 @@ When you are asked to select your framework, select custom and provide the follo
 
 If you miss this step, you can always find the build configuration section in your workflow and update the build configuration:
 
-```yml
+```yaml
 # .github/workflows/azure-static-web-apps-<RANDOM_NAME>.yml
 
 ###### Repository/Build Configurations ######
@@ -88,7 +88,7 @@ First, obtain your Azure Functions Publish Profile and add it as a secret to you
 
 Then create the following file as a workflow:
 
-```yml
+```yaml
 # .github/workflows/azure.yml
 name: azure
 on:

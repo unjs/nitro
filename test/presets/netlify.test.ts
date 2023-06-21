@@ -50,7 +50,8 @@ describe("nitro:preset:netlify", async () => {
       /rules/_/noncached/*	/.netlify/functions/server 200
       /rules/swr-ttl/*	/.netlify/builders/server 200
       /rules/swr/*	/.netlify/builders/server 200
-      /rules/static	/.netlify/builders/server 200
+      /rules/isr-ttl/*	/.netlify/builders/server 200
+      /rules/isr/*	/.netlify/builders/server 200
       /rules/dynamic	/.netlify/functions/server 200
       /* /.netlify/functions/server 200"
     `);

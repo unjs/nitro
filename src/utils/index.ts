@@ -3,7 +3,7 @@ import fsp from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import { relative, dirname, resolve } from "pathe";
 import jiti from "jiti";
-import consola from "consola";
+import { consola } from "consola";
 import chalk from "chalk";
 import { getProperty } from "dot-prop";
 import { provider } from "std-env";
@@ -111,8 +111,17 @@ const autodetectableProviders: Partial<
   cleavr: "cleavr",
 };
 
-export function detectTarget() {
-  return autodetectableProviders[provider];
+const autodetectableStaticProviders: Partial<
+  Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
+> = {
+  netlify: "netlify-static",
+  vercel: "vercel-static",
+};
+
+export function detectTarget(options: { static?: boolean } = {}) {
+  return options?.static
+    ? autodetectableStaticProviders[provider]
+    : autodetectableProviders[provider];
 }
 
 export async function isDirectory(path: string) {
@@ -213,7 +222,7 @@ export async function retry(fn: () => Promise<void>, retries: number) {
 
 export function provideFallbackValues(obj: Record<string, any>) {
   for (const key in obj) {
-    if (typeof obj[key] === "undefined" || obj[key] === null) {
+    if (obj[key] === undefined || obj[key] === null) {
       obj[key] = "";
     } else if (typeof obj[key] === "object") {
       provideFallbackValues(obj[key]);

@@ -2,6 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
+import { name, version } from "../../package.json";
 
 // Netlify functions
 export const netlify = defineNitroPreset({
@@ -17,6 +18,11 @@ export const netlify = defineNitroPreset({
     },
   },
   hooks: {
+    "rollup:before": (nitro: Nitro) => {
+      if (!nitro.options.future.nativeSWR) {
+        deprecateSWR(nitro);
+      }
+    },
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);
@@ -38,6 +44,9 @@ export const netlify = defineNitroPreset({
 export const netlifyBuilder = defineNitroPreset({
   extends: "netlify",
   entry: "#internal/nitro/entries/netlify-builder",
+  hooks: {
+    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+  },
 });
 
 // Netlify edge
@@ -45,23 +54,30 @@ export const netlifyEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/netlify-edge",
   output: {
-    serverDir: "{{ rootDir }}/.netlify/edge-functions",
+    serverDir: "{{ rootDir }}/.netlify/edge-functions/server",
     publicDir: "{{ rootDir }}/dist",
   },
   rollupConfig: {
     output: {
-      entryFileNames: "server.mjs",
+      entryFileNames: "server.js",
       format: "esm",
     },
   },
+  unenv: {
+    polyfill: ["#internal/nitro/polyfill/deno-env"],
+  },
   hooks: {
+    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
     async compiled(nitro: Nitro) {
+      // https://docs.netlify.com/edge-functions/create-integration/
       const manifest = {
         version: 1,
         functions: [
           {
+            path: "/*",
+            name: "nitro server handler",
             function: "server",
-            pattern: "^.*$",
+            generator: `${name}@${version}`,
           },
         ],
       };
@@ -75,27 +91,49 @@ export const netlifyEdge = defineNitroPreset({
   },
 });
 
+export const netlifyStatic = defineNitroPreset({
+  extends: "static",
+  output: {
+    publicDir: "{{ rootDir }}/dist",
+  },
+  commands: {
+    preview: "npx serve ./static",
+  },
+  hooks: {
+    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    async compiled(nitro: Nitro) {
+      await writeHeaders(nitro);
+      await writeRedirects(nitro);
+    },
+  },
+});
+
 async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
-  let contents = "/* /.netlify/functions/server 200";
+  const staticFallback = existsSync(
+    join(nitro.options.output.publicDir, "404.html")
+  )
+    ? "/* /404.html 404"
+    : "";
+  let contents = nitro.options.static
+    ? staticFallback
+    : "/* /.netlify/functions/server 200";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
   );
 
-  // Rewrite static cached paths to builder functions
-  for (const [key, value] of rules.filter(
-    ([_, value]) =>
-      value.cache === false ||
-      (value.cache && value.cache.swr === false) ||
-      (value.cache && (value.cache?.static || value.cache?.swr))
-  )) {
-    contents =
-      value.cache === false || value.cache.swr === false
-        ? `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
+  if (!nitro.options.static) {
+    // Rewrite static ISR paths to builder functions
+    for (const [key, value] of rules.filter(
+      ([_, value]) => value.isr !== undefined
+    )) {
+      contents = value.isr
+        ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
           contents
-        : `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
+        : `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
           contents;
+    }
   }
 
   for (const [key, routeRules] of rules.filter(
@@ -162,4 +200,28 @@ async function writeHeaders(nitro: Nitro) {
   }
 
   await fsp.writeFile(headersPath, contents);
+}
+
+function deprecateSWR(nitro: Nitro) {
+  let hasLegacyOptions = false;
+  for (const [key, value] of Object.entries(nitro.options.routeRules)) {
+    if ("isr" in value) {
+      continue;
+    }
+    if (value.cache === false) {
+      value.isr = false;
+    }
+    if ("static" in value) {
+      value.isr = !value.static;
+    }
+    if (value.cache && "swr" in value.cache) {
+      value.isr = value.cache.swr;
+    }
+    hasLegacyOptions = hasLegacyOptions || "isr" in value;
+  }
+  if (hasLegacyOptions) {
+    console.warn(
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions."
+    );
+  }
 }

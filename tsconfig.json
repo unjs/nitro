@@ -10,8 +10,12 @@
     "strict": false,
     "allowJs": true,
     "resolveJsonModule": true,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
     "paths": {
       "nitropack": ["./src/index"],
+      "nitropack/config": ["./src/config"],
       "#internal/nitro": ["./src/runtime/index"],
       "#internal/nitro/*": ["./src/runtime/*"]
     }

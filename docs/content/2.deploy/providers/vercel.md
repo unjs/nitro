@@ -35,6 +35,63 @@ It is possible to deploy your nitro applications directly on [Vercel Edge Functi
 
 In order to enable this target, please set `NITRO_PRESET` environment variable to `vercel-edge`.
 
+## Vercel KV Storage
+
+You can easily use [Vercel KV Storage](https://vercel.com/docs/storage/vercel-kv) with [Nitro Storage](/guide/storage).
+
+::alert{type="warning"}
+This feature is currently in beta. Please check [driver docs](https://unstorage.unjs.io/drivers/vercel-kv).
+::
+
+1. Install `@vercel/kv` dependency:
+
+```json [package.json]
+{
+  "devDependencies": {
+    "@vercel/kv": "latest"
+  }
+}
+```
+
+Update your configuration:
+
+::code-group
+```ts [nitro.config.ts]
+import { defineNitroConfig } from 'nitropack/config'
+
+export default defineNitroConfig({
+  storage: {
+    data: { driver: 'vercelKV' }
+  }
+})
+```
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      data: { driver: 'vercelKV' }
+    }
+  }
+})
+```
+::
+
+::alert
+You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables or pass `url` and `token` to driver options. Check [driver docs](https://unstorage.unjs.io/drivers/vercel-kv) for more information about usage.
+::
+
+You can now access data store in any event handler:
+
+```ts
+export default eventHandler(async (event) => {
+  const dataStorage = useStorage("data");
+  await dataStorage.setItem("hello", "world");
+  return {
+    hello: await dataStorage.getItem("hello"),
+  };
+});
+```
+
 ## Custom Build Output Configuration
 
-You can provide additional [build output configuration](https://vercel.com/docs/build-output-api/v3) using `vercel.config` key inside `nitro.config`. It will be merged with build-in auto generated config.
+You can provide additional [build output configuration](https://vercel.com/docs/build-output-api/v3) using `vercel.config` key inside `nitro.config`. It will be merged with built-in auto generated config.

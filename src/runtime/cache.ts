@@ -26,7 +26,6 @@ export interface CacheOptions<T = any> {
   group?: string;
   integrity?: any;
   maxAge?: number;
-  static?: boolean; // TODO
   swr?: boolean;
   staleMaxAge?: number;
   base?: string;
@@ -167,6 +166,7 @@ export interface CachedEventHandlerOptions<T = any>
 }
 
 function escapeKey(key: string) {
+  // eslint-disable-next-line unicorn/prefer-string-replace-all
   return key.replace(/[^\dA-Za-z]/g, "");
 }
 
@@ -210,6 +210,10 @@ export function defineCachedEventHandler<T = any>(
       let _resSendBody;
       const resProxy = cloneWithProxy(incomingEvent.node.res, {
         statusCode: 200,
+        writableEnded: false,
+        writableFinished: false,
+        headersSent: false,
+        closed: false,
         getHeader(name) {
           return resHeaders[name];
         },

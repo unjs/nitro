@@ -1,12 +1,12 @@
 import "#internal/nitro/virtual/polyfill";
-import { requestHasBody, useRequestBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
 
 export default async function handleEvent(request, event) {
   const url = new URL(request.url);
+
   let body;
-  if (requestHasBody(request)) {
-    body = await useRequestBody(request);
+  if (request.body) {
+    body = await request.arrayBuffer();
   }
 
   const r = await nitroApp.localCall({
