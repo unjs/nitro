@@ -19,6 +19,7 @@ import type {
   NitroOptions,
   NitroRouteConfig,
   NitroRouteRules,
+  NitroRuntimeConfig,
 } from "./types";
 import { runtimeDir, pkgDir } from "./dirs";
 import * as _PRESETS from "./presets";
@@ -368,7 +369,7 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     nitro: {},
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
-  return runtimeConfig;
+  return runtimeConfig as NitroRuntimeConfig;
 }
 
 export function normalizeRouteRules(

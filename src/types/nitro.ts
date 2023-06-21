@@ -31,7 +31,20 @@ export type NitroDynamicConfig = Pick<
   "runtimeConfig" | "routeRules"
 >;
 
+export interface NitroRuntimeConfigApp {
+  baseURL: string;
+  [key: string]: unknown;
+}
+
+export interface NitroRuntimeConfigNitro {
+  routeRules?: {
+    [path: string]: NitroRouteConfig;
+  }
+}
+
 export interface NitroRuntimeConfig {
+  app: NitroRuntimeConfigApp;
+  nitro: NitroRuntimeConfigNitro;
   [key: string]: unknown;
 }
 
