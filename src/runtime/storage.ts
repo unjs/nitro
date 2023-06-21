@@ -5,5 +5,5 @@ import { storage } from "#internal/nitro/virtual/storage";
 export function useStorage<T extends StorageValue = StorageValue>(
   base = ""
 ): Storage<T> {
-  return base ? prefixStorage(storage, base) : storage;
+  return base ? prefixStorage<T>(storage, base) : storage;
 }
