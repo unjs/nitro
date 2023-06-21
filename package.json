@@ -7,7 +7,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./types.d.ts",
       "import": "./dist/index.mjs"
     },
     "./config": {
@@ -20,7 +20,7 @@
     "./package.json": "./package.json"
   },
   "main": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./types.d.ts",
   "bin": {
     "nitro": "./dist/cli.mjs",
     "nitropack": "./dist/cli.mjs"
