@@ -39,7 +39,7 @@ export interface NitroRuntimeConfigApp {
 export interface NitroRuntimeConfigNitro {
   routeRules?: {
     [path: string]: NitroRouteConfig;
-  }
+  };
 }
 
 export interface NitroRuntimeConfig {
