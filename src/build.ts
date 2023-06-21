@@ -97,11 +97,13 @@ export async function writeTypes(nitro: Nitro) {
   }
 
   let autoImportedTypes: string[] = [];
-  let autoImportExports: string
+  let autoImportExports: string;
 
   if (nitro.unimport) {
     await nitro.unimport.init();
-    autoImportExports = await nitro.unimport.toExports(typesDir).then(r => r.replace(/#internal\/nitro/g, runtimeDir))
+    autoImportExports = await nitro.unimport
+      .toExports(typesDir)
+      .then((r) => r.replace(/#internal\/nitro/g, runtimeDir));
     autoImportedTypes = [
       (
         await nitro.unimport.generateTypeDeclarations({
@@ -186,10 +188,9 @@ declare module 'nitropack' {
 
   buildFiles.push({
     path: join(typesDir, "nitro-imports.d.ts"),
-    contents: [
-      ...autoImportedTypes,
-      autoImportExports || "export {}"
-    ].join("\n"),
+    contents: [...autoImportedTypes, autoImportExports || "export {}"].join(
+      "\n"
+    ),
   });
 
   buildFiles.push({
@@ -216,14 +217,14 @@ declare module 'nitropack' {
         jsxFactory: "h",
         jsxFragmentFactory: "Fragment",
         paths: {
-          '#imports': [join(typesDir, 'nitro-imports')],
-          ...nitro.options.typescript.internalPaths
-          ? {
-              "#internal/nitro": [join(runtimeDir, "index")],
-              "#internal/nitro/*": [join(runtimeDir, "*")],
-            }
-          : {},
-        }
+          "#imports": [join(typesDir, "nitro-imports")],
+          ...(nitro.options.typescript.internalPaths
+            ? {
+                "#internal/nitro": [join(runtimeDir, "index")],
+                "#internal/nitro/*": [join(runtimeDir, "*")],
+              }
+            : {}),
+        },
       },
       include: [
         relative(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
