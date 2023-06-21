@@ -371,4 +371,21 @@ export function testNitro(
       expect(headers["server-timing"]).toMatch(/-;dur=\d+;desc="Generate"/);
     });
   }
+
+  it("static build flags", async () => {
+    const { data } = await callHandler({ url: "/static-flags" });
+    expect(data).toMatchObject({
+      dev: [ctx.isDev, ctx.isDev],
+      preset: [ctx.preset, ctx.preset],
+      prerender: [
+        ctx.preset === "nitro-prerenderer",
+        ctx.preset === "nitro-prerenderer",
+      ],
+      client: [false, false],
+      nitro: [true, true],
+      server: [true, true],
+      "versions.nitro": [expect.any(String), expect.any(String)],
+      "versions?.nitro": [expect.any(String), expect.any(String)],
+    });
+  });
 }
