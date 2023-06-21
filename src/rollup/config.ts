@@ -21,6 +21,7 @@ import { hash } from "ohash";
 import type { Nitro } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
+import { version } from "../../package.json";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
@@ -163,6 +164,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   if (nitro.options.preset === "nitro-prerender") {
     NODE_ENV = "prerender";
   }
+
   const buildEnvVars = {
     NODE_ENV,
     prerender: nitro.options.preset === "nitro-prerender",
@@ -170,6 +172,16 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     dev: String(nitro.options.dev),
     DEBUG: nitro.options.dev,
+  };
+
+  const envFlags = {
+    dev: nitro.options.dev,
+    preset: nitro.options.preset,
+    prerender: nitro.options.preset === "nitro-prerender",
+    server: true,
+    client: false,
+    nitro: true,
+    "versions.nitro": version,
   };
 
   // Universal import.meta
@@ -205,6 +217,18 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         ...Object.fromEntries(
           Object.entries(buildEnvVars).map(([key, val]) => [
             `import.meta.env.${key}`,
+            JSON.stringify(val),
+          ])
+        ),
+        ...Object.fromEntries(
+          Object.entries(envFlags).map(([key, val]) => [
+            `process.${key}`,
+            JSON.stringify(val),
+          ])
+        ),
+        ...Object.fromEntries(
+          Object.entries(envFlags).map(([key, val]) => [
+            `import.meta.${key}`,
             JSON.stringify(val),
           ])
         ),

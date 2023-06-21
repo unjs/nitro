@@ -371,4 +371,39 @@ export function testNitro(
       expect(headers["server-timing"]).toMatch(/-;dur=\d+;desc="Generate"/);
     });
   }
+
+  it("env-flags", async () => {
+    const { data } = await callHandler({ url: "/env-flags" });
+    expect(data).toMatchInlineSnapshot(`
+      {
+        "client": [
+          false,
+          false,
+        ],
+        "dev": [
+          true,
+          true,
+        ],
+        "nitro": [
+          true,
+          true,
+        ],
+        "prerender": [
+          false,
+          false,
+        ],
+        "preset": [
+          "nitro-dev",
+          "nitro-dev",
+        ],
+        "server": [
+          true,
+          true,
+        ],
+        "versions.nitro": [
+          "2.4.0",
+        ],
+      }
+    `);
+  });
 }
