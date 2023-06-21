@@ -16,7 +16,6 @@
     "paths": {
       "nitropack": ["./src/index"],
       "nitropack/config": ["./src/config"],
-      "nitropack/dist/runtime/*": ["./src/runtime/*.ts"],
       "#internal/nitro": ["./src/runtime/index"],
       "#internal/nitro/*": ["./src/runtime/*"]
     }
