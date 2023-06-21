@@ -198,7 +198,7 @@ importers:
         specifier: ^3.0.8
         version: 3.0.8(rollup@3.25.1)
       unstorage:
-        specifier: ^1.7.0
+        specifier: ^1.6.1
         version: 1.7.0
     devDependencies:
       '@cloudflare/workers-types':
