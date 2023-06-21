@@ -33,7 +33,7 @@ export type NitroDynamicConfig = Pick<
 
 export interface NitroRuntimeConfigApp {
   baseURL: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface NitroRuntimeConfig {
