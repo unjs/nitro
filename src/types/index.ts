@@ -4,4 +4,4 @@ export * from "./serialize";
 export * from "./nitro";
 export * from "./handler";
 export * from "./utils";
-export * from "../runtime/types";
+export * from "nitropack/dist/runtime/types";
