@@ -372,8 +372,8 @@ export function testNitro(
     });
   }
 
-  it("env-flags", async () => {
-    const { data } = await callHandler({ url: "/env-flags" });
+  it("static build flags", async () => {
+    const { data } = await callHandler({ url: "/static-flags" });
     expect(data).toMatchInlineSnapshot(`
       {
         "client": [
@@ -401,6 +401,38 @@ export function testNitro(
           true,
         ],
         "versions.nitro": [
+          "2.4.0",
+          "2.4.0",
+        ],
+      }
+    ``
+      {
+        "client": [
+          false,
+          false,
+        ],
+        "dev": [
+          false,
+          false,
+        ],
+        "nitro": [
+          true,
+          true,
+        ],
+        "prerender": [
+          false,
+          false,
+        ],
+        "preset": [
+          "aws-lambda",
+          "aws-lambda",
+        ],
+        "server": [
+          true,
+          true,
+        ],
+        "versions.nitro": [
+          "2.4.0",
           "2.4.0",
         ],
       }

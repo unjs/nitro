@@ -174,7 +174,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     DEBUG: nitro.options.dev,
   };
 
-  const envFlags = {
+  const staticFlags = {
     dev: nitro.options.dev,
     preset: nitro.options.preset,
     prerender: nitro.options.preset === "nitro-prerender",
@@ -221,13 +221,13 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
           ])
         ),
         ...Object.fromEntries(
-          Object.entries(envFlags).map(([key, val]) => [
+          Object.entries(staticFlags).map(([key, val]) => [
             `process.${key}`,
             JSON.stringify(val),
           ])
         ),
         ...Object.fromEntries(
-          Object.entries(envFlags).map(([key, val]) => [
+          Object.entries(staticFlags).map(([key, val]) => [
             `import.meta.${key}`,
             JSON.stringify(val),
           ])
