@@ -36,15 +36,13 @@ export interface NitroRuntimeConfigApp {
   [key: string]: unknown;
 }
 
-export interface NitroRuntimeConfigNitro {
-  routeRules?: {
-    [path: string]: NitroRouteConfig;
-  };
-}
-
 export interface NitroRuntimeConfig {
   app: NitroRuntimeConfigApp;
-  nitro: NitroRuntimeConfigNitro;
+  nitro: {
+    routeRules?: {
+      [path: string]: NitroRouteConfig;
+    };
+  };
   [key: string]: unknown;
 }
 
