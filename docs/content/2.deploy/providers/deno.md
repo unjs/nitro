@@ -4,10 +4,10 @@ Deploy Nitro apps to [Deno Deploy](https://deno.com/deploy).
 
 ## Deno Deploy
 
-**Preset:** `deno` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `deno-deploy` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
-Deno support is experimental.
+Deno deploy preset is experimental.
 ::
 
 ### Deploy with the CLI
@@ -17,8 +17,8 @@ You can use [deployctl](https://deno.com/deploy/docs/deployctl) to deploy your a
 Login to [Deno Deploy](https://dash.deno.com/account#access-tokens) to obtain a `DENO_DEPLOY_TOKEN` access token, and set it as an environment variable.
 
 ```bash
-# Build with the deno NITRO preset
-NITRO_PRESET=deno npm run build
+# Build with the deno-deploy NITRO preset
+NITRO_PRESET=deno-deploy npm run build
 
 # Make sure to run the deployctl command from the output directory
 cd .output
@@ -56,11 +56,29 @@ jobs:
       - run: pnpm install
       - run: pnpm build
         env:
-          NITRO_PRESET: deno
+          NITRO_PRESET: deno-deploy
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: my-project
           entrypoint: server/index.ts
           root: .output
+```
+
+## Deno Server (Runtime)
+
+**Preset:** `deno-server` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+::alert{type="warning"}
+Deno runtime preset is experimental.
+::
+
+You can build your Nitro server using Node.js to run within [Deno Runtime](https://deno.com/runtime) in a custom server.
+
+```bash
+# Build with the deno NITRO preset
+NITRO_PRESET=deno-server npm run build
+
+# Start production server
+deno run --unstable --allow-net --allow-read --allow-env .output/server/index.ts
 ```

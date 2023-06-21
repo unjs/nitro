@@ -1,9 +1,9 @@
 import type { Plugin } from "rollup";
 import { Nitro } from "../../types";
 
-export function importMeta(nitro: Nitro): Plugin {
-  const ImportMetaRe = /import\.meta|globalThis._importMeta_/;
+export const ImportMetaRe = /import\.meta|globalThis._importMeta_/;
 
+export function importMeta(nitro: Nitro): Plugin {
   return {
     name: "import-meta",
     renderChunk(code, chunk) {

@@ -44,12 +44,14 @@ export default <NitroErrorHandler>function (error, event) {
 
   setResponseStatus(event, statusCode, statusMessage);
 
-  if (isJsonRequest(event)) {
-    event.node.res.setHeader("Content-Type", "application/json");
-    event.node.res.end(JSON.stringify(errorObject));
-  } else {
-    event.node.res.setHeader("Content-Type", "text/html");
-    event.node.res.end(renderHTMLError(errorObject));
+  if (!event.handled) {
+    if (isJsonRequest(event)) {
+      event.node.res.setHeader("Content-Type", "application/json");
+      event.node.res.end(JSON.stringify(errorObject));
+    } else {
+      event.node.res.setHeader("Content-Type", "text/html");
+      event.node.res.end(renderHTMLError(errorObject));
+    }
   }
 };
 

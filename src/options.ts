@@ -74,6 +74,7 @@ const NitroDefaults: NitroConfig = {
   prerender: {
     concurrency: 1,
     interval: 0,
+    failOnError: false,
     crawlLinks: false,
     ignore: [],
     routes: [],
@@ -94,6 +95,12 @@ const NitroDefaults: NitroConfig = {
   replace: {},
   node: true,
   sourceMap: true,
+  esbuild: {
+    options: {
+      jsxFactory: "h",
+      jsxFragment: "Fragment",
+    },
+  },
 
   // Advanced
   typescript: {
@@ -101,6 +108,7 @@ const NitroDefaults: NitroConfig = {
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
+    tsConfig: {},
   },
   nodeModulesDirs: [],
   hooks: {},
@@ -139,7 +147,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: detectTarget() || "node-server",
+      preset: detectTarget({ static: configOverrides.static }) || "node-server",
     },
     defaults: NitroDefaults,
     jitiOptions: {
