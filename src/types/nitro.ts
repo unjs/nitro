@@ -43,7 +43,7 @@ export interface NitroRuntimeConfig {
       [path: string]: NitroRouteConfig;
     };
   };
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface Nitro {
