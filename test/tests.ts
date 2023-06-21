@@ -375,11 +375,11 @@ export function testNitro(
   it("static build flags", async () => {
     const { data } = await callHandler({ url: "/static-flags" });
     expect(data).toMatchObject({
+      dev: [ctx.isDev, ctx.isDev],
+      preset: [ctx.preset, ctx.preset],
+      prerender: [ctx.preset === "nitro-dev", ctx.preset === "nitro-dev"],
       client: [false, false],
-      dev: [false, false],
       nitro: [true, true],
-      preset: [expect.any(String), expect.any(String)],
-      prerender: [expect.any(Boolean), expect.any(Boolean)],
       server: [true, true],
       "versions.nitro": [expect.any(String), expect.any(String)],
       "versions?.nitro": [expect.any(String), expect.any(String)],
