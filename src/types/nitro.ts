@@ -278,19 +278,4 @@ export interface NitroOptions extends PresetOptions {
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
-
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      dev?: boolean;
-      client?: boolean;
-      nitro?: boolean;
-      prerender?: boolean;
-      preset?: NitroOptions["preset"];
-      server?: boolean;
-      versions?: {
-        nitro?: string;
-      };
-    }
-  }
 }
