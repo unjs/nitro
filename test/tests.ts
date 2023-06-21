@@ -377,7 +377,10 @@ export function testNitro(
     expect(data).toMatchObject({
       dev: [ctx.isDev, ctx.isDev],
       preset: [ctx.preset, ctx.preset],
-      prerender: [ctx.preset === "nitro-dev", ctx.preset === "nitro-dev"],
+      prerender: [
+        ctx.preset === "nitro-prerenderer",
+        ctx.preset === "nitro-prerenderer",
+      ],
       client: [false, false],
       nitro: [true, true],
       server: [true, true],
