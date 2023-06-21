@@ -182,6 +182,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     nitro: true,
     "versions.nitro": version,
+    "versions?.nitro": version,
   };
 
   // Universal import.meta
