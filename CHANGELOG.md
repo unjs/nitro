@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.5.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.5.0...v2.5.1)
+
+
+### 📖 Documentation
+
+  - Fix typo in Flightcontrol deployment option ([#1332](https://github.com/unjs/nitro/pull/1332))
+
+### 📦 Build
+
+  - Avoid doubly-bundling runtime types ([#1334](https://github.com/unjs/nitro/pull/1334))
+
+### 🌊 Types
+
+  - Avoid overriding app runtime config namespace ([#1333](https://github.com/unjs/nitro/pull/1333))
+
+### ❤️  Contributors
+
+- Daniel Roe <daniel@roe.dev>
+- ModupeD
+
 ## v2.5.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v0.0.2...v2.5.0)
