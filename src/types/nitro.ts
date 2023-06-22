@@ -39,6 +39,7 @@ export interface NitroRuntimeConfigApp {
 export interface NitroRuntimeConfig {
   app: NitroRuntimeConfigApp;
   nitro: {
+    envPrefix?: string;
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
