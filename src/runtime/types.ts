@@ -1,7 +1,7 @@
 import type { H3Event } from "h3";
 
+import type { $Fetch, NitroFetchRequest } from "../types"
 import type { RenderResponse } from "./types";
-import type { $Fetch, NitroFetchRequest } from "nitropack"
 export type { NitroApp } from "./app";
 export type {
   CacheEntry,

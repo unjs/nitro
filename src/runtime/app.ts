@@ -16,6 +16,7 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
+import { $Fetch, NitroFetchRequest } from "../types"
 import { NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
@@ -70,8 +71,8 @@ function createNitroApp(): NitroApp {
       // Assign bound fetch to context
       event.fetch = (req, init) =>
         fetchWithEvent(event, req as any, init, { fetch: localFetch });
-      event.$fetch = (req, init) =>
-        fetchWithEvent(event, req as any, init, { fetch: $fetch });
+      event.$fetch = ((req, init) =>
+        fetchWithEvent(event, req as any, init as RequestInit, { fetch: $fetch })) as $Fetch<unknown, NitroFetchRequest>;
     })
   );
 
