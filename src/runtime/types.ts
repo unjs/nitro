@@ -1,6 +1,7 @@
 import type { H3Event } from "h3";
 
 import type { RenderResponse } from "./types";
+import type { $Fetch, NitroFetchRequest } from "nitropack"
 export type { NitroApp } from "./app";
 export type {
   CacheEntry,
@@ -16,7 +17,7 @@ declare module "h3" {
     /** @experimental Calls fetch with same context and request headers */
     fetch: typeof globalThis.fetch;
     /** @experimental Calls fetch with same context and request headers */
-    $fetch: typeof globalThis.fetch;
+    $fetch: $Fetch<unknown, NitroFetchRequest>;
   }
 }
 
