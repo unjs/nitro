@@ -29,9 +29,11 @@ export const describeIf = (condition, title, factory) =>
         it.skip("skipped", () => {});
       });
 
-export async function setupTest(preset: string) {
-  const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
+export const fixtureDir = fileURLToPath(
+  new URL("fixture", import.meta.url).href
+);
 
+export async function setupTest(preset: string) {
   const presetTempDir = fileURLToPath(
     new URL(`presets/.tmp/${preset}`, import.meta.url).href
   );
