@@ -1,0 +1,38 @@
+{
+  "routes": [
+    {
+      "route": "/admin",
+      "allowedRoles": [
+        "authenticated"
+      ]
+    },
+    {
+      "route": "/logout",
+      "redirect": "/.auth/logout"
+    },
+    {
+      "route": "/index.html",
+      "redirect": "/overridden-index"
+    },
+    {
+      "route": "/",
+      "rewrite": "/api/server/overridden"
+    }
+  ],
+  "responseOverrides": {
+    "401": {
+      "statusCode": 302,
+      "redirect": "/.auth/login/aad"
+    }
+  },
+  "networking": {
+    "allowedIpRanges": [
+      "10.0.0.0/24",
+      "100.0.0.0/32",
+      "192.168.100.0/22"
+    ]
+  },
+  "platform": {
+    "apiRuntime": "custom-runtime"
+  }
+}

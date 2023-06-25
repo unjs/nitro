@@ -25,6 +25,24 @@ NITRO_PRESET=azure yarn build
 npx @azure/static-web-apps-cli start .output/public --api-location .output/server
 ```
 
+### Configuration
+
+Azure Static Web Apps are [configured](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration) using the `staticwebapp.config.json` file.
+
+Nitro automatically generates this configuration file whenever the application is built with the `azure` preset.
+
+Nitro will automatically add the following properties based on the following criteria:
+| Property | Criteria | Default |
+| --- | --- | --- |
+| **[platform.apiRuntime](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#platform)** | Will automatically set to `node:16` or `node:14` depending on your package configuration. | `node:16` |
+| **[navigationFallback.rewrite](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#fallback-routes)** | Is always `/api/server` | `/api/server` |
+| **[routes](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#routes)** | All prerendered routes are added. Additionally, if you do not have an `index.html` file an empty one is created for you for compatibility purposes and also requests to `/index.html` are redirected to the root directory which is handled by `/api/server`.  | `[]` |
+
+### Custom Configuration
+If you need to add additional properties to your configuration or alter the configuration that Nitro generates every build you need to create a `custom.staticwebapp.config.json` file in your project root.
+
+Nitro will override the properties it generates with the properties you specify in this custom configuration file, with the only exception being `routes`. For `routes`, Nitro will add your custom routes to the beginning of the array and put the routes it generates at the end. In the case of a conflict (determined if an object has the same `route` property) the custom route will take priority over the generated one.
+
 ### Deploy from CI/CD via GitHub Actions
 
 When you link your GitHub repository to Azure Static Web Apps, a workflow file is added to the repository.

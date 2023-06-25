@@ -41,14 +41,31 @@ async function writeRoutes(nitro: Nitro) {
     }
   }
 
+  // Attempt to load custom config
+  let customConfig = {};
+  try {
+    customConfig = JSON.parse(
+      await readFile(
+        resolve(nitro.options.rootDir, "custom.staticwebapp.config.json"),
+        "utf8"
+      )
+    );
+  } catch {}
+
+  // Merge custom config into the generated config
   const config = {
     platform: {
       apiRuntime: `node:${nodeVersion}`,
     },
-    routes: [],
     navigationFallback: {
       rewrite: "/api/server",
     },
+
+    // This will overwrite the above properties if specified in the customConfig
+    ...customConfig,
+
+    // Overwrite routes for now, we will add existing routes after generating routes
+    routes: [],
   };
 
   const routeFiles = nitro._prerenderedRoutes || [];
@@ -97,6 +114,26 @@ async function writeRoutes(nitro: Nitro) {
       route,
       rewrite: fileName,
     });
+  }
+
+  // Prepend custom routes to the beginning of the routes array and override if they exist
+  if ("routes" in customConfig && Array.isArray(customConfig.routes)) {
+    // We iterate through the reverse so the order in the custom config is persisted
+    for (const customRoute of customConfig.routes.reverse()) {
+      let existingRouteMatchIndex = -1; // We want to record the index so we can override if it does exist
+      const routeExistsAlready = config.routes.some((element, index) => {
+        existingRouteMatchIndex = index;
+        return element.route === customRoute.route;
+      });
+
+      if (routeExistsAlready) {
+        // Override the existing route with our customRoute
+        config.routes[existingRouteMatchIndex] = customRoute;
+      } else {
+        // Otherwise put the customRoute at the beginning of the array
+        config.routes.unshift(customRoute);
+      }
+    }
   }
 
   const functionDefinition = {
