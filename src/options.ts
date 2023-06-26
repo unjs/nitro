@@ -148,7 +148,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: detectTarget({ static: configOverrides.static }) || "node-server",
+      preset: detectTarget({ static: configOverrides.static }),
     },
     defaults: NitroDefaults,
     jitiOptions: {
@@ -179,7 +179,7 @@ export async function loadOptions(
   options.preset =
     presetOverride ||
     (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
-    (detectTarget({ static: options.static }) ?? "node-server");
+    detectTarget({ static: options.static });
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(
