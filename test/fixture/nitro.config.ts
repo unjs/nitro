@@ -75,6 +75,6 @@ export default defineNitroConfig({
     routes: ["/prerender", "/icon.png", "/404"],
   },
   experimental: {
-    db: true,
+    database: true,
   },
 });

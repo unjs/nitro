@@ -13,6 +13,7 @@ import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
 import type { ProxyOptions } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { TSConfig } from "pkg-types";
+import type { ConnectorName } from "db0";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -98,6 +99,11 @@ export interface StorageMounts {
     driver: BuiltinDriverName | CustomDriverName;
     [option: string]: any;
   };
+}
+
+export interface DatabaseConnectionConfig {
+  connector: ConnectorName;
+  [key: string]: any;
 }
 
 type DeepPartial<T> = T extends Record<string, any>
@@ -206,6 +212,8 @@ export interface NitroOptions extends PresetOptions {
   // Features
   storage: StorageMounts;
   devStorage: StorageMounts;
+  database: DatabaseConnectionConfig;
+  devDatabase: DatabaseConnectionConfig;
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;
@@ -215,7 +223,7 @@ export interface NitroOptions extends PresetOptions {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
-    db?: boolean;
+    database?: boolean;
   };
   future: {
     nativeSWR: boolean;

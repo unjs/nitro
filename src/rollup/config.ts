@@ -34,6 +34,7 @@ import { handlers } from "./plugins/handlers";
 import { esbuild } from "./plugins/esbuild";
 import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
+import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 
@@ -272,6 +273,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   // Storage
   rollupConfig.plugins.push(storage(nitro));
+
+  // Database
+  rollupConfig.plugins.push(database(nitro));
 
   // App.config
   rollupConfig.plugins.push(appConfig(nitro));

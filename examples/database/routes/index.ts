@@ -1,5 +1,5 @@
 export default defineEventHandler(async () => {
-  const db = useDB();
+  const db = useDatabase();
 
   // Create users table
   await db.sql`DROP TABLE IF EXISTS users`;

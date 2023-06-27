@@ -351,11 +351,22 @@ export async function loadOptions(
   }
 
   // Experimental DB support
-  if (options.experimental.db && options.imports) {
+  if (options.experimental.database && options.imports) {
     options.imports.presets.push({
-      from: "#internal/nitro/db",
-      imports: ["useDB"],
+      from: "#internal/nitro/database",
+      imports: ["useDatabase"],
     });
+    if (options.dev && !options.database && !options.devDatabase) {
+      options.devDatabase = {
+        // @ts-expect-error
+        connector: "better-sqlite3",
+      };
+    } else if (options.node && !options.database) {
+      options.database = {
+        // @ts-expect-error
+        connector: "better-sqlite3",
+      };
+    }
   }
 
   return options;
