@@ -341,7 +341,7 @@ export async function loadOptions(
     options.storage.data === undefined &&
     options.devStorage.data === undefined
   ) {
-    options.storage.data = {
+    options.devStorage.data = {
       driver: "fs",
       base: resolve(options.rootDir, ".data/kv"),
     };

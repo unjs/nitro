@@ -1,4 +1,8 @@
-// eslint-disable-next-line require-await
 export default eventHandler(async (event) => {
-  return {};
+  const kvStorage = useStorage("data");
+  const counter = (Number(await kvStorage.getItem("counter")) || 0) + 1;
+  await kvStorage.setItem("counter", counter);
+  return {
+    counter,
+  };
 });
