@@ -350,6 +350,14 @@ export async function loadOptions(
     });
   }
 
+  // Experimental DB support
+  if (options.experimental.db && options.imports) {
+    options.imports.presets.push({
+      from: "#internal/nitro/db",
+      imports: ["useDB"],
+    });
+  }
+
   return options;
 }
 

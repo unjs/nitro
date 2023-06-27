@@ -215,6 +215,7 @@ export interface NitroOptions extends PresetOptions {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
+    db?: boolean;
   };
   future: {
     nativeSWR: boolean;

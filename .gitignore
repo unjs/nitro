@@ -69,3 +69,4 @@ staticwebapp.config.json
 .eslintcache
 
 test/fixture/functions
+.data
