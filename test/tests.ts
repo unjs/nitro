@@ -389,7 +389,7 @@ export function testNitro(
     });
   });
 
-  it.skipIf(!ctx.nitro.options.node && !["deno", "bun"].includes(ctx.preset))(
+  it.skipIf(!ctx.nitro.options.node || ["deno", "bun"].includes(ctx.preset))(
     "db works",
     async () => {
       const { data } = await callHandler({ url: "/api/db" });
