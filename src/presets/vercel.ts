@@ -268,23 +268,27 @@ function deprecateSWR(nitro: Nitro) {
   }
   let hasLegacyOptions = false;
   for (const [key, value] of Object.entries(nitro.options.routeRules)) {
-    if ("isr" in value) {
+    if (_hasProp(value, "isr")) {
       continue;
     }
     if (value.cache === false) {
       value.isr = false;
     }
-    if ("static" in value) {
-      value.isr = !value.static;
+    if (_hasProp(value, "static")) {
+      value.isr = !(value as { static: boolean }).static;
     }
-    if (value.cache && "swr" in value.cache) {
+    if (value.cache && _hasProp(value.cache, "swr")) {
       value.isr = value.cache.swr;
     }
-    hasLegacyOptions = hasLegacyOptions || "isr" in value;
+    hasLegacyOptions = hasLegacyOptions || _hasProp(value, "isr");
   }
   if (hasLegacyOptions) {
     console.warn(
       "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
     );
   }
+}
+
+function _hasProp(obj: any, prop: string) {
+  return obj && typeof obj === "object" && prop in obj;
 }
