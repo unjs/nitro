@@ -388,4 +388,18 @@ export function testNitro(
       "versions?.nitro": [expect.any(String), expect.any(String)],
     });
   });
+
+  it.skipIf(!ctx.nitro.options.node)("db works", async () => {
+    const { data } = await callHandler({ url: "/api/db" });
+    expect(data).toMatchObject({
+      rows: [
+        {
+          id: "1001",
+          firstName: "John",
+          lastName: "Doe",
+          email: "",
+        },
+      ],
+    });
+  });
 }

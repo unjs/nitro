@@ -125,6 +125,7 @@
     "@types/semver": "^7.5.0",
     "@types/serve-static": "^1.15.2",
     "@vitest/coverage-v8": "^0.32.2",
+    "better-sqlite3": "^8.4.0",
     "changelogen": "^0.5.3",
     "edge-runtime": "^2.4.4",
     "eslint": "^8.43.0",
