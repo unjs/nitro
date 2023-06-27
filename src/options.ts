@@ -335,6 +335,23 @@ export async function loadOptions(
     };
   }
 
+  // Runtime storage
+  if (
+    options.dev &&
+    options.storage.data === undefined &&
+    options.devStorage.data === undefined
+  ) {
+    options.storage.data = {
+      driver: "fs",
+      base: resolve(options.rootDir, ".data/kv"),
+    };
+  } else if (options.node && options.storage.data === undefined) {
+    options.storage.data = {
+      driver: "fs",
+      base: "./.data/kv",
+    };
+  }
+
   // Resolve plugin paths
   options.plugins = options.plugins.map((p) => resolvePath(p, options));
 
