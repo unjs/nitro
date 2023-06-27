@@ -23,9 +23,7 @@ export const vercel = defineNitroPreset({
   },
   hooks: {
     "rollup:before": (nitro: Nitro) => {
-      if (!nitro.options.future.nativeSWR) {
-        deprecateSWR(nitro);
-      }
+      deprecateSWR(nitro);
     },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
@@ -103,7 +101,9 @@ export const vercelEdge = defineNitroPreset({
     },
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
@@ -136,7 +136,9 @@ export const vercelStatic = defineNitroPreset({
     preview: "npx serve ./static",
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
@@ -261,6 +263,9 @@ function generateEndpoint(url: string) {
 }
 
 function deprecateSWR(nitro: Nitro) {
+  if (nitro.options.future.nativeSWR) {
+    return;
+  }
   let hasLegacyOptions = false;
   for (const [key, value] of Object.entries(nitro.options.routeRules)) {
     if ("isr" in value) {
@@ -279,7 +284,7 @@ function deprecateSWR(nitro: Nitro) {
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the future versions."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
     );
   }
 }

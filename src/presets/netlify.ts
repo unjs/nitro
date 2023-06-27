@@ -19,9 +19,7 @@ export const netlify = defineNitroPreset({
   },
   hooks: {
     "rollup:before": (nitro: Nitro) => {
-      if (!nitro.options.future.nativeSWR) {
-        deprecateSWR(nitro);
-      }
+      deprecateSWR(nitro);
     },
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
@@ -45,7 +43,9 @@ export const netlifyBuilder = defineNitroPreset({
   extends: "netlify",
   entry: "#internal/nitro/entries/netlify-builder",
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
   },
 });
 
@@ -67,7 +67,9 @@ export const netlifyEdge = defineNitroPreset({
     polyfill: ["#internal/nitro/polyfill/deno-env"],
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       // https://docs.netlify.com/edge-functions/create-integration/
       const manifest = {
@@ -100,7 +102,9 @@ export const netlifyStatic = defineNitroPreset({
     preview: "npx serve ./static",
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);
@@ -203,6 +207,9 @@ async function writeHeaders(nitro: Nitro) {
 }
 
 function deprecateSWR(nitro: Nitro) {
+  if (nitro.options.future.nativeSWR) {
+    return;
+  }
   let hasLegacyOptions = false;
   for (const [key, value] of Object.entries(nitro.options.routeRules)) {
     if ("isr" in value) {
@@ -221,7 +228,7 @@ function deprecateSWR(nitro: Nitro) {
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
     );
   }
 }
