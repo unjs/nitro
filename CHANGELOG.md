@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.5.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.5.1...v2.5.2)
+
+
+### 🩹 Fixes
+
+  - Add `envPrefix` to `runtimeConfig.nitro` types ([#1336](https://github.com/unjs/nitro/pull/1336))
+  - **prerender:** Allow to fetch static files ([#1340](https://github.com/unjs/nitro/pull/1340))
+  - **options:** Default target to `static` when `static` override is set ([#1342](https://github.com/unjs/nitro/pull/1342))
+  - Correct default `node-server`  target ([7976318](https://github.com/unjs/nitro/commit/7976318))
+  - **vercel, netlify:** Always check `nativeSWR` future flag ([ccebe4e](https://github.com/unjs/nitro/commit/ccebe4e))
+  - **vercel, netlify:** Handle boolean values for route rule deprecation ([dfd8bbd](https://github.com/unjs/nitro/commit/dfd8bbd))
+  - Dedup `unstorage` dependency and use subpath alias ([#1164](https://github.com/unjs/nitro/pull/1164))
+  - **dev:** Ensure socket path is accessable ([#1115](https://github.com/unjs/nitro/pull/1115))
+  - Type `event.$fetch` and `event.fetch` ([#1343](https://github.com/unjs/nitro/pull/1343))
+  - Allow configuring esbuild transform plugin ([#1347](https://github.com/unjs/nitro/pull/1347))
+
+### 📖 Documentation
+
+  - Add reference to install azure functions core tools to the swa section ([#1339](https://github.com/unjs/nitro/pull/1339))
+
+### 🏡 Chore
+
+  - **release:** V2.5.1 ([21a2595](https://github.com/unjs/nitro/commit/21a2595))
+  - Add `.data` to gitignore ([cff7bf0](https://github.com/unjs/nitro/commit/cff7bf0))
+  - Update deps and lockfile ([373f34c](https://github.com/unjs/nitro/commit/373f34c))
+  - Update unimport ([ef7eaf2](https://github.com/unjs/nitro/commit/ef7eaf2))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+- Stefan Bittmann <stefan@clinic.tools>
+- Nick Dawson
+
 ## v2.5.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.5.0...v2.5.1)
