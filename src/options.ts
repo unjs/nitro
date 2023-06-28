@@ -3,7 +3,11 @@ import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
-import { resolveModuleExportNames, resolvePath as resolveModule } from "mlly";
+import {
+  resolveModuleExportNames,
+  resolvePath as resolveModule,
+  parseNodeModulePath,
+} from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
@@ -316,16 +320,14 @@ export async function loadOptions(
 
   // Dedup built-in dependencies
   for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
-    // Resolve enrty path
     const entryPath = await resolveModule(pkg, { url: import.meta.url });
+    const { dir, name } = parseNodeModulePath(entryPath);
+    if (!dir || !name) {
+      continue;
+    }
     if (!options.alias[pkg + "/"]) {
-      const lastNodeModulesIndex = entryPath.lastIndexOf("node_modules/");
-      if (lastNodeModulesIndex > 0) {
-        options.alias[pkg + "/"] = entryPath.slice(
-          0,
-          Math.max(0, lastNodeModulesIndex)
-        );
-      }
+      const pkgDir = join(dir, name);
+      options.alias[pkg + "/"] = pkgDir;
     }
   }
 
