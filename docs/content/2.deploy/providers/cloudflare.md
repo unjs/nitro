@@ -81,7 +81,7 @@ Create a token according to [the wrangler action docs](https://github.com/market
 
 Create `.github/workflows/cloudflare.yml`:
 
-```yml
+```yaml
 name: cloudflare
 
 on:
@@ -132,7 +132,7 @@ jobs:
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare-pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.

@@ -39,20 +39,70 @@ export function createVFSHandler(nitro: Nitro) {
       };
     }
 
-    const items = Object.keys(vfsEntries)
-      .map((key) => {
-        const linkClass =
-          url === `/${encodeURIComponent(key)}`
-            ? "bg-gray-700 text-white"
-            : "hover:bg-gray-800 text-gray-200";
-        return `<li class="flex flex-nowrap"><a href="/_vfs/${encodeURIComponent(
-          key
-        )}" class="w-full text-sm px-2 py-1 border-b border-gray-10 ${linkClass}">${key.replace(
-          nitro.options.rootDir,
-          ""
-        )}</a></li>`;
-      })
-      .join("\n");
+    const directories: Record<string, any> = { [nitro.options.rootDir]: {} };
+    const fpaths = Object.keys(vfsEntries);
+
+    for (const item of fpaths) {
+      const segments = item
+        .replace(nitro.options.rootDir, "")
+        .split("/")
+        .filter(Boolean);
+      let currentDir = item.startsWith(nitro.options.rootDir)
+        ? directories[nitro.options.rootDir]
+        : directories;
+
+      for (const segment of segments) {
+        if (!currentDir[segment]) {
+          currentDir[segment] = {};
+        }
+
+        currentDir = currentDir[segment];
+      }
+    }
+
+    const generateHTML = (
+      directory: Record<string, any>,
+      path: string[] = []
+    ): string =>
+      Object.entries(directory)
+        .map(([fname, value = {}]) => {
+          const subpath = [...path, fname];
+          const key = subpath.join("/");
+          const encodedUrl = encodeURIComponent(key);
+
+          const linkClass =
+            url === `/${encodedUrl}`
+              ? "bg-gray-700 text-white"
+              : "hover:bg-gray-800 text-gray-200";
+
+          return Object.keys(value).length === 0
+            ? `
+            <li class="flex flex-nowrap">
+              <a href="/_vfs/${encodedUrl}" class="w-full text-sm px-2 py-1 border-b border-gray-10 ${linkClass}">
+                ${fname}
+              </a>
+            </li>
+            `
+            : `
+            <li>
+              <details ${url.startsWith(`/${encodedUrl}`) ? "open" : ""}>
+                <summary class="w-full text-sm px-2 py-1 border-b border-gray-10 hover:bg-gray-800 text-gray-200">
+                  ${fname}
+                </summary>
+                <ul class="ml-4">
+                  ${generateHTML(value, subpath)}
+                </ul>
+              </details>
+            </li>
+            `;
+        })
+        .join("");
+
+    const rootDirectory = directories[nitro.options.rootDir];
+    delete directories[nitro.options.rootDir];
+    const items =
+      generateHTML(rootDirectory, [nitro.options.rootDir]) +
+      generateHTML(directories);
 
     const files = `
       <div class="h-full overflow-auto border-r border-gray:10">
@@ -76,7 +126,7 @@ export function createVFSHandler(nitro: Nitro) {
         </div>
       `;
 
-    return `
+    return /* html */ `
 <!doctype html>
 <html>
 <head>
@@ -94,7 +144,7 @@ export function createVFSHandler(nitro: Nitro) {
   </style>
 </head>
 <body class="bg-[#1E1E1E]">
-  <div un-cloak class="h-screen h-screen grid grid-cols-[300px_1fr]">
+  <div un-cloak class="h-screen grid grid-cols-[300px_1fr]">
     ${files}
     ${file}
   </div>

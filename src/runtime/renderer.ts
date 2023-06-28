@@ -16,16 +16,18 @@ export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder
     if (event.node.req.url.endsWith("/favicon.ico")) {
-      event.node.res.setHeader("Content-Type", "image/x-icon");
-      event.node.res.end(
-        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-      );
+      if (!event.handled) {
+        event.node.res.setHeader("Content-Type", "image/x-icon");
+        event.node.res.end(
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        );
+      }
       return;
     }
 
     const response = await handler(event);
     if (!response) {
-      if (!event.node.res.writableEnded) {
+      if (!event.handled) {
         event.node.res.statusCode =
           event.node.res.statusCode === 200 ? 500 : event.node.res.statusCode;
         event.node.res.end(

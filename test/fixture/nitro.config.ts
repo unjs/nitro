@@ -1,4 +1,4 @@
-import { defineNitroConfig } from "../../src";
+import { defineNitroConfig } from "../../src/config";
 
 export default defineNitroConfig({
   compressPublicAssets: true,
@@ -11,6 +11,12 @@ export default defineNitroConfig({
       },
     ],
   },
+  handlers: [
+    {
+      route: "/api/test/*/foo",
+      handler: "~/api/hello.ts",
+    },
+  ],
   devProxy: {
     "/proxy/example": { target: "https://example.com", changeOrigin: true },
   },
@@ -22,6 +28,10 @@ export default defineNitroConfig({
   ],
   appConfig: {
     "nitro-config": true,
+    dynamic: "initial",
+  },
+  runtimeConfig: {
+    dynamic: "initial",
   },
   appConfigFiles: ["~/server.config.ts"],
   publicAssets: [
@@ -55,6 +65,7 @@ export default defineNitroConfig({
     "/rules/_/noncached/**": { swr: false, cache: false, isr: false },
     "/rules/_/cached/noncached": { cache: false, swr: false, isr: false },
     "/rules/_/cached/**": { swr: true },
+    "/api/proxy/**": { proxy: "/api/echo" },
   },
   prerender: {
     crawlLinks: true,

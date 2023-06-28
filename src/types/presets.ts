@@ -55,6 +55,11 @@ export interface VercelBuildConfigV3 {
 export interface PresetOptions {
   vercel: {
     config: VercelBuildConfigV3;
+    /**
+     * If you are using `vercel-edge`, you can specify the region(s) for your edge function.
+     * @see https://vercel.com/docs/concepts/functions/edge-functions#edge-function-regions
+     */
+    regions?: string[];
     functions?: {
       memory: number;
       maxDuration: number;
