@@ -195,7 +195,10 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     if (address.socketPath) {
       try {
         accessSync(address.socketPath);
-      } catch {
+      } catch (err) {
+        if (!lastError) {
+          lastError = err;
+        }
         return;
       }
     }
