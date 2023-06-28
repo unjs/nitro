@@ -314,11 +314,6 @@ export async function loadOptions(
     serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
   }
 
-  // for (const pkg of ["defu", "h3", "radix3"]) {
-  //   if (!options.alias[pkg]) {
-  //     options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url });
-  //   }
-  // }
   // Dedup built-in dependencies
   for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
     // Resolve enrty path
