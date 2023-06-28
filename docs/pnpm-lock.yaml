@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  nitropack: npm:nitropack-edge@latest
-
 importers:
 
   .:
@@ -964,7 +961,7 @@ packages:
     dependencies:
       '@nuxtjs/color-mode': 3.3.0(rollup@3.25.3)
       '@vueuse/core': 10.2.1(vue@3.3.4)
-      pinceau: 0.19.1(postcss@8.4.24)
+      pinceau: 0.19.2(postcss@8.4.24)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - postcss
@@ -980,7 +977,7 @@ packages:
       '@nuxtjs/color-mode': 3.3.0(rollup@3.25.3)
       nuxt-config-schema: 0.4.6(rollup@3.25.3)
       nuxt-icon: 0.4.1(rollup@3.25.3)(vue@3.3.4)
-      pinceau: 0.19.1(postcss@8.4.24)
+      pinceau: 0.19.2(postcss@8.4.24)
       ufo: 1.1.2
     transitivePeerDependencies:
       - postcss
@@ -1949,13 +1946,6 @@ packages:
       pathe: 1.1.1
     transitivePeerDependencies:
       - rollup
-    dev: true
-
-  /ast-types@0.15.2:
-    resolution: {integrity: sha512-c27loCv9QkZinsa5ProX751khO9DJl/AcB5c2KNtA6NRvHKS0PgLfcftz72KVq504vB0Gku5s2kUZzDBvQWvHg==}
-    engines: {node: '>=4'}
-    dependencies:
-      tslib: 2.6.0
     dev: true
 
   /ast-types@0.16.1:
@@ -4527,8 +4517,8 @@ packages:
     hasBin: true
     dev: true
 
-  /nitropack-edge@2.5.2-28132617.e3f817e:
-    resolution: {integrity: sha512-3dJs8HZkpXnN6fSDbRvvYLvbIZi2HPBpmP8GjfqhmPa3/1xJP//vSIEdaf6Qi73ZFkFdZIWHQaD7t0IsASFFYQ==}
+  /nitropack@2.5.2:
+    resolution: {integrity: sha512-hXEHY9NJmOOETFFTPCBB9PB0+txoAbU/fB2ovUF6UMRo4ucQZztYnZdX+YSxa6FVz6eONvcxXvf9/9s6t08KWw==}
     engines: {node: ^14.16.0 || ^16.11.0 || >=17.0.0}
     hasBin: true
     dependencies:
@@ -4800,7 +4790,7 @@ packages:
       local-pkg: 0.4.3
       magic-string: 0.30.0
       mlly: 1.4.0
-      nitropack: /nitropack-edge@2.5.2-28132617.e3f817e
+      nitropack: 2.5.2
       nuxi: 3.6.1
       nypm: 0.2.2
       ofetch: 1.1.1
@@ -4932,7 +4922,7 @@ packages:
       ansi-colors: 4.1.3
       fast-glob: 3.2.12
       js-yaml: 4.1.0
-      supports-color: 9.3.1
+      supports-color: 9.4.0
       undici: 5.22.1
       yargs-parser: 21.1.1
     dev: true
@@ -4955,15 +4945,6 @@ packages:
   /os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /paneer@0.1.0:
-    resolution: {integrity: sha512-SZfJe/y9fbpeXZU+Kf7cSG2G7rnGP50hUYzCvcWyhp7hYzA3YXGthpkGfv6NSt0oo6QbcRyKwycg/6dpG5p8aw==}
-    deprecated: Please migrate to https://github.com/unjs/magicast
-    dependencies:
-      '@babel/parser': 7.22.5
-      '@types/estree': 1.0.1
-      recast: 0.22.0
     dev: true
 
   /param-case@3.0.4:
@@ -5075,8 +5056,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /pinceau@0.19.1(postcss@8.4.24):
-    resolution: {integrity: sha512-3b4Y4K6Coh+WcirukmFPKEEjY7uVGWh/CIlhuhiuEfSqszGlPMNVUkEm3xM8viDJeavK1jLwsGkk9Hp7BEuWGA==}
+  /pinceau@0.19.2(postcss@8.4.24):
+    resolution: {integrity: sha512-lKMC+s+/5WlmbMaW48OKo3CfwWOidrUj6XbP1ReEPRTn/UXdUzs0JrJKYmtR/0lCxOvuf+aa2vsQfcoXWz7zVw==}
     dependencies:
       '@unocss/reset': 0.53.4
       '@volar/vue-language-core': 1.6.5
@@ -5088,7 +5069,6 @@ packages:
       magic-string: 0.30.0
       nanoid: 4.0.2
       ohash: 1.1.2
-      paneer: 0.1.0
       pathe: 1.1.1
       postcss-custom-properties: 13.2.0(postcss@8.4.24)
       postcss-dark-theme-class: 0.7.3(postcss@8.4.24)
@@ -5577,17 +5557,6 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
-    dev: true
-
-  /recast@0.22.0:
-    resolution: {integrity: sha512-5AAx+mujtXijsEavc5lWXBPQqrM4+Dl5qNH96N2aNeuJFUzpiiToKPsxQD/zAIJHspz7zz0maX0PCtCTFVlixQ==}
-    engines: {node: '>= 4'}
-    dependencies:
-      assert: 2.0.0
-      ast-types: 0.15.2
-      esprima: 4.0.1
-      source-map: 0.6.1
-      tslib: 2.6.0
     dev: true
 
   /recast@0.23.2:
@@ -6132,8 +6101,8 @@ packages:
       has-flag: 4.0.0
     dev: true
 
-  /supports-color@9.3.1:
-    resolution: {integrity: sha512-knBY82pjmnIzK3NifMo3RxEIRD9E0kIzV4BKcyTZ9+9kWgLMxd4PrsTSMoFQUabgRBbF8KOLRDCyKgNV+iK44Q==}
+  /supports-color@9.4.0:
+    resolution: {integrity: sha512-VL+lNrEoIXww1coLPOmiEmK/0sGigko5COxI09KzHc2VJXJsQ37UaQ+8quuxjDeA7+KnLGTWRyOXSLLR2Wb4jw==}
     engines: {node: '>=12'}
     dev: true
 
