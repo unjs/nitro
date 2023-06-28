@@ -199,8 +199,8 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
       unimport:
-        specifier: ^3.0.10
-        version: 3.0.10(rollup@3.25.3)
+        specifier: ^3.0.11
+        version: 3.0.11(rollup@3.25.3)
       unstorage:
         specifier: ^1.7.0
         version: 1.7.0
@@ -5459,8 +5459,8 @@ packages:
       pathe: 1.1.1
     dev: false
 
-  /unimport@3.0.10(rollup@3.25.3):
-    resolution: {integrity: sha512-rKxlbbjxVQR+6dL7OxJSuVOu96MtTvoRY0VBasGQTgZGTzKPrawZ4zMv7bmhLHRmUqG/CUAJ4uNZlaip+F/6+A==}
+  /unimport@3.0.11(rollup@3.25.3):
+    resolution: {integrity: sha512-UaaLu7TiqiEwjm5a9FGsL8RL87U65wyr1jBeIAAvLChgJZRMTTkknU9bkWjBsVGutXLT2Yq8/dPyWXSC3/ELRg==}
     dependencies:
       '@rollup/pluginutils': 5.0.2(rollup@3.25.3)
       escape-string-regexp: 5.0.0
