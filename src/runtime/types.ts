@@ -1,7 +1,6 @@
-import type { H3Event, fetchWithEvent } from "h3";
+import type { H3Event } from "h3";
+import type { RenderResponse } from "./renderer";
 
-import type { $Fetch, NitroFetchRequest } from "../types";
-import type { RenderResponse } from "./types";
 export type { NitroApp } from "./app";
 export type {
   CacheEntry,
@@ -11,18 +10,6 @@ export type {
 } from "./cache";
 export type { NitroAppPlugin } from "./plugin";
 export type { RenderResponse, RenderHandler } from "./renderer";
-
-declare module "h3" {
-  interface H3Event {
-    /** @experimental Calls fetch with same context and request headers */
-    fetch: (
-      request: NitroFetchRequest,
-      init?: RequestInit
-    ) => Promise<Response>;
-    /** @experimental Calls fetch with same context and request headers */
-    $fetch: $Fetch<unknown, NitroFetchRequest>;
-  }
-}
 
 export interface NitroRuntimeHooks {
   "render:response": (

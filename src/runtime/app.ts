@@ -15,7 +15,7 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
-import type { $Fetch, NitroFetchRequest } from "../types";
+import type { $Fetch, NitroFetchRequest } from "nitropack";
 import type { NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
