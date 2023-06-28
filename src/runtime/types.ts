@@ -1,4 +1,4 @@
-import type { H3Event } from "h3";
+import type { H3Event, fetchWithEvent } from "h3";
 
 import type { $Fetch, NitroFetchRequest } from "../types";
 import type { RenderResponse } from "./types";
@@ -15,7 +15,10 @@ export type { RenderResponse, RenderHandler } from "./renderer";
 declare module "h3" {
   interface H3Event {
     /** @experimental Calls fetch with same context and request headers */
-    fetch: typeof globalThis.fetch;
+    fetch: (
+      request: NitroFetchRequest,
+      init?: RequestInit
+    ) => Promise<Response>;
     /** @experimental Calls fetch with same context and request headers */
     $fetch: $Fetch<unknown, NitroFetchRequest>;
   }
