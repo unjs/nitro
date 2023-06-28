@@ -1,5 +1,5 @@
 import { Worker } from "node:worker_threads";
-import { existsSync, promises as fsp } from "node:fs";
+import { existsSync, accessSync, promises as fsp } from "node:fs";
 import { debounce } from "perfect-debounce";
 import {
   App,
@@ -95,7 +95,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
     worker.worker = null;
   }
   if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
-    await fsp.rm(worker.address.socketPath);
+    await fsp.rm(worker.address.socketPath).catch(() => {});
   }
 }
 
@@ -186,11 +186,30 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       proxyReq.setHeader("X-Forwarded-Proto", req.socket.remoteFamily);
     }
   });
+
+  const getWorkerAddress = () => {
+    const address = currentWorker?.address;
+    if (!address) {
+      return;
+    }
+    if (address.socketPath) {
+      try {
+        accessSync(address.socketPath);
+      } catch (err) {
+        if (!lastError) {
+          lastError = err;
+        }
+        return;
+      }
+    }
+    return address;
+  };
+
   app.use(
     eventHandler(async (event) => {
       await reloadPromise;
-      const address = currentWorker && currentWorker.address;
-      if (!address || (address.socketPath && !existsSync(address.socketPath))) {
+      const address = getWorkerAddress();
+      if (!address) {
         return errorHandler(lastError, event);
       }
       await proxy.handle(event, { target: address }).catch((err) => {
