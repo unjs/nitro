@@ -10,6 +10,9 @@
     "@nuxt-themes/docus": "^2.0.0-beta.12",
     "@nuxthq/studio": "^0.13.2",
     "@nuxtjs/plausible": "^0.2.1",
-    "nuxt": "3.6.1"
+    "nuxt": "^3.6.1"
+  },
+  "resolutions": {
+    "nitropack": "npm:nitropack-edge@latest"
   }
 }
