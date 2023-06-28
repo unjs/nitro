@@ -95,7 +95,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
     worker.worker = null;
   }
   if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
-    await fsp.rm(worker.address.socketPath);
+    await fsp.rm(worker.address.socketPath).catch(() => {});
   }
 }
 
