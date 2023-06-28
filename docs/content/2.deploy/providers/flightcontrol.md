@@ -5,7 +5,7 @@
 Nitro supports deploying to [AWS via Flightcontrol](https://flightcontrol.dev?ref=nitro) with minimal configuration.
 
 ::alert
-Flight control has zero config support for [Nuxt](https://nuxt.com/) projects.
+Flightcontrol has zero config support for [Nuxt](https://nuxt.com/) projects.
 ::
 
 ### Set Up your Flightcontrol account
@@ -14,7 +14,7 @@ On a high level, the steps you will need to follow to deploy a project for the f
 
 1. Create an account at [Flightcontrol](https://app.flightcontrol.dev/signup?ref=nitro)
 2. Create an account at [AWS](https://portal.aws.amazon.com/billing/signup) (if you don't already have one)
-3. Link your AWS account to the FlightControl
+3. Link your AWS account to the Flightcontrol
 4. Authorize the Flightcontrol GitHub App to access your chosen repositories, public or private.
 5. Create a Flightcontrol project with configuration via the Dashboard or with configuration via `flightcontrol.json`.
 

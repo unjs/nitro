@@ -2,6 +2,84 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.5.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.5.0...v2.5.1)
+
+
+### 📖 Documentation
+
+  - Fix typo in Flightcontrol deployment option ([#1332](https://github.com/unjs/nitro/pull/1332))
+
+### 📦 Build
+
+  - Avoid doubly-bundling runtime types ([#1334](https://github.com/unjs/nitro/pull/1334))
+
+### 🌊 Types
+
+  - Avoid overriding app runtime config namespace ([#1333](https://github.com/unjs/nitro/pull/1333))
+
+### ❤️  Contributors
+
+- Daniel Roe <daniel@roe.dev>
+- ModupeD
+
+## v2.5.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v0.0.2...v2.5.0)
+
+
+### 🚀 Enhancements
+
+  - Allow customising generated tsConfig ([#1266](https://github.com/unjs/nitro/pull/1266))
+  - Type `useRuntimeConfig` with `NitroRuntimeConfig` ([#1311](https://github.com/unjs/nitro/pull/1311))
+  - Type nitro app runtime hooks ([#1316](https://github.com/unjs/nitro/pull/1316))
+  - Add `cloudflare-pages-static` preset ([#1310](https://github.com/unjs/nitro/pull/1310))
+  - Add experimental `deno-server` preset ([#592](https://github.com/unjs/nitro/pull/592))
+  - Add `flightcontrol` preset ([#970](https://github.com/unjs/nitro/pull/970), [#1250](https://github.com/unjs/nitro/pull/1250))
+  - Support `jsx` and `tsx` out of the box ([#1303](https://github.com/unjs/nitro/pull/1303))
+  - Add support for `failOnError` ([#1294](https://github.com/unjs/nitro/pull/1294))
+  - UseStorage generic support ([#1279](https://github.com/unjs/nitro/pull/1279))
+  - Provide static `process.*` and `import.meta.*` build flags ([#1331](https://github.com/unjs/nitro/pull/1331))
+
+### 🩹 Fixes
+
+  - **bun:** Resolve internal dependencies with `bun` export condition ([#1313](https://github.com/unjs/nitro/pull/1313))
+  - **deno:** Support environment variables ([88b4e11](https://github.com/unjs/nitro/commit/88b4e11))
+  - Respect `static` flag when auto detecting preset ([#1321](https://github.com/unjs/nitro/pull/1321))
+  - **prerenderer:** Don't inherit `static` config ([#1324](https://github.com/unjs/nitro/pull/1324))
+  - **vercel:** Add check for index route rule ([#1290](https://github.com/unjs/nitro/pull/1290))
+  - Use `event.handled` guard before sending direct reponses ([#1326](https://github.com/unjs/nitro/pull/1326))
+  - Import `NitroRuntimeHooks` from runtime dir ([#1328](https://github.com/unjs/nitro/pull/1328))
+  - Generate types for `#imports` ([#1329](https://github.com/unjs/nitro/pull/1329))
+
+### 📖 Documentation
+
+  - Update docus version ([848c86a](https://github.com/unjs/nitro/commit/848c86a))
+  - Update cloudflare-pages preset ([#1304](https://github.com/unjs/nitro/pull/1304))
+  - Add an example for `devHandlers` config ([#1295](https://github.com/unjs/nitro/pull/1295))
+
+### 🏡 Chore
+
+  - Update dependencies ([db93afa](https://github.com/unjs/nitro/commit/db93afa))
+  - Apply new lint rules ([879a7c3](https://github.com/unjs/nitro/commit/879a7c3))
+  - Update all non major dependencies ([9bb674f](https://github.com/unjs/nitro/commit/9bb674f))
+  - Update dependencies ([46e6f10](https://github.com/unjs/nitro/commit/46e6f10))
+  - Update unstorage ([bac3b0d](https://github.com/unjs/nitro/commit/bac3b0d))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- 魔王少年 ([@maou-shonen](http://github.com/maou-shonen))
+- Daniel Roe <daniel@roe.dev>
+- Andrew <mshote@gmail.com>
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+- Dunqing ([@Dunqing](http://github.com/Dunqing))
+- Frantz Kati <bahdcoder@gmail.com>
+- Mike Laumann Bellika 
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Hebilicious ([@Hebilicious](http://github.com/Hebilicious))
+
 ## v2.4.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.3.3...v2.4.0)
