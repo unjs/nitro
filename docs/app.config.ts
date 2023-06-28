@@ -6,7 +6,7 @@ export default defineAppConfig({
     },
     description: "Nitro is an open source TypeScript framework to build ultra-fast web servers. The open engine powering Nuxt and open to everyone.",
     url: "https://nitro.unjs.io",
-    image: "/cover.png",
+    image: "/cover.jpg",
     socials: {
       twitter: "unjsio",
       github: "unjs/nitro",
