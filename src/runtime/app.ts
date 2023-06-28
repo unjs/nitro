@@ -69,9 +69,7 @@ function createNitroApp(): NitroApp {
       }
       // Assign bound fetch to context
       event.fetch = (req, init) =>
-        fetchWithEvent<Promise<Response>, NitroFetchRequest>(event, req, init, {
-          fetch: localFetch,
-        });
+        fetchWithEvent(event, req, init, { fetch: localFetch });
       event.$fetch = ((req, init) =>
         fetchWithEvent(event, req, init as RequestInit, {
           fetch: $fetch,
