@@ -15,11 +15,11 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
-import type { $Fetch, NitroFetchRequest } from "nitropack";
 import type { NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
+import type { $Fetch, NitroFetchRequest } from "nitropack";
 import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
 import { handlers } from "#internal/nitro/virtual/server-handlers";
