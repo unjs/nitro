@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@nuxt-themes/docus':
-        specifier: ^2.0.0-beta.12
-        version: 2.0.0-beta.12(nuxt@3.6.1)(postcss@8.4.24)(rollup@3.25.3)(vue@3.3.4)
+        specifier: ^2.0.0-beta.13
+        version: 2.0.0-beta.13(nuxt@3.6.1)(postcss@8.4.24)(rollup@3.25.3)(vue@3.3.4)
       '@nuxthq/studio':
         specifier: ^0.13.2
         version: 0.13.2(rollup@3.25.3)
@@ -884,8 +884,8 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@nuxt-themes/docus@2.0.0-beta.12(nuxt@3.6.1)(postcss@8.4.24)(rollup@3.25.3)(vue@3.3.4):
-    resolution: {integrity: sha512-QwEyLr90PVSLiTAUDPTozt4EkyK/QZjDMuRD96aa+MQh0jMq+ltJTB6AxLskWQKQL4FxzwBGKrVTh6gxjxQuyA==}
+  /@nuxt-themes/docus@2.0.0-beta.13(nuxt@3.6.1)(postcss@8.4.24)(rollup@3.25.3)(vue@3.3.4):
+    resolution: {integrity: sha512-vPCDj49SrH1AVO9lU+VOyIDN7uMmL7Zkv1nZZcJmQnXnw80lYuVzlNbGp+4w8qpjLERn3OL2UrGs21z6NT3/xg==}
     dependencies:
       '@nuxt-themes/elements': 1.0.4(fuse.js@6.6.2)(postcss@8.4.24)(rollup@3.25.3)(vue@3.3.4)
       '@nuxt-themes/tokens': 2.0.1(postcss@8.4.24)(rollup@3.25.3)(vue@3.3.4)
