@@ -196,6 +196,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       values: {
         "typeof window": '"undefined"',
         _import_meta_url_: "import.meta.url",
+        "globalThis.process.env.NODE_ENV": "process.env.NODE_ENV",
         "process.env.RUNTIME_CONFIG": () =>
           JSON.stringify(nitro.options.runtimeConfig, null, 2),
         ...Object.fromEntries(
