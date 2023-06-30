@@ -72,7 +72,6 @@ export interface PresetOptions {
     /**
      * Firebase functions v2 (2nd gen) Configuration
      * @see https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions
-     * @see
      */
     httpRequestOptions: HttpsOptions;
   };
