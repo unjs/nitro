@@ -5,7 +5,12 @@ import type { PackageJson } from "pkg-types";
 import { readPackageJSON } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
-import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
+import {
+  resolvePath,
+  isValidNodeImport,
+  lookupNodeModuleSubpath,
+  normalizeid,
+} from "mlly";
 import semver from "semver";
 import { isDirectory } from "../../utils";
 
@@ -24,7 +29,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
 
   const _resolveCache = new Map();
-  const _resolve = async (id: string) => {
+  const _resolve = async (id: string): Promise<string> => {
     let resolved = _resolveCache.get(id);
     if (resolved) {
       return resolved;
@@ -140,19 +145,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const packageEntry = await _resolve(pkgName).catch(() => null);
         if (packageEntry !== originalId) {
           // Reverse engineer subpath export
-          const { exports } = await getPackageJson(packageEntry);
-          const resolvedSubpath = exports && findSubpath(
-            subpath.replace(/^\//, "./"),
-            exports
-          );
-
-          // Fall back to guessing
-          const guessedSubpath = resolvedSubpath
-            ? join(pkgName, resolvedSubpath)
-            : pkgName + subpath.replace(/\.[a-z]+$/, "");
-          const resolvedGuess = await _resolve(guessedSubpath).catch(
-            () => null
-          );
+          const guessedSubpath: string | null = await lookupNodeModuleSubpath(
+            packageEntry
+          ).catch(() => null);
+          const resolvedGuess =
+            guessedSubpath &&
+            (await _resolve(guessedSubpath).catch(() => null));
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
             return {
@@ -252,7 +250,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         let tracedPackage = tracedPackages[pkgName];
 
         // Read package.json for file
-        let pkgJSON = await getPackageJson(tracedFile.pkgPath).catch(
+        let pkgJSON = await readPackageJSON(tracedFile.pkgPath, {
+          cache: true,
+        }).catch(
           () => {} // TODO: Only catch ENOENT
         );
         if (!pkgJSON) {
@@ -504,42 +504,4 @@ async function isFile(file: string) {
     }
     throw err;
   }
-}
-
-// Read package.json with cache
-const packageJSONCache = new Map(); // pkgDir => contents
-async function getPackageJson(pkgDir: string) {
-  if (packageJSONCache.has(pkgDir)) {
-    return packageJSONCache.get(pkgDir);
-  }
-  const pkgJSON = await readPackageJSON(pkgDir);
-  packageJSONCache.set(pkgDir, pkgJSON);
-  return pkgJSON;
-}
-
-function flattenExports(
-  exports: Record<string, string | Record<string, string>>,
-  path?: string
-) {
-  return Object.entries(exports).flatMap(([key, value]) =>
-    typeof value === "string"
-      ? [[path ?? key, value]]
-      : flattenExports(value, path ?? key)
-  );
-}
-
-function findSubpath(
-  path: string,
-  exports: Record<string, string | Record<string, string>>
-) {
-  const relativePath = path.startsWith(".") ? path : "./" + path;
-  if (relativePath in exports) {
-    return relativePath;
-  }
-
-  const flattenedExports = flattenExports(exports);
-
-  const [foundPath] =
-    flattenedExports.find(([_, resolved]) => resolved === path) || [];
-  return foundPath;
 }
