@@ -61,8 +61,10 @@ export default eventHandler((event) => {
 
   const ifNotMatch = event.node.req.headers["if-none-match"] === asset.etag;
   if (ifNotMatch) {
-    event.node.res.statusCode = 304;
-    event.node.res.end();
+    if (!event.handled) {
+      event.node.res.statusCode = 304;
+      event.node.res.end();
+    }
     return;
   }
 
@@ -73,8 +75,10 @@ export default eventHandler((event) => {
     asset.mtime &&
     new Date(ifModifiedSinceH) >= mtimeDate
   ) {
-    event.node.res.statusCode = 304;
-    event.node.res.end();
+    if (!event.handled) {
+      event.node.res.statusCode = 304;
+      event.node.res.end();
+    }
     return;
   }
 

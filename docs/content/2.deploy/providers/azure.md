@@ -16,6 +16,8 @@ Azure Static Web Apps are designed to be deployed continuously in a [GitHub Acti
 
 ### Local preview
 
+Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) if you want to test locally.
+
 You can invoke a development environment to preview before deploying.
 
 ```bash
@@ -37,7 +39,7 @@ When you are asked to select your framework, select custom and provide the follo
 
 If you miss this step, you can always find the build configuration section in your workflow and update the build configuration:
 
-```yml
+```yaml
 # .github/workflows/azure-static-web-apps-<RANDOM_NAME>.yml
 
 ###### Repository/Build Configurations ######
@@ -88,7 +90,7 @@ First, obtain your Azure Functions Publish Profile and add it as a secret to you
 
 Then create the following file as a workflow:
 
-```yml
+```yaml
 # .github/workflows/azure.yml
 name: azure
 on:

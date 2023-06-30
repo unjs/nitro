@@ -49,9 +49,9 @@ export default defineCommand({
                   diff.map((entry) => `  ${entry.toString()}`).join("\n")
               );
 
-              await (!diff.every((e) => hmrKeyRe.test(e.key))
-                ? reload() // Full reload
-                : nitro.updateConfig(newConfig.config)); // Hot reload
+              await (diff.every((e) => hmrKeyRe.test(e.key))
+                ? nitro.updateConfig(newConfig.config) // Full reload
+                : reload()); // Hot reload
             },
           },
         }

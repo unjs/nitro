@@ -1,5 +1,5 @@
 import { Worker } from "node:worker_threads";
-import { existsSync, promises as fsp } from "node:fs";
+import { existsSync, accessSync, promises as fsp } from "node:fs";
 import { debounce } from "perfect-debounce";
 import {
   App,
@@ -68,17 +68,34 @@ function initWorker(filename: string): Promise<NitroWorker> | null {
   });
 }
 
-async function killWorker(worker?: NitroWorker) {
+async function killWorker(worker: NitroWorker, nitro: Nitro) {
   if (!worker) {
     return;
   }
   if (worker.worker) {
+    worker.worker.postMessage({ event: "shutdown" });
+    const gracefulShutdownTimeout =
+      Number.parseInt(process.env.NITRO_SHUTDOWN_TIMEOUT, 10) || 3;
+    await new Promise<void>((resolve) => {
+      const timeout = setTimeout(() => {
+        nitro.logger.warn(
+          `[nitro] [dev] Force closing worker after ${gracefulShutdownTimeout} seconds...`
+        );
+        resolve();
+      }, gracefulShutdownTimeout * 1000);
+      worker.worker.once("message", (message) => {
+        if (message.event === "exit") {
+          clearTimeout(timeout);
+          resolve();
+        }
+      });
+    });
     worker.worker.removeAllListeners();
     await worker.worker.terminate();
     worker.worker = null;
   }
   if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
-    await fsp.rm(worker.address.socketPath);
+    await fsp.rm(worker.address.socketPath).catch(() => {});
   }
 }
 
@@ -101,7 +118,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     // Kill old worker
     const oldWorker = currentWorker;
     currentWorker = null;
-    await killWorker(oldWorker);
+    await killWorker(oldWorker, nitro);
     // Create a new worker
     currentWorker = await initWorker(workerEntry);
   }
@@ -169,11 +186,30 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       proxyReq.setHeader("X-Forwarded-Proto", req.socket.remoteFamily);
     }
   });
+
+  const getWorkerAddress = () => {
+    const address = currentWorker?.address;
+    if (!address) {
+      return;
+    }
+    if (address.socketPath) {
+      try {
+        accessSync(address.socketPath);
+      } catch (err) {
+        if (!lastError) {
+          lastError = err;
+        }
+        return;
+      }
+    }
+    return address;
+  };
+
   app.use(
     eventHandler(async (event) => {
       await reloadPromise;
-      const address = currentWorker && currentWorker.address;
-      if (!address || (address.socketPath && !existsSync(address.socketPath))) {
+      const address = getWorkerAddress();
+      if (!address) {
         return errorHandler(lastError, event);
       }
       await proxy.handle(event, { target: address }).catch((err) => {
@@ -203,7 +239,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     if (watcher) {
       await watcher.close();
     }
-    await killWorker(currentWorker);
+    await killWorker(currentWorker, nitro);
     await Promise.all(listeners.map((l) => l.close()));
     listeners = [];
   }

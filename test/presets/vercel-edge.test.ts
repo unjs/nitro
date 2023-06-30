@@ -1,10 +1,10 @@
 import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
 import { EdgeRuntime } from "edge-runtime";
-import { setupTest, startServer, testNitro } from "../tests";
+import { isWindows } from "std-env";
+import { describeIf, setupTest, testNitro } from "../tests";
 
-describe("nitro:preset:vercel-edge", async () => {
+describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
   const ctx = await setupTest("vercel-edge");
   testNitro(ctx, async () => {
     // TODO: Add add-event-listener

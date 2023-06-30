@@ -23,9 +23,7 @@ export const vercel = defineNitroPreset({
   },
   hooks: {
     "rollup:before": (nitro: Nitro) => {
-      if (!nitro.options.future.nativeSWR) {
-        deprecateSWR(nitro);
-      }
+      deprecateSWR(nitro);
     },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
@@ -97,8 +95,15 @@ export const vercelEdge = defineNitroPreset({
       format: "module",
     },
   },
+  unenv: {
+    inject: {
+      process: undefined,
+    },
+  },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
@@ -131,7 +136,9 @@ export const vercelStatic = defineNitroPreset({
     preview: "npx serve ./static",
   },
   hooks: {
-    "rollup:before": (nitro: Nitro) => deprecateSWR(nitro),
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
@@ -203,7 +210,7 @@ function generateBuildConfig(nitro: Nitro) {
       .filter(
         ([key, value]) =>
           // value.isr === false || (value.isr && key.includes("/**"))
-          value.isr !== undefined
+          value.isr !== undefined && key !== "/"
       )
       .map(([key, value]) => {
         const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
@@ -227,19 +234,19 @@ function generateBuildConfig(nitro: Nitro) {
       ? [
           {
             src: "(?<url>/)",
-            dest: "/__nitro-index",
+            dest: "/__nitro-index?url=$url",
           },
         ]
       : []),
     // If we are using an ISR function as a fallback, then we do not need to output the below fallback route as well
-    ...(!nitro.options.routeRules["/**"]?.isr
-      ? [
+    ...(nitro.options.routeRules["/**"]?.isr
+      ? []
+      : [
           {
             src: "/(.*)",
             dest: "/__nitro",
           },
-        ]
-      : [])
+        ])
   );
 
   return config;
@@ -256,25 +263,32 @@ function generateEndpoint(url: string) {
 }
 
 function deprecateSWR(nitro: Nitro) {
+  if (nitro.options.future.nativeSWR) {
+    return;
+  }
   let hasLegacyOptions = false;
   for (const [key, value] of Object.entries(nitro.options.routeRules)) {
-    if ("isr" in value) {
+    if (_hasProp(value, "isr")) {
       continue;
     }
     if (value.cache === false) {
       value.isr = false;
     }
-    if ("static" in value) {
-      value.isr = !value.static;
+    if (_hasProp(value, "static")) {
+      value.isr = !(value as { static: boolean }).static;
     }
-    if (value.cache && "swr" in value.cache) {
+    if (value.cache && _hasProp(value.cache, "swr")) {
       value.isr = value.cache.swr;
     }
-    hasLegacyOptions = hasLegacyOptions || "isr" in value;
+    hasLegacyOptions = hasLegacyOptions || _hasProp(value, "isr");
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the future versions."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
     );
   }
+}
+
+function _hasProp(obj: any, prop: string) {
+  return obj && typeof obj === "object" && prop in obj;
 }
