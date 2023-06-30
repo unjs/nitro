@@ -41,12 +41,12 @@ export function useRuntimeConfig<
 
 export function applyEnvToRuntimeConfig(
   env: Record<string, any>,
-  prefixes = ["NITRO", "NUXT"]
+  prefixes = [ENV_PREFIX, "NUXT_", ENV_PREFIX_ALT]
 ) {
   const safeEnv = Object.fromEntries(
     Object.entries(env)
       .filter(([key]) =>
-        prefixes.some((prefix) => key.startsWith(`${prefix}_`))
+        prefixes.filter((p) => p !== "_").some((p) => key.startsWith(p))
       )
       .map(([key, value]) => [formatKey(key), value])
   );
