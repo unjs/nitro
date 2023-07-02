@@ -35,33 +35,44 @@ Nitro output can directly run the server at the edge. Closer to your users.
 
 On-demand Builders are serverless functions used to generate web content as needed that’s automatically cached on Netlify’s Edge CDN. They enable you to build pages for your site when a user visits them for the first time and then cache them at the edge for subsequent visits.  ([Read More](https://docs.netlify.com/configure-builds/on-demand-builders/))
 
-## Handling atomic deploys
+## Handling atomic deploys with Nuxt
 
-Netlify uses atomic deploys, which means that all old chunk files will become invalid when a deploy occurs.
-This causes errors when existing clients try to load chunk files which no longer exist.
+[`cdnURL`](https://nuxt.com/docs/api/configuration/nuxt-config#cdnurl) can be used to configure the URL which serves the public folder from.
 
-Nuxt, for example, has default behaviour to reload the page in some circumstances, but this is not always
-desirable and it is possible to do better by serving Netlify's permanent link to each deploy, which remains valid.
+Since Netlify uses atomic deploys, old chunk files will become invalid when a deploy occurs.
+By default, Nuxt will reload the page in some circumstances, which causes errors when existing clients try to load chunk files which no longer exist.
+It's possible to configure Nuxt to serve Netlify's permanent link to each deploy.
 
-For example in Nuxt, add this to `nuxt.config.ts`
+Add this to your `nuxt.config.ts` :
 
+```ts
+export default defineNuxtConfig({
     $production: {
         app: {
             cdnURL: '/netlify/' + process.env.DEPLOY_URL?.replace('https://', ''),
         },
-    },
+        routeRules: {
+            '/_nuxt/**': {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+                }
+            }
+        }
+}}) 
+```
 
-Then in the `_redirects` file which Netlify will pick up, proxy it:
+Then use a `_redirects` file in your `public` directory :
 
-    /netlify/* https://:splat 200!
+```bash
+/netlify/* https://:splat 200!
+```
 
-Proxying is better than serving the files directly because some security software (e.g. Streamline3)
-will block scripts served from a different domain.
+Security software (such as Streamline3) will block scripts served from a different domain, hence why proxying is necessary.
 
-For example, you might be using the custom domain `https://example.com`, and your Netlify account might be
-`example.netlify.app`. In this case, `process.env.DEPLOY_URL` might be something like `https://5b243e66dd6a547b4fee73ae--example.netlify.app`.
+For example, with a `https://example.com` custom domain, and a `example.netlify.app` Netlify account,
+`process.env.DEPLOY_URL` will be set to something like `https://5b243e66dd6a547b4fee73ae--example.netlify.app`.
 
-Setting the `cdnURL` above will cause Nuxt to load scripts from `https://example.com/netlify/5b243e66dd6a547b4fee73ae--example.netlify.app/*`,
-a non-existent directory within the custom domain.
-[Netlify will proxy](https://docs.netlify.com/routing/redirects/rewrites-proxies/) this back to files under the original `DEPLOY_URL`
-address without the HTTP client being aware of the domain change.
+Setting the `cdnURL` above will cause Nuxt to load scripts from `/netlify/5b243e66dd6a547b4fee73ae--example.netlify.app/*`
+
+These URLs will then be [redirected](https://docs.netlify.com/routing/redirects/redirect-options/#splats) to the original `DEPLOY_URL`(`https://5b243e66dd6a547b4fee73ae--example.netlify.app`).
