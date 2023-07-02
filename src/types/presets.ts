@@ -68,7 +68,7 @@ export interface PresetOptions {
       [key: string]: unknown;
     };
   };
-  firebaseV2: {
+  firebase: {
     /**
      * Firebase functions v2 (2nd gen) Configuration
      * @see https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions

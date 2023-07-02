@@ -2,5 +2,5 @@ import { defineNitroPreset } from "../preset";
 
 export const firebaseV2 = defineNitroPreset({
   extends: "firebase",
-  entry: "#internal/nitro/entries/firebaseV2",
+  entry: "#internal/nitro/entries/firebase-v2",
 });
