@@ -1,4 +1,4 @@
-import { HttpsOptions } from "firebase-functions/lib/v2/providers/https";
+import type { HttpsOptions } from "firebase-functions/lib/v2/providers/https";
 
 /**
  * Vercel Build Output Configuration
