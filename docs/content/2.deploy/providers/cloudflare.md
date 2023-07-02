@@ -46,7 +46,7 @@ npx wrangler dev .output/server/index.mjs --site .output/public --local
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler2](https://github.com/cloudflare/wrangler2) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler#quick-start) and login to your Cloudflare account:
 
 ```bash
 npm i wrangler -g
@@ -72,7 +72,7 @@ wrangler dev .output/server/index.mjs --site .output/public
 Publish:
 
 ```bash
-wrangler publish
+wrangler deploy
 ```
 
 ### Deploy within CI/CD using GitHub Actions
