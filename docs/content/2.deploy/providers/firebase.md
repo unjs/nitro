@@ -105,7 +105,7 @@ It works the same as the [`firebase`](#firebase) preset above, but uses the V2 f
 
 The `firebaseV2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebaseV2.httpRequestOptions`.
 
-The `httpRequestOptions` object is passed to `functions.https.onRequest()` function as the first argument as per the [firebase docs](https://firebase.google.com/docs/functions/beta/http-events#trigger_a_function_with_an_http_request).
+The `httpRequestOptions` object is passed to `functions.https.onRequest()` function as the first argument as per the [firebase docs](https://firebase.google.com/docs/functions/http-events?gen=2nd#trigger_a_function_with_an_http_request).
 
 For example, to set the region and max instances of the function, you can add the following to your `nitro.config.ts`:
 
