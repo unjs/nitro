@@ -97,7 +97,7 @@ firebase deploy
 
 **Preset:** `firebaseV2` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-This preset will deploy to [firebase functions V2](https://firebase.google.com/docs/functions/beta/get-started) - the 2nd generation of cloud functions.
+This preset will deploy to [firebase functions V2](https://firebase.google.com/docs/functions/version-comparison) - the 2nd generation of cloud functions.
 
 It works the same as the [`firebase`](#firebase) preset above, but uses the V2 functions runtime.
 
