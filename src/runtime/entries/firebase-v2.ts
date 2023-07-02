@@ -5,6 +5,6 @@ import { nitroApp } from "../app";
 import { useRuntimeConfig } from "#internal/nitro";
 
 export const server = functions.https.onRequest(
-  useRuntimeConfig()?.firebaseV2?.httpRequestOptions || {},
+  useRuntimeConfig()?.firebase?.httpRequestOptions || {},
   toNodeListener(nitroApp.h3App)
 );

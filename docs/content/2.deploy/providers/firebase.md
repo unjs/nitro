@@ -8,7 +8,7 @@ Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with
 
 **Note**: You need to be on the **Blaze plan** to use Nitro with Cloud Functions.
 
-**Note**: This preset will deploy to firebase functions V1. If you want to deploy to firebase functions V2, please use the [`firebaseV2`](#firebase-functions-v2) preset.
+**Note**: This preset will deploy to firebase functions v1. If you want to deploy to firebase functions v2, please use the [`firebase-v2`](#firebase-functions-v2) preset.
 
 If you don't already have a `firebase.json` in your root directory, Nitro will create one the first time you run it. In this file, you will need to replace `<your_project_id>` with the ID of your Firebase project.
 
@@ -93,9 +93,9 @@ NITRO_PRESET=firebase yarn build
 firebase deploy
 ```
 
-## Firebase Functions V2
+## Firebase Functions v2
 
-**Preset:** `firebaseV2` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `firebase-v2` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 This preset will deploy to [firebase functions V2](https://firebase.google.com/docs/functions/version-comparison) - the 2nd generation of cloud functions.
 
@@ -103,7 +103,7 @@ It works the same as the [`firebase`](#firebase) preset above, but uses the V2 f
 
 **Note**: Follow the instructions for the `firebase` preset above for setup and deploy.
 
-The `firebaseV2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebaseV2.httpRequestOptions`.
+The `firebase-v2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebase.httpRequestOptions`.
 
 The `httpRequestOptions` object is passed to `functions.https.onRequest()` function as the first argument as per the [firebase docs](https://firebase.google.com/docs/functions/http-events?gen=2nd#trigger_a_function_with_an_http_request).
 
@@ -114,12 +114,12 @@ import { defineNitroConfig } from 'nitropack/config'
 
 export default defineNitroConfig({
   // Nitro options...
-  firebaseV2: {
+  firebase: {
     httpRequestOptions: {
       region: "europe-west1",
       maxInstances: 3,
       // etc.
-    };
+    }
   }
 })
 ```
