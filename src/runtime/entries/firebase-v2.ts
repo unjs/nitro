@@ -2,9 +2,9 @@ import "#internal/nitro/virtual/polyfill";
 import functions from "firebase-functions/v2";
 import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
-import { useRuntimeConfig } from "#internal/nitro";
+import { useAppConfig } from "#internal/nitro";
 
 export const server = functions.https.onRequest(
-  useRuntimeConfig()?.firebase?.httpRequestOptions || {},
+  useAppConfig()?._firebaseV2HttpRequestOptions || {},
   toNodeListener(nitroApp.h3App)
 );
