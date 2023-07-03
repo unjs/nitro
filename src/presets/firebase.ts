@@ -51,14 +51,13 @@ async function writeRoutes(nitro: Nitro) {
 
   const _require = createRequire(import.meta.url);
 
-  let jsons = await globby(
+  const allJsons = await globby(
     join(nitro.options.output.serverDir, "node_modules/**/package.json")
   );
 
-  // filter out any fsevents packages that may have been installed due to being on a mac system
-  // fsevents is a mac specific package that is not needed for firebase functions
+  // fsevents is a macOS specific package that breaks in google cloud build, so we filter-it ot
   // see: https://github.com/unjs/nitro/issues/1367
-  jsons = jsons.filter((json) => !json.includes("fsevents"));
+  const jsons = allJsons.filter((json) => !json.includes("fsevents"));
 
   const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length;
   const suffixLength = "/package.json".length;
