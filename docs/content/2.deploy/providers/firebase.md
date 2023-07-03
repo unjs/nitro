@@ -131,7 +131,7 @@ It works the same as the [`firebase`](#firebase) preset above, but uses the V2 f
 
 Follow the instructions for the `firebase` preset above for setup and deploy.
 
-**Caution**: New HTTP and HTTP callable functions deployed with any Firebase CLI lower than version 7.7.0 are private by default and throw HTTP 403 errors when invoked. Either explicitly [make these functions public](https://cloud.google.com/functions/docs/securing/managing-access-iam#allowing_unauthenticated_http_function_invocation) or [update your Firebase CLI](https://firebase.google.com/docs/cli#setup_update_cli) before you deploy.
+**Caution**: New HTTP and HTTP callable functions deployed with any Firebase CLI lower than version 7.7.0 are private by default and throw HTTP 403 errors when invoked. Either explicitly [make these functions public](https://cloud.google.com/functions/docs/securing/managing-access-iam#allowing_unauthenticated_http_function_invocation) or [update your Firebase CLI](https://firebase.google.com/docs/cli#setup_update_cli) before you deploy. If you deploy the function and it is not publicly accessible, then you will need to visit the [Functions Console](https://console.cloud.google.com/functions/list) on Google cloud platform, click your function name, select the 'Permissions' tab and follow the instructions on how to make the function public.
 
 ### Options
 
