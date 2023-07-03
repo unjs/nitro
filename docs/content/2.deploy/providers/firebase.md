@@ -90,3 +90,72 @@ Deploying to Firebase Hosting is a simple matter of just running the `firebase d
 NITRO_PRESET=firebase yarn build
 firebase deploy
 ```
+
+## Changing cloud function settings
+
+Using the firebase v1 preset, there is currently no configuration to be able to change the region that the functions are deployed to. In order to change the region and any other firebase functions options, you will need to use the `replace` key in the nitro config. Here you will be able to change the `region` as well as `runWith` options for the functions.
+
+### Changing the region
+
+```ts [nitro.config.ts]
+export default defineNitroConfig({
+  /* Other config options */
+  preset: "firebase",
+  replace: {
+    "functions.https.onRequest": "functions.region('europe-west2').https.onRequest",
+  },
+});
+```
+
+### Changing the runWith options
+
+Check the [firebase functions docs](https://firebase.google.com/docs/functions/manage-functions?gen=1st#min-max-instances) for all runWith options.
+
+```ts [nitro.config.ts]
+export default defineNitroConfig({
+  /* Other config options */
+  preset: "firebase",
+  replace: {
+    "functions.https.onRequest": "functions.runWith({ maxInstances: 10 }).https.onRequest",
+  },
+});
+```
+
+### Makeing it typesafe
+
+You can make the runWith options more typesage by creating an object first and then JSON.stringify it into the replacer string:
+
+```ts [nitro.config.ts]
+import { SUPPORTED_REGIONS, RuntimeOptions } from 'firebase-functions'
+
+const region: SUPPORTED_REGIONS = 'europe-west2'
+const runtimeOptions: RuntimeOptions = {
+  memory: '1GB',
+  maxInstances: 10
+  // ...etc
+}
+
+export default defineNitroConfig({
+  /* Other config options */
+  preset: "firebase",
+  replace: {
+    "functions.https.onRequest": `functions.region('${region}').runWith(${JSON.stringify(runtimeOptions)}).https.onRequest`,
+  },
+});
+```
+
+### Changing options in Nuxt
+
+In Nuxt, the replace key is found under the `nitro` key in the nuxt config.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  /* Other config options */
+  nitro: {
+    preset: "firebase",
+    replace: {
+      "functions.https.onRequest": "functions.region('europe-west2').https.onRequest",
+    },
+  },
+});
+```
