@@ -214,6 +214,7 @@ declare module 'nitropack' {
         allowJs: true,
         resolveJsonModule: true,
         jsx: "preserve",
+        allowSyntheticDefaultImports: true,
         jsxFactory: "h",
         jsxFragmentFactory: "Fragment",
         paths: {
