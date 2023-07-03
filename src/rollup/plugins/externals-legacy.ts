@@ -6,10 +6,19 @@ import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
 import semver from "semver";
 import { isDirectory, retry } from "../../utils";
+import { normalizeMatcher } from "./externals";
 
 export interface NodeExternalsOptions {
-  inline?: Array<string | RegExp>;
-  external?: Array<string | RegExp>;
+  inline?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
+  external?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -36,11 +45,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  opts.inline = (opts.inline || []).map((p) =>
-    typeof p === "string" ? normalize(p) : p
-  );
-  opts.external = (opts.external || []).map((p) =>
-    typeof p === "string" ? normalize(p) : p
+  const inlineMatchers = (opts.inline || []).map((p) => normalizeMatcher(p));
+  const externalMatchers = (opts.external || []).map((p) =>
+    normalizeMatcher(p)
   );
 
   return {
@@ -64,29 +71,18 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Normalize path (windows)
       const id = normalize(originalId);
 
-      // Id without .../node_modules/
-      const idWithoutNodeModules = id.split("node_modules/").pop();
-
       // Check for explicit inlines
-      if (
-        opts.inline.some((i) =>
-          typeof i === "string"
-            ? id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-            : i.test(id)
-        )
-      ) {
-        return null;
+      for (const matcher of inlineMatchers) {
+        if (matcher(id, importer)) {
+          return null;
+        }
       }
 
       // Check for explicit externals
-      if (
-        opts.external.some((i) =>
-          typeof i === "string"
-            ? id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-            : i.test(id)
-        )
-      ) {
-        return { id, external: true };
+      for (const matcher of externalMatchers) {
+        if (matcher(id, importer)) {
+          return { id, external: true };
+        }
       }
 
       // Resolve id using rollup resolver

@@ -9,8 +9,16 @@ import semver from "semver";
 import { isDirectory } from "../../utils";
 
 export interface NodeExternalsOptions {
-  inline?: Array<string | RegExp>;
-  external?: Array<string | RegExp>;
+  inline?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
+  external?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -37,11 +45,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  opts.inline = (opts.inline || []).map((p) =>
-    typeof p === "string" ? normalize(p) : p
-  );
-  opts.external = (opts.external || []).map((p) =>
-    typeof p === "string" ? normalize(p) : p
+  const inlineMatchers = (opts.inline || []).map((p) => normalizeMatcher(p));
+  const externalMatchers = (opts.external || []).map((p) =>
+    normalizeMatcher(p)
   );
 
   return {
@@ -69,25 +75,17 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const idWithoutNodeModules = id.split("node_modules/").pop();
 
       // Check for explicit inlines
-      if (
-        opts.inline.some((i) =>
-          typeof i === "string"
-            ? id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-            : i.test(id)
-        )
-      ) {
-        return null;
+      for (const matcher of inlineMatchers) {
+        if (matcher(id, importer)) {
+          return null;
+        }
       }
 
       // Check for explicit externals
-      if (
-        opts.external.some((i) =>
-          typeof i === "string"
-            ? id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-            : i.test(id)
-        )
-      ) {
-        return { id, external: true };
+      for (const matcher of externalMatchers) {
+        if (matcher(id, importer)) {
+          return { id, external: true };
+        }
       }
 
       // Resolve id using rollup resolver
@@ -515,4 +513,25 @@ async function isFile(file: string) {
     }
     throw err;
   }
+}
+
+export function normalizeMatcher(
+  pattern:
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+) {
+  if (typeof pattern === "string") {
+    const _pattern = normalize(pattern);
+    return (id: string) => {
+      const idWithoutNodeModules = id.split("node_modules/").pop();
+      return (
+        id.startsWith(_pattern) || idWithoutNodeModules.startsWith(_pattern)
+      );
+    };
+  }
+  if (typeof pattern === "function") {
+    return pattern;
+  }
+  return (id: string) => pattern.test(id);
 }
