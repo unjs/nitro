@@ -8,8 +8,8 @@ import semver from "semver";
 import { isDirectory, retry } from "../../utils";
 
 export interface NodeExternalsOptions {
-  inline?: string[];
-  external?: string[];
+  inline?: Array<string | RegExp>;
+  external?: Array<string | RegExp>;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -36,8 +36,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  opts.inline = (opts.inline || []).map((p) => normalize(p));
-  opts.external = (opts.external || []).map((p) => normalize(p));
+  opts.inline = (opts.inline || []).map((p) =>
+    typeof p === "string" ? normalize(p) : p
+  );
+  opts.external = (opts.external || []).map((p) =>
+    typeof p === "string" ? normalize(p) : p
+  );
 
   return {
     name: "node-externals",
@@ -65,8 +69,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Check for explicit inlines
       if (
-        opts.inline.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
+        opts.inline.some((i) =>
+          typeof i === "string"
+            ? id.startsWith(i) || idWithoutNodeModules.startsWith(i)
+            : i.test(id)
         )
       ) {
         return null;
@@ -74,8 +80,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Check for explicit externals
       if (
-        opts.external.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
+        opts.external.some((i) =>
+          typeof i === "string"
+            ? id.startsWith(i) || idWithoutNodeModules.startsWith(i)
+            : i.test(id)
         )
       ) {
         return { id, external: true };
