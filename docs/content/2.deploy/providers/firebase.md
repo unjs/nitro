@@ -103,6 +103,8 @@ It works the same as the [`firebase`](#firebase) preset above, but uses the V2 f
 
 **Note**: Follow the instructions for the `firebase` preset above for setup and deploy.
 
+**Caution**: New HTTP and HTTP callable functions deployed with any Firebase CLI lower than version 7.7.0 are private by default and throw HTTP 403 errors when invoked. Either explicitly [make these functions public](https://cloud.google.com/functions/docs/securing/managing-access-iam#allowing_unauthenticated_http_function_invocation) or [update your Firebase CLI](https://firebase.google.com/docs/cli#setup_update_cli) before you deploy.
+
 The `firebase-v2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebase.httpRequestOptions`.
 
 The `httpRequestOptions` object is passed to `functions.https.onRequest()` function as the first argument as per the [firebase docs](https://firebase.google.com/docs/functions/http-events?gen=2nd#trigger_a_function_with_an_http_request).
