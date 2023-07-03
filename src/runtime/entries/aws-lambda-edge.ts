@@ -34,12 +34,12 @@ export const handler = async function handler(
 function normalizeBody(
   body: CloudFrontRequestEvent["Records"][0]["cf"]["request"]["body"]
 ) {
-  if (typeof body === "undefined") {
+  if (body === undefined) {
     return body;
   }
 
   const bodyString = body;
-  if (typeof body.encoding !== "undefined" && body.encoding === "base64") {
+  if (body.encoding !== undefined && body.encoding === "base64") {
     bodyString.data = Buffer.from(body.data, "base64").toString("utf8");
     bodyString.data = decodeURIComponent(bodyString.data);
   }
