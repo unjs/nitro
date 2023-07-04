@@ -2,9 +2,15 @@ import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
 import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
 import type { PackageJson } from "pkg-types";
+import { readPackageJSON } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
-import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
+import {
+  resolvePath,
+  isValidNodeImport,
+  normalizeid,
+  lookupNodeModuleSubpath,
+} from "mlly";
 import semver from "semver";
 import { isDirectory } from "../../utils";
 
@@ -31,7 +37,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
 
   const _resolveCache = new Map();
-  const _resolve = async (id: string) => {
+  const _resolve = async (id: string): Promise<string> => {
     let resolved = _resolveCache.get(id);
     if (resolved) {
       return resolved;
@@ -144,11 +150,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Guess as main subpath export
         const packageEntry = await _resolve(pkgName).catch(() => null);
         if (packageEntry !== originalId) {
-          // Guess subpathexport
-          const guessedSubpath = pkgName + subpath.replace(/\.[a-z]+$/, "");
-          const resolvedGuess = await _resolve(guessedSubpath).catch(
-            () => null
-          );
+          // Reverse engineer subpath export
+          const guessedSubpath: string | null = await lookupNodeModuleSubpath(
+            packageEntry
+          ).catch(() => null);
+          const resolvedGuess =
+            guessedSubpath &&
+            (await _resolve(guessedSubpath).catch(() => null));
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
             return {
@@ -261,7 +269,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         let tracedPackage = tracedPackages[pkgName];
 
         // Read package.json for file
-        let pkgJSON = await getPackageJson(tracedFile.pkgPath).catch(
+        let pkgJSON = await readPackageJSON(tracedFile.pkgPath, {
+          cache: true,
+        }).catch(
           () => {} // TODO: Only catch ENOENT
         );
         if (!pkgJSON) {
