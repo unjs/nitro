@@ -138,7 +138,7 @@ Follow the instructions for the `firebase` preset above for setup and deploy.
 
 ### Options
 
-The `firebase-v2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebase.httpRequestOptions`.
+The `firebase-v2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebase.v2.httpRequestOptions`.
 
 The `httpRequestOptions` object is passed to `functions.https.onRequest()` function as the first argument as per the [firebase docs](https://firebase.google.com/docs/functions/http-events?gen=2nd#trigger_a_function_with_an_http_request).
 
@@ -150,10 +150,12 @@ import { defineNitroConfig } from 'nitropack/config'
 export default defineNitroConfig({
   // Nitro options...
   firebase: {
-    httpRequestOptions: {
-      region: "europe-west1",
-      maxInstances: 3,
-      // etc.
+    v2: {
+      httpRequestOptions: {
+        region: "europe-west1",
+        maxInstances: 3,
+        // etc.
+      }
     }
   }
 })
