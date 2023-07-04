@@ -33,30 +33,24 @@ Then, add Firebase dependencies to your project:
 yarn:
 
 ```bash
-yarn add --dev firebase-admin firebase-functions firebase-functions-test
+yarn add --dev firebase-admin firebase-functions firebase-functions-test firebase-tools
 ```
 
 npm:
 
 ```bash
-npm install -D firebase-admin firebase-functions firebase-functions-test
+npm install -D firebase-admin firebase-functions firebase-functions-test firebase-tools
 ```
 
-#### Install Firebase CLI globally
+#### Log into the firebase cli
 
-Make sure you have the latest version of the firebce CLI installed:
-
-yarn:
+Make sure you are authenticated with the firebase cli. Run this command and follow the prompts:
 
 ```bash
-yarn global add firebase-tools
+npx firebase-tools login
 ```
 
-npm:
 
-```bash
-npm install -g firebase-tools
-```
 
 ### Alternative Setup Using Firebase CLI
 
@@ -116,6 +110,15 @@ Deploy to Firebase Hosting by running a nitro build and then running the `fireba
 
 ```bash
 NITRO_PRESET=firebase yarn build
+```
+
+```bash
+npx firebase-tools deploy
+```
+
+If you chose the alternative setup using the Firebase CLI, you can also run:
+
+```bash
 firebase deploy
 ```
 
