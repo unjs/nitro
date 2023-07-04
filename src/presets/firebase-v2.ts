@@ -15,7 +15,7 @@ export const firebaseV2 = defineNitroPreset({
 
       // merge the default options with the user provided options
       const httpRequestOptions = defu(
-        nitro.options.firebase?.httpRequestOptions || {},
+        nitro.options.firebase?.v2?.httpRequestOptions || {},
         defaultHttpRequestOptions
       );
 
