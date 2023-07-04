@@ -92,6 +92,14 @@ export default eventHandler(async (event) => {
 });
 ```
 
+## API routes
+
+Nitro `/api` directory isn't compatible with Vercel.
+Instead, you have to use :
+
+- `routes/api/` for standalone usage
+- `server/api/` for [Nuxt](https://nuxt.com).
+
 ## Custom Build Output Configuration
 
 You can provide additional [build output configuration](https://vercel.com/docs/build-output-api/v3) using `vercel.config` key inside `nitro.config`. It will be merged with built-in auto generated config.
