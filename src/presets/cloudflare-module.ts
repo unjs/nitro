@@ -8,7 +8,7 @@ export const cloudflareModule = defineNitroPreset({
   entry: "#internal/nitro/entries/cloudflare-module",
   commands: {
     preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
-    deploy: "npx wrangler publish",
+    deploy: "npx wrangler deploy",
   },
   rollupConfig: {
     external: "__STATIC_CONTENT_MANIFEST",
