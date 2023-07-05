@@ -167,10 +167,10 @@ Create project:
 wrangler pages project create <project-name>
 ```
 
-Publish:
+Deploy:
 
 ```bash
-wrangler pages publish
+wrangler pages deploy
 ```
 
 ## Cloudflare Module Workers
