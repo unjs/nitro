@@ -15,7 +15,7 @@ const allowedExtensions = new Set(["", ".json"]);
 export async function prerender(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
     console.warn(
-      "[nitro] Skipping prerender since `noPublicDir` option is enabled."
+      "[nitro] Skipping prerender since `noPublicDir` option is enabled.",
     );
     return;
   }
@@ -68,13 +68,13 @@ export async function prerender(nitro: Nitro) {
   // Import renderer entry
   const serverEntrypoint = resolve(
     nitroRenderer.options.output.serverDir,
-    "index.mjs"
+    "index.mjs",
   );
   const { localFetch } = await import(pathToFileURL(serverEntrypoint).href);
 
   // Create route rule matcher
   const _routeRulesMatcher = toRouteMatcher(
-    createRadixRouter({ routes: nitro.options.routeRules })
+    createRadixRouter({ routes: nitro.options.routeRules }),
   );
   const _getRouteRules = (path: string) =>
     defu({}, ..._routeRulesMatcher.matchAll(path).reverse()) as NitroRouteRules;
@@ -107,11 +107,11 @@ export async function prerender(nitro: Nitro) {
       const _route = route.slice(0, 60) + "...";
       if (route.length >= FS_MAX_PATH_PUBLIC_HTML) {
         nitro.logger.warn(
-          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`
+          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`,
         );
       } else {
         nitro.logger.warn(
-          `Skipping prerender of the route "${_route}" since it exceeds the ${FS_MAX_SEGMENT}-character limit in one of the path segments and can cause filesystem issues.`
+          `Skipping prerender of the route "${_route}" since it exceeds the ${FS_MAX_SEGMENT}-character limit in one of the path segments and can cause filesystem issues.`,
         );
         return false;
       }
@@ -151,14 +151,14 @@ export async function prerender(nitro: Nitro) {
       withBase(encodedRoute, nitro.options.baseURL),
       {
         headers: { "x-nitro-prerender": encodedRoute },
-      }
+      },
     ) as ReturnType<typeof fetch>);
     _route.data = await res.arrayBuffer();
     Object.defineProperty(_route, "contents", {
       get: () => {
         if (!(_route as any)._contents) {
           (_route as any)._contents = new TextDecoder("utf8").decode(
-            new Uint8Array(_route.data)
+            new Uint8Array(_route.data),
           );
         }
         return (_route as any)._contents;
@@ -205,7 +205,7 @@ export async function prerender(nitro: Nitro) {
         _route.contents,
         route,
         res,
-        nitro.options.prerender.crawlLinks
+        nitro.options.prerender.crawlLinks,
       );
       for (const _link of extractedLinks) {
         if (canPrerender(_link)) {
@@ -220,12 +220,12 @@ export async function prerender(nitro: Nitro) {
   nitro.logger.info(
     nitro.options.prerender.crawlLinks
       ? `Prerendering ${routes.size} initial routes with crawler`
-      : `Prerendering ${routes.size} routes`
+      : `Prerendering ${routes.size} routes`,
   );
 
   async function processRoute(route: string) {
     const _route = await generateRoute(route).catch(
-      (error) => ({ route, error } as PrerenderGenerateRoute)
+      (error) => ({ route, error }) as PrerenderGenerateRoute,
     );
 
     if (!_route || _route.skip) {
@@ -239,12 +239,12 @@ export async function prerender(nitro: Nitro) {
         chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
           `  ├─ ${_route.route} (${
             _route.generateTimeMS
-          }ms) ${`(${_route.error})`}`
-        )
+          }ms) ${`(${_route.error})`}`,
+        ),
       );
     } else {
       nitro.logger.log(
-        chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
+        chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`),
       );
     }
   }
@@ -259,8 +259,8 @@ export async function prerender(nitro: Nitro) {
     for (const route of erroredRoutes) {
       nitro.logger.log(
         chalk[route.error.statusCode === 404 ? "yellow" : "red"](
-          `  ├─ ${route.route} (${route.error.statusCode})`
-        )
+          `  ├─ ${route.route} (${route.error.statusCode})`,
+        ),
       );
     }
     nitro.logger.log("");
@@ -275,7 +275,7 @@ export async function prerender(nitro: Nitro) {
 async function runParallel<T>(
   inputs: Set<T>,
   cb: (input: T) => unknown | Promise<unknown>,
-  opts: { concurrency: number; interval: number }
+  opts: { concurrency: number; interval: number },
 ) {
   const tasks = new Set<Promise<unknown>>();
 
@@ -287,7 +287,7 @@ async function runParallel<T>(
 
     inputs.delete(route);
     const task = new Promise((resolve) =>
-      setTimeout(resolve, opts.interval)
+      setTimeout(resolve, opts.interval),
     ).then(() => cb(route));
 
     tasks.add(task);
@@ -313,7 +313,7 @@ function extractLinks(
   html: string,
   from: string,
   res: Response,
-  crawlLinks: boolean
+  crawlLinks: boolean,
 ) {
   const links: string[] = [];
   const _links: string[] = [];
@@ -323,7 +323,7 @@ function extractLinks(
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
         .map((m) => m[1])
-        .filter((link) => allowedExtensions.has(getExtension(link)))
+        .filter((link) => allowedExtensions.has(getExtension(link))),
     );
   }
 
@@ -333,7 +333,7 @@ function extractLinks(
     ...header
       .split(",")
       .map((i) => i.trim())
-      .map((i) => decodeURIComponent(i))
+      .map((i) => decodeURIComponent(i)),
   );
 
   for (const link of _links.filter(Boolean)) {

@@ -32,7 +32,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   if (nitro.options.dev || nitro.options.preset === "nitro-prerender") {
     return virtual(
       { "#internal/nitro/virtual/server-assets": getAssetsDev(nitro) },
-      nitro.vfs
+      nitro.vfs,
     );
   }
 
@@ -64,7 +64,7 @@ export function serverAssets(nitro: Nitro): Plugin {
         return getAssetProd(assets);
       },
     },
-    nitro.vfs
+    nitro.vfs,
   );
 }
 
@@ -88,12 +88,12 @@ const _assets = {\n${Object.entries(assets)
     .map(
       ([id, asset]) =>
         `  [${JSON.stringify(
-          normalizeKey(id)
+          normalizeKey(id),
         )}]: {\n    import: () => import(${JSON.stringify(
-          "raw:" + asset.fsPath
+          "raw:" + asset.fsPath,
         )}).then(r => r.default || r),\n    meta: ${JSON.stringify(
-          asset.meta
-        )}\n  }`
+          asset.meta,
+        )}\n  }`,
     )
     .join(",\n")}\n}
 

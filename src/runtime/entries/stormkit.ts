@@ -20,7 +20,7 @@ export interface StormkitResult {
 
 export const handler: Handler<StormkitEvent, StormkitResult> = async function (
   event,
-  context
+  context,
 ) {
   const method = event.method || "get";
 
@@ -42,12 +42,12 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
 };
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | string[] | undefined>,
 ) {
   return Object.fromEntries(
     Object.entries(headers).map(([k, v]) => [
       k,
       Array.isArray(v) ? v.join(",") : v!,
-    ])
+    ]),
   );
 }

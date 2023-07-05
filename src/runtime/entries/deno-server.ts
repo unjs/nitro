@@ -6,17 +6,17 @@ import { useRuntimeConfig } from "#internal/nitro";
 // @ts-expect-error unknown global Deno
 if (Deno.env.get("DEBUG")) {
   addEventListener("unhandledrejection", (event) =>
-    console.error("[nitro] [dev] [unhandledRejection]", event.reason)
+    console.error("[nitro] [dev] [unhandledRejection]", event.reason),
   );
   addEventListener("error", (event) =>
-    console.error("[nitro] [dev] [uncaughtException]", event.error)
+    console.error("[nitro] [dev] [uncaughtException]", event.error),
   );
 } else {
   addEventListener("unhandledrejection", (err) =>
-    console.error("[nitro] [production] [unhandledRejection] " + err)
+    console.error("[nitro] [production] [unhandledRejection] " + err),
   );
   addEventListener("error", (event) =>
-    console.error("[nitro] [production] [uncaughtException] " + event.error)
+    console.error("[nitro] [production] [uncaughtException] " + event.error),
   );
 }
 
@@ -38,7 +38,7 @@ Deno.serve(
       console.log(`Listening ${url}`);
     },
   },
-  handler
+  handler,
 );
 
 async function handler(request: Request) {
@@ -71,7 +71,7 @@ async function handler(request: Request) {
 }
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | string[] | undefined>,
 ) {
   return Object.entries(headers).map(([k, v]) => [
     k,

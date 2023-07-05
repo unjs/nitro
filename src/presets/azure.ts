@@ -29,7 +29,7 @@ async function writeRoutes(nitro: Nitro) {
   let nodeVersion = "16";
   try {
     const currentNodeVersion = JSON.parse(
-      await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
+      await readFile(join(nitro.options.rootDir, "package.json"), "utf8"),
     ).engines.node;
     if (["16", "14"].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
@@ -54,7 +54,7 @@ async function writeRoutes(nitro: Nitro) {
   const routeFiles = nitro._prerenderedRoutes || [];
 
   const indexFileExists = routeFiles.some(
-    (route) => route.fileName === "/index.html"
+    (route) => route.fileName === "/index.html",
   );
   if (!indexFileExists) {
     config.routes.unshift(
@@ -65,7 +65,7 @@ async function writeRoutes(nitro: Nitro) {
       {
         route: "/",
         rewrite: "/api/server",
-      }
+      },
     );
   }
 
@@ -88,7 +88,7 @@ async function writeRoutes(nitro: Nitro) {
 
     const route = fileName.slice(0, -".html".length);
     const existingRouteIndex = config.routes.findIndex(
-      (_route) => _route.route === route
+      (_route) => _route.route === route,
     );
     if (existingRouteIndex > -1) {
       config.routes.splice(existingRouteIndex, 1);
@@ -120,20 +120,20 @@ async function writeRoutes(nitro: Nitro) {
 
   await writeFile(
     resolve(nitro.options.output.serverDir, "function.json"),
-    JSON.stringify(functionDefinition, null, 2)
+    JSON.stringify(functionDefinition, null, 2),
   );
   await writeFile(
     resolve(nitro.options.output.serverDir, "../host.json"),
-    JSON.stringify(host, null, 2)
+    JSON.stringify(host, null, 2),
   );
   const stubPackageJson = resolve(
     nitro.options.output.serverDir,
-    "../package.json"
+    "../package.json",
   );
   await writeFile(stubPackageJson, JSON.stringify({ private: true }));
   await writeFile(
     resolve(nitro.options.rootDir, "staticwebapp.config.json"),
-    JSON.stringify(config, null, 2)
+    JSON.stringify(config, null, 2),
   );
   if (!indexFileExists) {
     const baseURLSegments = nitro.options.baseURL.split("/").filter(Boolean);
@@ -141,9 +141,9 @@ async function writeRoutes(nitro: Nitro) {
     await writeFile(
       resolve(
         nitro.options.output.publicDir,
-        relativePrefix ? `${relativePrefix}/index.html` : "index.html"
+        relativePrefix ? `${relativePrefix}/index.html` : "index.html",
       ),
-      ""
+      "",
     );
   }
 }

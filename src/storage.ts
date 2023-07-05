@@ -25,15 +25,15 @@ export async function snapshotStorage(nitro: Nitro) {
   const allKeys = [
     ...new Set(
       await Promise.all(
-        nitro.options.bundledStorage.map((base) => nitro.storage.getKeys(base))
-      ).then((r) => r.flat())
+        nitro.options.bundledStorage.map((base) => nitro.storage.getKeys(base)),
+      ).then((r) => r.flat()),
     ),
   ];
 
   await Promise.all(
     allKeys.map(async (key) => {
       data[key] = await nitro.storage.getItem(key);
-    })
+    }),
   );
 
   return data;

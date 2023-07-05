@@ -47,7 +47,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   // Normalize options
   const inlineMatchers = (opts.inline || []).map((p) => normalizeMatcher(p));
   const externalMatchers = (opts.external || []).map((p) =>
-    normalizeMatcher(p)
+    normalizeMatcher(p),
   );
 
   return {
@@ -147,7 +147,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           // Guess subpathexport
           const guessedSubpath = pkgName + subpath.replace(/\.[a-z]+$/, "");
           const resolvedGuess = await _resolve(guessedSubpath).catch(
-            () => null
+            () => null,
           );
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
@@ -183,7 +183,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Trace used files using nft
       const _fileTrace = await nodeFileTrace(
         [...trackedExternals],
-        opts.traceOptions
+        opts.traceOptions,
       );
 
       // Read package.json with cache
@@ -193,7 +193,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           return packageJSONCache.get(pkgDir) as PackageJson;
         }
         const pkgJSON = JSON.parse(
-          await fsp.readFile(resolve(pkgDir, "package.json"), "utf8")
+          await fsp.readFile(resolve(pkgDir, "package.json"), "utf8"),
         );
         packageJSONCache.set(pkgDir, pkgJSON);
         return pkgJSON as PackageJson;
@@ -227,7 +227,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             const { baseDir, pkgName, subpath } = parseNodeModulePath(path);
             const pkgPath = join(baseDir, pkgName);
             const parents = await Promise.all(
-              [...reasons.parents].map((p) => _resolveTracedPath(p))
+              [...reasons.parents].map((p) => _resolveTracedPath(p)),
             );
             const tracedFile = <TracedFile>{
               path,
@@ -238,8 +238,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
               pkgPath,
             };
             return [path, tracedFile];
-          })
-        ).then((r) => r.filter(Boolean))
+          }),
+        ).then((r) => r.filter(Boolean)),
       );
 
       // Resolve traced packages
@@ -262,7 +262,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
         // Read package.json for file
         let pkgJSON = await getPackageJson(tracedFile.pkgPath).catch(
-          () => {} // TODO: Only catch ENOENT
+          () => {}, // TODO: Only catch ENOENT
         );
         if (!pkgJSON) {
           pkgJSON = <PackageJson>{ name: pkgName, version: "0.0.0" };
@@ -291,7 +291,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const writePackage = async (
         name: string,
         version: string,
-        outputName?: string
+        outputName?: string,
       ) => {
         // Find pkg
         const pkg = tracedPackages[name];
@@ -303,7 +303,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             opts.outDir,
             "node_modules",
             outputName || pkg.name,
-            subpath
+            subpath,
           );
           await fsp.mkdir(dirname(dst), { recursive: true });
           await fsp.copyFile(src, dst);
@@ -316,13 +316,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           opts.outDir,
           "node_modules",
           outputName || pkg.name,
-          "package.json"
+          "package.json",
         );
         await fsp.mkdir(dirname(pkgJSONPath), { recursive: true });
         await fsp.writeFile(
           pkgJSONPath,
           JSON.stringify(pkgJSON, null, 2),
-          "utf8"
+          "utf8",
         );
       };
 
@@ -341,7 +341,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           .symlink(
             relative(dirname(dst), src),
             dst,
-            isWindows ? "junction" : "dir"
+            isWindows ? "junction" : "dir",
           )
           .catch((err) => {
             console.error("Cannot link", from, "to", to, err);
@@ -352,7 +352,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const findPackageParents = (pkg: TracedPackage, version: string) => {
         // Try to find parent packages
         const versionFiles: TracedFile[] = pkg.versions[version].files.map(
-          (path) => tracedFiles[path]
+          (path) => tracedFiles[path],
         );
         const parentPkgs = [
           ...new Set(
@@ -365,8 +365,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
                   }
                   return `${parentFile.pkgName}@${parentFile.pkgVersion}`;
                 })
-                .filter(Boolean)
-            )
+                .filter(Boolean),
+            ),
           ),
         ];
         return parentPkgs;
@@ -386,7 +386,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         for (const version of versions) {
           multiVersionPkgs[tracedPackage.name][version] = findPackageParents(
             tracedPackage,
-            version
+            version,
           );
         }
       }
@@ -397,7 +397,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           const pkg = tracedPackages[pkgName];
           const version = Object.keys(pkg.versions)[0];
           return writePackage(pkgName, version);
-        })
+        }),
       );
 
       // Write packages with multiple versions
@@ -413,7 +413,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             }
             // 2. Newest version to be hoisted
             return compareVersions(v1, v2);
-          }
+          },
         );
         for (const [version, parentPkgs] of versionEntires) {
           // Write each version into node_modules/.nitro/{name}@{version}
@@ -426,11 +426,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             await (multiVersionPkgs[parentPkgName]
               ? linkPackage(
                   `.nitro/${pkgName}@${version}`,
-                  `.nitro/${parentPkg}/node_modules/${pkgName}`
+                  `.nitro/${parentPkg}/node_modules/${pkgName}`,
                 )
               : linkPackage(
                   `.nitro/${pkgName}@${version}`,
-                  `${parentPkgName}/node_modules/${pkgName}`
+                  `${parentPkgName}/node_modules/${pkgName}`,
                 ));
           }
         }
@@ -440,7 +440,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const bundledDependencies = Object.fromEntries(
         Object.values(tracedPackages)
           .sort((a, b) => a.name.localeCompare(b.name))
-          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
+          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")]),
       );
 
       await fsp.writeFile(
@@ -453,9 +453,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             bundledDependencies,
           },
           null,
-          2
+          2,
         ),
-        "utf8"
+        "utf8",
       );
     },
   };
@@ -474,7 +474,7 @@ function parseNodeModulePath(path: string) {
     return {};
   }
   const match = /^(.+\/node_modules\/)([^/@]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(
-    normalize(path)
+    normalize(path),
   );
   if (!match) {
     return {};
@@ -519,7 +519,7 @@ export function normalizeMatcher(
   pattern:
     | string
     | RegExp
-    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+    | ((id: string, importer?: string) => Promise<boolean> | boolean),
 ) {
   if (typeof pattern === "string") {
     const _pattern = normalize(pattern);

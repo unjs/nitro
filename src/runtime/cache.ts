@@ -40,7 +40,7 @@ const defaultCacheOptions = {
 
 export function defineCachedFunction<T = any>(
   fn: (...args) => T | Promise<T>,
-  opts: CacheOptions<T> = {}
+  opts: CacheOptions<T> = {},
 ) {
   opts = { ...defaultCacheOptions, ...opts };
 
@@ -55,7 +55,7 @@ export function defineCachedFunction<T = any>(
   async function get(
     key: string,
     resolver: () => T | Promise<T>,
-    shouldInvalidateCache?: boolean
+    shouldInvalidateCache?: boolean,
   ): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
     const cacheKey = [opts.base, group, name, key + ".json"]
@@ -172,7 +172,7 @@ function escapeKey(key: string) {
 
 export function defineCachedEventHandler<T = any>(
   handler: EventHandler<T>,
-  opts: CachedEventHandlerOptions<T> = defaultCacheOptions
+  opts: CachedEventHandlerOptions<T> = defaultCacheOptions,
 ): EventHandler<T> {
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
@@ -184,7 +184,7 @@ export function defineCachedEventHandler<T = any>(
       const url = event.node.req.originalUrl || event.node.req.url;
       const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
         0,
-        16
+        16,
       );
       const urlHash = hash(url);
       return `${friendlyName}.${urlHash}`;
@@ -306,7 +306,7 @@ export function defineCachedEventHandler<T = any>(
 
       return cacheEntry;
     },
-    _opts
+    _opts,
   );
 
   return defineEventHandler<T>(async (event) => {
@@ -351,7 +351,7 @@ export function defineCachedEventHandler<T = any>(
 
 function cloneWithProxy<T extends object = any>(
   obj: T,
-  overrides: Partial<T>
+  overrides: Partial<T>,
 ): T {
   return new Proxy(obj, {
     get(target, property, receiver) {

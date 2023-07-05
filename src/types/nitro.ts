@@ -87,7 +87,7 @@ export interface NitroHooks {
   "prerender:route": (route: PrerenderRoute) => HookResult;
   "prerender:generate": (
     route: PrerenderGenerateRoute,
-    nitro: Nitro
+    nitro: Nitro,
   ) => HookResult;
 }
 
@@ -140,7 +140,7 @@ export interface CompressOptions {
 
 type Enumerate<
   N extends number,
-  Acc extends number[] = []
+  Acc extends number[] = [],
 > = Acc["length"] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;

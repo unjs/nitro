@@ -15,7 +15,7 @@ export function replace(options: RollupReplaceOptions): Plugin {
           this,
           code,
           chunk,
-          options
+          options,
         );
       }
     },

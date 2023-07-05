@@ -24,7 +24,7 @@ export default {
   async fetch(
     request: CFRequest,
     env: CFPagesEnv,
-    context: EventContext<CFPagesEnv, string, any>
+    context: EventContext<CFPagesEnv, string, any>,
   ) {
     const url = new URL(request.url);
     if (isPublicAssetURL(url.pathname)) {

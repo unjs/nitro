@@ -17,13 +17,13 @@ export default eventHandler((event) => {
 
   let id = decodeURIComponent(
     withLeadingSlash(
-      withoutTrailingSlash(parseURL(event.node.req.url).pathname)
-    )
+      withoutTrailingSlash(parseURL(event.node.req.url).pathname),
+    ),
   );
   let asset;
 
   const encodingHeader = String(
-    event.node.req.headers["accept-encoding"] || ""
+    event.node.req.headers["accept-encoding"] || "",
   );
   const encodings = [
     ...encodingHeader

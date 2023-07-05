@@ -127,7 +127,7 @@ export interface LoadConfigOptions {
 
 export async function loadOptions(
   configOverrides: NitroConfig = {},
-  opts: LoadConfigOptions = {}
+  opts: LoadConfigOptions = {},
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
@@ -187,7 +187,7 @@ export async function loadOptions(
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(
-    () => options.rootDir
+    () => options.rootDir,
   );
   options.srcDir = resolve(options.srcDir || options.rootDir);
   for (const key of ["srcDir", "publicDir", "buildDir"]) {
@@ -206,7 +206,7 @@ export async function loadOptions(
   // Resolve possibly template paths
   if (!options.static && !options.entry) {
     throw new Error(
-      `Nitro entry is missing! Is "${options.preset}" preset correct?`
+      `Nitro entry is missing! Is "${options.preset}" preset correct?`,
     );
   }
   if (options.entry) {
@@ -214,15 +214,15 @@ export async function loadOptions(
   }
   options.output.dir = resolvePath(
     options.output.dir || NitroDefaults.output.dir,
-    options
+    options,
   );
   options.output.publicDir = resolvePath(
     options.output.publicDir || NitroDefaults.output.publicDir,
-    options
+    options,
   );
   options.output.serverDir = resolvePath(
     options.output.serverDir || NitroDefaults.output.serverDir,
-    options
+    options,
   );
 
   options.nodeModulesDirs.push(resolve(options.workspaceDir, "node_modules"));
@@ -230,14 +230,14 @@ export async function loadOptions(
   options.nodeModulesDirs.push(resolve(pkgDir, "node_modules"));
   options.nodeModulesDirs = [
     ...new Set(
-      options.nodeModulesDirs.map((dir) => resolve(options.rootDir, dir))
+      options.nodeModulesDirs.map((dir) => resolve(options.rootDir, dir)),
     ),
   ];
 
   // Resolve scanDirs
   options.scanDirs.unshift(options.srcDir);
   options.scanDirs = options.scanDirs.map((dir) =>
-    resolve(options.srcDir, dir)
+    resolve(options.srcDir, dir),
   );
   options.scanDirs = [...new Set(options.scanDirs)];
 
@@ -259,9 +259,9 @@ export async function loadOptions(
         ? new RegExp(
             `node_modules\\/(?!${scanDirsInNodeModules
               .map((dir) => escapeRE(dir))
-              .join("|")})`
+              .join("|")})`,
           )
-        : /[/\\]node_modules[/\\]/
+        : /[/\\]node_modules[/\\]/,
     );
   }
 
@@ -279,7 +279,7 @@ export async function loadOptions(
   // Auto imports from utils dirs
   if (options.imports) {
     options.imports.dirs.push(
-      ...options.scanDirs.map((dir) => join(dir, "utils/*"))
+      ...options.scanDirs.map((dir) => join(dir, "utils/*")),
     );
   }
 
@@ -310,7 +310,7 @@ export async function loadOptions(
   for (const publicAsset of options.publicAssets) {
     publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
     publicAsset.baseURL = withLeadingSlash(
-      withoutTrailingSlash(publicAsset.baseURL || "/")
+      withoutTrailingSlash(publicAsset.baseURL || "/"),
     );
   }
 
@@ -401,7 +401,7 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
 }
 
 export function normalizeRouteRules(
-  config: NitroConfig
+  config: NitroConfig,
 ): Record<string, NitroRouteRules> {
   const normalizedRules: Record<string, NitroRouteRules> = {};
   for (const path in config.routeRules) {

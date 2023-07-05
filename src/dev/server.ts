@@ -30,7 +30,7 @@ export interface NitroDevServer {
   reload: () => void;
   listen: (
     port: ListenOptions["port"],
-    opts?: Partial<ListenOptions>
+    opts?: Partial<ListenOptions>,
   ) => Promise<Listener>;
   app: App;
   close: () => Promise<void>;
@@ -46,8 +46,8 @@ function initWorker(filename: string): Promise<NitroWorker> | null {
     worker.once("exit", (code) => {
       reject(
         new Error(
-          code ? "[worker] exited with code: " + code : "[worker] exited"
-        )
+          code ? "[worker] exited with code: " + code : "[worker] exited",
+        ),
       );
     });
     worker.once("error", (err) => {
@@ -79,7 +79,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
     await new Promise<void>((resolve) => {
       const timeout = setTimeout(() => {
         nitro.logger.warn(
-          `[nitro] [dev] Force closing worker after ${gracefulShutdownTimeout} seconds...`
+          `[nitro] [dev] Force closing worker after ${gracefulShutdownTimeout} seconds...`,
         );
         resolve();
       }, gracefulShutdownTimeout * 1000);
@@ -104,7 +104,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   const workerEntry = resolve(
     nitro.options.output.dir,
     nitro.options.output.serverDir,
-    "index.mjs"
+    "index.mjs",
   );
 
   // Error handler
@@ -168,7 +168,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       route,
       eventHandler(async (event) => {
         await proxy.handle(event);
-      })
+      }),
     );
   }
 
@@ -216,7 +216,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
         lastError = err;
         throw err;
       });
-    })
+    }),
   );
 
   // Listen
@@ -267,7 +267,7 @@ function createProxy(defaults: HTTPProxyOptions = {}) {
             reject(error);
           }
           resolve();
-        }
+        },
       );
     });
   };

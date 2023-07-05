@@ -66,12 +66,12 @@ export async function compressPublicAssets(nitro: Nitro) {
               } else {
                 zlib.brotliCompress(fileContents, brotliOptions, cb);
               }
-            }
+            },
           );
           await fsp.writeFile(compressedPath, compressedBuff);
-        })
+        }),
       );
-    })
+    }),
   );
 }
 

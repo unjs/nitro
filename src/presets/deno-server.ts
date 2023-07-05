@@ -67,9 +67,9 @@ export const denoServer = defineNitroPreset({
                   JSON.stringify(
                     builtinModules.includes(specifier)
                       ? "node:" + specifier
-                      : "npm:" + specifier
-                  )
-                )
+                      : "npm:" + specifier,
+                  ),
+                ),
               );
             }
           }
@@ -116,7 +116,7 @@ export const denoServer = defineNitroPreset({
       };
       await writeFile(
         resolve(nitro.options.output.dir, "deno.json"),
-        JSON.stringify(denoJSON, null, 2)
+        JSON.stringify(denoJSON, null, 2),
       );
     },
   },

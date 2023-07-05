@@ -16,7 +16,7 @@ const timingMiddleware = eventHandler((event) => {
   event.node.res.end = function (
     chunk: any,
     encoding: BufferEncoding,
-    cb?: () => void
+    cb?: () => void,
   ) {
     const metrics = [
       ["Generate", globalTiming.end(start)],

@@ -35,8 +35,8 @@ export const edgio = defineNitroPreset({
             },
           },
           null,
-          2
-        )}`
+          2,
+        )}`,
       );
 
       // Write routes.js
@@ -55,7 +55,7 @@ if (isProductionBuild()) {
 router.fallback(({ renderWithApp }) => { renderWithApp() })
 
 export default router
-    `.trim()
+    `.trim(),
       );
 
       // Write edgio/prod.js
@@ -68,7 +68,7 @@ module.exports = async function entry (port) {
   await import('../server/index.mjs')
   console.log('Edgio server started')
 }
-      `.trim()
+      `.trim(),
       );
 
       // Write and prepare package.json for deployment
@@ -91,12 +91,12 @@ module.exports = async function entry (port) {
             },
           },
           null,
-          2
-        )
+          2,
+        ),
       );
       await writeFile(
         resolve(nitro.options.output.dir, "package-lock.json"),
-        ""
+        "",
       );
     },
   },

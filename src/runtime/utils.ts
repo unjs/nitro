@@ -9,7 +9,7 @@ export function requestHasBody(request: globalThis.Request): boolean {
 }
 
 export async function useRequestBody(
-  request: globalThis.Request
+  request: globalThis.Request,
 ): Promise<any> {
   const contentType = request.headers.get("content-type") || "";
   if (contentType.includes("form")) {
@@ -86,17 +86,17 @@ export function normalizeError(error: any) {
 export function trapUnhandledNodeErrors() {
   if (process.env.DEBUG) {
     process.on("unhandledRejection", (err) =>
-      console.error("[nitro] [unhandledRejection]", err)
+      console.error("[nitro] [unhandledRejection]", err),
     );
     process.on("uncaughtException", (err) =>
-      console.error("[nitro] [uncaughtException]", err)
+      console.error("[nitro] [uncaughtException]", err),
     );
   } else {
     process.on("unhandledRejection", (err) =>
-      console.error("[nitro] [unhandledRejection] " + err)
+      console.error("[nitro] [unhandledRejection] " + err),
     );
     process.on("uncaughtException", (err) =>
-      console.error("[nitro]  [uncaughtException] " + err)
+      console.error("[nitro]  [uncaughtException] " + err),
     );
   }
 }

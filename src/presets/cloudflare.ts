@@ -14,11 +14,11 @@ export const cloudflare = defineNitroPreset({
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "package.json"),
-        JSON.stringify({ private: true, main: "./server/index.mjs" }, null, 2)
+        JSON.stringify({ private: true, main: "./server/index.mjs" }, null, 2),
       );
       await writeFile(
         resolve(nitro.options.output.dir, "package-lock.json"),
-        JSON.stringify({ lockfileVersion: 1 }, null, 2)
+        JSON.stringify({ lockfileVersion: 1 }, null, 2),
       );
     },
   },

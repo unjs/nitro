@@ -12,15 +12,15 @@ import { nitroApp } from "../app";
 
 export async function handler(
   event: APIGatewayProxyEvent,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResult>;
 export async function handler(
   event: APIGatewayProxyEventV2,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResultV2>;
 export async function handler(
   event: APIGatewayProxyEvent | APIGatewayProxyEventV2,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResult | APIGatewayProxyResultV2> {
   const query = {
     ...event.queryStringParameters,
@@ -29,7 +29,7 @@ export async function handler(
   const url = withQuery(
     (event as APIGatewayProxyEvent).path ||
       (event as APIGatewayProxyEventV2).rawPath,
-    query
+    query,
   );
   const method =
     (event as APIGatewayProxyEvent).httpMethod ||
@@ -76,19 +76,19 @@ function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
     Object.entries(headers || {}).map(([key, value]) => [
       key.toLowerCase(),
       value!,
-    ])
+    ]),
   );
 }
 
 function normalizeOutgoingHeaders(
   headers: Record<string, string | string[] | undefined>,
-  stripCookies = false
+  stripCookies = false,
 ) {
   const entries = stripCookies
     ? Object.entries(headers).filter(([key]) => !["set-cookie"].includes(key))
     : Object.entries(headers);
 
   return Object.fromEntries(
-    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
+    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!]),
   );
 }

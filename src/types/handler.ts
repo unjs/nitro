@@ -46,5 +46,5 @@ export interface NitroDevEventHandler {
 
 export type NitroErrorHandler = (
   error: H3Error,
-  event: H3Event
+  event: H3Event,
 ) => void | Promise<void>;

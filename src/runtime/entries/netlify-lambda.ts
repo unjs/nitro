@@ -11,7 +11,7 @@ import { nitroApp } from "../app";
 
 export async function lambda(
   event: HandlerEvent,
-  context: HandlerContext
+  context: HandlerContext,
 ): Promise<HandlerResponse> {
   const query = {
     ...event.queryStringParameters,
@@ -42,17 +42,17 @@ function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
     Object.entries(headers || {}).map(([key, value]) => [
       key.toLowerCase(),
       value!,
-    ])
+    ]),
   );
 }
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | string[] | undefined>,
 ) {
   return Object.fromEntries(
     Object.entries(headers).map(([k, v]) => [
       k,
       Array.isArray(v) ? v.join(",") : v!,
-    ])
+    ]),
   );
 }

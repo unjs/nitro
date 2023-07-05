@@ -62,7 +62,7 @@ export function createVFSHandler(nitro: Nitro) {
 
     const generateHTML = (
       directory: Record<string, any>,
-      path: string[] = []
+      path: string[] = [],
     ): string =>
       Object.entries(directory)
         .map(([fname, value = {}]) => {
@@ -172,7 +172,7 @@ const editorTemplate = (options: Record<string, any>) => `
   setTimeout(() => {
     require(['vs/editor/editor.main'], function () {
       monaco.editor.create(document.getElementById('editor'), ${JSON.stringify(
-        options
+        options,
       )})
     })
   }, 0);

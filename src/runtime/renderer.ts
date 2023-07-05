@@ -9,7 +9,7 @@ export interface RenderResponse {
 }
 
 export type RenderHandler = (
-  event: H3Event
+  event: H3Event,
 ) => Partial<RenderResponse> | Promise<Partial<RenderResponse>>;
 
 export function defineRenderHandler(handler: RenderHandler) {
@@ -19,7 +19,7 @@ export function defineRenderHandler(handler: RenderHandler) {
       if (!event.handled) {
         event.node.res.setHeader("Content-Type", "image/x-icon");
         event.node.res.end(
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
         );
       }
       return;
@@ -31,7 +31,7 @@ export function defineRenderHandler(handler: RenderHandler) {
         event.node.res.statusCode =
           event.node.res.statusCode === 200 ? 500 : event.node.res.statusCode;
         event.node.res.end(
-          "No response returned from render handler: " + event.node.req.url
+          "No response returned from render handler: " + event.node.req.url,
         );
       }
       return;

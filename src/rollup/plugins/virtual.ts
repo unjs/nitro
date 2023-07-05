@@ -13,7 +13,7 @@ const PREFIX = "\0virtual:";
 
 export function virtual(
   modules: RollupVirtualOptions,
-  cache: Record<string, VirtualModule> = {}
+  cache: Record<string, VirtualModule> = {},
 ): Plugin {
   const _modules = new Map<string, VirtualModule>();
 

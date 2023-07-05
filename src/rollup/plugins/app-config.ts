@@ -20,6 +20,6 @@ export const appConfig = defuFn(${[
       ].join(", ")});
       `,
     },
-    nitro.vfs
+    nitro.vfs,
   );
 }

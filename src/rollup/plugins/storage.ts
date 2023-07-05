@@ -56,8 +56,8 @@ ${mounts
   .map(
     (m) =>
       `storage.mount('${m.path}', ${genSafeVariableName(
-        m.driver
-      )}(${JSON.stringify(m.opts)}))`
+        m.driver,
+      )}(${JSON.stringify(m.opts)}))`,
   )
   .join("\n")}
 
@@ -68,6 +68,6 @@ ${
 }
 `,
     },
-    nitro.vfs
+    nitro.vfs,
   );
 }

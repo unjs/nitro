@@ -87,7 +87,7 @@ export function readAsset (id) {
         const publicAssetBases = Object.fromEntries(
           nitro.options.publicAssets
             .filter((dir) => !dir.fallthrough && dir.baseURL !== "/")
-            .map((dir) => [dir.baseURL, { maxAge: dir.maxAge }])
+            .map((dir) => [dir.baseURL, { maxAge: dir.maxAge }]),
         );
 
         return `
@@ -127,6 +127,6 @@ export function getAsset (id) {
 `;
       },
     },
-    nitro.vfs
+    nitro.vfs,
   );
 }

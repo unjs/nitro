@@ -44,7 +44,7 @@ export async function copyPublicAssets(nitro: Nitro) {
       await fse.copy(
         asset.dir,
         join(nitro.options.output.publicDir, asset.baseURL!),
-        { overwrite: false }
+        { overwrite: false },
       );
     }
   }
@@ -52,7 +52,7 @@ export async function copyPublicAssets(nitro: Nitro) {
     await compressPublicAssets(nitro);
   }
   nitro.logger.success(
-    "Generated public " + prettyPath(nitro.options.output.publicDir)
+    "Generated public " + prettyPath(nitro.options.output.publicDir),
   );
 }
 
@@ -80,7 +80,7 @@ export async function writeTypes(nitro: Nitro) {
     }
     const relativePath = relative(typesDir, mw.handler).replace(
       /\.[a-z]+$/,
-      ""
+      "",
     );
 
     if (!routeTypes[mw.route]) {
@@ -92,7 +92,7 @@ export async function writeTypes(nitro: Nitro) {
       routeTypes[mw.route][method] = [];
     }
     routeTypes[mw.route][method].push(
-      `Simplify<Serialize<Awaited<ReturnType<typeof import('${relativePath}').default>>>>`
+      `Simplify<Serialize<Awaited<ReturnType<typeof import('${relativePath}').default>>>>`,
     );
   }
 
@@ -129,10 +129,10 @@ export async function writeTypes(nitro: Nitro) {
       [
         `    '${path}': {`,
         ...Object.entries(methods).map(
-          ([method, types]) => `      '${method}': ${types.join(" | ")}`
+          ([method, types]) => `      '${method}': ${types.join(" | ")}`,
         ),
         "    }",
-      ].join("\n")
+      ].join("\n"),
     ),
     "  }",
     "}",
@@ -150,7 +150,7 @@ ${nitro.options.appConfigFiles
   .map((file, index) =>
     genTypeImport(file.replace(/\.\w+$/, ""), [
       { name: "default", as: `appConfig${index}` },
-    ])
+    ]),
   )
   .join("\n")}
 
@@ -189,7 +189,7 @@ declare module 'nitropack' {
   buildFiles.push({
     path: join(typesDir, "nitro-imports.d.ts"),
     contents: [...autoImportedTypes, autoImportExports || "export {}"].join(
-      "\n"
+      "\n",
     ),
   });
 
@@ -201,7 +201,7 @@ declare module 'nitropack' {
   if (nitro.options.typescript.generateTsConfig) {
     const tsConfigPath = resolve(
       nitro.options.buildDir,
-      nitro.options.typescript.tsconfigPath
+      nitro.options.typescript.tsconfigPath,
     );
     const tsconfigDir = dirname(tsConfigPath);
     const tsConfig: TSConfig = defu(nitro.options.typescript.tsConfig, {
@@ -230,7 +230,7 @@ declare module 'nitropack' {
       include: [
         relative(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
           /^(?=[^.])/,
-          "./"
+          "./",
         ),
         join(relative(tsconfigDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir === nitro.options.rootDir
@@ -248,9 +248,9 @@ declare module 'nitropack' {
     buildFiles.map(async (file) => {
       await writeFile(
         resolve(nitro.options.buildDir, file.path),
-        file.contents
+        file.contents,
       );
-    })
+    }),
   );
 }
 
@@ -277,7 +277,7 @@ async function _snapshot(nitro: Nitro) {
       const fsPath = join(storageDir, path.replace(/:/g, "/"));
       await fsp.mkdir(dirname(fsPath), { recursive: true });
       await fsp.writeFile(fsPath, contents, "utf8");
-    })
+    }),
   );
 }
 
@@ -288,7 +288,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
 
   if (!nitro.options.static) {
     nitro.logger.info(
-      `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
+      `Building Nitro Server (preset: \`${nitro.options.preset}\`)`,
     );
     const build = await rollup.rollup(rollupConfig).catch((error) => {
       nitro.logger.error(formatRollupError(error));
@@ -314,7 +314,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     nitro.logger.success("Nitro server built");
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
-        await generateFSTree(nitro.options.output.serverDir)
+        await generateFSTree(nitro.options.output.serverDir),
       );
     }
   }
@@ -329,15 +329,15 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   if (buildInfo.commands.preview) {
     nitro.logger.success(
       `You can preview this build using \`${rewriteRelativePaths(
-        buildInfo.commands.preview
-      )}\``
+        buildInfo.commands.preview,
+      )}\``,
     );
   }
   if (buildInfo.commands.deploy) {
     nitro.logger.success(
       `You can deploy this build using \`${rewriteRelativePaths(
-        buildInfo.commands.deploy
-      )}\``
+        buildInfo.commands.deploy,
+      )}\``,
     );
   }
 }
@@ -348,7 +348,7 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       watch: {
         chokidar: nitro.options.watchOptions,
       },
-    })
+    }),
   );
   let start: number;
 
@@ -370,7 +370,7 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
         nitro.hooks.callHook("compiled", nitro);
         nitro.logger.success(
           "Nitro built",
-          start ? `in ${Date.now() - start} ms` : ""
+          start ? `in ${Date.now() - start} ms` : "",
         );
         nitro.hooks.callHook("dev:reload");
         return;
@@ -411,7 +411,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
       if (watchReloadEvents.has(event)) {
         reload();
       }
-    }
+    },
   );
 
   nitro.hooks.hook("close", () => {
@@ -440,7 +440,7 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
       const text =
         (error as PartialMessage).text || (error as RollupError).frame;
       logs.push(
-        `Rollup error while processing \`${path}\`` + text ? "\n\n" + text : ""
+        `Rollup error while processing \`${path}\`` + text ? "\n\n" + text : "",
       );
     }
     return logs.join("\n");

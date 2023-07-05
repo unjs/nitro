@@ -35,7 +35,7 @@ async function handleRequest(request: Request) {
 }
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | string[] | undefined>,
 ) {
   return Object.entries(headers).map(([k, v]) => [
     k,

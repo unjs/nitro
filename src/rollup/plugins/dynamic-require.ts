@@ -38,7 +38,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
       return {
         code: code.replace(
           DYNAMIC_REQUIRE_RE,
-          `import('${HELPER_DYNAMIC}').then(r => r.default || r).then(dynamicRequire => dynamicRequire($1)).then`
+          `import('${HELPER_DYNAMIC}').then(r => r.default || r).then(dynamicRequire => dynamicRequire($1)).then`,
         ),
         map: null,
       };
@@ -62,7 +62,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
       try {
         const wpManifest = resolve(dir, "./server.manifest.json");
         files = await import(pathToFileURL(wpManifest).href).then((r) =>
-          Object.keys(r.files).filter((file) => !ignore.includes(file))
+          Object.keys(r.files).filter((file) => !ignore.includes(file)),
         );
       } catch {
         files = await globby("**/*.{cjs,mjs,js}", {
@@ -79,7 +79,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
             src: resolve(dir, id).replace(/\\/g, "/"),
             name: genSafeVariableName(id),
             meta: await getWebpackChunkMeta(resolve(dir, id)),
-          }))
+          })),
         )
       ).filter((chunk) => chunk.meta);
 
@@ -90,7 +90,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
 
 async function getWebpackChunkMeta(src: string) {
   const chunk = await import(pathToFileURL(src).href).then(
-    (r) => r.default || r || {}
+    (r) => r.default || r || {},
   );
   const { id, ids, modules } = chunk;
   if (!id && !ids) {

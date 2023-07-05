@@ -51,13 +51,13 @@ export function esbuild(options: Options): Plugin {
 
   const extensions: string[] = Object.keys(loaders);
   const INCLUDE_REGEXP = new RegExp(
-    `\\.(${extensions.map((ext) => ext.slice(1)).join("|")})$`
+    `\\.(${extensions.map((ext) => ext.slice(1)).join("|")})$`,
   );
   const EXCLUDE_REGEXP = /node_modules/;
 
   const filter = createFilter(
     include || INCLUDE_REGEXP,
-    exclude || EXCLUDE_REGEXP
+    exclude || EXCLUDE_REGEXP,
   );
 
   return {
@@ -114,7 +114,7 @@ export function esbuild(options: Options): Plugin {
 function printWarnings(
   id: string,
   result: TransformResult,
-  plugin: PluginContext
+  plugin: PluginContext,
 ) {
   if (result.warnings) {
     for (const warning of result.warnings) {

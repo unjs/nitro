@@ -35,7 +35,7 @@ export const lagon = defineNitroPreset({
       const root = nitro.options.output.dir;
       const indexPath = relative(
         root,
-        resolve(nitro.options.output.serverDir, "index.mjs")
+        resolve(nitro.options.output.serverDir, "index.mjs"),
       );
       const assetsDir = relative(root, nitro.options.output.publicDir);
 
@@ -47,7 +47,7 @@ export const lagon = defineNitroPreset({
           index: indexPath,
           client: null,
           assets: assetsDir,
-        })
+        }),
       );
 
       // Write package.json for deployment
@@ -62,8 +62,8 @@ export const lagon = defineNitroPreset({
             },
           },
           null,
-          2
-        )
+          2,
+        ),
       );
     },
   },

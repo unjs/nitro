@@ -2,7 +2,7 @@ import type { NitroFetchRequest, $Fetch } from "./fetch";
 
 export type H3EventFetch = (
   request: NitroFetchRequest,
-  init?: RequestInit
+  init?: RequestInit,
 ) => Promise<Response>;
 
 export type H3Event$Fetch = $Fetch<unknown, NitroFetchRequest>;

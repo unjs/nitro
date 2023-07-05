@@ -47,7 +47,7 @@ export function raw(opts: RawOptions = {}): Plugin {
       if (id.startsWith("\0raw:")) {
         return {
           code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(
-            code
+            code,
           )}`,
           map: null,
         };

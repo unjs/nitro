@@ -31,7 +31,7 @@ async function writeRoutes(nitro: Nitro) {
           site: "<your_project_id>",
           public: relative(
             nitro.options.rootDir,
-            nitro.options.output.publicDir
+            nitro.options.output.publicDir,
           ),
           cleanUrls: true,
           rewrites: [
@@ -45,32 +45,35 @@ async function writeRoutes(nitro: Nitro) {
     };
     await writeFile(
       resolve(nitro.options.rootDir, "firebase.json"),
-      JSON.stringify(firebase)
+      JSON.stringify(firebase),
     );
   }
 
   const _require = createRequire(import.meta.url);
 
   const jsons = await globby(
-    join(nitro.options.output.serverDir, "node_modules/**/package.json")
+    join(nitro.options.output.serverDir, "node_modules/**/package.json"),
   );
   const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length;
   const suffixLength = "/package.json".length;
   // eslint-disable-next-line unicorn/no-array-reduce
-  const dependencies = jsons.reduce((obj, packageJson) => {
-    const dirname = packageJson.slice(prefixLength, -suffixLength);
-    if (!dirname.includes("node_modules")) {
-      obj[dirname] = _require(packageJson).version;
-    }
-    return obj;
-  }, {} as Record<string, string>);
+  const dependencies = jsons.reduce(
+    (obj, packageJson) => {
+      const dirname = packageJson.slice(prefixLength, -suffixLength);
+      if (!dirname.includes("node_modules")) {
+        obj[dirname] = _require(packageJson).version;
+      }
+      return obj;
+    },
+    {} as Record<string, string>,
+  );
 
   let nodeVersion = "18";
   const supportedNodeVersions = new Set(["18", "16", "14", "12", "10"]);
   //    ^ See https://cloud.google.com/functions/docs/concepts/nodejs-runtime
   try {
     const currentNodeVersion = JSON.parse(
-      await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
+      await readFile(join(nitro.options.rootDir, "package.json"), "utf8"),
     ).engines.node;
     if (supportedNodeVersions.has(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
@@ -105,7 +108,7 @@ async function writeRoutes(nitro: Nitro) {
         engines: { node: nodeVersion },
       },
       null,
-      2
-    )
+      2,
+    ),
   );
 }

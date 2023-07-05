@@ -47,7 +47,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   // Normalize options
   const inlineMatchers = (opts.inline || []).map((p) => normalizeMatcher(p));
   const externalMatchers = (opts.external || []).map((p) =>
-    normalizeMatcher(p)
+    normalizeMatcher(p),
   );
 
   return {
@@ -144,7 +144,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           // Guess subpathexport
           const guessedSubpath = pkgName + subpath.replace(/\.[a-z]+$/, "");
           const resolvedGuess = await _resolve(guessedSubpath).catch(
-            () => null
+            () => null,
           );
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
@@ -180,16 +180,16 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Trace files
       let tracedFiles = await nodeFileTrace(
         [...trackedExternals],
-        opts.traceOptions
+        opts.traceOptions,
       )
         .then((r) =>
-          [...r.fileList].map((f) => resolve(opts.traceOptions.base, f))
+          [...r.fileList].map((f) => resolve(opts.traceOptions.base, f)),
         )
         .then((r) => r.filter((file) => file.includes("node_modules")));
 
       // Resolve symlinks
       tracedFiles = await Promise.all(
-        tracedFiles.map((file) => fsp.realpath(file))
+        tracedFiles.map((file) => fsp.realpath(file)),
       );
 
       // Read package.json with cache
@@ -199,7 +199,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           return packageJSONCache.get(pkgDir);
         }
         const pkgJSON = JSON.parse(
-          await fsp.readFile(resolve(pkgDir, "package.json"), "utf8")
+          await fsp.readFile(resolve(pkgDir, "package.json"), "utf8"),
         );
         packageJSONCache.set(pkgDir, pkgJSON);
         return pkgJSON;
@@ -220,7 +220,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const existingPkgDir = tracedPackages.get(pkgName);
         if (existingPkgDir && existingPkgDir !== pkgDir) {
           const v1 = await getPackageJson(existingPkgDir).then(
-            (r) => r.version
+            (r) => r.version,
           );
           const v2 = await getPackageJson(pkgDir).then((r) => r.version);
           const isNewer = semver.gt(v2, v1);
@@ -246,7 +246,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           // Try to map traced files from one package to another for minor/patch versions
           if (getMajor(v1) === getMajor(v2)) {
             tracedFiles = tracedFiles.map((f) =>
-              f.startsWith(olderDir + "/") ? f.replace(olderDir, newerDir) : f
+              f.startsWith(olderDir + "/") ? f.replace(olderDir, newerDir) : f,
             );
           }
           // Exclude older version files
@@ -260,7 +260,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Filter out files from ignored packages and dedup
       tracedFiles = tracedFiles.filter(
-        (f) => !ignoreDirs.some((d) => f.startsWith(d))
+        (f) => !ignoreDirs.some((d) => f.startsWith(d)),
       );
       tracedFiles = [...new Set(tracedFiles)];
 
@@ -289,7 +289,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Write traced files
       await Promise.all(
-        tracedFiles.map((file) => retry(() => writeFile(file), 3))
+        tracedFiles.map((file) => retry(() => writeFile(file), 3)),
       );
 
       // Write an informative package.json
@@ -303,9 +303,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             bundledDependencies: [...tracedPackages.keys()].sort(),
           },
           null,
-          2
+          2,
         ),
-        "utf8"
+        "utf8",
       );
     },
   };
@@ -316,7 +316,7 @@ function parseNodeModulePath(path: string) {
     return {};
   }
   const match = /^(.+\/node_modules\/)([^/@]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(
-    normalize(path)
+    normalize(path),
   );
   if (!match) {
     return {};

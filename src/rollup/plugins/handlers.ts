@@ -32,13 +32,13 @@ export function handlers(nitro: Nitro) {
 
         // Imports take priority
         const imports = unique(
-          handlers.filter((h) => !h.lazy).map((h) => h.handler)
+          handlers.filter((h) => !h.lazy).map((h) => h.handler),
         );
 
         // Lazy imports should fill in the gaps
         // TODO: At least warn if a handler is imported both lazy and non lazy
         const lazyImports = unique(
-          handlers.filter((h) => h.lazy).map((h) => h.handler)
+          handlers.filter((h) => h.lazy).map((h) => h.handler),
         );
 
         const handlersMeta = getHandlers()
@@ -58,7 +58,7 @@ ${imports
 ${lazyImports
   .map(
     (handler) =>
-      `const ${getImportId(handler, true)} = () => import('${handler}');`
+      `const ${getImportId(handler, true)} = () => import('${handler}');`,
   )
   .join("\n")}
 
@@ -68,10 +68,10 @@ ${handlers
     (h) =>
       `  { route: '${h.route || ""}', handler: ${getImportId(
         h.handler,
-        h.lazy
+        h.lazy,
       )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, method: ${JSON.stringify(
-        h.method
-      )} }`
+        h.method,
+      )} }`,
   )
   .join(",\n")}
 ];
@@ -81,7 +81,7 @@ export const handlersMeta = ${JSON.stringify(handlersMeta, null, 2)}
         return code;
       },
     },
-    nitro.vfs
+    nitro.vfs,
   );
 }
 
@@ -97,7 +97,7 @@ const WILDCARD_PATH_RE = /\/\*\*.*$/;
 
 function extendMiddlewareWithRuleOverlaps(
   handlers: NitroEventHandler[],
-  routeRules: Record<string, NitroRouteRules>
+  routeRules: Record<string, NitroRouteRules>,
 ) {
   const rules = Object.entries(routeRules);
   for (const [path, rule] of rules) {
@@ -108,7 +108,7 @@ function extendMiddlewareWithRuleOverlaps(
         ([p, r]) =>
           r.cache &&
           WILDCARD_PATH_RE.test(p) &&
-          path.startsWith(p.replace(WILDCARD_PATH_RE, ""))
+          path.startsWith(p.replace(WILDCARD_PATH_RE, "")),
       );
       if (!isNested) {
         continue;

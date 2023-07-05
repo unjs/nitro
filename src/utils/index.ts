@@ -26,7 +26,10 @@ export function compileTemplate(contents: string) {
       const val = getProperty<Record<string, string>, string>(params, match);
       if (!val) {
         consola.warn(
-          `cannot resolve template param '${match}' in ${contents.slice(0, 20)}`
+          `cannot resolve template param '${match}' in ${contents.slice(
+            0,
+            20,
+          )}`,
         );
       }
       return val || `${match}`;
@@ -46,13 +49,13 @@ export function tryImport(dir: string, path: string) {
 export async function writeFile(
   file: string,
   contents: Buffer | string,
-  log = false
+  log = false,
 ) {
   await fsp.mkdir(dirname(file), { recursive: true });
   await fsp.writeFile(
     file,
     contents,
-    typeof contents === "string" ? "utf8" : undefined
+    typeof contents === "string" ? "utf8" : undefined,
   );
   if (log) {
     consola.info("Generated", prettyPath(file));
@@ -62,7 +65,7 @@ export async function writeFile(
 export function resolvePath(
   path: string,
   nitroOptions: Nitro["options"],
-  base?: string
+  base?: string,
 ): string {
   if (typeof path !== "string") {
     throw new TypeError("Invalid path: " + path);
@@ -82,7 +85,7 @@ export function resolvePath(
 export function resolveFile(
   path: string,
   base = ".",
-  extensions = [".js", ".ts", ".mjs", ".cjs", ".json"]
+  extensions = [".js", ".ts", ".mjs", ".cjs", ".json"],
 ): string | undefined {
   path = resolve(base, path);
   if (existsSync(path)) {
@@ -140,7 +143,7 @@ const _getDependenciesMode = {
 const _require = createRequire(import.meta.url);
 export function getDependencies(
   dir: string,
-  mode: keyof typeof _getDependenciesMode = "all"
+  mode: keyof typeof _getDependenciesMode = "all",
 ) {
   const fields = _getDependenciesMode[mode];
   const pkg = _require(resolve(dir, "package.json"));
@@ -157,14 +160,14 @@ export function getDependencies(
 
 export function readPackageJson(
   packageName: string,
-  _require: NodeRequire = createRequire(import.meta.url)
+  _require: NodeRequire = createRequire(import.meta.url),
 ) {
   try {
     return _require(`${packageName}/package.json`);
   } catch (error) {
     if (error.code === "ERR_PACKAGE_PATH_NOT_EXPORTED") {
       const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(
-        _require.resolve(packageName)
+        _require.resolve(packageName),
       );
       for (const pkgModulePath of pkgModulePaths || []) {
         const path = resolve(pkgModulePath, packageName, "package.json");
@@ -185,8 +188,8 @@ export function resolveAliases(_aliases: Record<string, string>) {
   const aliases = Object.fromEntries(
     Object.entries(_aliases).sort(
       ([a], [b]) =>
-        b.split("/").length - a.split("/").length || b.length - a.length
-    )
+        b.split("/").length - a.split("/").length || b.length - a.length,
+    ),
   );
   // Resolve alias values in relation to each other
   for (const key in aliases) {

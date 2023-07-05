@@ -21,7 +21,7 @@ export async function generateFSTree(dir: string) {
         const size = src.byteLength;
         const gzip = await gzipSize(src);
         return { file, path, size, gzip };
-      })
+      }),
     )
   ).sort((a, b) => a.path.localeCompare(b.path));
 
@@ -51,15 +51,15 @@ export async function generateFSTree(dir: string) {
 
     treeText += chalk.gray(
       `  ${treeChar} ${rpath} (${prettyBytes(item.size)}) (${prettyBytes(
-        item.gzip
-      )} gzip)\n`
+        item.gzip,
+      )} gzip)\n`,
     );
     totalSize += item.size;
     totalGzip += item.gzip;
   }
 
   treeText += `${chalk.cyan("Σ Total size:")} ${prettyBytes(
-    totalSize + totalNodeModulesSize
+    totalSize + totalNodeModulesSize,
   )} (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)\n`;
 
   return treeText;

@@ -85,7 +85,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
           prefix = "nitro";
         } else if (
           nitro.options.handlers.some((m) =>
-            lastModule.startsWith(m.handler as string)
+            lastModule.startsWith(m.handler as string),
           )
         ) {
           prefix = "handlers";
@@ -132,7 +132,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         const idWithoutNodeModules = normalizedId.split("node_modules/").pop();
         return nitro.options.moduleSideEffects.some(
           (m) =>
-            normalizedId.startsWith(m) || idWithoutNodeModules.startsWith(m)
+            normalizedId.startsWith(m) || idWithoutNodeModules.startsWith(m),
         );
       },
     },
@@ -144,7 +144,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   if (nitro.options.imports) {
     rollupConfig.plugins.push(
-      unimportPlugin.rollup(nitro.options.imports) as Plugin
+      unimportPlugin.rollup(nitro.options.imports) as Plugin,
     );
   }
 
@@ -203,41 +203,41 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
           [".", ";", ")", "[", "]", "}", " "].map((d) => [
             `import.meta${d}`,
             `globalThis._importMeta_${d}`,
-          ])
+          ]),
         ),
         ...Object.fromEntries(
           [";", "(", "{", "}", " ", "\t", "\n"].map((d) => [
             `${d}global.`,
             `${d}globalThis.`,
-          ])
+          ]),
         ),
         ...Object.fromEntries(
           Object.entries(buildEnvVars).map(([key, val]) => [
             `process.env.${key}`,
             JSON.stringify(val),
-          ])
+          ]),
         ),
         ...Object.fromEntries(
           Object.entries(buildEnvVars).map(([key, val]) => [
             `import.meta.env.${key}`,
             JSON.stringify(val),
-          ])
+          ]),
         ),
         ...Object.fromEntries(
           Object.entries(staticFlags).map(([key, val]) => [
             `process.${key}`,
             JSON.stringify(val),
-          ])
+          ]),
         ),
         ...Object.fromEntries(
           Object.entries(staticFlags).map(([key, val]) => [
             `import.meta.${key}`,
             JSON.stringify(val),
-          ])
+          ]),
         ),
         ...nitro.options.replace,
       },
-    })
+    }),
   );
 
   // esbuild
@@ -246,7 +246,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       target: "es2019",
       sourceMap: nitro.options.sourceMap,
       ...nitro.options.esbuild?.options,
-    })
+    }),
   );
 
   // Dynamic Require Support
@@ -262,7 +262,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         "server.mjs",
         "server.manifest.mjs",
       ],
-    })
+    }),
   );
 
   // Server assets
@@ -288,8 +288,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
           .map((p) => `import '${p}';`)
           .join("\n"),
       },
-      nitro.vfs
-    )
+      nitro.vfs,
+    ),
   );
 
   // User virtuals
@@ -309,8 +309,8 @@ export const plugins = [
 ]
     `,
       },
-      nitro.vfs
-    )
+      nitro.vfs,
+    ),
   );
 
   // https://github.com/rollup/plugins/tree/master/packages/alias
@@ -334,7 +334,7 @@ export const plugins = [
         "@@/": nitro.options.rootDir,
         ...env.alias,
       }),
-    })
+    }),
   );
 
   // Externals Plugin
@@ -370,8 +370,8 @@ export const plugins = [
         if (!resolved || resolved.external) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
-              from
-            )} and externals are not allowed!`
+              from,
+            )} and externals are not allowed!`,
           );
         }
       },
@@ -411,8 +411,8 @@ export const plugins = [
             "node",
             "import",
           ],
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -432,7 +432,7 @@ export const plugins = [
         "node",
         "import",
       ],
-    })
+    }),
   );
 
   // Automatically mock unresolved externals
@@ -444,7 +444,7 @@ export const plugins = [
       esmExternals: (id) => !id.startsWith("unenv/"),
       requireReturnsDefault: "auto",
       ...nitro.options.commonJS,
-    })
+    }),
   );
 
   // https://github.com/rollup/plugins/tree/master/packages/json
@@ -467,7 +467,7 @@ export const plugins = [
         format: {
           comments: false,
         },
-      })
+      }),
     );
   }
 
@@ -478,7 +478,7 @@ export const plugins = [
         ...nitro.options.analyze,
         filename: nitro.options.analyze.filename.replace("{name}", "nitro"),
         title: "Nitro Server bundle stats",
-      })
+      }),
     );
   }
 

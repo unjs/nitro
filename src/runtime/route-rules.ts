@@ -13,7 +13,7 @@ import type { NitroRouteRules } from "nitropack";
 
 const config = useRuntimeConfig();
 const _routeRulesMatcher = toRouteMatcher(
-  createRadixRouter({ routes: config.nitro.routeRules })
+  createRadixRouter({ routes: config.nitro.routeRules }),
 );
 
 export function createRouteRulesHandler() {
@@ -29,7 +29,7 @@ export function createRouteRulesHandler() {
       return sendRedirect(
         event,
         routeRules.redirect.to,
-        routeRules.redirect.statusCode
+        routeRules.redirect.statusCode,
       );
     }
     // Apply proxy options
@@ -59,7 +59,7 @@ export function getRouteRules(event: H3Event): NitroRouteRules {
   if (!event.context._nitro.routeRules) {
     const path = new URL(event.node.req.url, "http://localhost").pathname;
     event.context._nitro.routeRules = getRouteRulesForPath(
-      withoutBase(path, useRuntimeConfig().app.baseURL)
+      withoutBase(path, useRuntimeConfig().app.baseURL),
     );
   }
   return event.context._nitro.routeRules;

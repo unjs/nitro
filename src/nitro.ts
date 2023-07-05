@@ -16,7 +16,7 @@ import { createStorage } from "./storage";
 
 export async function createNitro(
   config: NitroConfig = {},
-  opts: LoadConfigOptions = {}
+  opts: LoadConfigOptions = {},
 ): Promise<Nitro> {
   // Resolve options
   const options = await loadOptions(config, opts);
@@ -32,10 +32,10 @@ export async function createNitro(
     storage: undefined,
     async updateConfig(config: NitroDynamicConfig) {
       nitro.options.routeRules = normalizeRouteRules(
-        config.routeRules ? config : nitro.options
+        config.routeRules ? config : nitro.options,
       );
       nitro.options.runtimeConfig = normalizeRuntimeConfig(
-        config.runtimeConfig ? config : nitro.options
+        config.runtimeConfig ? config : nitro.options,
       );
       await nitro.hooks.callHook("rollup:reload");
       consola.success("Nitro config hot reloaded!");

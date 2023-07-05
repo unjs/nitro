@@ -31,7 +31,7 @@ export const netlify = defineNitroPreset({
       };
       const functionConfigPath = join(
         nitro.options.output.serverDir,
-        "server.json"
+        "server.json",
       );
       await fsp.writeFile(functionConfigPath, JSON.stringify(functionConfig));
     },
@@ -85,7 +85,7 @@ export const netlifyEdge = defineNitroPreset({
       };
       const manifestPath = join(
         nitro.options.rootDir,
-        ".netlify/edge-functions/manifest.json"
+        ".netlify/edge-functions/manifest.json",
       );
       await fsp.mkdir(dirname(manifestPath), { recursive: true });
       await fsp.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
@@ -115,7 +115,7 @@ export const netlifyStatic = defineNitroPreset({
 async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
   const staticFallback = existsSync(
-    join(nitro.options.output.publicDir, "404.html")
+    join(nitro.options.output.publicDir, "404.html"),
   )
     ? "/* /404.html 404"
     : "";
@@ -124,13 +124,13 @@ async function writeRedirects(nitro: Nitro) {
     : "/* /.netlify/functions/server 200";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
-    (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
+    (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length,
   );
 
   if (!nitro.options.static) {
     // Rewrite static ISR paths to builder functions
     for (const [key, value] of rules.filter(
-      ([_, value]) => value.isr !== undefined
+      ([_, value]) => value.isr !== undefined,
     )) {
       contents = value.isr
         ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
@@ -141,7 +141,7 @@ async function writeRedirects(nitro: Nitro) {
   }
 
   for (const [key, routeRules] of rules.filter(
-    ([_, routeRules]) => routeRules.redirect
+    ([_, routeRules]) => routeRules.redirect,
   )) {
     // TODO: Remove map when netlify support 307/308
     let code = routeRules.redirect.statusCode;
@@ -155,12 +155,12 @@ async function writeRedirects(nitro: Nitro) {
     const currentRedirects = await fsp.readFile(redirectsPath, "utf8");
     if (/^\/\* /m.test(currentRedirects)) {
       nitro.logger.info(
-        "Not adding Nitro fallback to `_redirects` (as an existing fallback was found)."
+        "Not adding Nitro fallback to `_redirects` (as an existing fallback was found).",
       );
       return;
     }
     nitro.logger.info(
-      "Adding Nitro fallback to `_redirects` to handle all unmatched routes."
+      "Adding Nitro fallback to `_redirects` to handle all unmatched routes.",
     );
     contents = currentRedirects + "\n" + contents;
   }
@@ -173,16 +173,16 @@ async function writeHeaders(nitro: Nitro) {
   let contents = "";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
-    (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
+    (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length,
   );
 
   for (const [path, routeRules] of rules.filter(
-    ([_, routeRules]) => routeRules.headers
+    ([_, routeRules]) => routeRules.headers,
   )) {
     const headers = [
       path.replace("/**", "/*"),
       ...Object.entries({ ...routeRules.headers }).map(
-        ([header, value]) => `  ${header}: ${value}`
+        ([header, value]) => `  ${header}: ${value}`,
       ),
     ].join("\n");
 
@@ -193,12 +193,12 @@ async function writeHeaders(nitro: Nitro) {
     const currentHeaders = await fsp.readFile(headersPath, "utf8");
     if (/^\/\* /m.test(currentHeaders)) {
       nitro.logger.info(
-        "Not adding Nitro fallback to `_headers` (as an existing fallback was found)."
+        "Not adding Nitro fallback to `_headers` (as an existing fallback was found).",
       );
       return;
     }
     nitro.logger.info(
-      "Adding Nitro fallback to `_headers` to handle all unmatched routes."
+      "Adding Nitro fallback to `_headers` to handle all unmatched routes.",
     );
     contents = currentHeaders + "\n" + contents;
   }
@@ -228,7 +228,7 @@ function deprecateSWR(nitro: Nitro) {
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning.",
     );
   }
 }

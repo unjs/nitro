@@ -14,7 +14,7 @@ export type { RenderResponse, RenderHandler } from "./renderer";
 export interface NitroRuntimeHooks {
   "render:response": (
     response: Partial<RenderResponse>,
-    context: { event: H3Event }
+    context: { event: H3Event },
   ) => void;
   close: () => void;
 }

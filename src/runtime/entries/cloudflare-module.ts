@@ -21,7 +21,7 @@ export default {
   async fetch(
     request: Request, // CFRequest,
     env: CFModuleEnv,
-    context: ExecutionContext
+    context: ExecutionContext,
   ) {
     try {
       // https://github.com/cloudflare/kv-asset-handler#es-modules
@@ -37,7 +37,7 @@ export default {
           mapRequestToAsset: baseURLModifier,
           ASSET_NAMESPACE: env.__STATIC_CONTENT,
           ASSET_MANIFEST: JSON.parse(manifest),
-        }
+        },
       );
     } catch {
       // Ignore

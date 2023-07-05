@@ -62,7 +62,7 @@ export default eventHandler((event) => {
             },
           };
           return [route, item];
-        })
+        }),
       ),
     },
   };

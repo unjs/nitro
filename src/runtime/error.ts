@@ -38,7 +38,7 @@ export default <NitroErrorHandler>function (error, event) {
       .join(" ");
     console.error(
       tags,
-      error.message + "\n" + stack.map((l) => "  " + l.text).join("  \n")
+      error.message + "\n" + stack.map((l) => "  " + l.text).join("  \n"),
     );
   }
 

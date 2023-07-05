@@ -13,10 +13,10 @@ const ENV_PREFIX_ALT =
 
 // Runtime config
 const _sharedRuntimeConfig = _deepFreeze(
-  _applyEnv(klona(_inlineRuntimeConfig))
+  _applyEnv(klona(_inlineRuntimeConfig)),
 );
 export function useRuntimeConfig<
-  T extends NitroRuntimeConfig = NitroRuntimeConfig
+  T extends NitroRuntimeConfig = NitroRuntimeConfig,
 >(event?: H3Event): T {
   // Backwards compatibility with ambient context
   if (!event) {
@@ -55,7 +55,7 @@ export function useAppConfig(event?: H3Event) {
 function _getEnv(key: string) {
   const envKey = snakeCase(key).toUpperCase();
   return destr(
-    process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey]
+    process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey],
   );
 }
 
@@ -95,7 +95,7 @@ function _deepFreeze(object: Record<string, any>) {
 export default new Proxy(Object.create(null), {
   get: (_, prop) => {
     console.warn(
-      "Please use `useRuntimeConfig()` instead of accessing config directly."
+      "Please use `useRuntimeConfig()` instead of accessing config directly.",
     );
     const runtimeConfig = useRuntimeConfig();
     if (prop in runtimeConfig) {

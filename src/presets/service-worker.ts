@@ -9,7 +9,7 @@ const scriptTemplate = (baseURL = "/") => `
 async function register () {
   const registration = await navigator.serviceWorker.register('${joinURL(
     baseURL,
-    "sw.js"
+    "sw.js",
   )}')
   await navigator.serviceWorker.ready
   registration.active.addEventListener('statechange', (event) => {
@@ -56,7 +56,7 @@ export const serviceWorker = defineNitroPreset(() => {
         const script = scriptTemplate(nitro.options.baseURL);
         route.contents = route.contents.replace(
           "</head>",
-          `${script}\n</head>`
+          `${script}\n</head>`,
         );
       },
       async compiled(nitro: Nitro) {
@@ -65,9 +65,9 @@ export const serviceWorker = defineNitroPreset(() => {
           resolve(nitro.options.output.publicDir, "sw.js"),
           `self.importScripts('${joinURL(
             nitro.options.baseURL,
-            "server/index.mjs"
+            "server/index.mjs",
           )}');`,
-          "utf8"
+          "utf8",
         );
 
         // Write fallback initializer files
@@ -78,21 +78,21 @@ export const serviceWorker = defineNitroPreset(() => {
           await fsp.writeFile(
             resolve(nitro.options.output.publicDir, "index.html"),
             html,
-            "utf8"
+            "utf8",
           );
         }
         if (!existsSync(resolve(nitro.options.output.publicDir, "200.html"))) {
           await fsp.writeFile(
             resolve(nitro.options.output.publicDir, "200.html"),
             html,
-            "utf8"
+            "utf8",
           );
         }
         if (!existsSync(resolve(nitro.options.output.publicDir, "404.html"))) {
           await fsp.writeFile(
             resolve(nitro.options.output.publicDir, "404.html"),
             html,
-            "utf8"
+            "utf8",
           );
         }
       },

@@ -15,7 +15,7 @@ export function getGracefulShutdownConfig() {
 
 export function setupGracefulShutdown(
   listener: HttpServer,
-  nitroApp: NitroApp
+  nitroApp: NitroApp,
 ) {
   const shutdownConfig = getGracefulShutdownConfig();
   if (shutdownConfig.disabled) {

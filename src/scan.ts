@@ -23,7 +23,7 @@ export async function scanHandlers(nitro: Nitro) {
       return (
         h.middleware ||
         array.findIndex(
-          (h2) => h.route === h2.route && h.method === h2.method
+          (h2) => h.route === h2.route && h.method === h2.method,
         ) === index
       );
     });
@@ -68,7 +68,7 @@ export function scanRoutes(nitro: Nitro, dir: string, prefix = "/") {
 async function scanServerDir(
   nitro: Nitro,
   name: string,
-  mapper: (file: FileInfo) => NitroEventHandler
+  mapper: (file: FileInfo) => NitroEventHandler,
 ) {
   const dirs = nitro.options.scanDirs.map((dir) => join(dir, name));
   const files = await scanDirs(dirs);
@@ -105,6 +105,6 @@ function scanDirs(dirs: string[]): Promise<FileInfo[]> {
           };
         })
         .sort((a, b) => a.path.localeCompare(b.path));
-    })
+    }),
   ).then((r) => r.flat());
 }

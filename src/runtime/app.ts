@@ -74,7 +74,7 @@ function createNitroApp(): NitroApp {
         fetchWithEvent(event, req, init as RequestInit, {
           fetch: $fetch,
         })) as $Fetch<unknown, NitroFetchRequest>;
-    })
+    }),
   );
 
   for (const h of handlers) {
@@ -82,12 +82,12 @@ function createNitroApp(): NitroApp {
     if (h.middleware || !h.route) {
       const middlewareBase = (config.app.baseURL + (h.route || "/")).replace(
         /\/+/g,
-        "/"
+        "/",
       );
       h3App.use(middlewareBase, handler);
     } else {
       const routeRules = getRouteRulesForPath(
-        h.route.replace(/:\w+|\*\*/g, "_")
+        h.route.replace(/:\w+|\*\*/g, "_"),
       );
       if (routeRules.cache) {
         handler = cachedEventHandler(handler, {

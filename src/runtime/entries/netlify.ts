@@ -14,7 +14,7 @@ export const handler: Handler = async function handler(event, context) {
 
   if (routeRules.isr) {
     const builder = await import("@netlify/functions").then(
-      (r) => r.builder || r.default.builder
+      (r) => r.builder || r.default.builder,
     );
     const ttl = typeof routeRules.isr === "number" ? routeRules.isr : false;
     const builderHandler = ttl

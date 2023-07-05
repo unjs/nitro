@@ -9,7 +9,7 @@ export const bun = defineNitroPreset({
       resolvePathSync(id, {
         url: import.meta.url,
         conditions: ["bun"],
-      })
+      }),
     ),
   },
   commands: {

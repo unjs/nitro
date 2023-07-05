@@ -31,7 +31,7 @@ function runMaster() {
       await new Promise<void>((resolve) => {
         const timeout = setTimeout(() => {
           console.warn(
-            "[nitro] [cluster] Timeout reached for graceful shutdown. Forcing exit."
+            "[nitro] [cluster] Timeout reached for graceful shutdown. Forcing exit.",
           );
           resolve();
         }, shutdownConfig.timeout);

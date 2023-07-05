@@ -46,7 +46,7 @@ export default defineCommand({
 
               consola.info(
                 "Nitro config updated:\n" +
-                  diff.map((entry) => `  ${entry.toString()}`).join("\n")
+                  diff.map((entry) => `  ${entry.toString()}`).join("\n"),
               );
 
               await (diff.every((e) => hmrKeyRe.test(e.key))
@@ -54,7 +54,7 @@ export default defineCommand({
                 : reload()); // Hot reload
             },
           },
-        }
+        },
       );
       nitro.hooks.hookOnce("restart", reload);
       const server = createDevServer(nitro);
