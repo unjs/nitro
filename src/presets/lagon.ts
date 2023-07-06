@@ -2,6 +2,10 @@ import type { PackageJson } from "pkg-types";
 import { resolve, relative } from "pathe";
 import { defineNitroPreset } from "../preset";
 import { writeFile } from "../utils";
+import {
+  exportConditions,
+  workerExportConditions,
+} from "../utils/export-conditions";
 
 /**
  * Both function_id and organization_id fields are required but only used when deploying the function
@@ -18,6 +22,7 @@ export interface LagonFunctionConfig {
 export const lagon = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/lagon",
+  exportConditions: exportConditions("lagon", workerExportConditions),
   commands: {
     preview: "npm run dev --prefix ./",
     deploy: "npm run deploy --prefix ./",

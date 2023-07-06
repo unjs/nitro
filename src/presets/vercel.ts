@@ -6,6 +6,10 @@ import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 import type { VercelBuildConfigV3 } from "../types/presets";
+import {
+  exportConditions,
+  workerExportConditions,
+} from "../utils/export-conditions";
 
 // https://vercel.com/docs/build-output-api/v3
 
@@ -81,6 +85,10 @@ export const vercel = defineNitroPreset({
 export const vercelEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/vercel-edge",
+  exportConditions: exportConditions(
+    ["edge-light", "http"],
+    workerExportConditions
+  ),
   output: {
     dir: "{{ rootDir }}/.vercel/output",
     serverDir: "{{ output.dir }}/functions/__nitro.func",

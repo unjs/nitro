@@ -1,7 +1,12 @@
 import { defineNitroPreset } from "../preset";
+import {
+  exportConditions,
+  workerExportConditions,
+} from "../utils/export-conditions";
 
 export const denoDeploy = defineNitroPreset({
   entry: "#internal/nitro/entries/deno-deploy",
+  exportConditions: exportConditions("deno", workerExportConditions),
   node: false,
   noExternals: true,
   serveStatic: "deno",
