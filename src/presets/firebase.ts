@@ -11,7 +11,7 @@ import type { Nitro } from "../types";
 export const firebase = defineNitroPreset({
   entry: "#internal/nitro/entries/firebase",
   commands: {
-    deploy: "npx firebase deploy",
+    deploy: "npx firebase-tools deploy",
   },
   hooks: {
     async compiled(ctx) {
