@@ -6,7 +6,6 @@ import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import commonjs from "@rollup/plugin-commonjs";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
 import json from "@rollup/plugin-json";
 import wasmPlugin from "@rollup/plugin-wasm";
@@ -36,6 +35,7 @@ import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
+import { nodeResolvePlugin } from "./plugins/node-resolve";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -417,23 +417,7 @@ export const plugins = [
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve
-  rollupConfig.plugins.push(
-    nodeResolve({
-      extensions,
-      preferBuiltins: !!nitro.options.node,
-      rootDir: nitro.options.rootDir,
-      modulePaths: nitro.options.nodeModulesDirs,
-      // 'module' is intentionally not supported because of externals
-      mainFields: ["main"],
-      exportConditions: [
-        "default",
-        nitro.options.dev ? "development" : "production",
-        "module",
-        "node",
-        "import",
-      ],
-    })
-  );
+  rollupConfig.plugins.push(nodeResolvePlugin(nitro, extensions));
 
   // Automatically mock unresolved externals
   // rollupConfig.plugins.push(autoMock())
