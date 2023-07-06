@@ -80,6 +80,8 @@ export const nodeResolvePlugin = (nitro: Nitro, extensions: string[]) => {
     modulePaths: nitro.options.nodeModulesDirs,
     // 'module' is intentionally not supported because of externals
     mainFields: ["main"],
-    exportConditions: getExportConditions(nitro.options.preset),
+    exportConditions:
+      nitro.options.exportConditions ??
+      getExportConditions(nitro.options.preset),
   });
 };
