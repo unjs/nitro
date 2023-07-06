@@ -1,4 +1,5 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve";
+import { kebabCase } from "scule";
 import type { Nitro, NitroOptions } from "../../types";
 
 const rKeys = (runtimeKeys: string | string[], conditions: string[]) => {
@@ -41,7 +42,7 @@ export const nodeResolvePlugin = (nitro: Nitro, extensions: string[]) => {
   ];
 
   const getExportConditions = (preset: NitroOptions["preset"]) => {
-    switch (preset) {
+    switch (kebabCase(preset)) {
       case "node-server":
       case "node-cluster":
       case "node": {
