@@ -10,7 +10,7 @@ export const cloudflarePages = defineNitroPreset({
   entry: "#internal/nitro/entries/cloudflare-pages",
   commands: {
     preview: "npx wrangler pages dev ./",
-    deploy: "npx wrangler pages publish ./",
+    deploy: "npx wrangler pages deploy ./",
   },
   output: {
     dir: "{{ rootDir }}/dist",
