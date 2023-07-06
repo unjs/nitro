@@ -98,7 +98,7 @@ Nitro `/api` directory isn't compatible with Vercel.
 Instead, you have to use :
 
 - `routes/api/` for standalone usage
-- `server/api/` for [Nuxt](https://nuxt.com).
+- `server/api/` with [Nuxt](https://nuxt.com).
 
 ## Custom Build Output Configuration
 
