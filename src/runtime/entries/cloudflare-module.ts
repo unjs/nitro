@@ -51,6 +51,7 @@ export default {
 
     // Expose latest env to the global context
     globalThis.__env__ = env;
+
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: (request as any).cf,
