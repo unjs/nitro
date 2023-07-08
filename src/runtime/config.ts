@@ -12,13 +12,12 @@ const ENV_PREFIX_ALT =
   _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_";
 
 // Runtime config
-let appliedRuntimeConfig = {};
 const _sharedRuntimeConfig = _deepFreeze(
   _applyEnv(klona(_inlineRuntimeConfig))
 );
 const getRuntimeConfig = () => ({
   ..._sharedRuntimeConfig,
-  ...appliedRuntimeConfig,
+  ...envToRuntimeObject(globalThis.__env__ ?? {}),
 });
 
 export function useRuntimeConfig<
@@ -39,8 +38,8 @@ export function useRuntimeConfig<
   return runtimeConfig;
 }
 
-export function applyEnvToRuntimeConfig(
-  env: Record<string, any>,
+export function envToRuntimeObject(
+  env: Record<string, unknown>,
   prefixes = [ENV_PREFIX, "NUXT_", ENV_PREFIX_ALT]
 ) {
   const safeEnv = Object.fromEntries(
@@ -50,8 +49,7 @@ export function applyEnvToRuntimeConfig(
       )
       .map(([key, value]) => [formatKey(key), value])
   );
-  appliedRuntimeConfig = safeEnv;
-  return useRuntimeConfig();
+  return safeEnv;
 }
 
 const formatKey = (key: string) =>

@@ -3,7 +3,6 @@ import type {
   Request as CFRequest,
   EventContext,
 } from "@cloudflare/workers-types";
-import { applyEnvToRuntimeConfig } from "../config";
 import { requestHasBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
@@ -39,7 +38,6 @@ export default {
 
     // Expose latest env to the global context
     globalThis.__env__ = env;
-    applyEnvToRuntimeConfig(env);
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: request.cf,
