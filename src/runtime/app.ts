@@ -83,7 +83,7 @@ function createNitroApp(): NitroApp {
           event.context.nitro._waitUntilPromises = [];
         }
         event.context.nitro._waitUntilPromises.push(promise);
-        if (envContext.waitUntil) {
+        if (envContext?.waitUntil) {
           envContext.waitUntil(promise);
         }
       };
