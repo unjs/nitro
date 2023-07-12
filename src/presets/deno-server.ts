@@ -6,15 +6,11 @@ import inject from "@rollup/plugin-inject";
 import { defineNitroPreset } from "../preset";
 import { writeFile } from "../utils";
 import { ImportMetaRe } from "../rollup/plugins/import-meta";
-import {
-  exportConditions,
-  workerExportConditions,
-} from "../utils/export-conditions";
 
 export const denoServer = defineNitroPreset({
   extends: "node-server",
   entry: "#internal/nitro/entries/deno-server",
-  exportConditions: exportConditions("deno", workerExportConditions),
+  exportConditions: ["deno"],
   commands: {
     preview: "deno task --config ./deno.json start",
   },

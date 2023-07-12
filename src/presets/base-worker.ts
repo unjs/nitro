@@ -1,9 +1,7 @@
 import { defineNitroPreset } from "../preset";
-import { workerExportConditions } from "../utils/export-conditions";
 
 export const baseWorker = defineNitroPreset({
   entry: null, // Abstract
-  exportConditions: workerExportConditions,
   node: false,
   minify: true,
   noExternals: true,

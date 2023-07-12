@@ -4,15 +4,11 @@ import { joinURL, withLeadingSlash, withoutLeadingSlash } from "ufo";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import {
-  exportConditions,
-  workerExportConditions,
-} from "../utils/export-conditions";
 
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
   entry: "#internal/nitro/entries/cloudflare-pages",
-  exportConditions: exportConditions("workerd", workerExportConditions),
+  exportConditions: ["workerd"],
   commands: {
     preview: "npx wrangler pages dev ./",
     deploy: "npx wrangler pages deploy ./",

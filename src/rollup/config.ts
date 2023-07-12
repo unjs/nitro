@@ -404,13 +404,7 @@ export const plugins = [
             processCwd: nitro.options.rootDir,
             exportsOnly: true,
           },
-          exportConditions: [
-            "default",
-            nitro.options.dev ? "development" : "production",
-            "module",
-            "node",
-            "import",
-          ],
+          exportConditions: nitro.options.exportConditions,
         })
       )
     );
@@ -425,13 +419,7 @@ export const plugins = [
       modulePaths: nitro.options.nodeModulesDirs,
       // 'module' is intentionally not supported because of externals
       mainFields: ["main"],
-      exportConditions: nitro.options.exportConditions ?? [
-        "default",
-        nitro.options.dev ? "development" : "production",
-        "module",
-        "node",
-        "import",
-      ],
+      exportConditions: nitro.options.exportConditions,
     })
   );
 

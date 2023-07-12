@@ -3,10 +3,6 @@ import { join, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 import { name, version } from "../../package.json";
-import {
-  exportConditions,
-  workerExportConditions,
-} from "../utils/export-conditions";
 
 // Netlify functions
 export const netlify = defineNitroPreset({
@@ -57,7 +53,7 @@ export const netlifyBuilder = defineNitroPreset({
 export const netlifyEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/netlify-edge",
-  exportConditions: exportConditions("netlify", workerExportConditions),
+  exportConditions: ["netlify"],
   output: {
     serverDir: "{{ rootDir }}/.netlify/edge-functions/server",
     publicDir: "{{ rootDir }}/dist",

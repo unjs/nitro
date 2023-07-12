@@ -2,15 +2,11 @@ import { resolve } from "pathe";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import {
-  exportConditions,
-  workerExportConditions,
-} from "../utils/export-conditions";
 
 export const cloudflareModule = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/cloudflare-module",
-  exportConditions: exportConditions("workerd", workerExportConditions),
+  exportConditions: ["workerd"],
   commands: {
     preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
     deploy: "npx wrangler deploy",
