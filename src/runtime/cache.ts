@@ -39,10 +39,10 @@ const defaultCacheOptions = {
   maxAge: 1,
 };
 
-export function defineCachedFunction<T = any>(
-  fn: (...args) => T | Promise<T>,
+export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
+  fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
-) {
+): (...args: ArgsT) => Promise<T> {
   opts = { ...defaultCacheOptions, ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
