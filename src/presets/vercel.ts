@@ -81,6 +81,7 @@ export const vercel = defineNitroPreset({
 export const vercelEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/vercel-edge",
+  exportConditions: ["edge-light"],
   output: {
     dir: "{{ rootDir }}/.vercel/output",
     serverDir: "{{ output.dir }}/functions/__nitro.func",

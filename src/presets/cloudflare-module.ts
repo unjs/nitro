@@ -6,6 +6,7 @@ import type { Nitro } from "../types";
 export const cloudflareModule = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/cloudflare-module",
+  exportConditions: ["workerd"],
   commands: {
     preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
     deploy: "npx wrangler deploy",

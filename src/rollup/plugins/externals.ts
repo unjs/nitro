@@ -181,10 +181,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Trace used files using nft
-      const _fileTrace = await nodeFileTrace(
-        [...trackedExternals],
-        opts.traceOptions
-      );
+      const _fileTrace = await nodeFileTrace([...trackedExternals], {
+        conditions: opts.exportConditions,
+        ...opts.traceOptions,
+      });
 
       // Read package.json with cache
       const packageJSONCache = new Map(); // pkgDir => contents
