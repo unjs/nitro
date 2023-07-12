@@ -499,7 +499,7 @@ function _resolveExportConditions(
   // 4. Add default conditions
   resolvedConditions.push("import", "module", "default");
 
-  // Dedup with
+  // Dedup with preserving order
   return resolvedConditions.filter(
     (c, i) => resolvedConditions.indexOf(c) === i
   );
