@@ -390,7 +390,7 @@ export function testNitro(
   });
 
   it("event.waitUntil", async () => {
-    const res = await callHandler({ url: "/api/wait-until" });
+    const res = await callHandler({ url: "/wait-until" });
     expect(res.data).toBe("done");
   });
 }
