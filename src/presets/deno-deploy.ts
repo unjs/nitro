@@ -2,6 +2,7 @@ import { defineNitroPreset } from "../preset";
 
 export const denoDeploy = defineNitroPreset({
   entry: "#internal/nitro/entries/deno-deploy",
+  exportConditions: ["deno"],
   node: false,
   noExternals: true,
   serveStatic: "deno",
