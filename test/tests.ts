@@ -388,4 +388,9 @@ export function testNitro(
       "versions?.nitro": [expect.any(String), expect.any(String)],
     });
   });
+
+  it("event.waitUntil", async () => {
+    const res = await callHandler({ url: "/wait-until" });
+    expect(res.data).toBe("done");
+  });
 }
