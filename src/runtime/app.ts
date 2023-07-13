@@ -62,11 +62,13 @@ function createNitroApp(): NitroApp {
     eventHandler((event) => {
       // Init nitro context
       event.context.nitro = event.context.nitro || {};
+
       // Support platform context provided by local fetch
       const envContext = (event.node.req as any).__unenv__;
       if (envContext) {
         Object.assign(event.context, envContext);
       }
+
       // Assign bound fetch to context
       event.fetch = (req, init) =>
         fetchWithEvent(event, req, init, { fetch: localFetch });
@@ -74,6 +76,17 @@ function createNitroApp(): NitroApp {
         fetchWithEvent(event, req, init as RequestInit, {
           fetch: $fetch,
         })) as $Fetch<unknown, NitroFetchRequest>;
+
+      // https://github.com/unjs/nitro/issues/1420
+      event.waitUntil = (promise) => {
+        if (!event.context.nitro._waitUntilPromises) {
+          event.context.nitro._waitUntilPromises = [];
+        }
+        event.context.nitro._waitUntilPromises.push(promise);
+        if (envContext?.waitUntil) {
+          envContext.waitUntil(promise);
+        }
+      };
     })
   );
 
