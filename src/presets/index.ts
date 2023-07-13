@@ -1,4 +1,5 @@
 export * from "./aws-lambda";
+export * from "./aws-lambda-edge";
 export * from "./azure-functions";
 export * from "./azure";
 export * from "./base-worker";
