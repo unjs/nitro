@@ -42,6 +42,7 @@ export default {
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: request.cf,
+        waitUntil: (promise) => context.waitUntil(promise),
         cloudflare: {
           request,
           env,

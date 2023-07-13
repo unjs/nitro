@@ -267,6 +267,7 @@ export interface NitroOptions extends PresetOptions {
   analyze: false | PluginVisualizerOptions;
   replace: Record<string, string | ((id: string) => string)>;
   commonJS?: RollupCommonJSOptions;
+  exportConditions?: string[];
 
   // Advanced
   typescript: {

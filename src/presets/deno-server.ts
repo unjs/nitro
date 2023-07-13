@@ -10,6 +10,7 @@ import { ImportMetaRe } from "../rollup/plugins/import-meta";
 export const denoServer = defineNitroPreset({
   extends: "node-server",
   entry: "#internal/nitro/entries/deno-server",
+  exportConditions: ["deno"],
   commands: {
     preview: "deno task --config ./deno.json start",
   },
