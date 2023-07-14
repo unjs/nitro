@@ -267,10 +267,10 @@ export function testNitro(
       async () => {
         const { data } = await callHandler({ url: "/modules" });
         expect(data).toMatchObject({
-          depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
-          depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
-          depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
-          subpathLib: "nitro-lib@2.0.0",
+          depA: "@fixture/nitro-lib@1.0.0+nested-lib@1.0.0",
+          depB: "@fixturen/itro-lib@2.0.1+nested-lib@2.0.1",
+          depLib: "@fixture/nitro-lib@2.0.0+nested-lib@2.0.0",
+          subpathLib: "@fixture/nitro-lib@2.0.0",
         });
       }
     );
