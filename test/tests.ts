@@ -400,5 +400,10 @@ export function testNitro(
       expect((await callHandler({ url: "/api/_ignored" })).status).toBe(404);
       expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
     });
+
+    it("public files should be ignored", async () => {
+      expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
+      expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
+    });
   });
 }
