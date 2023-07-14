@@ -76,7 +76,7 @@ export async function scanServerRoutes(
 
 export async function scanPlugins(nitro: Nitro) {
   const files = await scanFiles(nitro, "plugins");
-  return files;
+  return files.map((f) => f.fullPath);
 }
 
 async function scanFiles(nitro: Nitro, name: string): Promise<FileInfo[]> {
