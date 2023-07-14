@@ -26,6 +26,7 @@ export default defineNitroConfig({
       dir: "files",
     },
   ],
+  ignore: ["api/**/_*", "middleware/_ignored.ts", "routes/_*.ts"],
   appConfig: {
     "nitro-config": true,
     dynamic: "initial",

@@ -211,7 +211,6 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
-  ignorePublic: string[];
   experimental?: {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
@@ -231,6 +230,7 @@ export interface NitroOptions extends PresetOptions {
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
+  ignore: string[];
 
   // Dev
   dev: boolean;

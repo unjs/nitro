@@ -46,7 +46,7 @@ export async function copyPublicAssets(nitro: Nitro) {
         cwd: asset.dir,
         absolute: false,
         dot: true,
-        ignore: nitro.options.ignorePublic,
+        ignore: nitro.options.ignore,
         onlyFiles: false,
       });
 
