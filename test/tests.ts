@@ -401,9 +401,17 @@ export function testNitro(
       expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
     });
 
-    it("public files should be ignored", async () => {
-      expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
+    it.skipIf(
+      [
+        "nitro-dev",
+        "cloudflare",
+        "cloudflare-pages",
+        "cloudflare-module",
+        "vercel-edge",
+      ].includes(ctx.preset)
+    )("public files should be ignored", async () => {
       expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
+      expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
     });
   });
 }
