@@ -1,4 +1,4 @@
-import { promises as fsp } from "node:fs";
+import { existsSync, promises as fsp } from "node:fs";
 import { relative, resolve, join, dirname, isAbsolute } from "pathe";
 import { resolveAlias } from "pathe/utils";
 import * as rollup from "rollup";
@@ -41,33 +41,23 @@ export async function copyPublicAssets(nitro: Nitro) {
     return;
   }
   for (const asset of nitro.options.publicAssets) {
-    if (await isDirectory(asset.dir)) {
+    const srcDir = asset.dir;
+    const dstDir = join(nitro.options.output.publicDir, asset.baseURL!);
+    if (await isDirectory(srcDir)) {
       const publicAssets = await globby("**", {
-        cwd: asset.dir,
+        cwd: srcDir,
         absolute: false,
         dot: true,
         ignore: nitro.options.ignore,
-        onlyFiles: false,
       });
-
-      const publicAssetsMap: { [path: string]: true } = {};
-      for (const path of publicAssets) {
-        const pathWithPrefix = `/${path}`;
-        publicAssetsMap[pathWithPrefix] = true;
-      }
-
-      await fse.copy(
-        asset.dir,
-        join(nitro.options.output.publicDir, asset.baseURL!),
-        {
-          overwrite: false,
-          filter: (src: string, _dest: string) => {
-            const removeDirString = src.replace(asset.dir, "");
-            const passCopy =
-              removeDirString === "" || removeDirString in publicAssetsMap;
-            return passCopy;
-          },
-        }
+      await Promise.all(
+        publicAssets.map((file) => {
+          const src = join(srcDir, file);
+          const dst = join(dstDir, file);
+          if (!existsSync(dst)) {
+            return fsp.cp(src, dst);
+          }
+        })
       );
     }
   }
