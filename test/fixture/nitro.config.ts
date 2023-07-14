@@ -23,7 +23,7 @@ export default defineNitroConfig({
   },
   alias: {
     "#fixture-nitro-utils-extra-absolute": fileURLToPath(
-      new URL("node_modules/@fixture/nitro-utils/extra.mjs", import.meta.url)
+      new URL("node_modules/@fixture/nitro-utils/extra2.mjs", import.meta.url)
     ),
   },
   serverAssets: [
