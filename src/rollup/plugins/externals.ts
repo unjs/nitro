@@ -9,8 +9,16 @@ import semver from "semver";
 import { isDirectory } from "../../utils";
 
 export interface NodeExternalsOptions {
-  inline?: string[];
-  external?: string[];
+  inline?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
+  external?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -37,8 +45,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  opts.inline = (opts.inline || []).map((p) => normalize(p));
-  opts.external = (opts.external || []).map((p) => normalize(p));
+  const inlineMatchers = (opts.inline || []).map((p) => normalizeMatcher(p));
+  const externalMatchers = (opts.external || []).map((p) =>
+    normalizeMatcher(p)
+  );
 
   return {
     name: "node-externals",
@@ -65,21 +75,17 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const idWithoutNodeModules = id.split("node_modules/").pop();
 
       // Check for explicit inlines
-      if (
-        opts.inline.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
-      ) {
-        return null;
+      for (const matcher of inlineMatchers) {
+        if (matcher(id, importer)) {
+          return null;
+        }
       }
 
       // Check for explicit externals
-      if (
-        opts.external.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
-      ) {
-        return { id, external: true };
+      for (const matcher of externalMatchers) {
+        if (matcher(id, importer)) {
+          return { id, external: true };
+        }
       }
 
       // Resolve id using rollup resolver
@@ -175,10 +181,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Trace used files using nft
-      const _fileTrace = await nodeFileTrace(
-        [...trackedExternals],
-        opts.traceOptions
-      );
+      const _fileTrace = await nodeFileTrace([...trackedExternals], {
+        conditions: opts.exportConditions,
+        ...opts.traceOptions,
+      });
 
       // Read package.json with cache
       const packageJSONCache = new Map(); // pkgDir => contents
@@ -432,10 +438,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Write an informative package.json
       const bundledDependencies = Object.fromEntries(
-        Object.values(tracedPackages).map((pkg) => [
-          pkg.name,
-          Object.keys(pkg.versions).join(" | "),
-        ])
+        Object.values(tracedPackages)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
       );
 
       await fsp.writeFile(
@@ -508,4 +513,25 @@ async function isFile(file: string) {
     }
     throw err;
   }
+}
+
+export function normalizeMatcher(
+  pattern:
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+) {
+  if (typeof pattern === "string") {
+    const _pattern = normalize(pattern);
+    return (id: string) => {
+      const idWithoutNodeModules = id.split("node_modules/").pop();
+      return (
+        id.startsWith(_pattern) || idWithoutNodeModules.startsWith(_pattern)
+      );
+    };
+  }
+  if (typeof pattern === "function") {
+    return pattern;
+  }
+  return (id: string) => pattern.test(id);
 }

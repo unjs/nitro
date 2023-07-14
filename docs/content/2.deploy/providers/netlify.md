@@ -1,7 +1,6 @@
----
-title: Netlify
-description: 'Discover Netlify preset for Nitro!'
----
+# Netlify
+
+Deploy Nitro apps to Netlify.
 
 **Preset:** `netlify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

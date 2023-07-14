@@ -48,9 +48,7 @@ import { assets } from '#internal/nitro/virtual/server-assets'
 
 ${driverImports.map((i) => genImport(i, genSafeVariableName(i))).join("\n")}
 
-const storage = createStorage({})
-
-export const useStorage = () => storage
+export const storage = createStorage({})
 
 storage.mount('/assets', assets)
 

@@ -3,13 +3,16 @@ import type { Nitro, NitroRouteRules, NitroEventHandler } from "../../types";
 import { virtual } from "./virtual";
 
 export function handlers(nitro: Nitro) {
+  const getHandlers = () =>
+    [
+      ...nitro.scannedHandlers,
+      ...nitro.options.handlers,
+    ] as NitroEventHandler[];
+
   return virtual(
     {
       "#internal/nitro/virtual/server-handlers": () => {
-        const handlers: NitroEventHandler[] = [
-          ...nitro.scannedHandlers,
-          ...nitro.options.handlers,
-        ];
+        const handlers = getHandlers();
         if (nitro.options.serveStatic) {
           handlers.unshift({
             middleware: true,
@@ -38,6 +41,15 @@ export function handlers(nitro: Nitro) {
           handlers.filter((h) => h.lazy).map((h) => h.handler)
         );
 
+        const handlersMeta = getHandlers()
+          .filter((h) => h.route)
+          .map((h) => {
+            return {
+              route: h.route,
+              method: h.method,
+            };
+          });
+
         const code = `
 ${imports
   .map((handler) => `import ${getImportId(handler)} from '${handler}';`)
@@ -63,6 +75,8 @@ ${handlers
   )
   .join(",\n")}
 ];
+
+export const handlersMeta = ${JSON.stringify(handlersMeta, null, 2)}
   `.trim();
         return code;
       },

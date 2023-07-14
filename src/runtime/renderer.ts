@@ -1,4 +1,4 @@
-import { H3Event, eventHandler } from "h3";
+import { H3Event, eventHandler, setResponseStatus } from "h3";
 import { useNitroApp } from "./app";
 
 export interface RenderResponse {
@@ -16,16 +16,18 @@ export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder
     if (event.node.req.url.endsWith("/favicon.ico")) {
-      event.node.res.setHeader("Content-Type", "image/x-icon");
-      event.node.res.end(
-        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-      );
+      if (!event.handled) {
+        event.node.res.setHeader("Content-Type", "image/x-icon");
+        event.node.res.end(
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        );
+      }
       return;
     }
 
     const response = await handler(event);
     if (!response) {
-      if (!event.node.res.writableEnded) {
+      if (!event.handled) {
         event.node.res.statusCode =
           event.node.res.statusCode === 200 ? 500 : event.node.res.statusCode;
         event.node.res.end(
@@ -48,12 +50,7 @@ export function defineRenderHandler(handler: RenderHandler) {
       for (const header in response.headers) {
         event.node.res.setHeader(header, response.headers[header]);
       }
-      if (response.statusCode) {
-        event.node.res.statusCode = response.statusCode;
-      }
-      if (response.statusMessage) {
-        event.node.res.statusMessage = response.statusMessage;
-      }
+      setResponseStatus(event, response.statusCode, response.statusMessage);
     }
 
     // Send response body

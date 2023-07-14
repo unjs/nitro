@@ -6,8 +6,12 @@ describe("nitro:preset:nitro-dev", async () => {
   testNitro(
     ctx,
     () => {
-      return async ({ url }) => {
-        const res = await ctx.fetch(url);
+      return async ({ url, headers, method, body }) => {
+        const res = await ctx.fetch(url, {
+          headers,
+          method,
+          body,
+        });
         return res;
       };
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute left-0 top-0 w-full max-w-full">
+  <div class="absolute left-0 top-0 w-full max-w-full h-full max-h-full overflow-hidden pointer-events-none">
     <div class="ellipsis" />
   </div>
 </template>

@@ -1,6 +1,7 @@
+import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
 import { Miniflare } from "miniflare";
-import { describe } from "vitest";
+import { describe, it, expect } from "vitest";
 
 import { setupTest, testNitro } from "../tests";
 

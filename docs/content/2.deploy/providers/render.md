@@ -1,7 +1,6 @@
----
-title: Render.com
-description: 'Discover Render.com preset for Nitro!'
----
+# Render.com
+
+Deploy Nitro apps to Render.
 
 **Preset:** `render-com` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -26,7 +25,7 @@ Nitro supports deploying on [Render](https://render.com/) with minimal configura
 1. Create a file called `render.yaml` with following content at the root of your repository.
 > This file followed by [Infrastructure as Code](https://render.com/docs/infrastructure-as-code) on Render
 
-```
+```yaml
 services:
   - type: web
     name: <PROJECTNAME>

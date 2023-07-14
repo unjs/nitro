@@ -41,8 +41,9 @@ export function isJsonRequest(event: H3Event) {
     hasReqHeader(event, "accept", "application/json") ||
     hasReqHeader(event, "user-agent", "curl/") ||
     hasReqHeader(event, "user-agent", "httpie/") ||
-    event.node.req.url?.endsWith(".json") ||
-    event.node.req.url?.includes("/api/")
+    hasReqHeader(event, "sec-fetch-mode", "cors") ||
+    event.path.startsWith("/api/") ||
+    event.path.endsWith(".json")
   );
 }
 
@@ -80,4 +81,22 @@ export function normalizeError(error: any) {
     statusMessage,
     message,
   };
+}
+
+export function trapUnhandledNodeErrors() {
+  if (process.env.DEBUG) {
+    process.on("unhandledRejection", (err) =>
+      console.error("[nitro] [unhandledRejection]", err)
+    );
+    process.on("uncaughtException", (err) =>
+      console.error("[nitro] [uncaughtException]", err)
+    );
+  } else {
+    process.on("unhandledRejection", (err) =>
+      console.error("[nitro] [unhandledRejection] " + err)
+    );
+    process.on("uncaughtException", (err) =>
+      console.error("[nitro]  [uncaughtException] " + err)
+    );
+  }
 }

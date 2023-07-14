@@ -4,7 +4,7 @@ import { globby } from "globby";
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
 import type { Nitro, NitroEventHandler } from "./types";
 
-export const GLOB_SCAN_PATTERN = "**/*.{ts,mjs,js,cjs}";
+export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
 type FileInfo = { dir: string; path: string; fullPath: string };
 
 const httpMethodRegex =
@@ -104,7 +104,7 @@ function scanDirs(dirs: string[]): Promise<FileInfo[]> {
             fullPath: resolve(dir, fileName),
           };
         })
-        .sort((a, b) => b.path.localeCompare(a.path));
+        .sort((a, b) => a.path.localeCompare(b.path));
     })
   ).then((r) => r.flat());
 }

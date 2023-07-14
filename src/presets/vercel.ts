@@ -22,6 +22,9 @@ export const vercel = defineNitroPreset({
     preview: "",
   },
   hooks: {
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
@@ -29,6 +32,8 @@ export const vercel = defineNitroPreset({
 
       const systemNodeVersion = process.versions.node.split(".")[0];
       const runtimeVersion = `nodejs${systemNodeVersion}.x`;
+      const customMemory = nitro.options.vercel?.functions?.memory;
+      const customMaxDuration = nitro.options.vercel?.functions?.maxDuration;
       const functionConfigPath = resolve(
         nitro.options.output.serverDir,
         ".vc-config.json"
@@ -38,21 +43,19 @@ export const vercel = defineNitroPreset({
         handler: "index.mjs",
         launcherType: "Nodejs",
         shouldAddHelpers: false,
+        memory: customMemory,
+        maxDuration: customMaxDuration,
       };
       await writeFile(
         functionConfigPath,
         JSON.stringify(functionConfig, null, 2)
       );
 
-      // Write prerender functions
-      const rules = Object.entries(nitro.options.routeRules).filter(
-        ([_, value]) => value.cache && (value.cache.swr || value.cache.static)
-      );
-
-      for (const [key, value] of rules) {
-        if (!value.cache) {
+      // Write ISR functions
+      for (const [key, value] of Object.entries(nitro.options.routeRules)) {
+        if (!value.isr) {
           continue;
-        } // for type support
+        }
         const funcPrefix = resolve(
           nitro.options.output.serverDir,
           ".." + generateEndpoint(key)
@@ -63,18 +66,10 @@ export const vercel = defineNitroPreset({
           funcPrefix + ".func",
           "junction"
         );
-
-        let expiration: boolean | number = 60;
-        if (value.cache.static) {
-          expiration = false;
-        } else if (typeof value.cache.swr === "number") {
-          expiration = value.cache.swr;
-        }
-
         await writeFile(
           funcPrefix + ".prerender-config.json",
           JSON.stringify({
-            expiration,
+            expiration: value.isr === true ? false : value.isr,
             allowQuery: key.includes("/**") ? ["url"] : undefined,
           })
         );
@@ -86,6 +81,7 @@ export const vercel = defineNitroPreset({
 export const vercelEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/vercel-edge",
+  exportConditions: ["edge-light"],
   output: {
     dir: "{{ rootDir }}/.vercel/output",
     serverDir: "{{ output.dir }}/functions/__nitro.func",
@@ -100,7 +96,15 @@ export const vercelEdge = defineNitroPreset({
       format: "module",
     },
   },
+  unenv: {
+    inject: {
+      process: undefined,
+    },
+  },
   hooks: {
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
     async compiled(nitro: Nitro) {
       const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
       const buildConfig = generateBuildConfig(nitro);
@@ -113,6 +117,7 @@ export const vercelEdge = defineNitroPreset({
       const functionConfig = {
         runtime: "edge",
         entrypoint: "index.mjs",
+        regions: nitro.options.vercel?.regions,
       };
       await writeFile(
         functionConfigPath,
@@ -122,22 +127,47 @@ export const vercelEdge = defineNitroPreset({
   },
 });
 
+export const vercelStatic = defineNitroPreset({
+  extends: "static",
+  output: {
+    dir: "{{ rootDir }}/.vercel/output",
+    publicDir: "{{ output.dir }}/static",
+  },
+  commands: {
+    preview: "npx serve ./static",
+  },
+  hooks: {
+    "rollup:before": (nitro: Nitro) => {
+      deprecateSWR(nitro);
+    },
+    async compiled(nitro: Nitro) {
+      const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
+      const buildConfig = generateBuildConfig(nitro);
+      await writeFile(buildConfigPath, JSON.stringify(buildConfig, null, 2));
+    },
+  },
+});
+
 function generateBuildConfig(nitro: Nitro) {
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
   );
 
-  return defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
+  const config = defu(nitro.options.vercel?.config, <VercelBuildConfigV3>{
     version: 3,
-    overrides: Object.fromEntries(
-      (
-        nitro._prerenderedRoutes?.filter((r) => r.fileName !== r.route) || []
-      ).map(({ route, fileName }) => [
-        withoutLeadingSlash(fileName),
-        { path: route.replace(/^\//, "") },
-      ])
-    ),
+    overrides: {
+      // Nitro static prerendered route overrides
+      ...Object.fromEntries(
+        (
+          nitro._prerenderedRoutes?.filter((r) => r.fileName !== r.route) || []
+        ).map(({ route, fileName }) => [
+          withoutLeadingSlash(fileName),
+          { path: route.replace(/^\//, "") },
+        ])
+      ),
+    },
     routes: [
+      // Redirect and header rules
       ...rules
         .filter(([_, routeRules]) => routeRules.redirect || routeRules.headers)
         .map(([path, routeRules]) => {
@@ -155,6 +185,7 @@ function generateBuildConfig(nitro: Nitro) {
           }
           return route;
         }),
+      // Public asset rules
       ...nitro.options.publicAssets
         .filter((asset) => !asset.fallthrough)
         .map((asset) => asset.baseURL)
@@ -166,57 +197,60 @@ function generateBuildConfig(nitro: Nitro) {
           continue: true,
         })),
       { handle: "filesystem" },
-      ...rules
-        .filter(
-          ([key, value]) =>
-            value.cache === false ||
-            (value.cache && value.cache.swr === false) ||
-            (value.cache &&
-              (value.cache.swr || value.cache.static) &&
-              key.includes("/**"))
-        )
-        .map(([key, value]) => {
-          const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
-          if (
-            value.cache === false ||
-            (value.cache && value.cache.swr === false)
-          ) {
-            // we need to write a rule to avoid route being shadowed by another cache rule elsewhere
-            return {
-              src,
-              dest: "/__nitro",
-            };
-          }
-          return {
-            src,
-            dest: generateEndpoint(key) + "?url=$url",
-          };
-        }),
-      // If we are using a prerender function for /, then we need to write this explicitly
-      ...(nitro.options.routeRules["/"]?.cache
-        ? [
-            {
-              src: "(?<url>/)",
-              dest: "/__nitro-index",
-            },
-          ]
-        : []),
-      // If we are using a prerender function as a fallback, then we do not need to output
-      // the below fallback route as well
-      ...(!nitro.options.routeRules["/**"]?.cache ||
-      !(
-        nitro.options.routeRules["/**"].cache.swr ||
-        nitro.options.routeRules["/**"]?.cache.static
-      )
-        ? [
-            {
-              src: "/(.*)",
-              dest: "/__nitro",
-            },
-          ]
-        : []),
     ],
   });
+
+  // Early return if we are building a static site
+  if (nitro.options.static) {
+    return config;
+  }
+
+  config.routes.push(
+    // ISR rules
+    ...rules
+      .filter(
+        ([key, value]) =>
+          // value.isr === false || (value.isr && key.includes("/**"))
+          value.isr !== undefined && key !== "/"
+      )
+      .map(([key, value]) => {
+        const src = key.replace(/^(.*)\/\*\*/, "(?<url>$1/.*)");
+        if (value.isr === false) {
+          // we need to write a rule to avoid route being shadowed by another cache rule elsewhere
+          return {
+            src,
+            dest: "/__nitro",
+          };
+        }
+        return {
+          src,
+          dest:
+            nitro.options.preset === "vercel-edge"
+              ? "/__nitro?url=$url"
+              : generateEndpoint(key) + "?url=$url",
+        };
+      }),
+    // If we are using an ISR function for /, then we need to write this explicitly
+    ...(nitro.options.routeRules["/"]?.isr
+      ? [
+          {
+            src: "(?<url>/)",
+            dest: "/__nitro-index?url=$url",
+          },
+        ]
+      : []),
+    // If we are using an ISR function as a fallback, then we do not need to output the below fallback route as well
+    ...(nitro.options.routeRules["/**"]?.isr
+      ? []
+      : [
+          {
+            src: "/(.*)",
+            dest: "/__nitro",
+          },
+        ])
+  );
+
+  return config;
 }
 
 function generateEndpoint(url: string) {
@@ -227,4 +261,35 @@ function generateEndpoint(url: string) {
     ? "/__nitro-" +
         withoutLeadingSlash(url.replace(/\/\*\*.*/, "").replace(/[^a-z]/g, "-"))
     : url;
+}
+
+function deprecateSWR(nitro: Nitro) {
+  if (nitro.options.future.nativeSWR) {
+    return;
+  }
+  let hasLegacyOptions = false;
+  for (const [key, value] of Object.entries(nitro.options.routeRules)) {
+    if (_hasProp(value, "isr")) {
+      continue;
+    }
+    if (value.cache === false) {
+      value.isr = false;
+    }
+    if (_hasProp(value, "static")) {
+      value.isr = !(value as { static: boolean }).static;
+    }
+    if (value.cache && _hasProp(value.cache, "swr")) {
+      value.isr = value.cache.swr;
+    }
+    hasLegacyOptions = hasLegacyOptions || _hasProp(value, "isr");
+  }
+  if (hasLegacyOptions) {
+    console.warn(
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Vercel. Backwards-compatible support for `static` and `swr` options within the Vercel Build Options API will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
+    );
+  }
+}
+
+function _hasProp(obj: any, prop: string) {
+  return obj && typeof obj === "object" && prop in obj;
 }

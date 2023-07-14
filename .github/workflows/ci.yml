@@ -21,6 +21,7 @@ jobs:
           node-version: "16"
           cache: pnpm
       - run: pnpm install
+      - run: pnpm stub
       - run: pnpm lint
 
   ci:
@@ -38,10 +39,20 @@ jobs:
         with:
           node-version: "16"
           cache: pnpm
+      - uses: oven-sh/setup-bun@v1
+        if: ${{ matrix.os != 'windows-latest' }}
+        with:
+          bun-version: latest
+      - uses: denoland/setup-deno@v1
+        if: ${{ matrix.os != 'windows-latest' }}
+        with:
+          deno-version: v1.x
       - run: pnpm install
       - run: pnpm test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
       - uses: codecov/codecov-action@v3
       - name: Release Edge
         if: |

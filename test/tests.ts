@@ -1,9 +1,8 @@
 import { resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
-import { fetch } from "ofetch";
-import { expect, it, afterAll } from "vitest";
-import { isWindows } from "std-env";
+import { fetch, FetchOptions } from "ofetch";
+import { expect, it, afterAll, beforeAll, describe } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import * as _nitro from "../src";
@@ -17,52 +16,56 @@ export interface Context {
   nitro?: Nitro;
   rootDir: string;
   outDir: string;
-  fetch: (url: string) => Promise<any>;
+  fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
 }
 
+// https://github.com/unjs/nitro/pull/1240
+export const describeIf = (condition, title, factory) =>
+  condition
+    ? describe(title, factory)
+    : describe(title, () => {
+        it.skip("skipped", () => {});
+      });
+
 export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
+
+  const presetTempDir = fileURLToPath(
+    new URL(`presets/.tmp/${preset}`, import.meta.url).href
+  );
 
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
-    outDir: resolve(fixtureDir, ".output", preset),
-    fetch: (url) =>
-      fetch(joinURL(ctx.server!.url, url.slice(1)), { redirect: "manual" }),
+    outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    fetch: (url, opts) =>
+      fetch(joinURL(ctx.server!.url, url.slice(1)), {
+        redirect: "manual",
+        ...(opts as any),
+      }),
   };
 
   const nitro = (ctx.nitro = await createNitro({
     preset: ctx.preset,
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
+    buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
-      preset !== "cloudflare" && preset !== "vercel-edge" && !ctx.isDev,
-    output: { dir: ctx.outDir },
-    routeRules: {
-      "/rules/headers": { headers: { "cache-control": "s-maxage=60" } },
-      "/rules/cors": {
-        cors: true,
-        headers: { "access-control-allowed-methods": "GET" },
-      },
-      "/rules/dynamic": { cache: false },
-      "/rules/redirect": { redirect: "/base" },
-      "/rules/static": { static: true },
-      "/rules/swr/**": { swr: true },
-      "/rules/swr-ttl/**": { swr: 60 },
-      "/rules/redirect/obj": {
-        redirect: { to: "https://nitro.unjs.io/", statusCode: 308 },
-      },
-      "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
-      "/rules/nested/override": { redirect: { to: "/other" } },
-      "/rules/_/noncached/cached": { swr: true },
-      "/rules/_/noncached/**": { swr: false, cache: false },
-      "/rules/_/cached/noncached": { cache: false, swr: false },
-      "/rules/_/cached/**": { swr: true },
+      preset !== "cloudflare" &&
+      preset !== "cloudflare-module" &&
+      preset !== "cloudflare-pages" &&
+      preset !== "vercel-edge" &&
+      !ctx.isDev,
+    output: {
+      dir: ctx.outDir,
     },
-    timing: preset !== "cloudflare" && preset !== "vercel-edge",
+    timing:
+      preset !== "cloudflare" &&
+      preset !== "cloudflare-pages" &&
+      preset !== "vercel-edge",
   }));
 
   if (ctx.isDev) {
@@ -126,9 +129,9 @@ export function testNitro(
     };
   }
 
-  it("setup handler", async () => {
+  beforeAll(async () => {
     _handler = await getHandler();
-  });
+  }, 25_000);
 
   it("API Works", async () => {
     const { data: helloData } = await callHandler({ url: "/api/hello" });
@@ -161,6 +164,11 @@ export function testNitro(
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
   });
 
+  it("render JSX", async () => {
+    const { data } = await callHandler({ url: "/jsx" });
+    expect(data).toMatch("<h1 >Hello JSX!</h1>");
+  });
+
   it("handles route rules - headers", async () => {
     const { headers } = await callHandler({ url: "/rules/headers" });
     expect(headers["cache-control"]).toBe("s-maxage=60");
@@ -169,7 +177,7 @@ export function testNitro(
   it("handles route rules - cors", async () => {
     const expectedHeaders = {
       "access-control-allow-origin": "*",
-      "access-control-allowed-methods": "GET",
+      "access-control-allow-methods": "GET",
       "access-control-allow-headers": "*",
       "access-control-max-age": "0",
     };
@@ -254,20 +262,106 @@ export function testNitro(
       `);
     });
 
-    it("resolve module version conflicts", async () => {
-      const { data } = await callHandler({ url: "/modules" });
-      expect(data).toMatchObject({
-        depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
-        depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
-        depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
-        subpathLib: "nitro-lib@2.0.0",
+    it.skipIf(ctx.preset === "deno-server")(
+      "resolve module version conflicts",
+      async () => {
+        const { data } = await callHandler({ url: "/modules" });
+        expect(data).toMatchObject({
+          depA: "@fixture/nitro-lib@1.0.0+@fixture/nested-lib@1.0.0",
+          depB: "@fixture/nitro-lib@2.0.1+@fixture/nested-lib@2.0.1",
+          depLib: "@fixture/nitro-lib@2.0.0+@fixture/nested-lib@2.0.0",
+          subpathLib: "@fixture/nitro-lib@2.0.0",
+          extraUtils: "@fixture/nitro-utils/extra",
+        });
+      }
+    );
+
+    it("useStorage (with base)", async () => {
+      const putRes = await callHandler({
+        url: "/api/storage/item?key=test:hello",
+        method: "PUT",
+        body: "world",
       });
+      expect(putRes.data).toMatchObject("world");
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?key=:",
+          })
+        ).data
+      ).toMatchObject(["test:hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?base=test&key=:",
+          })
+        ).data
+      ).toMatchObject(["hello"]);
+
+      expect(
+        (
+          await callHandler({
+            url: "/api/storage/item?base=test&key=hello",
+          })
+        ).data
+      ).toBe("world");
     });
 
     if (additionalTests) {
       additionalTests(ctx, callHandler);
     }
   }
+
+  it("runtime proxy", async () => {
+    const { data } = await callHandler({
+      url: "/api/proxy?foo=bar",
+      headers: {
+        "x-test": "foobar",
+      },
+    });
+    expect(data.headers["x-test"]).toBe("foobar");
+    expect(data.url).toBe("/api/echo?foo=bar");
+  });
+
+  it("config", async () => {
+    const { data } = await callHandler({
+      url: "/config",
+    });
+    expect(data).toMatchObject({
+      appConfig: {
+        dynamic: "from-middleware",
+        "app-config": true,
+        "nitro-config": true,
+        "server-config": true,
+      },
+      runtimeConfig: {
+        dynamic: "from-env",
+        app: {
+          baseURL: "/",
+        },
+      },
+      sharedAppConfig: {
+        dynamic: "initial",
+        "app-config": true,
+        "nitro-config": true,
+        "server-config": true,
+      },
+      sharedRuntimeConfig: {
+        dynamic:
+          // TODO
+          ctx.preset.includes("cloudflare") ||
+          ctx.preset === "vercel-edge" ||
+          ctx.preset === "nitro-dev"
+            ? "initial"
+            : "from-env",
+        app: {
+          baseURL: "/",
+        },
+      },
+    });
+  });
 
   if (ctx.nitro!.options.timing) {
     it("set server timing header", async () => {
@@ -278,4 +372,26 @@ export function testNitro(
       expect(headers["server-timing"]).toMatch(/-;dur=\d+;desc="Generate"/);
     });
   }
+
+  it("static build flags", async () => {
+    const { data } = await callHandler({ url: "/static-flags" });
+    expect(data).toMatchObject({
+      dev: [ctx.isDev, ctx.isDev],
+      preset: [ctx.preset, ctx.preset],
+      prerender: [
+        ctx.preset === "nitro-prerenderer",
+        ctx.preset === "nitro-prerenderer",
+      ],
+      client: [false, false],
+      nitro: [true, true],
+      server: [true, true],
+      "versions.nitro": [expect.any(String), expect.any(String)],
+      "versions?.nitro": [expect.any(String), expect.any(String)],
+    });
+  });
+
+  it("event.waitUntil", async () => {
+    const res = await callHandler({ url: "/wait-until" });
+    expect(res.data).toBe("done");
+  });
 }

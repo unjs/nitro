@@ -1,6 +1,7 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
 import { $Fetch } from "../..";
+import { defineNitroConfig } from "../../src/config";
 
 interface TestResponse {
   message: string;
@@ -13,7 +14,7 @@ describe("API routes", () => {
   const dynamicString: string = "";
 
   it("generates types for middleware, unknown and manual typed routes", () => {
-    expectTypeOf($fetch("/")).toMatchTypeOf<Promise<unknown>>(); // middleware
+    expectTypeOf($fetch("/")).toEqualTypeOf<Promise<unknown>>(); // middleware
     expectTypeOf($fetch("/api/unknown")).toEqualTypeOf<Promise<unknown>>();
     expectTypeOf($fetch<TestResponse>("/test")).toEqualTypeOf<
       Promise<TestResponse>
@@ -98,7 +99,7 @@ describe("API routes", () => {
 
   it("generates types for routes matching prefix", () => {
     expectTypeOf($fetch("/api/hey/**")).toEqualTypeOf<Promise<string>>();
-    expectTypeOf($fetch("/api/param/{id}/**")).toEqualTypeOf<Promise<any>>();
+    expectTypeOf($fetch("/api/param/{id}/**")).toEqualTypeOf<Promise<string>>();
     expectTypeOf(
       $fetch("/api/typed/user/{someUserId}/post/{somePostId}/**")
     ).toEqualTypeOf<
@@ -127,7 +128,9 @@ describe("API routes", () => {
   });
 
   it("generates types for routes matching Api keys with /** globs", () => {
-    expectTypeOf($fetch("/api/wildcard/foo/bar")).toEqualTypeOf<Promise<any>>();
+    expectTypeOf($fetch("/api/wildcard/foo/bar")).toEqualTypeOf<
+      Promise<string>
+    >();
     expectTypeOf($fetch("/api/typed/todos/parent/child")).toEqualTypeOf<
       Promise<{ internalApiKey: "/api/typed/todos/**" }>
     >();
@@ -175,20 +178,81 @@ describe("API routes", () => {
   });
 
   it("generates the correct type depending on the method used", () => {
-    expectTypeOf($fetch("/api/methods", { method: "get" })).toMatchTypeOf<
+    expectTypeOf($fetch("/api/methods", { method: "get" })).toEqualTypeOf<
       Promise<"Index get">
     >();
-    expectTypeOf($fetch("/api/methods", { method: "post" })).toMatchTypeOf<
+    expectTypeOf($fetch("/api/methods", { method: "post" })).toEqualTypeOf<
       Promise<"Index post">
     >();
     expectTypeOf(
       $fetch("/api/methods/default", { method: "GET" })
-    ).toMatchTypeOf<Promise<"Default route">>();
+    ).toEqualTypeOf<Promise<"Default route">>();
     expectTypeOf(
       $fetch("/api/methods/default", { method: "PUT" })
-    ).toMatchTypeOf<Promise<"Default route">>();
+    ).toEqualTypeOf<Promise<"Default route">>();
     expectTypeOf(
       $fetch("/api/methods/default", { method: "POST" })
-    ).toMatchTypeOf<Promise<"Default override">>();
+    ).toEqualTypeOf<Promise<"Default override">>();
+  });
+
+  it("generates types matching JSON serialization output", () => {
+    expectTypeOf($fetch("/api/serialized/date")).toEqualTypeOf<
+      Promise<{
+        createdAt: string;
+      }>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/error")).toEqualTypeOf<
+      Promise<{
+        statusCode: number;
+        statusMessage?: string;
+        data?: any;
+        message: string;
+      }>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/void")).toEqualTypeOf<
+      Promise<unknown>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/null")).toEqualTypeOf<Promise<any>>();
+
+    expectTypeOf($fetch("/api/serialized/function")).toEqualTypeOf<
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      Promise<{}>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/map")).toEqualTypeOf<
+      Promise<{
+        foo: Record<string, never>;
+      }>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/set")).toEqualTypeOf<
+      Promise<{
+        foo: Record<string, never>;
+      }>
+    >();
+
+    expectTypeOf($fetch("/api/serialized/tuple")).toEqualTypeOf<
+      Promise<[string, string]>
+    >();
+  });
+});
+
+describe("defineNitroConfig", () => {
+  it("should not accept functions to routeRules.cache", () => {
+    defineNitroConfig({
+      routeRules: {
+        "/**": {
+          cache: {
+            // @ts-expect-error
+            shouldBypassCache(event) {
+              return false;
+            },
+          },
+        },
+      },
+    });
   });
 });
