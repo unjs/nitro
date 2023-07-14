@@ -271,6 +271,7 @@ export function testNitro(
           depB: "@fixture/nitro-lib@2.0.1+@fixture/nested-lib@2.0.1",
           depLib: "@fixture/nitro-lib@2.0.0+@fixture/nested-lib@2.0.0",
           subpathLib: "@fixture/nitro-lib@2.0.0",
+          extraUtils: "@fixture/nitro-utils/extra",
         });
       }
     );
