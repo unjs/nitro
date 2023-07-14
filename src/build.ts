@@ -51,11 +51,11 @@ export async function copyPublicAssets(nitro: Nitro) {
         ignore: nitro.options.ignore,
       });
       await Promise.all(
-        publicAssets.map((file) => {
+        publicAssets.map(async (file) => {
           const src = join(srcDir, file);
           const dst = join(dstDir, file);
           if (!existsSync(dst)) {
-            return fsp.cp(src, dst);
+            await fsp.cp(src, dst);
           }
         })
       );
