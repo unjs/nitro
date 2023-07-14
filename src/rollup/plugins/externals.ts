@@ -535,6 +535,7 @@ export function normalizeMatcher(input: string | RegExp | Matcher): Matcher {
       const idWithoutNodeModules = id.split("node_modules/").pop();
       return id.startsWith(pattern) || idWithoutNodeModules.startsWith(pattern);
     }) as Matcher;
+    matcher.score = input.length;
     Object.defineProperty(matcher, "name", { value: `match(${pattern})` });
     return matcher;
   }
