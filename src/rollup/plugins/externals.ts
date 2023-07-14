@@ -71,9 +71,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Normalize path (windows)
       const id = normalize(originalId);
 
-      // Id without .../node_modules/
-      const idWithoutNodeModules = id.split("node_modules/").pop();
-
       // Check for explicit inlines
       for (const matcher of inlineMatchers) {
         if (matcher(id, importer)) {
