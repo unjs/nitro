@@ -1,4 +1,4 @@
-import { promises as fsp } from "node:fs";
+import { existsSync, promises as fsp } from "node:fs";
 import { relative, resolve, join, dirname, isAbsolute } from "pathe";
 import { resolveAlias } from "pathe/utils";
 import * as rollup from "rollup";
@@ -11,6 +11,7 @@ import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
+import { globby } from "globby";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
@@ -40,11 +41,23 @@ export async function copyPublicAssets(nitro: Nitro) {
     return;
   }
   for (const asset of nitro.options.publicAssets) {
-    if (await isDirectory(asset.dir)) {
-      await fse.copy(
-        asset.dir,
-        join(nitro.options.output.publicDir, asset.baseURL!),
-        { overwrite: false }
+    const srcDir = asset.dir;
+    const dstDir = join(nitro.options.output.publicDir, asset.baseURL!);
+    if (await isDirectory(srcDir)) {
+      const publicAssets = await globby("**", {
+        cwd: srcDir,
+        absolute: false,
+        dot: true,
+        ignore: nitro.options.ignore,
+      });
+      await Promise.all(
+        publicAssets.map(async (file) => {
+          const src = join(srcDir, file);
+          const dst = join(dstDir, file);
+          if (!existsSync(dst)) {
+            await fsp.cp(src, dst);
+          }
+        })
       );
     }
   }
