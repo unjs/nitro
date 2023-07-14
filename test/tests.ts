@@ -394,4 +394,11 @@ export function testNitro(
     const res = await callHandler({ url: "/wait-until" });
     expect(res.data).toBe("done");
   });
+
+  describe("ignore", () => {
+    it("server routes should be ignored", async () => {
+      expect((await callHandler({ url: "/api/_ignored" })).status).toBe(404);
+      expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
+    });
+  });
 }

@@ -63,6 +63,7 @@ const NitroDefaults: NitroConfig = {
   },
   virtual: {},
   compressPublicAssets: false,
+  ignore: [],
 
   // Dev
   dev: false,
