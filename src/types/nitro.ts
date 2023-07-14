@@ -215,6 +215,10 @@ export interface NitroOptions extends PresetOptions {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
+    /**
+     * See https://github.com/microsoft/TypeScript/pull/51669
+     */
+    typescriptBundlerResolution?: boolean;
   };
   future: {
     nativeSWR: boolean;
