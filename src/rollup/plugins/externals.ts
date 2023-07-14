@@ -10,6 +10,7 @@ import {
   isValidNodeImport,
   lookupNodeModuleSubpath,
   normalizeid,
+  parseNodeModulePath,
 } from "mlly";
 import semver from "semver";
 import { isDirectory } from "../../utils";
@@ -126,7 +127,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // -- Trace externals --
 
       // Try to extract package name from path
-      const { pkgName, subpath } = parseNodeModulePath(resolved.id);
+      const { name: pkgName } = parseNodeModulePath(resolved.id);
 
       // Inline if cannot detect package name
       if (!pkgName) {
@@ -219,7 +220,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             if (!(await isFile(path))) {
               return;
             }
-            const { baseDir, pkgName, subpath } = parseNodeModulePath(path);
+            const {
+              dir: baseDir,
+              name: pkgName,
+              subpath,
+            } = parseNodeModulePath(path);
             const pkgPath = join(baseDir, pkgName);
             const parents = await Promise.all(
               [...reasons.parents].map((p) => _resolveTracedPath(p))
@@ -464,24 +469,6 @@ function compareVersions(v1 = "0.0.0", v2 = "0.0.0") {
   } catch {
     return v1.localeCompare(v2);
   }
-}
-
-function parseNodeModulePath(path: string) {
-  if (!path) {
-    return {};
-  }
-  const match = /^(.+\/node_modules\/)([^/@]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(
-    normalize(path)
-  );
-  if (!match) {
-    return {};
-  }
-  const [, baseDir, pkgName, subpath] = match;
-  return {
-    baseDir,
-    pkgName,
-    subpath,
-  };
 }
 
 export function applyProductionCondition(exports: PackageJson["exports"]) {
