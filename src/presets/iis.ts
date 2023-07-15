@@ -44,7 +44,7 @@ const iisnodeXmlTemplate = () => `
      <iisnode watchedFiles="web.config;*.js" node_env="production" debuggingEnabled="true" />
    </system.webServer>
  </configuration>
-`
+`;
 
 const iisXmlTemplate = () => `
 <?xml version="1.0" encoding="UTF-8"?>
@@ -61,7 +61,7 @@ const iisXmlTemplate = () => `
      </httpPlatform>
    </system.webServer>
  </configuration>
-`
+`;
 
 // iisnode
 export const iisnode = defineNitroPreset({
@@ -70,13 +70,13 @@ export const iisnode = defineNitroPreset({
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "web.config"),
-        iisnodeXmlTemplate(),
+        iisnodeXmlTemplate()
       );
 
       await writeFile(
         resolve(nitro.options.output.dir, "index.js"),
-        "import('./server/index.mjs');",
-      )
+        "import('./server/index.mjs');"
+      );
     },
   },
 });
@@ -88,7 +88,7 @@ export const iis = defineNitroPreset({
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "web.config"),
-        iisXmlTemplate(),
+        iisXmlTemplate()
       );
     },
   },
