@@ -4,6 +4,7 @@ import {
   defineEventHandler,
   createEvent,
   EventHandler,
+  isEvent,
 } from "h3";
 import type { H3Event } from "h3";
 import { parseURL } from "ufo";
@@ -26,7 +27,6 @@ export interface CacheOptions<T = any> {
   group?: string;
   integrity?: any;
   maxAge?: number;
-  static?: boolean; // TODO
   swr?: boolean;
   staleMaxAge?: number;
   base?: string;
@@ -39,10 +39,10 @@ const defaultCacheOptions = {
   maxAge: 1,
 };
 
-export function defineCachedFunction<T = any>(
-  fn: (...args) => T | Promise<T>,
+export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
+  fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
-) {
+): (...args: ArgsT) => Promise<T> {
   opts = { ...defaultCacheOptions, ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
@@ -56,7 +56,8 @@ export function defineCachedFunction<T = any>(
   async function get(
     key: string,
     resolver: () => T | Promise<T>,
-    shouldInvalidateCache?: boolean
+    shouldInvalidateCache?: boolean,
+    waitUntil?: (promise: Promise<void>) => void
   ): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
     const cacheKey = [opts.base, group, name, key + ".json"]
@@ -80,7 +81,11 @@ export function defineCachedFunction<T = any>(
     const _resolve = async () => {
       const isPending = pending[key];
       if (!isPending) {
-        if (entry.value !== undefined && (opts.staleMaxAge || 0) >= 0) {
+        if (
+          entry.value !== undefined &&
+          (opts.staleMaxAge || 0) >= 0 &&
+          opts.swr === false
+        ) {
           // Remove cached entry to prevent using expired cache on concurrent requests
           entry.value = undefined;
           entry.integrity = undefined;
@@ -107,9 +112,12 @@ export function defineCachedFunction<T = any>(
         entry.integrity = integrity;
         delete pending[key];
         if (validate(entry)) {
-          useStorage()
+          const promise = useStorage()
             .setItem(cacheKey, entry)
             .catch((error) => console.error("[nitro] [cache]", error));
+          if (waitUntil) {
+            waitUntil(promise);
+          }
         }
       }
     };
@@ -133,7 +141,14 @@ export function defineCachedFunction<T = any>(
     }
     const key = await (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
-    const entry = await get(key, () => fn(...args), shouldInvalidateCache);
+    const waitUntil =
+      args[0] && isEvent(args[0]) ? args[0].waitUntil : undefined;
+    const entry = await get(
+      key,
+      () => fn(...args),
+      shouldInvalidateCache,
+      waitUntil
+    );
     let value = entry.value;
     if (opts.transform) {
       value = (await opts.transform(entry, ...args)) || value;
@@ -163,6 +178,7 @@ export interface CachedEventHandlerOptions<T = any>
 }
 
 function escapeKey(key: string) {
+  // eslint-disable-next-line unicorn/prefer-string-replace-all
   return key.replace(/[^\dA-Za-z]/g, "");
 }
 
@@ -206,6 +222,10 @@ export function defineCachedEventHandler<T = any>(
       let _resSendBody;
       const resProxy = cloneWithProxy(incomingEvent.node.res, {
         statusCode: 200,
+        writableEnded: false,
+        writableFinished: false,
+        headersSent: false,
+        closed: false,
         getHeader(name) {
           return resHeaders[name];
         },

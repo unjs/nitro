@@ -12,17 +12,16 @@ export const handler: Handler = async function handler(event, context) {
   const url = withQuery(event.path, query);
   const routeRules = getRouteRulesForPath(url);
 
-  if (routeRules.cache && (routeRules.cache.swr || routeRules.cache.static)) {
+  if (routeRules.isr) {
     const builder = await import("@netlify/functions").then(
       (r) => r.builder || r.default.builder
     );
-    const ttl =
-      typeof routeRules.cache.swr === "number" ? routeRules.cache.swr : 60;
-    const swrHandler = routeRules.cache.swr
+    const ttl = typeof routeRules.isr === "number" ? routeRules.isr : false;
+    const builderHandler = ttl
       ? (((event, context) =>
           lambda(event, context).then((r) => ({ ...r, ttl }))) as Handler)
       : lambda;
-    return builder(swrHandler)(event, context) as any;
+    return builder(builderHandler)(event, context) as any;
   }
 
   return lambda(event, context);

@@ -1,3 +1,3 @@
 export default eventHandler((event) => {
-  return event.context.params.id;
+  return event.context.params!.id;
 });

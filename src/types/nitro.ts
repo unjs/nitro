@@ -4,13 +4,15 @@ import type { Unimport } from "unimport";
 import type { UnimportPluginOptions } from "unimport/unplugin";
 import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
 import type { NestedHooks, Hookable } from "hookable";
-import type { Consola, LogLevel } from "consola";
+import type { ConsolaInstance, LogLevel } from "consola";
 import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
 import type { ProxyOptions } from "h3";
+import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { TSConfig } from "pkg-types";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -24,15 +26,37 @@ import type {
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
 
+export type NitroDynamicConfig = Pick<
+  NitroConfig,
+  "runtimeConfig" | "routeRules"
+>;
+
+export interface NitroRuntimeConfigApp {
+  baseURL: string;
+  [key: string]: any;
+}
+
+export interface NitroRuntimeConfig {
+  app: NitroRuntimeConfigApp;
+  nitro: {
+    envPrefix?: string;
+    routeRules?: {
+      [path: string]: NitroRouteConfig;
+    };
+  };
+  [key: string]: any;
+}
+
 export interface Nitro {
   options: NitroOptions;
   scannedHandlers: NitroEventHandler[];
   vfs: Record<string, string>;
   hooks: Hookable<NitroHooks>;
   unimport?: Unimport;
-  logger: Consola;
+  logger: ConsolaInstance;
   storage: Storage;
   close: () => Promise<void>;
+  updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
 
   /* @internal */
   _prerenderedRoutes?: PrerenderGenerateRoute[];
@@ -53,9 +77,11 @@ export interface PrerenderGenerateRoute extends PrerenderRoute {
 
 type HookResult = void | Promise<void>;
 export interface NitroHooks {
-  "rollup:before": (nitro: Nitro) => HookResult;
+  "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
+  "rollup:reload": () => HookResult;
+  restart: () => HookResult;
   close: () => HookResult;
   "prerender:routes": (routes: Set<string>) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;
@@ -124,12 +150,19 @@ type IntRange<F extends number, T extends number> = Exclude<
 >;
 type HTTPStatusCode = IntRange<100, 600>;
 
+type ExcludeFunctions<G extends Record<string, any>> = Pick<
+  G,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  { [P in keyof G]: NonNullable<G[P]> extends Function ? never : P }[keyof G]
+>;
+
 export interface NitroRouteConfig {
-  cache?: CachedEventHandlerOptions | false;
+  cache?: ExcludeFunctions<CachedEventHandlerOptions> | false;
   headers?: Record<string, string>;
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
   proxy?: string | ({ to: string } & ProxyOptions);
+  isr?: number | boolean;
 
   // Shortcuts
   cors?: boolean;
@@ -146,18 +179,15 @@ export interface NitroRouteRules
 export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
+  _c12: ResolvedConfig<NitroConfig> | ConfigWatcher<NitroConfig>;
 
   // General
   debug: boolean;
   // eslint-disable-next-line @typescript-eslint/ban-types
   preset: KebabCase<keyof typeof _PRESETS> | (string & {});
+  static: boolean;
   logLevel: LogLevel;
-  runtimeConfig: {
-    app: {
-      baseURL: string;
-    };
-    [key: string]: any;
-  };
+  runtimeConfig: NitroRuntimeConfig;
   appConfig: AppConfig;
   appConfigFiles: string[];
 
@@ -178,12 +208,20 @@ export interface NitroOptions extends PresetOptions {
   devStorage: StorageMounts;
   bundledStorage: string[];
   timing: boolean;
-  renderer: string;
+  renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
   experimental?: {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
+    openAPI?: boolean;
+    /**
+     * See https://github.com/microsoft/TypeScript/pull/51669
+     */
+    typescriptBundlerResolution?: boolean;
+  };
+  future: {
+    nativeSWR: boolean;
   };
   serverAssets: ServerAssetDir[];
   publicAssets: PublicAssetDir[];
@@ -192,6 +230,7 @@ export interface NitroOptions extends PresetOptions {
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
+  ignore: string[];
 
   // Dev
   dev: boolean;
@@ -207,7 +246,10 @@ export interface NitroOptions extends PresetOptions {
   errorHandler: string;
   devErrorHandler: NitroErrorHandler;
   prerender: {
+    concurrency: number;
+    interval: number;
     crawlLinks: boolean;
+    failOnError: boolean;
     ignore: string[];
     routes: string[];
   };
@@ -230,13 +272,16 @@ export interface NitroOptions extends PresetOptions {
   analyze: false | PluginVisualizerOptions;
   replace: Record<string, string | ((id: string) => string)>;
   commonJS?: RollupCommonJSOptions;
+  exportConditions?: string[];
 
   // Advanced
   typescript: {
+    strict?: boolean;
     internalPaths?: boolean;
     generateTsConfig?: boolean;
     /** the path of the generated `tsconfig.json`, relative to buildDir */
     tsconfigPath: string;
+    tsConfig?: Partial<TSConfig>;
   };
   hooks: NestedHooks<NitroHooks>;
   nodeModulesDirs: string[];
@@ -244,4 +289,8 @@ export interface NitroOptions extends PresetOptions {
     preview: string;
     deploy: string;
   };
+}
+
+declare global {
+  const defineNitroConfig: (config: NitroConfig) => NitroConfig;
 }

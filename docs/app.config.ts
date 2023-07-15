@@ -2,10 +2,9 @@ export default defineAppConfig({
   docus: {
     title: "Nitro",
     header: {
-      title: false,
       logo: true,
     },
-    description: "Build and Deploy Universal JavaScript Servers.",
+    description: "Nitro is an open source TypeScript framework to build ultra-fast web servers. The open engine powering Nuxt and open to everyone.",
     url: "https://nitro.unjs.io",
     image: "/cover.png",
     socials: {
@@ -31,7 +30,7 @@ export default defineAppConfig({
       iconLinks: [
         {
           href: "https://unjs.io",
-          icon: "vscode-icons:file-type-js-official",
+          icon: "IconUnJS",
           label: "UnJS",
         },
       ],

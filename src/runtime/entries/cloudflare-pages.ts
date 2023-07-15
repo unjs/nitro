@@ -36,9 +36,13 @@ export default {
       body = Buffer.from(await request.arrayBuffer());
     }
 
+    // Expose latest env to the global context
+    globalThis.__env__ = env;
+
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: request.cf,
+        waitUntil: (promise) => context.waitUntil(promise),
         cloudflare: {
           request,
           env,
