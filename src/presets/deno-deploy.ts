@@ -19,7 +19,9 @@ export const denoDeploy = defineNitroPreset({
     external: ["https://deno.land/std/http/server.ts"],
     output: {
       entryFileNames: "index.ts",
-      manualChunks: () => "index",
+      manualChunks: (id) => {
+        if (id !== "https://deno.land/std/http/server.ts") { return "index"; }
+      },
       format: "esm",
     },
   },
