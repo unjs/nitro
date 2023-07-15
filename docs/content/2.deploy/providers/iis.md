@@ -1,34 +1,24 @@
 # IIS
 
-Deploy Nitro apps to IIS.
+Deploy Nitro apps to IIS. You can either use [IISnode](https://github.com/Azure/iisnode) (recommended for Nuxt) or IIS directly.
 
-**Preset:** `there is no preset`
+Make sure that [node.js](https://nodejs.org/en/) is installed on your Windows Server.
 
-First of all Node.js has to be installed on the Windows Server.
+**Preset:** `iisnode` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
+IISnode supports SSR build, but requires configuration
+
+Install [IISnode x64](https://github.com/azure/iisnode/releases/download/v0.2.21/iisnode-full-v0.2.21-x64.msi) or [IISnode x86](https://github.com/azure/iisnode/releases/download/v0.2.21/iisnode-full-v0.2.21-x86.msi), and the [IIS URL Rewrite Module](https://www.iis.net/downloads/microsoft/url-rewrite).
+
+Deploy the contents of your `.output` folder to your website in IIS.
+
+In IIS, add `.mjs` as a new mime type and set its content type to `application/javascript`.
+
+## Using IIS directly
+
+**Preset:** `iis` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+
+If you do not wish to use IISnode, you can use IIS directly.
 To deploy a Nitro application to IIS, the `HttpPlatformHandler` IIS Module is needed.
 
-The module serves two main purposes. Firstly, it facilitates the management of HTTP Listeners, which can include various processes that can listen on a port to receive HTTP requests (such as Tomcat, Jetty, Node.exe, Ruby, etc.). Secondly, it acts as a proxy, directing requests to the relevant process being managed.
-
-Add a `web.config` to the `.output` directory after the build. It should look like this:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <system.webServer>
-    <handlers>
-      <add name="httpPlatformHandler" path="*" verb="*" modules="httpPlatformHandler" resourceType="Unspecified" requireAccess="Script" />
-    </handlers>
-    <httpPlatform stdoutLogEnabled="true" stdoutLogFile=".\logs\node.log" startupTimeLimit="20" processPath="C:\Program Files\nodejs\node.exe" arguments=".\server\index.mjs">
-      <environmentVariables>
-        <environmentVariable name="PORT" value="%HTTP_PLATFORM_PORT%" />
-        <environmentVariable name="NODE_ENV" value="Production" />
-      </environmentVariables>
-    </httpPlatform>
-  </system.webServer>
-</configuration>
-```
-
-Additional `environmentVariables` can be added accordingly.
-
-Lastly copy your `.output` directory to the Windows Server and create a website on IIS pointing to that exact directory. The copy task should also be integrated into your pipeline.
+Copy your `.output` directory into the Windows Server, and create a website on IIS pointing to that exact directory.
