@@ -101,7 +101,7 @@
     "pkg-types": "^1.0.3",
     "pretty-bytes": "^6.1.0",
     "radix3": "^1.0.1",
-    "rollup": "^3.26.2",
+    "rollup": "3.26.1",
     "rollup-plugin-visualizer": "^5.9.2",
     "scule": "^1.0.0",
     "semver": "^7.5.4",
