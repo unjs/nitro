@@ -1,24 +1,26 @@
 # IIS
 
-Deploy Nitro apps to IIS. You can either use [IISnode](https://github.com/Azure/iisnode) (recommended for Nuxt) or IIS directly.
+Deploy Nitro apps to IIS.
 
-Make sure that [node.js](https://nodejs.org/en/) is installed on your Windows Server.
+::alert{type="warning"}
+This is an experimental preset.
+::
 
-**Preset:** `iisnode` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+## Using [IISnode](https://github.com/Azure/iisnode) (recommended)
 
-IISnode supports SSR build, but requires configuration
+**Preset:** `iis-node` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-Install [IISnode x64](https://github.com/azure/iisnode/releases/download/v0.2.21/iisnode-full-v0.2.21-x64.msi) or [IISnode x86](https://github.com/azure/iisnode/releases/download/v0.2.21/iisnode-full-v0.2.21-x86.msi), and the [IIS URL Rewrite Module](https://www.iis.net/downloads/microsoft/url-rewrite).
+1. Install [IISnode](https://github.com/azure/iisnode/releases), and the [IIS URL Rewrite Module](https://www.iis.net/downloads/microsoft/url-rewrite).
+2. In IIS, add `.mjs` as a new mime type and set its content type to `application/javascript`.
+3.  Deploy the contents of your `.output` folder to your website in IIS.
 
-Deploy the contents of your `.output` folder to your website in IIS.
-
-In IIS, add `.mjs` as a new mime type and set its content type to `application/javascript`.
 
 ## Using IIS directly
 
-**Preset:** `iis` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `iis-handler` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 If you do not wish to use IISnode, you can use IIS directly.
-To deploy a Nitro application to IIS, the `HttpPlatformHandler` IIS Module is needed.
 
-Copy your `.output` directory into the Windows Server, and create a website on IIS pointing to that exact directory.
+1. Make sure that [Node.js](https://nodejs.org/en/) is installed on your Windows Server.
+2. Make sure [`HttpPlatformHandler` Module](https://www.iis.net/downloads/microsoft/httpplatformhandler) is installed.
+3.  Copy your `.output` directory into the Windows Server, and create a website on IIS pointing to that exact directory.
