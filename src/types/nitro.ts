@@ -31,9 +31,18 @@ export type NitroDynamicConfig = Pick<
   "runtimeConfig" | "routeRules"
 >;
 
+export interface NitroRuntimeConfigApp {
+  baseURL: string;
+  [key: string]: any;
+}
+
 export interface NitroRuntimeConfig {
-  app: {
-    baseURL: string;
+  app: NitroRuntimeConfigApp;
+  nitro: {
+    envPrefix?: string;
+    routeRules?: {
+      [path: string]: NitroRouteConfig;
+    };
   };
   [key: string]: any;
 }
@@ -206,6 +215,10 @@ export interface NitroOptions extends PresetOptions {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
+    /**
+     * See https://github.com/microsoft/TypeScript/pull/51669
+     */
+    typescriptBundlerResolution?: boolean;
   };
   future: {
     nativeSWR: boolean;
@@ -217,6 +230,7 @@ export interface NitroOptions extends PresetOptions {
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
+  ignore: string[];
 
   // Dev
   dev: boolean;
@@ -235,6 +249,7 @@ export interface NitroOptions extends PresetOptions {
     concurrency: number;
     interval: number;
     crawlLinks: boolean;
+    failOnError: boolean;
     ignore: string[];
     routes: string[];
   };
@@ -257,6 +272,7 @@ export interface NitroOptions extends PresetOptions {
   analyze: false | PluginVisualizerOptions;
   replace: Record<string, string | ((id: string) => string)>;
   commonJS?: RollupCommonJSOptions;
+  exportConditions?: string[];
 
   // Advanced
   typescript: {

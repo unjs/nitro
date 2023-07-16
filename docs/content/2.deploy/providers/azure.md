@@ -16,6 +16,8 @@ Azure Static Web Apps are designed to be deployed continuously in a [GitHub Acti
 
 ### Local preview
 
+Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) if you want to test locally.
+
 You can invoke a development environment to preview before deploying.
 
 ```bash

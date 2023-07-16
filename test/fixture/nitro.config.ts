@@ -26,6 +26,7 @@ export default defineNitroConfig({
       dir: "files",
     },
   ],
+  ignore: ["api/**/_*", "middleware/_ignored.ts", "routes/_*.ts", "_*.txt"],
   appConfig: {
     "nitro-config": true,
     dynamic: "initial",
@@ -41,7 +42,6 @@ export default defineNitroConfig({
       maxAge: 3600,
     },
   ],
-  nodeModulesDirs: ["./_/node_modules"],
   routeRules: {
     "/api/param/prerender4": { prerender: true },
     "/api/param/prerender2": { prerender: false },
