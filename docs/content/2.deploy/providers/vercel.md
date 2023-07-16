@@ -83,7 +83,7 @@ You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment var
 You can now access data store in any event handler:
 
 ```ts
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const dataStorage = useStorage("data");
   await dataStorage.setItem("hello", "world");
   return {
