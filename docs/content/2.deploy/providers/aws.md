@@ -23,8 +23,6 @@ Nitro output, by default uses dynamic chunks for lazy loading code only when nee
 
 ::code-group
 ```ts [nitro.config.ts]
-import { defineNitroConfig } from "nitropack/config";
-
 export default defineNitroConfig({
   inlineDynamicImports: true
 });
