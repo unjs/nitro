@@ -123,3 +123,14 @@ export function normalizeOutgoingHeaders(
   }
   return outgoingHeaders;
 }
+
+export function withNormalizedHeaders(fetch: typeof globalThis.fetch) {
+  return async (...args: Parameters<typeof fetch>) => {
+    const r = await fetch(...args);
+    return new Response(r.body, {
+      headers: normalizeOutgoingHeaders(r.headers),
+      status: r.status,
+      statusText: r.statusText,
+    });
+  };
+}

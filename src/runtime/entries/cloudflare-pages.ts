@@ -3,10 +3,7 @@ import type {
   Request as CFRequest,
   EventContext,
 } from "@cloudflare/workers-types";
-import {
-  normalizeOutgoingHeaders,
-  requestHasBody,
-} from "#internal/nitro/utils";
+import { requestHasBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
@@ -42,7 +39,7 @@ export default {
     // Expose latest env to the global context
     globalThis.__env__ = env;
 
-    const r = await nitroApp.localFetch(url.pathname + url.search, {
+    return nitroApp.localFetchWithNormalizedHeaders(url.pathname + url.search, {
       context: {
         cf: request.cf,
         waitUntil: (promise) => context.waitUntil(promise),
@@ -57,11 +54,6 @@ export default {
       method: request.method,
       headers: request.headers,
       body,
-    });
-    return new Response(r.body, {
-      headers: normalizeOutgoingHeaders(r.headers),
-      status: r.status,
-      statusText: r.statusText,
     });
   },
 };
