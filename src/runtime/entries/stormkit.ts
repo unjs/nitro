@@ -34,6 +34,7 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
     body: event.body,
   });
 
+  // @todo handle cookies
   return {
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),

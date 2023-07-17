@@ -30,6 +30,7 @@ export async function lambda(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
+  // @todo Handle cookies
   return {
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
