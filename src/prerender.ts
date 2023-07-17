@@ -168,7 +168,9 @@ export async function prerender(nitro: Nitro) {
         _route.data = new TextEncoder().encode(value);
       },
     });
-    if (res.status !== 200) {
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+    const redirectCodes = [301, 302, 303, 304, 307, 308];
+    if (![200, ...redirectCodes].includes(res.status)) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error.statusCode = res.status;
       _route.error.statusMessage = res.statusText;
