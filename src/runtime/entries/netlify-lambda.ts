@@ -11,6 +11,7 @@ import {
   normalizeOutgoingHeadersLambda,
 } from "../utils";
 
+// Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
 export async function lambda(
   event: HandlerEvent,
   context: HandlerContext
@@ -32,16 +33,16 @@ export async function lambda(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  // Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
   const cookies = r.headers["set-cookie"];
   return {
     statusCode: r.status,
     headers: normalizeOutgoingHeadersLambda(r.headers, true),
     body: r.body.toString(),
-    ...(cookies.length > 0 && {
-      multiValueHeaders: {
-        "set-cookie": Array.isArray(cookies) ? cookies : [cookies],
-      },
-    }),
+    ...(cookies &&
+      cookies.length > 0 && {
+        multiValueHeaders: {
+          "set-cookie": Array.isArray(cookies) ? cookies : [cookies],
+        },
+      }),
   };
 }

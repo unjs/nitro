@@ -132,7 +132,7 @@ export function normalizeIncomingHeadersLambda(
 }
 
 export function normalizeOutgoingHeadersLambda(
-  headers: Record<string, string | string[] | undefined>,
+  headers: HeadersObject,
   stripCookies = false
 ) {
   const entries = stripCookies
