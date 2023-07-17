@@ -13,7 +13,6 @@ const server = Bun.serve({
     }
 
     return nitroApp.localFetchWithNormalizedHeaders(url.pathname + url.search, {
-      url: url.pathname + url.search,
       host: url.hostname,
       protocol: url.protocol,
       headers: request.headers,

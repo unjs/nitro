@@ -1,9 +1,8 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
-import { normalizeOutgoingHeaders } from "../utils";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
-addEventListener("fetch", (event: any) => {
+addEventListener("fetch", (event: FetchEvent) => {
   const url = new URL(event.request.url);
   if (isPublicAssetURL(url.pathname) || url.pathname.includes("/_server/")) {
     return;
@@ -18,21 +17,13 @@ async function handleEvent(url, event) {
     body = await event.request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
-    event,
-    url: url.pathname + url.search,
+  return nitroApp.localFetchWithNormalizedHeaders(url.pathname + url.search, {
     host: url.hostname,
     protocol: url.protocol,
     headers: event.request.headers,
     method: event.request.method,
     redirect: event.request.redirect,
     body,
-  });
-
-  return new Response(r.body, {
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
   });
 }
 

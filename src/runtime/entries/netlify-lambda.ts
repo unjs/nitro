@@ -1,6 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
 import type {
-  Handler,
   HandlerResponse,
   HandlerContext,
   HandlerEvent,

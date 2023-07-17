@@ -4,7 +4,7 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
-import { normalizeOutgoingHeaders, requestHasBody } from "../utils";
+import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
@@ -29,26 +29,21 @@ async function handleEvent(event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer());
   }
 
-  const r = await nitroApp.localCall({
-    event,
+  return nitroApp.localFetchWithNormalizedHeaders(url.pathname + url.search, {
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
       cf: (event.request as any).cf,
       waitUntil: (promise) => event.waitUntil(promise),
+      cloudflare: {
+        event,
+      },
     },
-    url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
     headers: Object.fromEntries(event.request.headers.entries()),
     method: event.request.method,
     redirect: event.request.redirect,
     body,
-  });
-
-  return new Response(r.body, {
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
   });
 }
 

@@ -1,7 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import destr from "destr";
 import { nitroApp } from "../app";
-import { normalizeOutgoingHeaders } from "../utils";
 import { useRuntimeConfig } from "#internal/nitro";
 
 // @ts-expect-error unknown global Deno
@@ -51,22 +50,20 @@ async function handler(request: Request) {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
-    url: url.pathname + url.search,
-    host: url.hostname,
-    protocol: url.protocol,
-    headers: Object.fromEntries(request.headers.entries()),
-    method: request.method,
-    redirect: request.redirect,
-    body,
-  });
+  const r = await nitroApp.localFetchWithNormalizedHeaders(
+    url.pathname + url.search,
+    {
+      host: url.hostname,
+      protocol: url.protocol,
+      headers: request.headers,
+      method: request.method,
+      redirect: request.redirect,
+      body,
+    }
+  );
 
   // TODO: fix in runtime/static
   const responseBody = r.status === 304 ? null : r.body;
-  return new Response(responseBody, {
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
-  });
+  return new Response(responseBody, r);
 }
 export default {};
