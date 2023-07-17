@@ -9,6 +9,10 @@ import type {
 import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
+import {
+  normalizeIncomingHeadersLambda,
+  normalizeOutgoingHeadersLambda,
+} from "../utils";
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -44,7 +48,7 @@ export async function handler(
     event,
     url,
     context,
-    headers: normalizeIncomingHeaders(event.headers),
+    headers: normalizeIncomingHeadersLambda(event.headers),
     method,
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
@@ -57,38 +61,16 @@ export async function handler(
       : outgoingCookies?.split(",") || [];
 
     return {
-      cookies,
+      cookies, // lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
       statusCode: r.status,
-      headers: normalizeOutgoingHeaders(r.headers, true),
+      headers: normalizeOutgoingHeadersLambda(r.headers, true),
       body: r.body.toString(),
     };
   }
 
   return {
     statusCode: r.status,
-    headers: normalizeOutgoingHeaders(r.headers),
+    headers: normalizeOutgoingHeadersLambda(r.headers),
     body: r.body.toString(),
   };
-}
-
-function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(
-    Object.entries(headers || {}).map(([key, value]) => [
-      key.toLowerCase(),
-      value!,
-    ])
-  );
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>,
-  stripCookies = false
-) {
-  const entries = stripCookies
-    ? Object.entries(headers).filter(([key]) => !["set-cookie"].includes(key))
-    : Object.entries(headers);
-
-  return Object.fromEntries(
-    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
-  );
 }

@@ -3,10 +3,13 @@ import type {
   HandlerResponse,
   HandlerContext,
   HandlerEvent,
-} from "@netlify/functions/dist/main";
-import type { APIGatewayProxyEventHeaders } from "aws-lambda";
+} from "@netlify/functions";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
+import {
+  normalizeIncomingHeadersLambda,
+  normalizeOutgoingHeadersLambda,
+} from "../utils";
 
 export async function lambda(
   event: HandlerEvent,
@@ -23,36 +26,22 @@ export async function lambda(
     event,
     url,
     context,
-    headers: normalizeIncomingHeaders(event.headers),
+    headers: normalizeIncomingHeadersLambda(event.headers),
     method,
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  // @todo Handle cookies
+  // Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
+  const cookies = r.headers["set-cookie"];
   return {
     statusCode: r.status,
-    headers: normalizeOutgoingHeaders(r.headers),
+    headers: normalizeOutgoingHeadersLambda(r.headers, true),
     body: r.body.toString(),
+    ...(cookies.length > 0 && {
+      multiValueHeaders: {
+        "set-cookie": Array.isArray(cookies) ? cookies : [cookies],
+      },
+    }),
   };
-}
-
-function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(
-    Object.entries(headers || {}).map(([key, value]) => [
-      key.toLowerCase(),
-      value!,
-    ])
-  );
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.fromEntries(
-    Object.entries(headers).map(([k, v]) => [
-      k,
-      Array.isArray(v) ? v.join(",") : v!,
-    ])
-  );
 }

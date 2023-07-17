@@ -1,6 +1,9 @@
+import type { Cookie } from "@azure/functions";
+import type { APIGatewayProxyEventHeaders } from "aws-lambda";
+import type { HeadersObject } from "unenv/runtime/_internal/types";
 import type { H3Event } from "h3";
 import { getRequestHeader, splitCookiesString } from "h3";
-import type { NitroApp } from "./app";
+import { parse } from "cookie-es";
 
 const METHOD_WITH_BODY_RE = /post|put|patch/i;
 const TEXT_MIME_RE = /application\/text|text\/html/;
@@ -106,7 +109,7 @@ export function trapUnhandledNodeErrors() {
 const joinIfArray = (value: string | string[]) =>
   Array.isArray(value) ? value.join(",") : value;
 
-const normalizeOutgoingHeaders = (headers: Headers) => {
+const normalizeOutgoingFetchHeaders = (headers: Headers) => {
   const outgoingHeaders = new Headers();
   for (const [name, header] of headers) {
     if (name === "set-cookie") {
@@ -124,9 +127,44 @@ export function withNormalizedHeaders(fetch: typeof globalThis.fetch) {
   return async (...args: Parameters<typeof fetch>) => {
     const r = await fetch(...args);
     return new Response(r.body, {
-      headers: normalizeOutgoingHeaders(r.headers),
+      headers: normalizeOutgoingFetchHeaders(r.headers),
       status: r.status,
       statusText: r.statusText,
     });
   };
+}
+
+export function getParsedCookiesFromHeaders(headers: HeadersObject) {
+  const c = headers["set-cookie"];
+  if (!c || c.length === 0) {
+    return [];
+  }
+  const cookies = splitCookiesString(joinIfArray(c)).map((cookie) =>
+    parse(cookie)
+  );
+  return cookies as unknown as Cookie[];
+}
+
+export function normalizeIncomingHeadersLambda(
+  headers?: APIGatewayProxyEventHeaders
+) {
+  return Object.fromEntries(
+    Object.entries(headers || {}).map(([key, value]) => [
+      key.toLowerCase(),
+      value,
+    ])
+  );
+}
+
+export function normalizeOutgoingHeadersLambda(
+  headers: Record<string, string | string[] | undefined>,
+  stripCookies = false
+) {
+  const entries = stripCookies
+    ? Object.entries(headers).filter(([key]) => !["set-cookie"].includes(key))
+    : Object.entries(headers);
+
+  return Object.fromEntries(
+    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v])
+  );
 }
