@@ -9,7 +9,7 @@ export async function handler(request: Request) {
     body = await request.arrayBuffer();
   }
 
-  return nitroApp.localFetchWithNormalizedHeaders(url.pathname + url.search, {
+  return nitroApp.localFetch(url.pathname + url.search, {
     host: url.hostname,
     protocol: url.protocol,
     headers: request.headers,

@@ -29,7 +29,7 @@ async function handleEvent(event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer());
   }
 
-  return nitroApp.localFetchWithNormalizedHeaders(url.pathname + url.search, {
+  return nitroApp.localFetch(url.pathname + url.search, {
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
       cf: (event.request as any).cf,

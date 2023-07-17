@@ -31,7 +31,6 @@ export interface NitroApp {
   hooks: Hookable<NitroRuntimeHooks>;
   localCall: ReturnType<typeof createCall>;
   localFetch: ReturnType<typeof createLocalFetch>;
-  localFetchWithNormalizedHeaders: ReturnType<typeof createLocalFetch>;
 }
 
 function createNitroApp(): NitroApp {
@@ -50,8 +49,7 @@ function createNitroApp(): NitroApp {
 
   // Create local fetch callers
   const localCall = createCall(toNodeListener(h3App) as any);
-  const localFetch = createLocalFetch(localCall, globalThis.fetch);
-  const localFetchWithNormalizedHeaders = withNormalizedHeaders(
+  const localFetch = withNormalizedHeaders(
     createLocalFetch(localCall, globalThis.fetch)
   );
   const $fetch = createFetch({
@@ -125,7 +123,6 @@ function createNitroApp(): NitroApp {
     router,
     localCall,
     localFetch,
-    localFetchWithNormalizedHeaders,
   };
 
   for (const plugin of plugins) {

@@ -39,7 +39,7 @@ export default {
     // Expose latest env to the global context
     globalThis.__env__ = env;
 
-    return nitroApp.localFetchWithNormalizedHeaders(url.pathname + url.search, {
+    return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: request.cf,
         waitUntil: (promise) => context.waitUntil(promise),
