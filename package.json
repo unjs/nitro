@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "prepare": "npx nitropack prepare",
     "dev": "npx nitropack dev",
     "build": "npx nitropack build",
     "preview": "node .output/server/index.mjs"
