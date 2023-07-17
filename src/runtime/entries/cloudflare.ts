@@ -40,7 +40,7 @@ async function handleEvent(event: FetchEvent) {
     },
     host: url.hostname,
     protocol: url.protocol,
-    headers: Object.fromEntries(event.request.headers.entries()),
+    headers: event.request.headers,
     method: event.request.method,
     redirect: event.request.redirect,
     body,
