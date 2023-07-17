@@ -57,8 +57,6 @@ Update your configuration:
 
 ::code-group
 ```ts [nitro.config.ts]
-import { defineNitroConfig } from 'nitropack/config'
-
 export default defineNitroConfig({
   storage: {
     data: { driver: 'vercelKV' }
