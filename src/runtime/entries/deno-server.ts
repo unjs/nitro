@@ -1,6 +1,7 @@
 import "#internal/nitro/virtual/polyfill";
 import destr from "destr";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 import { useRuntimeConfig } from "#internal/nitro";
 
 // @ts-expect-error unknown global Deno
@@ -50,7 +51,7 @@ async function handler(request: Request) {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
@@ -59,6 +60,7 @@ async function handler(request: Request) {
     redirect: request.redirect,
     body,
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   // TODO: fix in runtime/static
   const responseBody = r.status === 304 ? null : r.body;

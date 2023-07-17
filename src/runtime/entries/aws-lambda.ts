@@ -9,6 +9,7 @@ import type {
 import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -40,7 +41,7 @@ export async function handler(
     event.headers.cookie = event.cookies.join(";");
   }
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     event,
     url,
     context,
@@ -49,6 +50,7 @@ export async function handler(
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   if ("cookies" in event || "rawPath" in event) {
     const outgoingCookies = r.headers["set-cookie"];

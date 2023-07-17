@@ -1,5 +1,7 @@
 import type { H3Event } from "h3";
 import { getRequestHeader } from "h3";
+import type { NitroApp } from "./app";
+
 const METHOD_WITH_BODY_RE = /post|put|patch/i;
 const TEXT_MIME_RE = /application\/text|text\/html/;
 const JSON_MIME_RE = /application\/json/;
@@ -100,3 +102,25 @@ export function trapUnhandledNodeErrors() {
     );
   }
 }
+
+/**
+ * Hook usage :
+ *
+ * ```ts
+ * nitroApp.hooks.hook("on:response", (callback) => {
+ *  callback.modifyResponse = (response) => new Response("hello")
+ * });
+ * ```
+ */
+export const defineNitroResponse = async <
+  ResponseType extends Response | Awaited<ReturnType<NitroApp["localCall"]>>
+>(
+  nitroApp: NitroApp,
+  response: ResponseType
+) => {
+  const callback = {
+    modifyResponse: (response: ResponseType) => response,
+  };
+  await nitroApp.hooks.callHook("on:response", callback);
+  return callback.modifyResponse(response);
+};

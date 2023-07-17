@@ -1,5 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 
 // @ts-expect-error: Bun global
 const server = Bun.serve({
@@ -21,8 +22,7 @@ const server = Bun.serve({
       redirect: request.redirect,
       body,
     });
-
-    return response;
+    return defineNitroResponse(nitroApp, response);
   },
 });
 

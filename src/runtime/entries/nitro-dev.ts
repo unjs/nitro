@@ -9,6 +9,7 @@ import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
 
+// @todo apply define nitro response
 const server = new Server(toNodeListener(nitroApp.h3App));
 
 function getAddress() {

@@ -4,7 +4,7 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
-import { requestHasBody } from "../utils";
+import { defineNitroResponse, requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
@@ -29,7 +29,7 @@ async function handleEvent(event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer());
   }
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     event,
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
@@ -44,6 +44,7 @@ async function handleEvent(event: FetchEvent) {
     redirect: event.request.redirect,
     body,
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   return new Response(r.body, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]

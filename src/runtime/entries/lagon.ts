@@ -1,4 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
+import { defineNitroResponse } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 
 export async function handler(request: Request): Promise<Response> {
@@ -9,7 +10,7 @@ export async function handler(request: Request): Promise<Response> {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
@@ -18,6 +19,7 @@ export async function handler(request: Request): Promise<Response> {
     redirect: request.redirect,
     body,
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   return new Response(r.body, {
     // @ts-ignore TODO: Should be HeadersInit instead of string[][]

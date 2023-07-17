@@ -1,6 +1,7 @@
 import type { Handler } from "aws-lambda";
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 
 interface StormkitEvent {
   url: string; // e.g. /my/path, /my/path?with=query
@@ -24,7 +25,7 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
 ) {
   const method = event.method || "get";
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     event,
     url: event.url,
     context,
@@ -33,6 +34,7 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
     query: event.query,
     body: event.body,
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   return {
     statusCode: r.status,

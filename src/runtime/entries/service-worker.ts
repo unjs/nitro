@@ -1,5 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
@@ -17,7 +18,7 @@ async function handleEvent(url, event) {
     body = await event.request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     event,
     url: url.pathname + url.search,
     host: url.hostname,
@@ -27,6 +28,7 @@ async function handleEvent(url, event) {
     redirect: event.request.redirect,
     body,
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   return new Response(r.body, {
     headers: r.headers as HeadersInit,

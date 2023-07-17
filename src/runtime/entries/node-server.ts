@@ -12,6 +12,7 @@ import { useRuntimeConfig } from "#internal/nitro";
 const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;
 
+// @todo apply defineNitroResponse
 const server =
   cert && key
     ? new HttpsServer({ key, cert }, toNodeListener(nitroApp.h3App))

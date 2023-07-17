@@ -1,5 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 // https://docs.netlify.com/edge-functions/api/
@@ -19,7 +20,7 @@ export default async function (request: Request, _context) {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
@@ -29,6 +30,7 @@ export default async function (request: Request, _context) {
     redirect: request.redirect,
     body,
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   return new Response(r.body, {
     headers: r.headers as HeadersInit,

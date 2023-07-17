@@ -3,6 +3,7 @@ import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
 
+// @todo apply defineNitroResponse
 export const listener = toNodeListener(nitroApp.h3App);
 
 /** @deprecated use new `listener` export instead */

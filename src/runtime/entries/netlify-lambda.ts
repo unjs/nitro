@@ -8,6 +8,7 @@ import type {
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 
 export async function lambda(
   event: HandlerEvent,
@@ -20,7 +21,7 @@ export async function lambda(
   const url = withQuery(event.path, query);
   const method = event.httpMethod || "get";
 
-  const r = await nitroApp.localCall({
+  const response = await nitroApp.localCall({
     event,
     url,
     context,
@@ -29,6 +30,7 @@ export async function lambda(
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
   });
+  const r = await defineNitroResponse(nitroApp, response);
 
   return {
     statusCode: r.status,

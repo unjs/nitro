@@ -1,11 +1,12 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { defineNitroResponse } from "../utils";
 
 async function cli() {
   const url = process.argv[2] || "/";
   const debug = (label, ...args) => console.debug(`> ${label}:`, ...args);
-  const r = await nitroApp.localCall({ url });
-
+  const response = await nitroApp.localCall({ url });
+  const r = await defineNitroResponse(nitroApp, response);
   debug("URL", url);
   debug("StatusCode", r.status);
   debug("StatusMessage", r.statusText);

@@ -3,6 +3,7 @@ import { toNodeListener, NodeListener } from "h3";
 import { parseQuery } from "ufo";
 import { nitroApp } from "../app";
 
+// @todo apply defineNitroResponse
 const handler = toNodeListener(nitroApp.h3App);
 
 export default <NodeListener>function (req, res) {

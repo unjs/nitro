@@ -3,7 +3,7 @@ import type {
   Request as CFRequest,
   EventContext,
 } from "@cloudflare/workers-types";
-import { requestHasBody } from "#internal/nitro/utils";
+import { defineNitroResponse, requestHasBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
@@ -39,21 +39,24 @@ export default {
     // Expose latest env to the global context
     globalThis.__env__ = env;
 
-    return nitroApp.localFetch(url.pathname + url.search, {
-      context: {
-        cf: request.cf,
-        waitUntil: (promise) => context.waitUntil(promise),
-        cloudflare: {
-          request,
-          env,
-          context,
+    return defineNitroResponse(
+      nitroApp,
+      await nitroApp.localFetch(url.pathname + url.search, {
+        context: {
+          cf: request.cf,
+          waitUntil: (promise) => context.waitUntil(promise),
+          cloudflare: {
+            request,
+            env,
+            context,
+          },
         },
-      },
-      host: url.hostname,
-      protocol: url.protocol,
-      method: request.method,
-      headers: request.headers,
-      body,
-    });
+        host: url.hostname,
+        protocol: url.protocol,
+        method: request.method,
+        headers: request.headers,
+        body,
+      })
+    );
   },
 };
