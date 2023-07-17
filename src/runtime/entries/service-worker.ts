@@ -1,5 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { normalizeOutgoingHeaders } from "../utils";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 addEventListener("fetch", (event: any) => {
@@ -29,7 +30,7 @@ async function handleEvent(url, event) {
   });
 
   return new Response(r.body, {
-    headers: r.headers as HeadersInit,
+    headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
     statusText: r.statusText,
   });

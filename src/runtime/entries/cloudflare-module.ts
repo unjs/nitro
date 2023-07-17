@@ -8,7 +8,7 @@ import {
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from "__STATIC_CONTENT_MANIFEST";
-import { requestHasBody } from "../utils";
+import { normalizeOutgoingHeaders, requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
@@ -52,7 +52,7 @@ export default {
     // Expose latest env to the global context
     globalThis.__env__ = env;
 
-    return nitroApp.localFetch(url.pathname + url.search, {
+    const r = await nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: (request as any).cf,
         waitUntil: (promise) => context.waitUntil(promise),
@@ -67,6 +67,11 @@ export default {
       method: request.method,
       headers: request.headers,
       body,
+    });
+    return new Response(r.body, {
+      headers: normalizeOutgoingHeaders(r.headers),
+      status: r.status,
+      statusText: r.statusText,
     });
   },
 };

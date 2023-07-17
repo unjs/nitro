@@ -1,6 +1,7 @@
 import "#internal/nitro/virtual/polyfill";
 import destr from "destr";
 import { nitroApp } from "../app";
+import { normalizeOutgoingHeaders } from "../utils";
 import { useRuntimeConfig } from "#internal/nitro";
 
 // @ts-expect-error unknown global Deno
@@ -63,20 +64,9 @@ async function handler(request: Request) {
   // TODO: fix in runtime/static
   const responseBody = r.status === 304 ? null : r.body;
   return new Response(responseBody, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
     statusText: r.statusText,
   });
 }
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
-}
-
 export default {};

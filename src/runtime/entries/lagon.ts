@@ -1,4 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
+import { normalizeOutgoingHeaders } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 
 export async function handler(request: Request): Promise<Response> {
@@ -20,18 +21,8 @@ export async function handler(request: Request): Promise<Response> {
   });
 
   return new Response(r.body, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
     headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
     statusText: r.statusText,
   });
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
 }

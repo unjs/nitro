@@ -1,5 +1,7 @@
 import type { H3Event } from "h3";
-import { getRequestHeader } from "h3";
+import { getRequestHeader, splitCookiesString } from "h3";
+import type { NitroApp } from "./app";
+
 const METHOD_WITH_BODY_RE = /post|put|patch/i;
 const TEXT_MIME_RE = /application\/text|text\/html/;
 const JSON_MIME_RE = /application\/json/;
@@ -99,4 +101,25 @@ export function trapUnhandledNodeErrors() {
       console.error("[nitro]  [uncaughtException] " + err)
     );
   }
+}
+
+const joinIfArray = (value: string | string[]) =>
+  Array.isArray(value) ? value.join(",") : value;
+
+export function normalizeOutgoingHeaders(
+  headers: Awaited<ReturnType<NitroApp["localCall"]>>["headers"] | Headers
+) {
+  const outgoingHeaders = new Headers();
+  const iterableHeaders =
+    headers instanceof Headers ? headers : Object.entries(headers);
+  for (const [name, header] of iterableHeaders) {
+    if (name === "set-cookie") {
+      for (const cookie of splitCookiesString(joinIfArray(header))) {
+        outgoingHeaders.append("set-cookie", cookie);
+      }
+    } else {
+      outgoingHeaders.set(name, joinIfArray(header));
+    }
+  }
+  return outgoingHeaders;
 }

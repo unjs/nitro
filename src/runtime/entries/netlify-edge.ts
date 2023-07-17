@@ -1,5 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { normalizeOutgoingHeaders } from "../utils";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 // https://docs.netlify.com/edge-functions/api/
@@ -31,7 +32,7 @@ export default async function (request: Request, _context) {
   });
 
   return new Response(r.body, {
-    headers: r.headers as HeadersInit,
+    headers: normalizeOutgoingHeaders(r.headers),
     status: r.status,
     statusText: r.statusText,
   });

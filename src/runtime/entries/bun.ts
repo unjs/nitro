@@ -1,5 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { normalizeOutgoingHeaders } from "../utils";
 
 // @ts-expect-error: Bun global
 const server = Bun.serve({
@@ -12,7 +13,7 @@ const server = Bun.serve({
       body = await request.arrayBuffer();
     }
 
-    const response = await nitroApp.localFetch(url.pathname + url.search, {
+    const r = await nitroApp.localFetch(url.pathname + url.search, {
       url: url.pathname + url.search,
       host: url.hostname,
       protocol: url.protocol,
@@ -21,8 +22,11 @@ const server = Bun.serve({
       redirect: request.redirect,
       body,
     });
-
-    return response;
+    return new Response(r.body, {
+      headers: normalizeOutgoingHeaders(r.headers),
+      status: r.status,
+      statusText: r.statusText,
+    });
   },
 });
 
