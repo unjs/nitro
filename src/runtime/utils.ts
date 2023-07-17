@@ -106,40 +106,15 @@ export function trapUnhandledNodeErrors() {
   }
 }
 
-const joinIfArray = (value: string | string[]) =>
+export const stringifyHeaders = (value: string | string[]) =>
   Array.isArray(value) ? value.join(",") : value;
-
-const normalizeOutgoingFetchHeaders = (headers: Headers) => {
-  const outgoingHeaders = new Headers();
-  for (const [name, header] of headers) {
-    if (name === "set-cookie") {
-      for (const cookie of splitCookiesString(joinIfArray(header))) {
-        outgoingHeaders.append("set-cookie", cookie);
-      }
-    } else {
-      outgoingHeaders.set(name, joinIfArray(header));
-    }
-  }
-  return outgoingHeaders;
-};
-
-export function withNormalizedHeaders(fetch: typeof globalThis.fetch) {
-  return async (...args: Parameters<typeof fetch>) => {
-    const r = await fetch(...args);
-    return new Response(r.body, {
-      headers: normalizeOutgoingFetchHeaders(r.headers),
-      status: r.status,
-      statusText: r.statusText,
-    });
-  };
-}
 
 export function getParsedCookiesFromHeaders(headers: HeadersObject) {
   const c = headers["set-cookie"];
   if (!c || c.length === 0) {
     return [];
   }
-  const cookies = splitCookiesString(joinIfArray(c)).map((cookie) =>
+  const cookies = splitCookiesString(stringifyHeaders(c)).map((cookie) =>
     parse(cookie)
   );
   return cookies as unknown as Cookie[];
