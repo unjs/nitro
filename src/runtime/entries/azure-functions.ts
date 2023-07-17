@@ -1,7 +1,12 @@
 import "#internal/nitro/virtual/polyfill";
+import type { HttpRequest, HttpResponse } from "@azure/functions";
 import { nitroApp } from "../app";
+import {
+  getParsedCookiesFromHeaders,
+  normalizeOutgoingHeadersLambda,
+} from "../utils";
 
-export async function handle(context, req) {
+export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
   const url = "/" + (req.params.url || "");
 
   const { body, status, statusText, headers } = await nitroApp.localCall({
@@ -15,7 +20,8 @@ export async function handle(context, req) {
   // @todo cookies https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#http-response
   context.res = {
     status,
-    headers,
+    cookies: getParsedCookiesFromHeaders(headers),
+    headers: normalizeOutgoingHeadersLambda(headers, true),
     body: body ? body.toString() : statusText,
   };
 }

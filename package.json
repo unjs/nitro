@@ -116,6 +116,7 @@
     "unstorage": "^1.8.0"
   },
   "devDependencies": {
+    "@azure/functions": "^3.5.1",
     "@cloudflare/workers-types": "^4.20230710.1",
     "@types/aws-lambda": "^8.10.119",
     "@types/etag": "^1.8.1",
