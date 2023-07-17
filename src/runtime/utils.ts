@@ -106,13 +106,9 @@ export function trapUnhandledNodeErrors() {
 const joinIfArray = (value: string | string[]) =>
   Array.isArray(value) ? value.join(",") : value;
 
-export function normalizeOutgoingHeaders(
-  headers: Awaited<ReturnType<NitroApp["localCall"]>>["headers"] | Headers
-) {
+const normalizeOutgoingHeaders = (headers: Headers) => {
   const outgoingHeaders = new Headers();
-  const iterableHeaders =
-    headers instanceof Headers ? headers : Object.entries(headers);
-  for (const [name, header] of iterableHeaders) {
+  for (const [name, header] of headers) {
     if (name === "set-cookie") {
       for (const cookie of splitCookiesString(joinIfArray(header))) {
         outgoingHeaders.append("set-cookie", cookie);
@@ -122,7 +118,7 @@ export function normalizeOutgoingHeaders(
     }
   }
   return outgoingHeaders;
-}
+};
 
 export function withNormalizedHeaders(fetch: typeof globalThis.fetch) {
   return async (...args: Parameters<typeof fetch>) => {
