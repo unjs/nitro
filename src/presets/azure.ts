@@ -44,16 +44,12 @@ async function writeRoutes(nitro: Nitro) {
 
   // Attempt to load custom config
   let customConfig = {};
-  try {
-    const customConfigPath = resolve(
-      nitro.options.rootDir,
-      "custom.staticwebapp.config.json"
-    );
-    if (existsSync(customConfigPath)) {
-      customConfig = JSON.parse(await readFile(customConfigPath, "utf8"));
-    }
-  } catch {
-    console.error('Error parsing "custom.staticwebapp.config.json"');
+  const customConfigPath = resolve(
+    nitro.options.rootDir,
+    "custom.staticwebapp.config.json"
+  );
+  if (existsSync(customConfigPath)) {
+    customConfig = JSON.parse(await readFile(customConfigPath, "utf8"));
   }
 
   // Merge custom config into the generated config
