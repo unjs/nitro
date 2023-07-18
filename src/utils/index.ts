@@ -120,8 +120,8 @@ const autodetectableStaticProviders: Partial<
 
 export function detectTarget(options: { static?: boolean } = {}) {
   return options?.static
-    ? autodetectableStaticProviders[provider] || "node-server"
-    : autodetectableProviders[provider] || "static";
+    ? autodetectableStaticProviders[provider] || "static"
+    : autodetectableProviders[provider] || "node-server";
 }
 
 export async function isDirectory(path: string) {
