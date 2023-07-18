@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { join, resolve } from "pathe";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
@@ -44,13 +45,16 @@ async function writeRoutes(nitro: Nitro) {
   // Attempt to load custom config
   let customConfig = {};
   try {
-    customConfig = JSON.parse(
-      await readFile(
-        resolve(nitro.options.rootDir, "custom.staticwebapp.config.json"),
-        "utf8"
-      )
+    const customConfigPath = resolve(
+      nitro.options.rootDir,
+      "custom.staticwebapp.config.json"
     );
-  } catch {}
+    if (existsSync(customConfigPath)) {
+      customConfig = JSON.parse(await readFile(customConfigPath, "utf8"));
+    }
+  } catch {
+    console.error('Error parsing "custom.staticwebapp.config.json"');
+  }
 
   // Merge custom config into the generated config
   const config = {
@@ -120,18 +124,16 @@ async function writeRoutes(nitro: Nitro) {
   if ("routes" in customConfig && Array.isArray(customConfig.routes)) {
     // We iterate through the reverse so the order in the custom config is persisted
     for (const customRoute of customConfig.routes.reverse()) {
-      let existingRouteMatchIndex = -1; // We want to record the index so we can override if it does exist
-      const routeExistsAlready = config.routes.some((element, index) => {
-        existingRouteMatchIndex = index;
-        return element.route === customRoute.route;
-      });
+      const existingRouteMatchIndex = config.routes.findIndex(
+        (value) => value.route === customRoute.route
+      );
 
-      if (routeExistsAlready) {
-        // Override the existing route with our customRoute
-        config.routes[existingRouteMatchIndex] = customRoute;
-      } else {
-        // Otherwise put the customRoute at the beginning of the array
+      if (existingRouteMatchIndex === -1) {
+        // If we don't find a match, put the customRoute at the beginning of the array
         config.routes.unshift(customRoute);
+      } else {
+        // Otherwise override the existing route with our customRoute
+        config.routes[existingRouteMatchIndex] = customRoute;
       }
     }
   }
