@@ -269,10 +269,11 @@ export function testNitro(
       async () => {
         const { data } = await callHandler({ url: "/modules" });
         expect(data).toMatchObject({
-          depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
-          depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
-          depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
-          subpathLib: "nitro-lib@2.0.0",
+          depA: "@fixture/nitro-lib@1.0.0+@fixture/nested-lib@1.0.0",
+          depB: "@fixture/nitro-lib@2.0.1+@fixture/nested-lib@2.0.1",
+          depLib: "@fixture/nitro-lib@2.0.0+@fixture/nested-lib@2.0.0",
+          subpathLib: "@fixture/nitro-lib@2.0.0",
+          extraUtils: "@fixture/nitro-utils/extra",
         });
       }
     );
@@ -388,6 +389,31 @@ export function testNitro(
       server: [true, true],
       "versions.nitro": [expect.any(String), expect.any(String)],
       "versions?.nitro": [expect.any(String), expect.any(String)],
+    });
+  });
+
+  it("event.waitUntil", async () => {
+    const res = await callHandler({ url: "/wait-until" });
+    expect(res.data).toBe("done");
+  });
+
+  describe("ignore", () => {
+    it("server routes should be ignored", async () => {
+      expect((await callHandler({ url: "/api/_ignored" })).status).toBe(404);
+      expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
+    });
+
+    it.skipIf(
+      [
+        "nitro-dev",
+        "cloudflare",
+        "cloudflare-pages",
+        "cloudflare-module",
+        "vercel-edge",
+      ].includes(ctx.preset)
+    )("public files should be ignored", async () => {
+      expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
+      expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
     });
   });
 }

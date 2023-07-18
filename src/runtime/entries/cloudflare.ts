@@ -34,6 +34,7 @@ async function handleEvent(event: FetchEvent) {
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
       cf: (event.request as any).cf,
+      waitUntil: (promise) => event.waitUntil(promise),
     },
     url: url.pathname + url.search,
     host: url.hostname,
