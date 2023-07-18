@@ -1,20 +1,20 @@
 import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { fixtureDir, setupTest } from "../tests";
+
+async function attemptToDeleteExistingConfigs() {
+  await fsp
+    .rm(resolve(fixtureDir, "custom.staticwebapp.config.json"))
+    .catch(() => {});
+  await fsp.rm(resolve(fixtureDir, "staticwebapp.config.json")).catch(() => {});
+}
 
 describe(
   "nitro:preset:azure",
   () => {
-    beforeEach(async () => {
-      // Attempt to delete existing configs
-      await fsp
-        .rm(resolve(fixtureDir, "custom.staticwebapp.config.json"))
-        .catch(() => {});
-      await fsp
-        .rm(resolve(fixtureDir, "staticwebapp.config.json"))
-        .catch(() => {});
-    });
+    beforeEach(attemptToDeleteExistingConfigs);
+    afterEach(attemptToDeleteExistingConfigs);
 
     it("basic staticwebapp.config.json created successfully", async () => {
       const ctx = await setupTest("azure");
