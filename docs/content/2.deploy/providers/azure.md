@@ -39,9 +39,9 @@ Nitro will automatically add the following properties based on the following cri
 | **[routes](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#routes)** | All prerendered routes are added. Additionally, if you do not have an `index.html` file an empty one is created for you for compatibility purposes and also requests to `/index.html` are redirected to the root directory which is handled by `/api/server`.  | `[]` |
 
 ### Custom Configuration
-If you need to add additional properties to your configuration or alter the configuration that Nitro generates every build you need to create a `custom.staticwebapp.config.json` file in your project root.
+You can alter the Nitro generated configuration with a `custom.staticwebapp.config.json` file in your project root.
 
-Nitro will override the properties it generates with the properties you specify in this custom configuration file, with the only exception being `routes`. For `routes`, Nitro will add your custom routes to the beginning of the array and put the routes it generates at the end. In the case of a conflict (determined if an object has the same `route` property) the custom route will take priority over the generated one.
+Custom routes will be added and matched first. In the case of a conflict (determined if an object has the same route property), custom routes will override generated ones.
 
 ### Deploy from CI/CD via GitHub Actions
 
