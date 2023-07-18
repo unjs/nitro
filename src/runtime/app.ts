@@ -57,7 +57,7 @@ function createNitroApp(): NitroApp {
   // @ts-ignore
   globalThis.$fetch = $fetch;
 
-  // A generic event handler give nitro acess to the requests
+  // A generic event handler give nitro access to the requests
   h3App.use(
     eventHandler((event) => {
       // Init nitro context
