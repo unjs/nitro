@@ -449,8 +449,8 @@ export function testNitro(
 
       // TODO: Node presets do not split cookies
       // https://github.com/unjs/nitro/issues/1462
-      // (vercel uses node only for tests only)
-      const notSplitingPresets = ["node", "nitro-dev", "vercel"];
+      // (vercel and deno-server uses node only for tests only)
+      const notSplitingPresets = ["node", "nitro-dev", "vercel", "deno-server"];
       if (notSplitingPresets.includes(ctx.preset)) {
         // Refactor: https://github.com/unjs/std-env/issues/60
         const nodeVersion = Number.parseInt(
