@@ -103,7 +103,7 @@ export function trapUnhandledNodeErrors() {
 }
 
 export function joinHeaders(value: string | string[]) {
-  return Array.isArray(value) ? value.join(",") : value;
+  return Array.isArray(value) ? value.join(", ") : value;
 }
 
 export function normalizeFetchResponse(response: Response) {
