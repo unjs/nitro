@@ -9,6 +9,7 @@ import {
 import type { H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "./storage";
+import { useNitroApp } from "./app";
 
 export interface CacheEntry<T = any> {
   value?: T;
@@ -57,7 +58,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
     key: string,
     resolver: () => T | Promise<T>,
     shouldInvalidateCache?: boolean,
-    waitUntil?: (promise: Promise<void>) => void
+    event?: H3Event
   ): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
     const cacheKey = [opts.base, group, name, key + ".json"]
@@ -114,10 +115,9 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
         if (validate(entry)) {
           const promise = useStorage()
             .setItem(cacheKey, entry)
-            .catch((error) => console.error("[nitro] [cache]", error));
-          if (waitUntil) {
-            waitUntil(promise);
-          }
+            .catch((error) => {
+              useNitroApp().captureError(error, { event, tags: ["cache"] });
+            });
         }
       }
     };
@@ -126,7 +126,9 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
 
     if (opts.swr && entry.value) {
       // eslint-disable-next-line no-console
-      _resolvePromise.catch(console.error);
+      _resolvePromise.catch((error) => {
+        useNitroApp().captureError(error, { event, tags: ["cache"] });
+      });
       // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return entry;
     }
@@ -141,13 +143,11 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
     }
     const key = await (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
-    const waitUntil =
-      args[0] && isEvent(args[0]) ? args[0].waitUntil : undefined;
     const entry = await get(
       key,
       () => fn(...args),
       shouldInvalidateCache,
-      waitUntil
+      args[0] && isEvent(args[0]) ? args[0] : undefined
     );
     let value = entry.value;
     if (opts.transform) {

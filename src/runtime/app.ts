@@ -7,6 +7,7 @@ import {
   Router,
   toNodeListener,
   fetchWithEvent,
+  H3Error,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -31,6 +32,7 @@ export interface NitroApp {
   hooks: Hookable<NitroRuntimeHooks>;
   localCall: ReturnType<typeof createCall>;
   localFetch: ReturnType<typeof createLocalFetch>;
+  captureError: NitroRuntimeHooks["error"];
 }
 
 function createNitroApp(): NitroApp {
@@ -38,9 +40,24 @@ function createNitroApp(): NitroApp {
 
   const hooks = createHooks<NitroRuntimeHooks>();
 
+  const captureError: NitroApp["captureError"] = (error, context = {}) => {
+    const promise = hooks
+      .callHookParallel("error", error, context)
+      .catch((_err) => {
+        console.error("Error in error hook", _err);
+      });
+    if (context.event) {
+      context.event.context.nitro?.errors?.push({ error, context });
+      context.event.waitUntil(promise);
+    }
+  };
+
   const h3App = createApp({
     debug: destr(process.env.DEBUG),
-    onError: errorHandler,
+    onError: (error, event) => {
+      captureError(error, { event, tags: ["request"] });
+      return errorHandler(error as H3Error, event);
+    },
   });
 
   const router = createRouter();
@@ -68,7 +85,7 @@ function createNitroApp(): NitroApp {
   h3App.use(
     eventHandler((event) => {
       // Init nitro context
-      event.context.nitro = event.context.nitro || {};
+      event.context.nitro = event.context.nitro || { errors: [] };
 
       // Support platform context provided by local fetch
       const envContext = (event.node.req as any).__unenv__;
@@ -127,6 +144,7 @@ function createNitroApp(): NitroApp {
     router,
     localCall,
     localFetch,
+    captureError,
   };
 
   for (const plugin of plugins) {

@@ -15,6 +15,8 @@ declare module "h3" {
     $fetch: H3Event$Fetch;
     /** @experimental See https://github.com/unjs/nitro/issues/1420 */
     waitUntil: (promise: Promise<unknown>) => void;
+    /** @experimental */
+    errors: { error?: Error, context: { tags?: string[], [key:string]: unknown } } }[];
   }
   interface H3Context {
     nitro: {

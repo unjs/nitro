@@ -482,4 +482,14 @@ export function testNitro(
       expect(headers["set-cookie"]).toMatchObject(expectedCookies);
     });
   });
+
+  describe("errors", () => {
+    it("captures errors", async () => {
+      const { data } = await callHandler({ url: "/api/errors" });
+      const allErrorMessages = data.allErrors.map(
+        (err) => err.error.message as string
+      );
+      expect(allErrorMessages).to.includes("Service Unavailable");
+    });
+  });
 }
