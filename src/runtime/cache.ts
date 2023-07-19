@@ -118,6 +118,9 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
             .catch((error) => {
               useNitroApp().captureError(error, { event, tags: ["cache"] });
             });
+          if (event && event.waitUntil) {
+            event.waitUntil(promise);
+          }
         }
       }
     };
