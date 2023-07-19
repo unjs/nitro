@@ -5,6 +5,7 @@ import {
   readAsset,
   isPublicAssetURL,
 } from "#internal/nitro/virtual/public-assets";
+import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
 
 const METHODS = new Set(["HEAD", "GET"]);
 
@@ -20,7 +21,7 @@ export default eventHandler((event) => {
       withoutTrailingSlash(parseURL(event.node.req.url).pathname)
     )
   );
-  let asset;
+  let asset: PublicAsset;
 
   const encodingHeader = String(
     event.node.req.headers["accept-encoding"] || ""
