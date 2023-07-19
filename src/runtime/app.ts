@@ -8,6 +8,7 @@ import {
   toNodeListener,
   fetchWithEvent,
   H3Error,
+  isEvent,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -46,7 +47,7 @@ function createNitroApp(): NitroApp {
       .catch((_err) => {
         console.error("Error while capturing another error", _err);
       });
-    if (context.event) {
+    if (context.event && isEvent(context.event)) {
       const errors = context.event.context.nitro?.errors;
       if (errors) {
         errors.push({ error, context });
