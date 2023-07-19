@@ -53,6 +53,7 @@ export async function handler(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
+  // Lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
   if ("cookies" in event || "rawPath" in event) {
     const outgoingCookies = r.headers["set-cookie"];
     const cookies = Array.isArray(outgoingCookies)
@@ -60,7 +61,7 @@ export async function handler(
       : outgoingCookies?.split(",") || [];
 
     return {
-      cookies, // lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
+      cookies,
       statusCode: r.status,
       headers: normalizeLambdaOutgoingHeaders(r.headers, true),
       body: r.body.toString(),
