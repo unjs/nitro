@@ -4,8 +4,8 @@ import {
   getAsset,
   readAsset,
   isPublicAssetURL,
-  PublicAsset,
 } from "#internal/nitro/virtual/public-assets";
+import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
 
 const METHODS = new Set(["HEAD", "GET"]);
 
