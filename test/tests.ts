@@ -8,6 +8,9 @@ import { joinURL } from "ufo";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
 
+// Refactor: https://github.com/unjs/std-env/issues/60
+const nodeVersion = Number.parseInt(process.versions.node.match(/^v?(\d+)/)[0]);
+
 const { createNitro, build, prepare, copyPublicAssets, prerender } =
   (_nitro as any as { default: typeof _nitro }).default || _nitro;
 
@@ -452,10 +455,6 @@ export function testNitro(
       // (vercel and deno-server uses node only for tests only)
       const notSplitingPresets = ["node", "nitro-dev", "vercel", "deno-server"];
       if (notSplitingPresets.includes(ctx.preset)) {
-        // Refactor: https://github.com/unjs/std-env/issues/60
-        const nodeVersion = Number.parseInt(
-          process.versions.node.match(/^v?(\d+)/)[0]
-        );
         expectedCookies =
           nodeVersion < 18
             ? "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/"
