@@ -1,5 +1,6 @@
 import type { H3Event } from "h3";
 import { getRequestHeader, splitCookiesString } from "h3";
+import { useNitroApp } from "./app";
 
 const METHOD_WITH_BODY_RE = /post|put|patch/i;
 const TEXT_MIME_RE = /application\/text|text\/html/;
@@ -84,22 +85,18 @@ export function normalizeError(error: any) {
   };
 }
 
+function _captureError(error: Error, type: string) {
+  console.error(`[nitro] [${type}]`, error);
+  useNitroApp().captureError(error, { tags: [type] });
+}
+
 export function trapUnhandledNodeErrors() {
-  if (process.env.DEBUG) {
-    process.on("unhandledRejection", (err) =>
-      console.error("[nitro] [unhandledRejection]", err)
-    );
-    process.on("uncaughtException", (err) =>
-      console.error("[nitro] [uncaughtException]", err)
-    );
-  } else {
-    process.on("unhandledRejection", (err) =>
-      console.error("[nitro] [unhandledRejection] " + err)
-    );
-    process.on("uncaughtException", (err) =>
-      console.error("[nitro]  [uncaughtException] " + err)
-    );
-  }
+  process.on("unhandledRejection", (error: Error) =>
+    _captureError(error, "unhandledRejection")
+  );
+  process.on("uncaughtException", (error: Error) =>
+    _captureError(error, "uncaughtException")
+  );
 }
 
 export function joinHeaders(value: string | string[]) {
