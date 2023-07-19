@@ -5,6 +5,7 @@ import {
   readAsset,
   isPublicAssetURL,
 } from "#internal/nitro/virtual/public-assets";
+import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
 
 const METHODS = new Set(["HEAD", "GET"]);
 
@@ -16,7 +17,7 @@ export default eventHandler((event) => {
   }
 
   let id: string;
-  let asset;
+  let asset: PublicAsset;
   try {
     id = decodeURIComponent(
       withLeadingSlash(
