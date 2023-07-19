@@ -117,11 +117,15 @@ export function normalizeFetchResponse(response: Response) {
   });
 }
 
+export function normalizeCookieHeader(header: string | string[] = "") {
+  return splitCookiesString(joinHeaders(header));
+}
+
 export function normalizeCookieHeaders(headers: Headers) {
   const outgoingHeaders = new Headers();
   for (const [name, header] of headers) {
     if (name === "set-cookie") {
-      for (const cookie of splitCookiesString(joinHeaders(header))) {
+      for (const cookie of normalizeCookieHeader(header)) {
         outgoingHeaders.append("set-cookie", cookie);
       }
     } else {

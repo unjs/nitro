@@ -5,11 +5,13 @@ import type {
   HandlerEvent,
 } from "@netlify/functions";
 import { withQuery } from "ufo";
+import { splitCookiesString } from "h3";
 import { nitroApp } from "../app";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
+import { normalizeCookieHeader } from "../utils";
 
 // Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
 export async function lambda(
@@ -33,16 +35,14 @@ export async function lambda(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  const cookies = r.headers["set-cookie"];
+  const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
+
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers, true),
     body: r.body.toString(),
-    ...(cookies &&
-      cookies.length > 0 && {
-        multiValueHeaders: {
-          "set-cookie": Array.isArray(cookies) ? cookies : [cookies],
-        },
-      }),
+    multiValueHeaders: {
+      ...(cookies.length > 0 ? { "set-cookie": cookies } : {}),
+    },
   };
 }
