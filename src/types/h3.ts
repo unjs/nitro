@@ -17,13 +17,13 @@ declare module "h3" {
     /** @experimental See https://github.com/unjs/nitro/issues/1420 */
     waitUntil: (promise: Promise<unknown>) => void;
     /** @experimental */
-    errors: { error?: Error; context: CapturedErrorContext }[];
-    /** @experimental */
     captureError: CaptureError;
   }
   interface H3Context {
     nitro: {
       _waitUntilPromises?: Promise<unknown>[];
+      /** @experimental */
+      errors: { error?: Error; context: CapturedErrorContext }[];
     };
   }
 }
