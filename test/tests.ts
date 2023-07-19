@@ -19,6 +19,7 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  [key: string]: unknown;
 }
 
 // https://github.com/unjs/nitro/pull/1240
@@ -106,7 +107,7 @@ export async function startServer(ctx: Context, handle) {
 type TestHandlerResult = {
   data: any;
   status: number;
-  headers: Record<string, string>;
+  headers: Record<string, string | string[]>;
 };
 type TestHandler = (options: any) => Promise<TestHandlerResult | Response>;
 
@@ -122,10 +123,27 @@ export function testNitro(
     if (result.constructor.name !== "Response") {
       return result as TestHandlerResult;
     }
+
+    const headers: Record<string, string | string[]> = {};
+    for (const [key, value] of (result as Response).headers.entries()) {
+      if (headers[key]) {
+        if (!Array.isArray(headers[key])) {
+          headers[key] = [headers[key] as string];
+        }
+        if (Array.isArray(value)) {
+          (headers[key] as string[]).push(...value);
+        } else {
+          (headers[key] as string[]).push(value);
+        }
+      } else {
+        headers[key] = value;
+      }
+    }
+
     return {
       data: destr(await (result as Response).text()),
       status: result.status,
-      headers: Object.fromEntries((result as Response).headers.entries()),
+      headers,
     };
   }
 
@@ -412,6 +430,52 @@ export function testNitro(
     )("public files should be ignored", async () => {
       expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
       expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
+    });
+  });
+
+  describe("headers", () => {
+    it("handles headers correctly", async () => {
+      const { headers } = await callHandler({ url: "/api/headers" });
+      expect(headers["content-type"]).toBe("text/html");
+      expect(headers["x-foo"]).toBe("bar");
+      expect(headers["x-array"]).toMatch(/^foo,\s?bar$/);
+
+      let expectedCookies: string | string[] = [
+        "foo=bar",
+        "bar=baz",
+        "test=value; Path=/",
+        "test2=value; Path=/",
+      ];
+
+      // TODO: Node presets do not split cookies
+      // (vercel uses node only for tests only)
+      const notSplitingPresets = ["node", "nitro-dev", "vercel"];
+      if (notSplitingPresets.includes(ctx.preset)) {
+        expectedCookies = [
+          "foo=bar, bar=baz",
+          "test=value; Path=/",
+          "test2=value; Path=/",
+        ];
+      }
+
+      // TODO: verce-ledge joins all cookies for some reason!
+      if (ctx.preset === "vercel-edge") {
+        expectedCookies =
+          "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
+      }
+
+      // Aws lambda v1
+      if (ctx.preset === "aws-lambda" && ctx.lambdaV1) {
+        expectedCookies =
+          "foo=bar, bar=baz,test=value; Path=/,test2=value; Path=/";
+      }
+
+      // TODO: Bun does not handles set-cookie at all
+      if (["bun"].includes(ctx.preset)) {
+        return [];
+      }
+
+      expect(headers["set-cookie"]).toMatchObject(expectedCookies);
     });
   });
 }
