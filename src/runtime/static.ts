@@ -1,5 +1,5 @@
 import { eventHandler, createError } from "h3";
-import { joinURL, withoutTrailingSlash, withLeadingSlash, parseURL } from "ufo";
+import { decodePath, joinURL, parseURL } from "ufo";
 import {
   getAsset,
   readAsset,
@@ -16,41 +16,34 @@ export default eventHandler((event) => {
     return;
   }
 
-  let id: string;
+  let id = decodePath(parseURL(event.node.req.url).pathname);
   let asset: PublicAsset;
-  try {
-    id = decodeURIComponent(
-      withLeadingSlash(
-        withoutTrailingSlash(parseURL(event.node.req.url).pathname)
-      )
-    );
 
-    const encodingHeader = String(
-      event.node.req.headers["accept-encoding"] || ""
-    );
-    const encodings = [
-      ...encodingHeader
-        .split(",")
-        .map((e) => EncodingMap[e.trim()])
-        .filter(Boolean)
-        .sort(),
-      "",
-    ];
-    if (encodings.length > 1) {
-      event.node.res.setHeader("Vary", "Accept-Encoding");
-    }
+  const encodingHeader = String(
+    event.node.req.headers["accept-encoding"] || ""
+  );
+  const encodings = [
+    ...encodingHeader
+      .split(",")
+      .map((e) => EncodingMap[e.trim()])
+      .filter(Boolean)
+      .sort(),
+    "",
+  ];
+  if (encodings.length > 1) {
+    event.node.res.setHeader("Vary", "Accept-Encoding");
+  }
 
-    for (const encoding of encodings) {
-      for (const _id of [id + encoding, joinURL(id, "index.html" + encoding)]) {
-        const _asset = getAsset(_id);
-        if (_asset) {
-          asset = _asset;
-          id = _id;
-          break;
-        }
+  for (const encoding of encodings) {
+    for (const _id of [id + encoding, joinURL(id, "index.html" + encoding)]) {
+      const _asset = getAsset(_id);
+      if (_asset) {
+        asset = _asset;
+        id = _id;
+        break;
       }
     }
-  } catch {}
+  }
 
   if (!asset) {
     if (isPublicAssetURL(id)) {
