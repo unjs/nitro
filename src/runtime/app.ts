@@ -157,7 +157,12 @@ function createNitroApp(): NitroApp {
   };
 
   for (const plugin of plugins) {
-    plugin(app);
+    try {
+      plugin(app);
+    } catch (err) {
+      captureError(err, { tags: ["plugin"] });
+      throw err;
+    }
   }
 
   return app;
