@@ -448,6 +448,7 @@ export function testNitro(
       ];
 
       // TODO: Node presets do not split cookies
+      // https://github.com/unjs/nitro/issues/1462
       // (vercel uses node only for tests only)
       const notSplitingPresets = ["node", "nitro-dev", "vercel"];
       if (notSplitingPresets.includes(ctx.preset)) {
@@ -471,6 +472,7 @@ export function testNitro(
       }
 
       // TODO: Bun does not handles set-cookie at all
+      // https://github.com/unjs/nitro/issues/1461
       if (["bun"].includes(ctx.preset)) {
         return [];
       }
