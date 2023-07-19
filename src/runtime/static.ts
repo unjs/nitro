@@ -1,5 +1,11 @@
 import { eventHandler, createError } from "h3";
-import { decodePath, joinURL, parseURL } from "ufo";
+import {
+  decodePath,
+  joinURL,
+  parseURL,
+  withLeadingSlash,
+  withoutTrailingSlash,
+} from "ufo";
 import {
   getAsset,
   readAsset,
@@ -16,7 +22,11 @@ export default eventHandler((event) => {
     return;
   }
 
-  let id = decodePath(parseURL(event.node.req.url).pathname);
+  let id = decodePath(
+    withLeadingSlash(
+      withoutTrailingSlash(parseURL(event.node.req.url).pathname)
+    )
+  );
   let asset: PublicAsset;
 
   const encodingHeader = String(
