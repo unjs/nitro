@@ -452,11 +452,14 @@ export function testNitro(
       // (vercel uses node only for tests only)
       const notSplitingPresets = ["node", "nitro-dev", "vercel"];
       if (notSplitingPresets.includes(ctx.preset)) {
-        expectedCookies = [
-          "foo=bar, bar=baz",
-          "test=value; Path=/",
-          "test2=value; Path=/",
-        ];
+        // Refactor: https://github.com/unjs/std-env/issues/60
+        const nodeVersion = Number.parseInt(
+          process.versions.node.match(/^v?(\d+)/)[0]
+        );
+        expectedCookies =
+          nodeVersion < 18
+            ? "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/"
+            : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
       }
 
       // TODO: verce-ledge joins all cookies for some reason!
@@ -474,7 +477,7 @@ export function testNitro(
       // TODO: Bun does not handles set-cookie at all
       // https://github.com/unjs/nitro/issues/1461
       if (["bun"].includes(ctx.preset)) {
-        return [];
+        return;
       }
 
       expect(headers["set-cookie"]).toMatchObject(expectedCookies);
