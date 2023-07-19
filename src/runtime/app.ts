@@ -47,8 +47,13 @@ function createNitroApp(): NitroApp {
         console.error("Error while capturing another error", _err);
       });
     if (context.event) {
-      context.event.context.nitro?.errors?.push({ error, context });
-      context.event.waitUntil(promise);
+      const errors = context.event.context.nitro?.errors;
+      if (errors) {
+        errors.push({ error, context });
+      }
+      if (context.event.waitUntil) {
+        context.event.waitUntil(promise);
+      }
     }
   };
 
