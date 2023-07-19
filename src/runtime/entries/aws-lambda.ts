@@ -1,6 +1,5 @@
 import type {
   APIGatewayProxyEvent,
-  APIGatewayProxyEventHeaders,
   APIGatewayProxyEventV2,
   APIGatewayProxyResult,
   APIGatewayProxyResultV2,
@@ -10,9 +9,9 @@ import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 import {
-  normalizeIncomingHeadersLambda,
-  normalizeOutgoingHeadersLambda,
-} from "../utils";
+  normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingHeaders,
+} from "../utils.lambda";
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -48,7 +47,7 @@ export async function handler(
     event,
     url,
     context,
-    headers: normalizeIncomingHeadersLambda(event.headers),
+    headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
@@ -63,14 +62,14 @@ export async function handler(
     return {
       cookies, // lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
       statusCode: r.status,
-      headers: normalizeOutgoingHeadersLambda(r.headers, true),
+      headers: normalizeLambdaOutgoingHeaders(r.headers, true),
       body: r.body.toString(),
     };
   }
 
   return {
     statusCode: r.status,
-    headers: normalizeOutgoingHeadersLambda(r.headers),
+    headers: normalizeLambdaOutgoingHeaders(r.headers),
     body: r.body.toString(),
   };
 }

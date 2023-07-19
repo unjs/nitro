@@ -2,10 +2,8 @@ import "#internal/nitro/virtual/polyfill";
 import type { HttpResponse, HttpRequest } from "@azure/functions";
 import { parseURL } from "ufo";
 import { nitroApp } from "../app";
-import {
-  getParsedCookiesFromHeaders,
-  normalizeOutgoingHeadersLambda,
-} from "../utils";
+import { getAzureParsedCookiesFromHeaders } from "../utils.azure";
+import { normalizeLambdaOutgoingHeaders } from "../utils.lambda";
 
 export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
   let url: string;
@@ -30,8 +28,8 @@ export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
   context.res = {
     status,
     // cookies https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#http-response
-    cookies: getParsedCookiesFromHeaders(headers),
-    headers: normalizeOutgoingHeadersLambda(headers, true),
+    cookies: getAzureParsedCookiesFromHeaders(headers),
+    headers: normalizeLambdaOutgoingHeaders(headers, true),
     body: body ? body.toString() : statusText,
   };
 }

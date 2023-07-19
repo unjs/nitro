@@ -7,9 +7,9 @@ import type {
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 import {
-  normalizeIncomingHeadersLambda,
-  normalizeOutgoingHeadersLambda,
-} from "../utils";
+  normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingHeaders,
+} from "../utils.lambda";
 
 // Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
 export async function lambda(
@@ -27,7 +27,7 @@ export async function lambda(
     event,
     url,
     context,
-    headers: normalizeIncomingHeadersLambda(event.headers),
+    headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
@@ -36,7 +36,7 @@ export async function lambda(
   const cookies = r.headers["set-cookie"];
   return {
     statusCode: r.status,
-    headers: normalizeOutgoingHeadersLambda(r.headers, true),
+    headers: normalizeLambdaOutgoingHeaders(r.headers, true),
     body: r.body.toString(),
     ...(cookies &&
       cookies.length > 0 && {

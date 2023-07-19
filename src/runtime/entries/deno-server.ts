@@ -50,7 +50,7 @@ async function handler(request: Request) {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localFetch(url.pathname + url.search, {
+  return nitroApp.localFetch(url.pathname + url.search, {
     host: url.hostname,
     protocol: url.protocol,
     headers: request.headers,
@@ -58,9 +58,6 @@ async function handler(request: Request) {
     redirect: request.redirect,
     body,
   });
-
-  // TODO: fix in runtime/static
-  const responseBody = r.status === 304 ? null : r.body;
-  return new Response(responseBody, r);
 }
+
 export default {};

@@ -7,7 +7,6 @@ import {
   Router,
   toNodeListener,
   fetchWithEvent,
-  splitCookiesString,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -19,7 +18,7 @@ import { createHooks, Hookable } from "hookable";
 import type { NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
-import { stringifyHeaders } from "./utils";
+import { normalizeFetchResponse } from "./utils";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
 import type { $Fetch, NitroFetchRequest } from "nitropack";
 import { plugins } from "#internal/nitro/virtual/plugins";
@@ -50,14 +49,18 @@ function createNitroApp(): NitroApp {
 
   // Create local fetch callers
   const localCall = createCall(toNodeListener(h3App) as any);
-  const localFetch = withNormalizedHeaders(
-    createLocalFetch(localCall, globalThis.fetch)
-  );
+  const _localFetch = createLocalFetch(localCall, globalThis.fetch);
+  const localFetch = (...args: Parameters<typeof _localFetch>) => {
+    return _localFetch(...args).then((response) =>
+      normalizeFetchResponse(response)
+    );
+  };
   const $fetch = createFetch({
     fetch: localFetch,
     Headers,
     defaults: { baseURL: config.app.baseURL },
   });
+
   // @ts-ignore
   globalThis.$fetch = $fetch;
 
@@ -136,28 +139,3 @@ function createNitroApp(): NitroApp {
 export const nitroApp: NitroApp = createNitroApp();
 
 export const useNitroApp = () => nitroApp;
-
-const normalizeOutgoingFetchHeaders = (headers: Headers) => {
-  const outgoingHeaders = new Headers();
-  for (const [name, header] of headers) {
-    if (name === "set-cookie") {
-      for (const cookie of splitCookiesString(stringifyHeaders(header))) {
-        outgoingHeaders.append("set-cookie", cookie);
-      }
-    } else {
-      outgoingHeaders.set(name, stringifyHeaders(header));
-    }
-  }
-  return outgoingHeaders;
-};
-
-function withNormalizedHeaders(fetch: typeof globalThis.fetch) {
-  return async (...args: Parameters<typeof fetch>) => {
-    const r = await fetch(...args);
-    return new Response(r.body, {
-      headers: normalizeOutgoingFetchHeaders(r.headers),
-      status: r.status,
-      statusText: r.statusText,
-    });
-  };
-}
