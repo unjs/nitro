@@ -58,7 +58,7 @@ export async function handler(
     const outgoingCookies = r.headers["set-cookie"];
     const cookies = Array.isArray(outgoingCookies)
       ? outgoingCookies
-      : outgoingCookies?.split(",") || [];
+      : outgoingCookies?.split(/,\s?/) || [];
 
     return {
       cookies,
