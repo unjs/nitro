@@ -486,8 +486,8 @@ export function testNitro(
   describe("errors", () => {
     it("captures errors", async () => {
       const { data } = await callHandler({ url: "/api/errors" });
-      const allErrorMessages = data.allErrors.map(
-        (err) => err.error.message as string
+      const allErrorMessages = (data.allErrors || []).map(
+        (entry) => entry.message
       );
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
