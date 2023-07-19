@@ -1,6 +1,5 @@
 import type { H3Event } from "h3";
 import type { RenderResponse } from "./renderer";
-import type { CaptureError } from "nitropack";
 
 export type { NitroApp } from "./app";
 export type {
@@ -11,6 +10,16 @@ export type {
 } from "./cache";
 export type { NitroAppPlugin } from "./plugin";
 export type { RenderResponse, RenderHandler } from "./renderer";
+
+export type CapturedErrorContext = {
+  event?: H3Event;
+  [key: string]: unknown;
+};
+
+export type CaptureError = (
+  error: Error,
+  context: CapturedErrorContext
+) => void;
 
 export interface NitroRuntimeHooks {
   close: () => void;

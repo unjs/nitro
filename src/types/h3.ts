@@ -1,5 +1,5 @@
+import type { CaptureError, CapturedErrorContext } from "../runtime/types";
 import type { NitroFetchRequest, $Fetch } from "./fetch";
-import type { CaptureError, CapturedErrorContext } from "./error";
 
 export type H3EventFetch = (
   request: NitroFetchRequest,
