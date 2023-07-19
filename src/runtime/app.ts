@@ -119,7 +119,7 @@ function createNitroApp(): NitroApp {
       };
 
       event.captureError = (error, context) => {
-        captureError(error, { event, context });
+        captureError(error, { event, ...context });
       };
     })
   );
