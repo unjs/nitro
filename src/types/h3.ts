@@ -1,4 +1,5 @@
 import type { NitroFetchRequest, $Fetch } from "./fetch";
+import type { CaptureError, CapturedErrorContext } from "./error";
 
 export type H3EventFetch = (
   request: NitroFetchRequest,
@@ -16,7 +17,9 @@ declare module "h3" {
     /** @experimental See https://github.com/unjs/nitro/issues/1420 */
     waitUntil: (promise: Promise<unknown>) => void;
     /** @experimental */
-    errors: { error?: Error, context: { tags?: string[], [key:string]: unknown } } }[];
+    errors: { error?: Error; context: CapturedErrorContext }[];
+    /** @experimental */
+    captureError: CaptureError;
   }
   interface H3Context {
     nitro: {

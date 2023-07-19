@@ -21,7 +21,7 @@ import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
-import type { $Fetch, NitroFetchRequest } from "nitropack";
+import type { $Fetch, NitroFetchRequest, CaptureError } from "nitropack";
 import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
 import { handlers } from "#internal/nitro/virtual/server-handlers";
@@ -32,7 +32,7 @@ export interface NitroApp {
   hooks: Hookable<NitroRuntimeHooks>;
   localCall: ReturnType<typeof createCall>;
   localFetch: ReturnType<typeof createLocalFetch>;
-  captureError: NitroRuntimeHooks["error"];
+  captureError: CaptureError;
 }
 
 function createNitroApp(): NitroApp {
@@ -40,11 +40,11 @@ function createNitroApp(): NitroApp {
 
   const hooks = createHooks<NitroRuntimeHooks>();
 
-  const captureError: NitroApp["captureError"] = (error, context = {}) => {
+  const captureError: CaptureError = (error, context = {}) => {
     const promise = hooks
       .callHookParallel("error", error, context)
       .catch((_err) => {
-        console.error("Error in error hook", _err);
+        console.error("Error while capturing another error", _err);
       });
     if (context.event) {
       context.event.context.nitro?.errors?.push({ error, context });
@@ -110,6 +110,10 @@ function createNitroApp(): NitroApp {
         if (envContext?.waitUntil) {
           envContext.waitUntil(promise);
         }
+      };
+
+      event.captureError = (error, context) => {
+        captureError(error, { event, context });
       };
     })
   );

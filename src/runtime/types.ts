@@ -1,5 +1,6 @@
 import type { H3Event } from "h3";
 import type { RenderResponse } from "./renderer";
+import type { CaptureError } from "nitropack";
 
 export type { NitroApp } from "./app";
 export type {
@@ -13,7 +14,7 @@ export type { RenderResponse, RenderHandler } from "./renderer";
 
 export interface NitroRuntimeHooks {
   close: () => void;
-  error: (error: Error, context: { event?: H3Event; tags?: string[] }) => void;
+  error: CaptureError;
   "render:response": (
     response: Partial<RenderResponse>,
     context: { event: H3Event }
