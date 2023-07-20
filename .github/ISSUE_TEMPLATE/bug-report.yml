@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         If bug-report is related to Nuxt framework, please open an issue directly there:
-        https://github.com/nuxt/framework/issues/new/choose
+        https://github.com/nuxt/nuxt/issues/new/choose
   - type: textarea
     id: bug-env
     attributes:
