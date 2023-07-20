@@ -8,8 +8,9 @@ import { withQuery } from "ufo";
 import { splitCookiesString } from "h3";
 import { nitroApp } from "../app";
 import {
-    normalizeLambdaIncomingHeaders, normalizeLambdaOutgoingBody,
-    normalizeLambdaOutgoingHeaders,
+  normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingBody,
+  normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
 import { normalizeCookieHeader } from "../utils";
 
@@ -34,7 +35,6 @@ export async function lambda(
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
   });
-
 
   const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
 

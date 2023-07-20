@@ -35,8 +35,6 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
     body: event.body,
   });
 
-
-
   // TODO: Handle cookies with lambda v1 or v2 ?
   return {
     statusCode: r.status,

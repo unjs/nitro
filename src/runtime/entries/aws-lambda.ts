@@ -9,8 +9,9 @@ import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 import {
-    normalizeLambdaIncomingHeaders, normalizeLambdaOutgoingBody,
-    normalizeLambdaOutgoingHeaders,
+  normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingBody,
+  normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
 
 export async function handler(
