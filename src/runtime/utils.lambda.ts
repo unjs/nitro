@@ -1,3 +1,4 @@
+import { isUtf8, Buffer } from "node:buffer";
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
 import type { HeadersObject } from "unenv/runtime/_internal/types";
 
@@ -31,7 +32,7 @@ export function normalizeLambdaOutgoingBody(
     // AWS Lambda proxy integrations requires base64 encoded buffers
     // binaryMediaTypes should be */*
     // see https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings.html
-    if (Buffer.isBuffer(body)) {
+    if (Buffer.isBuffer(body) && !isUtf8(body)) {
         return (body as Buffer).toString("base64")
     }
     return body.toString()

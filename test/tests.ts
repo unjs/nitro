@@ -185,6 +185,19 @@ export function testNitro(
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
   });
 
+  // aws lambda requires buffer responses to be base 64
+  it.skipIf(ctx.preset !== "aws-lambda")(
+      "buffer image responses", async () => {
+        const { data } = await callHandler({ url: "/buffer" });
+        const buffer = Buffer.from(data, "base64");
+        // check if buffer is a png
+        function isBufferPng(buffer: Buffer) {
+          return buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47;
+        }
+        expect(isBufferPng(buffer)).toBe(true);
+      }
+    )
+
   it("render JSX", async () => {
     const { data } = await callHandler({ url: "/jsx" });
     expect(data).toMatch("<h1 >Hello JSX!</h1>");
