@@ -1,7 +1,7 @@
-import { setResponseStatus } from "h3";
+import { H3Event, setResponseStatus } from "h3";
 import { NitroErrorHandler } from "../types";
 
-function errorHandler(error, event) {
+function errorHandler(error: any, event: H3Event) {
   event.node.res.setHeader("Content-Type", "text/html; charset=UTF-8");
   setResponseStatus(event, 503, "Server Unavailable");
 
@@ -14,6 +14,10 @@ function errorHandler(error, event) {
     title = "Reloading server...";
     body =
       "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
+  }
+
+  if (event.handled) {
+    return;
   }
 
   event.node.res.end(`<!DOCTYPE html>

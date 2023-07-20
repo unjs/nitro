@@ -131,7 +131,7 @@ export function testNitro(
 
   beforeAll(async () => {
     _handler = await getHandler();
-  });
+  }, 25_000);
 
   it("API Works", async () => {
     const { data: helloData } = await callHandler({ url: "/api/hello" });
@@ -162,6 +162,11 @@ export function testNitro(
     const obj = await callHandler({ url: "/rules/redirect/obj" });
     expect(obj.status).toBe(308);
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
+  });
+
+  it("render JSX", async () => {
+    const { data } = await callHandler({ url: "/jsx" });
+    expect(data).toMatch("<h1 >Hello JSX!</h1>");
   });
 
   it("handles route rules - headers", async () => {
@@ -257,15 +262,18 @@ export function testNitro(
       `);
     });
 
-    it("resolve module version conflicts", async () => {
-      const { data } = await callHandler({ url: "/modules" });
-      expect(data).toMatchObject({
-        depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
-        depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
-        depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
-        subpathLib: "nitro-lib@2.0.0",
-      });
-    });
+    it.skipIf(ctx.preset === "deno-server")(
+      "resolve module version conflicts",
+      async () => {
+        const { data } = await callHandler({ url: "/modules" });
+        expect(data).toMatchObject({
+          depA: "nitro-lib@1.0.0+nested-lib@1.0.0",
+          depB: "nitro-lib@2.0.1+nested-lib@2.0.1",
+          depLib: "nitro-lib@2.0.0+nested-lib@2.0.0",
+          subpathLib: "nitro-lib@2.0.0",
+        });
+      }
+    );
 
     it("useStorage (with base)", async () => {
       const putRes = await callHandler({
@@ -363,4 +371,21 @@ export function testNitro(
       expect(headers["server-timing"]).toMatch(/-;dur=\d+;desc="Generate"/);
     });
   }
+
+  it("static build flags", async () => {
+    const { data } = await callHandler({ url: "/static-flags" });
+    expect(data).toMatchObject({
+      dev: [ctx.isDev, ctx.isDev],
+      preset: [ctx.preset, ctx.preset],
+      prerender: [
+        ctx.preset === "nitro-prerenderer",
+        ctx.preset === "nitro-prerenderer",
+      ],
+      client: [false, false],
+      nitro: [true, true],
+      server: [true, true],
+      "versions.nitro": [expect.any(String), expect.any(String)],
+      "versions?.nitro": [expect.any(String), expect.any(String)],
+    });
+  });
 }

@@ -3,7 +3,6 @@ import {
   createApp,
   createRouter,
   eventHandler,
-  H3Event,
   lazyEventHandler,
   Router,
   toNodeListener,
@@ -16,9 +15,11 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
+import type { NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
+import type { $Fetch, NitroFetchRequest } from "nitropack";
 import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
 import { handlers } from "#internal/nitro/virtual/server-handlers";
@@ -26,8 +27,7 @@ import { handlers } from "#internal/nitro/virtual/server-handlers";
 export interface NitroApp {
   h3App: H3App;
   router: Router;
-  // TODO: Type hooks and allow extending
-  hooks: Hookable;
+  hooks: Hookable<NitroRuntimeHooks>;
   localCall: ReturnType<typeof createCall>;
   localFetch: ReturnType<typeof createLocalFetch>;
 }
@@ -35,7 +35,7 @@ export interface NitroApp {
 function createNitroApp(): NitroApp {
   const config = useRuntimeConfig();
 
-  const hooks = createHooks();
+  const hooks = createHooks<NitroRuntimeHooks>();
 
   const h3App = createApp({
     debug: destr(process.env.DEBUG),
@@ -69,9 +69,11 @@ function createNitroApp(): NitroApp {
       }
       // Assign bound fetch to context
       event.fetch = (req, init) =>
-        fetchWithEvent(event, req as any, init, { fetch: localFetch });
-      event.$fetch = (req, init) =>
-        fetchWithEvent(event, req as any, init, { fetch: $fetch });
+        fetchWithEvent(event, req, init, { fetch: localFetch });
+      event.$fetch = ((req, init) =>
+        fetchWithEvent(event, req, init as RequestInit, {
+          fetch: $fetch,
+        })) as $Fetch<unknown, NitroFetchRequest>;
     })
   );
 
@@ -97,7 +99,7 @@ function createNitroApp(): NitroApp {
     }
   }
 
-  h3App.use(config.app.baseURL, router);
+  h3App.use(config.app.baseURL as string, router.handler);
 
   const app: NitroApp = {
     hooks,
