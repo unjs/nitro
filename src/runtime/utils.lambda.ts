@@ -26,14 +26,12 @@ export function normalizeLambdaOutgoingHeaders(
   );
 }
 
-export function normalizeLambdaOutgoingBody(
-    body: BodyInit,
-) {
-    // AWS Lambda proxy integrations requires base64 encoded buffers
-    // binaryMediaTypes should be */*
-    // see https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings.html
-    if (Buffer.isBuffer(body) && !isUtf8(body)) {
-        return (body as Buffer).toString("base64")
-    }
-    return body.toString()
+export function normalizeLambdaOutgoingBody(body: BodyInit) {
+  // AWS Lambda proxy integrations requires base64 encoded buffers
+  // binaryMediaTypes should be */*
+  // see https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings.html
+  if (Buffer.isBuffer(body) && !isUtf8(body)) {
+    return (body as Buffer).toString("base64");
+  }
+  return body.toString();
 }
