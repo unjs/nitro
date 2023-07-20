@@ -1,6 +1,5 @@
 import type {
   APIGatewayProxyEvent,
-  APIGatewayProxyEventHeaders,
   APIGatewayProxyEventV2,
   APIGatewayProxyResult,
   APIGatewayProxyResultV2,
@@ -9,6 +8,10 @@ import type {
 import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
+import {
+  normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingHeaders,
+} from "../utils.lambda";
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -44,62 +47,35 @@ export async function handler(
     event,
     url,
     context,
-    headers: normalizeIncomingHeaders(event.headers),
+    headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  const headers = normalizeOutgoingHeaders(r.headers);
-  // image buffers must be base64 encoded
-  if (Buffer.isBuffer(r.body) && headers["content-type"].startsWith("image/")) {
-    return {
-      statusCode: r.status,
-      headers,
-      body: (r.body as Buffer).toString("base64"),
-      isBase64Encoded: true,
-    };
-  }
+    // buffers must be base64 encoded
+    if (Buffer.isBuffer(r.body)) {
+     r.body = (r.body as Buffer).toString("base64"),
+    }
 
+  // Lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
   if ("cookies" in event || "rawPath" in event) {
     const outgoingCookies = r.headers["set-cookie"];
     const cookies = Array.isArray(outgoingCookies)
       ? outgoingCookies
-      : outgoingCookies?.split(",") || [];
+      : outgoingCookies?.split(/,\s?/) || [];
 
     return {
       cookies,
       statusCode: r.status,
-      headers: normalizeOutgoingHeaders(r.headers, true),
+      headers: normalizeLambdaOutgoingHeaders(r.headers, true),
       body: r.body.toString(),
     };
   }
 
   return {
     statusCode: r.status,
-    headers,
+    headers: normalizeLambdaOutgoingHeaders(r.headers),
     body: r.body.toString(),
   };
-}
-
-function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(
-    Object.entries(headers || {}).map(([key, value]) => [
-      key.toLowerCase(),
-      value!,
-    ])
-  );
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>,
-  stripCookies = false
-) {
-  const entries = stripCookies
-    ? Object.entries(headers).filter(([key]) => !["set-cookie"].includes(key))
-    : Object.entries(headers);
-
-  return Object.fromEntries(
-    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
-  );
 }
