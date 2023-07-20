@@ -9,8 +9,8 @@ import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 import {
-  normalizeLambdaIncomingHeaders,
-  normalizeLambdaOutgoingHeaders,
+    normalizeLambdaIncomingHeaders, normalizeLambdaOutgoingBody,
+    normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
 
 export async function handler(
@@ -53,11 +53,6 @@ export async function handler(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-    // buffers must be base64 encoded
-    if (Buffer.isBuffer(r.body)) {
-     r.body = (r.body as Buffer).toString("base64"),
-    }
-
   // Lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
   if ("cookies" in event || "rawPath" in event) {
     const outgoingCookies = r.headers["set-cookie"];
@@ -69,13 +64,13 @@ export async function handler(
       cookies,
       statusCode: r.status,
       headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-      body: r.body.toString(),
+      body: normalizeLambdaOutgoingBody(r.body),
     };
   }
 
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers),
-    body: r.body.toString(),
+    body: normalizeLambdaOutgoingBody(r.body),
   };
 }
