@@ -1,4 +1,4 @@
-import { Buffer, isUtf8 as _isUtf8 } from 'node:buffer'
+import NodeBuffer, { Buffer } from 'node:buffer'
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
 import type { HeadersObject } from "unenv/runtime/_internal/types";
 
@@ -34,8 +34,11 @@ export function normalizeLambdaOutgoingBody(body: BodyInit) {
     let isUtf8 = false
     try {
       // not supported in Node <= 16.x
-      isUtf8 = _isUtf8(body)
-    } catch {}
+      isUtf8 = NodeBuffer.isUtf8(body)
+    } catch {
+      // hacky fallback option for determining if buffer is utf8
+      isUtf8 = body.toString().length === body.length
+    }
     if (!isUtf8) {
       return body.toString("base64");
     }
