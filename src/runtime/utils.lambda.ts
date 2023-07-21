@@ -1,4 +1,3 @@
-import NodeBuffer, { Buffer } from "node:buffer";
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
 import type { HeadersObject } from "unenv/runtime/_internal/types";
 
