@@ -12,6 +12,8 @@ import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
 
+const linkParents = new Map<string, Set<string>>();
+
 export async function prerender(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
     console.warn(
@@ -235,20 +237,7 @@ export async function prerender(nitro: Nitro) {
     }
 
     await nitro.hooks.callHook("prerender:route", _route);
-
-    if (_route.error) {
-      nitro.logger.log(
-        chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
-          `  ├─ ${_route.route} (${
-            _route.generateTimeMS
-          }ms) ${`(${_route.error})`}`
-        )
-      );
-    } else {
-      nitro.logger.log(
-        chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
-      );
-    }
+    nitro.logger.log(formatPrerenderRoute(_route));
   }
 
   await runParallel(routes, processRoute, {
@@ -259,11 +248,13 @@ export async function prerender(nitro: Nitro) {
   if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
     nitro.logger.log("\nErrors prerendering:");
     for (const route of erroredRoutes) {
-      nitro.logger.log(
-        chalk[route.error.statusCode === 404 ? "yellow" : "red"](
-          `  ├─ ${route.route} (${route.error.statusCode})`
-        )
-      );
+      const parents = linkParents.get(route.route);
+      const parentsText = parents?.size
+        ? `\n${[...parents.values()]
+            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
+            .join("\n")}`
+        : "";
+      nitro.logger.log(formatPrerenderRoute(route));
     }
     nitro.logger.log("");
     throw new Error("Exiting due to prerender errors.");
@@ -350,6 +341,14 @@ function extractLinks(
     }
     links.push(pathname);
   }
+  for (const link of links) {
+    const _parents = linkParents.get(link);
+    if (_parents) {
+      _parents.add(from);
+    } else {
+      linkParents.set(link, new Set([from]));
+    }
+  }
   return links;
 }
 
@@ -358,4 +357,23 @@ const EXT_REGEX = /\.[\da-z]+$/;
 function getExtension(link: string): string {
   const pathname = parseURL(link).pathname;
   return (pathname.match(EXT_REGEX) || [])[0] || "";
+}
+
+function formatPrerenderRoute(route: PrerenderGenerateRoute) {
+  let str = `  ├─ ${route.route} (${route.generateTimeMS}ms)`;
+
+  if (route.error) {
+    const parents = linkParents.get(route.route);
+    const errorColor = chalk[route.error.statusCode === 404 ? "yellow" : "red"];
+    const errorLead = parents?.size ? "├──" : "└──";
+    str += `\n  │ ${errorLead} ${errorColor(route.error)}`;
+
+    if (parents?.size) {
+      str += `\n${[...parents.values()]
+        .map((link) => `  │ └── Linked from ${link}`)
+        .join("\n")}`;
+    }
+  }
+
+  return chalk.gray(str);
 }
