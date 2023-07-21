@@ -12,7 +12,7 @@ import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
 
-const linkSourceMap = new Map<string, string[]>();
+const linkParents = new Map<string, Set<string>>();
 
 export async function prerender(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
@@ -239,9 +239,9 @@ export async function prerender(nitro: Nitro) {
     await nitro.hooks.callHook("prerender:route", _route);
 
     if (_route.error) {
-      const sources = linkSourceMap.get(_route.route);
-      const sourceText = sources?.length
-        ? ` (linked from ${sources.join(", ")})`
+      const parents = linkParents.get(_route.route);
+      const sourceText = parents?.size
+        ? ` (linked from ${[...parents.values()].join(", ")})`
         : "";
       nitro.logger.log(
         chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
@@ -265,9 +265,9 @@ export async function prerender(nitro: Nitro) {
   if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
     nitro.logger.log("\nErrors prerendering:");
     for (const route of erroredRoutes) {
-      const sources = linkSourceMap.get(route.route);
-      const sourceText = sources?.length
-        ? ` (linked from ${sources.join(", ")})`
+      const parents = linkParents.get(route.route);
+      const sourceText = parents?.size
+        ? ` (Parents ${[...parents.values()].join(", ")})`
         : "";
       nitro.logger.log(
         chalk[route.error.statusCode === 404 ? "yellow" : "red"](
@@ -361,7 +361,12 @@ function extractLinks(
     links.push(pathname);
   }
   for (const link of links) {
-    linkSourceMap.set(link, [...(linkSourceMap.get(link) || []), from]);
+    const _parents = linkParents.get(link);
+    if (_parents) {
+      _parents.add(from);
+    } else {
+      linkParents.set(link, new Set([from]));
+    }
   }
   return links;
 }
