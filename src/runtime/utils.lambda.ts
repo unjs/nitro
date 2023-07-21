@@ -49,6 +49,10 @@ export function normalizeLambdaOutgoingBody(
   throw new Error(`Unsupported body type: ${typeof body}`);
 }
 
-function isTextType(contentType: string) {
-  return contentType.includes("text/") || contentType.includes("json");
+// -- Internal --
+
+const TEXT_TYPE_RE = /^text\/|\/(json|xml)|utf-?8/;
+
+function isTextType(contentType = "") {
+  return TEXT_TYPE_RE.test(contentType);
 }
