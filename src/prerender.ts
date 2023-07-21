@@ -237,26 +237,7 @@ export async function prerender(nitro: Nitro) {
     }
 
     await nitro.hooks.callHook("prerender:route", _route);
-
-    if (_route.error) {
-      const parents = linkParents.get(_route.route);
-      const parentsText = parents?.size
-        ? `\n${[...parents.values()]
-            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
-            .join("\n")}`
-        : "";
-      nitro.logger.log(
-        chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
-          `  ├─ ${_route.route} (${
-            _route.generateTimeMS
-          }ms) ${`(${_route.error})`}${parentsText}`
-        )
-      );
-    } else {
-      nitro.logger.log(
-        chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
-      );
-    }
+    nitro.logger.log(formatPrerenderRoute(_route));
   }
 
   await runParallel(routes, processRoute, {
@@ -273,11 +254,7 @@ export async function prerender(nitro: Nitro) {
             .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
             .join("\n")}`
         : "";
-      nitro.logger.log(
-        chalk[route.error.statusCode === 404 ? "yellow" : "red"](
-          `  ├─ ${route.route} (${route.error.statusCode})${parentsText}`
-        )
-      );
+      nitro.logger.log(formatPrerenderRoute(route));
     }
     nitro.logger.log("");
     throw new Error("Exiting due to prerender errors.");
@@ -380,4 +357,25 @@ const EXT_REGEX = /\.[\da-z]+$/;
 function getExtension(link: string): string {
   const pathname = parseURL(link).pathname;
   return (pathname.match(EXT_REGEX) || [])[0] || "";
+}
+
+function formatPrerenderRoute(route: PrerenderGenerateRoute) {
+  if (!route.error) {
+    return chalk.gray(`  ├─ ${route.route} (${route.generateTimeMS}ms)`);
+  }
+  const parents = linkParents.get(route.route);
+  const parentsText = parents?.size
+    ? `\n${[...parents.values()]
+        .map((link) => `  │ └── Linked from ${link}`)
+        .join("\n")}`
+    : "";
+  const color = chalk[route.error.statusCode === 404 ? "yellow" : "red"];
+  return (
+    color(`  ├─ ${route.route} (${route.generateTimeMS}ms)`) +
+    chalk.gray(
+      `${`\n  │ ${parentsText ? "├" : "└"}── ${chalk.bold(
+        route.error
+      )}`}${parentsText}`
+    )
+  );
 }
