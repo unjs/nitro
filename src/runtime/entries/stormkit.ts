@@ -39,7 +39,7 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
   return {
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
-    body: normalizeLambdaOutgoingBody(r.body),
+    body: normalizeLambdaOutgoingBody(r.body, r.headers),
   };
 };
 
