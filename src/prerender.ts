@@ -240,14 +240,16 @@ export async function prerender(nitro: Nitro) {
 
     if (_route.error) {
       const parents = linkParents.get(_route.route);
-      const sourceText = parents?.size
-        ? ` (linked from ${[...parents.values()].join(", ")})`
+      const parentsText = parents?.size
+        ? `\n${[...parents.values()]
+            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
+            .join("\n")}`
         : "";
       nitro.logger.log(
         chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
           `  ├─ ${_route.route} (${
             _route.generateTimeMS
-          }ms)${sourceText} ${`(${_route.error})`}`
+          }ms) ${`(${_route.error})`}${parentsText}`
         )
       );
     } else {
@@ -266,12 +268,14 @@ export async function prerender(nitro: Nitro) {
     nitro.logger.log("\nErrors prerendering:");
     for (const route of erroredRoutes) {
       const parents = linkParents.get(route.route);
-      const sourceText = parents?.size
-        ? ` (Parents ${[...parents.values()].join(", ")})`
+      const parentsText = parents?.size
+        ? `\n${[...parents.values()]
+            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
+            .join("\n")}`
         : "";
       nitro.logger.log(
         chalk[route.error.statusCode === 404 ? "yellow" : "red"](
-          `  ├─ ${route.route}${sourceText} (${route.error.statusCode})`
+          `  ├─ ${route.route} (${route.error.statusCode})${parentsText}`
         )
       );
     }
