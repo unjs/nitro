@@ -240,7 +240,9 @@ export async function prerender(nitro: Nitro) {
 
     if (_route.error) {
       const sources = linkSourceMap.get(_route.route);
-      const sourceText = sources?.length ? ` (linked from ${sources.join(", ")})` : "";
+      const sourceText = sources?.length
+        ? ` (linked from ${sources.join(", ")})`
+        : "";
       nitro.logger.log(
         chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
           `  ├─ ${_route.route} (${
@@ -264,7 +266,9 @@ export async function prerender(nitro: Nitro) {
     nitro.logger.log("\nErrors prerendering:");
     for (const route of erroredRoutes) {
       const sources = linkSourceMap.get(route.route);
-      const sourceText = sources?.length ? ` (linked from ${sources.join(", ")})` : "";
+      const sourceText = sources?.length
+        ? ` (linked from ${sources.join(", ")})`
+        : "";
       nitro.logger.log(
         chalk[route.error.statusCode === 404 ? "yellow" : "red"](
           `  ├─ ${route.route}${sourceText} (${route.error.statusCode})`
