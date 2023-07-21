@@ -10,6 +10,7 @@ import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 import {
   normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
 
@@ -64,13 +65,13 @@ export async function handler(
       cookies,
       statusCode: r.status,
       headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-      body: r.body.toString(),
+      body: normalizeLambdaOutgoingBody(r.body, r.headers),
     };
   }
 
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers),
-    body: r.body.toString(),
+    body: normalizeLambdaOutgoingBody(r.body, r.headers),
   };
 }
