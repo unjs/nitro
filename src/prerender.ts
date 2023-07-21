@@ -85,8 +85,10 @@ export async function prerender(nitro: Nitro) {
   const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
-    // Skip if route is already generated or skipped
-    if (generatedRoutes.has(route) || skippedRoutes.has(route)) {
+    const { search } = parseURL(route);
+
+    // If the url include query url we should skip
+    if (search) {
       return false;
     }
 
@@ -132,15 +134,17 @@ export async function prerender(nitro: Nitro) {
     return true;
   };
 
+  const shouldCrawl = (route: string) => {
+    // Skip route if already explored (TODO: Check if skippedRoutes is still usefull)
+    return !(generatedRoutes.has(route) || skippedRoutes.has(route));
+  };
+
   const generateRoute = async (route: string) => {
     const start = Date.now();
 
-    // Check if we should render route
-    if (!canPrerender(route)) {
-      skippedRoutes.add(route);
+    if (!shouldCrawl(route)) {
       return;
     }
-    generatedRoutes.add(route);
 
     // Create result object
     const _route: PrerenderGenerateRoute = { route };
@@ -179,6 +183,29 @@ export async function prerender(nitro: Nitro) {
     const isImplicitHTML =
       !route.endsWith(".html") &&
       (res.headers.get("content-type") || "").includes("html");
+
+    // Crawl route links
+    if (!_route.error && isImplicitHTML) {
+      const extractedLinks = extractLinks(
+        _route.contents,
+        route,
+        res,
+        nitro.options.prerender.crawlLinks
+      );
+      for (const _link of extractedLinks) {
+        if (shouldCrawl(_link)) {
+          routes.add(_link);
+        }
+      }
+    }
+
+    // Check if we should render route
+    if (!canPrerender(route)) {
+      skippedRoutes.add(route);
+      return;
+    }
+    generatedRoutes.add(route);
+
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
     _route.fileName = isImplicitHTML
       ? joinURL(route, "index.html")
@@ -198,21 +225,6 @@ export async function prerender(nitro: Nitro) {
     const filePath = join(nitro.options.output.publicDir, _route.fileName);
     await writeFile(filePath, Buffer.from(_route.data));
     nitro._prerenderedRoutes.push(_route);
-
-    // Crawl route links
-    if (!_route.error && isImplicitHTML) {
-      const extractedLinks = extractLinks(
-        _route.contents,
-        route,
-        res,
-        nitro.options.prerender.crawlLinks
-      );
-      for (const _link of extractedLinks) {
-        if (canPrerender(_link)) {
-          routes.add(_link);
-        }
-      }
-    }
 
     return _route;
   };
@@ -342,11 +354,12 @@ function extractLinks(
       continue;
     }
     let { pathname } = parsed;
+    const { search } = parsed;
     if (!pathname.startsWith("/")) {
       const fromURL = new URL(from, "http://localhost");
       pathname = new URL(pathname, fromURL).pathname;
     }
-    links.push(pathname);
+    links.push(pathname + search);
   }
   return links;
 }
