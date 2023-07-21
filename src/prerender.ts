@@ -360,22 +360,20 @@ function getExtension(link: string): string {
 }
 
 function formatPrerenderRoute(route: PrerenderGenerateRoute) {
-  if (!route.error) {
-    return chalk.gray(`  ├─ ${route.route} (${route.generateTimeMS}ms)`);
-  }
-  const parents = linkParents.get(route.route);
-  const parentsText = parents?.size
-    ? `\n${[...parents.values()]
+  let str = `  ├─ ${route.route} (${route.generateTimeMS}ms)`;
+
+  if (route.error) {
+    const parents = linkParents.get(route.route);
+    const errorColor = chalk[route.error.statusCode === 404 ? "yellow" : "red"];
+    const errorLead = parents?.size ? "├──" : "└──";
+    str += `\n  │ ${errorLead} ${errorColor(route.error)}`;
+
+    if (parents?.size) {
+      str += `\n${[...parents.values()]
         .map((link) => `  │ └── Linked from ${link}`)
-        .join("\n")}`
-    : "";
-  const color = chalk[route.error.statusCode === 404 ? "yellow" : "red"];
-  return (
-    color(`  ├─ ${route.route} (${route.generateTimeMS}ms)`) +
-    chalk.gray(
-      `${`\n  │ ${parentsText ? "├" : "└"}── ${chalk.bold(
-        route.error
-      )}`}${parentsText}`
-    )
-  );
+        .join("\n")}`;
+    }
+  }
+
+  return chalk.gray(str);
 }
