@@ -530,11 +530,11 @@ export function testNitro(
   });
 
   describe("environment variables", () => {
-    it.skipIf(
-      !["cloudflare-module", "cloudflare-pages"].includes(
+    it.runIf(
+      ["cloudflare-module", "cloudflare-pages"].includes(
         ctx.nitro.options.preset
       )
-    )("can load environment variables", async () => {
+    )("can load environment variables from runtimeConfig", async () => {
       const { data } = await callHandler({
         url: "/config",
       });
