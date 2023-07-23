@@ -538,8 +538,6 @@ export function testNitro(
       const { data } = await callHandler({
         url: "/config",
       });
-      console.log(data.sharedRuntimeConfig);
-      console.log(data.runtimeConfig);
       expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.helloThere).toBe("general");
       expect(data.runtimeConfig.secret).toBeUndefined();
