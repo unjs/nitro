@@ -40,7 +40,7 @@ export function useRuntimeConfig<
 
 export function envToRuntimeObject(
   env: Record<string, unknown>,
-  prefixes = [ENV_PREFIX, "NUXT_", ENV_PREFIX_ALT]
+  prefixes = [ENV_PREFIX, ENV_PREFIX_ALT]
 ) {
   const safeEnv = Object.fromEntries(
     Object.entries(env)

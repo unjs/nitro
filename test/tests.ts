@@ -56,6 +56,11 @@ export async function setupTest(preset: string) {
     preset: ctx.preset,
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
+    runtimeConfig: {
+      nitro: {
+        envPrefix: "NUXT_",
+      },
+    },
     buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
       preset !== "cloudflare" &&
