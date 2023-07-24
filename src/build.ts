@@ -1,4 +1,4 @@
-import { existsSync, promises as fsp } from "node:fs";
+import { existsSync, promises as fsp, readFileSync } from "node:fs";
 import { relative, resolve, join, dirname, isAbsolute } from "pathe";
 import { resolveAlias } from "pathe/utils";
 import * as rollup from "rollup";
@@ -315,14 +315,17 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
 
   // Write build info
   const nitroConfigPath = resolve(nitro.options.output.dir, "nitro.json");
-  const buildInfo = {
-    date: new Date(),
-    preset: nitro.options.preset,
-    commands: {
-      preview: nitro.options.commands.preview,
-      deploy: nitro.options.commands.deploy,
-    },
-  };
+  const buildInfo = existsSync(nitroConfigPath)
+    ? JSON.parse(readFileSync(nitroConfigPath, "utf8"))
+    : {
+        date: new Date(),
+        preset: nitro.options.preset,
+        commands: {
+          preview: nitro.options.commands.preview,
+          deploy: nitro.options.commands.deploy,
+        },
+      };
+
   await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
 
   if (!nitro.options.static) {
