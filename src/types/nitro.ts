@@ -161,7 +161,7 @@ export interface NitroRouteConfig {
   headers?: Record<string, string>;
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
-  proxy?: string | ({ to: string } & ProxyOptions);
+  proxy?: string | ({ to: string; transparent?: boolean } & ProxyOptions);
   isr?: number | boolean;
 
   // Shortcuts
@@ -173,7 +173,7 @@ export interface NitroRouteConfig {
 export interface NitroRouteRules
   extends Omit<NitroRouteConfig, "redirect" | "cors" | "swr" | "static"> {
   redirect?: { to: string; statusCode: HTTPStatusCode };
-  proxy?: { to: string } & ProxyOptions;
+  proxy?: { to: string; transparent?: boolean } & ProxyOptions;
 }
 
 export interface NitroOptions extends PresetOptions {

@@ -46,9 +46,18 @@ export function createRouteRulesHandler() {
         const query = getQuery(event.path);
         target = withQuery(target, query);
       }
+
+      const transparentOptions: any = {}
+      if (routeRules.proxy.transparent) {
+        transparentOptions.fetchOptions = {
+          ignoreResponseError: true
+        }
+      }
+
       return proxyRequest(event, target, {
         fetch: $fetch.raw as any,
         ...routeRules.proxy,
+        ...transparentOptions
       });
     }
   });
