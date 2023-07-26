@@ -54,11 +54,14 @@ export function createRouteRulesHandler() {
         }
       }
 
-      return proxyRequest(event, target, {
-        fetch: $fetch.raw as any,
-        ...routeRules.proxy,
-        ...transparentOptions
-      });
+      const options = defu(
+        {},
+        transparentOptions,
+        routeRules.proxy,
+        { fetch: $fetch.raw as any },
+      )
+
+      return proxyRequest(event, target, options);
     }
   });
 }
