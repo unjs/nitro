@@ -133,7 +133,7 @@
     "expect-type": "^0.16.0",
     "get-port-please": "^3.0.1",
     "miniflare": "^2.14.0",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.0",
     "typescript": "^5.1.6",
     "unbuild": "^1.2.1",
     "undici": "^5.22.1",
