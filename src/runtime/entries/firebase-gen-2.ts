@@ -5,6 +5,10 @@ import { nitroApp } from "../app";
 import { useAppConfig } from "#internal/nitro";
 
 export const server = onRequest(
-  useAppConfig()?._firebaseV2HttpRequestOptions || {},
+  {
+    // must be set to public to allow all public requests by default
+    invoker: "public",
+    ...useAppConfig()?._firebase?.gen2?.httpOptions,
+  },
   toNodeListener(nitroApp.h3App)
 );

@@ -1,4 +1,5 @@
-import type { HttpsOptions } from "firebase-functions/lib/v2/providers/https";
+import type { HttpsOptions } from "firebase-functions/v2/https";
+import type { RuntimeOptions, region } from "firebase-functions";
 
 /**
  * Vercel Build Output Configuration
@@ -68,13 +69,31 @@ export interface PresetOptions {
       [key: string]: unknown;
     };
   };
-  firebase: {
-    v2: {
+  firebase?: {
+    /**
+     * Firebase functions 1st generation options.
+     */
+    gen1?: {
       /**
-       * Firebase functions v2 (2nd gen) Configuration
+       * Firebase functions 1st generation region passed to `functions.region()`.
+       */
+      region?: Parameters<typeof region>[0];
+
+      /**
+       * Firebase functions 1st generation runtime options passed to `functions.runWith()`.
+       */
+      runtimeOptions?: RuntimeOptions;
+    };
+
+    /**
+     * Firebase functions 2nd generation options.
+     */
+    gen2?: {
+      /**
+       * Firebase functions 2nd generation https options passed to `onRequest`.
        * @see https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions
        */
-      httpRequestOptions: HttpsOptions;
+      httpsOptions?: HttpsOptions;
     };
   };
 }

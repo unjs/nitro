@@ -8,14 +8,27 @@ import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 
+// default to one for retro compatibility but should be set to 2
+const firebaseFunctionsGen = process.env.FIREBASE_FUNCTIONS_GEN || "1";
+
+if (firebaseFunctionsGen !== "1" && firebaseFunctionsGen !== "2") {
+  throw new Error(
+    `FIREBASE_FUNCTIONS_GEN must be 1 or 2, got "${firebaseFunctionsGen}"`
+  );
+}
+
 export const firebase = defineNitroPreset({
-  entry: "#internal/nitro/entries/firebase",
+  entry: `#internal/nitro/entries/firebase-gen-${firebaseFunctionsGen}`,
   commands: {
     deploy: "npx firebase-tools deploy",
   },
   hooks: {
     async compiled(ctx) {
       await writeRoutes(ctx);
+    },
+
+    "rollup:before": (nitro) => {
+      nitro.options.appConfig._firebase = nitro.options.firebase;
     },
   },
 });
