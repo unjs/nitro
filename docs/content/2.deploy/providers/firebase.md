@@ -8,7 +8,7 @@ Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with
 
 **Note**: You need to be on the **Blaze plan** to use Nitro with Cloud Functions.
 
-**Note**: This preset will deploy to firebase functions v1. If you want to deploy to firebase functions v2, please use the [`firebase-v2`](#firebase-functions-v2) preset.
+**Note**: This preset will deploy to firebase functions 1st gen by default. If you want to deploy to firebase functions 2nd gen, see the [instructions below](#).
 
 ### Setup Using Nitro
 
@@ -50,20 +50,20 @@ Make sure you are authenticated with the firebase cli. Run this command and foll
 npx firebase-tools login
 ```
 
-
-
 ### Alternative Setup Using Firebase CLI
 
-You may instead prefer to set up your project with the Firebase CLI, which will fetch your project ID for you, add required dependencies (see above) and even set up automated deployments via GitHub Actions. [Learn about installing the firebase CLI](https://firebase.google.com/docs/cli#windows-npm).
+You may instead prefer to set up your project with the Firebase CLI, which will fetch your project ID for you, add required dependencies (see above) and even set up automated deployments via GitHub Actions (for hosting only). [Learn about installing the firebase CLI](https://firebase.google.com/docs/cli#windows-npm).
 
 #### Install Firebase CLI globally
 
+Always try to use the latest version of the Firebase CLI.
+
 ```bash
 # yarn
-yarn global add firebase-tools
+yarn global add firebase-tools@latest
 
 # npm
-npm install -g firebase-tools
+npm install -g firebase-tools@latest
 ```
 
 **Note**: You need to be on [^11.18.0](https://github.com/firebase/firebase-tools/releases/tag/v11.18.0) to deploy a nodejs18 function.
@@ -122,29 +122,21 @@ If you chose the alternative setup using the Firebase CLI, you can also run:
 firebase deploy
 ```
 
-## Firebase Functions v2
+## Using 2nd Generation Firebase Functions
 
-**Preset:** `firebase-v2` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+- [Comparison between 1st and 2nd generation functions](https://firebase.google.com/docs/functions/version-comparison)
 
-This preset will deploy to [firebase functions V2](https://firebase.google.com/docs/functions/version-comparison) - the 2nd generation of cloud functions.
+To switch to the more recent and, recommended generation of firebase functions, set the `FIREBASE_FUNCTIONS_GEN` to `2` when building:
 
-It works the same as the [`firebase`](#firebase) preset above, but uses the V2 functions runtime.
+```bash
+FIREBASE_FUNCTIONS_GEN=2 NITRO_PRESET=firebase yarn build
+```
 
-### Setup
+If you already have a deployed version of your website and want to upgrade to 2nd gen, [see the Migration process on Firebase docs](https://firebase.google.com/docs/functions/2nd-gen-upgrade). Namely, the CLI will ask you to delete your existing functions before deploying the new ones.
 
-Follow the instructions for the `firebase` preset above for setup and deploy.
+## Options
 
-::alert{type="warning"}
-New HTTP and HTTP callable functions deployed with any Firebase CLI lower than version 7.7.0 are private by default and throw HTTP 403 errors when invoked. Either explicitly [make these functions public](https://cloud.google.com/functions/docs/securing/managing-access-iam#allowing_unauthenticated_http_function_invocation) or [update your Firebase CLI](https://firebase.google.com/docs/cli#setup_update_cli) before you deploy. If you deploy the function and it is not publicly accessible, then you will need to visit the [Functions Console](https://console.cloud.google.com/functions/list) on Google cloud platform, click your function name, select the 'Permissions' tab and follow the instructions on how to make the function public.
-::
-
-### Options
-
-The `firebase-v2` preset also supports passing options to the firebase function via the nitro config. These options are defined in the nitro config object under `firebase.v2.httpRequestOptions`.
-
-The `httpRequestOptions` object is passed to `functions.https.onRequest()` function as the first argument as per the [firebase docs](https://firebase.google.com/docs/functions/http-events?gen=2nd#trigger_a_function_with_an_http_request).
-
-For example, to set the region and max instances of the function, you can add the following to your `nitro.config.ts`:
+You can set options for the firebase functions in your `nitro.config.ts` file:
 
 ```ts
 import { defineNitroConfig } from 'nitropack/config'
@@ -152,8 +144,8 @@ import { defineNitroConfig } from 'nitropack/config'
 export default defineNitroConfig({
   // Nitro options...
   firebase: {
-    v2: {
-      httpRequestOptions: {
+    gen2: {
+      httpOptions: {
         region: "europe-west1",
         maxInstances: 3,
         // etc.
@@ -163,11 +155,11 @@ export default defineNitroConfig({
 })
 ```
 
-The documentation for the `httpRequestOptions` option can be found in the [firebase functions 2nd gen docs](https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions).
+You can also set 1st gen options in the `gen1` key.
 
-### Runtime
+## Runtime
 
-Firebase uses the engines.node version in your `package.json` to determine which node version to use for your functions. If you want to use a different version of node for your functions, you should set the `engines.node` version in your `package.json` to the version you want to use:
+Firebase uses the `engines.node` version in your `package.json` to determine which node version to use for your functions. If you want to use a different version of node for your functions, you should set the `engines.node` version in your `package.json` to the version you want to use:
 
 ```json [package.json]
 {
