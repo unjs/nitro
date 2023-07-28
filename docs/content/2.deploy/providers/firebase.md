@@ -138,22 +138,34 @@ If you already have a deployed version of your website and want to upgrade to 2n
 
 You can set options for the firebase functions in your `nitro.config.ts` file:
 
-```ts
-import { defineNitroConfig } from 'nitropack/config'
-
+::code-group
+```ts [nitro.config.ts]
 export default defineNitroConfig({
-  // Nitro options...
   firebase: {
     gen2: {
       httpOptions: {
-        region: "europe-west1",
-        maxInstances: 3,
-        // etc.
+        region: 'europe-west1',
+        maxInstances: 3
       }
     }
   }
 })
 ```
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    firebase: {
+      gen2: {
+        httpOptions: {
+          region: 'europe-west1',
+          maxInstances: 3
+        }
+      }
+    }
+  }
+})
+```
+::
 
 You can also set 1st gen options in the `gen1` key.
 
