@@ -8,7 +8,7 @@ Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with
 
 **Note**: You need to be on the **Blaze plan** to use Nitro with Cloud Functions.
 
-**Note**: This preset will deploy to firebase functions 1st gen by default. If you want to deploy to firebase functions 2nd gen, see the [instructions below](#).
+**Note**: This preset will deploy to firebase functions 1st gen by default. If you want to deploy to firebase functions 2nd gen, see the [instructions below](#using-2nd-generation-firebase-functions).
 
 ### Setup Using Nitro
 
