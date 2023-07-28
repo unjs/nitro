@@ -10,11 +10,11 @@ Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with
 
 **Note**: This preset will deploy to firebase functions 1st gen by default. If you want to deploy to firebase functions 2nd gen, see the [instructions below](#using-2nd-generation-firebase-functions).
 
-### Setup Using Nitro
+## Setup Using Nitro
 
 If you don't already have a `firebase.json` in your root directory, Nitro will create one the first time you run it. In this file, you will need to replace `<your_project_id>` with the ID of your Firebase project. This file should then be committed to version control.
 
-#### Create a .firebaserc file
+### Create a .firebaserc file
 
 It is also recommended to create a `.firebaserc` file so you don't need to manually pass your project ID to your `firebase` commands (with `--project <your_project_id>`):
 
@@ -30,19 +30,19 @@ It is also recommended to create a `.firebaserc` file so you don't need to manua
 
 Then, add Firebase dependencies to your project:
 
-yarn:
-
-```bash
-yarn add --dev firebase-admin firebase-functions firebase-functions-test firebase-tools
-```
-
-npm:
-
-```bash
+::code-group
+```bash [npm]
 npm install -D firebase-admin firebase-functions firebase-functions-test firebase-tools
 ```
+```bash [yarn]
+yarn add --dev firebase-admin firebase-functions firebase-functions-test firebase-tools
+```
+```bash [pnpm]
+pnpm install -D firebase-admin firebase-functions firebase-functions-test firebase-tools
+```
+::
 
-#### Log into the firebase cli
+### Log into the firebase cli
 
 Make sure you are authenticated with the firebase cli. Run this command and follow the prompts:
 
@@ -50,25 +50,21 @@ Make sure you are authenticated with the firebase cli. Run this command and foll
 npx firebase-tools login
 ```
 
-### Alternative Setup Using Firebase CLI
+## Alternative Setup Using Firebase CLI
 
 You may instead prefer to set up your project with the Firebase CLI, which will fetch your project ID for you, add required dependencies (see above) and even set up automated deployments via GitHub Actions (for hosting only). [Learn about installing the firebase CLI](https://firebase.google.com/docs/cli#windows-npm).
 
-#### Install Firebase CLI globally
+### Install Firebase CLI globally
 
 Always try to use the latest version of the Firebase CLI.
 
 ```bash
-# yarn
-yarn global add firebase-tools@latest
-
-# npm
 npm install -g firebase-tools@latest
 ```
 
 **Note**: You need to be on [^11.18.0](https://github.com/firebase/firebase-tools/releases/tag/v11.18.0) to deploy a nodejs18 function.
 
-#### Initialize your Firebase project
+### Initialize your Firebase project
 
 ```bash
 firebase login
@@ -100,7 +96,7 @@ You can find more details in the [Firebase documentation](https://firebase.googl
 You can preview a local version of your site if you need to test things out without deploying.
 
 ```bash
-NITRO_PRESET=firebase yarn build
+NITRO_PRESET=firebase npm run build
 firebase emulators:start
 ```
 
@@ -109,7 +105,7 @@ firebase emulators:start
 Deploy to Firebase Hosting by running a nitro build and then running the `firebase deploy` command.
 
 ```bash
-NITRO_PRESET=firebase yarn build
+NITRO_PRESET=firebase npm run build
 ```
 
 ```bash
@@ -129,7 +125,7 @@ firebase deploy
 To switch to the more recent and, recommended generation of firebase functions, set the `FIREBASE_FUNCTIONS_GEN` to `2` when building:
 
 ```bash
-FIREBASE_FUNCTIONS_GEN=2 NITRO_PRESET=firebase yarn build
+FIREBASE_FUNCTIONS_GEN=2 NITRO_PRESET=firebase npm run build
 ```
 
 If you already have a deployed version of your website and want to upgrade to 2nd gen, [see the Migration process on Firebase docs](https://firebase.google.com/docs/functions/2nd-gen-upgrade). Namely, the CLI will ask you to delete your existing functions before deploying the new ones.
