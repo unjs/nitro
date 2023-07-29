@@ -66,7 +66,9 @@ function createNitroApp(): NitroApp {
     },
   });
 
-  const router = createRouter();
+  const router = createRouter({
+    preemptive: true,
+  });
 
   h3App.use(createRouteRulesHandler());
 
