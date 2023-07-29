@@ -24,4 +24,4 @@ jobs:
         run: npm run lint:fix
       - uses: autofix-ci/action@8caa572fd27b0019a65e4c695447089c8d3138b9
         with:
-          commit-message: 'style: apply lint fixes'
+          commit-message: 'chore: apply automated lint fixes'
