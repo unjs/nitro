@@ -7,6 +7,16 @@ body:
       value: |
         If bug-report is related to Nuxt framework, please open an issue directly there:
         https://github.com/nuxt/nuxt/issues/new/choose
+        
+        Please use one a the templates below to create a minimal reproduction :
+        
+        Nitro starter : 
+        👉 https://stackblitz.com/github/unjs/nitro/tree/starter
+        👉 https://codesandbox.io/p/github/unjs/nitro/starter
+        
+        Nitro preset starter :
+        👉 https://stackblitz.com/github/unjs/nitro-preset-starter/tree/main
+        👉 https://codesandbox.io/p/github/unjs/nitro-preset-starter/main
   - type: textarea
     id: bug-env
     attributes:
