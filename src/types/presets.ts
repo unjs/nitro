@@ -63,6 +63,7 @@ export interface PresetOptions {
     functions?: {
       memory: number;
       maxDuration: number;
+      [key: string]: unknown;
     };
   };
 }
