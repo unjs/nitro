@@ -175,6 +175,16 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("Handle 404 not found", async () => {
+    const res = await callHandler({ url: "/api/not-found" });
+    expect(res.status).toBe(404);
+  });
+
+  it("Handle 405 method not allowed", async () => {
+    const res = await callHandler({ url: "/api/upload" });
+    expect(res.status).toBe(405);
+  });
+
   it("handles route rules - redirects", async () => {
     const base = await callHandler({ url: "/rules/redirect" });
     expect(base.status).toBe(307);
