@@ -8,7 +8,7 @@ body:
         If bug-report is related to Nuxt framework, please open an issue directly there:
         https://github.com/nuxt/nuxt/issues/new/choose
 
-        Please use one a the templates below to create a minimal reproduction :
+        Please use one of the templates below to create a minimal reproduction :
           
         👉 https://stackblitz.com/github/unjs/nitro/tree/starter
         👉 https://codesandbox.io/p/github/unjs/nitro/starter
