@@ -55,7 +55,7 @@ export interface VercelBuildConfigV3 {
   }[];
 }
 
-interface FirebaseBaseOptions {
+interface FirebaseOptionsBase {
   gen: 1 | 2;
   /**
    * Firebase functions node runtime version.
@@ -64,7 +64,7 @@ interface FirebaseBaseOptions {
   nodeVersion?: "20" | "18" | "16" | "14" | "12" | "10";
 }
 
-interface FirebaseGen1Options extends FirebaseBaseOptions {
+interface FirebaseOptionsGen1 extends FirebaseOptionsBase {
   gen: 1;
   /**
    * Firebase functions 1st generation region passed to `functions.region()`.
@@ -76,7 +76,7 @@ interface FirebaseGen1Options extends FirebaseBaseOptions {
   runtimeOptions?: RuntimeOptions;
 }
 
-interface FirebaseGen2Options extends FirebaseBaseOptions {
+interface FirebaseOptionsGen2 extends FirebaseOptionsBase {
   gen: 2;
   /**
    * Firebase functions 2nd generation https options passed to `onRequest`.
@@ -85,7 +85,7 @@ interface FirebaseGen2Options extends FirebaseBaseOptions {
   httpsOptions?: HttpsOptions;
 }
 
-type FirebaseOptions = FirebaseGen1Options | FirebaseGen2Options;
+type FirebaseOptions = FirebaseOptionsGen1 | FirebaseOptionsGen2;
 
 export interface PresetOptions {
   vercel: {
