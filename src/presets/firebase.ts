@@ -8,17 +8,8 @@ import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 
-// default to one for retro compatibility but should be set to 2
-const firebaseFunctionsGen = process.env.FIREBASE_FUNCTIONS_GEN || "1";
-
-if (firebaseFunctionsGen !== "1" && firebaseFunctionsGen !== "2") {
-  throw new Error(
-    `FIREBASE_FUNCTIONS_GEN must be 1 or 2, got "${firebaseFunctionsGen}"`
-  );
-}
-
 export const firebase = defineNitroPreset({
-  entry: `#internal/nitro/entries/firebase-gen-${firebaseFunctionsGen}`,
+  entry: `#internal/nitro/entries/firebase-gen-{{ firebase.gen }}`,
   commands: {
     deploy: "npx firebase-tools deploy",
   },
@@ -81,8 +72,8 @@ async function writeRoutes(nitro: Nitro) {
     {} as Record<string, string>
   );
 
-  let nodeVersion = "18";
-  const supportedNodeVersions = new Set(["18", "16", "14", "12", "10"]);
+  let nodeVersion: string = nitro.options.firebase?.nodeVersion || "18";
+  const supportedNodeVersions = new Set(["20", "18", "16", "14", "12", "10"]);
   //    ^ See https://cloud.google.com/functions/docs/concepts/nodejs-runtime
   try {
     const currentNodeVersion = JSON.parse(

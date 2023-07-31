@@ -8,7 +8,7 @@ export const server = onRequest(
   {
     // must be set to public to allow all public requests by default
     invoker: "public",
-    ...useAppConfig()?._firebase?.gen2?.httpOptions,
+    ...useAppConfig()?._firebase?.httpOptions,
   },
   toNodeListener(nitroApp.h3App)
 );
