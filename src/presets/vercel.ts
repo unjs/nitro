@@ -5,7 +5,10 @@ import { withoutLeadingSlash } from "ufo";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import type { VercelBuildConfigV3 } from "../types/presets";
+import type {
+  VercelBuildConfigV3,
+  VercelServerlessFunctionConfig,
+} from "../types/presets";
 
 // https://vercel.com/docs/build-output-api/v3
 
@@ -36,11 +39,12 @@ export const vercel = defineNitroPreset({
         nitro.options.output.serverDir,
         ".vc-config.json"
       );
-      const functionConfig = {
+      const functionConfig: VercelServerlessFunctionConfig = {
         runtime: runtimeVersion,
         handler: "index.mjs",
         launcherType: "Nodejs",
         shouldAddHelpers: false,
+        supportsResponseStreaming: true,
         ...nitro.options.vercel?.functions,
       };
       await writeFile(

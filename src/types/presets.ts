@@ -52,18 +52,43 @@ export interface VercelBuildConfigV3 {
   }[];
 }
 
+/**
+ * https://vercel.com/docs/build-output-api/v3/primitives#serverless-function-configuration
+ */
+export interface VercelServerlessFunctionConfig {
+  /**
+   * Amount of memory (RAM in MB) that will be allocated to the Serverless Function.
+   */
+  memory?: number;
+
+  /**
+   * Maximum execution duration (in seconds) that will be allowed for the Serverless Function.
+   */
+  maxDuration?: number;
+
+  /**
+   * True if a custom runtime has support for Lambda runtime wrappers.
+   */
+  supportsWrapper?: boolean;
+
+  /**
+   * When true, the Serverless Function will stream the response to the client.
+   */
+  supportsResponseStreaming?: boolean;
+
+  [key: string]: unknown;
+}
+
 export interface PresetOptions {
   vercel: {
     config: VercelBuildConfigV3;
+
     /**
      * If you are using `vercel-edge`, you can specify the region(s) for your edge function.
      * @see https://vercel.com/docs/concepts/functions/edge-functions#edge-function-regions
      */
     regions?: string[];
-    functions?: {
-      memory: number;
-      maxDuration: number;
-      [key: string]: unknown;
-    };
+
+    functions?: VercelServerlessFunctionConfig;
   };
 }
