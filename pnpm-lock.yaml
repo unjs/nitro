@@ -100,8 +100,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       h3:
-        specifier: ^1.8.0-rc.0
-        version: 1.8.0-rc.0
+        specifier: ^1.8.0-rc.1
+        version: 1.8.0-rc.1
       hookable:
         specifier: ^5.5.3
         version: 5.5.3
@@ -3466,8 +3466,8 @@ packages:
       uncrypto: 0.1.3
     dev: false
 
-  /h3@1.8.0-rc.0:
-    resolution: {integrity: sha512-q0/MyVY/qvEApQV+lhTvu2xJOLFBILngVbCvBaAYpo2U/nYSJEjXg6d8B5J8hGeUE5m9kx9tPGQLKnTGxS/l7g==}
+  /h3@1.8.0-rc.1:
+    resolution: {integrity: sha512-e9UGHw8vRjjrVjwlJW3J8RPDSE66ASnWjF8r2KL4L1cBVo75sueLVicozFCkCCu0tdH4r97+0qtj/6Qaj5JTAA==}
     dependencies:
       cookie-es: 1.0.0
       defu: 6.1.2
