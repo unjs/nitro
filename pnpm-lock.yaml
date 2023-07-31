@@ -100,8 +100,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       h3:
-        specifier: ^1.8.0-rc.1
-        version: 1.8.0-rc.1
+        specifier: ^2.0.0
+        version: 2.0.0
       hookable:
         specifier: ^5.5.3
         version: 5.5.3
@@ -3466,16 +3466,8 @@ packages:
       uncrypto: 0.1.3
     dev: false
 
-  /h3@1.8.0-rc.1:
-    resolution: {integrity: sha512-e9UGHw8vRjjrVjwlJW3J8RPDSE66ASnWjF8r2KL4L1cBVo75sueLVicozFCkCCu0tdH4r97+0qtj/6Qaj5JTAA==}
-    dependencies:
-      cookie-es: 1.0.0
-      defu: 6.1.2
-      destr: 2.0.0
-      iron-webcrypto: 0.8.0
-      radix3: 1.0.1
-      ufo: 1.2.0
-      uncrypto: 0.1.3
+  /h3@2.0.0:
+    resolution: {integrity: sha512-3INyyEir2VkWXD3auY+uUL/mqrgYX5ejRdUjtjyd4AOZcoijIyvf6PkBPsn+NFGE5rks2nCcMIOLZGTxpp/A7w==}
     dev: false
 
   /has-bigints@1.0.2:
@@ -3674,10 +3666,6 @@ packages:
 
   /iron-webcrypto@0.7.1:
     resolution: {integrity: sha512-K/UmlEhPCPXEHV5hAtH5C0tI5JnFuOrv4yO/j7ODPl3HaiiHBLbOLTde+ieUaAyfCATe4LoAnclyF+hmSCOVmQ==}
-    dev: false
-
-  /iron-webcrypto@0.8.0:
-    resolution: {integrity: sha512-gScdcWHjTGclCU15CIv2r069NoQrys1UeUFFfaO1hL++ytLHkVw7N5nXJmFf3J2LEDMz1PkrvC0m62JEeu1axQ==}
     dev: false
 
   /is-array-buffer@3.0.2:
