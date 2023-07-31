@@ -97,8 +97,9 @@ function createNitroApp(): NitroApp {
       event.context.nitro = event.context.nitro || { errors: [] };
 
       // Support platform context provided by local fetch
-      const envContext: { waitUntil?: H3Event['waitUntil']  } | undefined = (event.node.req as unknown as { __unenv__: unknown })
-        ?.__unenv__;
+      const envContext: { waitUntil?: H3Event["waitUntil"] } | undefined = (
+        event.node.req as unknown as { __unenv__: unknown }
+      )?.__unenv__;
       if (envContext) {
         Object.assign(event.context, envContext);
       }
