@@ -20,7 +20,9 @@ export const firebase = defineNitroPreset({
 
     "rollup:before": (nitro) => {
       if (!nitro.options.firebase?.gen) {
-        nitro.logger.warn('"firebase.gen" is not set in nitro options. This will default to Cloud Functions 1st generation. It is recommended to set this to the latest generation (currently 2). Set the version to remove this warning. See https://firebase.google.com/docs/functions/version-comparison for more information.');
+        nitro.logger.warn(
+          '"firebase.gen" is not set in nitro options. This will default to Cloud Functions 1st generation. It is recommended to set this to the latest generation (currently 2). Set the version to remove this warning. See https://firebase.google.com/docs/functions/version-comparison for more information.'
+        );
       }
 
       nitro.options.appConfig._firebase = nitro.options.firebase;
