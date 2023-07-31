@@ -26,19 +26,21 @@ It is also recommended to create a `.firebaserc` file so you don't need to manua
 }
 ```
 
-#### Install Firebase dependencies
+This file is usually generated when you initialize your project with the Firebase CLI. But if you don't have one, you can create it manually.
+
+### Install Firebase dependencies
 
 Then, add Firebase dependencies to your project:
 
 ::code-group
 ```bash [npm]
-npm install -D firebase-admin firebase-functions firebase-functions-test firebase-tools
+npm install -D firebase-admin firebase-functions firebase-functions-test
 ```
 ```bash [yarn]
-yarn add --dev firebase-admin firebase-functions firebase-functions-test firebase-tools
+yarn add --dev firebase-admin firebase-functions firebase-functions-test
 ```
 ```bash [pnpm]
-pnpm install -D firebase-admin firebase-functions firebase-functions-test firebase-tools
+pnpm install -D firebase-admin firebase-functions firebase-functions-test
 ```
 ::
 
@@ -47,10 +49,10 @@ pnpm install -D firebase-admin firebase-functions firebase-functions-test fireba
 Make sure you are authenticated with the firebase cli. Run this command and follow the prompts:
 
 ```bash
-npx firebase-tools login
+npx login
 ```
 
-## Alternative Setup Using Firebase CLI
+## Alternative Setup Using Firebase CLI (Recommended)
 
 You may instead prefer to set up your project with the Firebase CLI, which will fetch your project ID for you, add required dependencies (see above) and even set up automated deployments via GitHub Actions (for hosting only). [Learn about installing the firebase CLI](https://firebase.google.com/docs/cli#windows-npm).
 
@@ -112,7 +114,7 @@ NITRO_PRESET=firebase npm run build
 npx firebase-tools deploy
 ```
 
-If you chose the alternative setup using the Firebase CLI, you can also run:
+If you installed the Firebase CLI globally, you can also run:
 
 ```bash
 firebase deploy
@@ -122,11 +124,28 @@ firebase deploy
 
 - [Comparison between 1st and 2nd generation functions](https://firebase.google.com/docs/functions/version-comparison)
 
-To switch to the more recent and, recommended generation of firebase functions, set the `FIREBASE_FUNCTIONS_GEN` to `2` when building:
+To switch to the more recent and, recommended generation of firebase functions, set the `firebase.gen` option to `2`:
 
-```bash
-FIREBASE_FUNCTIONS_GEN=2 NITRO_PRESET=firebase npm run build
+::code-group
+```ts{3} [nitro.config.ts]
+export default defineNitroConfig({
+  firebase: {
+    gen: 2
+    // ...
+  }
+})
 ```
+```ts{4} [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    firebase: {
+      gen: 2
+      // ...
+    }
+  }
+})
+```
+::
 
 If you already have a deployed version of your website and want to upgrade to 2nd gen, [see the Migration process on Firebase docs](https://firebase.google.com/docs/functions/2nd-gen-upgrade). Namely, the CLI will ask you to delete your existing functions before deploying the new ones.
 
@@ -138,11 +157,9 @@ You can set options for the firebase functions in your `nitro.config.ts` file:
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   firebase: {
-    gen2: {
-      httpOptions: {
-        region: 'europe-west1',
-        maxInstances: 3
-      }
+    httpOptions: {
+      region: 'europe-west1',
+      maxInstances: 3
     }
   }
 })
@@ -151,11 +168,9 @@ export default defineNitroConfig({
 export default defineNuxtConfig({
   nitro: {
     firebase: {
-      gen2: {
-        httpOptions: {
-          region: 'europe-west1',
-          maxInstances: 3
-        }
+      httpOptions: {
+        region: 'europe-west1',
+        maxInstances: 3
       }
     }
   }
@@ -163,7 +178,7 @@ export default defineNuxtConfig({
 ```
 ::
 
-You can also set 1st gen options in the `gen1` key.
+You can also set 1st gen options in the `gen` is set to `1`.
 
 ## Runtime
 
@@ -177,7 +192,7 @@ Firebase uses the `engines.node` version in your `package.json` to determine whi
 }
 ```
 
-For some node versions you will also need to add a runtime key to your firebase.json file:
+For some node versions you might also need to add a runtime key to your firebase.json file:
 
 ```json [firebase.json]
 {
@@ -187,6 +202,8 @@ For some node versions you will also need to add a runtime key to your firebase.
   }
 }
 ```
+
+You can read more about this in [Firebase Docs](https://firebase.google.com/docs/functions/manage-functions?gen=2nd#set_nodejs_version).
 
 ## If your firebase project has other cloud functions
 
