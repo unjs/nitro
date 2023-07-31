@@ -1,6 +1,10 @@
+blank_issues_enabled: true
 contact_links:
+  - name: 📚 Nitro Documentation
+    url: https://nitro.unjs.io/
+    about: Check the documentation for usage of Nuxt 3
   - name: 💬 Discussions
-    url: https://github.com/unjs/nitropack/discussions
+    url: https://github.com/unjs/nitro/discussions
     about: Use discussions if you have an idea for improvement and asking questions
   - name: 🔗 Nuxt related Issues
     url: https://github.com/nuxt/nuxt/issues/new/choose

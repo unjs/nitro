@@ -1,6 +1,7 @@
 import type { Handler } from "aws-lambda";
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { normalizeLambdaOutgoingBody } from "#internal/nitro/utils.lambda";
 
 interface StormkitEvent {
   url: string; // e.g. /my/path, /my/path?with=query
@@ -38,7 +39,7 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
   return {
     statusCode: r.status,
     headers: normalizeOutgoingHeaders(r.headers),
-    body: r.body.toString(),
+    body: normalizeLambdaOutgoingBody(r.body, r.headers),
   };
 };
 
