@@ -1,4 +1,13 @@
-import { eventHandler, createError, getRequestHeader } from "h3";
+import {
+  eventHandler,
+  createError,
+  getRequestHeader,
+  getResponseHeader,
+  setResponseHeader,
+  setResponseStatus,
+  removeResponseHeader,
+  send,
+} from "h3";
 import {
   decodePath,
   joinURL,
@@ -39,7 +48,7 @@ export default eventHandler((event) => {
     "",
   ];
   if (encodings.length > 1) {
-    event.node.res.setHeader("Vary", "Accept-Encoding");
+    setResponseHeader(event, "Vary", "Accept-Encoding");
   }
 
   for (const encoding of encodings) {
@@ -55,7 +64,7 @@ export default eventHandler((event) => {
 
   if (!asset) {
     if (isPublicAssetURL(id)) {
-      event.node.res.removeHeader("cache-control");
+      removeResponseHeader(event, "Cache-Control");
       throw createError({
         statusMessage: "Cannot find static asset " + id,
         statusCode: 404,
@@ -66,10 +75,8 @@ export default eventHandler((event) => {
 
   const ifNotMatch = getRequestHeader(event, "if-none-match") === asset.etag;
   if (ifNotMatch) {
-    if (!event.handled) {
-      event.node.res.statusCode = 304;
-      event.node.res.end();
-    }
+    setResponseStatus(event, 304, "Not Modified");
+    send(event, "");
     return;
   }
 
@@ -80,31 +87,29 @@ export default eventHandler((event) => {
     asset.mtime &&
     new Date(ifModifiedSinceH) >= mtimeDate
   ) {
-    if (!event.handled) {
-      event.node.res.statusCode = 304;
-      event.node.res.end();
-    }
+    setResponseStatus(event, 304, "Not Modified");
+    send(event, "");
     return;
   }
 
-  if (asset.type && !event.node.res.getHeader("Content-Type")) {
-    event.node.res.setHeader("Content-Type", asset.type);
+  if (asset.type && !getResponseHeader(event, "Content-Type")) {
+    setResponseHeader(event, "Content-Type", asset.type);
   }
 
-  if (asset.etag && !event.node.res.getHeader("ETag")) {
-    event.node.res.setHeader("ETag", asset.etag);
+  if (asset.etag && !getResponseHeader(event, "ETag")) {
+    setResponseHeader(event, "ETag", asset.etag);
   }
 
-  if (asset.mtime && !event.node.res.getHeader("Last-Modified")) {
-    event.node.res.setHeader("Last-Modified", mtimeDate.toUTCString());
+  if (asset.mtime && !getResponseHeader(event, "Last-Modified")) {
+    setResponseHeader(event, "Last-Modified", mtimeDate.toUTCString());
   }
 
-  if (asset.encoding && !event.node.res.getHeader("Content-Encoding")) {
-    event.node.res.setHeader("Content-Encoding", asset.encoding);
+  if (asset.encoding && !getResponseHeader(event, "Content-Encoding")) {
+    setResponseHeader(event, "Content-Encoding", asset.encoding);
   }
 
-  if (asset.size > 0 && !event.node.res.getHeader("Content-Length")) {
-    event.node.res.setHeader("Content-Length", asset.size);
+  if (asset.size > 0 && !getResponseHeader(event, "Content-Length")) {
+    setResponseHeader(event, "Content-Length", asset.size);
   }
 
   return readAsset(id);
