@@ -229,7 +229,7 @@ export async function prerender(nitro: Nitro) {
 
   async function processRoute(route: string) {
     const _route = await generateRoute(route).catch(
-      (error) => ({ route, error } as PrerenderGenerateRoute)
+      (error) => ({ route, error }) as PrerenderGenerateRoute
     );
 
     if (!_route || _route.skip) {
