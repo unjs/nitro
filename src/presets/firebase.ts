@@ -79,7 +79,7 @@ async function writeRoutes(nitro: Nitro) {
   );
 
   let nodeVersion: string = nitro.options.firebase?.nodeVersion || "18";
-  const supportedNodeVersions = new Set(["20", "18", "16", "14", "12", "10"]);
+  const supportedNodeVersions = new Set(["20", "18", "16"]);
   //    ^ See https://cloud.google.com/functions/docs/concepts/nodejs-runtime
   try {
     const currentNodeVersion = JSON.parse(
