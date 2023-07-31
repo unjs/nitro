@@ -154,6 +154,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       key,
       () => fn(...args),
       shouldInvalidateCache,
+      // @ts-ignore
       args[0] && isEvent(args[0]) ? args[0] : undefined
     );
     let value = entry.value;
