@@ -61,7 +61,7 @@ interface FirebaseOptionsBase {
    * Firebase functions node runtime version.
    * @see https://cloud.google.com/functions/docs/concepts/nodejs-runtime
    */
-  nodeVersion?: "20" | "18" | "16" | "14" | "12" | "10";
+  nodeVersion?: "20" | "18" | "16";
 }
 
 interface FirebaseOptionsGen1 extends FirebaseOptionsBase {
