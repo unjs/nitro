@@ -6,19 +6,19 @@ export interface VercelBuildConfigV3 {
   version: 3;
   routes?: (
     | {
-      src: string;
-      headers: {
-        "cache-control": string;
-      };
-      continue: boolean;
-    }
+        src: string;
+        headers: {
+          "cache-control": string;
+        };
+        continue: boolean;
+      }
     | {
-      handle: string;
-    }
+        handle: string;
+      }
     | {
-      src: string;
-      dest: string;
-    }
+        src: string;
+        dest: string;
+      }
   )[];
   images?: {
     sizes: number[];

@@ -5,7 +5,10 @@ import { withoutLeadingSlash } from "ufo";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import type { VercelBuildConfigV3, VercelServerlessFunctionConfig } from "../types/presets";
+import type {
+  VercelBuildConfigV3,
+  VercelServerlessFunctionConfig,
+} from "../types/presets";
 
 // https://vercel.com/docs/build-output-api/v3
 
