@@ -1,4 +1,4 @@
-import { eventHandler, createError } from "h3";
+import { eventHandler, createError, getRequestHeader } from "h3";
 import {
   decodePath,
   joinURL,
@@ -18,19 +18,17 @@ const METHODS = new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
 
 export default eventHandler((event) => {
-  if (event.node.req.method && !METHODS.has(event.node.req.method)) {
+  if (event.method && !METHODS.has(event.method)) {
     return;
   }
 
   let id = decodePath(
-    withLeadingSlash(
-      withoutTrailingSlash(parseURL(event.node.req.url).pathname)
-    )
+    withLeadingSlash(withoutTrailingSlash(parseURL(event.path).pathname))
   );
   let asset: PublicAsset;
 
   const encodingHeader = String(
-    event.node.req.headers["accept-encoding"] || ""
+    getRequestHeader(event, "accept-encoding") || ""
   );
   const encodings = [
     ...encodingHeader
@@ -66,7 +64,7 @@ export default eventHandler((event) => {
     return;
   }
 
-  const ifNotMatch = event.node.req.headers["if-none-match"] === asset.etag;
+  const ifNotMatch = getRequestHeader(event, "if-none-match") === asset.etag;
   if (ifNotMatch) {
     if (!event.handled) {
       event.node.res.statusCode = 304;
@@ -75,7 +73,7 @@ export default eventHandler((event) => {
     return;
   }
 
-  const ifModifiedSinceH = event.node.req.headers["if-modified-since"];
+  const ifModifiedSinceH = getRequestHeader(event, "if-modified-since");
   const mtimeDate = new Date(asset.mtime);
   if (
     ifModifiedSinceH &&

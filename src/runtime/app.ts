@@ -96,7 +96,8 @@ function createNitroApp(): NitroApp {
       event.context.nitro = event.context.nitro || { errors: [] };
 
       // Support platform context provided by local fetch
-      const envContext = (event.node.req as any).__unenv__;
+      const envContext = (event.node.req as unknown as { __unenv__: unknown })
+        ?.__unenv__;
       if (envContext) {
         Object.assign(event.context, envContext);
       }

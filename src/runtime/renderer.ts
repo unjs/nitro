@@ -15,7 +15,7 @@ export type RenderHandler = (
 export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder
-    if (event.node.req.url.endsWith("/favicon.ico")) {
+    if (event.path.endsWith("/favicon.ico")) {
       if (!event.handled) {
         event.node.res.setHeader("Content-Type", "image/x-icon");
         event.node.res.end(
@@ -31,7 +31,7 @@ export function defineRenderHandler(handler: RenderHandler) {
         event.node.res.statusCode =
           event.node.res.statusCode === 200 ? 500 : event.node.res.statusCode;
         event.node.res.end(
-          "No response returned from render handler: " + event.node.req.url
+          "No response returned from render handler: " + event.path
         );
       }
       return;

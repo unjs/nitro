@@ -205,7 +205,7 @@ d1_databases = [
 ```ts
 // waitUntil allows cache writes, external logging, etc without blocking the event
 const { cloudflare } = event.context
-cloudflare.context.waitUntil(logRequest(event.node.req))
+cloudflare.context.waitUntil(logRequest(event.path))
 ```
 
 ### Access env and bindings

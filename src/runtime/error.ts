@@ -19,7 +19,7 @@ export default <NitroErrorHandler>function (error, event) {
   const showDetails = isDev && statusCode !== 404;
 
   const errorObject = {
-    url: event.node.req.url || "",
+    url: event.path || "",
     statusCode,
     statusMessage,
     message,

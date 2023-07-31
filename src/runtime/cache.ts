@@ -195,12 +195,12 @@ export function defineCachedEventHandler<T = any>(
 ): EventHandler<T> {
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
-    getKey: async (event) => {
+    getKey: async (event: H3Event) => {
       const key = await opts.getKey?.(event);
       if (key) {
         return escapeKey(key);
       }
-      const url = event.node.req.originalUrl || event.node.req.url;
+      const url = event._originalPath || event.path;
       const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
         0,
         16
