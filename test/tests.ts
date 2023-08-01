@@ -525,16 +525,9 @@ export function testNitro(
   });
 
   describe.only("prerender", () => {
-    it("renders prerender:done file", async () => {
+    it("renders prerenderer finished file", async () => {
       const { data } = await callHandler({ url: "/routes.txt" });
-      expect(data).toMatchInlineSnapshot(`
-        {
-          "message": "Cannot read properties of null (reading 'map')",
-          "statusCode": 500,
-          "statusMessage": "",
-          "url": "/routes.txt",
-        }
-      `)
+      expect(data.startsWith('Routes:') && data.includes('/')).toBe(true);
     });
   });
 }
