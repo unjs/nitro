@@ -89,11 +89,13 @@ export interface NitroHooks {
     route: PrerenderGenerateRoute,
     nitro: Nitro
   ) => HookResult;
-  "prerender:done": (ctx: {
-    nitro: Nitro,
-    nitroRenderer: Nitro,
+  "prerenderer:config": (config: NitroConfig) => HookResult;
+  "prerenderer:init": (prerenderer: Nitro) => HookResult;
+  "prerenderer:finished": (ctx: {
+    nitro: Nitro;
+    prerenderer: Nitro;
     erroredRoutes: Set<PrerenderGenerateRoute>;
-    generateRoute: (route: string) => Promise<PrerenderGenerateRoute>
+    generateRoute: (route: string) => Promise<PrerenderGenerateRoute>;
   }) => HookResult;
 }
 

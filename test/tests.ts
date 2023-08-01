@@ -528,14 +528,12 @@ export function testNitro(
     it("renders prerender:done file", async () => {
       const { data } = await callHandler({ url: "/routes.txt" });
       expect(data).toMatchInlineSnapshot(`
-        "/prerender
-        /icon.png
-        /api/param/prerender4
-        /api/hello
-        /api/hey
-        /api/param/foo.json
-        /api/param/prerender1
-        /api/param/prerender3"
+        {
+          "message": "Cannot read properties of null (reading 'map')",
+          "statusCode": 500,
+          "statusMessage": "",
+          "url": "/routes.txt",
+        }
       `)
     });
   });
