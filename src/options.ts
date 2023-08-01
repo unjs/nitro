@@ -122,7 +122,9 @@ const NitroDefaults: NitroConfig = {
 
   // Presets
   firebase: {
-    gen: 1,
+    // we need this defined here so it's picked up by the template in firebase's entry
+    // @ts-expect-error: internal value to detect if the user is defining a `gen` property
+    gen: 'default',
   },
 };
 
