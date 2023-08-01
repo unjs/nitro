@@ -49,7 +49,7 @@ export async function prerender(nitro: Nitro) {
   // Build with prerender preset
   nitro.logger.info("Initializing prerenderer");
   nitro._prerenderedRoutes = [];
-  const prerendererConfig = { ...nitro.options._config }
+  const prerendererConfig = { ...nitro.options._config };
   await nitro.hooks.callHook("prerenderer:config", prerendererConfig);
   const nitroRenderer = await createNitro({
     ...prerendererConfig,
