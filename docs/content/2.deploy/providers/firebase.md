@@ -49,7 +49,7 @@ pnpm install -D firebase-admin firebase-functions firebase-functions-test
 Make sure you are authenticated with the firebase cli. Run this command and follow the prompts:
 
 ```bash
-npx login
+npx firebase-tools login
 ```
 
 ## Alternative Setup Using Firebase CLI (Recommended)
@@ -178,7 +178,7 @@ export default defineNuxtConfig({
 ```
 ::
 
-You can also set 1st gen options in the `gen` is set to `1`.
+You can also set options for 1st generation Cloud Functions if the `gen` option is set to `1`. Note these are different from the options for 2nd generation Cloud Functions.
 
 ## Runtime
 
