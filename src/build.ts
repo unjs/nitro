@@ -233,11 +233,17 @@ declare module 'nitropack' {
         jsxFactory: "h",
         jsxFragmentFactory: "Fragment",
         paths: {
-          "#imports": [relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports"))],
+          "#imports": [
+            relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports")),
+          ],
           ...(nitro.options.typescript.internalPaths
             ? {
-                "#internal/nitro": [relativeWithDot(tsconfigDir, join(runtimeDir, "index"))],
-                "#internal/nitro/*": [relativeWithDot(tsconfigDir, join(runtimeDir, "*"))],
+                "#internal/nitro": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
+                ],
+                "#internal/nitro/*": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
+                ],
               }
             : {}),
         },
@@ -465,7 +471,7 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
 }
 
 const RELATIVE_RE = /^\.{1,2}\//;
-function relativeWithDot (from: string, to: string) {
-  const rel = relative(from, to)
-  return RELATIVE_RE.test(rel) ? rel : './' + rel
+function relativeWithDot(from: string, to: string) {
+  const rel = relative(from, to);
+  return RELATIVE_RE.test(rel) ? rel : "./" + rel;
 }
