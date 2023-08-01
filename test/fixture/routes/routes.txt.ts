@@ -1,4 +1,4 @@
-import type {PrerenderGenerateRoute} from "nitropack";
+import type { PrerenderGenerateRoute } from "nitropack";
 
 export default eventHandler(async () => {
   const routes = await useStorage().getItem('cache:prerender:routes') as PrerenderGenerateRoute[]
