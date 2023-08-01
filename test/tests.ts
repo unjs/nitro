@@ -524,7 +524,7 @@ export function testNitro(
     });
   });
 
-  describe.only("prerender", () => {
+  describe("prerender", () => {
     it("renders prerenderer finished file", async () => {
       const { data } = await callHandler({ url: "/routes.txt" });
       expect(data.startsWith('Routes:') && data.includes('/')).toBe(true);
