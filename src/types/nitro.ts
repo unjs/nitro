@@ -89,6 +89,12 @@ export interface NitroHooks {
     route: PrerenderGenerateRoute,
     nitro: Nitro
   ) => HookResult;
+  "prerender:done": (ctx: {
+    nitro: Nitro,
+    nitroRenderer: Nitro,
+    erroredRoutes: Set<PrerenderGenerateRoute>;
+    generateRoute: (route: string) => Promise<PrerenderGenerateRoute>
+  }) => HookResult;
 }
 
 type CustomDriverName = string & { _custom?: any };

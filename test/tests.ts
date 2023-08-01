@@ -523,4 +523,20 @@ export function testNitro(
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
   });
+
+  describe.only("prerender", () => {
+    it("renders prerender:done file", async () => {
+      const { data } = await callHandler({ url: "/routes.txt" });
+      expect(data).toMatchInlineSnapshot(`
+        "/prerender
+        /icon.png
+        /api/param/prerender4
+        /api/hello
+        /api/hey
+        /api/param/foo.json
+        /api/param/prerender1
+        /api/param/prerender3"
+      `)
+    });
+  });
 }
