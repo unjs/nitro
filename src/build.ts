@@ -464,7 +464,8 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
   }
 }
 
+const RELATIVE_RE = /^\.{1,2}\//;
 function relativeWithDot (from: string, to: string) {
   const rel = relative(from, to)
-  return rel.startsWith('.') ? rel : './' + rel
+  return RELATIVE_RE.test(rel) ? rel : './' + rel
 }
