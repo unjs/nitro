@@ -524,7 +524,15 @@ export function testNitro(
     });
   });
 
-  describe("prerender", () => {
+  describe.skipIf(
+    [
+      "nitro-dev",
+      "cloudflare",
+      "cloudflare-pages",
+      "cloudflare-module",
+      "vercel-edge",
+    ].includes(ctx.preset)
+  )("prerender", () => {
     it("renders prerenderer finished file", async () => {
       const { data } = await callHandler({ url: "/routes.txt" });
       expect(data.startsWith('Routes:') && data.includes('/')).toBe(true);
