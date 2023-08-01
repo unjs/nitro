@@ -253,7 +253,7 @@ export async function prerender(nitro: Nitro) {
     prerenderer: nitroRenderer,
     erroredRoutes,
     generateRoute,
-  })
+  });
 
   if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
     nitro.logger.log("\nErrors prerendering:");
