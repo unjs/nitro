@@ -93,23 +93,25 @@ export interface PresetOptions {
 
     functions?: VercelServerlessFunctionConfig;
   };
-  cloudflarePages: {
-    /**
-     * Nitro will automatically generate a `_routes.json` that controls which files get served statically and
-     * which get served by the Worker. Using this config will override the automatic `_routes.json.
-     * @see https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
-     *
-     * There are a maximum of 100 rules, and you must have at least one include rule. Wildcards are accepted.
-     *
-     * If any fields are unset, they default to:
-     * ```json
-     * {
-     *   "version": 1,
-     *   "include": ["/*"],
-     *   "exclude": []
-     * }
-     * ```
-     */
-    routes?: Partial<CloudflarePagesRoutes>;
+  cloudflare: {
+    pages: {
+      /**
+       * Nitro will automatically generate a `_routes.json` that controls which files get served statically and
+       * which get served by the Worker. Using this config will override the automatic `_routes.json.
+       * @see https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
+       *
+       * There are a maximum of 100 rules, and you must have at least one include rule. Wildcards are accepted.
+       *
+       * If any fields are unset, they default to:
+       * ```json
+       * {
+       *   "version": 1,
+       *   "include": ["/*"],
+       *   "exclude": []
+       * }
+       * ```
+       */
+      routes?: Partial<CloudflarePagesRoutes>;
+    };
   };
 }

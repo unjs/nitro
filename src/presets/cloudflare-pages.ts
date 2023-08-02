@@ -108,9 +108,9 @@ async function writeCFRoutes(nitro: Nitro) {
     routes.exclude.splice(100 - routes.include.length);
   } else {
     routes = {
-      version: nitro.options.cloudflarePages.routes!.version ?? 1,
-      include: nitro.options.cloudflarePages.routes!.include ?? ["/*"],
-      exclude: nitro.options.cloudflarePages.routes!.exclude ?? [],
+      version: nitro.options.cloudflare.pages.routes!.version ?? 1,
+      include: nitro.options.cloudflare.pages.routes!.include ?? ["/*"],
+      exclude: nitro.options.cloudflare.pages.routes!.exclude ?? [],
     };
   }
 
