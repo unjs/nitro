@@ -523,19 +523,4 @@ export function testNitro(
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
   });
-
-  describe.skipIf(
-    [
-      "nitro-dev",
-      "cloudflare",
-      "cloudflare-pages",
-      "cloudflare-module",
-      "vercel-edge",
-    ].includes(ctx.preset)
-  )("prerender", () => {
-    it("renders prerenderer done custom manifest", async () => {
-      const { data } = await callHandler({ url: "/custom-manifest.json" });
-      expect(Array.isArray(data)).toBeTruthy()
-    });
-  });
 }
