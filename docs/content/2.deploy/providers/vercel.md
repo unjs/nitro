@@ -57,8 +57,6 @@ Update your configuration:
 
 ::code-group
 ```ts [nitro.config.ts]
-import { defineNitroConfig } from 'nitropack/config'
-
 export default defineNitroConfig({
   storage: {
     data: { driver: 'vercelKV' }
@@ -83,7 +81,7 @@ You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment var
 You can now access data store in any event handler:
 
 ```ts
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const dataStorage = useStorage("data");
   await dataStorage.setItem("hello", "world");
   return {
@@ -91,6 +89,14 @@ export default eventHandler(async (event) => {
   };
 });
 ```
+
+## API routes
+
+Nitro `/api` directory isn't compatible with Vercel.
+Instead, you have to use :
+
+- `routes/api/` for standalone usage
+- `server/api/` with [Nuxt](https://nuxt.com).
 
 ## Custom Build Output Configuration
 

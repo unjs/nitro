@@ -1,14 +1,21 @@
-import { setResponseStatus } from "h3";
+import {
+  H3Event,
+  setResponseHeader,
+  setResponseStatus,
+  getResponseStatus,
+  getResponseStatusText,
+  send,
+} from "h3";
 import { NitroErrorHandler } from "../types";
 
-function errorHandler(error, event) {
-  event.node.res.setHeader("Content-Type", "text/html; charset=UTF-8");
+function errorHandler(error: any, event: H3Event) {
+  setResponseHeader(event, "Content-Type", "text/html; charset=UTF-8");
   setResponseStatus(event, 503, "Server Unavailable");
 
   let body;
   let title;
   if (error) {
-    title = `${event.node.res.statusCode} ${event.node.res.statusMessage}`;
+    title = `${getResponseStatus(event)} ${getResponseStatusText(event)}`;
     body = `<code><pre>${error.stack}</pre></code>`;
   } else {
     title = "Reloading server...";
@@ -16,7 +23,9 @@ function errorHandler(error, event) {
       "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
   }
 
-  event.node.res.end(`<!DOCTYPE html>
+  send(
+    event,
+    `<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -39,7 +48,8 @@ function errorHandler(error, event) {
   </main>
   </body>
 </html>
-`);
+`
+  );
 }
 
 export default errorHandler as NitroErrorHandler;

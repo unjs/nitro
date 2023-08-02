@@ -6,11 +6,11 @@ import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import commonjs from "@rollup/plugin-commonjs";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
 import json from "@rollup/plugin-json";
 import wasmPlugin from "@rollup/plugin-wasm";
 import inject from "@rollup/plugin-inject";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
@@ -18,9 +18,10 @@ import type { Preset } from "unenv";
 import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
-import type { Nitro } from "../types";
+import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
+import { version } from "../../package.json";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
@@ -163,6 +164,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   if (nitro.options.preset === "nitro-prerender") {
     NODE_ENV = "prerender";
   }
+
   const buildEnvVars = {
     NODE_ENV,
     prerender: nitro.options.preset === "nitro-prerender",
@@ -170,6 +172,18 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     dev: String(nitro.options.dev),
     DEBUG: nitro.options.dev,
+  };
+
+  const staticFlags: NitroStaticBuildFlags = {
+    dev: nitro.options.dev,
+    preset: nitro.options.preset,
+    prerender: nitro.options.preset === "nitro-prerender",
+    server: true,
+    client: false,
+    nitro: true,
+    // @ts-expect-error
+    "versions.nitro": version,
+    "versions?.nitro": version,
   };
 
   // Universal import.meta
@@ -182,6 +196,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       values: {
         "typeof window": '"undefined"',
         _import_meta_url_: "import.meta.url",
+        "globalThis.process.": "process.",
         "process.env.RUNTIME_CONFIG": () =>
           JSON.stringify(nitro.options.runtimeConfig, null, 2),
         ...Object.fromEntries(
@@ -205,6 +220,18 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         ...Object.fromEntries(
           Object.entries(buildEnvVars).map(([key, val]) => [
             `import.meta.env.${key}`,
+            JSON.stringify(val),
+          ])
+        ),
+        ...Object.fromEntries(
+          Object.entries(staticFlags).map(([key, val]) => [
+            `process.${key}`,
+            JSON.stringify(val),
+          ])
+        ),
+        ...Object.fromEntries(
+          Object.entries(staticFlags).map(([key, val]) => [
+            `import.meta.${key}`,
             JSON.stringify(val),
           ])
         ),
@@ -377,13 +404,7 @@ export const plugins = [
             processCwd: nitro.options.rootDir,
             exportsOnly: true,
           },
-          exportConditions: [
-            "default",
-            nitro.options.dev ? "development" : "production",
-            "module",
-            "node",
-            "import",
-          ],
+          exportConditions: nitro.options.exportConditions,
         })
       )
     );
@@ -398,13 +419,7 @@ export const plugins = [
       modulePaths: nitro.options.nodeModulesDirs,
       // 'module' is intentionally not supported because of externals
       mainFields: ["main"],
-      exportConditions: [
-        "default",
-        nitro.options.dev ? "development" : "production",
-        "module",
-        "node",
-        "import",
-      ],
+      exportConditions: nitro.options.exportConditions,
     })
   );
 

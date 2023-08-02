@@ -8,9 +8,10 @@ import type { Nitro } from "../types";
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
   entry: "#internal/nitro/entries/cloudflare-pages",
+  exportConditions: ["workerd"],
   commands: {
     preview: "npx wrangler pages dev ./",
-    deploy: "npx wrangler pages publish ./",
+    deploy: "npx wrangler pages deploy ./",
   },
   output: {
     dir: "{{ rootDir }}/dist",
