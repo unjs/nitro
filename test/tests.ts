@@ -533,9 +533,9 @@ export function testNitro(
       "vercel-edge",
     ].includes(ctx.preset)
   )("prerender", () => {
-    it("renders prerenderer finished file", async () => {
-      const { data } = await callHandler({ url: "/routes.txt" });
-      expect(data.startsWith('Routes:') && data.includes('/')).toBe(true);
+    it("renders prerenderer done custom manifest", async () => {
+      const { data } = await callHandler({ url: "/custom-manifest.json" });
+      expect(Array.isArray(data)).toBeTruthy()
     });
   });
 }

@@ -1,4 +1,7 @@
+import { writeFile } from 'node:fs/promises'
+import { joinURL } from "ufo";
 import { defineNitroConfig } from "../../src/config";
+import { Nitro } from "nitropack";
 
 export default defineNitroConfig({
   compressPublicAssets: true,
@@ -75,9 +78,11 @@ export default defineNitroConfig({
     routes: ["/prerender", "/icon.png", "/404"],
   },
   hooks: {
-    "prerenderer:done": async ({ prerenderer, nitro, generateRoute }) => {
-      await prerenderer.storage.setItem('cache:prerender:routes', nitro._prerenderedRoutes)
-      await generateRoute('/routes.txt')
+    "prerenderer:done": async (prerenderer: Nitro, { prerenderedRoutes }) => {
+      // emit a basic manifest
+      const path = joinURL(prerenderer.options.output.publicDir, "custom-manifest.json")
+      // ideally we could use prerenderer.storage.setItem('output:public:custom-manifest.json')
+      await writeFile(path, JSON.stringify(prerenderedRoutes, null, 2))
     }
   }
 });
