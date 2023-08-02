@@ -73,7 +73,17 @@ async function writeCFRoutes(nitro: Nitro) {
     exclude: [],
   };
 
-  if (nitro.options.cloudflarePages?.routes == null) {
+  if (
+    nitro.options.cloudflare?.pages?.routes == null ||
+    nitro.options.cloudflare.pages.routes!.merge
+  ) {
+    routes.exclude.push(
+      ...(nitro.options.cloudflare?.pages?.routes?.exclude ?? [])
+    );
+    routes.include.push(
+      ...(nitro.options.cloudflare?.pages?.routes?.exclude ?? [])
+    );
+
     // Exclude public assets from hitting the worker
     const explicitPublicAssets = nitro.options.publicAssets.filter(
       (i) => !i.fallthrough

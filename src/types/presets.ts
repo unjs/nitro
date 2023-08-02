@@ -97,7 +97,9 @@ export interface PresetOptions {
     pages: {
       /**
        * Nitro will automatically generate a `_routes.json` that controls which files get served statically and
-       * which get served by the Worker. Using this config will override the automatic `_routes.json.
+       * which get served by the Worker. Using this config will override the automatic `_routes.json. Or, if the
+       * `merge` options is set, it will merge the user-set routes with the auto-generated ones, giving priority
+       * to the user routes.
        * @see https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
        *
        * There are a maximum of 100 rules, and you must have at least one include rule. Wildcards are accepted.
@@ -111,7 +113,13 @@ export interface PresetOptions {
        * }
        * ```
        */
-      routes?: Partial<CloudflarePagesRoutes>;
+      routes?: Partial<CloudflarePagesRoutes> & {
+        /**
+         * Merge the user-set routes with the auto-generated routes instead of overwriting them
+         * @default false
+         */
+        merge?: boolean;
+      };
     };
   };
 }
