@@ -75,7 +75,7 @@ export default defineNitroConfig({
     routes: ["/prerender", "/icon.png", "/404"],
   },
   hooks: {
-    "prerenderer:close": async ({ prerenderer, nitro, generateRoute }) => {
+    "prerenderer:done": async ({ prerenderer, nitro, generateRoute }) => {
       await prerenderer.storage.setItem('cache:prerender:routes', nitro._prerenderedRoutes)
       await generateRoute('/routes.txt')
     }
