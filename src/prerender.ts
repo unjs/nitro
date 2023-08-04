@@ -8,7 +8,7 @@ import mime from "mime";
 import { createNitro } from "./nitro";
 import { build } from "./build";
 import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
-import { writeFile } from "./utils";
+import { localFetchWithRetries, writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
@@ -164,16 +164,21 @@ export async function prerender(nitro: Nitro) {
 
     // Fetch the route
     const encodedRoute = encodeURI(route);
-    const res = await (localFetch(
-      withBase(encodedRoute, nitro.options.baseURL),
-      {
+
+    const res = (await localFetchWithRetries({
+      url: withBase(encodedRoute, nitro.options.baseURL),
+      options: {
         headers: { "x-nitro-prerender": encodedRoute },
-      }
-    ) as ReturnType<typeof fetch>);
+      },
+      fetcher: localFetch,
+      tries: nitro.options.prerender.tries ?? 3, // By default we try 3 times
+      delay: nitro.options.prerender.retryDelay ?? 500,
+    })) as Awaited<ReturnType<typeof fetch>>;
 
     // Data will be removed as soon as written to the disk
     let dataBuff: Buffer | undefined = Buffer.from(await res.arrayBuffer());
 
+    _route.data = await res.arrayBuffer();
     Object.defineProperty(_route, "contents", {
       get: () => {
         return dataBuff ? dataBuff.toString("utf8") : undefined;

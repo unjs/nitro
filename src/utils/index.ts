@@ -230,3 +230,41 @@ export function provideFallbackValues(obj: Record<string, any>) {
     }
   }
 }
+
+type FetchWithRetries = {
+  url: string;
+  options: RequestInit;
+  /** Will use globalThis.fetch by default. */
+  fetcher?: typeof fetch;
+  /** Amount of tries. Pass Infinity to retry indefinitely. */
+  tries?: number;
+  /** Delay between each retry in ms. */
+  delay?: number;
+};
+export async function localFetchWithRetries({
+  url,
+  options,
+  fetcher = fetch,
+  tries = 3,
+  delay = 1000,
+}: FetchWithRetries): Promise<Response> {
+  try {
+    const res = await fetcher(url, options);
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    return res;
+  } catch (error) {
+    if (tries > 1) {
+      // wait 1s before retrying
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return localFetchWithRetries({
+        url,
+        options,
+        fetcher,
+        tries: tries - 1,
+      });
+    }
+    throw error;
+  }
+}

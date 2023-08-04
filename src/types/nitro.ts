@@ -297,6 +297,10 @@ export interface NitroOptions extends PresetOptions {
     failOnError: boolean;
     ignore: string[];
     routes: string[];
+    /** Amount of tries. Pass Infinity to retry indefinitely. */
+    tries: number;
+    /** Delay between each retry in ms. */
+    retryDelay: number;
   };
 
   // Rollup
