@@ -1,4 +1,6 @@
+import { dirname } from "pathe"
 import { defineNitroConfig } from "../../src/config";
+import { fileURLToPath } from "node:url"
 
 export default defineNitroConfig({
   compressPublicAssets: true,
@@ -10,6 +12,9 @@ export default defineNitroConfig({
         imports: ["camelCase", "pascalCase", "kebabCase"],
       },
     ],
+  },
+  alias: {
+    '~': dirname(fileURLToPath(import.meta.url))
   },
   handlers: [
     {
