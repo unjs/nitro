@@ -25,7 +25,9 @@ export const cloudflarePages = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      entryFileNames: "_worker.js",
+      dir: "dist/_worker.js",
+      inlineDynamicImports: false,
+      entryFileNames: "index.js",
       format: "esm",
     },
   },
