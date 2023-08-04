@@ -7,8 +7,8 @@ import type { MatchedRoutes } from "./utils";
 export interface InternalApi {}
 
 export interface InternalFetch {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   <T = unknown>(
+    // eslint-disable-next-line @typescript-eslint/ban-types
     request: Exclude<FetchRequest, string> | (string & {}),
     opts?: FetchOptions
   ): Promise<T>;

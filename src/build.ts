@@ -122,15 +122,16 @@ export async function writeTypes(nitro: Nitro) {
       )
       .join(" | ");
 
-    const methodType = mw.method
-      ? mw.method.toUpperCase() === "PATCH"
-        ? "PATCH"
-        : [mw.method.toUpperCase(), mw.method.toLowerCase()]
-            .map((m) => `'${m}'`)
-            .join(" | ")
-      : excludedMethods
+    const defaultMethod = excludedMethods
       ? `Exclude<DefaultMethod, ${excludedMethods}>`
       : "DefaultMethod";
+
+    const methodType = mw.method
+      ? [mw.method.toUpperCase(), mw.method.toLowerCase()]
+          .filter((m) => m !== "patch")
+          .map((m) => `'${m}'`)
+          .join(" | ")
+      : defaultMethod;
 
     // TODO: 1. Fine-tune matching algorithm?
     // TODO: merge return types
