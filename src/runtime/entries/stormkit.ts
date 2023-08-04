@@ -44,7 +44,7 @@ export const handler: Handler<StormkitEvent, StormkitResult> = async function (
 };
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, number | string | string[] | undefined>
 ) {
   return Object.fromEntries(
     Object.entries(headers).map(([k, v]) => [

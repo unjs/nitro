@@ -59,7 +59,7 @@ export async function handler(
     const outgoingCookies = r.headers["set-cookie"];
     const cookies = Array.isArray(outgoingCookies)
       ? outgoingCookies
-      : outgoingCookies?.split(/,\s?/) || [];
+      : String(outgoingCookies)?.split(/,\s?/) || [];
 
     return {
       cookies,
