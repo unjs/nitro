@@ -231,7 +231,7 @@ export function provideFallbackValues(obj: Record<string, any>) {
   }
 }
 
-type FetchWithRetries = {
+type FetchWithNTries = {
   url: string;
   options: RequestInit;
   /** Will use globalThis.fetch by default. */
@@ -241,13 +241,13 @@ type FetchWithRetries = {
   /** Delay between each retry in ms. */
   delay?: number;
 };
-export async function localFetchWithRetries({
+export async function fetchWithNTries({
   url,
   options,
   fetcher = fetch,
   tries = 3,
   delay = 1000,
-}: FetchWithRetries): Promise<Response> {
+}: FetchWithNTries): Promise<Response> {
   try {
     const res = await fetcher(url, options);
     if (!res.ok) {
@@ -258,7 +258,7 @@ export async function localFetchWithRetries({
     if (tries > 1) {
       // wait 1s before retrying
       await new Promise((resolve) => setTimeout(resolve, delay));
-      return localFetchWithRetries({
+      return fetchWithNTries({
         url,
         options,
         fetcher,
