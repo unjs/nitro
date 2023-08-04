@@ -57,13 +57,16 @@ async function writeRoutes(nitro: Nitro) {
   const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length;
   const suffixLength = "/package.json".length;
   // eslint-disable-next-line unicorn/no-array-reduce
-  const dependencies = jsons.reduce((obj, packageJson) => {
-    const dirname = packageJson.slice(prefixLength, -suffixLength);
-    if (!dirname.includes("node_modules")) {
-      obj[dirname] = _require(packageJson).version;
-    }
-    return obj;
-  }, {} as Record<string, string>);
+  const dependencies = jsons.reduce(
+    (obj, packageJson) => {
+      const dirname = packageJson.slice(prefixLength, -suffixLength);
+      if (!dirname.includes("node_modules")) {
+        obj[dirname] = _require(packageJson).version;
+      }
+      return obj;
+    },
+    {} as Record<string, string>
+  );
 
   let nodeVersion = "18";
   const supportedNodeVersions = new Set(["18", "16", "14", "12", "10"]);

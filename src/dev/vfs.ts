@@ -1,4 +1,4 @@
-import { createError, eventHandler } from "h3";
+import { createError, eventHandler, getRequestHeader } from "h3";
 import type { Nitro } from "../types";
 
 export function createVFSHandler(nitro: Nitro) {
@@ -8,10 +8,10 @@ export function createVFSHandler(nitro: Nitro) {
       ...nitro.options.virtual,
     };
 
-    const url = event.node.req.url || "";
+    const url = event.path || "";
     const isJson =
-      event.node.req.headers.accept?.includes("application/json") ||
-      url.startsWith(".json");
+      url.endsWith(".json") ||
+      getRequestHeader(event, "accept")?.includes("application/json");
     const id = decodeURIComponent(url.replace(/^(\.json)?\/?/, "") || "");
 
     if (id && !(id in vfsEntries)) {

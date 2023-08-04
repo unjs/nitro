@@ -2,6 +2,7 @@ import { appendHeader } from "h3";
 
 export default defineEventHandler((event) => {
   const links = [
+    "/404",
     "https://about.google/products/",
     "/api/hello",
     "/api/hello?bar=baz",

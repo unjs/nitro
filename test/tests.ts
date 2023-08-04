@@ -175,6 +175,16 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("Handle 404 not found", async () => {
+    const res = await callHandler({ url: "/api/not-found" });
+    expect(res.status).toBe(404);
+  });
+
+  it("Handle 405 method not allowed", async () => {
+    const res = await callHandler({ url: "/api/upload" });
+    expect(res.status).toBe(405);
+  });
+
   it("handles route rules - redirects", async () => {
     const base = await callHandler({ url: "/rules/redirect" });
     expect(base.status).toBe(307);
@@ -184,6 +194,27 @@ export function testNitro(
     expect(obj.status).toBe(308);
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
   });
+
+  // aws lambda requires buffer responses to be base 64
+  const LambdaPresets = ["netlify", "aws-lambda"];
+  it.runIf(LambdaPresets.includes(ctx.preset))(
+    "buffer image responses",
+    async () => {
+      const { data } = await callHandler({ url: "/icon.png" });
+      expect(typeof data).toBe("string");
+      const buffer = Buffer.from(data, "base64");
+      // check if buffer is a png
+      function isBufferPng(buffer: Buffer) {
+        return (
+          buffer[0] === 0x89 &&
+          buffer[1] === 0x50 &&
+          buffer[2] === 0x4e &&
+          buffer[3] === 0x47
+        );
+      }
+      expect(isBufferPng(buffer)).toBe(true);
+    }
+  );
 
   it("render JSX", async () => {
     const { data } = await callHandler({ url: "/jsx" });
@@ -453,7 +484,7 @@ export function testNitro(
       // TODO: Node presets do not split cookies
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
-      const notSplitingPresets = ["node", "nitro-dev", "vercel", "deno-server"];
+      const notSplitingPresets = ["node", "nitro-dev", "vercel", nodeVersion < 18 && "deno-server"].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
           nodeVersion < 18

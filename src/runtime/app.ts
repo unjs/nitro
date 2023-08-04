@@ -9,6 +9,7 @@ import {
   fetchWithEvent,
   H3Error,
   isEvent,
+  H3Event,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -66,7 +67,9 @@ function createNitroApp(): NitroApp {
     },
   });
 
-  const router = createRouter();
+  const router = createRouter({
+    preemptive: true,
+  });
 
   h3App.use(createRouteRulesHandler());
 
@@ -94,7 +97,9 @@ function createNitroApp(): NitroApp {
       event.context.nitro = event.context.nitro || { errors: [] };
 
       // Support platform context provided by local fetch
-      const envContext = (event.node.req as any).__unenv__;
+      const envContext: { waitUntil?: H3Event["waitUntil"] } | undefined = (
+        event.node.req as unknown as { __unenv__: unknown }
+      )?.__unenv__;
       if (envContext) {
         Object.assign(event.context, envContext);
       }

@@ -9,6 +9,7 @@ import { splitCookiesString } from "h3";
 import { nitroApp } from "../app";
 import {
   normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
 import { normalizeCookieHeader } from "../utils";
@@ -40,7 +41,7 @@ export async function lambda(
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-    body: r.body.toString(),
+    body: normalizeLambdaOutgoingBody(r.body, r.headers),
     multiValueHeaders: {
       ...(cookies.length > 0 ? { "set-cookie": cookies } : {}),
     },

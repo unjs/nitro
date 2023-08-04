@@ -233,24 +233,30 @@ declare module 'nitropack' {
         jsxFactory: "h",
         jsxFragmentFactory: "Fragment",
         paths: {
-          "#imports": [join(typesDir, "nitro-imports")],
+          "#imports": [
+            relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports")),
+          ],
           ...(nitro.options.typescript.internalPaths
             ? {
-                "#internal/nitro": [join(runtimeDir, "index")],
-                "#internal/nitro/*": [join(runtimeDir, "*")],
+                "#internal/nitro": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
+                ],
+                "#internal/nitro/*": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
+                ],
               }
             : {}),
         },
       },
       include: [
-        relative(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
+        relativeWithDot(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
           /^(?=[^.])/,
           "./"
         ),
-        join(relative(tsconfigDir, nitro.options.rootDir), "**/*"),
+        join(relativeWithDot(tsconfigDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir === nitro.options.rootDir
           ? []
-          : [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]),
+          : [join(relativeWithDot(tsconfigDir, nitro.options.srcDir), "**/*")]),
       ],
     });
     buildFiles.push({
@@ -462,4 +468,10 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
   } catch {
     return _error?.toString();
   }
+}
+
+const RELATIVE_RE = /^\.{1,2}\//;
+function relativeWithDot(from: string, to: string) {
+  const rel = relative(from, to);
+  return RELATIVE_RE.test(rel) ? rel : "./" + rel;
 }
