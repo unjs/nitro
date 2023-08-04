@@ -171,7 +171,7 @@ export async function prerender(nitro: Nitro) {
         headers: { "x-nitro-prerender": encodedRoute },
       },
       fetcher: localFetch,
-      tries: nitro.options.prerender.tries ?? 3, // By default we try 3 times
+      retries: nitro.options.prerender.retries ?? 2, // By default we retry 2 times
       delay: nitro.options.prerender.retryDelay ?? 500,
     })) as Awaited<ReturnType<typeof fetch>>;
 

@@ -298,7 +298,7 @@ export interface NitroOptions extends PresetOptions {
     ignore: string[];
     routes: string[];
     /** Amount of tries. Pass Infinity to retry indefinitely. */
-    tries: number;
+    retries: number;
     /** Delay between each retry in ms. */
     retryDelay: number;
   };
