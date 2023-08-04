@@ -7,7 +7,11 @@ import type { MatchedRoutes } from "./utils";
 export interface InternalApi {}
 
 export interface InternalFetch {
-  <T = unknown>(request: Exclude<FetchRequest, string> | (string & {}), opts?: FetchOptions): Promise<T>
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  <T = unknown>(
+    request: Exclude<FetchRequest, string> | (string & {}),
+    opts?: FetchOptions
+  ): Promise<T>;
 }
 
 export type NitroFetchRequest =

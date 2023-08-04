@@ -77,7 +77,7 @@ export async function build(nitro: Nitro) {
     : _build(nitro, rollupConfig);
 }
 
-const DYNAMIC_PARAM_RE = /(\*\*)(?!:)|((\*\*)?:[^/]+)/g
+const DYNAMIC_PARAM_RE = /(\*\*)(?!:)|((\*\*)?:[^/]+)/g;
 
 export async function writeTypes(nitro: Nitro) {
   const routeTypes: Record<
@@ -85,35 +85,52 @@ export async function writeTypes(nitro: Nitro) {
     Partial<Record<RouterMethod | "default", string[]>>
   > = {};
 
-  const fetchSignatures = [] as Array<[route: string, type: string]>
-  const eventHandlerImports = new Set<string>()
+  const fetchSignatures = [] as Array<[route: string, type: string]>;
+  const eventHandlerImports = new Set<string>();
 
   const typesDir = resolve(nitro.options.buildDir, "types");
 
   const middleware = [...nitro.scannedHandlers, ...nitro.options.handlers];
 
-  let i = 1
+  let i = 1;
   for (const mw of middleware) {
     if (typeof mw.handler !== "string" || !mw.route) {
       continue;
     }
-    const relativePath = relative(typesDir, resolveAlias(mw.handler, nitro.options.alias)).replace(
-      /\.[a-z]+$/,
-      ""
-    );
+    const relativePath = relative(
+      typesDir,
+      resolveAlias(mw.handler, nitro.options.alias)
+    ).replace(/\.[a-z]+$/, "");
 
     if (!routeTypes[mw.route]) {
       routeTypes[mw.route] = {};
     }
 
-    const eventHandlerType = `EventHandler${i++}`
-    eventHandlerImports.add(`type ${eventHandlerType} = typeof import('${relativePath}').default`)
+    const eventHandlerType = `EventHandler${i++}`;
+    eventHandlerImports.add(
+      `type ${eventHandlerType} = typeof import('${relativePath}').default`
+    );
 
     // const isOptionsOptional
-    const isMethodOptional = !mw.method || mw.method.toUpperCase() === 'GET'
-    const excludedMethods = middleware.filter(other => other.method && other.route === mw.route && other !== mw).flatMap(m => [m.method.toUpperCase(), m.method.toLowerCase()].map(m => `'${m}'`)).join(' | ')
+    const isMethodOptional = !mw.method || mw.method.toUpperCase() === "GET";
+    const excludedMethods = middleware
+      .filter(
+        (other) => other.method && other.route === mw.route && other !== mw
+      )
+      .flatMap((m) =>
+        [m.method.toUpperCase(), m.method.toLowerCase()].map((m) => `'${m}'`)
+      )
+      .join(" | ");
 
-    const methodType = mw.method ? mw.method.toUpperCase() === 'PATCH' ? 'PATCH' : [mw.method.toUpperCase(), mw.method.toLowerCase()].map(m => `'${m}'`).join(' | ') : (excludedMethods ? `Exclude<DefaultMethod, ${excludedMethods}>` : 'DefaultMethod')
+    const methodType = mw.method
+      ? mw.method.toUpperCase() === "PATCH"
+        ? "PATCH"
+        : [mw.method.toUpperCase(), mw.method.toLowerCase()]
+            .map((m) => `'${m}'`)
+            .join(" | ")
+      : excludedMethods
+      ? `Exclude<DefaultMethod, ${excludedMethods}>`
+      : "DefaultMethod";
 
     // TODO: 1. Fine-tune matching algorithm?
     // TODO: merge return types
@@ -121,14 +138,16 @@ export async function writeTypes(nitro: Nitro) {
     // TODO: 3. require options object when we provide typed input
 
     const routeType = DYNAMIC_PARAM_RE.test(mw.route)
-      ? `\`${mw.route.replace(DYNAMIC_PARAM_RE, '${string}')}\``
-      : `'${mw.route}' | \`${mw.route}?$\{string}\``
+      ? `\`${mw.route.replace(DYNAMIC_PARAM_RE, `\${string}`)}\``
+      : `'${mw.route}' | \`${mw.route}?$\{string}\``;
 
     fetchSignatures.push([
       mw.route,
-      `    <T = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown>(url: ${routeType}, options?: BaseFetchOptions & { method${isMethodOptional ? '?' : ''}: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : {})): Promise<T>
-    `
-    ])
+      `    <T = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown>(url: ${routeType}, options?: BaseFetchOptions & { method${
+        isMethodOptional ? "?" : ""
+      }: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : {})): Promise<T>
+    `,
+    ]);
 
     const method = mw.method || "default";
     if (!routeTypes[mw.route][method]) {
@@ -184,9 +203,13 @@ export async function writeTypes(nitro: Nitro) {
     ),
     "  }",
     "  interface InternalFetch {",
-    ...fetchSignatures.sort(([a], [b]) => {
-      return b.replace(DYNAMIC_PARAM_RE, '____').localeCompare(a.replace(DYNAMIC_PARAM_RE, '____'))
-    }).map(([route, type]) => type),
+    ...fetchSignatures
+      .sort(([a], [b]) => {
+        return b
+          .replace(DYNAMIC_PARAM_RE, "____")
+          .localeCompare(a.replace(DYNAMIC_PARAM_RE, "____"));
+      })
+      .map(([route, type]) => type),
     "  }",
     "",
     "}",
