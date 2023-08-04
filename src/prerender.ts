@@ -7,7 +7,7 @@ import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
 import type { Nitro, NitroRouteRules, PrerenderGenerateRoute } from "./types";
-import { writeFile } from "./utils";
+import { RouteSet, writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
@@ -23,8 +23,7 @@ export async function prerender(nitro: Nitro) {
   }
 
   // Initial list of routes to prerender
-  const routes = new Set(nitro.options.prerender.routes);
-
+  const routes = RouteSet(nitro.options.prerender.routes);
   // Extend with static prerender route rules
   const prerenderRulePaths = Object.entries(nitro.options.routeRules)
     .filter(([path, options]) => options.prerender && !path.includes("*"))
@@ -39,7 +38,7 @@ export async function prerender(nitro: Nitro) {
   }
 
   // Allow extending prereneder routes
-  await nitro.hooks.callHook("prerender:routes", routes);
+  await nitro.hooks.callHook("prerender:routes", routes.getSet());
 
   // Skip if no prerender routes specified
   if (routes.size === 0) {
@@ -201,7 +200,10 @@ export async function prerender(nitro: Nitro) {
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName);
     await writeFile(filePath, Buffer.from(_route.data));
-    nitro._prerenderedRoutes.push(_route);
+    nitro._prerenderedRoutes.push({
+      route: _route.route,
+      fileName: _route.fileName,
+    });
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
@@ -213,7 +215,11 @@ export async function prerender(nitro: Nitro) {
       );
       for (const _link of extractedLinks) {
         if (canPrerender(_link)) {
-          routes.add(_link);
+          if (_link.endsWith("_payload.json")) {
+            routes.prepend(_link);
+          } else {
+            routes.add(_link);
+          }
         }
       }
     }
@@ -240,7 +246,7 @@ export async function prerender(nitro: Nitro) {
     nitro.logger.log(formatPrerenderRoute(_route));
   }
 
-  await runParallel(routes, processRoute, {
+  await runParallel(routes.getSet(), processRoute, {
     concurrency: nitro.options.prerender.concurrency,
     interval: nitro.options.prerender.interval,
   });
