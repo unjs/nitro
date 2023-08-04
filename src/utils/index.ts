@@ -236,7 +236,7 @@ type FetchWithRetries = {
   options: RequestInit;
   /** Will use globalThis.fetch by default. */
   fetcher?: typeof fetch;
-  /** Amount of tries. Pass Infinity to retry indefinitely. */
+  /** Amount of retries. Pass Infinity to retry indefinitely. */
   retries?: number;
   /** Delay between each retry in ms. */
   delay?: number;
