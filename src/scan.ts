@@ -1,45 +1,53 @@
-import { resolve, join } from "pathe";
+import { relative, join } from "pathe";
 import { globby } from "globby";
-
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
-import type { Nitro, NitroEventHandler } from "./types";
+import type { Nitro } from "./types";
 
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
-type FileInfo = { dir: string; path: string; fullPath: string };
+type FileInfo = { path: string; fullPath: string };
 
 const httpMethodRegex =
   /\.(connect|delete|get|head|options|patch|post|put|trace)/;
 
 export async function scanHandlers(nitro: Nitro) {
+  const middleware = await scanMiddleware(nitro);
+
   const handlers = await Promise.all([
-    scanMiddleware(nitro),
-    scanRoutes(nitro, "api", "/api"),
-    scanRoutes(nitro, "routes", "/"),
+    scanServerRoutes(nitro, "api", "/api"),
+    scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
 
-  nitro.scannedHandlers = handlers
-    .flatMap((h) => h.handlers)
-    .filter((h, index, array) => {
+  nitro.scannedHandlers = [
+    ...middleware,
+    ...handlers.filter((h, index, array) => {
       return (
-        h.middleware ||
         array.findIndex(
           (h2) => h.route === h2.route && h.method === h2.method
         ) === index
       );
-    });
+    }),
+  ];
 
   return handlers;
 }
 
-export function scanMiddleware(nitro: Nitro) {
-  return scanServerDir(nitro, "middleware", (file) => ({
-    middleware: true,
-    handler: file.fullPath,
-  }));
+export async function scanMiddleware(nitro: Nitro) {
+  const files = await scanFiles(nitro, "middleware");
+  return files.map((file) => {
+    return {
+      middleware: true,
+      handler: file.fullPath,
+    };
+  });
 }
 
-export function scanRoutes(nitro: Nitro, dir: string, prefix = "/") {
-  return scanServerDir(nitro, dir, (file) => {
+export async function scanServerRoutes(
+  nitro: Nitro,
+  dir: "routes" | "api",
+  prefix = "/"
+) {
+  const files = await scanFiles(nitro, dir);
+  return files.map((file) => {
     let route = file.path
       .replace(/\.[A-Za-z]+$/, "")
       .replace(/\[\.{3}]/g, "**")
@@ -59,52 +67,42 @@ export function scanRoutes(nitro: Nitro, dir: string, prefix = "/") {
     return {
       handler: file.fullPath,
       lazy: true,
+      middlweware: false,
       route,
       method,
     };
   });
 }
 
-async function scanServerDir(
-  nitro: Nitro,
-  name: string,
-  mapper: (file: FileInfo) => NitroEventHandler
-) {
-  const dirs = nitro.options.scanDirs.map((dir) => join(dir, name));
-  const files = await scanDirs(dirs);
-  const handlers: NitroEventHandler[] = files.map((f) => mapper(f));
-  return { dirs, files, handlers };
-}
-
 export async function scanPlugins(nitro: Nitro) {
-  const plugins = [];
-  for (const dir of nitro.options.scanDirs) {
-    const pluginDir = join(dir, "plugins");
-    const pluginFiles = await globby(GLOB_SCAN_PATTERN, {
-      cwd: pluginDir,
-      absolute: true,
-    });
-    plugins.push(...pluginFiles.sort());
-  }
-  return plugins;
+  const files = await scanFiles(nitro, "plugins");
+  return files.map((f) => f.fullPath);
 }
 
-function scanDirs(dirs: string[]): Promise<FileInfo[]> {
-  return Promise.all(
-    dirs.map(async (dir) => {
-      const fileNames = await globby(GLOB_SCAN_PATTERN, {
-        cwd: dir,
-        dot: true,
-      });
-      return fileNames
-        .map((fileName) => {
-          return {
-            dir,
-            path: fileName,
-            fullPath: resolve(dir, fileName),
-          };
-        })
-        .sort((a, b) => a.path.localeCompare(b.path));
-    })
+async function scanFiles(nitro: Nitro, name: string): Promise<FileInfo[]> {
+  const files = await Promise.all(
+    nitro.options.scanDirs.map((dir) => scanDir(nitro, dir, name))
   ).then((r) => r.flat());
+  return files;
+}
+
+async function scanDir(
+  nitro: Nitro,
+  dir: string,
+  name: string
+): Promise<FileInfo[]> {
+  const fileNames = await globby(join(name, GLOB_SCAN_PATTERN), {
+    cwd: dir,
+    dot: true,
+    ignore: nitro.options.ignore,
+    absolute: true,
+  });
+  return fileNames
+    .map((fullPath) => {
+      return {
+        fullPath,
+        path: relative(join(dir, name), fullPath),
+      };
+    })
+    .sort((a, b) => a.path.localeCompare(b.path));
 }

@@ -140,7 +140,7 @@ export interface CompressOptions {
 
 type Enumerate<
   N extends number,
-  Acc extends number[] = []
+  Acc extends number[] = [],
 > = Acc["length"] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;
@@ -215,6 +215,10 @@ export interface NitroOptions extends PresetOptions {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
+    /**
+     * See https://github.com/microsoft/TypeScript/pull/51669
+     */
+    typescriptBundlerResolution?: boolean;
   };
   future: {
     nativeSWR: boolean;
@@ -226,6 +230,7 @@ export interface NitroOptions extends PresetOptions {
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
+  ignore: string[];
 
   // Dev
   dev: boolean;

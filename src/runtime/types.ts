@@ -11,10 +11,21 @@ export type {
 export type { NitroAppPlugin } from "./plugin";
 export type { RenderResponse, RenderHandler } from "./renderer";
 
+export type CapturedErrorContext = {
+  event?: H3Event;
+  [key: string]: unknown;
+};
+
+export type CaptureError = (
+  error: Error,
+  context: CapturedErrorContext
+) => void;
+
 export interface NitroRuntimeHooks {
+  close: () => void;
+  error: CaptureError;
   "render:response": (
     response: Partial<RenderResponse>,
     context: { event: H3Event }
   ) => void;
-  close: () => void;
 }

@@ -1,4 +1,4 @@
-import { promises as fsp } from "node:fs";
+import { existsSync, promises as fsp } from "node:fs";
 import { relative, resolve, join, dirname, isAbsolute } from "pathe";
 import { resolveAlias } from "pathe/utils";
 import * as rollup from "rollup";
@@ -11,6 +11,7 @@ import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
+import { globby } from "globby";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
@@ -40,11 +41,23 @@ export async function copyPublicAssets(nitro: Nitro) {
     return;
   }
   for (const asset of nitro.options.publicAssets) {
-    if (await isDirectory(asset.dir)) {
-      await fse.copy(
-        asset.dir,
-        join(nitro.options.output.publicDir, asset.baseURL!),
-        { overwrite: false }
+    const srcDir = asset.dir;
+    const dstDir = join(nitro.options.output.publicDir, asset.baseURL!);
+    if (await isDirectory(srcDir)) {
+      const publicAssets = await globby("**", {
+        cwd: srcDir,
+        absolute: false,
+        dot: true,
+        ignore: nitro.options.ignore,
+      });
+      await Promise.all(
+        publicAssets.map(async (file) => {
+          const src = join(srcDir, file);
+          const dst = join(dstDir, file);
+          if (!existsSync(dst)) {
+            await fsp.cp(src, dst);
+          }
+        })
       );
     }
   }
@@ -210,7 +223,9 @@ declare module 'nitropack' {
         strict: nitro.options.typescript.strict,
         target: "ESNext",
         module: "ESNext",
-        moduleResolution: "Node",
+        moduleResolution: nitro.options.experimental.typescriptBundlerResolution
+          ? "Bundler"
+          : "Node",
         allowJs: true,
         resolveJsonModule: true,
         jsx: "preserve",
@@ -218,24 +233,30 @@ declare module 'nitropack' {
         jsxFactory: "h",
         jsxFragmentFactory: "Fragment",
         paths: {
-          "#imports": [join(typesDir, "nitro-imports")],
+          "#imports": [
+            relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports")),
+          ],
           ...(nitro.options.typescript.internalPaths
             ? {
-                "#internal/nitro": [join(runtimeDir, "index")],
-                "#internal/nitro/*": [join(runtimeDir, "*")],
+                "#internal/nitro": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
+                ],
+                "#internal/nitro/*": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
+                ],
               }
             : {}),
         },
       },
       include: [
-        relative(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
+        relativeWithDot(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
           /^(?=[^.])/,
           "./"
         ),
-        join(relative(tsconfigDir, nitro.options.rootDir), "**/*"),
+        join(relativeWithDot(tsconfigDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir === nitro.options.rootDir
           ? []
-          : [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]),
+          : [join(relativeWithDot(tsconfigDir, nitro.options.srcDir), "**/*")]),
       ],
     });
     buildFiles.push({
@@ -447,4 +468,10 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
   } catch {
     return _error?.toString();
   }
+}
+
+const RELATIVE_RE = /^\.{1,2}\//;
+function relativeWithDot(from: string, to: string) {
+  const rel = relative(from, to);
+  return RELATIVE_RE.test(rel) ? rel : "./" + rel;
 }
