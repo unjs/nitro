@@ -24,6 +24,7 @@ export async function prerender(nitro: Nitro) {
 
   // Initial list of routes to prerender
   const routes = new Set(nitro.options.prerender.routes);
+
   // Extend with static prerender route rules
   const prerenderRulePaths = Object.entries(nitro.options.routeRules)
     .filter(([path, options]) => options.prerender && !path.includes("*"))
