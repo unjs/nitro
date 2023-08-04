@@ -229,17 +229,3 @@ export function provideFallbackValues(obj: Record<string, any>) {
     }
   }
 }
-
-export function RouteSet(routes: string[]) {
-  let set = new Set(routes);
-  return {
-    size: set.size,
-    add: (s: string) => set.add(s),
-    prepend: (s: string) => {
-      set = new Set([s, ...set.values()]);
-      return set;
-    },
-    values: set.values,
-    getSet: () => set,
-  };
-}
