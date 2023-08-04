@@ -12,6 +12,11 @@ import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
 import type { RouterMethod } from "h3";
 import { globby } from "globby";
+import {
+  lookupNodeModuleSubpath,
+  parseNodeModulePath,
+  resolvePath,
+} from "mlly";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import { prettyPath, writeFile, isDirectory } from "./utils";
@@ -114,19 +119,49 @@ export async function writeTypes(nitro: Nitro) {
 
   if (nitro.unimport) {
     await nitro.unimport.init();
+    // TODO: fully resolve utils exported from `#imports`
     autoImportExports = await nitro.unimport
       .toExports(typesDir)
       .then((r) => r.replace(/#internal\/nitro/g, runtimeDir));
+
+    const resolvedImportPathMap = new Map<string, string>();
+    const imports = await nitro.unimport
+      .getImports()
+      .then((r) => r.filter((i) => !i.type));
+
+    for (const i of imports) {
+      if (resolvedImportPathMap.has(i.from)) {
+        continue;
+      }
+      let path = resolveAlias(i.from, nitro.options.alias);
+      if (!isAbsolute(path)) {
+        const resolvedPath = await resolvePath(i.from, {
+          url: nitro.options.nodeModulesDirs,
+        }).catch(() => null);
+        if (resolvedPath) {
+          const { dir, name } = parseNodeModulePath(resolvedPath);
+          if (!dir || !name) {
+            path = resolvedPath;
+          } else {
+            const subpath = await lookupNodeModuleSubpath(resolvedPath);
+            path = join(dir, name, subpath || "");
+          }
+        }
+      }
+      if (existsSync(path) && !isDirectory(path)) {
+        path = path.replace(/\.[a-z]+$/, "");
+      }
+      if (isAbsolute(path)) {
+        path = relative(typesDir, path);
+      }
+      resolvedImportPathMap.set(i.from, path);
+    }
+
     autoImportedTypes = [
       (
         await nitro.unimport.generateTypeDeclarations({
           exportHelper: false,
-          resolvePath: (i) => {
-            if (i.from.startsWith("#internal/nitro")) {
-              return resolveAlias(i.from, nitro.options.alias);
-            }
-            return i.from;
-          },
+          resolvePath: (i) => resolvedImportPathMap.get(i.from) ?? i.from,
         })
       ).trim(),
     ];
