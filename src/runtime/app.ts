@@ -110,7 +110,7 @@ function createNitroApp(): NitroApp {
       event.$fetch = ((req, init) =>
         fetchWithEvent(event, req, init as RequestInit, {
           fetch: $fetch,
-        })) as $Fetch<unknown, NitroFetchRequest>;
+        })) as $Fetch;
 
       // https://github.com/unjs/nitro/issues/1420
       event.waitUntil = (promise) => {

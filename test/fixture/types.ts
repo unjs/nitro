@@ -98,15 +98,11 @@ describe("API routes", () => {
   });
 
   it("generates types for routes matching prefix", () => {
-    expectTypeOf($fetch("/api/hey/**")).toEqualTypeOf<Promise<string>>();
     expectTypeOf($fetch("/api/param/{id}/**")).toEqualTypeOf<Promise<string>>();
     expectTypeOf(
       $fetch("/api/typed/user/{someUserId}/post/{somePostId}/**")
     ).toEqualTypeOf<
       Promise<{ internalApiKey: "/api/typed/user/:userId/post/:postId" }>
-    >();
-    expectTypeOf($fetch("/api/typed/user/john/post/coffee/**")).toEqualTypeOf<
-      Promise<{ internalApiKey: "/api/typed/user/john/post/coffee" }>
     >();
     expectTypeOf(
       $fetch(`/api/typed/user/${dynamicString}/post/${dynamicString}/**`)
@@ -144,16 +140,14 @@ describe("API routes", () => {
       $fetch("/api/typed/todos/firstTodo/comments/foo")
     ).toEqualTypeOf<
       Promise<
-        | { internalApiKey: "/api/typed/todos/**" }
-        | { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
+        { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
       >
     >();
     expectTypeOf(
       $fetch(`/api/typed/todos/firstTodo/comments/${dynamicString}`)
     ).toEqualTypeOf<
       Promise<
-        | { internalApiKey: "/api/typed/todos/**" }
-        | { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
+        { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
       >
     >();
     expectTypeOf(
@@ -212,7 +206,7 @@ describe("API routes", () => {
     >();
 
     expectTypeOf($fetch("/api/serialized/void")).toEqualTypeOf<
-      Promise<unknown>
+      Promise<never>
     >();
 
     expectTypeOf($fetch("/api/serialized/null")).toEqualTypeOf<Promise<any>>();

@@ -6,7 +6,7 @@ export type H3EventFetch = (
   init?: RequestInit
 ) => Promise<Response>;
 
-export type H3Event$Fetch = $Fetch<unknown, NitroFetchRequest>;
+export type H3Event$Fetch = $Fetch;
 
 declare module "h3" {
   interface H3Event {

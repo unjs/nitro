@@ -7,7 +7,7 @@ import type { MatchedRoutes } from "./utils";
 export interface InternalApi {}
 
 export interface InternalFetch {
-  (request: Exclude<FetchRequest, string> | (string & {}), opts?: FetchOptions): unknown
+  <T = unknown>(request: Exclude<FetchRequest, string> | (string & {}), opts?: FetchOptions): Promise<T>
 }
 
 export type NitroFetchRequest =
@@ -72,31 +72,9 @@ export type ExtractedRouteMethod<
   ? Lowercase<O["method"]>
   : "get";
 
-export interface $Fetch<
-  DefaultT = unknown,
-  DefaultR extends NitroFetchRequest = NitroFetchRequest,
-> {
-  <
-    T = DefaultT,
-    R extends NitroFetchRequest = DefaultR,
-    O extends NitroFetchOptions<R> = NitroFetchOptions<R>,
-  >(
-    request: R,
-    opts?: O
-  ): Promise<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>;
-  raw<
-    T = DefaultT,
-    R extends NitroFetchRequest = DefaultR,
-    O extends NitroFetchOptions<R> = NitroFetchOptions<R>,
-  >(
-    request: R,
-    opts?: O
-  ): Promise<
-    FetchResponse<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>
-  >;
-  create<T = DefaultT, R extends NitroFetchRequest = DefaultR>(
-    defaults: FetchOptions
-  ): $Fetch<T, R>;
+export interface $Fetch extends InternalFetch {
+  raw: InternalFetch;
+  create(defaults: FetchOptions): InternalFetch;
 }
 
 declare global {

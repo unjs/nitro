@@ -77,17 +77,15 @@ export async function build(nitro: Nitro) {
     : _build(nitro, rollupConfig);
 }
 
+const DYNAMIC_PARAM_RE = /(\*\*)(?!:)|((\*\*)?:[^/]+)/g
+
 export async function writeTypes(nitro: Nitro) {
   const routeTypes: Record<
     string,
     Partial<Record<RouterMethod | "default", string[]>>
   > = {};
 
-  const fetchSignatures = {
-    exact: [] as string[],
-    dynamic: [] as string[],
-    globs: [] as string[],
-  }
+  const fetchSignatures = [] as Array<[route: string, type: string]>
   const eventHandlerImports = new Set<string>()
 
   const typesDir = resolve(nitro.options.buildDir, "types");
@@ -99,7 +97,7 @@ export async function writeTypes(nitro: Nitro) {
     if (typeof mw.handler !== "string" || !mw.route) {
       continue;
     }
-    const relativePath = relative(typesDir, mw.handler).replace(
+    const relativePath = relative(typesDir, resolveAlias(mw.handler, nitro.options.alias)).replace(
       /\.[a-z]+$/,
       ""
     );
@@ -118,17 +116,19 @@ export async function writeTypes(nitro: Nitro) {
     const methodType = mw.method ? mw.method.toUpperCase() === 'PATCH' ? 'PATCH' : [mw.method.toUpperCase(), mw.method.toLowerCase()].map(m => `'${m}'`).join(' | ') : (excludedMethods ? `Exclude<DefaultMethod, ${excludedMethods}>` : 'DefaultMethod')
 
     // TODO: 1. Fine-tune matching algorithm?
+    // TODO: merge return types
     // TODO: 2. infer returns when we provide typed input
     // TODO: 3. require options object when we provide typed input
 
-    const group = mw.route.includes('**:') ? 'globs' : mw.route.includes(':') ? 'dynamic' : 'exact'
-    const routeType = mw.route.includes(':')
-      ? `\`${mw.route.replace(/(\*\*)?:[^/]+/g, '${string}')}\``
-      : `'${mw.route}'`
+    const routeType = DYNAMIC_PARAM_RE.test(mw.route)
+      ? `\`${mw.route.replace(DYNAMIC_PARAM_RE, '${string}')}\``
+      : `'${mw.route}' | \`${mw.route}?$\{string}\``
 
-    fetchSignatures[group].push(
-      `    (url: ${routeType}, options?: BaseFetchOptions & { method${isMethodOptional ? '?' : ''}: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : {})): ${eventHandlerType} extends EventHandler<any, infer Output> ? Promise<Simplify<Serialize<Awaited<Output>>>> : Promise<unknown>
-    `)
+    fetchSignatures.push([
+      mw.route,
+      `    <T = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown>(url: ${routeType}, options?: BaseFetchOptions & { method${isMethodOptional ? '?' : ''}: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : {})): Promise<T>
+    `
+    ])
 
     const method = mw.method || "default";
     if (!routeTypes[mw.route][method]) {
@@ -184,9 +184,9 @@ export async function writeTypes(nitro: Nitro) {
     ),
     "  }",
     "  interface InternalFetch {",
-    ...fetchSignatures.exact,
-    ...fetchSignatures.dynamic,
-    ...fetchSignatures.globs,
+    ...fetchSignatures.sort(([a], [b]) => {
+      return b.replace(DYNAMIC_PARAM_RE, '____').localeCompare(a.replace(DYNAMIC_PARAM_RE, '____'))
+    }).map(([route, type]) => type),
     "  }",
     "",
     "}",
