@@ -6,6 +6,10 @@ import type { MatchedRoutes } from "./utils";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InternalApi {}
 
+export interface InternalFetch {
+  (request: Exclude<FetchRequest, string> | (string & {}), opts?: FetchOptions): unknown
+}
+
 export type NitroFetchRequest =
   | Exclude<keyof InternalApi, `/_${string}` | `/api/_${string}`>
   | Exclude<FetchRequest, string>
