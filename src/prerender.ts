@@ -8,7 +8,7 @@ import mime from "mime";
 import { createNitro } from "./nitro";
 import { build } from "./build";
 import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
-import { localFetchWithRetries, writeFile } from "./utils";
+import { fetchWithRetries, writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
@@ -165,7 +165,7 @@ export async function prerender(nitro: Nitro) {
     // Fetch the route
     const encodedRoute = encodeURI(route);
 
-    const res = (await localFetchWithRetries({
+    const res = (await fetchWithRetries({
       url: withBase(encodedRoute, nitro.options.baseURL),
       options: {
         headers: { "x-nitro-prerender": encodedRoute },
