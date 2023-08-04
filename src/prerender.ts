@@ -208,6 +208,8 @@ export async function prerender(nitro: Nitro) {
 
     // Check if route skipped or has errors
     if (_route.skip || _route.error) {
+      await nitro.hooks.callHook("prerender:route", _route);
+      nitro.logger.log(formatPrerenderRoute(_route));
       return _route;
     }
 
@@ -232,7 +234,11 @@ export async function prerender(nitro: Nitro) {
       }
     }
 
-    dataBuff = undefined; // Free memory
+    await nitro.hooks.callHook("prerender:route", _route);
+    nitro.logger.log(formatPrerenderRoute(_route));
+
+    // Free memory
+    dataBuff = undefined;
 
     return _route;
   };
@@ -243,20 +249,7 @@ export async function prerender(nitro: Nitro) {
       : `Prerendering ${routes.size} routes`
   );
 
-  async function processRoute(route: string) {
-    const _route = await generateRoute(route).catch(
-      (error) => ({ route, error }) as PrerenderGenerateRoute
-    );
-
-    if (!_route || _route.skip) {
-      return;
-    }
-
-    await nitro.hooks.callHook("prerender:route", _route);
-    nitro.logger.log(formatPrerenderRoute(_route));
-  }
-
-  await runParallel(routes, processRoute, {
+  await runParallel(routes, generateRoute, {
     concurrency: nitro.options.prerender.concurrency,
     interval: nitro.options.prerender.interval,
   });
@@ -295,9 +288,11 @@ async function runParallel<T>(
     }
 
     inputs.delete(route);
-    const task = new Promise((resolve) =>
-      setTimeout(resolve, opts.interval)
-    ).then(() => cb(route));
+    const task = new Promise((resolve) => setTimeout(resolve, opts.interval))
+      .then(() => cb(route))
+      .catch((error) => {
+        console.error(error);
+      });
 
     tasks.add(task);
     return task.then(() => {
