@@ -234,10 +234,8 @@ export async function prerender(nitro: Nitro) {
       }
     }
 
-    if (!_route.skip) {
-      await nitro.hooks.callHook("prerender:route", _route);
-      nitro.logger.log(formatPrerenderRoute(_route));
-    }
+    await nitro.hooks.callHook("prerender:route", _route);
+    nitro.logger.log(formatPrerenderRoute(_route));
 
     // Free memory
     dataBuff = undefined;
