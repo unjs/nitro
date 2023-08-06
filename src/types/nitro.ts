@@ -59,7 +59,7 @@ export interface Nitro {
   updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
 
   /* @internal */
-  _prerenderedRoutes?: PrerenderGenerateRoute[];
+  _prerenderedRoutes?: PrerenderRoute[];
 }
 
 export interface PrerenderRoute {
@@ -71,6 +71,7 @@ export interface PrerenderRoute {
   generateTimeMS?: number;
 }
 
+/** @deprecated Internal type will be removed in future versions */
 export interface PrerenderGenerateRoute extends PrerenderRoute {
   skip?: boolean;
 }
@@ -88,7 +89,7 @@ export interface NitroHooks {
   "prerender:config": (config: NitroConfig) => HookResult;
   "prerender:init": (prerenderer: Nitro) => HookResult;
   "prerender:generate": (
-    route: PrerenderGenerateRoute,
+    route: PrerenderRoute & { skip?: boolean },
     nitro: Nitro
   ) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;

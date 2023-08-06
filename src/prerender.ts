@@ -6,12 +6,7 @@ import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type {
-  Nitro,
-  NitroRouteRules,
-  PrerenderGenerateRoute,
-  PrerenderRoute,
-} from "./types";
+import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
@@ -153,7 +148,7 @@ export async function prerender(nitro: Nitro) {
     generatedRoutes.add(route);
 
     // Create result object
-    const _route: PrerenderGenerateRoute = { route };
+    const _route: PrerenderRoute & { skip?: boolean } = { route };
 
     // Fetch the route
     const encodedRoute = encodeURI(route);
@@ -383,7 +378,7 @@ function getExtension(link: string): string {
   return (pathname.match(EXT_REGEX) || [])[0] || "";
 }
 
-function formatPrerenderRoute(route: PrerenderGenerateRoute) {
+function formatPrerenderRoute(route: PrerenderRoute) {
   let str = `  ├─ ${route.route} (${route.generateTimeMS}ms)`;
 
   if (route.error) {
