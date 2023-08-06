@@ -16,7 +16,7 @@ const _sharedRuntimeConfig = _deepFreeze(
   _applyEnv(klona(_inlineRuntimeConfig))
 );
 export function useRuntimeConfig<
-  T extends NitroRuntimeConfig = NitroRuntimeConfig
+  T extends NitroRuntimeConfig = NitroRuntimeConfig,
 >(event?: H3Event): T {
   // Backwards compatibility with ambient context
   if (!event) {

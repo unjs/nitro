@@ -175,6 +175,16 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("Handle 404 not found", async () => {
+    const res = await callHandler({ url: "/api/not-found" });
+    expect(res.status).toBe(404);
+  });
+
+  it("Handle 405 method not allowed", async () => {
+    const res = await callHandler({ url: "/api/upload" });
+    expect(res.status).toBe(405);
+  });
+
   it("handles route rules - redirects", async () => {
     const base = await callHandler({ url: "/rules/redirect" });
     expect(base.status).toBe(307);
@@ -474,7 +484,7 @@ export function testNitro(
       // TODO: Node presets do not split cookies
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
-      const notSplitingPresets = ["node", "nitro-dev", "vercel", "deno-server"];
+      const notSplitingPresets = ["node", "nitro-dev", "vercel", nodeVersion < 18 && "deno-server"].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
           nodeVersion < 18

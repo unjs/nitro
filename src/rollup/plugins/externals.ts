@@ -45,10 +45,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  const inlineMatchers = (opts.inline || []).map((p) => normalizeMatcher(p));
-  const externalMatchers = (opts.external || []).map((p) =>
-    normalizeMatcher(p)
-  );
+  const inlineMatchers = (opts.inline || [])
+    .map((p) => normalizeMatcher(p))
+    .sort((a, b) => b.score - a.score);
+  const externalMatchers = (opts.external || [])
+    .map((p) => normalizeMatcher(p))
+    .sort((a, b) => b.score - a.score);
 
   return {
     name: "node-externals",
@@ -71,21 +73,15 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Normalize path (windows)
       const id = normalize(originalId);
 
-      // Id without .../node_modules/
-      const idWithoutNodeModules = id.split("node_modules/").pop();
-
-      // Check for explicit inlines
-      for (const matcher of inlineMatchers) {
-        if (matcher(id, importer)) {
-          return null;
-        }
-      }
-
-      // Check for explicit externals
-      for (const matcher of externalMatchers) {
-        if (matcher(id, importer)) {
-          return { id, external: true };
-        }
+      // Check for explicit inlines and externals
+      const inlineMatch = inlineMatchers.find((m) => m(id, importer));
+      const externalMatch = externalMatchers.find((m) => m(id, importer));
+      if (
+        inlineMatch &&
+        (!externalMatch ||
+          (externalMatch && inlineMatch.score > externalMatch.score))
+      ) {
+        return null;
       }
 
       // Resolve id using rollup resolver
@@ -515,23 +511,34 @@ async function isFile(file: string) {
   }
 }
 
-export function normalizeMatcher(
-  pattern:
-    | string
-    | RegExp
-    | ((id: string, importer?: string) => Promise<boolean> | boolean)
-) {
-  if (typeof pattern === "string") {
-    const _pattern = normalize(pattern);
-    return (id: string) => {
+type Matcher = ((
+  id: string,
+  importer?: string
+) => Promise<boolean> | boolean) & { score?: number };
+
+export function normalizeMatcher(input: string | RegExp | Matcher): Matcher {
+  if (typeof input === "function") {
+    input.score = input.score ?? 10_000;
+    return input;
+  }
+
+  if (input instanceof RegExp) {
+    const matcher = ((id: string) => input.test(id)) as Matcher;
+    matcher.score = input.toString().length;
+    Object.defineProperty(matcher, "name", { value: `match(${input})` });
+    return matcher;
+  }
+
+  if (typeof input === "string") {
+    const pattern = normalize(input);
+    const matcher = ((id: string) => {
       const idWithoutNodeModules = id.split("node_modules/").pop();
-      return (
-        id.startsWith(_pattern) || idWithoutNodeModules.startsWith(_pattern)
-      );
-    };
+      return id.startsWith(pattern) || idWithoutNodeModules.startsWith(pattern);
+    }) as Matcher;
+    matcher.score = input.length;
+    Object.defineProperty(matcher, "name", { value: `match(${pattern})` });
+    return matcher;
   }
-  if (typeof pattern === "function") {
-    return pattern;
-  }
-  return (id: string) => pattern.test(id);
+
+  throw new Error(`Invalid matcher or pattern: ${input}`);
 }

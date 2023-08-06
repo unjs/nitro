@@ -31,6 +31,9 @@ export default defineEventHandler((event) => {
 ${links.map((link) => `    <li><a href="${link}">${link}</a></li>`).join("\n")}
   </ul>
   <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ac fermentum tortor, vitae semper nisl. Morbi eu ex sed lacus mollis mollis vel nec mi. Aenean tincidunt pretium ligula, at dapibus libero vestibulum vel. Nunc in lorem vitae tortor lacinia cursus. Morbi malesuada nunc vel mi ornare, a iaculis magna molestie. In dictum, ex quis euismod semper, augue diam convallis nisi, vitae ullamcorper urna augue vel metus. Cras risus elit, tempus ac pretium quis, gravida id odio. Curabitur posuere diam vel leo imperdiet porttitor. Cras posuere hendrerit porta. In tellus velit, sagittis et scelerisque ultrices, iaculis ut leo. Proin id nibh blandit, pharetra lorem et, feugiat dui. Morbi hendrerit massa nec mauris aliquet ultrices. -->
+
+  /* Bad Link Examples */
+  <a x-href="/500?x-href">x-href attr</a>
 </body>
 </html>`;
 });
