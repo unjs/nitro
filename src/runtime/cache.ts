@@ -197,24 +197,21 @@ export function defineCachedEventHandler<T = any>(
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: async (event: H3Event) => {
+      // Custom user-defined key
       const key = await opts.getKey?.(event);
       if (key) {
         return escapeKey(key);
       }
-      const varyParts = opts.varies?.map((varyHeader) => {
-        const key = varyHeader.toLowerCase();
-        const value = event.node.req.headers[key];
-        if (value) {
-          return `${key}_${value}`;
-        }
-      });
+      // Auto-generated key
       const url = event._originalPath || event.path;
-      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
-        0,
-        16
-      );
-      const urlHash = hash(`${varyParts}${url}`);
-      return `${varyParts}_${friendlyName}.${urlHash}`;
+      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname));
+      const variableHeaders = (opts.varies || [])
+        .map((h) => h.toLowerCase())
+        .map((h) => {
+          return `${h}: ${event.node.req.headers[h] || ""}`;
+        });
+      const urlHash = hash([url, variableHeaders]);
+      return `${friendlyName.slice(0, 16)}.${urlHash}`;
     },
     validate: (entry) => {
       if (entry.value.code >= 400) {
@@ -232,16 +229,16 @@ export function defineCachedEventHandler<T = any>(
   const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
     async (incomingEvent: H3Event) => {
       // Only pass headers which are defined in opts.varies
-      const filteredHeaders: Record<string, string | string[]> = {};
+      const variableHeaders: Record<string, string | string[]> = {};
       for (const header of opts.varies || []) {
         if (incomingEvent.node.req.headers[header]) {
-          filteredHeaders[header] = incomingEvent.node.req.headers[header];
+          variableHeaders[header] = incomingEvent.node.req.headers[header];
         }
       }
 
       // Create proxies to avoid sharing state with user request
       const reqProxy = cloneWithProxy(incomingEvent.node.req, {
-        headers: filteredHeaders,
+        headers: variableHeaders,
       });
       const resHeaders: Record<string, number | string | string[]> = {};
       let _resSendBody;
