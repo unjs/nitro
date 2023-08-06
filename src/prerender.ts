@@ -257,7 +257,7 @@ export async function prerender(nitro: Nitro) {
     interval: nitro.options.prerender.interval,
   });
 
-  await nitro.hooks.callHook("prerender:done", nitroRenderer, {
+  await nitro.hooks.callHook("prerender:done", {
     erroredRoutes,
     prerenderedRoutes: nitro._prerenderedRoutes,
   });
