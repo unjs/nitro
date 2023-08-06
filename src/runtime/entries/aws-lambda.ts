@@ -13,6 +13,7 @@ import {
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
+import { normalizeCookieHeader } from "../utils";
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -56,10 +57,7 @@ export async function handler(
 
   // Lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
   if ("cookies" in event || "rawPath" in event) {
-    const outgoingCookies = r.headers["set-cookie"];
-    const cookies = Array.isArray(outgoingCookies)
-      ? outgoingCookies
-      : outgoingCookies?.split(/,\s?/) || [];
+    const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
 
     return {
       cookies,
