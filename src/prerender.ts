@@ -6,7 +6,7 @@ import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type { Nitro, NitroRouteRules, PrerenderGenerateRoute } from "./types";
+import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
@@ -49,13 +49,16 @@ export async function prerender(nitro: Nitro) {
   // Build with prerender preset
   nitro.logger.info("Initializing prerenderer");
   nitro._prerenderedRoutes = [];
-  const nitroRenderer = await createNitro({
+  const prerendererConfig = {
     ...nitro.options._config,
     static: false,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: "nitro-prerender",
-  });
+  };
+  await nitro.hooks.callHook("prerender:config", prerendererConfig);
+  const nitroRenderer = await createNitro(prerendererConfig);
+  await nitro.hooks.callHook("prerender:init", nitroRenderer);
 
   // Set path to preview prerendered routes relative to the "host" nitro preset
   let path = relative(nitro.options.output.dir, nitro.options.output.publicDir);
@@ -83,7 +86,7 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
-  const erroredRoutes = new Set<PrerenderGenerateRoute>();
+  const failedRoutes = new Set<PrerenderRoute>();
   const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
@@ -145,7 +148,7 @@ export async function prerender(nitro: Nitro) {
     generatedRoutes.add(route);
 
     // Create result object
-    const _route: PrerenderGenerateRoute = { route };
+    const _route: PrerenderRoute & { skip?: boolean } = { route };
 
     // Fetch the route
     const encodedRoute = encodeURI(route);
@@ -155,28 +158,40 @@ export async function prerender(nitro: Nitro) {
         headers: { "x-nitro-prerender": encodedRoute },
       }
     ) as ReturnType<typeof fetch>);
-    _route.data = await res.arrayBuffer();
+
+    // Data will be removed as soon as written to the disk
+    let dataBuff: Buffer | undefined = Buffer.from(await res.arrayBuffer());
+
     Object.defineProperty(_route, "contents", {
       get: () => {
-        if (!(_route as any)._contents) {
-          (_route as any)._contents = new TextDecoder("utf8").decode(
-            new Uint8Array(_route.data)
-          );
-        }
-        return (_route as any)._contents;
+        return dataBuff ? dataBuff.toString("utf8") : undefined;
       },
       set(value: string) {
-        (_route as any)._contents = value;
-        _route.data = new TextEncoder().encode(value);
+        // Only set if we didn't consume the buffer yet
+        if (dataBuff) {
+          dataBuff = Buffer.from(value);
+        }
       },
     });
+    Object.defineProperty(_route, "data", {
+      get: () => {
+        return dataBuff ? dataBuff.buffer : undefined;
+      },
+      set(value: string) {
+        // Only set if we didn't consume the buffer yet
+        if (dataBuff) {
+          dataBuff = Buffer.from(value);
+        }
+      },
+    });
+
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
     const redirectCodes = [301, 302, 303, 304, 307, 308];
     if (![200, ...redirectCodes].includes(res.status)) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error.statusCode = res.status;
       _route.error.statusMessage = res.statusText;
-      erroredRoutes.add(_route);
+      failedRoutes.add(_route);
     }
 
     // Write to the file
@@ -196,17 +211,21 @@ export async function prerender(nitro: Nitro) {
 
     // Check if route skipped or has errors
     if (_route.skip || _route.error) {
+      await nitro.hooks.callHook("prerender:route", _route);
+      nitro.logger.log(formatPrerenderRoute(_route));
       return _route;
     }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName);
-    await writeFile(filePath, Buffer.from(_route.data));
+
+    await writeFile(filePath, dataBuff);
+
     nitro._prerenderedRoutes.push(_route);
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
       const extractedLinks = extractLinks(
-        _route.contents,
+        dataBuff.toString("utf8"),
         route,
         res,
         nitro.options.prerender.crawlLinks
@@ -218,6 +237,12 @@ export async function prerender(nitro: Nitro) {
       }
     }
 
+    await nitro.hooks.callHook("prerender:route", _route);
+    nitro.logger.log(formatPrerenderRoute(_route));
+
+    // Free memory
+    dataBuff = undefined;
+
     return _route;
   };
 
@@ -227,27 +252,19 @@ export async function prerender(nitro: Nitro) {
       : `Prerendering ${routes.size} routes`
   );
 
-  async function processRoute(route: string) {
-    const _route = await generateRoute(route).catch(
-      (error) => ({ route, error }) as PrerenderGenerateRoute
-    );
-
-    if (!_route || _route.skip) {
-      return;
-    }
-
-    await nitro.hooks.callHook("prerender:route", _route);
-    nitro.logger.log(formatPrerenderRoute(_route));
-  }
-
-  await runParallel(routes, processRoute, {
+  await runParallel(routes, generateRoute, {
     concurrency: nitro.options.prerender.concurrency,
     interval: nitro.options.prerender.interval,
   });
 
-  if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
+  await nitro.hooks.callHook("prerender:done", {
+    prerenderedRoutes: nitro._prerenderedRoutes,
+    failedRoutes: [...failedRoutes],
+  });
+
+  if (nitro.options.prerender.failOnError && failedRoutes.size > 0) {
     nitro.logger.log("\nErrors prerendering:");
-    for (const route of erroredRoutes) {
+    for (const route of failedRoutes) {
       const parents = linkParents.get(route.route);
       const parentsText = parents?.size
         ? `\n${[...parents.values()]
@@ -279,9 +296,11 @@ async function runParallel<T>(
     }
 
     inputs.delete(route);
-    const task = new Promise((resolve) =>
-      setTimeout(resolve, opts.interval)
-    ).then(() => cb(route));
+    const task = new Promise((resolve) => setTimeout(resolve, opts.interval))
+      .then(() => cb(route))
+      .catch((error) => {
+        console.error(error);
+      });
 
     tasks.add(task);
     return task.then(() => {
@@ -300,7 +319,7 @@ async function runParallel<T>(
   await refillQueue();
 }
 
-const LINK_REGEX = /href=["']?([^"'>]+)/g;
+const LINK_REGEX = /(?<=\s)href=["']?([^"'>]+)/g;
 
 function extractLinks(
   html: string,
@@ -359,7 +378,7 @@ function getExtension(link: string): string {
   return (pathname.match(EXT_REGEX) || [])[0] || "";
 }
 
-function formatPrerenderRoute(route: PrerenderGenerateRoute) {
+function formatPrerenderRoute(route: PrerenderRoute) {
   let str = `  ├─ ${route.route} (${route.generateTimeMS}ms)`;
 
   if (route.error) {

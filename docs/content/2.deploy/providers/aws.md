@@ -2,7 +2,7 @@
 
 Deploy Nitro apps to AWS Lambda.
 
-**Preset:** `aws-lambda` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `aws_lambda` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 Nitro provides a built-in preset to generate output format compatible with [AWS Lambda](https://aws.amazon.com/lambda/).
 

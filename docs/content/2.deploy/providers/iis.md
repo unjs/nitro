@@ -8,7 +8,7 @@ This is an experimental preset.
 
 ## Using [IISnode](https://github.com/Azure/iisnode) (recommended)
 
-**Preset:** `iis-node` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `iis_node` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 1. Install [IISnode](https://github.com/azure/iisnode/releases), and the [IIS URL Rewrite Module](https://www.iis.net/downloads/microsoft/url-rewrite).
 2. In IIS, add `.mjs` as a new mime type and set its content type to `application/javascript`.
