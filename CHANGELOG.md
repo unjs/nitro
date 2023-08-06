@@ -2,6 +2,203 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.5.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.5.1...v2.5.2)
+
+
+### 🩹 Fixes
+
+  - Add `envPrefix` to `runtimeConfig.nitro` types ([#1336](https://github.com/unjs/nitro/pull/1336))
+  - **prerender:** Allow to fetch static files ([#1340](https://github.com/unjs/nitro/pull/1340))
+  - **options:** Default target to `static` when `static` override is set ([#1342](https://github.com/unjs/nitro/pull/1342))
+  - Correct default `node-server`  target ([7976318](https://github.com/unjs/nitro/commit/7976318))
+  - **vercel, netlify:** Always check `nativeSWR` future flag ([ccebe4e](https://github.com/unjs/nitro/commit/ccebe4e))
+  - **vercel, netlify:** Handle boolean values for route rule deprecation ([dfd8bbd](https://github.com/unjs/nitro/commit/dfd8bbd))
+  - Dedup `unstorage` dependency and use subpath alias ([#1164](https://github.com/unjs/nitro/pull/1164))
+  - **dev:** Ensure socket path is accessable ([#1115](https://github.com/unjs/nitro/pull/1115))
+  - Type `event.$fetch` and `event.fetch` ([#1343](https://github.com/unjs/nitro/pull/1343))
+  - Allow configuring esbuild transform plugin ([#1347](https://github.com/unjs/nitro/pull/1347))
+
+### 📖 Documentation
+
+  - Add reference to install azure functions core tools to the swa section ([#1339](https://github.com/unjs/nitro/pull/1339))
+
+### 🏡 Chore
+
+  - **release:** V2.5.1 ([21a2595](https://github.com/unjs/nitro/commit/21a2595))
+  - Add `.data` to gitignore ([cff7bf0](https://github.com/unjs/nitro/commit/cff7bf0))
+  - Update deps and lockfile ([373f34c](https://github.com/unjs/nitro/commit/373f34c))
+  - Update unimport ([ef7eaf2](https://github.com/unjs/nitro/commit/ef7eaf2))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+- Stefan Bittmann <stefan@clinic.tools>
+- Nick Dawson
+
+## v2.5.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.5.0...v2.5.1)
+
+
+### 📖 Documentation
+
+  - Fix typo in Flightcontrol deployment option ([#1332](https://github.com/unjs/nitro/pull/1332))
+
+### 📦 Build
+
+  - Avoid doubly-bundling runtime types ([#1334](https://github.com/unjs/nitro/pull/1334))
+
+### 🌊 Types
+
+  - Avoid overriding app runtime config namespace ([#1333](https://github.com/unjs/nitro/pull/1333))
+
+### ❤️  Contributors
+
+- Daniel Roe <daniel@roe.dev>
+- ModupeD
+
+## v2.5.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v0.0.2...v2.5.0)
+
+
+### 🚀 Enhancements
+
+  - Allow customising generated tsConfig ([#1266](https://github.com/unjs/nitro/pull/1266))
+  - Type `useRuntimeConfig` with `NitroRuntimeConfig` ([#1311](https://github.com/unjs/nitro/pull/1311))
+  - Type nitro app runtime hooks ([#1316](https://github.com/unjs/nitro/pull/1316))
+  - Add `cloudflare-pages-static` preset ([#1310](https://github.com/unjs/nitro/pull/1310))
+  - Add experimental `deno-server` preset ([#592](https://github.com/unjs/nitro/pull/592))
+  - Add `flightcontrol` preset ([#970](https://github.com/unjs/nitro/pull/970), [#1250](https://github.com/unjs/nitro/pull/1250))
+  - Support `jsx` and `tsx` out of the box ([#1303](https://github.com/unjs/nitro/pull/1303))
+  - Add support for `failOnError` ([#1294](https://github.com/unjs/nitro/pull/1294))
+  - UseStorage generic support ([#1279](https://github.com/unjs/nitro/pull/1279))
+  - Provide static `process.*` and `import.meta.*` build flags ([#1331](https://github.com/unjs/nitro/pull/1331))
+
+### 🩹 Fixes
+
+  - **bun:** Resolve internal dependencies with `bun` export condition ([#1313](https://github.com/unjs/nitro/pull/1313))
+  - **deno:** Support environment variables ([88b4e11](https://github.com/unjs/nitro/commit/88b4e11))
+  - Respect `static` flag when auto detecting preset ([#1321](https://github.com/unjs/nitro/pull/1321))
+  - **prerenderer:** Don't inherit `static` config ([#1324](https://github.com/unjs/nitro/pull/1324))
+  - **vercel:** Add check for index route rule ([#1290](https://github.com/unjs/nitro/pull/1290))
+  - Use `event.handled` guard before sending direct reponses ([#1326](https://github.com/unjs/nitro/pull/1326))
+  - Import `NitroRuntimeHooks` from runtime dir ([#1328](https://github.com/unjs/nitro/pull/1328))
+  - Generate types for `#imports` ([#1329](https://github.com/unjs/nitro/pull/1329))
+
+### 📖 Documentation
+
+  - Update docus version ([848c86a](https://github.com/unjs/nitro/commit/848c86a))
+  - Update cloudflare-pages preset ([#1304](https://github.com/unjs/nitro/pull/1304))
+  - Add an example for `devHandlers` config ([#1295](https://github.com/unjs/nitro/pull/1295))
+
+### 🏡 Chore
+
+  - Update dependencies ([db93afa](https://github.com/unjs/nitro/commit/db93afa))
+  - Apply new lint rules ([879a7c3](https://github.com/unjs/nitro/commit/879a7c3))
+  - Update all non major dependencies ([9bb674f](https://github.com/unjs/nitro/commit/9bb674f))
+  - Update dependencies ([46e6f10](https://github.com/unjs/nitro/commit/46e6f10))
+  - Update unstorage ([bac3b0d](https://github.com/unjs/nitro/commit/bac3b0d))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- 魔王少年 ([@maou-shonen](http://github.com/maou-shonen))
+- Daniel Roe <daniel@roe.dev>
+- Andrew <mshote@gmail.com>
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+- Dunqing ([@Dunqing](http://github.com/Dunqing))
+- Frantz Kati <bahdcoder@gmail.com>
+- Mike Laumann Bellika 
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Hebilicious ([@Hebilicious](http://github.com/Hebilicious))
+
+## v2.4.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.3.3...v2.4.0)
+
+
+### 🚀 Enhancements
+
+  - Add cloudflare module worker support ([#681](https://github.com/unjs/nitro/pull/681))
+  - **vercel, netlify:** Introduce `isr` route rule ([#1124](https://github.com/unjs/nitro/pull/1124))
+  - Add `static` preset ([#1127](https://github.com/unjs/nitro/pull/1127))
+  - Add `vercel-static` and `netlify-static` presets ([#1073](https://github.com/unjs/nitro/pull/1073))
+  - Add `github-pages` preset ([#1133](https://github.com/unjs/nitro/pull/1133))
+  - Pass resolved config to `rollup:before` hook ([#1160](https://github.com/unjs/nitro/pull/1160))
+  - Config reload support for `nitro dev` ([#1173](https://github.com/unjs/nitro/pull/1173))
+  - Config hmr support for `routeRules` and `rutimeConfig` ([#1175](https://github.com/unjs/nitro/pull/1175))
+  - Support dynamic app config and runtime config ([#1154](https://github.com/unjs/nitro/pull/1154))
+  - Experimental `/_nitro/openapi.json` and `/_nitro/swagger` for dev mode ([#1162](https://github.com/unjs/nitro/pull/1162))
+  - **vercel:** Add support for specifying edge regions ([#1192](https://github.com/unjs/nitro/pull/1192))
+  - `future.nativeSWR` ([#1212](https://github.com/unjs/nitro/pull/1212))
+
+### 🔥 Performance
+
+  - Export `defineNitroConfig` from `nitro/config` ([#1174](https://github.com/unjs/nitro/pull/1174))
+
+### 🩹 Fixes
+
+  - Separate `typesDir` from `tsConfigDir` ([#1146](https://github.com/unjs/nitro/pull/1146))
+  - **cloudflare:** Expose env from module context ([#1147](https://github.com/unjs/nitro/pull/1147))
+  - **proxy:** Append request query params for single proxy route rules ([#1163](https://github.com/unjs/nitro/pull/1163))
+  - **vercel, netlify:** Keep default behavior for `static` and `swr` to `isr` mapping ([#1155](https://github.com/unjs/nitro/pull/1155))
+  - Apply `chunkFileNames` on windows ([#1189](https://github.com/unjs/nitro/pull/1189))
+  - **pkg:** Allow installing on node v20 and above ([#1204](https://github.com/unjs/nitro/pull/1204))
+
+### 💅 Refactors
+
+  - Rename `build` option to `static` ([#1144](https://github.com/unjs/nitro/pull/1144))
+  - **cli:** Migrate to citty ([#1157](https://github.com/unjs/nitro/pull/1157))
+  - Move swagger/openapi behind experimental flag ([2079cab](https://github.com/unjs/nitro/commit/2079cab))
+
+### 📖 Documentation
+
+  - Fix typo ([#1131](https://github.com/unjs/nitro/pull/1131))
+  - Update serverAssets example ([#1156](https://github.com/unjs/nitro/pull/1156))
+  - Add edge releases channel ([2793f51](https://github.com/unjs/nitro/commit/2793f51))
+  - **get-started:** H2 instead of h3 ([ff3964e](https://github.com/unjs/nitro/commit/ff3964e))
+  - **routing:** Add route rules ([46740e6](https://github.com/unjs/nitro/commit/46740e6))
+  - **routing:** Add missing import ([30675d4](https://github.com/unjs/nitro/commit/30675d4))
+  - Fix syntax issue in guide > storage ([#1180](https://github.com/unjs/nitro/pull/1180))
+  - Update ([1e5bb86](https://github.com/unjs/nitro/commit/1e5bb86))
+  - Fix typo ([#1185](https://github.com/unjs/nitro/pull/1185))
+  - Fix typo ([#1190](https://github.com/unjs/nitro/pull/1190))
+  - **vercel:** Add vercel kv storage section ([#1210](https://github.com/unjs/nitro/pull/1210))
+  - Update branding ([#1188](https://github.com/unjs/nitro/pull/1188))
+  - Update vercel-storage ([ffff9db](https://github.com/unjs/nitro/commit/ffff9db))
+
+### 🏡 Chore
+
+  - Update dependencies ([39d1f27](https://github.com/unjs/nitro/commit/39d1f27))
+  - **release:** V2.3.3 ([2d55caf](https://github.com/unjs/nitro/commit/2d55caf))
+  - Update dependencies and lockfile ([eea8943](https://github.com/unjs/nitro/commit/eea8943))
+  - Update unenv ([ba81902](https://github.com/unjs/nitro/commit/ba81902))
+  - Update lockfile ([6a4e57e](https://github.com/unjs/nitro/commit/6a4e57e))
+  - Update lockfile ([0793451](https://github.com/unjs/nitro/commit/0793451))
+  - **docs:** Move `vercel.json` ([00502d0](https://github.com/unjs/nitro/commit/00502d0))
+  - **docs:** Update deps ([4a95c96](https://github.com/unjs/nitro/commit/4a95c96))
+  - Update deps ([6b08d37](https://github.com/unjs/nitro/commit/6b08d37))
+
+### ✅ Tests
+
+  - Enable `vercel-edge` test ([7951532](https://github.com/unjs/nitro/commit/7951532))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Daniel Roe <daniel@roe.dev>
+- AaronBeaudoin <aaronjbeaudoin@gmail.com>
+- Oumar Barry ([@oumarbarry](http://github.com/oumarbarry))
+- G-Cyrille 
+- 魔王少年 <q267009886.work@gmail.com>
+- Iho Somnam <ihosomnam4741@gmail.com>
+- Timhanlon <tim@timhanlon.com>
+
 ## v2.3.3
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.3.2...v2.3.3)

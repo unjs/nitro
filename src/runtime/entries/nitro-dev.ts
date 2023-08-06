@@ -7,6 +7,7 @@ import { threadId, parentPort } from "node:worker_threads";
 import { isWindows, provider } from "std-env";
 import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
+import { trapUnhandledNodeErrors } from "../utils";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
@@ -25,7 +26,7 @@ function getAddress() {
 }
 
 const listenAddress = getAddress();
-server.listen(listenAddress, () => {
+const listener = server.listen(listenAddress, () => {
   const _address = server.address();
   parentPort.postMessage({
     event: "listen",
@@ -36,18 +37,17 @@ server.listen(listenAddress, () => {
   });
 });
 
-if (process.env.DEBUG) {
-  process.on("unhandledRejection", (err) =>
-    console.error("[nitro] [dev] [unhandledRejection]", err)
-  );
-  process.on("uncaughtException", (err) =>
-    console.error("[nitro] [dev] [uncaughtException]", err)
-  );
-} else {
-  process.on("unhandledRejection", (err) =>
-    console.error("[nitro] [dev] [unhandledRejection] " + err)
-  );
-  process.on("uncaughtException", (err) =>
-    console.error("[nitro] [dev] [uncaughtException] " + err)
-  );
+// Trap unhandled errors
+trapUnhandledNodeErrors();
+
+// Graceful shutdown
+async function onShutdown(signal?: NodeJS.Signals) {
+  await nitroApp.hooks.callHook("close");
 }
+
+parentPort.on("message", async (msg) => {
+  if (msg && msg.event === "shutdown") {
+    await onShutdown();
+    parentPort.postMessage({ event: "exit" });
+  }
+});

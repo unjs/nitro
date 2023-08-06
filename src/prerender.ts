@@ -6,16 +6,13 @@ import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type {
-  Nitro,
-  NitroRouteRules,
-  PrerenderGenerateRoute,
-  PrerenderRoute,
-} from "./types";
+import type { Nitro, NitroRouteRules, PrerenderGenerateRoute } from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
+
+const linkParents = new Map<string, Set<string>>();
 
 export async function prerender(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
@@ -54,6 +51,7 @@ export async function prerender(nitro: Nitro) {
   nitro._prerenderedRoutes = [];
   const nitroRenderer = await createNitro({
     ...nitro.options._config,
+    static: false,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: "nitro-prerender",
@@ -85,10 +83,12 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
+  const erroredRoutes = new Set<PrerenderGenerateRoute>();
+  const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
-    // Skip if route is already generated
-    if (generatedRoutes.has(route)) {
+    // Skip if route is already generated or skipped
+    if (generatedRoutes.has(route) || skippedRoutes.has(route)) {
       return false;
     }
 
@@ -139,10 +139,10 @@ export async function prerender(nitro: Nitro) {
 
     // Check if we should render route
     if (!canPrerender(route)) {
+      skippedRoutes.add(route);
       return;
     }
     generatedRoutes.add(route);
-    routes.delete(route);
 
     // Create result object
     const _route: PrerenderGenerateRoute = { route };
@@ -155,25 +155,40 @@ export async function prerender(nitro: Nitro) {
         headers: { "x-nitro-prerender": encodedRoute },
       }
     ) as ReturnType<typeof fetch>);
-    _route.data = await res.arrayBuffer();
+
+    // Data will be removed as soon as written to the disk
+    let dataBuff: Buffer | undefined = Buffer.from(await res.arrayBuffer());
+
     Object.defineProperty(_route, "contents", {
       get: () => {
-        if (!(_route as any)._contents) {
-          (_route as any)._contents = new TextDecoder("utf8").decode(
-            new Uint8Array(_route.data)
-          );
-        }
-        return (_route as any)._contents;
+        return dataBuff ? dataBuff.toString("utf8") : undefined;
       },
       set(value: string) {
-        (_route as any)._contents = value;
-        _route.data = new TextEncoder().encode(value);
+        // Only set if we didn't consume the buffer yet
+        if (dataBuff) {
+          dataBuff = Buffer.from(value);
+        }
       },
     });
-    if (res.status !== 200) {
+    Object.defineProperty(_route, "data", {
+      get: () => {
+        return dataBuff ? dataBuff.buffer : undefined;
+      },
+      set(value: string) {
+        // Only set if we didn't consume the buffer yet
+        if (dataBuff) {
+          dataBuff = Buffer.from(value);
+        }
+      },
+    });
+
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+    const redirectCodes = [301, 302, 303, 304, 307, 308];
+    if (![200, ...redirectCodes].includes(res.status)) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error.statusCode = res.status;
       _route.error.statusMessage = res.statusText;
+      erroredRoutes.add(_route);
     }
 
     // Write to the file
@@ -193,17 +208,21 @@ export async function prerender(nitro: Nitro) {
 
     // Check if route skipped or has errors
     if (_route.skip || _route.error) {
+      await nitro.hooks.callHook("prerender:route", _route);
+      nitro.logger.log(formatPrerenderRoute(_route));
       return _route;
     }
 
     const filePath = join(nitro.options.output.publicDir, _route.fileName);
-    await writeFile(filePath, Buffer.from(_route.data));
+
+    await writeFile(filePath, dataBuff);
+
     nitro._prerenderedRoutes.push(_route);
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
       const extractedLinks = extractLinks(
-        _route.contents,
+        dataBuff.toString("utf8"),
         route,
         res,
         nitro.options.prerender.crawlLinks
@@ -215,6 +234,12 @@ export async function prerender(nitro: Nitro) {
       }
     }
 
+    await nitro.hooks.callHook("prerender:route", _route);
+    nitro.logger.log(formatPrerenderRoute(_route));
+
+    // Free memory
+    dataBuff = undefined;
+
     return _route;
   };
 
@@ -223,37 +248,67 @@ export async function prerender(nitro: Nitro) {
       ? `Prerendering ${routes.size} initial routes with crawler`
       : `Prerendering ${routes.size} routes`
   );
-  for (let i = 0; i < 100 && routes.size > 0; i++) {
-    for (const route of routes) {
-      const _route = await generateRoute(route).catch(
-        (error) => ({ route, error } as PrerenderGenerateRoute)
-      );
 
-      if (!_route || _route.skip) {
-        continue;
-      }
+  await runParallel(routes, generateRoute, {
+    concurrency: nitro.options.prerender.concurrency,
+    interval: nitro.options.prerender.interval,
+  });
 
-      await nitro.hooks.callHook("prerender:route", _route);
-
-      if (_route.error) {
-        nitro.logger.log(
-          chalk[_route.error.statusCode === 404 ? "yellow" : "red"](
-            `  ├─ ${_route.route} (${
-              _route.generateTimeMS
-            }ms) ${`(${_route.error})`}`
-          )
-        );
-      } else {
-        nitro.logger.log(
-          chalk.gray(`  ├─ ${_route.route} (${_route.generateTimeMS}ms)`)
-        );
-      }
+  if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
+    nitro.logger.log("\nErrors prerendering:");
+    for (const route of erroredRoutes) {
+      const parents = linkParents.get(route.route);
+      const parentsText = parents?.size
+        ? `\n${[...parents.values()]
+            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
+            .join("\n")}`
+        : "";
+      nitro.logger.log(formatPrerenderRoute(route));
     }
+    nitro.logger.log("");
+    throw new Error("Exiting due to prerender errors.");
   }
 
   if (nitro.options.compressPublicAssets) {
     await compressPublicAssets(nitro);
   }
+}
+
+async function runParallel<T>(
+  inputs: Set<T>,
+  cb: (input: T) => unknown | Promise<unknown>,
+  opts: { concurrency: number; interval: number }
+) {
+  const tasks = new Set<Promise<unknown>>();
+
+  function queueNext() {
+    const route = inputs.values().next().value;
+    if (!route) {
+      return;
+    }
+
+    inputs.delete(route);
+    const task = new Promise((resolve) => setTimeout(resolve, opts.interval))
+      .then(() => cb(route))
+      .catch((error) => {
+        console.error(error);
+      });
+
+    tasks.add(task);
+    return task.then(() => {
+      tasks.delete(task);
+      if (inputs.size > 0) {
+        return refillQueue();
+      }
+    });
+  }
+
+  function refillQueue() {
+    const workers = Math.min(opts.concurrency - tasks.size, inputs.size);
+    return Promise.all(Array.from({ length: workers }, () => queueNext()));
+  }
+
+  await refillQueue();
 }
 
 const LINK_REGEX = /href=["']?([^"'>]+)/g;
@@ -297,6 +352,14 @@ function extractLinks(
     }
     links.push(pathname);
   }
+  for (const link of links) {
+    const _parents = linkParents.get(link);
+    if (_parents) {
+      _parents.add(from);
+    } else {
+      linkParents.set(link, new Set([from]));
+    }
+  }
   return links;
 }
 
@@ -305,4 +368,23 @@ const EXT_REGEX = /\.[\da-z]+$/;
 function getExtension(link: string): string {
   const pathname = parseURL(link).pathname;
   return (pathname.match(EXT_REGEX) || [])[0] || "";
+}
+
+function formatPrerenderRoute(route: PrerenderGenerateRoute) {
+  let str = `  ├─ ${route.route} (${route.generateTimeMS}ms)`;
+
+  if (route.error) {
+    const parents = linkParents.get(route.route);
+    const errorColor = chalk[route.error.statusCode === 404 ? "yellow" : "red"];
+    const errorLead = parents?.size ? "├──" : "└──";
+    str += `\n  │ ${errorLead} ${errorColor(route.error)}`;
+
+    if (parents?.size) {
+      str += `\n${[...parents.values()]
+        .map((link) => `  │ └── Linked from ${link}`)
+        .join("\n")}`;
+    }
+  }
+
+  return chalk.gray(str);
 }

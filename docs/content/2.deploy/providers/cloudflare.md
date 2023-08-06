@@ -46,7 +46,7 @@ npx wrangler dev .output/server/index.mjs --site .output/public --local
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler2](https://github.com/cloudflare/wrangler2) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler#quick-start) and login to your Cloudflare account:
 
 ```bash
 npm i wrangler -g
@@ -72,7 +72,7 @@ wrangler dev .output/server/index.mjs --site .output/public
 Publish:
 
 ```bash
-wrangler publish
+wrangler deploy
 ```
 
 ### Deploy within CI/CD using GitHub Actions
@@ -81,7 +81,7 @@ Create a token according to [the wrangler action docs](https://github.com/market
 
 Create `.github/workflows/cloudflare.yml`:
 
-```yml
+```yaml
 name: cloudflare
 
 on:
@@ -132,7 +132,7 @@ jobs:
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare-pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -167,10 +167,10 @@ Create project:
 wrangler pages project create <project-name>
 ```
 
-Publish:
+Deploy:
 
 ```bash
-wrangler pages publish
+wrangler pages deploy
 ```
 
 ## Cloudflare Module Workers
@@ -222,7 +222,7 @@ d1_databases = [
 ```ts
 // waitUntil allows cache writes, external logging, etc without blocking the event
 const { cloudflare } = event.context
-cloudflare.context.waitUntil(logRequest(event.node.req))
+cloudflare.context.waitUntil(logRequest(event.path))
 ```
 
 ### Access env and bindings

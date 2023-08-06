@@ -1,9 +1,13 @@
 import { resolve, join } from "pathe";
-import { loadConfig } from "c12";
+import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
-import { resolveModuleExportNames, resolvePath as resolveModule } from "mlly";
+import {
+  resolveModuleExportNames,
+  resolvePath as resolveModule,
+  parseNodeModulePath,
+} from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
@@ -19,6 +23,7 @@ import type {
   NitroOptions,
   NitroRouteConfig,
   NitroRouteRules,
+  NitroRuntimeConfig,
 } from "./types";
 import { runtimeDir, pkgDir } from "./dirs";
 import * as _PRESETS from "./presets";
@@ -43,6 +48,7 @@ const NitroDefaults: NitroConfig = {
 
   // Features
   experimental: {},
+  future: {},
   storage: {},
   devStorage: {},
   bundledStorage: [],
@@ -57,6 +63,7 @@ const NitroDefaults: NitroConfig = {
   },
   virtual: {},
   compressPublicAssets: false,
+  ignore: [],
 
   // Dev
   dev: false,
@@ -71,6 +78,9 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    concurrency: 1,
+    interval: 0,
+    failOnError: false,
     crawlLinks: false,
     ignore: [],
     routes: [],
@@ -86,10 +96,17 @@ const NitroDefaults: NitroConfig = {
     "unenv/runtime/polyfill/",
     "node-fetch-native/polyfill",
     "node-fetch-native/dist/polyfill",
+    resolve(runtimeDir, "polyfill/"),
   ],
   replace: {},
   node: true,
   sourceMap: true,
+  esbuild: {
+    options: {
+      jsxFactory: "h",
+      jsxFragment: "Fragment",
+    },
+  },
 
   // Advanced
   typescript: {
@@ -97,14 +114,21 @@ const NitroDefaults: NitroConfig = {
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
+    tsConfig: {},
   },
   nodeModulesDirs: [],
   hooks: {},
   commands: {},
 };
 
+export interface LoadConfigOptions {
+  watch?: boolean;
+  c12?: WatchConfigOptions;
+}
+
 export async function loadOptions(
-  configOverrides: NitroConfig = {}
+  configOverrides: NitroConfig = {},
+  opts: LoadConfigOptions = {}
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
@@ -115,7 +139,11 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
-  const { config, layers } = await loadConfig({
+  // @ts-ignore
+  globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
+  const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
+    WatchConfigOptions
+  >{
     name: "nitro",
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
@@ -125,9 +153,15 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: detectTarget() || "node-server",
+      preset: detectTarget({ static: configOverrides.static }),
     },
     defaults: NitroDefaults,
+    jitiOptions: {
+      alias: {
+        nitropack: "nitropack/config",
+        "nitropack/config": "nitropack/config",
+      },
+    },
     resolve(id: string) {
       const presets = _PRESETS as any as Map<string, NitroConfig>;
       let matchedPreset = presets[camelCase(id)] || presets[id];
@@ -141,14 +175,16 @@ export async function loadOptions(
         config: matchedPreset,
       };
     },
+    ...opts.c12,
   });
-  const options = klona(config) as NitroOptions;
+  const options = klona(c12Config.config) as NitroOptions;
   options._config = configOverrides;
+  options._c12 = c12Config;
 
   options.preset =
     presetOverride ||
-    (layers.find((l) => l.config.preset)?.config.preset as string) ||
-    (detectTarget({ static: options.static }) ?? "node-server");
+    (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
+    detectTarget({ static: options.static });
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(
@@ -264,10 +300,119 @@ export async function loadOptions(
   // Backward compatibility for options.routes
   options.routeRules = defu(options.routeRules, (options as any).routes || {});
 
-  // Normalize route rules (NitroRouteConfig => NitroRouteRules)
-  const normalizedRules: { [p: string]: NitroRouteRules } = {};
-  for (const path in options.routeRules) {
-    const routeConfig = options.routeRules[path] as NitroRouteConfig;
+  // Normalize route rules
+  options.routeRules = normalizeRouteRules(options);
+
+  options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
+
+  // Normalize runtime config
+  options.runtimeConfig = normalizeRuntimeConfig(options);
+
+  for (const publicAsset of options.publicAssets) {
+    publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
+    publicAsset.baseURL = withLeadingSlash(
+      withoutTrailingSlash(publicAsset.baseURL || "/")
+    );
+  }
+
+  for (const serverAsset of options.serverAssets) {
+    serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
+  }
+
+  // Dedup built-in dependencies
+  for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
+    const entryPath = await resolveModule(pkg, { url: import.meta.url });
+    const { dir, name } = parseNodeModulePath(entryPath);
+    if (!dir || !name) {
+      continue;
+    }
+    if (!options.alias[pkg + "/"]) {
+      const pkgDir = join(dir, name);
+      options.alias[pkg + "/"] = pkgDir;
+    }
+  }
+
+  // Build-only storage
+  const fsMounts = {
+    root: resolve(options.rootDir),
+    src: resolve(options.srcDir),
+    build: resolve(options.buildDir),
+    cache: resolve(options.buildDir, "cache"),
+  };
+  for (const p in fsMounts) {
+    options.devStorage[p] = options.devStorage[p] || {
+      driver: "fs",
+      readOnly: p === "root" || p === "src",
+      base: fsMounts[p],
+    };
+  }
+
+  // Runtime storage
+  if (
+    options.dev &&
+    options.storage.data === undefined &&
+    options.devStorage.data === undefined
+  ) {
+    options.devStorage.data = {
+      driver: "fs",
+      base: resolve(options.rootDir, ".data/kv"),
+    };
+  } else if (options.node && options.storage.data === undefined) {
+    options.storage.data = {
+      driver: "fs",
+      base: "./.data/kv",
+    };
+  }
+
+  // Resolve plugin paths
+  options.plugins = options.plugins.map((p) => resolvePath(p, options));
+
+  // Export conditions
+  options.exportConditions = _resolveExportConditions(
+    options.exportConditions,
+    { dev: options.dev, node: options.node }
+  );
+
+  // Add open-api endpoint
+  if (options.dev && options.experimental.openAPI) {
+    options.handlers.push({
+      route: "/_nitro/openapi.json",
+      handler: "#internal/nitro/routes/openapi",
+    });
+    options.handlers.push({
+      route: "/_nitro/swagger",
+      handler: "#internal/nitro/routes/swagger",
+    });
+  }
+
+  return options;
+}
+
+/**
+ * @deprecated Please import `defineNitroConfig` from nitropack/config instead
+ */
+export function defineNitroConfig(config: NitroConfig): NitroConfig {
+  return config;
+}
+
+export function normalizeRuntimeConfig(config: NitroConfig) {
+  provideFallbackValues(config.runtimeConfig);
+  const runtimeConfig = defu(config.runtimeConfig, {
+    app: {
+      baseURL: config.baseURL,
+    },
+    nitro: {},
+  });
+  runtimeConfig.nitro.routeRules = config.routeRules;
+  return runtimeConfig as NitroRuntimeConfig;
+}
+
+export function normalizeRouteRules(
+  config: NitroConfig
+): Record<string, NitroRouteRules> {
+  const normalizedRules: Record<string, NitroRouteRules> = {};
+  for (const path in config.routeRules) {
+    const routeConfig = config.routeRules[path] as NitroRouteConfig;
     const routeRules: NitroRouteRules = {
       ...routeConfig,
       redirect: undefined,
@@ -318,57 +463,45 @@ export async function loadOptions(
     }
     normalizedRules[path] = routeRules;
   }
-  options.routeRules = normalizedRules;
+  return normalizedRules;
+}
 
-  options.baseURL = withLeadingSlash(withTrailingSlash(options.baseURL));
+function _resolveExportConditions(
+  conditions: string[] = [],
+  opts: { dev: boolean; node: boolean }
+) {
+  const resolvedConditions: string[] = [];
 
-  provideFallbackValues(options.runtimeConfig);
-  options.runtimeConfig = defu(options.runtimeConfig, {
-    app: {
-      baseURL: options.baseURL,
-    },
-    nitro: {},
-  });
-  options.runtimeConfig.nitro.routeRules = options.routeRules;
+  // 1. Add dev or production
+  resolvedConditions.push(opts.dev ? "development" : "production");
 
-  for (const publicAsset of options.publicAssets) {
-    publicAsset.dir = resolve(options.srcDir, publicAsset.dir);
-    publicAsset.baseURL = withLeadingSlash(
-      withoutTrailingSlash(publicAsset.baseURL || "/")
+  // 2. Add user specified conditions
+  resolvedConditions.push(...conditions);
+
+  // 3. Add runtime conditions (node or web)
+  if (opts.node) {
+    resolvedConditions.push("node");
+  } else {
+    // https://runtime-keys.proposal.wintercg.org/
+    resolvedConditions.push(
+      "wintercg",
+      "worker",
+      "web",
+      "browser",
+      "workerd",
+      "edge-light",
+      "lagon",
+      "netlify",
+      "edge-routine",
+      "deno"
     );
   }
 
-  for (const serverAsset of options.serverAssets) {
-    serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
-  }
+  // 4. Add default conditions
+  resolvedConditions.push("import", "module", "default");
 
-  for (const pkg of ["defu", "h3", "radix3"]) {
-    if (!options.alias[pkg]) {
-      options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url });
-    }
-  }
-
-  // Build-only storage
-  const fsMounts = {
-    root: resolve(options.rootDir),
-    src: resolve(options.srcDir),
-    build: resolve(options.buildDir),
-    cache: resolve(options.buildDir, "cache"),
-  };
-  for (const p in fsMounts) {
-    options.devStorage[p] = options.devStorage[p] || {
-      driver: "fs",
-      readOnly: p === "root" || p === "src",
-      base: fsMounts[p],
-    };
-  }
-
-  // Resolve plugin paths
-  options.plugins = options.plugins.map((p) => resolvePath(p, options));
-
-  return options;
-}
-
-export function defineNitroConfig(config: NitroConfig): NitroConfig {
-  return config;
+  // Dedup with preserving order
+  return resolvedConditions.filter(
+    (c, i) => resolvedConditions.indexOf(c) === i
+  );
 }
