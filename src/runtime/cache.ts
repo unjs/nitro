@@ -185,33 +185,39 @@ export interface CachedEventHandlerOptions<T = any>
   varies?: string[];
 }
 
-function escapeKey(key: string) {
-  // eslint-disable-next-line unicorn/prefer-string-replace-all
-  return key.replace(/[^\dA-Za-z]/g, "");
+function escapeKey(key: string | string[]) {
+  return String(key).replace(/\W/g, "");
 }
 
 export function defineCachedEventHandler<T = any>(
   handler: EventHandler<T>,
   opts: CachedEventHandlerOptions<T> = defaultCacheOptions
 ): EventHandler<T> {
+  const variableHeaderNames = (opts.varies || [])
+    .filter(Boolean)
+    .map((h) => h.toLowerCase())
+    .sort();
+
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: async (event: H3Event) => {
       // Custom user-defined key
-      const key = await opts.getKey?.(event);
-      if (key) {
-        return escapeKey(key);
+      const customKey = await opts.getKey?.(event);
+      if (customKey) {
+        return escapeKey(customKey);
       }
       // Auto-generated key
-      const url = event._originalPath || event.path;
-      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname));
-      const variableHeaders = (opts.varies || [])
-        .map((h) => h.toLowerCase())
-        .map((h) => {
-          return `${h}: ${event.node.req.headers[h] || ""}`;
-        });
-      const urlHash = hash([url, variableHeaders]);
-      return `${friendlyName.slice(0, 16)}.${urlHash}`;
+      const _path = event._originalPath || event.path;
+      const _headers = variableHeaderNames
+        .map((header) => [header, event.node.req.headers[header]])
+        .map(
+          ([name, value]) =>
+            escapeKey(name) +
+            (value ? `_${escapeKey(value)}.${hash(value)}` : "")
+        );
+      const _name = escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16);
+      const _hash = hash(_path);
+      return [_name, ..._headers, _hash].join(":");
     },
     validate: (entry) => {
       if (entry.value.code >= 400) {
@@ -230,7 +236,7 @@ export function defineCachedEventHandler<T = any>(
     async (incomingEvent: H3Event) => {
       // Only pass headers which are defined in opts.varies
       const variableHeaders: Record<string, string | string[]> = {};
-      for (const header of opts.varies || []) {
+      for (const header of variableHeaderNames) {
         if (incomingEvent.node.req.headers[header]) {
           variableHeaders[header] = incomingEvent.node.req.headers[header];
         }
