@@ -95,7 +95,7 @@ export interface NitroHooks {
   "prerender:route": (route: PrerenderRoute) => HookResult;
   "prerender:done": (result: {
     prerenderedRoutes: PrerenderRoute[];
-    erroredRoutes: Set<PrerenderRoute>;
+    failedRoutes: PrerenderRoute[];
   }) => HookResult;
 }
 

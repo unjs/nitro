@@ -86,7 +86,7 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
-  const erroredRoutes = new Set<PrerenderRoute>();
+  const failedRoutes = new Set<PrerenderRoute>();
   const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
@@ -191,7 +191,7 @@ export async function prerender(nitro: Nitro) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error.statusCode = res.status;
       _route.error.statusMessage = res.statusText;
-      erroredRoutes.add(_route);
+      failedRoutes.add(_route);
     }
 
     // Write to the file
@@ -258,13 +258,13 @@ export async function prerender(nitro: Nitro) {
   });
 
   await nitro.hooks.callHook("prerender:done", {
-    erroredRoutes,
     prerenderedRoutes: nitro._prerenderedRoutes,
+    failedRoutes: [...failedRoutes],
   });
 
-  if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
+  if (nitro.options.prerender.failOnError && failedRoutes.size > 0) {
     nitro.logger.log("\nErrors prerendering:");
-    for (const route of erroredRoutes) {
+    for (const route of failedRoutes) {
       const parents = linkParents.get(route.route);
       const parentsText = parents?.size
         ? `\n${[...parents.values()]
