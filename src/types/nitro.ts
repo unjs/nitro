@@ -93,8 +93,8 @@ export interface NitroHooks {
   ) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;
   "prerender:done": (result: {
-    prerenderedRoutes: PrerenderGenerateRoute[];
-    erroredRoutes: Set<PrerenderGenerateRoute>;
+    prerenderedRoutes: PrerenderRoute[];
+    erroredRoutes: Set<PrerenderRoute>;
   }) => HookResult;
 }
 
