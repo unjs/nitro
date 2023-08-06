@@ -74,4 +74,7 @@ export default defineNitroConfig({
     ],
     routes: ["/prerender", "/icon.png", "/404"],
   },
+  experimental: {
+    openAPI: true,
+  },
 });
