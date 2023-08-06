@@ -6,7 +6,7 @@ import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type { Nitro, NitroRouteRules, PrerenderGenerateRoute } from "./types";
+import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
 import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
@@ -49,13 +49,16 @@ export async function prerender(nitro: Nitro) {
   // Build with prerender preset
   nitro.logger.info("Initializing prerenderer");
   nitro._prerenderedRoutes = [];
-  const nitroRenderer = await createNitro({
+  const prerendererConfig = {
     ...nitro.options._config,
     static: false,
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: "nitro-prerender",
-  });
+  };
+  await nitro.hooks.callHook("prerender:config", prerendererConfig);
+  const nitroRenderer = await createNitro(prerendererConfig);
+  await nitro.hooks.callHook("prerender:init", nitroRenderer);
 
   // Set path to preview prerendered routes relative to the "host" nitro preset
   let path = relative(nitro.options.output.dir, nitro.options.output.publicDir);
@@ -83,7 +86,7 @@ export async function prerender(nitro: Nitro) {
 
   // Start prerendering
   const generatedRoutes = new Set();
-  const erroredRoutes = new Set<PrerenderGenerateRoute>();
+  const failedRoutes = new Set<PrerenderRoute>();
   const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
   const canPrerender = (route = "/") => {
@@ -145,7 +148,7 @@ export async function prerender(nitro: Nitro) {
     generatedRoutes.add(route);
 
     // Create result object
-    const _route: PrerenderGenerateRoute = { route };
+    const _route: PrerenderRoute & { skip?: boolean } = { route };
 
     // Fetch the route
     const encodedRoute = encodeURI(route);
@@ -188,7 +191,7 @@ export async function prerender(nitro: Nitro) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error.statusCode = res.status;
       _route.error.statusMessage = res.statusText;
-      erroredRoutes.add(_route);
+      failedRoutes.add(_route);
     }
 
     // Write to the file
@@ -254,9 +257,14 @@ export async function prerender(nitro: Nitro) {
     interval: nitro.options.prerender.interval,
   });
 
-  if (nitro.options.prerender.failOnError && erroredRoutes.size > 0) {
+  await nitro.hooks.callHook("prerender:done", {
+    prerenderedRoutes: nitro._prerenderedRoutes,
+    failedRoutes: [...failedRoutes],
+  });
+
+  if (nitro.options.prerender.failOnError && failedRoutes.size > 0) {
     nitro.logger.log("\nErrors prerendering:");
-    for (const route of erroredRoutes) {
+    for (const route of failedRoutes) {
       const parents = linkParents.get(route.route);
       const parentsText = parents?.size
         ? `\n${[...parents.values()]
@@ -370,7 +378,7 @@ function getExtension(link: string): string {
   return (pathname.match(EXT_REGEX) || [])[0] || "";
 }
 
-function formatPrerenderRoute(route: PrerenderGenerateRoute) {
+function formatPrerenderRoute(route: PrerenderRoute) {
   let str = `  ├─ ${route.route} (${route.generateTimeMS}ms)`;
 
   if (route.error) {
