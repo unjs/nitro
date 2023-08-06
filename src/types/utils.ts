@@ -4,20 +4,20 @@ type MatchResult<
   Key extends string,
   Exact extends boolean = false,
   Score extends any[] = [],
-  catchAll extends boolean = false
+  catchAll extends boolean = false,
 > = {
   [k in Key]: { key: k; exact: Exact; score: Score; catchAll: catchAll };
 }[Key];
 
 type Subtract<
   Minuend extends any[] = [],
-  Subtrahend extends any[] = []
+  Subtrahend extends any[] = [],
 > = Minuend extends [...Subtrahend, ...infer Remainder] ? Remainder : never;
 
 type TupleIfDiff<
   First extends string,
   Second extends string,
-  Tuple extends any[] = []
+  Tuple extends any[] = [],
 > = First extends `${Second}${infer Diff}`
   ? Diff extends ""
     ? []
@@ -34,7 +34,7 @@ type CalcMatchScore<
   Route extends string,
   Score extends any[] = [],
   Init extends boolean = false,
-  FirstKeySegMatcher extends string = Init extends true ? ":Invalid:" : ""
+  FirstKeySegMatcher extends string = Init extends true ? ":Invalid:" : "",
 > = `${Key}/` extends `${infer KeySeg}/${infer KeyRest}`
   ? KeySeg extends FirstKeySegMatcher // return score if `KeySeg` is empty string (except first pass)
     ? Subtract<
@@ -60,7 +60,7 @@ type _MatchedRoutes<
   Route extends string,
   MatchedResultUnion extends MatchResult<string> = MatchResult<
     keyof InternalApi
-  >
+  >,
 > = MatchedResultUnion["key"] extends infer MatchedKeys // spread union type
   ? MatchedKeys extends string
     ? Route extends MatchedKeys
@@ -84,7 +84,10 @@ export type MatchedRoutes<
   MatchedKeysResult extends MatchResult<string> = MatchResult<
     keyof InternalApi
   >,
-  Matches extends MatchResult<string> = _MatchedRoutes<Route, MatchedKeysResult>
+  Matches extends MatchResult<string> = _MatchedRoutes<
+    Route,
+    MatchedKeysResult
+  >,
 > = Route extends "/"
   ? keyof InternalApi // root middleware
   : Extract<Matches, { exact: true }> extends never
@@ -98,7 +101,7 @@ export type MatchedRoutes<
 
 export type KebabCase<
   T extends string,
-  A extends string = ""
+  A extends string = "",
 > = T extends `${infer F}${infer R}`
   ? KebabCase<R, `${A}${F extends Lowercase<F> ? "" : "-"}${Lowercase<F>}`>
   : A;
