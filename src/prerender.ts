@@ -319,7 +319,7 @@ async function runParallel<T>(
   await refillQueue();
 }
 
-const LINK_REGEX = /(?<=\s)href=["']?([^"'>]+)/g;
+const LINK_REGEX = /(?<=\s)href=(?!&quot;)["']?([^"'>]+)/g;
 
 function extractLinks(
   html: string,
