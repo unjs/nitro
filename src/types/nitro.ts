@@ -83,14 +83,15 @@ export interface NitroHooks {
   "rollup:reload": () => HookResult;
   restart: () => HookResult;
   close: () => HookResult;
+  // Prerender
   "prerender:routes": (routes: Set<string>) => HookResult;
-  "prerender:route": (route: PrerenderRoute) => HookResult;
+  "prerender:config": (config: NitroConfig) => HookResult;
+  "prerender:init": (prerenderer: Nitro) => HookResult;
   "prerender:generate": (
     route: PrerenderGenerateRoute,
     nitro: Nitro
   ) => HookResult;
-  "prerender:config": (config: NitroConfig) => HookResult;
-  "prerender:init": (prerenderer: Nitro) => HookResult;
+  "prerender:route": (route: PrerenderRoute) => HookResult;
   "prerender:done": (result: {
     prerenderedRoutes: PrerenderGenerateRoute[];
     erroredRoutes: Set<PrerenderGenerateRoute>;
