@@ -56,9 +56,9 @@ export async function prerender(nitro: Nitro) {
     logLevel: 0,
     preset: "nitro-prerender",
   };
-  await nitro.hooks.callHook("prerenderer:config", prerendererConfig);
+  await nitro.hooks.callHook("prerender:config", prerendererConfig);
   const nitroRenderer = await createNitro(prerendererConfig);
-  await nitro.hooks.callHook("prerenderer:init", nitroRenderer);
+  await nitro.hooks.callHook("prerender:init", nitroRenderer);
 
   // Set path to preview prerendered routes relative to the "host" nitro preset
   let path = relative(nitro.options.output.dir, nitro.options.output.publicDir);
@@ -257,7 +257,7 @@ export async function prerender(nitro: Nitro) {
     interval: nitro.options.prerender.interval,
   });
 
-  await nitro.hooks.callHook("prerenderer:done", nitroRenderer, {
+  await nitro.hooks.callHook("prerender:done", nitroRenderer, {
     erroredRoutes,
     prerenderedRoutes: nitro._prerenderedRoutes,
   });
