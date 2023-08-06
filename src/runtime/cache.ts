@@ -232,11 +232,13 @@ export function defineCachedEventHandler<T = any>(
   const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
     async (incomingEvent: H3Event) => {
       // Only pass headers which are defined in opts.varies
-      const filteredHeaders = opts.varies?.reduce((obj, varyHeader) => {
-        const key = varyHeader.toLowerCase();
-        obj[key] = incomingEvent.node.req.headers[key];
-        return obj;
-      }, {});
+      const filteredHeaders: Record<string, string | string[]> = {};
+      for (const header of opts.varies || []) {
+        if (incomingEvent.node.req.headers[header]) {
+          filteredHeaders[header] = incomingEvent.node.req.headers[header];
+        }
+      }
+
       // Create proxies to avoid sharing state with user request
       const reqProxy = cloneWithProxy(incomingEvent.node.req, {
         headers: filteredHeaders,
