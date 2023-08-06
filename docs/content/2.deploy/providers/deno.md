@@ -34,7 +34,7 @@ You do not need to set up any secrets for this to work. You do need to link your
 Create `.github/workflows/deno_deploy.yml`:
 
 ```yaml
-name: deno_deploy
+name: deno-deploy
 
 on:
   push:

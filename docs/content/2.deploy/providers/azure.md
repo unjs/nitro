@@ -16,7 +16,7 @@ Azure Static Web Apps are designed to be deployed continuously in a [GitHub Acti
 
 ### Local preview
 
-Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure_functions/functions-run-local) if you want to test locally.
+Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) if you want to test locally.
 
 You can invoke a development environment to preview before deploying.
 
@@ -57,11 +57,11 @@ If you are using runtimeConfig, you will likely want to configure the correspond
 
 **Preset:** `azure_functions`
 
-**Note:** If you encounter any issues, please ensure you're using a Node.js 14+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure_functions/functions-reference-node?tabs=v2#setting-the-node-version).
+**Note:** If you encounter any issues, please ensure you're using a Node.js 14+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#setting-the-node-version).
 
 ### Local preview
 
-Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure_functions/functions-run-local) if you want to test locally.
+Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) if you want to test locally.
 
 You can invoke a development environment from the serverless directory.
 

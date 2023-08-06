@@ -8,7 +8,7 @@ Nitro supports deploying on [GitHub Pages](https://pages.github.com/) with minim
 
 ## Setup
 
-Follow the steps to [create a GitHub Pages site](https://docs.github.com/en/pages/getting-started-with-github_pages/creating-a-github_pages-site).
+Follow the steps to [create a GitHub Pages site](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site).
 
 ## Deployment
 
