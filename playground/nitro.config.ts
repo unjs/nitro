@@ -1,5 +1,1 @@
-export default defineNitroConfig({
-  routeRules: {
-    "/**": { cache: { varies: ["host"] } },
-  },
-});
+export default defineNitroConfig({});
