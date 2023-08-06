@@ -132,7 +132,7 @@ jobs:
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare-pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -175,7 +175,7 @@ wrangler pages deploy
 
 ## Cloudflare Module Workers
 
-**Preset:** `cloudflare-module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -205,7 +205,7 @@ d1_databases = [
 ```ts
 // waitUntil allows cache writes, external logging, etc without blocking the event
 const { cloudflare } = event.context
-cloudflare.context.waitUntil(logRequest(event.node.req))
+cloudflare.context.waitUntil(logRequest(event.path))
 ```
 
 ### Access env and bindings

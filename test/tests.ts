@@ -8,6 +8,9 @@ import { joinURL } from "ufo";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
 
+// Refactor: https://github.com/unjs/std-env/issues/60
+const nodeVersion = Number.parseInt(process.versions.node.match(/^v?(\d+)/)[0]);
+
 const { createNitro, build, prepare, copyPublicAssets, prerender } =
   (_nitro as any as { default: typeof _nitro }).default || _nitro;
 
@@ -19,6 +22,7 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  [key: string]: unknown;
 }
 
 // https://github.com/unjs/nitro/pull/1240
@@ -106,7 +110,7 @@ export async function startServer(ctx: Context, handle) {
 type TestHandlerResult = {
   data: any;
   status: number;
-  headers: Record<string, string>;
+  headers: Record<string, string | string[]>;
 };
 type TestHandler = (options: any) => Promise<TestHandlerResult | Response>;
 
@@ -122,10 +126,27 @@ export function testNitro(
     if (result.constructor.name !== "Response") {
       return result as TestHandlerResult;
     }
+
+    const headers: Record<string, string | string[]> = {};
+    for (const [key, value] of (result as Response).headers.entries()) {
+      if (headers[key]) {
+        if (!Array.isArray(headers[key])) {
+          headers[key] = [headers[key] as string];
+        }
+        if (Array.isArray(value)) {
+          (headers[key] as string[]).push(...value);
+        } else {
+          (headers[key] as string[]).push(value);
+        }
+      } else {
+        headers[key] = value;
+      }
+    }
+
     return {
       data: destr(await (result as Response).text()),
       status: result.status,
-      headers: Object.fromEntries((result as Response).headers.entries()),
+      headers,
     };
   }
 
@@ -154,6 +175,16 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("Handle 404 not found", async () => {
+    const res = await callHandler({ url: "/api/not-found" });
+    expect(res.status).toBe(404);
+  });
+
+  it("Handle 405 method not allowed", async () => {
+    const res = await callHandler({ url: "/api/upload" });
+    expect(res.status).toBe(405);
+  });
+
   it("handles route rules - redirects", async () => {
     const base = await callHandler({ url: "/rules/redirect" });
     expect(base.status).toBe(307);
@@ -163,6 +194,27 @@ export function testNitro(
     expect(obj.status).toBe(308);
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
   });
+
+  // aws lambda requires buffer responses to be base 64
+  const LambdaPresets = ["netlify", "aws-lambda"];
+  it.runIf(LambdaPresets.includes(ctx.preset))(
+    "buffer image responses",
+    async () => {
+      const { data } = await callHandler({ url: "/icon.png" });
+      expect(typeof data).toBe("string");
+      const buffer = Buffer.from(data, "base64");
+      // check if buffer is a png
+      function isBufferPng(buffer: Buffer) {
+        return (
+          buffer[0] === 0x89 &&
+          buffer[1] === 0x50 &&
+          buffer[2] === 0x4e &&
+          buffer[3] === 0x47
+        );
+      }
+      expect(isBufferPng(buffer)).toBe(true);
+    }
+  );
 
   it("render JSX", async () => {
     const { data } = await callHandler({ url: "/jsx" });
@@ -412,6 +464,63 @@ export function testNitro(
     )("public files should be ignored", async () => {
       expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
       expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
+    });
+  });
+
+  describe("headers", () => {
+    it("handles headers correctly", async () => {
+      const { headers } = await callHandler({ url: "/api/headers" });
+      expect(headers["content-type"]).toBe("text/html");
+      expect(headers["x-foo"]).toBe("bar");
+      expect(headers["x-array"]).toMatch(/^foo,\s?bar$/);
+
+      let expectedCookies: string | string[] = [
+        "foo=bar",
+        "bar=baz",
+        "test=value; Path=/",
+        "test2=value; Path=/",
+      ];
+
+      // TODO: Node presets do not split cookies
+      // https://github.com/unjs/nitro/issues/1462
+      // (vercel and deno-server uses node only for tests only)
+      const notSplitingPresets = ["node", "nitro-dev", "vercel", nodeVersion < 18 && "deno-server"].filter(Boolean);
+      if (notSplitingPresets.includes(ctx.preset)) {
+        expectedCookies =
+          nodeVersion < 18
+            ? "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/"
+            : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
+      }
+
+      // TODO: verce-ledge joins all cookies for some reason!
+      if (ctx.preset === "vercel-edge") {
+        expectedCookies =
+          "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
+      }
+
+      // Aws lambda v1
+      if (ctx.preset === "aws-lambda" && ctx.lambdaV1) {
+        expectedCookies =
+          "foo=bar, bar=baz,test=value; Path=/,test2=value; Path=/";
+      }
+
+      // TODO: Bun does not handles set-cookie at all
+      // https://github.com/unjs/nitro/issues/1461
+      if (["bun"].includes(ctx.preset)) {
+        return;
+      }
+
+      expect(headers["set-cookie"]).toMatchObject(expectedCookies);
+    });
+  });
+
+  describe("errors", () => {
+    it("captures errors", async () => {
+      const { data } = await callHandler({ url: "/api/errors" });
+      const allErrorMessages = (data.allErrors || []).map(
+        (entry) => entry.message
+      );
+      expect(allErrorMessages).to.includes("Service Unavailable");
     });
   });
 }

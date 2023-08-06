@@ -23,7 +23,7 @@ Learn more about Vercel’s [Git Integration](https://vercel.com/docs/concepts/g
 
 ## Vercel Edge Functions
 
-**Preset:** `vercel-edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `vercel_edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 It is possible to deploy your nitro applications directly on [Vercel Edge Functions](https://vercel.com/docs/concepts/functions/edge-functions).
 
@@ -33,7 +33,7 @@ It is possible to deploy your nitro applications directly on [Vercel Edge Functi
 > By taking advantage of this small runtime, Edge Functions can have faster cold boots and higher scalability than Serverless Functions.
 > Edge Functions run after the cache, and can both cache and return responses. [Read More](https://vercel.com/docs/concepts/functions/edge-functions)
 
-In order to enable this target, please set `NITRO_PRESET` environment variable to `vercel-edge`.
+In order to enable this target, please set `NITRO_PRESET` environment variable to `vercel_edge`.
 
 ## Vercel KV Storage
 
@@ -57,8 +57,6 @@ Update your configuration:
 
 ::code-group
 ```ts [nitro.config.ts]
-import { defineNitroConfig } from 'nitropack/config'
-
 export default defineNitroConfig({
   storage: {
     data: { driver: 'vercelKV' }
@@ -83,7 +81,7 @@ You need to either set `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment var
 You can now access data store in any event handler:
 
 ```ts
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const dataStorage = useStorage("data");
   await dataStorage.setItem("hello", "world");
   return {
