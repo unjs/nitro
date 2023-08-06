@@ -99,8 +99,8 @@ export function trapUnhandledNodeErrors() {
   );
 }
 
-export function joinHeaders(value: string | string[]) {
-  return Array.isArray(value) ? value.join(", ") : value;
+export function joinHeaders(value: number | string | string[]) {
+  return Array.isArray(value) ? value.join(", ") : String(value);
 }
 
 export function normalizeFetchResponse(response: Response) {
@@ -114,7 +114,7 @@ export function normalizeFetchResponse(response: Response) {
   });
 }
 
-export function normalizeCookieHeader(header: string | string[] = "") {
+export function normalizeCookieHeader(header: number | string | string[] = "") {
   return splitCookiesString(joinHeaders(header));
 }
 
