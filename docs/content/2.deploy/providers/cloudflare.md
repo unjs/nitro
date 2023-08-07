@@ -250,14 +250,18 @@ NUXT_HELLO_THERE="general"
 SECRET="secret"
 ```
 
+::alert{type="info"}
+**Note:** Cloudflare variables are only available within event handlers with `useRuntimeConfig(event)`.
+::
+
 ```ts
 export default defineEventHandler((event) => {
   event.context.cloudflare.env.NITRO_HELLO //world
-  useRuntimeConfig().hello //world
+  useRuntimeConfig(event).hello //world
   event.context.cloudflare.env.NUXT_HELLO //general
-  useRuntimeConfig().helloThere //general
+  useRuntimeConfig(event).helloThere //general
   event.context.cloudflare.env.SECRET //secret
-  useRuntimeConfig().secret //undefined
+  useRuntimeConfig(event).secret //undefined
 });
 ```
 
