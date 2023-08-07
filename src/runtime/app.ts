@@ -66,20 +66,20 @@ function createNitroApp(): NitroApp {
       return errorHandler(error as H3Error, event);
     },
     onRequest: async (event) => {
-      await nitroApp.hooks.callHookParallel("request", event).catch((error) => {
+      await nitroApp.hooks.callHook("request", event).catch((error) => {
         captureError(error, { event, tags: ["request"] });
       });
     },
     onBeforeResponse: async (event, response) => {
       await nitroApp.hooks
-        .callHookParallel("beforeResponse", event, response)
+        .callHook("beforeResponse", event, response)
         .catch((error) => {
           captureError(error, { event, tags: ["request", "response"] });
         });
     },
     onAfterResponse: async (event, response) => {
       await nitroApp.hooks
-        .callHookParallel("afterResponse", event, response)
+        .callHook("afterResponse", event, response)
         .catch((error) => {
           captureError(error, { event, tags: ["request", "response"] });
         });
