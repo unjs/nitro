@@ -1,5 +1,5 @@
 import destr from "destr";
-import { camelCase, snakeCase } from "scule";
+import { snakeCase } from "scule";
 import { klona } from "klona";
 import { H3Event } from "h3";
 import { appConfig as _inlineAppConfig } from "#internal/nitro/virtual/app-config";
@@ -15,18 +15,12 @@ const ENV_PREFIX_ALT =
 const _sharedRuntimeConfig = _deepFreeze(
   _applyEnv(klona(_inlineRuntimeConfig))
 );
-const getRuntimeConfig = () => ({
-  ..._sharedRuntimeConfig,
-  ...envToRuntimeObject(globalThis.__env__ ?? process.env ?? {}),
-});
-
 export function useRuntimeConfig<
   T extends NitroRuntimeConfig = NitroRuntimeConfig,
 >(event?: H3Event): T {
   // Backwards compatibility with ambient context
   if (!event) {
     return _sharedRuntimeConfig as T;
-    // return getRuntimeConfig() as T;
   }
   // Reuse cached runtime config from event context
   if (event.context.nitro.runtimeConfig) {
@@ -34,28 +28,10 @@ export function useRuntimeConfig<
   }
   // Prepare runtime config for event context
   const runtimeConfig = klona(_inlineRuntimeConfig) as T;
-  // const runtimeConfig = klona(getRuntimeConfig()) as T;
   _applyEnv(runtimeConfig);
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;
 }
-
-export function envToRuntimeObject(
-  env: Record<string, unknown>,
-  prefixes = [ENV_PREFIX, ENV_PREFIX_ALT]
-) {
-  const safeEnv = Object.fromEntries(
-    Object.entries(env)
-      .filter(([key]) =>
-        prefixes.filter((p) => p !== "_").some((p) => key.startsWith(p))
-      )
-      .map(([key, value]) => [formatKey(key), value])
-  );
-  return safeEnv;
-}
-
-const formatKey = (key: string) =>
-  camelCase(key.split("_").slice(1).join("_").toLocaleLowerCase());
 
 // App config
 const _sharedAppConfig = _deepFreeze(klona(_inlineAppConfig));
