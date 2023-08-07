@@ -208,6 +208,9 @@ export function defineCachedEventHandler<T = any>(
       }
       // Auto-generated key
       const _path = event._originalPath || event.path;
+      const _pathname =
+        escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) || "index";
+      const _hashedPath = `${_pathname}.${hash(_path)}`;
       const _headers = variableHeaderNames
         .map((header) => [header, event.node.req.headers[header]])
         .map(
@@ -215,9 +218,9 @@ export function defineCachedEventHandler<T = any>(
             escapeKey(name) +
             (value ? `_${escapeKey(value)}.${hash(value)}` : "")
         );
-      const _name = escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16);
-      const _hash = hash(_path);
-      return [_name, ..._headers, _hash].join(":");
+      return _headers.length > 0
+        ? [_hashedPath, ..._headers].join(":")
+        : _hashedPath;
     },
     validate: (entry) => {
       if (entry.value.code >= 400) {
