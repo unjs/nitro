@@ -111,9 +111,9 @@ export async function prerender(nitro: Nitro) {
     return true;
   };
 
-  const canWriteToDisk = (route: string) => {
+  const canWriteToDisk = (route: PrerenderRoute) => {
     // Cannot write routes with query
-    if (route.includes("?")) {
+    if (route.route.includes("?")) {
       return false;
     }
 
@@ -126,15 +126,15 @@ export async function prerender(nitro: Nitro) {
       FS_MAX_PATH - (nitro.options.output.publicDir.length + 10);
 
     if (
-      (route.length >= FS_MAX_PATH_PUBLIC_HTML ||
-        route.split("/").some((s) => s.length > FS_MAX_SEGMENT)) &&
+      (route.route.length >= FS_MAX_PATH_PUBLIC_HTML ||
+        route.route.split("/").some((s) => s.length > FS_MAX_SEGMENT)) &&
       !displayedLengthWarns.has(route)
     ) {
       displayedLengthWarns.add(route);
-      const _route = route.slice(0, 60) + "...";
-      if (route.length >= FS_MAX_PATH_PUBLIC_HTML) {
+      const _route = route.route.slice(0, 60) + "...";
+      if (route.route.length >= FS_MAX_PATH_PUBLIC_HTML) {
         nitro.logger.warn(
-          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`
+          `Prerendering long route "${_route}" (${route.route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`
         );
       } else {
         nitro.logger.warn(
@@ -214,21 +214,24 @@ export async function prerender(nitro: Nitro) {
       : routeWithIndex;
     _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL);
 
-    await nitro.hooks.callHook("prerender:generate", _route, nitro);
+    if (canWriteToDisk(_route)) {
+      await nitro.hooks.callHook("prerender:generate", _route, nitro);
 
-    // Measure actual time taken for generating route
-    _route.generateTimeMS = Date.now() - start;
+      // Measure actual time taken for generating route
+      _route.generateTimeMS = Date.now() - start;
 
-    // Check if route skipped or has errors
-    if (_route.skip || _route.error) {
-      await nitro.hooks.callHook("prerender:route", _route);
-      nitro.logger.log(formatPrerenderRoute(_route));
-      return _route;
+      // Check if route skipped or has errors
+      if (_route.skip || _route.error) {
+        await nitro.hooks.callHook("prerender:route", _route);
+        nitro.logger.log(formatPrerenderRoute(_route));
+        dataBuff = undefined; // Free memory
+        return _route;
+      }
+
+      const filePath = join(nitro.options.output.publicDir, _route.fileName);
+
+      await writeFile(filePath, dataBuff);
     }
-
-    const filePath = join(nitro.options.output.publicDir, _route.fileName);
-
-    await writeFile(filePath, dataBuff);
 
     nitro._prerenderedRoutes.push(_route);
 
@@ -250,8 +253,7 @@ export async function prerender(nitro: Nitro) {
     await nitro.hooks.callHook("prerender:route", _route);
     nitro.logger.log(formatPrerenderRoute(_route));
 
-    // Free memory
-    dataBuff = undefined;
+    dataBuff = undefined; // Free memory
 
     return _route;
   };
