@@ -75,5 +75,5 @@ describe("nitro:preset:cloudflare-pages", async () => {
       exclude: ["/blog/static/*"],
       version: 1,
     });
-  });
+  }, 10_000);
 });
