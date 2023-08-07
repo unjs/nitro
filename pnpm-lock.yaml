@@ -205,8 +205,8 @@ importers:
         specifier: ^3.1.3
         version: 3.1.3(rollup@3.27.2)
       unstorage:
-        specifier: ^1.8.0
-        version: 1.8.0
+        specifier: ^1.9.0
+        version: 1.9.0
     devDependencies:
       '@azure/functions':
         specifier: ^3.5.1
@@ -1574,7 +1574,7 @@ packages:
     dependencies:
       '@rollup/pluginutils': 5.0.2(rollup@3.27.2)
       estree-walker: 2.0.2
-      magic-string: 0.30.2
+      magic-string: 0.27.0
       rollup: 3.27.2
     dev: false
 
@@ -4216,6 +4216,18 @@ packages:
       duplexer: 0.1.2
     dev: false
 
+  /h3@1.7.1:
+    resolution: {integrity: sha512-A9V2NEDNHet7v1gCg7CMwerSigLi0SRbhTy7C3lGb0N4YKIpPmLDjedTUopqp4dnn7COHfqUjjaz3zbtz4QduA==}
+    dependencies:
+      cookie-es: 1.0.0
+      defu: 6.1.2
+      destr: 2.0.1
+      iron-webcrypto: 0.7.1
+      radix3: 1.0.1
+      ufo: 1.2.0
+      uncrypto: 0.1.3
+    dev: false
+
   /h3@1.8.0-rc.2:
     resolution: {integrity: sha512-2VSDQOuVElZ7QCSTbti5fTkfyrsOIYSG9SXQQ+xO/dI3O2n2k6cbA1/rapNOJZtC2tO7cN8N/JlGhlUsFh5LoA==}
     dependencies:
@@ -4450,6 +4462,10 @@ packages:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
     dev: true
+
+  /iron-webcrypto@0.7.1:
+    resolution: {integrity: sha512-K/UmlEhPCPXEHV5hAtH5C0tI5JnFuOrv4yO/j7ODPl3HaiiHBLbOLTde+ieUaAyfCATe4LoAnclyF+hmSCOVmQ==}
+    dev: false
 
   /iron-webcrypto@0.8.0:
     resolution: {integrity: sha512-gScdcWHjTGclCU15CIv2r069NoQrys1UeUFFfaO1hL++ytLHkVw7N5nXJmFf3J2LEDMz1PkrvC0m62JEeu1axQ==}
@@ -6801,8 +6817,8 @@ packages:
       webpack-virtual-modules: 0.5.0
     dev: false
 
-  /unstorage@1.8.0:
-    resolution: {integrity: sha512-Wl6a0fYIIPx8yWIHAVNzsNRcIpagVnBV05UXeIFCNqPZ5tu0w0MPE+eTjpRe/yxCD60K7qX55K5Px/PeKvNntw==}
+  /unstorage@1.9.0:
+    resolution: {integrity: sha512-VpD8ZEYc/le8DZCrny3bnqKE4ZjioQxBRnWE+j5sGNvziPjeDlaS1NaFFHzl/kkXaO3r7UaF8MGQrs14+1B4pQ==}
     peerDependencies:
       '@azure/app-configuration': ^1.4.1
       '@azure/cosmos': ^3.17.3
@@ -6810,9 +6826,11 @@ packages:
       '@azure/identity': ^3.2.3
       '@azure/keyvault-secrets': ^4.7.0
       '@azure/storage-blob': ^12.14.0
-      '@planetscale/database': ^1.7.0
-      '@upstash/redis': ^1.21.0
+      '@capacitor/preferences': ^5.0.0
+      '@planetscale/database': ^1.8.0
+      '@upstash/redis': ^1.22.0
       '@vercel/kv': ^0.2.2
+      idb-keyval: ^6.2.1
     peerDependenciesMeta:
       '@azure/app-configuration':
         optional: true
@@ -6826,17 +6844,21 @@ packages:
         optional: true
       '@azure/storage-blob':
         optional: true
+      '@capacitor/preferences':
+        optional: true
       '@planetscale/database':
         optional: true
       '@upstash/redis':
         optional: true
       '@vercel/kv':
         optional: true
+      idb-keyval:
+        optional: true
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.5.3
       destr: 2.0.1
-      h3: 1.8.0-rc.2
+      h3: 1.7.1
       ioredis: 5.3.2
       listhen: 1.2.2
       lru-cache: 10.0.0
