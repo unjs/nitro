@@ -24,7 +24,7 @@ export function useEvent(): H3Event {
   } catch {
     const hint = import.meta._asyncContext
       ? "Note: This is an experimental feature and might be broken on non-Node.js environments."
-      : "Enable the experimental flag using `experimental.asyncContext: true`";
+      : "Enable the experimental flag using `experimental.asyncContext: true`.";
     throw createError({
       message: `Nitro request context is not available. ${hint}`,
     });
