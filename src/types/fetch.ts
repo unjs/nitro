@@ -6,10 +6,10 @@ import type { MatchedRoutes } from "./utils";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InternalApi {}
 
-export interface InternalFetch {
-  <T = unknown>(
+export interface InternalFetch<DefaultResponse = unknown, DefaultFetchRequest = Exclude<FetchRequest, string> | (string & {})> {
+  <T = DefaultResponse, R = DefaultFetchRequest>(
     // eslint-disable-next-line @typescript-eslint/ban-types
-    request: Exclude<FetchRequest, string> | (string & {}),
+    request: R,
     opts?: FetchOptions
   ): Promise<T>;
 }
@@ -76,9 +76,9 @@ export type ExtractedRouteMethod<
   ? Lowercase<O["method"]>
   : "get";
 
-export interface $Fetch extends InternalFetch {
-  raw: InternalFetch;
-  create(defaults: FetchOptions): InternalFetch;
+export interface $Fetch<DefaultResponse = unknown, DefaultFetchRequest = Exclude<FetchRequest, string> | (string & {})> extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
+  raw: InternalFetch<DefaultResponse, DefaultFetchRequest>;
+  create(defaults: FetchOptions): InternalFetch<DefaultResponse>;
 }
 
 declare global {
