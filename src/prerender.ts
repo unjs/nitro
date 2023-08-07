@@ -204,26 +204,6 @@ export async function prerender(nitro: Nitro) {
       failedRoutes.add(_route);
     }
 
-    // Guess if route is HTML
-    const isImplicitHTML =
-      !route.endsWith(".html") &&
-      (res.headers.get("content-type") || "").includes("html");
-
-    // Crawl route links
-    if (!_route.error && isImplicitHTML) {
-      const extractedLinks = extractLinks(
-        dataBuff.toString("utf8"),
-        route,
-        res,
-        nitro.options.prerender.crawlLinks
-      );
-      for (const _link of extractedLinks) {
-        if (canPrerender(_link)) {
-          routes.add(_link);
-        }
-      }
-    }
-
     // Measure actual time taken for generating route
     _route.generateTimeMS = Date.now() - start;
 
@@ -240,6 +220,12 @@ export async function prerender(nitro: Nitro) {
       return _route;
     }
 
+    // Guess if route is HTML
+    const isImplicitHTML =
+      !route.endsWith(".html") &&
+      (res.headers.get("content-type") || "").includes("html");
+
+    // Write to disk
     if (canWriteToDisk(_route)) {
       const routeWithIndex = route.endsWith("/") ? route + "index" : route;
       _route.fileName = isImplicitHTML
@@ -248,14 +234,28 @@ export async function prerender(nitro: Nitro) {
       _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL);
       const filePath = join(nitro.options.output.publicDir, _route.fileName);
       await writeFile(filePath, dataBuff);
+      nitro._prerenderedRoutes.push(_route);
     }
 
-    nitro._prerenderedRoutes.push(_route);
+    // Crawl route links
+    if (!_route.error && isImplicitHTML) {
+      const extractedLinks = extractLinks(
+        dataBuff.toString("utf8"),
+        route,
+        res,
+        nitro.options.prerender.crawlLinks
+      );
+      for (const _link of extractedLinks) {
+        if (canPrerender(_link)) {
+          routes.add(_link);
+        }
+      }
+    }
+
     await nitro.hooks.callHook("prerender:route", _route);
     nitro.logger.log(formatPrerenderRoute(_route));
 
     dataBuff = undefined; // Free memory
-
     return _route;
   };
 
