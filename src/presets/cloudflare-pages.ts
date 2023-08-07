@@ -68,7 +68,7 @@ export interface CloudflarePagesRoutes {
 }
 
 async function writeCFRoutes(nitro: Nitro) {
-  const _cfPagesConfig = nitro.options.cloudflare.pages || {};
+  const _cfPagesConfig = nitro.options.cloudflare?.pages || {};
   const routes: CloudflarePagesRoutes = {
     version: _cfPagesConfig.routes?.version || 1,
     include: _cfPagesConfig.routes?.include || ["/*"],
