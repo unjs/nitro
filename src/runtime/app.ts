@@ -65,6 +65,25 @@ function createNitroApp(): NitroApp {
       captureError(error, { event, tags: ["request"] });
       return errorHandler(error as H3Error, event);
     },
+    onRequest: async (event) => {
+      await nitroApp.hooks.callHookParallel("request", event).catch((error) => {
+        captureError(error, { event, tags: ["request"] });
+      });
+    },
+    onBeforeResponse: async (event, response) => {
+      await nitroApp.hooks
+        .callHookParallel("beforeResponse", event, response)
+        .catch((error) => {
+          captureError(error, { event, tags: ["request", "response"] });
+        });
+    },
+    onAfterResponse: async (event, response) => {
+      await nitroApp.hooks
+        .callHookParallel("afterResponse", event, response)
+        .catch((error) => {
+          captureError(error, { event, tags: ["request", "response"] });
+        });
+    },
   });
 
   const router = createRouter({
