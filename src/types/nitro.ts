@@ -227,6 +227,10 @@ export interface NitroOptions extends PresetOptions {
      * See https://github.com/microsoft/TypeScript/pull/51669
      */
     typescriptBundlerResolution?: boolean;
+    /**
+     * Enable native async context support for useEvent()
+     */
+    asyncContext?: boolean;
   };
   future: {
     nativeSWR: boolean;
