@@ -199,8 +199,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       unenv:
-        specifier: ^1.6.1
-        version: 1.6.1
+        specifier: ^1.6.2
+        version: 1.6.2
       unimport:
         specifier: ^3.1.3
         version: 3.1.3(rollup@3.27.2)
@@ -3494,7 +3494,7 @@ packages:
       radix3: 1.0.1
       ufo: 1.2.0
       uncrypto: 0.1.3
-      unenv: 1.6.1
+      unenv: 1.6.2
     dev: false
 
   /has-bigints@1.0.2:
@@ -5574,8 +5574,8 @@ packages:
     dependencies:
       busboy: 1.6.0
 
-  /unenv@1.6.1:
-    resolution: {integrity: sha512-cjQnvJctZluBwOCBtFT4ZRR1cCJOVrcDK/TXzdqc6I+ZKWBFVDs6JjH0qkK6d8RsFSRHbQkWRgSzu66e52FHBA==}
+  /unenv@1.6.2:
+    resolution: {integrity: sha512-oDbB3arlgPB8Berj4nD7z9ydzF8ITInlBunf0a+3YJkLDhI1DJrUdmv2ovPXAIXvxzW4FTIGtWqng6dk7/kziA==}
     dependencies:
       consola: 3.2.3
       defu: 6.1.2
