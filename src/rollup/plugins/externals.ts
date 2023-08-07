@@ -520,6 +520,13 @@ export function normalizeMatcher(input: string | RegExp | Matcher): Matcher {
       return id.startsWith(pattern) || idWithoutNodeModules.startsWith(pattern);
     }) as Matcher;
     matcher.score = input.length;
+
+    // Increase score for npm package names to avoid breaking changes
+    // TODO: Remove in next major version
+    if (!isAbsolute(input) && input[0] !== ".") {
+      matcher.score += 1000;
+    }
+
     Object.defineProperty(matcher, "name", { value: `match(${pattern})` });
     return matcher;
   }

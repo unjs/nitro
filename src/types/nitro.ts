@@ -69,12 +69,11 @@ export interface PrerenderRoute {
   fileName?: string;
   error?: Error & { statusCode: number; statusMessage: string };
   generateTimeMS?: number;
+  skip?: boolean;
 }
 
 /** @deprecated Internal type will be removed in future versions */
-export interface PrerenderGenerateRoute extends PrerenderRoute {
-  skip?: boolean;
-}
+export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
 export interface NitroHooks {
@@ -88,10 +87,7 @@ export interface NitroHooks {
   "prerender:routes": (routes: Set<string>) => HookResult;
   "prerender:config": (config: NitroConfig) => HookResult;
   "prerender:init": (prerenderer: Nitro) => HookResult;
-  "prerender:generate": (
-    route: PrerenderRoute & { skip?: boolean },
-    nitro: Nitro
-  ) => HookResult;
+  "prerender:generate": (route: PrerenderRoute, nitro: Nitro) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;
   "prerender:done": (result: {
     prerenderedRoutes: PrerenderRoute[];
@@ -227,6 +223,10 @@ export interface NitroOptions extends PresetOptions {
      * See https://github.com/microsoft/TypeScript/pull/51669
      */
     typescriptBundlerResolution?: boolean;
+    /**
+     * Enable native async context support for useEvent()
+     */
+    asyncContext?: boolean;
   };
   future: {
     nativeSWR: boolean;
