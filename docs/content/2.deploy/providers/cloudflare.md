@@ -132,7 +132,7 @@ jobs:
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare-pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -178,7 +178,7 @@ wrangler pages deploy
 
 ## Cloudflare Module Workers
 
-**Preset:** `cloudflare-module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.

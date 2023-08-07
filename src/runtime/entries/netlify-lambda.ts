@@ -5,7 +5,6 @@ import type {
   HandlerEvent,
 } from "@netlify/functions";
 import { withQuery } from "ufo";
-import { splitCookiesString } from "h3";
 import { nitroApp } from "../app";
 import {
   normalizeLambdaIncomingHeaders,
@@ -36,7 +35,7 @@ export async function lambda(
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
+  const cookies = normalizeCookieHeader(String(r.headers["set-cookie"]));
 
   return {
     statusCode: r.status,

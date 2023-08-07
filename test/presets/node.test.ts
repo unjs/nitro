@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
+import { isWindows } from "std-env";
 import { startServer, setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:node", async () => {
@@ -29,10 +30,13 @@ describe("nitro:preset:node", async () => {
     expect(noncached2.headers.get("etag")).toBeNull();
   });
 
-  it("should not bundle externals", () => {
+  it.skipIf(isWindows)("should not bundle externals", () => {
     const serverNodeModules = resolve(ctx.outDir, "server/node_modules");
     expect(
       existsSync(resolve(serverNodeModules, "@fixture/nitro-utils/extra.mjs"))
+    ).toBe(true);
+    expect(
+      existsSync(resolve(serverNodeModules, "@fixture/nitro-utils/extra2.mjs"))
     ).toBe(true);
   });
 });

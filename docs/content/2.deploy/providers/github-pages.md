@@ -2,7 +2,7 @@
 
 Deploy Nitro apps to GitHub Pages.
 
-**Preset:** `github-pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `github_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 Nitro supports deploying on [GitHub Pages](https://pages.github.com/) with minimal configuration.
 
@@ -12,7 +12,7 @@ Follow the steps to [create a GitHub Pages site](https://docs.github.com/en/page
 
 ## Deployment
 
-Here is an example GitHub Actions workflow to deploy your site to GitHub Pages using the `github-pages` preset:
+Here is an example GitHub Actions workflow to deploy your site to GitHub Pages using the `github_pages` preset:
 
 ```yaml
 # https://github.com/actions/deploy-pages#usage
@@ -38,7 +38,7 @@ jobs:
       - run: npm install
       - run: npm run build
         env:
-          NITRO_PRESET: github-pages
+          NITRO_PRESET: github_pages
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
@@ -55,9 +55,9 @@ jobs:
       pages: write      # to deploy to Pages
       id-token: write   # to verify the deployment originates from an appropriate source
 
-    # Deploy to the github-pages environment
+    # Deploy to the github_pages environment
     environment:
-      name: github-pages
+      name: github_pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     # Specify runner + deployment step
