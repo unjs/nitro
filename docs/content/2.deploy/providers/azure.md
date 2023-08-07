@@ -55,7 +55,7 @@ If you are using runtimeConfig, you will likely want to configure the correspond
 
 ## Azure Functions
 
-**Preset:** `azure-functions`
+**Preset:** `azure_functions`
 
 **Note:** If you encounter any issues, please ensure you're using a Node.js 14+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#setting-the-node-version).
 
@@ -66,7 +66,7 @@ Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azur
 You can invoke a development environment from the serverless directory.
 
 ```bash
-NITRO_PRESET=azure-functions yarn build
+NITRO_PRESET=azure_functions yarn build
 cd .output
 func start
 ```
@@ -134,7 +134,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NITRO_PRESET: azure-functions
+          NITRO_PRESET: azure_functions
 
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1

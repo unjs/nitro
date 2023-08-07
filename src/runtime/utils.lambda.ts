@@ -1,5 +1,4 @@
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
-import type { HeadersObject } from "unenv/runtime/_internal/types";
 
 export function normalizeLambdaIncomingHeaders(
   headers?: APIGatewayProxyEventHeaders
@@ -13,7 +12,7 @@ export function normalizeLambdaIncomingHeaders(
 }
 
 export function normalizeLambdaOutgoingHeaders(
-  headers: HeadersObject,
+  headers: Record<string, number | string | string[] | undefined>,
   stripCookies = false
 ) {
   const entries = stripCookies
@@ -21,7 +20,7 @@ export function normalizeLambdaOutgoingHeaders(
     : Object.entries(headers);
 
   return Object.fromEntries(
-    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v])
+    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : String(v)])
   );
 }
 
@@ -30,7 +29,7 @@ export function normalizeLambdaOutgoingHeaders(
 // see https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings.html
 export function normalizeLambdaOutgoingBody(
   body: BodyInit,
-  headers: HeadersObject
+  headers: Record<string, number | string | string[] | undefined>
 ): string {
   if (typeof body === "string") {
     return body;
