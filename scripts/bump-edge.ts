@@ -3,7 +3,7 @@ import { execaCommand } from "execa";
 import { resolve } from "pathe";
 import { globby } from "globby";
 
-// Temporary forked from nuxt/framework
+// Temporary forked from nuxt/nuxt
 
 async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, "package.json");

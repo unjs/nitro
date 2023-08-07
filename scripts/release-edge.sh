@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Temporary forked from nuxt/framework
+# Temporary forked from nuxt/nuxt
 
 set -xe
 

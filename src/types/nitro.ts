@@ -59,7 +59,7 @@ export interface Nitro {
   updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
 
   /* @internal */
-  _prerenderedRoutes?: PrerenderGenerateRoute[];
+  _prerenderedRoutes?: PrerenderRoute[];
 }
 
 export interface PrerenderRoute {
@@ -71,6 +71,7 @@ export interface PrerenderRoute {
   generateTimeMS?: number;
 }
 
+/** @deprecated Internal type will be removed in future versions */
 export interface PrerenderGenerateRoute extends PrerenderRoute {
   skip?: boolean;
 }
@@ -83,12 +84,19 @@ export interface NitroHooks {
   "rollup:reload": () => HookResult;
   restart: () => HookResult;
   close: () => HookResult;
+  // Prerender
   "prerender:routes": (routes: Set<string>) => HookResult;
-  "prerender:route": (route: PrerenderRoute) => HookResult;
+  "prerender:config": (config: NitroConfig) => HookResult;
+  "prerender:init": (prerenderer: Nitro) => HookResult;
   "prerender:generate": (
-    route: PrerenderGenerateRoute,
+    route: PrerenderRoute & { skip?: boolean },
     nitro: Nitro
   ) => HookResult;
+  "prerender:route": (route: PrerenderRoute) => HookResult;
+  "prerender:done": (result: {
+    prerenderedRoutes: PrerenderRoute[];
+    failedRoutes: PrerenderRoute[];
+  }) => HookResult;
 }
 
 type CustomDriverName = string & { _custom?: any };
@@ -140,7 +148,7 @@ export interface CompressOptions {
 
 type Enumerate<
   N extends number,
-  Acc extends number[] = []
+  Acc extends number[] = [],
 > = Acc["length"] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;
@@ -219,6 +227,10 @@ export interface NitroOptions extends PresetOptions {
      * See https://github.com/microsoft/TypeScript/pull/51669
      */
     typescriptBundlerResolution?: boolean;
+    /**
+     * Enable native async context support for useEvent()
+     */
+    asyncContext?: boolean;
   };
   future: {
     nativeSWR: boolean;
