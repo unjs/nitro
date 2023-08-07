@@ -25,14 +25,16 @@ export function useRuntimeConfig<
 >(event?: H3Event): T {
   // Backwards compatibility with ambient context
   if (!event) {
-    return getRuntimeConfig() as T;
+    return _sharedRuntimeConfig as T;
+    // return getRuntimeConfig() as T;
   }
   // Reuse cached runtime config from event context
   if (event.context.nitro.runtimeConfig) {
     return event.context.nitro.runtimeConfig;
   }
   // Prepare runtime config for event context
-  const runtimeConfig = klona(getRuntimeConfig()) as T;
+  const runtimeConfig = klona(_inlineRuntimeConfig) as T;
+  // const runtimeConfig = klona(getRuntimeConfig()) as T;
   _applyEnv(runtimeConfig);
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;

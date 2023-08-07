@@ -71,6 +71,8 @@ export async function setupTest(preset: string) {
       nitro: {
         envPrefix: "NUXT_",
       },
+      hello: "",
+      helloThere: "",
     },
     buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
@@ -405,7 +407,7 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        dynamic: "from-env",
+        dynamic: ctx.preset.startsWith("cloudflare") ? "initial" : "from-env",
         app: {
           baseURL: "/",
         },
@@ -417,9 +419,7 @@ export function testNitro(
         "server-config": true,
       },
       sharedRuntimeConfig: {
-        dynamic:
-          // TODO
-          ctx.preset.includes("cloudflare") ? "initial" : "from-env",
+        dynamic: ctx.preset.startsWith("cloudflare") ? "initial" : "from-env",
         app: {
           baseURL: "/",
         },
@@ -544,6 +544,7 @@ export function testNitro(
   describe("environment variables", () => {
     it("can load environment variables from runtimeConfig", async () => {
       const { data } = await callHandler({ url: "/config" });
+      expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.helloThere).toBe("general");
       expect(data.runtimeConfig.secret).toBeUndefined();
