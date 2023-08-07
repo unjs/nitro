@@ -407,7 +407,7 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        // TODO `cloudflare` preset __env__ issue
+        // @note `cloudflare-pages` and `cloudflare-module` presets are only available in their `fetch` context.
         dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
         app: {
           baseURL: "/",
@@ -422,7 +422,7 @@ export function testNitro(
       sharedRuntimeConfig: {
         dynamic:
           // TODO
-          ctx.preset.startsWith("cloudflare") ||
+          ctx.preset.includes("cloudflare") ||
           ctx.preset === "vercel-edge" ||
           ctx.preset === "nitro-dev"
             ? "initial"
@@ -549,14 +549,11 @@ export function testNitro(
   });
 
   describe("environment variables", () => {
-    it.skipIf(ctx.preset === "cloudflare")(
-      "can load environment variables from runtimeConfig",
-      async () => {
-        const { data } = await callHandler({ url: "/config" });
-        expect(data.runtimeConfig.hello).toBe("world");
-        expect(data.runtimeConfig.helloThere).toBe("general");
-        expect(data.runtimeConfig.secret).toBeUndefined();
-      }
-    );
+    it("can load environment variables from runtimeConfig", async () => {
+      const { data } = await callHandler({ url: "/config" });
+      expect(data.runtimeConfig.hello).toBe("world");
+      expect(data.runtimeConfig.helloThere).toBe("general");
+      expect(data.runtimeConfig.secret).toBeUndefined();
+    });
   });
 }
