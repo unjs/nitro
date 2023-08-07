@@ -87,7 +87,7 @@ export default defineNitroConfig({
   cloudflare: {
     pages: {
       routes: {
-        include: ["/api/*", "/blog/*"],
+        include: ["/*", "/api/*", "/blog/*"],
         exclude: ["/blog/static/*"],
       },
     },
