@@ -29,8 +29,6 @@ async function handleEvent(event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer());
   }
 
-  globalThis.__env__ = globalThis;
-
   return nitroApp.localFetch(url.pathname + url.search, {
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
