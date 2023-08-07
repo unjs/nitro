@@ -75,7 +75,7 @@ async function writeCFRoutes(nitro: Nitro) {
 
   if (
     nitro.options.cloudflare?.pages?.routes == null ||
-    nitro.options.cloudflare.pages.routes!.merge
+    nitro.options.cloudflare?.pages?.routes?.merge
   ) {
     routes.exclude.push(
       ...(nitro.options.cloudflare?.pages?.routes?.exclude ?? [])
