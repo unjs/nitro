@@ -1,6 +1,5 @@
 import { createRequire } from "node:module";
 import { existsSync } from "node:fs";
-import { readFile } from "node:fs/promises";
 import { join, relative, resolve } from "pathe";
 import { globby } from "globby";
 import { readPackageJSON } from "pkg-types";
@@ -13,25 +12,26 @@ export const firebase = defineNitroPreset({
   commands: {
     deploy: "npx firebase-tools deploy",
   },
+  firebase: {
+    // we need this defined here so it's picked up by the template in firebase's entry
+    gen: (process.env.NITRO_FIREBASE_GEN || "default") as any,
+  },
   hooks: {
     async compiled(ctx) {
       await writeRoutes(ctx);
     },
 
     "rollup:before": (nitro) => {
-      if (
-        !nitro.options.firebase?.gen ||
-        // @ts-expect-error: internal value only
-        nitro.options.firebase.gen === "default"
-      ) {
+      const _gen = nitro.options.firebase?.gen as unknown;
+      if (!_gen || _gen === "default") {
         nitro.logger.warn(
-          '"firebase.gen" is not set in nitro options. This will default to Cloud Functions 1st generation. It is recommended to set this to the latest generation (currently 2). Set the version to remove this warning. See https://firebase.google.com/docs/functions/version-comparison for more information.'
+          "Nether `firebase.gen` or `NITRO_FIREBASE_GEN` is not set. This will default to Cloud Functions 1st generation. It is recommended to set this to the latest generation (currently `2`). Set the version to remove this warning. See https://nitro.unjs.io/deploy/providers/firebase for more information."
         );
         // Using the gen 1 makes this preset backwards compatible for people already using it
         nitro.options.firebase = { gen: 1 };
       }
-
-      nitro.options.appConfig._firebase = nitro.options.firebase;
+      nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
+      nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
     },
   },
 });
@@ -84,22 +84,9 @@ async function writeRoutes(nitro: Nitro) {
     {} as Record<string, string>
   );
 
-  let nodeVersion: string = nitro.options.firebase?.nodeVersion || "18";
-  const supportedNodeVersions = new Set(["20", "18", "16"]);
-  //    ^ See https://cloud.google.com/functions/docs/concepts/nodejs-runtime
-  try {
-    const currentNodeVersion = JSON.parse(
-      await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
-    ).engines.node;
-    if (supportedNodeVersions.has(currentNodeVersion)) {
-      nodeVersion = currentNodeVersion;
-    }
-  } catch {
-    const currentNodeVersion = process.versions.node.slice(0, 2);
-    if (supportedNodeVersions.has(currentNodeVersion)) {
-      nodeVersion = currentNodeVersion;
-    }
-  }
+  // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
+  // const supportedNodeVersions = new Set(["20", "18", "16"]);
+  const nodeVersion: string = nitro.options.firebase?.nodeVersion || "18";
 
   const getPackageVersion = async (id) => {
     const pkg = await readPackageJSON(id, {

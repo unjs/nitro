@@ -14,7 +14,7 @@ Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with
 
 If you don't already have a `firebase.json` in your root directory, Nitro will create one the first time you run it. In this file, you will need to replace `<your_project_id>` with the ID of your Firebase project. This file should then be committed to version control.
 
-### Create a .firebaserc file
+### Create a `.firebaserc` file
 
 It is also recommended to create a `.firebaserc` file so you don't need to manually pass your project ID to your `firebase` commands (with `--project <your_project_id>`):
 
@@ -56,7 +56,7 @@ npx firebase-tools login
 
 You may instead prefer to set up your project with the Firebase CLI, which will fetch your project ID for you, add required dependencies (see above) and even set up automated deployments via GitHub Actions (for hosting only). [Learn about installing the firebase CLI](https://firebase.google.com/docs/cli#windows-npm).
 
-### Install Firebase CLI globally
+### Install Firebase CLI Globally
 
 Always try to use the latest version of the Firebase CLI.
 
@@ -64,9 +64,9 @@ Always try to use the latest version of the Firebase CLI.
 npm install -g firebase-tools@latest
 ```
 
-**Note**: You need to be on [^11.18.0](https://github.com/firebase/firebase-tools/releases/tag/v11.18.0) to deploy a nodejs18 function.
+**Note**: You need to be on [^11.18.0](https://github.com/firebase/firebase-tools/releases/tag/v11.18.0) to deploy a `nodejs18` function.
 
-### Initialize your Firebase project
+### Initialize your Firebase Project
 
 ```bash
 firebase login
@@ -93,7 +93,7 @@ Once complete, add the following to your `firebase.json` to enable server render
 
 You can find more details in the [Firebase documentation](https://firebase.google.com/docs/hosting/quickstart).
 
-## Local preview
+## Local Preview
 
 You can preview a local version of your site if you need to test things out without deploying.
 
@@ -180,7 +180,9 @@ export default defineNuxtConfig({
 
 You can also set options for 1st generation Cloud Functions if the `gen` option is set to `1`. Note these are different from the options for 2nd generation Cloud Functions.
 
-## Runtime
+## Runtime Version
+
+<!-- TODO: Prefer nitro config for Node.js version! -->
 
 Firebase uses the `engines.node` version in your `package.json` to determine which node version to use for your functions. If you want to use a different version of node for your functions, you should set the `engines.node` version in your `package.json` to the version you want to use:
 

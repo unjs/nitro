@@ -253,6 +253,9 @@ importers:
       expect-type:
         specifier: ^0.16.0
         version: 0.16.0
+      firebase-admin:
+        specifier: ^11.10.1
+        version: 11.10.1
       firebase-functions:
         specifier: ^4.4.1
         version: 4.4.1(firebase-admin@11.10.1)

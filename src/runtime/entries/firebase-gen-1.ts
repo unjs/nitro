@@ -4,9 +4,9 @@ import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
 import { useAppConfig } from "#internal/nitro";
 
-const firebaseGen1Config = useAppConfig()?._firebase;
+const firebaseConfig = useAppConfig().nitro.firebase;
 
 export const server = functions
-  .region(firebaseGen1Config?.region ?? functions.RESET_VALUE)
-  .runWith(firebaseGen1Config?.runtimeOptions ?? functions.RESET_VALUE)
+  .region(firebaseConfig.region ?? functions.RESET_VALUE)
+  .runWith(firebaseConfig.runtimeOptions ?? functions.RESET_VALUE)
   .https.onRequest(toNodeListener(nitroApp.h3App));
