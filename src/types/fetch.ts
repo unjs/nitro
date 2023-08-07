@@ -6,7 +6,13 @@ import type { MatchedRoutes } from "./utils";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InternalApi {}
 
-export interface InternalFetch<DefaultResponse = unknown, DefaultFetchRequest extends RequestInfo | URL = Exclude<FetchRequest, string> | RequestInfo | URL> {
+export interface InternalFetch<
+  DefaultResponse = unknown,
+  DefaultFetchRequest extends RequestInfo | URL =
+    | Exclude<FetchRequest, string>
+    | RequestInfo
+    | URL,
+> {
   <T = DefaultResponse, R extends RequestInfo | URL = DefaultFetchRequest>(
     request: R,
     opts?: FetchOptions
@@ -75,7 +81,13 @@ export type ExtractedRouteMethod<
   ? Lowercase<O["method"]>
   : "get";
 
-export interface $Fetch<DefaultResponse = unknown, DefaultFetchRequest extends RequestInfo | URL = Exclude<FetchRequest, string> | RequestInfo | URL> extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
+export interface $Fetch<
+  DefaultResponse = unknown,
+  DefaultFetchRequest extends RequestInfo | URL =
+    | Exclude<FetchRequest, string>
+    | RequestInfo
+    | URL,
+> extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
   raw: InternalFetch<DefaultResponse, DefaultFetchRequest>;
   create(defaults: FetchOptions): InternalFetch<DefaultResponse>;
 }
