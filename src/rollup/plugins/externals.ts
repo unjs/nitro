@@ -157,7 +157,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
             return {
-              id: guessedSubpath,
+              id: join(pkgName, guessedSubpath),
               external: true,
             };
           }
