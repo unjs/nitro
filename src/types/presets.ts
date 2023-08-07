@@ -116,6 +116,12 @@ export interface PresetOptions {
        * ```
        */
       routes?: CloudflarePagesRoutes;
+      /**
+       * If set to `false`, nitro will disable the automatically generated `_routes.json` and instead use the user-set only ones.
+       *
+       * @default true
+       */
+      defaultRoutes?: boolean;
     };
   };
 }

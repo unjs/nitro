@@ -68,13 +68,23 @@ export interface CloudflarePagesRoutes {
 }
 
 async function writeCFRoutes(nitro: Nitro) {
-  const _cfPagesConfig = nitro.options.cloudflare.pages.routes || {};
-
+  const _cfPagesConfig = nitro.options.cloudflare.pages || {};
   const routes: CloudflarePagesRoutes = {
-    version: _cfPagesConfig.version || 1,
-    include: _cfPagesConfig.include || [],
-    exclude: [...(_cfPagesConfig.exclude || [])],
+    version: _cfPagesConfig.routes?.version || 1,
+    include: _cfPagesConfig.routes?.include || ["/*"],
+    exclude: _cfPagesConfig.routes?.exclude || [],
   };
+
+  const writeRoutes = () =>
+    fsp.writeFile(
+      resolve(nitro.options.output.publicDir, "_routes.json"),
+      JSON.stringify(routes, undefined, 2)
+    );
+
+  if (_cfPagesConfig.defaultRoutes === false) {
+    await writeRoutes();
+    return;
+  }
 
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
@@ -109,10 +119,7 @@ async function writeCFRoutes(nitro: Nitro) {
   // Only allow 100 rules in total (include + exclude)
   routes.exclude.splice(100 - routes.include.length);
 
-  await fsp.writeFile(
-    resolve(nitro.options.output.publicDir, "_routes.json"),
-    JSON.stringify(routes, undefined, 2)
-  );
+  await writeRoutes();
 }
 
 function comparePaths(a: string, b: string) {
