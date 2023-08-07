@@ -2,7 +2,7 @@
 
 Deploy Nitro apps to Render.
 
-**Preset:** `render-com` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `render_com` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 Nitro supports deploying on [Render](https://render.com/) with minimal configuration.
 
@@ -16,7 +16,7 @@ Nitro supports deploying on [Render](https://render.com/) with minimal configura
 
 1. Update the start command to `node .output/server/index.mjs`
 
-1. Click 'Advanced' and add an environment variable with `NITRO_PRESET` set to `render-com`.
+1. Click 'Advanced' and add an environment variable with `NITRO_PRESET` set to `render_com`.
 
 1. Click 'Create Web Service'.
 
@@ -35,7 +35,7 @@ services:
     buildCommand: npm install && npm run build
     envVars:
     - key: NITRO_PRESET
-      value: render-com
+      value: render_com
 ```
 2. [Create a new Blueprint Instance](https://dashboard.render.com/select-repo?type=blueprint) and select the repository containing your `render.yaml` file.
 

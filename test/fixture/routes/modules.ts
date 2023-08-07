@@ -8,6 +8,8 @@ import depLib from "@fixture/nitro-lib";
 import subpathLib from "@fixture/nitro-lib/subpath";
 // @ts-ignore
 import extraUtils from "@fixture/nitro-utils/extra";
+// @ts-ignore
+import extraUtilsAbsolute from "#fixture-nitro-utils-extra-absolute";
 
 export default defineEventHandler(() => {
   return {
@@ -16,5 +18,6 @@ export default defineEventHandler(() => {
     depLib, // expected to all be 2.0.0
     subpathLib, // expected to 2.0.0
     extraUtils,
+    extraUtilsAbsolute,
   };
 });
