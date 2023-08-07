@@ -484,7 +484,12 @@ export function testNitro(
       // TODO: Node presets do not split cookies
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
-      const notSplitingPresets = ["node", "nitro-dev", "vercel", nodeVersion < 18 && "deno-server"].filter(Boolean);
+      const notSplitingPresets = [
+        "node",
+        "nitro-dev",
+        "vercel",
+        nodeVersion < 18 && "deno-server",
+      ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
           nodeVersion < 18
@@ -521,6 +526,17 @@ export function testNitro(
         (entry) => entry.message
       );
       expect(allErrorMessages).to.includes("Service Unavailable");
+    });
+  });
+
+  describe("async context", () => {
+    it.skipIf(!ctx.nitro.options.node)("works", async () => {
+      const { data } = await callHandler({ url: "/context?foo" });
+      expect(data).toMatchObject({
+        context: {
+          path: "/context?foo",
+        },
+      });
     });
   });
 }
