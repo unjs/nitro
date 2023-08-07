@@ -22,6 +22,7 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  env: Record<string, string>;
   [key: string]: unknown;
 }
 
@@ -45,12 +46,22 @@ export async function setupTest(preset: string) {
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    env: {
+      NITRO_HELLO: "world",
+      NUXT_HELLO_THERE: "general",
+      SECRET: "secret",
+    },
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
         redirect: "manual",
         ...(opts as any),
       }),
   };
+
+  // Set environment variables for process compatible presets
+  for (const [name, value] of Object.entries(ctx.env)) {
+    process.env[name] = value;
+  }
 
   const nitro = (ctx.nitro = await createNitro({
     preset: ctx.preset,
@@ -408,11 +419,7 @@ export function testNitro(
       sharedRuntimeConfig: {
         dynamic:
           // TODO
-          ctx.preset.includes("cloudflare") ||
-          ctx.preset === "vercel-edge" ||
-          ctx.preset === "nitro-dev"
-            ? "initial"
-            : "from-env",
+          ctx.preset.includes("cloudflare") ? "initial" : "from-env",
         app: {
           baseURL: "/",
         },
@@ -489,7 +496,12 @@ export function testNitro(
       // TODO: Node presets do not split cookies
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
-      const notSplitingPresets = ["node", "nitro-dev", "vercel", nodeVersion < 18 && "deno-server"].filter(Boolean);
+      const notSplitingPresets = [
+        "node",
+        "nitro-dev",
+        "vercel",
+        nodeVersion < 18 && "deno-server",
+      ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
           nodeVersion < 18
@@ -530,14 +542,8 @@ export function testNitro(
   });
 
   describe("environment variables", () => {
-    it.runIf(
-      ["cloudflare-module", "cloudflare-pages"].includes(
-        ctx.nitro.options.preset
-      )
-    )("can load environment variables from runtimeConfig", async () => {
-      const { data } = await callHandler({
-        url: "/config",
-      });
+    it("can load environment variables from runtimeConfig", async () => {
+      const { data } = await callHandler({ url: "/config" });
       expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.helloThere).toBe("general");
       expect(data.runtimeConfig.secret).toBeUndefined();

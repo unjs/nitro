@@ -17,7 +17,7 @@ const _sharedRuntimeConfig = _deepFreeze(
 );
 const getRuntimeConfig = () => ({
   ..._sharedRuntimeConfig,
-  ...envToRuntimeObject(globalThis.__env__ ?? {}),
+  ...envToRuntimeObject(globalThis.__env__ ?? process.env ?? {}),
 });
 
 export function useRuntimeConfig<
