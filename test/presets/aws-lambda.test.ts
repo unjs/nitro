@@ -7,7 +7,7 @@ import { setupTest, testNitro } from "../tests";
 describe("nitro:preset:aws-lambda", async () => {
   const ctx = await setupTest("aws-lambda");
   // Lambda v1 paylod
-  testNitro(ctx, async () => {
+  testNitro({ ...ctx, lambdaV1: true }, async () => {
     const { handler } = await import(resolve(ctx.outDir, "server/index.mjs"));
     return async ({ url: rawRelativeUrl, headers, method, body }) => {
       // creating new URL object to parse query easier
@@ -28,6 +28,7 @@ describe("nitro:preset:aws-lambda", async () => {
         data: destr(res.body),
         status: res.statusCode,
         headers: res.headers,
+        cookies: res.cookies,
       };
     };
   });
@@ -61,10 +62,20 @@ describe("nitro:preset:aws-lambda", async () => {
         body: body || "",
       };
       const res = await handler(event);
+      const resHeaders = { ...res.headers };
+      if (res.cookies) {
+        if (!resHeaders["set-cookie"]) {
+          resHeaders["set-cookie"] = [];
+        }
+        if (!Array.isArray(resHeaders["set-cookie"])) {
+          resHeaders["set-cookie"] = [resHeaders["set-cookie"]];
+        }
+        resHeaders["set-cookie"].push(...res.cookies);
+      }
       return {
         data: destr(res.body),
         status: res.statusCode,
-        headers: res.headers,
+        headers: resHeaders,
       };
     };
   });

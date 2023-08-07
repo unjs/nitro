@@ -26,10 +26,11 @@ describe("nitro:preset:netlify", async () => {
         body: body || "",
       };
       const res = await handler(event, {} as any, () => {});
+      const resHeaders = { ...res.headers, ...res.multiValueHeaders };
       return {
         data: destr(res.body),
         status: res.statusCode,
-        headers: res.headers,
+        headers: resHeaders,
       };
     };
   });

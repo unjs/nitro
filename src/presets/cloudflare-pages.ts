@@ -8,9 +8,10 @@ import type { Nitro } from "../types";
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
   entry: "#internal/nitro/entries/cloudflare-pages",
+  exportConditions: ["workerd"],
   commands: {
     preview: "npx wrangler pages dev ./",
-    deploy: "npx wrangler pages publish ./",
+    deploy: "npx wrangler pages deploy ./",
   },
   output: {
     dir: "{{ rootDir }}/dist",
@@ -55,18 +56,35 @@ export const cloudflarePagesStatic = defineNitroPreset({
 /**
  * https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
  */
-interface CloudflarePagesRoutes {
-  version: 1;
-  include: string[];
-  exclude: string[];
+export interface CloudflarePagesRoutes {
+  /** Defines the version of the schema. Currently there is only one version of the schema (version 1), however, we may add more in the future and aim to be backwards compatible. */
+  version?: 1;
+
+  /** Defines routes that will be invoked by Functions. Accepts wildcard behavior. */
+  include?: string[];
+
+  /** Defines routes that will not be invoked by Functions. Accepts wildcard behavior. `exclude` always take priority over `include`. */
+  exclude?: string[];
 }
 
 async function writeCFRoutes(nitro: Nitro) {
+  const _cfPagesConfig = nitro.options.cloudflare?.pages || {};
   const routes: CloudflarePagesRoutes = {
-    version: 1,
-    include: ["/*"],
-    exclude: [],
+    version: _cfPagesConfig.routes?.version || 1,
+    include: _cfPagesConfig.routes?.include || ["/*"],
+    exclude: _cfPagesConfig.routes?.exclude || [],
   };
+
+  const writeRoutes = () =>
+    fsp.writeFile(
+      resolve(nitro.options.output.publicDir, "_routes.json"),
+      JSON.stringify(routes, undefined, 2)
+    );
+
+  if (_cfPagesConfig.defaultRoutes === false) {
+    await writeRoutes();
+    return;
+  }
 
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
@@ -101,10 +119,7 @@ async function writeCFRoutes(nitro: Nitro) {
   // Only allow 100 rules in total (include + exclude)
   routes.exclude.splice(100 - routes.include.length);
 
-  await fsp.writeFile(
-    resolve(nitro.options.output.publicDir, "_routes.json"),
-    JSON.stringify(routes, undefined, 2)
-  );
+  await writeRoutes();
 }
 
 function comparePaths(a: string, b: string) {

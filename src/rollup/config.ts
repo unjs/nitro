@@ -6,11 +6,11 @@ import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import commonjs from "@rollup/plugin-commonjs";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
 import json from "@rollup/plugin-json";
 import wasmPlugin from "@rollup/plugin-wasm";
 import inject from "@rollup/plugin-inject";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
@@ -184,6 +184,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     // @ts-expect-error
     "versions.nitro": version,
     "versions?.nitro": version,
+    // Internal
+    _asyncContext: nitro.options.experimental.asyncContext,
   };
 
   // Universal import.meta
@@ -385,7 +387,10 @@ export const plugins = [
         defu(nitro.options.externals, {
           outDir: nitro.options.output.serverDir,
           moduleDirectories: nitro.options.nodeModulesDirs,
-          external: [...(nitro.options.dev ? [nitro.options.buildDir] : [])],
+          external: [
+            ...(nitro.options.dev ? [nitro.options.buildDir] : []),
+            ...nitro.options.nodeModulesDirs,
+          ],
           inline: [
             "#",
             "~",
@@ -404,13 +409,7 @@ export const plugins = [
             processCwd: nitro.options.rootDir,
             exportsOnly: true,
           },
-          exportConditions: [
-            "default",
-            nitro.options.dev ? "development" : "production",
-            "module",
-            "node",
-            "import",
-          ],
+          exportConditions: nitro.options.exportConditions,
         })
       )
     );
@@ -425,13 +424,7 @@ export const plugins = [
       modulePaths: nitro.options.nodeModulesDirs,
       // 'module' is intentionally not supported because of externals
       mainFields: ["main"],
-      exportConditions: [
-        "default",
-        nitro.options.dev ? "development" : "production",
-        "module",
-        "node",
-        "import",
-      ],
+      exportConditions: nitro.options.exportConditions,
     })
   );
 

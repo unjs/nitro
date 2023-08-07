@@ -59,7 +59,7 @@ export interface Nitro {
   updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
 
   /* @internal */
-  _prerenderedRoutes?: PrerenderGenerateRoute[];
+  _prerenderedRoutes?: PrerenderRoute[];
 }
 
 export interface PrerenderRoute {
@@ -69,11 +69,11 @@ export interface PrerenderRoute {
   fileName?: string;
   error?: Error & { statusCode: number; statusMessage: string };
   generateTimeMS?: number;
-}
-
-export interface PrerenderGenerateRoute extends PrerenderRoute {
   skip?: boolean;
 }
+
+/** @deprecated Internal type will be removed in future versions */
+export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
 export interface NitroHooks {
@@ -83,12 +83,16 @@ export interface NitroHooks {
   "rollup:reload": () => HookResult;
   restart: () => HookResult;
   close: () => HookResult;
+  // Prerender
   "prerender:routes": (routes: Set<string>) => HookResult;
+  "prerender:config": (config: NitroConfig) => HookResult;
+  "prerender:init": (prerenderer: Nitro) => HookResult;
+  "prerender:generate": (route: PrerenderRoute, nitro: Nitro) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;
-  "prerender:generate": (
-    route: PrerenderGenerateRoute,
-    nitro: Nitro
-  ) => HookResult;
+  "prerender:done": (result: {
+    prerenderedRoutes: PrerenderRoute[];
+    failedRoutes: PrerenderRoute[];
+  }) => HookResult;
 }
 
 type CustomDriverName = string & { _custom?: any };
@@ -140,7 +144,7 @@ export interface CompressOptions {
 
 type Enumerate<
   N extends number,
-  Acc extends number[] = []
+  Acc extends number[] = [],
 > = Acc["length"] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;
@@ -215,6 +219,14 @@ export interface NitroOptions extends PresetOptions {
     wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
+    /**
+     * See https://github.com/microsoft/TypeScript/pull/51669
+     */
+    typescriptBundlerResolution?: boolean;
+    /**
+     * Enable native async context support for useEvent()
+     */
+    asyncContext?: boolean;
   };
   future: {
     nativeSWR: boolean;
@@ -226,6 +238,7 @@ export interface NitroOptions extends PresetOptions {
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
+  ignore: string[];
 
   // Dev
   dev: boolean;
@@ -267,6 +280,7 @@ export interface NitroOptions extends PresetOptions {
   analyze: false | PluginVisualizerOptions;
   replace: Record<string, string | ((id: string) => string)>;
   commonJS?: RollupCommonJSOptions;
+  exportConditions?: string[];
 
   // Advanced
   typescript: {

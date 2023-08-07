@@ -132,7 +132,7 @@ jobs:
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare-pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -143,6 +143,8 @@ jobs:
 :br
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
 ::
+
+Nitro automatically generates a `_routes.json` file that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overrided with the config option `cloudflare.pages.routes` ([read more](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)).
 
 ### Git integration
 
@@ -167,15 +169,15 @@ Create project:
 wrangler pages project create <project-name>
 ```
 
-Publish:
+Deploy:
 
 ```bash
-wrangler pages publish
+wrangler pages deploy
 ```
 
 ## Cloudflare Module Workers
 
-**Preset:** `cloudflare-module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -205,7 +207,7 @@ d1_databases = [
 ```ts
 // waitUntil allows cache writes, external logging, etc without blocking the event
 const { cloudflare } = event.context
-cloudflare.context.waitUntil(logRequest(event.node.req))
+cloudflare.context.waitUntil(logRequest(event.path))
 ```
 
 ### Access env and bindings

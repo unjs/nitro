@@ -63,6 +63,7 @@ const NitroDefaults: NitroConfig = {
   },
   virtual: {},
   compressPublicAssets: false,
+  ignore: [],
 
   // Dev
   dev: false,
@@ -366,6 +367,12 @@ export async function loadOptions(
   // Resolve plugin paths
   options.plugins = options.plugins.map((p) => resolvePath(p, options));
 
+  // Export conditions
+  options.exportConditions = _resolveExportConditions(
+    options.exportConditions,
+    { dev: options.dev, node: options.node }
+  );
+
   // Add open-api endpoint
   if (options.dev && options.experimental.openAPI) {
     options.handlers.push({
@@ -457,4 +464,44 @@ export function normalizeRouteRules(
     normalizedRules[path] = routeRules;
   }
   return normalizedRules;
+}
+
+function _resolveExportConditions(
+  conditions: string[] = [],
+  opts: { dev: boolean; node: boolean }
+) {
+  const resolvedConditions: string[] = [];
+
+  // 1. Add dev or production
+  resolvedConditions.push(opts.dev ? "development" : "production");
+
+  // 2. Add user specified conditions
+  resolvedConditions.push(...conditions);
+
+  // 3. Add runtime conditions (node or web)
+  if (opts.node) {
+    resolvedConditions.push("node");
+  } else {
+    // https://runtime-keys.proposal.wintercg.org/
+    resolvedConditions.push(
+      "wintercg",
+      "worker",
+      "web",
+      "browser",
+      "workerd",
+      "edge-light",
+      "lagon",
+      "netlify",
+      "edge-routine",
+      "deno"
+    );
+  }
+
+  // 4. Add default conditions
+  resolvedConditions.push("import", "module", "default");
+
+  // Dedup with preserving order
+  return resolvedConditions.filter(
+    (c, i) => resolvedConditions.indexOf(c) === i
+  );
 }

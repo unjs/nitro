@@ -9,8 +9,16 @@ import semver from "semver";
 import { isDirectory } from "../../utils";
 
 export interface NodeExternalsOptions {
-  inline?: string[];
-  external?: string[];
+  inline?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
+  external?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -37,8 +45,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  opts.inline = (opts.inline || []).map((p) => normalize(p));
-  opts.external = (opts.external || []).map((p) => normalize(p));
+  const inlineMatchers = (opts.inline || [])
+    .map((p) => normalizeMatcher(p))
+    .sort((a, b) => b.score - a.score);
+  const externalMatchers = (opts.external || [])
+    .map((p) => normalizeMatcher(p))
+    .sort((a, b) => b.score - a.score);
 
   return {
     name: "node-externals",
@@ -61,25 +73,15 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Normalize path (windows)
       const id = normalize(originalId);
 
-      // Id without .../node_modules/
-      const idWithoutNodeModules = id.split("node_modules/").pop();
-
-      // Check for explicit inlines
+      // Check for explicit inlines and externals
+      const inlineMatch = inlineMatchers.find((m) => m(id, importer));
+      const externalMatch = externalMatchers.find((m) => m(id, importer));
       if (
-        opts.inline.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
+        inlineMatch &&
+        (!externalMatch ||
+          (externalMatch && inlineMatch.score > externalMatch.score))
       ) {
         return null;
-      }
-
-      // Check for explicit externals
-      if (
-        opts.external.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
-      ) {
-        return { id, external: true };
       }
 
       // Resolve id using rollup resolver
@@ -175,10 +177,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Trace used files using nft
-      const _fileTrace = await nodeFileTrace(
-        [...trackedExternals],
-        opts.traceOptions
-      );
+      const _fileTrace = await nodeFileTrace([...trackedExternals], {
+        conditions: opts.exportConditions,
+        ...opts.traceOptions,
+      });
 
       // Read package.json with cache
       const packageJSONCache = new Map(); // pkgDir => contents
@@ -507,4 +509,43 @@ async function isFile(file: string) {
     }
     throw err;
   }
+}
+
+type Matcher = ((
+  id: string,
+  importer?: string
+) => Promise<boolean> | boolean) & { score?: number };
+
+export function normalizeMatcher(input: string | RegExp | Matcher): Matcher {
+  if (typeof input === "function") {
+    input.score = input.score ?? 10_000;
+    return input;
+  }
+
+  if (input instanceof RegExp) {
+    const matcher = ((id: string) => input.test(id)) as Matcher;
+    matcher.score = input.toString().length;
+    Object.defineProperty(matcher, "name", { value: `match(${input})` });
+    return matcher;
+  }
+
+  if (typeof input === "string") {
+    const pattern = normalize(input);
+    const matcher = ((id: string) => {
+      const idWithoutNodeModules = id.split("node_modules/").pop();
+      return id.startsWith(pattern) || idWithoutNodeModules.startsWith(pattern);
+    }) as Matcher;
+    matcher.score = input.length;
+
+    // Increase score for npm package names to avoid breaking changes
+    // TODO: Remove in next major version
+    if (!isAbsolute(input) && input[0] !== ".") {
+      matcher.score += 1000;
+    }
+
+    Object.defineProperty(matcher, "name", { value: `match(${pattern})` });
+    return matcher;
+  }
+
+  throw new Error(`Invalid matcher or pattern: ${input}`);
 }
