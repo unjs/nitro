@@ -550,7 +550,6 @@ export function testNitro(
     it("can load environment variables from runtimeConfig", async () => {
       const { data } = await callHandler({ url: "/config" });
       expect(data.runtimeConfig.hello).toBe("world");
-      expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.helloThere).toBe("general");
       expect(data.runtimeConfig.secret).toBeUndefined();
     });
