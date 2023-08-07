@@ -6,9 +6,8 @@ import type { MatchedRoutes } from "./utils";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InternalApi {}
 
-export interface InternalFetch<DefaultResponse = unknown, DefaultFetchRequest = Exclude<FetchRequest, string> | (string & {})> {
-  <T = DefaultResponse, R = DefaultFetchRequest>(
-    // eslint-disable-next-line @typescript-eslint/ban-types
+export interface InternalFetch<DefaultResponse = unknown, DefaultFetchRequest extends RequestInfo | URL = Exclude<FetchRequest, string> | RequestInfo | URL> {
+  <T = DefaultResponse, R extends RequestInfo | URL = DefaultFetchRequest>(
     request: R,
     opts?: FetchOptions
   ): Promise<T>;
@@ -17,8 +16,8 @@ export interface InternalFetch<DefaultResponse = unknown, DefaultFetchRequest = 
 export type NitroFetchRequest =
   | Exclude<keyof InternalApi, `/_${string}` | `/api/_${string}`>
   | Exclude<FetchRequest, string>
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | (string & {});
+  | RequestInfo
+  | URL;
 
 export type MiddlewareOf<
   Route extends string,
@@ -76,7 +75,7 @@ export type ExtractedRouteMethod<
   ? Lowercase<O["method"]>
   : "get";
 
-export interface $Fetch<DefaultResponse = unknown, DefaultFetchRequest = Exclude<FetchRequest, string> | (string & {})> extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
+export interface $Fetch<DefaultResponse = unknown, DefaultFetchRequest extends RequestInfo | URL = Exclude<FetchRequest, string> | RequestInfo | URL> extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
   raw: InternalFetch<DefaultResponse, DefaultFetchRequest>;
   create(defaults: FetchOptions): InternalFetch<DefaultResponse>;
 }
