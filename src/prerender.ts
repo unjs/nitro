@@ -207,6 +207,16 @@ export async function prerender(nitro: Nitro) {
     // Measure actual time taken for generating route
     _route.generateTimeMS = Date.now() - start;
 
+    // Guess route type and populate fileName
+    const isImplicitHTML =
+      !route.endsWith(".html") &&
+      (res.headers.get("content-type") || "").includes("html");
+    const routeWithIndex = route.endsWith("/") ? route + "index" : route;
+    _route.fileName = withoutBase(
+      isImplicitHTML ? joinURL(route, "index.html") : routeWithIndex,
+      nitro.options.baseURL
+    );
+
     // Allow hooking before generate
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
 
@@ -220,18 +230,8 @@ export async function prerender(nitro: Nitro) {
       return _route;
     }
 
-    // Guess if route is HTML
-    const isImplicitHTML =
-      !route.endsWith(".html") &&
-      (res.headers.get("content-type") || "").includes("html");
-
-    // Write to disk
+    // Write to the disk
     if (canWriteToDisk(_route)) {
-      const routeWithIndex = route.endsWith("/") ? route + "index" : route;
-      _route.fileName = isImplicitHTML
-        ? joinURL(route, "index.html")
-        : routeWithIndex;
-      _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL);
       const filePath = join(nitro.options.output.publicDir, _route.fileName);
       await writeFile(filePath, dataBuff);
       nitro._prerenderedRoutes.push(_route);
