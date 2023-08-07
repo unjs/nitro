@@ -8,8 +8,8 @@ import {
 import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { joinURL, withQuery, getQuery, withoutBase } from "ufo";
-import type { NitroRouteRules } from "nitropack";
 import { useRuntimeConfig } from "./config";
+import type { NitroRouteRules } from "nitropack";
 
 const config = useRuntimeConfig();
 const _routeRulesMatcher = toRouteMatcher(
