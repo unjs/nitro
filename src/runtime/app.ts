@@ -23,6 +23,7 @@ import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
+import { NitroAsyncContext, nitroAsyncContext } from "./context";
 import type { $Fetch, NitroFetchRequest } from "nitropack";
 import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
@@ -171,6 +172,15 @@ function createNitroApp(): NitroApp {
   }
 
   h3App.use(config.app.baseURL as string, router.handler);
+
+  // Experimental async context support
+  if (import.meta._asyncContext) {
+    const _handler = h3App.handler;
+    h3App.handler = (event) => {
+      const ctx: NitroAsyncContext = { event };
+      return nitroAsyncContext.callAsync(ctx, () => _handler(event));
+    };
+  }
 
   const app: NitroApp = {
     hooks,
