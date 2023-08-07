@@ -42,6 +42,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
     expect(config).toMatchInlineSnapshot(`
       {
         "exclude": [
+          "/blog/static/*",
           "/build/*",
           "/favicon.ico",
           "/icon.png",
@@ -58,23 +59,11 @@ describe("nitro:preset:cloudflare-pages", async () => {
         ],
         "include": [
           "/*",
+          "/api/*",
+          "/blog/*",
         ],
         "version": 1,
       }
     `);
   });
-
-  it("should generate the _routes.json set in the config", async () => {
-    const ctx = await setupTest("cloudflare-pages", {
-      cloudflarePages: { testRoutesConfig: true },
-    });
-    const config = await fsp
-      .readFile(resolve(ctx.outDir, "_routes.json"), "utf8")
-      .then((r) => JSON.parse(r));
-    expect(config).toMatchObject({
-      include: ["/api/*", "/blog/*"],
-      exclude: ["/blog/static/*"],
-      version: 1,
-    });
-  }, 10_000);
 });

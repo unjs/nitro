@@ -84,4 +84,12 @@ export default defineNitroConfig({
     openAPI: true,
     asyncContext: true,
   },
+  cloudflare: {
+    pages: {
+      routes: {
+        include: ["/api/*", "/blog/*"],
+        exclude: ["/blog/static/*"],
+      },
+    },
+  },
 });
