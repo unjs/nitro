@@ -2,8 +2,8 @@ import destr from "destr";
 import { snakeCase } from "scule";
 import { klona } from "klona";
 import { H3Event } from "h3";
-import { appConfig as _inlineAppConfig } from "#internal/nitro/virtual/app-config";
 import type { NitroRuntimeConfig } from "nitropack";
+import { appConfig as _inlineAppConfig } from "#internal/nitro/virtual/app-config";
 
 // Static runtime config inlined by nitro build
 const _inlineRuntimeConfig = process.env.RUNTIME_CONFIG as any;
