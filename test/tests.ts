@@ -420,7 +420,8 @@ export function testNitro(
       },
       sharedRuntimeConfig: {
         dynamic:
-          ctx.preset.startsWith("cloudflare") ||
+          // TODO
+          ctx.preset.includes("cloudflare") ||
           ctx.preset === "vercel-edge" ||
           ctx.preset === "nitro-dev"
             ? "initial"
