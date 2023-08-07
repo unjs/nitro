@@ -213,11 +213,7 @@ export function defineCachedEventHandler<T = any>(
       const _hashedPath = `${_pathname}.${hash(_path)}`;
       const _headers = variableHeaderNames
         .map((header) => [header, event.node.req.headers[header]])
-        .map(
-          ([name, value]) =>
-            escapeKey(name) +
-            (value ? `_${escapeKey(value)}.${hash(value)}` : "")
-        );
+        .map(([name, value]) => `${escapeKey(name)}.${hash(value)}`);
       return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
