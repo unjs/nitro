@@ -132,6 +132,8 @@
     "eslint-config-unjs": "^0.2.1",
     "execa": "^7.2.0",
     "expect-type": "^0.16.0",
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^4.4.1",
     "get-port-please": "^3.0.1",
     "miniflare": "^2.14.0",
     "prettier": "^3.0.1",

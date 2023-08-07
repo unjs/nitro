@@ -42,6 +42,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
     expect(config).toMatchInlineSnapshot(`
       {
         "exclude": [
+          "/blog/static/*",
           "/build/*",
           "/favicon.ico",
           "/icon.png",
@@ -58,6 +59,8 @@ describe("nitro:preset:cloudflare-pages", async () => {
         ],
         "include": [
           "/*",
+          "/api/*",
+          "/blog/*",
         ],
         "version": 1,
       }
