@@ -66,12 +66,14 @@ export async function setupTest(
       preset !== "cloudflare-pages" &&
       preset !== "vercel-edge" &&
       !ctx.isDev,
-    cloudflarePages:
+    cloudflare:
       preset === "cloudflare-pages" && opts?.cloudflarePages?.testRoutesConfig
         ? {
-            routes: {
-              include: ["/api/*", "/blog/*"],
-              exclude: ["/blog/static/*"],
+            pages: {
+              routes: {
+                include: ["/api/*", "/blog/*"],
+                exclude: ["/blog/static/*"],
+              },
             },
           }
         : undefined,
@@ -496,7 +498,12 @@ export function testNitro(
       // TODO: Node presets do not split cookies
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
-      const notSplitingPresets = ["node", "nitro-dev", "vercel", nodeVersion < 18 && "deno-server"].filter(Boolean);
+      const notSplitingPresets = [
+        "node",
+        "nitro-dev",
+        "vercel",
+        nodeVersion < 18 && "deno-server",
+      ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
           nodeVersion < 18
