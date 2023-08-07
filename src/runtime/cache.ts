@@ -182,31 +182,39 @@ export interface CachedEventHandlerOptions<T = any>
   shouldBypassCache?: (event: H3Event) => boolean;
   getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
+  varies?: string[];
 }
 
-function escapeKey(key: string) {
-  // eslint-disable-next-line unicorn/prefer-string-replace-all
-  return key.replace(/[^\dA-Za-z]/g, "");
+function escapeKey(key: string | string[]) {
+  return String(key).replace(/\W/g, "");
 }
 
 export function defineCachedEventHandler<T = any>(
   handler: EventHandler<T>,
   opts: CachedEventHandlerOptions<T> = defaultCacheOptions
 ): EventHandler<T> {
+  const variableHeaderNames = (opts.varies || [])
+    .filter(Boolean)
+    .map((h) => h.toLowerCase())
+    .sort();
+
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
     getKey: async (event: H3Event) => {
-      const key = await opts.getKey?.(event);
-      if (key) {
-        return escapeKey(key);
+      // Custom user-defined key
+      const customKey = await opts.getKey?.(event);
+      if (customKey) {
+        return escapeKey(customKey);
       }
-      const url = event._originalPath || event.path;
-      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
-        0,
-        16
-      );
-      const urlHash = hash(url);
-      return `${friendlyName}.${urlHash}`;
+      // Auto-generated key
+      const _path = event._originalPath || event.path;
+      const _pathname =
+        escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) || "index";
+      const _hashedPath = `${_pathname}.${hash(_path)}`;
+      const _headers = variableHeaderNames
+        .map((header) => [header, event.node.req.headers[header]])
+        .map(([name, value]) => `${escapeKey(name)}.${hash(value)}`);
+      return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
       if (entry.value.code >= 400) {
@@ -223,8 +231,16 @@ export function defineCachedEventHandler<T = any>(
 
   const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
     async (incomingEvent: H3Event) => {
+      // Only pass headers which are defined in opts.varies
+      const variableHeaders: Record<string, string | string[]> = {};
+      for (const header of variableHeaderNames) {
+        variableHeaders[header] = incomingEvent.node.req.headers[header];
+      }
+
       // Create proxies to avoid sharing state with user request
-      const reqProxy = cloneWithProxy(incomingEvent.node.req, { headers: {} });
+      const reqProxy = cloneWithProxy(incomingEvent.node.req, {
+        headers: variableHeaders,
+      });
       const resHeaders: Record<string, number | string | string[]> = {};
       let _resSendBody;
       const resProxy = cloneWithProxy(incomingEvent.node.res, {
