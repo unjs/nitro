@@ -11,7 +11,7 @@ Deploy Nitro apps to CloudFlare.
 ::
 
 ::alert{type="warning"}
-**Warning:** Please be aware that `runtimeConfig` cannot be updated via Cloudflare's environment variables (see [#272](https://github.com/unjs/nitro/issues/272) for more). As a workaround, you can use the Cloudflare env variables as constants in the code, or the module syntax.
+**Warning:** Cloudflare environment variables are only available within event handlers with `useRuntimeConfig(event)`. You can also access environment variables as globals in the `cloudflare` preset, and with `event.context.env` in the`cloudflare_module` and `cloudflare_page` presets.
 ::
 
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
@@ -223,7 +223,7 @@ const stmt = await cloudflare.env.D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
 ```
 
-### Environment variables and secrets
+## Environment variables and secrets
 
 You can add environment variables and secret to your project and they will be accessible within your event handlers.
 You can acess them with `event.cloudflare.env`.
@@ -236,13 +236,9 @@ When you try out your project locally with `wrangler dev` or `wrangler pages dev
 
 For production, use the cloudflare dashboard or the [`wrangler secret`](https://developers.cloudflare.com/workers/wrangler/commands/#secret) command to set environment variables and secrets.
 
-#### useRuntimeConfig
+### useRuntimeConfig
 
 For your convenience, the `useRuntimeConfig` helper will return a `camelCase` version of your custom cloudflare environment variables and secrets.
-
-::alert{type="info"}
-**Note:** Only the variables prefixed with `NITRO_` or `NUXT` will be applied to `useRuntimeConfig`, and they will override the variables defined within `nitro.options.runtimeConfig`.
-::
 
 ```bash
 NITRO_HELLO="world"
@@ -251,7 +247,7 @@ SECRET="secret"
 ```
 
 ::alert{type="info"}
-**Note:** Cloudflare variables are only available within event handlers with `useRuntimeConfig(event)`.
+**Note:** Only the variables prefixed with `NITRO_` or `NUXT` will be applied to `useRuntimeConfig`, and they will override the variables defined within `nitro.options.runtimeConfig`.
 ::
 
 ```ts
@@ -265,7 +261,7 @@ export default defineEventHandler((event) => {
 });
 ```
 
-#### wrangler.toml
+### wrangler.toml
 
 You can specify a custom `wrangler.toml` file and define vars inside.
 Note that this isn't recommend for sensitive data.
