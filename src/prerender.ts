@@ -158,7 +158,7 @@ export async function prerender(nitro: Nitro) {
     generatedRoutes.add(route);
 
     // Create result object
-    const _route: PrerenderRoute & { skip?: boolean } = { route };
+    const _route: PrerenderRoute = { route };
 
     // Fetch the route
     const encodedRoute = encodeURI(route);
@@ -235,6 +235,8 @@ export async function prerender(nitro: Nitro) {
       const filePath = join(nitro.options.output.publicDir, _route.fileName);
       await writeFile(filePath, dataBuff);
       nitro._prerenderedRoutes.push(_route);
+    } else {
+      _route.skip = true;
     }
 
     // Crawl route links
@@ -404,6 +406,10 @@ function formatPrerenderRoute(route: PrerenderRoute) {
         .map((link) => `  │ └── Linked from ${link}`)
         .join("\n")}`;
     }
+  }
+
+  if (route.skip) {
+    str += chalk.gray(" (skipped)");
   }
 
   return chalk.gray(str);
