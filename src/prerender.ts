@@ -89,37 +89,11 @@ export async function prerender(nitro: Nitro) {
   const failedRoutes = new Set<PrerenderRoute>();
   const skippedRoutes = new Set();
   const displayedLengthWarns = new Set();
+
   const canPrerender = (route = "/") => {
     // Skip if route is already generated or skipped
     if (generatedRoutes.has(route) || skippedRoutes.has(route)) {
       return false;
-    }
-
-    // Ensure length is not too long for filesystem
-    // https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
-    const FS_MAX_SEGMENT = 255;
-    // 1024 is the max path length on APFS (undocumented)
-    const FS_MAX_PATH = 1024;
-    const FS_MAX_PATH_PUBLIC_HTML =
-      FS_MAX_PATH - (nitro.options.output.publicDir.length + 10);
-
-    if (
-      (route.length >= FS_MAX_PATH_PUBLIC_HTML ||
-        route.split("/").some((s) => s.length > FS_MAX_SEGMENT)) &&
-      !displayedLengthWarns.has(route)
-    ) {
-      displayedLengthWarns.add(route);
-      const _route = route.slice(0, 60) + "...";
-      if (route.length >= FS_MAX_PATH_PUBLIC_HTML) {
-        nitro.logger.warn(
-          `Prerendering long route "${_route}" (${route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`
-        );
-      } else {
-        nitro.logger.warn(
-          `Skipping prerender of the route "${_route}" since it exceeds the ${FS_MAX_SEGMENT}-character limit in one of the path segments and can cause filesystem issues.`
-        );
-        return false;
-      }
     }
 
     // Check for explicitly ignored routes
@@ -137,6 +111,42 @@ export async function prerender(nitro: Nitro) {
     return true;
   };
 
+  const canWriteToDisk = (route: PrerenderRoute) => {
+    // Cannot write routes with query
+    if (route.route.includes("?")) {
+      return false;
+    }
+
+    // Ensure length is not too long for filesystem
+    // https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
+    const FS_MAX_SEGMENT = 255;
+    // 1024 is the max path length on APFS (undocumented)
+    const FS_MAX_PATH = 1024;
+    const FS_MAX_PATH_PUBLIC_HTML =
+      FS_MAX_PATH - (nitro.options.output.publicDir.length + 10);
+
+    if (
+      (route.route.length >= FS_MAX_PATH_PUBLIC_HTML ||
+        route.route.split("/").some((s) => s.length > FS_MAX_SEGMENT)) &&
+      !displayedLengthWarns.has(route)
+    ) {
+      displayedLengthWarns.add(route);
+      const _route = route.route.slice(0, 60) + "...";
+      if (route.route.length >= FS_MAX_PATH_PUBLIC_HTML) {
+        nitro.logger.warn(
+          `Prerendering long route "${_route}" (${route.route.length}) can cause filesystem issues since it exceeds ${FS_MAX_PATH_PUBLIC_HTML}-character limit when writing to \`${nitro.options.output.publicDir}\`.`
+        );
+      } else {
+        nitro.logger.warn(
+          `Skipping prerender of the route "${_route}" since it exceeds the ${FS_MAX_SEGMENT}-character limit in one of the path segments and can cause filesystem issues.`
+        );
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const generateRoute = async (route: string) => {
     const start = Date.now();
 
@@ -148,7 +158,7 @@ export async function prerender(nitro: Nitro) {
     generatedRoutes.add(route);
 
     // Create result object
-    const _route: PrerenderRoute & { skip?: boolean } = { route };
+    const _route: PrerenderRoute = { route };
 
     // Fetch the route
     const encodedRoute = encodeURI(route);
@@ -194,33 +204,38 @@ export async function prerender(nitro: Nitro) {
       failedRoutes.add(_route);
     }
 
-    // Write to the file
+    // Measure actual time taken for generating route
+    _route.generateTimeMS = Date.now() - start;
+
+    // Guess route type and populate fileName
     const isImplicitHTML =
       !route.endsWith(".html") &&
       (res.headers.get("content-type") || "").includes("html");
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
-    _route.fileName = isImplicitHTML
-      ? joinURL(route, "index.html")
-      : routeWithIndex;
-    _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL);
+    _route.fileName = withoutBase(
+      isImplicitHTML ? joinURL(route, "index.html") : routeWithIndex,
+      nitro.options.baseURL
+    );
 
+    // Allow hooking before generate
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
 
-    // Measure actual time taken for generating route
-    _route.generateTimeMS = Date.now() - start;
-
-    // Check if route skipped or has errors
+    // Check if route is skipped or has errors
     if (_route.skip || _route.error) {
       await nitro.hooks.callHook("prerender:route", _route);
       nitro.logger.log(formatPrerenderRoute(_route));
+      dataBuff = undefined; // Free memory
       return _route;
     }
 
-    const filePath = join(nitro.options.output.publicDir, _route.fileName);
-
-    await writeFile(filePath, dataBuff);
-
-    nitro._prerenderedRoutes.push(_route);
+    // Write to the disk
+    if (canWriteToDisk(_route)) {
+      const filePath = join(nitro.options.output.publicDir, _route.fileName);
+      await writeFile(filePath, dataBuff);
+      nitro._prerenderedRoutes.push(_route);
+    } else {
+      _route.skip = true;
+    }
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
@@ -240,9 +255,7 @@ export async function prerender(nitro: Nitro) {
     await nitro.hooks.callHook("prerender:route", _route);
     nitro.logger.log(formatPrerenderRoute(_route));
 
-    // Free memory
-    dataBuff = undefined;
-
+    dataBuff = undefined; // Free memory
     return _route;
   };
 
@@ -349,16 +362,15 @@ function extractLinks(
   );
 
   for (const link of _links.filter(Boolean)) {
-    const parsed = parseURL(link);
-    if (parsed.protocol) {
+    const _link = parseURL(link);
+    if (_link.protocol) {
       continue;
     }
-    let { pathname } = parsed;
-    if (!pathname.startsWith("/")) {
+    if (!_link.pathname.startsWith("/")) {
       const fromURL = new URL(from, "http://localhost");
-      pathname = new URL(pathname, fromURL).pathname;
+      _link.pathname = new URL(_link.pathname, fromURL).pathname;
     }
-    links.push(pathname);
+    links.push(_link.pathname + _link.search);
   }
   for (const link of links) {
     const _parents = linkParents.get(link);
@@ -392,6 +404,10 @@ function formatPrerenderRoute(route: PrerenderRoute) {
         .map((link) => `  │ └── Linked from ${link}`)
         .join("\n")}`;
     }
+  }
+
+  if (route.skip) {
+    str += chalk.gray(" (skipped)");
   }
 
   return chalk.gray(str);

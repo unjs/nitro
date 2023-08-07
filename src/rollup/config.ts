@@ -184,6 +184,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     // @ts-expect-error
     "versions.nitro": version,
     "versions?.nitro": version,
+    // Internal
+    _asyncContext: nitro.options.experimental.asyncContext,
   };
 
   // Universal import.meta

@@ -542,4 +542,15 @@ export function testNitro(
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
   });
+
+  describe("async context", () => {
+    it.skipIf(!ctx.nitro.options.node)("works", async () => {
+      const { data } = await callHandler({ url: "/context?foo" });
+      expect(data).toMatchObject({
+        context: {
+          path: "/context?foo",
+        },
+      });
+    });
+  });
 }
