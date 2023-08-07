@@ -48,7 +48,7 @@ export async function setupTest(preset: string) {
     outDir: resolve(fixtureDir, presetTempDir, ".output"),
     env: {
       NITRO_HELLO: "world",
-      NUXT_HELLO_THERE: "general",
+      CUSTOM_HELLO_THERE: "general",
       SECRET: "secret",
     },
     fetch: (url, opts) =>
@@ -69,7 +69,7 @@ export async function setupTest(preset: string) {
     rootDir: ctx.rootDir,
     runtimeConfig: {
       nitro: {
-        envPrefix: "NUXT_",
+        envPrefix: "CUSTOM_",
       },
       hello: "",
       helloThere: "",
