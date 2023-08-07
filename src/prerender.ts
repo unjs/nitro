@@ -204,36 +204,10 @@ export async function prerender(nitro: Nitro) {
       failedRoutes.add(_route);
     }
 
-    // Write to the file
+    // Guess if route is HTML
     const isImplicitHTML =
       !route.endsWith(".html") &&
       (res.headers.get("content-type") || "").includes("html");
-    const routeWithIndex = route.endsWith("/") ? route + "index" : route;
-    _route.fileName = isImplicitHTML
-      ? joinURL(route, "index.html")
-      : routeWithIndex;
-    _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL);
-
-    if (canWriteToDisk(_route)) {
-      await nitro.hooks.callHook("prerender:generate", _route, nitro);
-
-      // Measure actual time taken for generating route
-      _route.generateTimeMS = Date.now() - start;
-
-      // Check if route skipped or has errors
-      if (_route.skip || _route.error) {
-        await nitro.hooks.callHook("prerender:route", _route);
-        nitro.logger.log(formatPrerenderRoute(_route));
-        dataBuff = undefined; // Free memory
-        return _route;
-      }
-
-      const filePath = join(nitro.options.output.publicDir, _route.fileName);
-
-      await writeFile(filePath, dataBuff);
-    }
-
-    nitro._prerenderedRoutes.push(_route);
 
     // Crawl route links
     if (!_route.error && isImplicitHTML) {
@@ -250,6 +224,36 @@ export async function prerender(nitro: Nitro) {
       }
     }
 
+    // Measure actual time taken for generating route
+    _route.generateTimeMS = Date.now() - start;
+
+    // Check if route skipped or has errors
+    if (_route.skip || _route.error) {
+      await nitro.hooks.callHook("prerender:route", _route);
+      nitro.logger.log(formatPrerenderRoute(_route));
+      dataBuff = undefined; // Free memory
+      return _route;
+    }
+
+    // Check if can write to disk
+    if (!canWriteToDisk(_route)) {
+      skippedRoutes.add(route);
+      dataBuff = undefined; // Free memory
+      return _route;
+    }
+
+    await nitro.hooks.callHook("prerender:generate", _route, nitro);
+
+    const routeWithIndex = route.endsWith("/") ? route + "index" : route;
+    _route.fileName = isImplicitHTML
+      ? joinURL(route, "index.html")
+      : routeWithIndex;
+    _route.fileName = withoutBase(_route.fileName, nitro.options.baseURL);
+
+    const filePath = join(nitro.options.output.publicDir, _route.fileName);
+    await writeFile(filePath, dataBuff);
+
+    nitro._prerenderedRoutes.push(_route);
     await nitro.hooks.callHook("prerender:route", _route);
     nitro.logger.log(formatPrerenderRoute(_route));
 
