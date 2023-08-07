@@ -419,7 +419,12 @@ export function testNitro(
         "server-config": true,
       },
       sharedRuntimeConfig: {
-        dynamic: ctx.preset.startsWith("cloudflare") ? "initial" : "from-env",
+        dynamic:
+          ctx.preset.startsWith("cloudflare") ||
+          ctx.preset === "vercel-edge" ||
+          ctx.preset === "nitro-dev"
+            ? "initial"
+            : "from-env",
         app: {
           baseURL: "/",
         },
