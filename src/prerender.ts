@@ -223,9 +223,7 @@ export async function prerender(nitro: Nitro) {
     // Check if route is skipped or has errors
     if (_route.skip || _route.error) {
       await nitro.hooks.callHook("prerender:route", _route);
-      if (!_route.skip) {
-        nitro.logger.log(formatPrerenderRoute(_route));
-      }
+      nitro.logger.log(formatPrerenderRoute(_route));
       dataBuff = undefined; // Free memory
       return _route;
     }
