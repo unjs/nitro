@@ -11,7 +11,7 @@ Deploy Nitro apps to CloudFlare.
 ::
 
 ::alert{type="warning"}
-**Warning:** Please be aware that `runtimeConfig` cannot be updated via Cloudflare's environment variables (see [#272](https://github.com/unjs/nitro/issues/272) for more). As a workaround, you can use the Cloudflare env variables as constants in the code, or the module syntax.
+**Warning:** Cloudflare environment variables are only available within event handlers with `useRuntimeConfig(event)`. You can also access environment variables as globals in the `cloudflare` preset, and with `event.context.env` in the`cloudflare_module` and `cloudflare_page` presets.
 ::
 
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
