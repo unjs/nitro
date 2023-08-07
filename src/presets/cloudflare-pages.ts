@@ -81,7 +81,7 @@ async function writeCFRoutes(nitro: Nitro) {
       ...(nitro.options.cloudflare?.pages?.routes?.exclude ?? [])
     );
     routes.include.push(
-      ...(nitro.options.cloudflare?.pages?.routes?.exclude ?? [])
+      ...(nitro.options.cloudflare?.pages?.routes?.include ?? [])
     );
 
     // Exclude public assets from hitting the worker
