@@ -10,10 +10,6 @@ Deploy Nitro apps to CloudFlare.
 **Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
 ::
 
-::alert{type="warning"}
-**Warning:** Cloudflare environment variables are only available within event handlers with `useRuntimeConfig(event)`. You can also access environment variables as globals in the `cloudflare` preset, and with `event.context.env` in the`cloudflare_module` and `cloudflare_page` presets.
-::
-
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
 
 Create a `wrangler.toml` in your root directory:
@@ -227,45 +223,17 @@ const { results } = await stmt.all()
 
 ### Environment variables and secrets
 
-You can add environment variables and secret to your project and they will be accessible within your event handlers.
-You can acess them with `event.cloudflare.env`.
+Cloudflare environment variables have some providers specificities:
 
-When you try out your project locally with `wrangler dev` or `wrangler pages dev`, use a `.dev.vars` file in the root of your project.
+- For `cloudflare_module` and `cloudflare_pages` presets, the [env object](https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#parameters) is available on `event.cloudflare.env`.
+- For `cloudflare`, environment variables are available in the [global scope](https://developers.cloudflare.com/workers/wrangler/environments/#staging-and-production-environments).
 
 ::alert{type="info"}
-**Note:** If you are using a `.env` file while developping, your `dev.vars` should be identical to it.
+When you try out your project locally with `wrangler dev` or `wrangler pages dev`, use a `.dev.vars` file in the root of your project.
+If you are using a `.env` file while developping, your `dev.vars` should be identical to it.
 ::
 
 For production, use the cloudflare dashboard or the [`wrangler secret`](https://developers.cloudflare.com/workers/wrangler/commands/#secret) command to set environment variables and secrets.
-
-#### useRuntimeConfig
-
-For your convenience, the `useRuntimeConfig` helper will return a `camelCase` version of your custom cloudflare environment variables and secrets.
-
-::alert{type="info"}
-**Note:** Only the variables prefixed with `NITRO_` or `NUXT` will be applied to `useRuntimeConfig`, and they will override the variables defined within `nitro.options.runtimeConfig`.
-::
-
-```bash
-NITRO_HELLO="world"
-NUXT_HELLO_THERE="general"
-SECRET="secret"
-```
-
-::alert{type="info"}
-**Note:** Cloudflare variables are only available within event handlers with `useRuntimeConfig(event)`.
-::
-
-```ts
-export default defineEventHandler((event) => {
-  event.context.cloudflare.env.NITRO_HELLO //world
-  useRuntimeConfig(event).hello //world
-  event.context.cloudflare.env.NUXT_HELLO //general
-  useRuntimeConfig(event).helloThere //general
-  event.context.cloudflare.env.SECRET //secret
-  useRuntimeConfig(event).secret //undefined
-});
-```
 
 #### wrangler.toml
 
@@ -286,16 +254,29 @@ bucket = "dist/.output/public"
 # under the `[vars]` block using
 # the `key = "value"` format
 [vars]
-NITRO_HELLO="world"
-NUXT_HELLO_THERE="general"
+NITRO_HELLO_THERE="general"
 SECRET="secret"
 
 # Override values for `--env production` usage
 [env.production]
 name = "my-worker-production"
 [env.production.vars]
-NITRO_HELLO="universe"
+NITRO_HELLO_THERE="captain"
 SECRET="top-secret"
+```
+
+```ts
+// In development
+export default defineEventHandler((event) => {
+  useRuntimeConfig(event).helloThere //general
+  useRuntimeConfig(event).secret //undefined
+  // Module syntax (cloudflare_module, cloudflare_pages)
+  event.context.cloudflare.env.NITRO_HELLO_THERE //general
+  event.context.cloudflare.env.SECRET //secret
+  // Service worker syntax (cloudflare)
+  NITRO_HELLO_THERE //general
+  SECRET //secret
+});
 ```
 
 ::alert{type="info"}
