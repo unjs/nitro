@@ -218,9 +218,7 @@ export function defineCachedEventHandler<T = any>(
             escapeKey(name) +
             (value ? `_${escapeKey(value)}.${hash(value)}` : "")
         );
-      return _headers.length > 0
-        ? [_hashedPath, ..._headers].join(":")
-        : _hashedPath;
+      return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
       if (entry.value.code >= 400) {
@@ -240,9 +238,7 @@ export function defineCachedEventHandler<T = any>(
       // Only pass headers which are defined in opts.varies
       const variableHeaders: Record<string, string | string[]> = {};
       for (const header of variableHeaderNames) {
-        if (incomingEvent.node.req.headers[header]) {
-          variableHeaders[header] = incomingEvent.node.req.headers[header];
-        }
+        variableHeaders[header] = incomingEvent.node.req.headers[header];
       }
 
       // Create proxies to avoid sharing state with user request
