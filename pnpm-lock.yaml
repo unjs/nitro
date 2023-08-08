@@ -105,9 +105,6 @@ importers:
       hookable:
         specifier: ^5.5.3
         version: 5.5.3
-      http-graceful-shutdown:
-        specifier: ^3.1.13
-        version: 3.1.13
       http-proxy:
         specifier: ^1.18.1
         version: 1.18.1
@@ -1574,7 +1571,7 @@ packages:
     dependencies:
       '@rollup/pluginutils': 5.0.2(rollup@3.27.2)
       estree-walker: 2.0.2
-      magic-string: 0.30.2
+      magic-string: 0.27.0
       rollup: 3.27.2
     dev: false
 
@@ -4317,15 +4314,6 @@ packages:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
-
-  /http-graceful-shutdown@3.1.13:
-    resolution: {integrity: sha512-Ci5LRufQ8AtrQ1U26AevS8QoMXDOhnAHCJI3eZu1com7mZGHxREmw3dNj85ftpQokQCvak8nI2pnFS8zyM1M+Q==}
-    engines: {node: '>=4.0.0'}
-    dependencies:
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /http-parser-js@0.5.8:
     resolution: {integrity: sha512-SGeBX54F94Wgu5RH3X5jsDtf4eHyRogWX1XGT3b4HuW3tQPM4AaBzoUji/4AAJNXCEOWZ5O0DgZmJw1947gD5Q==}
