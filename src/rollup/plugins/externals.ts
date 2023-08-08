@@ -286,23 +286,23 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         tracedFile.pkgVersion = pkgJSON.version;
       }
 
+      const pkgAliases = {
+        "h3-nightly": "h3",
+      };
+
       const writePackage = async (
         name: string,
         version: string,
-        outputName?: string
+        _pkgPath?: string
       ) => {
         // Find pkg
         const pkg = tracedPackages[name];
+        const pkgPath = _pkgPath || pkg.name;
 
         // Copy files
         for (const src of pkg.versions[version].files) {
           const { subpath } = parseNodeModulePath(src);
-          const dst = join(
-            opts.outDir,
-            "node_modules",
-            outputName || pkg.name,
-            subpath
-          );
+          const dst = join(opts.outDir, "node_modules", pkgPath, subpath);
           await fsp.mkdir(dirname(dst), { recursive: true });
           await fsp.copyFile(src, dst);
         }
@@ -313,7 +313,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const pkgJSONPath = join(
           opts.outDir,
           "node_modules",
-          outputName || pkg.name,
+          pkgPath,
           "package.json"
         );
         await fsp.mkdir(dirname(pkgJSONPath), { recursive: true });
@@ -322,6 +322,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           JSON.stringify(pkgJSON, null, 2),
           "utf8"
         );
+
+        // Link aliases
+        if (pkgPath in pkgAliases) {
+          await linkPackage(pkgPath, pkgAliases[pkgPath]);
+        }
       };
 
       const isWindows = platform() === "win32";
