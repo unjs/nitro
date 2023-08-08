@@ -142,22 +142,17 @@ export async function writeTypes(nitro: Nitro) {
           .join(" | ")
       : defaultMethod;
 
-    // TODO: 1. Fine-tune matching algorithm?
-    // TODO: merge return types
-    // TODO: 2. infer returns when we provide typed input
-    // TODO: 3. require options object when we provide typed input
-
     const routeType = DYNAMIC_PARAM_RE.test(mw.route)
       ? `\`${mw.route.replace(DYNAMIC_PARAM_RE, `\${string}`)}\``
       : `'${mw.route}' | \`${mw.route}?$\{string}\``;
 
     fetchSignatures.push([
       mw.route,
-      `    <T = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown>(url: ${routeType}, options${
-        isMethodOptional ? "?" : ""
-      }: BaseFetchOptions & { method${
-        isMethodOptional ? "?" : ""
-      }: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : EventHandlerRequest)): Promise<T>
+      `    <T = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown>(
+        url: ${routeType},
+        options${isMethodOptional ? "?" : ""}:
+          BaseFetchOptions & { method${isMethodOptional ? "?" : ""}: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : EventHandlerRequest)
+      ): Promise<T>
     `,
     ]);
 

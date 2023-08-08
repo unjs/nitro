@@ -13,21 +13,23 @@ describe("API routes", () => {
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   const dynamicString: string = "";
 
-  it("requires correct options for typed routes", () => {
+  it("requires correct options for typed routes", async () => {
     // @ts-expect-error should be a POST request
-    $fetch("/api/upload");
+    await $fetch("/api/upload");
+    // TODO: @ts-expect-error `query.id` is required
+    await $fetch("/typed-routes");
     // @ts-expect-error `query.id` is required
-    $fetch("/typed-routes");
-    // @ts-expect-error `query.id` is required
-    $fetch("/typed-routes", {});
+    await $fetch("/typed-routes", {});
     // @ts-expect-error `query.id` should be a string
-    $fetch("/typed-routes", { query: { id: 42 } });
+    await $fetch("/typed-routes", { query: { id: 42 } });
 
     expectTypeOf($fetch("/typed-routes", { query: { id: 'string' } })).toEqualTypeOf<Promise<string>>();
   });
 
-  it("generates types for middleware, unknown and manual typed routes", () => {
-    expectTypeOf($fetch("/")).toEqualTypeOf<Promise<unknown>>(); // middleware
+  it("generates types for unknown and manual typed routes", () => {
+    // @ts-expect-error No route matching this path exists
+    $fetch("/");
+    $fetch("https://test.com/");
     expectTypeOf($fetch("/api/unknown")).toEqualTypeOf<Promise<unknown>>();
     expectTypeOf($fetch<TestResponse>("/test")).toEqualTypeOf<
       Promise<TestResponse>

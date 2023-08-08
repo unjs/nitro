@@ -14,7 +14,11 @@ export interface InternalFetch<
 > {
   <T = DefaultResponse, R extends string | Request | URL = DefaultFetchRequest>(
     url: unknown extends T
-      ? R
+      ? R extends string
+        ? string extends keyof InternalApi[MatchedRoutes<R>]
+          ? R
+          : never
+        : R
       :
           | R
           // eslint-disable-next-line @typescript-eslint/ban-types
