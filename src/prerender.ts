@@ -5,10 +5,11 @@ import chalk from "chalk";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import mime from "mime";
+import type { $Fetch } from "ofetch";
 import { createNitro } from "./nitro";
 import { build } from "./build";
 import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
-import { fetchWithRetries, writeFile } from "./utils";
+import { writeFile } from "./utils";
 import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
@@ -77,7 +78,9 @@ export async function prerender(nitro: Nitro) {
     nitroRenderer.options.output.serverDir,
     "index.mjs"
   );
-  const { localFetch } = await import(pathToFileURL(serverEntrypoint).href);
+  const { localFetch } = (await import(
+    pathToFileURL(serverEntrypoint).href
+  )) as { localFetch: $Fetch };
 
   // Create route rule matcher
   const _routeRulesMatcher = toRouteMatcher(
@@ -165,16 +168,14 @@ export async function prerender(nitro: Nitro) {
     // Fetch the route
     const encodedRoute = encodeURI(route);
 
-    const res = (await fetchWithRetries({
-      url: withBase(encodedRoute, nitro.options.baseURL),
-      options: {
+    const res = await localFetch<Response>(
+      withBase(encodedRoute, nitro.options.baseURL),
+      {
         headers: { "x-nitro-prerender": encodedRoute },
-      },
-      fetcher: localFetch,
-      retries: nitro.options.prerender.retries ?? 2, // By default we retry 2 times
-      delay: nitro.options.prerender.retryDelay ?? 500,
-    })) as Awaited<ReturnType<typeof fetch>>;
-
+        retry: nitro.options.prerender.retries ?? 2, // By default we retry 2 times
+        retryDelay: nitro.options.prerender.retryDelay ?? 250,
+      }
+    );
     // Data will be removed as soon as written to the disk
     let dataBuff: Buffer | undefined = Buffer.from(await res.arrayBuffer());
 
