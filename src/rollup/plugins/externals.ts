@@ -2,9 +2,16 @@ import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
 import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
 import type { PackageJson } from "pkg-types";
+import { readPackageJSON } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
-import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
+import {
+  resolvePath,
+  isValidNodeImport,
+  lookupNodeModuleSubpath,
+  normalizeid,
+  parseNodeModulePath,
+} from "mlly";
 import semver from "semver";
 import { isDirectory } from "../../utils";
 
@@ -31,7 +38,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
 
   const _resolveCache = new Map();
-  const _resolve = async (id: string) => {
+  const _resolve = async (id: string): Promise<string> => {
     let resolved = _resolveCache.get(id);
     if (resolved) {
       return resolved;
@@ -116,7 +123,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // -- Trace externals --
 
       // Try to extract package name from path
-      const { pkgName, subpath } = parseNodeModulePath(resolved.id);
+      const { name: pkgName } = parseNodeModulePath(resolved.id);
 
       // Inline if cannot detect package name
       if (!pkgName) {
@@ -140,15 +147,17 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Guess as main subpath export
         const packageEntry = await _resolve(pkgName).catch(() => null);
         if (packageEntry !== originalId) {
-          // Guess subpathexport
-          const guessedSubpath = pkgName + subpath.replace(/\.[a-z]+$/, "");
-          const resolvedGuess = await _resolve(guessedSubpath).catch(
-            () => null
-          );
+          // Reverse engineer subpath export
+          const guessedSubpath: string | null = await lookupNodeModuleSubpath(
+            originalId
+          ).catch(() => null);
+          const resolvedGuess =
+            guessedSubpath &&
+            (await _resolve(join(pkgName, guessedSubpath)).catch(() => null));
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
             return {
-              id: guessedSubpath,
+              id: join(pkgName, guessedSubpath),
               external: true,
             };
           }
@@ -182,19 +191,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         ...opts.traceOptions,
       });
 
-      // Read package.json with cache
-      const packageJSONCache = new Map(); // pkgDir => contents
-      const getPackageJson = async (pkgDir: string) => {
-        if (packageJSONCache.has(pkgDir)) {
-          return packageJSONCache.get(pkgDir) as PackageJson;
-        }
-        const pkgJSON = JSON.parse(
-          await fsp.readFile(resolve(pkgDir, "package.json"), "utf8")
-        );
-        packageJSONCache.set(pkgDir, pkgJSON);
-        return pkgJSON as PackageJson;
-      };
-
       // Resolve traced files
       type TracedFile = {
         path: string;
@@ -220,7 +216,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             if (!(await isFile(path))) {
               return;
             }
-            const { baseDir, pkgName, subpath } = parseNodeModulePath(path);
+            const {
+              dir: baseDir,
+              name: pkgName,
+              subpath,
+            } = parseNodeModulePath(path);
             const pkgPath = join(baseDir, pkgName);
             const parents = await Promise.all(
               [...reasons.parents].map((p) => _resolveTracedPath(p))
@@ -257,7 +257,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         let tracedPackage = tracedPackages[pkgName];
 
         // Read package.json for file
-        let pkgJSON = await getPackageJson(tracedFile.pkgPath).catch(
+        let pkgJSON = await readPackageJSON(tracedFile.pkgPath, {
+          cache: true,
+        }).catch(
           () => {} // TODO: Only catch ENOENT
         );
         if (!pkgJSON) {
@@ -465,24 +467,6 @@ function compareVersions(v1 = "0.0.0", v2 = "0.0.0") {
   }
 }
 
-function parseNodeModulePath(path: string) {
-  if (!path) {
-    return {};
-  }
-  const match = /^(.+\/node_modules\/)([^/@]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(
-    normalize(path)
-  );
-  if (!match) {
-    return {};
-  }
-  const [, baseDir, pkgName, subpath] = match;
-  return {
-    baseDir,
-    pkgName,
-    subpath,
-  };
-}
-
 export function applyProductionCondition(exports: PackageJson["exports"]) {
   if (!exports || typeof exports === "string") {
     return;
@@ -536,6 +520,13 @@ export function normalizeMatcher(input: string | RegExp | Matcher): Matcher {
       return id.startsWith(pattern) || idWithoutNodeModules.startsWith(pattern);
     }) as Matcher;
     matcher.score = input.length;
+
+    // Increase score for npm package names to avoid breaking changes
+    // TODO: Remove in next major version
+    if (!isAbsolute(input) && input[0] !== ".") {
+      matcher.score += 1000;
+    }
+
     Object.defineProperty(matcher, "name", { value: `match(${pattern})` });
     return matcher;
   }

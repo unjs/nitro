@@ -359,7 +359,7 @@ export async function loadOptions(
     };
   } else if (options.node && options.storage.data === undefined) {
     options.storage.data = {
-      driver: "fs",
+      driver: "fsLite",
       base: "./.data/kv",
     };
   }

@@ -1,3 +1,7 @@
+import type { HttpsOptions } from "firebase-functions/v2/https";
+import type { RuntimeOptions, region } from "firebase-functions";
+import type { CloudflarePagesRoutes } from "../presets/cloudflare-pages";
+
 /**
  * Vercel Build Output Configuration
  * @see https://vercel.com/docs/build-output-api/v3
@@ -52,6 +56,38 @@ export interface VercelBuildConfigV3 {
   }[];
 }
 
+interface FirebaseOptionsBase {
+  gen: 1 | 2;
+  /**
+   * Firebase functions node runtime version.
+   * @see https://cloud.google.com/functions/docs/concepts/nodejs-runtime
+   */
+  nodeVersion?: "20" | "18" | "16";
+}
+
+interface FirebaseOptionsGen1 extends FirebaseOptionsBase {
+  gen: 1;
+  /**
+   * Firebase functions 1st generation region passed to `functions.region()`.
+   */
+  region?: Parameters<typeof region>[0];
+  /**
+   * Firebase functions 1st generation runtime options passed to `functions.runWith()`.
+   */
+  runtimeOptions?: RuntimeOptions;
+}
+
+interface FirebaseOptionsGen2 extends FirebaseOptionsBase {
+  gen: 2;
+  /**
+   * Firebase functions 2nd generation https options passed to `onRequest`.
+   * @see https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.httpsoptions
+   */
+  httpsOptions?: HttpsOptions;
+}
+
+type FirebaseOptions = FirebaseOptionsGen1 | FirebaseOptionsGen2;
+
 /**
  * https://vercel.com/docs/build-output-api/v3/primitives#serverless-function-configuration
  */
@@ -90,5 +126,37 @@ export interface PresetOptions {
     regions?: string[];
 
     functions?: VercelServerlessFunctionConfig;
+  };
+  firebase: FirebaseOptions;
+  cloudflare: {
+    pages: {
+      /**
+       * Nitro will automatically generate a `_routes.json` that controls which files get served statically and
+       * which get served by the Worker. Using this config will override the automatic `_routes.json`. Or, if the
+       * `merge` options is set, it will merge the user-set routes with the auto-generated ones, giving priority
+       * to the user routes.
+       *
+       * @see https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
+       *
+       * There are a maximum of 100 rules, and you must have at least one include rule. Wildcards are accepted.
+       *
+       * If any fields are unset, they default to:
+       *
+       * ```json
+       * {
+       *   "version": 1,
+       *   "include": ["/*"],
+       *   "exclude": []
+       * }
+       * ```
+       */
+      routes?: CloudflarePagesRoutes;
+      /**
+       * If set to `false`, nitro will disable the automatically generated `_routes.json` and instead use the user-set only ones.
+       *
+       * @default true
+       */
+      defaultRoutes?: boolean;
+    };
   };
 }
