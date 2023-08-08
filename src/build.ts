@@ -99,7 +99,11 @@ export async function writeTypes(nitro: Nitro) {
 
   let i = 1;
   for (const mw of middleware) {
-    if (typeof mw.handler !== "string" || !mw.route) {
+    if (
+      typeof mw.handler !== "string" ||
+      !mw.route ||
+      /^(\/_|\/api\/_)/.test(mw.route)
+    ) {
       continue;
     }
     const relativePath = relative(

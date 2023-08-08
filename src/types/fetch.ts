@@ -8,21 +8,23 @@ export interface InternalApi {}
 
 export interface InternalFetch<
   DefaultResponse = unknown,
-  DefaultFetchRequest extends RequestInfo | URL =
+  DefaultFetchRequest extends string | Request | URL =
     | Exclude<FetchRequest, string>
-    | RequestInfo
     | URL,
 > {
-  <T = DefaultResponse, R extends RequestInfo | URL = DefaultFetchRequest>(
-    request: R,
-    opts?: FetchOptions
+  <T = DefaultResponse, R extends string | Request | URL = DefaultFetchRequest>(
+    url: unknown extends T
+      ? R
+      :
+          | R
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          | (string & {})
   ): Promise<T>;
 }
 
 export type NitroFetchRequest =
-  | Exclude<keyof InternalApi, `/_${string}` | `/api/_${string}`>
+  | keyof InternalApi
   | Exclude<FetchRequest, string>
-  | RequestInfo
   | URL;
 
 export type MiddlewareOf<
@@ -83,9 +85,8 @@ export type ExtractedRouteMethod<
 
 export interface $Fetch<
   DefaultResponse = unknown,
-  DefaultFetchRequest extends RequestInfo | URL =
+  DefaultFetchRequest extends string | Request | URL =
     | Exclude<FetchRequest, string>
-    | RequestInfo
     | URL,
 > extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
   raw: InternalFetch<DefaultResponse, DefaultFetchRequest>;
