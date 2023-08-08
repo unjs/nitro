@@ -56,10 +56,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   const env = unenv.env(nodePreset, builtinPreset, nitro.options.unenv);
 
-  if (nitro.options.sourceMap) {
-    env.polyfill.push("source-map-support/register.js");
-  }
-
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
   const runtimeAppDir = join(runtimeDir, "app");
 
