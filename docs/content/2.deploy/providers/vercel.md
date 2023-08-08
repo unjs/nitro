@@ -21,6 +21,33 @@ After your project has been imported and deployed, all subsequent pushes to bran
 
 Learn more about Vercel’s [Git Integration](https://vercel.com/docs/concepts/git).
 
+## Experimental Streaming Support
+
+In order to leverage Streaming support in vercel functions, you have to enable `supportsResponseStreaming` flag:
+
+::code-group
+```ts [nitro.config.ts]
+export default defineNitroConfig({
+  vercel: {
+    functions: {
+      supportsResponseStreaming: true
+    }
+  }
+})
+```
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    vercel: {
+      functions: {
+        supportsResponseStreaming: true
+      }
+    }
+  }
+})
+```
+::
+
 ## Vercel Edge Functions
 
 **Preset:** `vercel_edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))

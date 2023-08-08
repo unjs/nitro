@@ -44,7 +44,8 @@ export const vercel = defineNitroPreset({
         handler: "index.mjs",
         launcherType: "Nodejs",
         shouldAddHelpers: false,
-        supportsResponseStreaming: true,
+        // TODO: Enable as soon as we have a green light from Vercel team!
+        supportsResponseStreaming: false,
         ...nitro.options.vercel?.functions,
       };
       await writeFile(
