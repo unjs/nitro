@@ -32,6 +32,7 @@ export interface NodeExternalsOptions {
   moduleDirectories?: string[];
   exportConditions?: string[];
   traceInclude?: string[];
+  traceAlias?: Record<string, string>;
 }
 
 export function externals(opts: NodeExternalsOptions): Plugin {
@@ -286,10 +287,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         tracedFile.pkgVersion = pkgJSON.version;
       }
 
-      const pkgAliases = {
-        "h3-nightly": "h3",
-      };
-
       const writePackage = async (
         name: string,
         version: string,
@@ -324,8 +321,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         );
 
         // Link aliases
-        if (pkgPath in pkgAliases) {
-          await linkPackage(pkgPath, pkgAliases[pkgPath]);
+        if (opts.traceAlias && pkgPath in opts.traceAlias) {
+          await linkPackage(pkgPath, opts.traceAlias[pkgPath]);
         }
       };
 
