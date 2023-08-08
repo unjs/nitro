@@ -230,14 +230,3 @@ export function provideFallbackValues(obj: Record<string, any>) {
     }
   }
 }
-
-type FetchWithRetries = {
-  url: string;
-  options: RequestInit;
-  /** Will use globalThis.fetch by default. */
-  fetcher?: typeof fetch;
-  /** Amount of retries. Pass Infinity to retry indefinitely. */
-  retries?: number;
-  /** Delay between each retry in ms. */
-  delay?: number;
-};
