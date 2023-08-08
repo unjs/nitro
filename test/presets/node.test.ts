@@ -1,6 +1,4 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { tmpdir } from "node:os";
-import fse from "fs-extra";
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
 import { isWindows } from "std-env";
@@ -10,14 +8,7 @@ describe("nitro:preset:node", async () => {
   const ctx = await setupTest("node");
 
   testNitro(ctx, async () => {
-    // Copy the server files to an isolated directory from (repo) node_modules
-    const tmpOutputDir = resolve(tmpdir(), "nitro-tests/node");
-    await fsp.rm(tmpOutputDir, { recursive: true }).catch(() => {});
-    await fsp.mkdir(tmpOutputDir, { recursive: true });
-    await fse.copy(resolve(ctx.outDir), tmpOutputDir);
-
-    const entryPath = resolve(tmpOutputDir, "server/index.mjs");
-    // console.log("entry", entryPath);
+    const entryPath = resolve(ctx.outDir, "server/index.mjs");
     const { listener } = await import(entryPath);
 
     await startServer(ctx, listener);
