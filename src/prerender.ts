@@ -172,8 +172,8 @@ export async function prerender(nitro: Nitro) {
       withBase(encodedRoute, nitro.options.baseURL),
       {
         headers: { "x-nitro-prerender": encodedRoute },
-        retry: nitro.options.prerender.retries ?? 2, // By default we retry 2 times
-        retryDelay: nitro.options.prerender.retryDelay ?? 250,
+        retry: nitro.options.prerender.retries ?? 2, // default is 2 retries
+        retryDelay: nitro.options.prerender.retryDelay ?? 250, // default is 250ms
       }
     );
     // Data will be removed as soon as written to the disk
