@@ -18,11 +18,10 @@ export const handler = async function handler(
 ): Promise<CloudFrontResultResponse> {
   const request = event.Records[0].cf.request;
 
-  console.log("Cloudfront Request", request);
   const url = getFullUrl(request.uri, request.querystring);
   const headers = normalizeCloudfrontIncomingHeaders(request.headers);
   const body = normalizeCloudfrontBody(request.body);
-  console.log(url, headers, body);
+
   const r = await nitroApp.localCall({
     event,
     url,
@@ -31,7 +30,7 @@ export const handler = async function handler(
     method: request.method,
     body,
   });
-  console.log("Nitro response", r);
+
   return {
     status: r.status.toString(),
     headers: normalizeCloudfrontOutgoingHeaders(r.headers),
