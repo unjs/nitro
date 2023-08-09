@@ -11,7 +11,6 @@ export const nitroRuntimeDependencies = [
   "ohash",
   "pathe",
   "radix3",
-  "radix3",
   "scule",
   "ufo",
   "uncrypto",
