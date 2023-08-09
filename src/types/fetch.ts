@@ -40,6 +40,8 @@ export interface ExternalFetch<
 export type NitroFetchRequest =
   | keyof InternalApi
   | Exclude<FetchRequest, string>
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {})
   | URL;
 
 /** @deprecated */
