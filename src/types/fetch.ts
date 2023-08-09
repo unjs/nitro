@@ -29,13 +29,11 @@ export interface InternalFetch<
 
 export interface ExternalFetch<
   DefaultResponse = unknown,
-  DefaultFetchRequest extends string | Request | URL =
-    | FetchRequest
-    | URL,
+  DefaultFetchRequest extends string | Request | URL = FetchRequest | URL,
   Raw extends boolean = false,
 > {
   <T = DefaultResponse, R extends string | Request | URL = DefaultFetchRequest>(
-    url: R,
+    url: R
   ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>;
 }
 
@@ -112,7 +110,9 @@ export interface $Fetch<
     | URL,
 > extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
   raw: InternalFetch<DefaultResponse, DefaultFetchRequest, true>;
-  create(defaults: Omit<FetchOptions, 'baseURL'>): InternalFetch<DefaultResponse>;
+  create(
+    defaults: Omit<FetchOptions, "baseURL">
+  ): InternalFetch<DefaultResponse>;
   create(defaults: FetchOptions): ExternalFetch;
 }
 

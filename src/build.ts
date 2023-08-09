@@ -151,7 +151,9 @@ export async function writeTypes(nitro: Nitro) {
       `    <T = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown>(
         url: ${routeType},
         options${isMethodOptional ? "?" : ""}:
-          BaseFetchOptions & { method${isMethodOptional ? "?" : ""}: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : EventHandlerRequest)
+          BaseFetchOptions & { method${
+            isMethodOptional ? "?" : ""
+          }: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : EventHandlerRequest)
       ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>
     `,
     ]);
