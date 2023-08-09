@@ -397,7 +397,9 @@ export const plugins = [
             "virtual:",
             runtimeDir,
             nitro.options.srcDir,
-            ...(nitro.options.dev ? [] : [...nitroRuntimeDependencies]),
+            ...(nitro.options.dev || nitro.options.prerender
+              ? []
+              : [...nitroRuntimeDependencies]),
             ...nitro.options.handlers
               .map((m) => m.handler)
               .filter((i) => typeof i === "string"),
