@@ -163,7 +163,7 @@ export async function writeTypes(nitro: Nitro) {
       routeTypes[mw.route][method] = [];
     }
     routeTypes[mw.route][method].push(
-      `Simplify<Serialize<Awaited<ReturnType<typeof import('${relativePath}').default>>>>`
+      `Simplify<Serialize<Awaited<ReturnType<${eventHandlerType}>>>>`
     );
   }
 
