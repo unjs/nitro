@@ -356,9 +356,9 @@ export const plugins = [
             conditions: [
               "default",
               nitro.options.dev ? "development" : "production",
-              "module",
               "node",
               "import",
+              "require",
             ],
           }).catch(() => null);
           if (_resolved) {
