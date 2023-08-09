@@ -22,6 +22,7 @@ import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
 import { version } from "../../package.json";
+import { nitroRuntimeDependencies } from "../deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
@@ -396,6 +397,7 @@ export const plugins = [
             "virtual:",
             runtimeDir,
             nitro.options.srcDir,
+            ...(nitro.options.dev ? [] : [...nitroRuntimeDependencies]),
             ...nitro.options.handlers
               .map((m) => m.handler)
               .filter((i) => typeof i === "string"),
