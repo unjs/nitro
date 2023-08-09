@@ -1,6 +1,7 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
-import { $Fetch } from "../..";
+import type { FetchResponse } from "ofetch"
+import type { $Fetch } from "../..";
 import { defineNitroConfig } from "../../src/config";
 
 interface TestResponse {
@@ -247,6 +248,33 @@ describe("API routes", () => {
       Promise<[string, string]>
     >();
   });
+
+  it('types event.$fetch', () => {
+    const event = useEvent();
+    expectTypeOf(event.$fetch("/api/serialized/tuple")).toEqualTypeOf<
+      Promise<[string, string]>
+    >();
+  })
+
+  it('produces correct $fetch.raw', async () => {
+    const r = await $fetch.raw("/api/serialized/tuple")
+    expectTypeOf($fetch.raw("/api/serialized/tuple")).toEqualTypeOf<
+      Promise<FetchResponse<[string, string]>>
+    >();
+  })
+
+  it('produces correctly typed new instance with $fetch.create', () => {
+    const newBase = $fetch.create({
+      baseURL: 'https://test.com'
+    })
+    expectTypeOf(newBase("/api/serialized/tuple")).toEqualTypeOf<Promise<unknown>>();
+    const sameBase = $fetch.create({
+      headers: { Authorization: 'Bearer 123' }
+    })
+    expectTypeOf(sameBase("/api/serialized/tuple")).toEqualTypeOf<
+      Promise<[string, string]>
+    >();
+  })
 });
 
 describe("defineNitroConfig", () => {
