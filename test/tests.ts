@@ -39,7 +39,11 @@ export async function setupTest(
   preset: string,
   opts: { config?: _nitro.NitroConfig } = {}
 ) {
-  const presetTmpDir = getPresetTmpDir(preset);
+  const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
+  const presetTempDir = resolve(
+    process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
+    preset + "-" + Date.now()
+  );
 
   await fsp.rm(presetTmpDir, { recursive: true }).catch(() => {});
   await fsp.mkdir(presetTmpDir, { recursive: true });

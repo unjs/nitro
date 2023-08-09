@@ -1,7 +1,7 @@
+import type { SSTConfig } from "sst";
 import type { HttpsOptions } from "firebase-functions/v2/https";
 import type { RuntimeOptions, region } from "firebase-functions";
 import type { CloudflarePagesRoutes } from "../presets/cloudflare-pages";
-
 /**
  * Vercel Build Output Configuration
  * @see https://vercel.com/docs/build-output-api/v3
@@ -97,6 +97,8 @@ type FirebaseOptions = FirebaseOptionsGen1 | FirebaseOptionsGen2;
 
 interface AWSLambdaOptionsBase {
   target: "single" | "edge";
+  sst?: boolean;
+  sstOptions?: Awaited<ReturnType<SSTConfig["config"]>>;
 }
 
 interface AwsLambdaOptionsSingleRegion extends AWSLambdaOptionsBase {

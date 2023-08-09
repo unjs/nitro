@@ -1,5 +1,6 @@
 import { defineNitroPreset } from "../preset";
 import { generateCdkApp } from "../utils/cdk";
+import { generateSST } from "../utils/sst";
 
 export const awsLambda = defineNitroPreset({
   entry: `#internal/nitro/entries/aws-lambda-{{ awsLambda.target }}`,
@@ -19,6 +20,9 @@ export const awsLambda = defineNitroPreset({
       }
     },
     async compiled(nitro) {
+      if (nitro.options.awsLambda.sst) {
+        await generateSST(nitro);
+      }
       if (
         nitro.options.awsLambda.target === "edge" &&
         nitro.options.awsLambda.cdk === true
