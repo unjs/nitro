@@ -25,7 +25,7 @@ import { version } from "../../package.json";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
-import { externals } from "./plugins/externals";
+import { NodeExternalsOptions, externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
 import { timing } from "./plugins/timing";
 import { publicAssets } from "./plugins/public-assets";
@@ -380,7 +380,7 @@ export const plugins = [
       : externals;
     rollupConfig.plugins.push(
       externalsPlugin(
-        defu(nitro.options.externals, {
+        defu(nitro.options.externals, <NodeExternalsOptions>{
           outDir: nitro.options.output.serverDir,
           moduleDirectories: nitro.options.nodeModulesDirs,
           external: [
@@ -404,6 +404,10 @@ export const plugins = [
             base: "/",
             processCwd: nitro.options.rootDir,
             exportsOnly: true,
+          },
+          traceAlias: {
+            "h3-nightly": "h3",
+            ...nitro.options.externals?.traceAlias,
           },
           exportConditions: nitro.options.exportConditions,
         })

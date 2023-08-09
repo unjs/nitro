@@ -12,10 +12,11 @@ describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
     const initialCode = await fsp.readFile(entry, "utf8");
     const runtime = new EdgeRuntime();
     runtime.evaluate(
-      initialCode.replace(
-        "export{handleEvent as default}",
-        "globalThis.handleEvent = handleEvent"
-      )
+      "globalThis.process = { env: {} };\n" +
+        initialCode.replace(
+          "export{handleEvent as default}",
+          "globalThis.handleEvent = handleEvent"
+        )
     );
     return async ({ url, headers }) => {
       const res = await runtime.evaluate(

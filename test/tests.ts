@@ -1,5 +1,8 @@
-import { resolve } from "pathe";
+import { tmpdir } from "node:os";
+import { promises as fsp } from "node:fs";
+import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
+import fse from "fs-extra";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll, beforeAll, describe } from "vitest";
@@ -35,16 +38,19 @@ export const describeIf = (condition, title, factory) =>
 
 export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
-
-  const presetTempDir = fileURLToPath(
-    new URL(`presets/.tmp/${preset}`, import.meta.url).href
+  const presetTempDir = resolve(
+    process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
+    preset
   );
+
+  await fsp.rm(presetTempDir, { recursive: true }).catch(() => {});
+  await fsp.mkdir(presetTempDir, { recursive: true });
 
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
-    outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    outDir: resolve(fixtureDir, presetTempDir, "output"),
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
         redirect: "manual",
