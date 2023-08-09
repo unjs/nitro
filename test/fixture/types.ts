@@ -263,10 +263,12 @@ describe("API routes", () => {
     >();
   })
 
-  it('produces correct $fetch.raw', async () => {
-    const r = await $fetch.raw("/api/serialized/tuple")
+  it('produces correct $fetch.raw', () => {
     expectTypeOf($fetch.raw("/api/serialized/tuple")).toEqualTypeOf<
       Promise<FetchResponse<[string, string]>>
+    >();
+    expectTypeOf($fetch.raw("/unknown")).toEqualTypeOf<
+      Promise<FetchResponse<unknown>>
     >();
   })
 
