@@ -121,10 +121,10 @@ export async function writeTypes(nitro: Nitro) {
     );
     eventHandlerImports.add(
       `type ${eventHandlerType}Output = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown`
-    )
+    );
     eventHandlerImports.add(
       `type ${eventHandlerType}Input = ${eventHandlerType} extends EventHandler<infer Input> ? Input : EventHandlerRequest`
-    )
+    );
 
     const Output = `${eventHandlerType}Output`;
     const Input = `${eventHandlerType}Input`;
@@ -160,19 +160,21 @@ export async function writeTypes(nitro: Nitro) {
       `    <T = ${Output}>(
         url: ${routeType},
         options: BaseFetchOptions & { method${
-            isMethodOptional ? "?" : ""
-          }: ${methodType} } & ${Input}
+          isMethodOptional ? "?" : ""
+        }: ${methodType} } & ${Input}
       ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>
-      ${isMethodOptional
-? `
+      ${
+        isMethodOptional
+          ? `
       <T = ${Output}>(
         url: IsOptional<${Input}> extends true ? ${routeType} : never,
         options?: BaseFetchOptions & { method${
-            isMethodOptional ? "?" : ""
-          }: ${methodType} } & ${Input}
+          isMethodOptional ? "?" : ""
+        }: ${methodType} } & ${Input}
       ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>
       `
-: ''}`
+          : ""
+      }`,
     ]);
 
     const method = mw.method || "default";
