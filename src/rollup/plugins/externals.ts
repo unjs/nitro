@@ -188,7 +188,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Trace used files using nft
       const _fileTrace = await nodeFileTrace([...trackedExternals], {
-        conditions: opts.exportConditions,
+        // https://github.com/unjs/nitro/pull/1562
+        conditions: opts.exportConditions.filter(
+          (c) => !["require", "import", "default"].includes(c)
+        ),
         ...opts.traceOptions,
       });
 
