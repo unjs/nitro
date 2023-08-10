@@ -6,6 +6,13 @@ import type { MatchedRoutes } from "./utils";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InternalApi {}
 
+export interface InternalFetchSignatures {
+  [key: string]: {
+    options?: unknown;
+    response?: unknown;
+  }
+}
+
 export interface InternalFetch<
   DefaultResponse = unknown,
   DefaultFetchRequest extends string | Request | URL =
@@ -13,17 +20,20 @@ export interface InternalFetch<
     | URL,
   Raw extends boolean = false,
 > {
-  <T = DefaultResponse, R extends string | Request | URL = DefaultFetchRequest>(
-    url: unknown extends T
-      ? R extends string
-        ? string extends keyof InternalApi[MatchedRoutes<R>]
-          ? R
-          : never
-        : R
-      :
-          | R
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          | (string & {})
+
+  <T, R extends (string & {}) | keyof InternalApi, M extends InternalFetchSignatures[MatchedRoutes<R>]['options']['method'], O extends InternalFetchSignatures[MatchedRoutes<R>]['options'], Res = unknown extends InternalFetchSignatures[MatchedRoutes<R>]['response'] ? T : InternalFetchSignatures[MatchedRoutes<R>]['response']>(
+    url: MatchedRoutes<R> extends keyof InternalApi ? R : never,
+    options: O
+  ): (true extends Raw ? Promise<FetchResponse<Res>> : Promise<Res>);
+
+  <T, R extends (string & {}) | keyof InternalApi, M extends InternalFetchSignatures[MatchedRoutes<R>]['options']['method'], O extends InternalFetchSignatures[MatchedRoutes<R>]['options'], Res = unknown extends InternalFetchSignatures[MatchedRoutes<R>]['response'] ? T : InternalFetchSignatures[MatchedRoutes<R>]['response']>(
+    url: Partial<InternalFetchSignatures[MatchedRoutes<R>]['options']> extends InternalFetchSignatures[MatchedRoutes<R>]['options'] ? MatchedRoutes<R> extends keyof InternalApi ? R : never : never,
+    options?: O
+  ): (true extends Raw ? Promise<FetchResponse<Res>> : Promise<Res>);
+
+  <T = DefaultResponse, R extends Request | URL = Request | URL>(
+    url: R,
+    options?: FetchOptions
   ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>;
 }
 

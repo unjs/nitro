@@ -1,7 +1,7 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
 import type { FetchResponse } from "ofetch"
-import type { $Fetch } from "../..";
+import type { $Fetch, InternalApi, InternalFetchSignatures, MatchedRoutes } from "../..";
 import { defineNitroConfig } from "../../src/config";
 
 interface TestResponse {
@@ -10,17 +10,24 @@ interface TestResponse {
 
 const $fetch = {} as $Fetch;
 
+type C = InternalFetchSignatures[MatchedRoutes<'/typed-routes'>]
+
 describe("API routes", () => {
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   const dynamicString: string = "";
 
+  type D = InternalFetchSignatures[MatchedRoutes<'/typed-routes'>]['options']
+  type E = Partial<D> extends D ? 'optional' : 'required'
+
   it("requires correct options for typed routes", async () => {
     // @ts-expect-error should be a POST request
     await $fetch("/api/upload");
-    // TODO: @ts-expect-error `query.id` is required
+    // @ts-expect-error `query.id` is required
     await $fetch("/typed-routes");
     // @ts-expect-error `query.id` is required
-    await $fetch("/typed-routes", {});
+    await $fetch("/typed-routes", {
+      query: {}
+    });
     // @ts-expect-error `query.id` should be a string
     await $fetch("/typed-routes", { query: { id: 42 } });
 
@@ -28,9 +35,8 @@ describe("API routes", () => {
   });
 
   it("generates types for unknown and manual typed routes", () => {
-    // @ts-expect-error No route matching this path exists
-    $fetch("/");
-    $fetch("https://test.com/");
+    expectTypeOf($fetch("/")).toEqualTypeOf<Promise<unknown>>();
+    expectTypeOf($fetch("https://test.com/")).toEqualTypeOf<Promise<unknown>>();
     expectTypeOf($fetch("/api/unknown")).toEqualTypeOf<Promise<unknown>>();
     expectTypeOf($fetch<TestResponse>("/test")).toEqualTypeOf<
       Promise<TestResponse>
@@ -81,8 +87,7 @@ describe("API routes", () => {
     >();
     expectTypeOf($fetch(`/api/typed/user/${dynamicString}`)).toEqualTypeOf<
       Promise<
-        // TODO: reenable deep merging of return types
-      // | { internalApiKey: "/api/typed/user/john" }
+        | { internalApiKey: "/api/typed/user/john" }
         | { internalApiKey: "/api/typed/user/:userId" }
       >
     >();
@@ -90,8 +95,7 @@ describe("API routes", () => {
       $fetch(`/api/typed/user/john/post/${dynamicString}`)
     ).toEqualTypeOf<
       Promise<
-        // TODO: reenable deep merging of return types
-      // | { internalApiKey: "/api/typed/user/john/post/coffee" }
+        | { internalApiKey: "/api/typed/user/john/post/coffee" }
         | { internalApiKey: "/api/typed/user/john/post/:postId" }
       >
     >();
@@ -100,19 +104,17 @@ describe("API routes", () => {
     ).toEqualTypeOf<
       Promise<
         | { internalApiKey: "/api/typed/user/:userId/post/:postId" }
-        // TODO: reenable deep merging of return types
-        // | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
+        | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
       >
     >();
     expectTypeOf(
       $fetch(`/api/typed/user/${dynamicString}/post/${dynamicString}`)
     ).toEqualTypeOf<
       Promise<
-        // TODO: reenable deep merging of return types
-        // | { internalApiKey: "/api/typed/user/john/post/coffee" }
-        // | { internalApiKey: "/api/typed/user/john/post/:postId" }
+        | { internalApiKey: "/api/typed/user/john/post/coffee" }
+        | { internalApiKey: "/api/typed/user/john/post/:postId" }
         | { internalApiKey: "/api/typed/user/:userId/post/:postId" }
-        // | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
+        | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
       >
     >();
   });
@@ -128,11 +130,10 @@ describe("API routes", () => {
       $fetch(`/api/typed/user/${dynamicString}/post/${dynamicString}/**`)
     ).toEqualTypeOf<
       Promise<
-        // TODO: reenable deep merging of return types
-        // | { internalApiKey: "/api/typed/user/john/post/coffee" }
-        // | { internalApiKey: "/api/typed/user/john/post/:postId" }
+        | { internalApiKey: "/api/typed/user/john/post/coffee" }
+        | { internalApiKey: "/api/typed/user/john/post/:postId" }
         | { internalApiKey: "/api/typed/user/:userId/post/:postId" }
-        // | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
+        | { internalApiKey: "/api/typed/user/:userId/post/firstPost" }
       >
     >();
   });
@@ -161,14 +162,16 @@ describe("API routes", () => {
       $fetch("/api/typed/todos/firstTodo/comments/foo")
     ).toEqualTypeOf<
       Promise<
-        { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
+        | { internalApiKey: "/api/typed/todos/**" }
+        | { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
       >
     >();
     expectTypeOf(
       $fetch(`/api/typed/todos/firstTodo/comments/${dynamicString}`)
     ).toEqualTypeOf<
       Promise<
-        { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
+        | { internalApiKey: "/api/typed/todos/**" }
+        | { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
       >
     >();
     expectTypeOf(
@@ -176,8 +179,7 @@ describe("API routes", () => {
     ).toEqualTypeOf<
       Promise<
         | { internalApiKey: "/api/typed/todos/**" }
-        // TODO: reenable deep merging of return types
-        // | { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
+        | { internalApiKey: "/api/typed/todos/:todoId/comments/**:commentId" }
       >
     >();
     expectTypeOf(
@@ -185,8 +187,7 @@ describe("API routes", () => {
     ).toEqualTypeOf<
       Promise<
         | { internalApiKey: "/api/typed/catchall/:slug/**:another" }
-        // TODO: reenable deep merging of return types
-        // | { internalApiKey: "/api/typed/catchall/some/**:test" }
+        | { internalApiKey: "/api/typed/catchall/some/**:test" }
       >
     >();
     expectTypeOf($fetch("/api/typed/catchall/some/foo/bar/baz")).toEqualTypeOf<
