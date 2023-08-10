@@ -188,7 +188,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Trace used files using nft
       const _fileTrace = await nodeFileTrace([...trackedExternals], {
-        conditions: opts.exportConditions,
         ...opts.traceOptions,
       });
 
