@@ -119,6 +119,15 @@ export async function writeTypes(nitro: Nitro) {
     eventHandlerImports.add(
       `type ${eventHandlerType} = typeof import('${relativePath}').default`
     );
+    eventHandlerImports.add(
+      `type ${eventHandlerType}Output = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown`
+    )
+    eventHandlerImports.add(
+      `type ${eventHandlerType}Input = ${eventHandlerType} extends EventHandler<infer Input> ? Input : EventHandlerRequest`
+    )
+
+    const Output = `${eventHandlerType}Output`;
+    const Input = `${eventHandlerType}Input`;
 
     // const isOptionsOptional
     const isMethodOptional = !mw.method || mw.method.toUpperCase() === "GET";
@@ -148,20 +157,26 @@ export async function writeTypes(nitro: Nitro) {
 
     fetchSignatures.push([
       mw.route,
-      `    <T = ${eventHandlerType} extends EventHandler<any, infer Output> ? Simplify<Serialize<Awaited<Output>>> : unknown>(
+      `    <T = ${Output}>(
         url: ${routeType},
-        options${isMethodOptional ? "?" : ""}:
-          BaseFetchOptions & { method${
+        options: BaseFetchOptions & { method${
             isMethodOptional ? "?" : ""
-          }: ${methodType} } & (${eventHandlerType} extends EventHandler<infer Input> ? Input : EventHandlerRequest)
+          }: ${methodType} } & ${Input}
       ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>
-    `,
+      ${isMethodOptional
+? `
+      <T = ${Output}>(
+        url: IsOptional<${Input}> extends true ? ${routeType} : never,
+        options?: BaseFetchOptions & { method${
+            isMethodOptional ? "?" : ""
+          }: ${methodType} } & ${Input}
+      ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>
+      `
+: ''}`
     ]);
 
     const method = mw.method || "default";
-    if (!routeTypes[mw.route][method]) {
-      routeTypes[mw.route][method] = [];
-    }
+    routeTypes[mw.route][method] ||= [];
     routeTypes[mw.route][method].push(
       `Simplify<Serialize<Awaited<ReturnType<${eventHandlerType}>>>>`
     );
@@ -226,6 +241,20 @@ export async function writeTypes(nitro: Nitro) {
     "import type { EventHandler, EventHandlerRequest, HTTPMethod } from 'h3'",
     "import type { FetchOptions, FetchResponse } from 'ofetch'",
     "type DefaultMethod = HTTPMethod | Lowercase<Exclude<HTTPMethod, 'PATCH'>>",
+    `type IsOptional<T extends Record<string, any>> =
+  'body' extends keyof T
+    ? 'query' extends keyof T
+      ? undefined extends T['body'] & T['query']
+        ? true
+        : false
+      : T['body'] extends undefined
+        ? true
+        : false
+    : 'query' extends keyof T
+      ? T['query'] extends undefined
+        ? true
+        : false
+      : true`,
     "type BaseFetchOptions = Omit<FetchOptions, 'method' | 'body' | 'query'>",
     ...eventHandlerImports,
     "declare module 'nitropack' {",

@@ -13,17 +13,14 @@ export interface InternalFetch<
     | URL,
   Raw extends boolean = false,
 > {
-  <T = DefaultResponse, R extends string | Request | URL = DefaultFetchRequest>(
-    url: unknown extends T
-      ? R extends string
-        ? string extends keyof InternalApi[MatchedRoutes<R>]
-          ? R
-          : never
-        : R
-      :
-          | R
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          | (string & {})
+  <T = DefaultResponse, R extends string = string>(
+    url: MatchedRoutes<R> extends never ? R : never,
+    options?: FetchOptions
+  ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>;
+
+  <T = DefaultResponse, R extends Request | URL = Request | URL>(
+    url: R,
+    options?: FetchOptions
   ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>;
 }
 

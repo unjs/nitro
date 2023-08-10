@@ -17,7 +17,7 @@ describe("API routes", () => {
   it("requires correct options for typed routes", async () => {
     // @ts-expect-error should be a POST request
     await $fetch("/api/upload");
-    // TODO: @ts-expect-error `query.id` is required
+    // @ts-expect-error `query.id` is required
     await $fetch("/typed-routes");
     // @ts-expect-error `query.id` is required
     await $fetch("/typed-routes", {});
@@ -28,9 +28,9 @@ describe("API routes", () => {
   });
 
   it("generates types for unknown and manual typed routes", () => {
-    // @ts-expect-error No route matching this path exists
-    $fetch("/");
-    $fetch("https://test.com/");
+    // @ts-expect-error this is wrongly detected as a matched route
+    $fetch("/")
+    expectTypeOf($fetch("https://test.com/")).toEqualTypeOf<Promise<unknown>>();
     expectTypeOf($fetch("/api/unknown")).toEqualTypeOf<Promise<unknown>>();
     expectTypeOf($fetch<TestResponse>("/test")).toEqualTypeOf<
       Promise<TestResponse>
@@ -82,7 +82,7 @@ describe("API routes", () => {
     expectTypeOf($fetch(`/api/typed/user/${dynamicString}`)).toEqualTypeOf<
       Promise<
         // TODO: reenable deep merging of return types
-      // | { internalApiKey: "/api/typed/user/john" }
+        // | { internalApiKey: "/api/typed/user/john" }
         | { internalApiKey: "/api/typed/user/:userId" }
       >
     >();
