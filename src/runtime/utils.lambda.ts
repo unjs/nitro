@@ -123,10 +123,7 @@ export function normalizeCloudfrontBody(body?: CloudFrontRequest["body"]) {
     return undefined;
   }
 
-  const bodyString = body;
-  if (body.encoding === "base64") {
-    bodyString.data = Buffer.from(body.data, "base64").toString("utf8");
-    bodyString.data = decodeURIComponent(bodyString.data);
-  }
-  return bodyString.data;
+  return body.encoding === "base64"
+    ? decodeURIComponent(Buffer.from(body.data, "base64").toString("utf8"))
+    : body.data;
 }
