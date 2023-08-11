@@ -191,7 +191,7 @@ export interface WasmOptions {
   /**
    * Options for `@rollup/plugin-wasm`, only used when `esmImport` is `false`
    */
-  bundle?: RollupWasmOptions;
+  rollupOptions?: RollupWasmOptions;
 }
 
 export interface NitroOptions extends PresetOptions {
