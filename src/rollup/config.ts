@@ -4,11 +4,9 @@ import { dirname, join, normalize, relative, resolve } from "pathe";
 import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
-import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
 import json from "@rollup/plugin-json";
-import wasmPlugin from "@rollup/plugin-wasm";
 import inject from "@rollup/plugin-inject";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { isWindows } from "std-env";
@@ -24,6 +22,7 @@ import { runtimeDir } from "../dirs";
 import { version } from "../../package.json";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
+import { wasm } from "./plugins/wasm";
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { NodeExternalsOptions, externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
@@ -147,12 +146,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   // Raw asset loader
   rollupConfig.plugins.push(raw());
 
-  // WASM import support
+  // WASM support
   if (nitro.options.experimental.wasm) {
-    const options = {
-      ...(nitro.options.experimental.wasm as RollupWasmOptions),
-    };
-    rollupConfig.plugins.push(wasmPlugin(options));
+    rollupConfig.plugins.push(wasm(nitro.options.wasm || {}));
   }
 
   // Build-time environment variables
@@ -365,7 +361,10 @@ export const plugins = [
             return { id: _resolved, external: false };
           }
         }
-        if (!resolved || resolved.external) {
+        if (
+          !resolved ||
+          (resolved.external && resolved.resolvedBy !== "nitro:wasm-import")
+        ) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
               from
