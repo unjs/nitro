@@ -229,7 +229,7 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
-  /** @experimental Requires experimental.wasm to be effective */
+  /** @experimental Requires `experimental.wasm` to be effective */
   wasm?: WasmOptions;
   experimental?: {
     legacyExternals?: boolean;
