@@ -180,11 +180,18 @@ export interface NitroRouteRules
   proxy?: { to: string } & ProxyOptions;
 }
 
-export interface WasmOptions extends RollupWasmOptions {
+export interface WasmOptions {
   /**
    * Direct import the wasm file instead of bundling, required in Cloudflare Workers
+   *
+   * @default false
    */
-  directImport?: boolean;
+  esmImport?: boolean;
+
+  /**
+   * Options for `@rollup/plugin-wasm`, only used when `esmImport` is `false`
+   */
+  bundle?: RollupWasmOptions;
 }
 
 export interface NitroOptions extends PresetOptions {
@@ -222,8 +229,8 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
+  wasm?: WasmOptions;
   experimental?: {
-    wasm?: boolean | WasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
     /**
@@ -234,6 +241,11 @@ export interface NitroOptions extends PresetOptions {
      * Enable native async context support for useEvent()
      */
     asyncContext?: boolean;
+
+    /**
+     * @deprecated Moved to top level wasm option
+     */
+    wasm?: any;
   };
   future: {
     nativeSWR: boolean;

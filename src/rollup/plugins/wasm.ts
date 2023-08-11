@@ -2,9 +2,15 @@ import { createHash } from "node:crypto";
 import { extname, basename } from "node:path";
 import { promises as fs } from "node:fs";
 import type { Plugin } from "rollup";
+import wasmBundle from "@rollup/plugin-wasm";
+import { WasmOptions } from "../../types";
 
 const PLUGIN_NAME = "nitro:wasm-import";
 const wasmRegex = /\.wasm$/;
+
+export function wasm(options: WasmOptions): Plugin {
+  return options.esmImport ? wasmImport() : wasmBundle(options.bundle);
+}
 
 export function wasmImport(): Plugin {
   const copies = Object.create(null);
@@ -21,7 +27,6 @@ export function wasmImport(): Plugin {
       if (wasmRegex.test(id)) {
         const { id: filepath } =
           (await this.resolve(id, importer, { skipSelf: true })) || {};
-        console.log({ filepath });
         if (!filepath || filepath === id) {
           return null;
         }
@@ -33,11 +38,7 @@ export function wasmImport(): Plugin {
         const ext = extname(filepath);
         const name = basename(filepath, ext);
 
-        const outputFileName = "wasm/[name]-[hash][extname]"
-          .replace(/\[hash]/g, hash)
-          .replace(/\[extname]/g, ext)
-          .replace(/\[name]/g, name);
-
+        const outputFileName = `wasm/${name}-${hash}${ext}`;
         const publicFilepath = `./${outputFileName}`;
 
         copies[id] = {
@@ -59,7 +60,6 @@ export function wasmImport(): Plugin {
           await this.emitFile({
             type: "asset",
             source: copy.buffer,
-            name: "Rollup WASM Asset",
             fileName: copy.filename,
           });
         })
