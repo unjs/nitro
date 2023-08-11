@@ -1,6 +1,6 @@
 {
-  "name": "nitropack-edge-edge-edge",
-  "version": "2.5.2-28195897.75ddbf46-28195898.75ddbf46-28195899.75ddbf46",
+  "name": "nitropack",
+  "version": "2.5.2",
   "description": "Build and Deploy Universal JavaScript Servers",
   "repository": "unjs/nitro",
   "license": "MIT",
@@ -48,7 +48,7 @@
   "resolutions": {
     "nitropack": "link:.",
     "undici": "^5.23.0",
-    "h3": "npm:h3-nightly@1.8.0-1691512197.ffab809"
+    "h3": "npm:h3-nightly@latest"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.0",
@@ -80,7 +80,7 @@
     "fs-extra": "^11.1.1",
     "globby": "^13.2.2",
     "gzip-size": "^7.0.0",
-    "h3": "npm:h3-nightly@latest",
+    "h3": "^1.8.3-rc.3",
     "hookable": "^5.5.3",
     "http-proxy": "^1.18.1",
     "is-primitive": "^3.0.1",
