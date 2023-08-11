@@ -1,6 +1,6 @@
 {
-  "name": "nitropack",
-  "version": "2.5.2",
+  "name": "nitropack-edge-edge-edge",
+  "version": "2.5.2-28195897.75ddbf46-28195898.75ddbf46-28195899.75ddbf46",
   "description": "Build and Deploy Universal JavaScript Servers",
   "repository": "unjs/nitro",
   "license": "MIT",
@@ -80,7 +80,7 @@
     "fs-extra": "^11.1.1",
     "globby": "^13.2.2",
     "gzip-size": "^7.0.0",
-    "h3": "^1.8.0-rc.3",
+    "h3": "npm:h3-nightly@latest",
     "hookable": "^5.5.3",
     "http-proxy": "^1.18.1",
     "is-primitive": "^3.0.1",

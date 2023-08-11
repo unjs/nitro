@@ -3,8 +3,6 @@ import { execaCommand } from "execa";
 import { resolve } from "pathe";
 import { globby } from "globby";
 
-// Temporary forked from nuxt/nuxt
-
 async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, "package.json");
   const data = JSON.parse(
@@ -111,13 +109,27 @@ async function main() {
   );
   const date = Math.round(Date.now() / (1000 * 60));
 
+  const nightlyPackages = {
+    h3: "h3-nightly",
+  };
+
   for (const pkg of workspace.packages.filter((p) => !p.data.private)) {
     workspace.setVersion(
       pkg.data.name,
       `${pkg.data.version}-${date}.${commit}`
     );
     workspace.rename(pkg.data.name, pkg.data.name + "-edge");
+    pkg.updateDeps((dep) => {
+      if (nightlyPackages[dep.name]) {
+        dep.range = "npm:" + nightlyPackages[dep.name] + "@latest";
+        return dep;
+      }
+    });
   }
+
+  // const { version: latest } = await $fetch<{ version: string }>(
+  //   `https://registry.npmjs.org/${name}/latest`
+  // );
 
   await workspace.save();
 }
