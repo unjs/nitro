@@ -80,7 +80,7 @@
     "fs-extra": "^11.1.1",
     "globby": "^13.2.2",
     "gzip-size": "^7.0.0",
-    "h3": "^1.8.3-rc.3",
+    "h3": "^1.8.0-rc.3",
     "hookable": "^5.5.3",
     "http-proxy": "^1.18.1",
     "is-primitive": "^3.0.1",
