@@ -147,16 +147,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   // Raw asset loader
   rollupConfig.plugins.push(raw());
 
-  // Legacy WASM options
+  // WASM support
   if (nitro.options.experimental.wasm) {
-    nitro.logger.warn(
-      `Config \`experimental.wasm\` has been moved to top-level \`wasm\` config.`
-    );
-  }
-
-  // WASM import support
-  if (nitro.options.wasm) {
-    rollupConfig.plugins.push(wasm(nitro.options.wasm));
+    rollupConfig.plugins.push(wasm(nitro.options.wasm || {}));
   }
 
   // Build-time environment variables

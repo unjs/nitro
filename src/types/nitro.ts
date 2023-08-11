@@ -191,7 +191,7 @@ export interface WasmOptions {
   /**
    * Options for `@rollup/plugin-wasm`, only used when `esmImport` is `false`
    */
-  rollupOptions?: RollupWasmOptions;
+  rollup?: RollupWasmOptions;
 }
 
 export interface NitroOptions extends PresetOptions {
@@ -229,6 +229,7 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
+  /** @experimental Requires experimental.wasm to be effective */
   wasm?: WasmOptions;
   experimental?: {
     legacyExternals?: boolean;
@@ -241,11 +242,10 @@ export interface NitroOptions extends PresetOptions {
      * Enable native async context support for useEvent()
      */
     asyncContext?: boolean;
-
     /**
-     * @deprecated Moved to top level wasm option
+     * Enable Experimental WebAssembly Support
      */
-    wasm?: any;
+    wasm?: boolean;
   };
   future: {
     nativeSWR: boolean;

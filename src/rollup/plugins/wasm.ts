@@ -9,7 +9,7 @@ const PLUGIN_NAME = "nitro:wasm-import";
 const wasmRegex = /\.wasm$/;
 
 export function wasm(options: WasmOptions): Plugin {
-  return options.esmImport ? wasmImport() : wasmBundle(options.rollupOptions);
+  return options.esmImport ? wasmImport() : wasmBundle(options.rollup);
 }
 
 export function wasmImport(): Plugin {
