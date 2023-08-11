@@ -173,7 +173,7 @@ You can set options for the firebase functions in your `nitro.config.ts` file:
 export default defineNitroConfig({
   firebase: {
     gen: 2,
-    httpOptions: {
+    httpsOptions: {
       region: 'europe-west1',
       maxInstances: 3,
     },
@@ -186,7 +186,7 @@ export default defineNuxtConfig({
   nitro: {
     firebase: {
       gen: 2,
-      httpOptions: {
+      httpsOptions: {
         region: 'europe-west1',
         maxInstances: 3,
       },
@@ -206,7 +206,7 @@ You can set custom Node.js version in configuration:
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   firebase: {
-    nodeVersion: 18 // Can be 16 or 18 or 20
+    nodeVersion: "18" // Can be "16" or "18" or "20"
   },
 });
 ```
@@ -215,7 +215,7 @@ export default defineNitroConfig({
 export default defineNuxtConfig({
   nitro: {
     firebase: {
-      nodeVersion: 18 // Can be 16 or 18 or 20
+      nodeVersion: "18" // Can be "16" or "18" or "20"
     },
   },
 });
