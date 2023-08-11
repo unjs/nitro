@@ -48,7 +48,7 @@
   "resolutions": {
     "nitropack": "link:.",
     "undici": "^5.23.0",
-    "h3": "npm:h3-nightly@1.8.0-1691512197.ffab809"
+    "h3": "npm:h3-nightly@latest"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.0",
