@@ -18,12 +18,13 @@ import type { Preset } from "unenv";
 import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
-import type { Nitro, NitroStaticBuildFlags } from "../types";
+import type { Nitro, NitroStaticBuildFlags, WasmOptions } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
 import { version } from "../../package.json";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
+import { wasmImport } from "./plugins/wasm-import";
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { NodeExternalsOptions, externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
@@ -150,9 +151,13 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   // WASM import support
   if (nitro.options.experimental.wasm) {
     const options = {
-      ...(nitro.options.experimental.wasm as RollupWasmOptions),
+      ...(nitro.options.experimental.wasm as WasmOptions),
     };
-    rollupConfig.plugins.push(wasmPlugin(options));
+    if (options.directImport) {
+      rollupConfig.plugins.push(wasmImport());
+    } else {
+      rollupConfig.plugins.push(wasmPlugin(options));
+    }
   }
 
   // Build-time environment variables
@@ -365,7 +370,8 @@ export const plugins = [
             return { id: _resolved, external: false };
           }
         }
-        if (!resolved || resolved.external) {
+        // @ts-expect-error cast
+        if (!resolved || (resolved.external && !resolved.__nitro_external__)) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
               from

@@ -22,5 +22,15 @@ export const cloudflare = defineNitroPreset({
         JSON.stringify({ lockfileVersion: 1 }, null, 2)
       );
     },
+    "rollup:before"(nitro) {
+      if (nitro.options.experimental?.wasm) {
+        if (nitro.options.experimental.wasm === true) {
+          nitro.options.experimental.wasm = {};
+        }
+        // Cloudflare Workers requires WASM to be directly imported
+        // https://community.cloudflare.com/t/fixed-cloudflare-workers-slow-with-moderate-sized-webassembly-bindings/184668/3
+        nitro.options.experimental.wasm.directImport = true;
+      }
+    },
   },
 });

@@ -180,6 +180,13 @@ export interface NitroRouteRules
   proxy?: { to: string } & ProxyOptions;
 }
 
+export interface WasmOptions extends RollupWasmOptions {
+  /**
+   * Direct import the wasm file instead of bundling, required in Cloudflare Workers
+   */
+  directImport?: boolean;
+}
+
 export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
@@ -216,7 +223,7 @@ export interface NitroOptions extends PresetOptions {
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
   experimental?: {
-    wasm?: boolean | RollupWasmOptions;
+    wasm?: boolean | WasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
     /**
