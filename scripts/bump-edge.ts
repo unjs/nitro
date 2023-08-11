@@ -127,10 +127,6 @@ async function main() {
     });
   }
 
-  // const { version: latest } = await $fetch<{ version: string }>(
-  //   `https://registry.npmjs.org/${name}/latest`
-  // );
-
   await workspace.save();
 }
 
