@@ -58,7 +58,7 @@ export function getRouteRules(event: H3Event): NitroRouteRules {
   event.context._nitro = event.context._nitro || {};
   if (!event.context._nitro.routeRules) {
     event.context._nitro.routeRules = getRouteRulesForPath(
-      withoutBase(event.url.pathname, useRuntimeConfig().app.baseURL)
+      withoutBase(event.path.split("?")[0], useRuntimeConfig().app.baseURL)
     );
   }
   return event.context._nitro.routeRules;
