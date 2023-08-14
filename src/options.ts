@@ -181,10 +181,14 @@ export async function loadOptions(
   options._config = configOverrides;
   options._c12 = c12Config;
 
+  console.log(configOverrides.static, detectTarget({ static: configOverrides.static }), options.static);
+
   options.preset =
     presetOverride ||
     (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
     detectTarget({ static: options.static });
+
+  console.log(options.preset);
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(
@@ -384,6 +388,8 @@ export async function loadOptions(
       handler: "#internal/nitro/routes/swagger",
     });
   }
+
+  console.log(options.preset);
 
   return options;
 }

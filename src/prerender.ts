@@ -15,6 +15,7 @@ const allowedExtensions = new Set(["", ".json"]);
 const linkParents = new Map<string, Set<string>>();
 
 export async function prerender(nitro: Nitro) {
+  console.log(nitro.options.prerender);
   if (nitro.options.noPublicDir) {
     console.warn(
       "[nitro] Skipping prerender since `noPublicDir` option is enabled."

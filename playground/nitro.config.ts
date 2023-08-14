@@ -1,1 +1,3 @@
-export default defineNitroConfig({});
+export default defineNitroConfig({
+  static: true,
+});
