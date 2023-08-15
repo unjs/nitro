@@ -36,7 +36,7 @@ import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
-import { sourcemapIgnore } from "./plugins/sourcemap-ignore";
+import { sourcemapMininify } from "./plugins/sourcemap-min";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -107,7 +107,11 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       sanitizeFileName: sanitizeFilePath,
       sourcemap: nitro.options.sourceMap,
       sourcemapExcludeSources: true,
+      sourcemapIgnoreList(relativePath, sourcemapPath) {
+        return relativePath.includes("node_modules");
+      },
       sourcemapPathTransform(relativePath, sourcemapPath) {
+        // TODO: Avoid absolute
         return resolve(dirname(sourcemapPath), relativePath);
       },
     },
@@ -134,10 +138,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       },
     },
   });
-
-  if (nitro.options.timing) {
-    rollupConfig.plugins.push(timing());
-  }
 
   if (nitro.options.imports) {
     rollupConfig.plugins.push(
@@ -402,7 +402,7 @@ export const plugins = [
               .filter((i) => typeof i === "string"),
             ...(nitro.options.dev ||
             nitro.options.preset === "nitro-prerender" ||
-            nitro.options.experimental.inlineRuntimeDependencies === false
+            nitro.options.experimental.bundleRuntimeDependencies === false
               ? []
               : nitroRuntimeDependencies),
           ],
@@ -470,12 +470,12 @@ export const plugins = [
     );
   }
 
-  // Minify
+  // Minify sourcemaps
   if (
     nitro.options.sourceMap &&
-    nitro.options.experimental.sourcemapIgnore !== false
+    nitro.options.experimental.sourcemapMinify !== false
   ) {
-    rollupConfig.plugins.push(sourcemapIgnore());
+    rollupConfig.plugins.push(sourcemapMininify());
   }
 
   if (nitro.options.analyze) {
