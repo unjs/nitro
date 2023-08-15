@@ -32,22 +32,28 @@ interface CloudflareModuleEnv {
   [key: string]: any;
 }
 
+type SendResponse = { sendResponse: () => any };
+
+export type ExtendedExecutionContext = ExecutionContext & SendResponse;
+
 interface CloudflareModuleRuntimeHooks {
-  "cloudflare:scheduled": (moduleArgs: {
+  "cloudflare:scheduled": (e: {
     controller: ScheduledController;
     env: CloudflareModuleEnv;
-    context: ExecutionContext;
+    context: ExtendedExecutionContext;
   }) => any;
-  "cloudflare:queue": (moduleArgs: {
+  "cloudflare:queue": (e: {
     batch: MessageBatch;
     env: CloudflareModuleEnv;
-    context: ExecutionContext;
+    context: ExtendedExecutionContext;
   }) => any;
 }
 
+export type ExtendedEvent<Event> = Event & SendResponse;
+
 interface CloudflareSWRuntimeHooks {
-  "cloudflare:scheduled": (event: ScheduledEvent) => any;
-  "cloudflare:queue": (event: QueueEvent) => any;
+  "cloudflare:scheduled": (event: ExtendedEvent<ScheduledEvent>) => any;
+  "cloudflare:queue": (event: ExtendedEvent<QueueEvent>) => any;
 }
 
 type CloudflareRuntimeOptions =
