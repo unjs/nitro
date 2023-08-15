@@ -207,7 +207,7 @@ export function defineCachedEventHandler<T = any>(
         return escapeKey(customKey);
       }
       // Auto-generated key
-      const _path = event._originalPath || event.path;
+      const _path = event.path;
       const _pathname =
         escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) || "index";
       const _hashedPath = `${_pathname}.${hash(_path)}`;
