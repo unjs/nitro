@@ -110,21 +110,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       sourcemapIgnoreList(relativePath, sourcemapPath) {
         return relativePath.includes("node_modules");
       },
-      sourcemapPathTransform(relativePath, sourcemapPath) {
-        const sourcemapDir = dirname(sourcemapPath);
-        const sourcePath = resolve(sourcemapDir, relativePath);
-        if (nitro.options.dev) {
-          return sourcePath;
-        }
-        if (sourcePath.includes("node_modules/")) {
-          return join(
-            relative(sourcemapDir, nitro.options.output.serverDir),
-            "node_modules",
-            sourcePath.split("node_modules/").pop()
-          );
-        }
-        return relativePath;
-      },
     },
     external: env.external,
     // https://github.com/rollup/rollup/pull/4021#issuecomment-809985618
