@@ -1,6 +1,10 @@
 import "#internal/nitro/virtual/polyfill";
 import { withoutBase } from "ufo";
-import type { ExecutionContext } from "@cloudflare/workers-types";
+import type {
+  ExecutionContext,
+  MessageBatch,
+  ScheduledEvent,
+} from "@cloudflare/workers-types";
 import {
   getAssetFromKV,
   mapRequestToAsset,
@@ -68,6 +72,22 @@ export default {
       headers: request.headers,
       body,
     });
+  },
+  // eslint-disable-next-line require-await
+  async queue(
+    batch: MessageBatch,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    return nitroApp.hooks.callHook("cloudflare:queue", batch, env, context);
+  },
+  // eslint-disable-next-line require-await
+  async scheduled(
+    event: ScheduledEvent,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    return nitroApp.hooks.callHook("cloudflare:scheduled", event, env, context);
   },
 };
 

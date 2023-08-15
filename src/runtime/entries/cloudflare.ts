@@ -3,11 +3,20 @@ import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
+import { addEventListener } from "@cloudflare/workers-types";
 import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+
+addEventListener("scheduled", (event) => {
+  return nitroApp.hooks.callHook("cloudflare:scheduled", event);
+});
+
+addEventListener("queue", (event) => {
+  return nitroApp.hooks.callHook("cloudflare:queue", event);
+});
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
