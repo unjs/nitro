@@ -13,7 +13,7 @@ import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
 import type { Preset } from "unenv";
-import { sanitizeFilePath, resolvePath } from "mlly";
+import { sanitizeFilePath, resolvePath, parseNodeModulePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
 import type { Nitro, NitroStaticBuildFlags } from "../types";
@@ -111,8 +111,14 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         return relativePath.includes("node_modules");
       },
       sourcemapPathTransform(relativePath, sourcemapPath) {
-        // TODO: Avoid absolute
-        return resolve(dirname(sourcemapPath), relativePath);
+        const sourcePath = resolve(dirname(sourcemapPath), relativePath);
+        if (nitro.options.dev) {
+          return sourcePath;
+        }
+        if (sourcePath.includes("node_modules/")) {
+          return `node_modules/${sourcePath.split("node_modules/").pop()}`;
+        }
+        return relativePath;
       },
     },
     external: env.external,
