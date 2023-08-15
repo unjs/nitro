@@ -21,12 +21,14 @@ declare function addEventListener<Type extends keyof WorkerGlobalScopeEventMap>(
   options?: EventTargetAddEventListenerOptions | boolean
 ): void;
 
+// https://developers.cloudflare.com/workers/runtime-apis/add-event-listener
 // https://developers.cloudflare.com/workers/runtime-apis/scheduled-event/
 addEventListener("scheduled", async (event) => {
   await nitroApp.hooks.callHook("cloudflare:scheduled", event);
 });
 
-// https://developers.cloudflare.com/queues/get-started/#5-create-your-consumer-worker
+// https://developers.cloudflare.com/workers/runtime-apis/add-event-listener
+// https://developers.cloudflare.com/queues/platform/javascript-apis/#consumer
 addEventListener("queue", async (event) => {
   await nitroApp.hooks.callHook("cloudflare:queue", event);
 });
