@@ -477,6 +477,7 @@ export const plugins = [
   // Minify sourcemaps
   if (
     nitro.options.sourceMap &&
+    !nitro.options.dev &&
     nitro.options.experimental.sourcemapMinify !== false
   ) {
     rollupConfig.plugins.push(sourcemapMininify());
