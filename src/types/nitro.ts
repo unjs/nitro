@@ -250,6 +250,10 @@ export interface NitroOptions extends PresetOptions {
      * Disable Experimental bundling of Nitro Runtime Dependencies
      */
     inlineRuntimeDependencies?: false;
+    /**
+     * Disable Experimental Sourcemap Minification
+     */
+    sourcemapIgnore?: false;
   };
   future: {
     nativeSWR: boolean;
