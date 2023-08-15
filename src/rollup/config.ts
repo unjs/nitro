@@ -36,6 +36,7 @@ import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
+import { sourcemapIgnore } from "./plugins/sourcemap-ignore";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -466,6 +467,9 @@ export const plugins = [
       })
     );
   }
+
+  // Minify
+  rollupConfig.plugins.push(sourcemapIgnore());
 
   if (nitro.options.analyze) {
     // https://github.com/btd/rollup-plugin-visualizer
