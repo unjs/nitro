@@ -139,6 +139,10 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     },
   });
 
+  if (nitro.options.timing) {
+    rollupConfig.plugins.push(timing());
+  }
+
   if (nitro.options.imports) {
     rollupConfig.plugins.push(
       unimportPlugin.rollup(nitro.options.imports) as Plugin
