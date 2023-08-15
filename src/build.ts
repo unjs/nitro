@@ -294,6 +294,44 @@ declare module 'nitropack' {
           : [join(relativeWithDot(tsconfigDir, nitro.options.srcDir), "**/*")]),
       ],
     });
+
+    for (const alias in tsConfig.compilerOptions!.paths) {
+      const paths = tsConfig.compilerOptions!.paths[alias];
+      tsConfig.compilerOptions!.paths[alias] = await Promise.all(
+        paths.map(async (path: string) => {
+          if (!isAbsolute(path)) {
+            return path;
+          }
+          const stats = await fsp
+            .stat(path)
+            .catch(() => null /* file does not exist */);
+          return relativeWithDot(
+            tsconfigDir,
+            stats?.isFile()
+              ? path.replace(/(?<=\w)\.\w+$/g, "") /* remove extension */
+              : path
+          );
+        })
+      );
+    }
+
+    tsConfig.include = [
+      ...new Set(
+        tsConfig.include.map((p) =>
+          isAbsolute(p) ? relativeWithDot(tsconfigDir, p) : p
+        )
+      ),
+    ];
+    if (tsConfig.exclude) {
+      tsConfig.exclude = [
+        ...new Set(
+          tsConfig.exclude!.map((p) =>
+            isAbsolute(p) ? relativeWithDot(tsconfigDir, p) : p
+          )
+        ),
+      ];
+    }
+
     buildFiles.push({
       path: tsConfigPath,
       contents: JSON.stringify(tsConfig, null, 2),

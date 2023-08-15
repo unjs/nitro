@@ -32,6 +32,7 @@ import { nitroImports } from "./imports";
 const NitroDefaults: NitroConfig = {
   // General
   debug: isDebug,
+  timing: isDebug,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
   appConfig: {},
@@ -498,7 +499,7 @@ function _resolveExportConditions(
   }
 
   // 4. Add default conditions
-  resolvedConditions.push("import", "module", "default");
+  resolvedConditions.push("import", "default");
 
   // Dedup with preserving order
   return resolvedConditions.filter(
