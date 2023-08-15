@@ -396,12 +396,12 @@ export const plugins = [
             "virtual:",
             runtimeDir,
             nitro.options.srcDir,
-            ...(nitro.options.dev || nitro.options.prerender
-              ? []
-              : [...nitroRuntimeDependencies]),
             ...nitro.options.handlers
               .map((m) => m.handler)
               .filter((i) => typeof i === "string"),
+            ...(nitro.options.dev || nitro.options.preset === "nitro-prerender"
+              ? []
+              : nitroRuntimeDependencies),
           ],
           traceOptions: {
             base: "/",
