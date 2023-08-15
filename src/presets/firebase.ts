@@ -68,7 +68,10 @@ async function writeRoutes(nitro: Nitro) {
   const _require = createRequire(import.meta.url);
 
   const jsons = await globby(
-    join(nitro.options.output.serverDir, "node_modules/**[!fsevents]/package.json"),
+    join(
+      nitro.options.output.serverDir,
+      "node_modules/**[!fsevents]/package.json"
+    )
   );
   const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length;
   const suffixLength = "/package.json".length;
