@@ -1,0 +1,86 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Install Dependencies",
+      "command": "pnpm install"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "build": {
+      "name": "build",
+      "command": "pnpm build",
+      "runAtStart": false
+    },
+    "dev": {
+      "name": "dev",
+      "command": "pnpm dev",
+      "runAtStart": true,
+      "preview": {
+        "port": 3000
+      }
+    },
+    "dev:build": {
+      "name": "dev:build",
+      "command": "pnpm dev:build",
+      "runAtStart": false
+    },
+    "dev:start": {
+      "name": "dev:start",
+      "command": "pnpm dev:start",
+      "runAtStart": false
+    },
+    "lint": {
+      "name": "lint",
+      "command": "pnpm lint",
+      "runAtStart": false
+    },
+    "lint:fix": {
+      "name": "lint:fix",
+      "command": "pnpm lint:fix",
+      "runAtStart": false
+    },
+    "nitro": {
+      "name": "nitro",
+      "command": "pnpm nitro",
+      "runAtStart": false
+    },
+    "prepack": {
+      "name": "prepack",
+      "command": "pnpm prepack",
+      "runAtStart": false
+    },
+    "release": {
+      "name": "release",
+      "command": "pnpm release",
+      "runAtStart": false
+    },
+    "stub": {
+      "name": "stub",
+      "command": "pnpm stub",
+      "runAtStart": false
+    },
+    "test": {
+      "name": "test",
+      "command": "pnpm test",
+      "runAtStart": false
+    },
+    "test:fixture:types": {
+      "name": "test:fixture:types",
+      "command": "pnpm test:fixture:types",
+      "runAtStart": false
+    },
+    "test:types": {
+      "name": "test:types",
+      "command": "pnpm test:types",
+      "runAtStart": false
+    },
+    "vitest-es": {
+      "name": "vitest-es",
+      "command": "pnpm vitest-es",
+      "runAtStart": false
+    }
+  }
+}
