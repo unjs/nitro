@@ -533,6 +533,11 @@ export function testNitro(
       );
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
+
+    it.skipIf(!ctx.nitro.options.node)("sourcemap works", async () => {
+      const { data } = await callHandler({ url: "/error-stack" });
+      expect(data.stack[1]).toMatch("test/fixture/routes/error-stack.ts:4:1");
+    });
   });
 
   describe("async context", () => {
