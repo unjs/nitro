@@ -38,7 +38,6 @@ describe("nitro:preset:cloudflare-module", async () => {
 
   it("should handle scheduled events", async () => {
     const waitUntil = await mf.dispatchScheduled();
-    console.log(waitUntil);
     expect(waitUntil[0]).toBe("scheduled:cloudflare-module");
   });
 });
