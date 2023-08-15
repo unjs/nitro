@@ -533,6 +533,13 @@ export function testNitro(
       );
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
+
+    it.skipIf(
+      !ctx.nitro.options.node || ctx.preset === "bun" /* TODO: Investigate */
+    )("sourcemap works", async () => {
+      const { data } = await callHandler({ url: "/error-stack" });
+      expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
+    });
   });
 
   describe("async context", () => {
