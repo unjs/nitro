@@ -471,7 +471,10 @@ export const plugins = [
   }
 
   // Minify
-  if (nitro.options.experimental.sourcemapIgnore !== false) {
+  if (
+    nitro.options.sourceMap &&
+    nitro.options.experimental.sourcemapIgnore !== false
+  ) {
     rollupConfig.plugins.push(sourcemapIgnore());
   }
 
