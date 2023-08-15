@@ -3,12 +3,24 @@ import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
-import { addEventListener } from "@cloudflare/workers-types";
+import type {
+  WorkerGlobalScopeEventMap,
+  EventListenerOrEventListenerObject,
+  EventTargetAddEventListenerOptions,
+} from "@cloudflare/workers-types";
 import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+
+export declare function addEventListener<
+  Type extends keyof WorkerGlobalScopeEventMap,
+>(
+  type: Type,
+  handler: EventListenerOrEventListenerObject<WorkerGlobalScopeEventMap[Type]>,
+  options?: EventTargetAddEventListenerOptions | boolean
+): void;
 
 addEventListener("scheduled", (event) => {
   return nitroApp.hooks.callHook("cloudflare:scheduled", event);

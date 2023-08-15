@@ -32,16 +32,16 @@ interface CloudflareModuleEnv {
 }
 
 interface CloudflareModuleRuntimeHooks {
-  "cloudflare:scheduled": (
-    event: ScheduledEvent,
-    env: CloudflareModuleEnv,
-    context: ExecutionContext
-  ) => any;
-  "cloudflare:queue": (
-    event: MessageBatch,
-    env: CloudflareModuleEnv,
-    context: ExecutionContext
-  ) => any;
+  "cloudflare:scheduled": (moduleArgs: {
+    event: ScheduledEvent;
+    env: CloudflareModuleEnv;
+    context: ExecutionContext;
+  }) => any;
+  "cloudflare:queue": (moduleArgs: {
+    batch: MessageBatch;
+    env: CloudflareModuleEnv;
+    context: ExecutionContext;
+  }) => any;
 }
 
 interface CloudflareSWRuntimeHooks {
@@ -61,8 +61,11 @@ export interface NitroRuntimeHooks {
   beforeResponse: AppOptions["onBeforeResponse"];
   afterResponse: AppOptions["onAfterResponse"];
 
-  "cloudflare:scheduled": CloudflareRuntimeOptions["cloudflare:scheduled"];
-  "cloudflare:queue": CloudflareRuntimeOptions["cloudflare:queue"];
+  "cloudflare-module:scheduled": CloudflareModuleRuntimeHooks["cloudflare:scheduled"];
+  "cloudflare-module:queue": CloudflareModuleRuntimeHooks["cloudflare:queue"];
+
+  "cloudflare:scheduled": CloudflareSWRuntimeHooks["cloudflare:scheduled"];
+  "cloudflare:queue": CloudflareSWRuntimeHooks["cloudflare:queue"];
 
   "render:response": (
     response: Partial<RenderResponse>,

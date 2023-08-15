@@ -1,9 +1,11 @@
+/* eslint-disable require-await */
 import "#internal/nitro/virtual/polyfill";
 import { withoutBase } from "ufo";
 import type {
   ExecutionContext,
   MessageBatch,
   ScheduledEvent,
+  ExportedHandler,
 } from "@cloudflare/workers-types";
 import {
   getAssetFromKV,
@@ -73,21 +75,29 @@ export default {
       body,
     });
   },
-  // eslint-disable-next-line require-await
+  // https://developers.cloudflare.com/queues/get-started/#5-create-your-consumer-worker
   async queue(
     batch: MessageBatch,
     env: CFModuleEnv,
     context: ExecutionContext
   ) {
-    return nitroApp.hooks.callHook("cloudflare:queue", batch, env, context);
+    return nitroApp.hooks.callHook("cloudflare-module:queue", {
+      batch,
+      env,
+      context,
+    });
   },
-  // eslint-disable-next-line require-await
+  // https://developers.cloudflare.com/workers/runtime-apis/scheduled-event/
   async scheduled(
     event: ScheduledEvent,
     env: CFModuleEnv,
     context: ExecutionContext
   ) {
-    return nitroApp.hooks.callHook("cloudflare:scheduled", event, env, context);
+    return nitroApp.hooks.callHook("cloudflare-module:scheduled", {
+      event,
+      env,
+      context,
+    });
   },
 };
 
