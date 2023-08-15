@@ -111,12 +111,17 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         return relativePath.includes("node_modules");
       },
       sourcemapPathTransform(relativePath, sourcemapPath) {
-        const sourcePath = resolve(dirname(sourcemapPath), relativePath);
+        const sourcemapDir = dirname(sourcemapPath);
+        const sourcePath = resolve(sourcemapDir, relativePath);
         if (nitro.options.dev) {
           return sourcePath;
         }
         if (sourcePath.includes("node_modules/")) {
-          return `node_modules/${sourcePath.split("node_modules/").pop()}`;
+          return join(
+            relative(sourcemapDir, nitro.options.output.serverDir),
+            "node_modules",
+            sourcePath.split("node_modules/").pop()
+          );
         }
         return relativePath;
       },
