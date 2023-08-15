@@ -8,12 +8,9 @@ import type {
   EventListenerOrEventListenerObject,
   EventTargetAddEventListenerOptions,
   Response as CFResponse,
-  ScheduledEvent,
-  QueueEvent,
 } from "@cloudflare/workers-types";
 import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
-import type { ExtendedEvent } from "../types";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
@@ -24,16 +21,14 @@ declare function addEventListener<Type extends keyof WorkerGlobalScopeEventMap>(
   options?: EventTargetAddEventListenerOptions | boolean
 ): void;
 
-addEventListener("scheduled", async (event: ExtendedEvent<ScheduledEvent>) => {
-  event.sendResponse = () => null;
+// https://developers.cloudflare.com/workers/runtime-apis/scheduled-event/
+addEventListener("scheduled", async (event) => {
   await nitroApp.hooks.callHook("cloudflare:scheduled", event);
-  return event.sendResponse();
 });
 
-addEventListener("queue", async (event: ExtendedEvent<QueueEvent>) => {
-  event.sendResponse = () => null;
+// https://developers.cloudflare.com/queues/get-started/#5-create-your-consumer-worker
+addEventListener("queue", async (event) => {
   await nitroApp.hooks.callHook("cloudflare:queue", event);
-  return event.sendResponse();
 });
 
 addEventListener("fetch", (event) => {

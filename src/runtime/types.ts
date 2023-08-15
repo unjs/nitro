@@ -49,16 +49,10 @@ interface CloudflareModuleRuntimeHooks {
   }) => any;
 }
 
-export type ExtendedEvent<Event> = Event & SendResponse;
-
 interface CloudflareSWRuntimeHooks {
-  "cloudflare:scheduled": (event: ExtendedEvent<ScheduledEvent>) => any;
-  "cloudflare:queue": (event: ExtendedEvent<QueueEvent>) => any;
+  "cloudflare:scheduled": (event: ScheduledEvent) => any;
+  "cloudflare:queue": (event: QueueEvent) => any;
 }
-
-type CloudflareRuntimeOptions =
-  | CloudflareModuleRuntimeHooks
-  | CloudflareSWRuntimeHooks;
 
 export interface NitroRuntimeHooks {
   close: () => void;

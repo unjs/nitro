@@ -9,23 +9,23 @@ import { setupTest, testNitro } from "../tests";
 describe("nitro:preset:cloudflare-module", async () => {
   const ctx = await setupTest("cloudflare-module");
 
-  testNitro(ctx, () => {
-    const mf = new Miniflare({
-      modules: true,
-      scriptPath: resolve(ctx.outDir, "server/index.mjs"),
-      sitePath: resolve(ctx.outDir, "public"),
-      bindings: {
-        ASSETS: {
-          fetch: async (request) => {
-            const contents = await fsp.readFile(
-              join(ctx.outDir, new URL(request.url).pathname)
-            );
-            return new _Response(contents);
-          },
+  const mf = new Miniflare({
+    modules: true,
+    scriptPath: resolve(ctx.outDir, "server/index.mjs"),
+    sitePath: resolve(ctx.outDir, "public"),
+    bindings: {
+      ASSETS: {
+        fetch: async (request) => {
+          const contents = await fsp.readFile(
+            join(ctx.outDir, new URL(request.url).pathname)
+          );
+          return new _Response(contents);
         },
       },
-    });
+    },
+  });
 
+  testNitro(ctx, () => {
     return async ({ url, headers, method, body }) => {
       const res = await mf.dispatchFetch("http://localhost" + url, {
         headers: headers || {},
@@ -34,5 +34,11 @@ describe("nitro:preset:cloudflare-module", async () => {
       });
       return res as unknown as Response;
     };
+  });
+
+  it("should handle scheduled events", async () => {
+    const waitUntil = await mf.dispatchScheduled();
+    console.log(waitUntil);
+    expect(waitUntil[0]).toBe("scheduled:cloudflare-module");
   });
 });
