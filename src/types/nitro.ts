@@ -246,6 +246,10 @@ export interface NitroOptions extends PresetOptions {
      * Enable Experimental WebAssembly Support
      */
     wasm?: boolean;
+    /**
+     * Disable Experimental bundling of Nitro Runtime Dependencies
+     */
+    inlineRuntimeDependencies?: false;
   };
   future: {
     nativeSWR: boolean;

@@ -400,7 +400,9 @@ export const plugins = [
             ...nitro.options.handlers
               .map((m) => m.handler)
               .filter((i) => typeof i === "string"),
-            ...(nitro.options.dev || nitro.options.preset === "nitro-prerender"
+            ...(nitro.options.dev ||
+            nitro.options.preset === "nitro-prerender" ||
+            nitro.options.experimental.inlineRuntimeDependencies === false
               ? []
               : nitroRuntimeDependencies),
           ],
@@ -469,7 +471,9 @@ export const plugins = [
   }
 
   // Minify
-  rollupConfig.plugins.push(sourcemapIgnore());
+  if (nitro.options.experimental.inlineRuntimeDependencies !== false) {
+    rollupConfig.plugins.push(sourcemapIgnore());
+  }
 
   if (nitro.options.analyze) {
     // https://github.com/btd/rollup-plugin-visualizer
