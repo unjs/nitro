@@ -2,10 +2,8 @@
 import "#internal/nitro/virtual/polyfill";
 import { withoutBase } from "ufo";
 import type {
-  ExecutionContext,
-  MessageBatch,
-  ScheduledEvent,
   ExportedHandler,
+  Response as CFResponse,
 } from "@cloudflare/workers-types";
 import {
   getAssetFromKV,
@@ -23,12 +21,9 @@ interface CFModuleEnv {
   [key: string]: any;
 }
 
-export default {
-  async fetch(
-    request: Request, // CFRequest,
-    env: CFModuleEnv,
-    context: ExecutionContext
-  ) {
+export default <ExportedHandler>{
+  async fetch(cfRequest, env: CFModuleEnv, context) {
+    const request = cfRequest as unknown as Request;
     try {
       // https://github.com/cloudflare/kv-asset-handler#es-modules
       return await getAssetFromKV(
@@ -73,28 +68,20 @@ export default {
       method: request.method,
       headers: request.headers,
       body,
-    });
+    }) as unknown as CFResponse;
   },
   // https://developers.cloudflare.com/queues/get-started/#5-create-your-consumer-worker
-  async queue(
-    batch: MessageBatch,
-    env: CFModuleEnv,
-    context: ExecutionContext
-  ) {
-    return nitroApp.hooks.callHook("cloudflare-module:queue", {
+  async queue(batch, env: CFModuleEnv, context) {
+    await nitroApp.hooks.callHook("cloudflare-module:queue", {
       batch,
       env,
       context,
     });
   },
   // https://developers.cloudflare.com/workers/runtime-apis/scheduled-event/
-  async scheduled(
-    event: ScheduledEvent,
-    env: CFModuleEnv,
-    context: ExecutionContext
-  ) {
-    return nitroApp.hooks.callHook("cloudflare-module:scheduled", {
-      event,
+  async scheduled(controller, env: CFModuleEnv, context) {
+    await nitroApp.hooks.callHook("cloudflare-module:scheduled", {
+      controller,
       env,
       context,
     });

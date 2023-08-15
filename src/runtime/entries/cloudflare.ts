@@ -7,6 +7,7 @@ import type {
   WorkerGlobalScopeEventMap,
   EventListenerOrEventListenerObject,
   EventTargetAddEventListenerOptions,
+  Response as CFResponse,
 } from "@cloudflare/workers-types";
 import { withoutBase } from "ufo";
 import { requestHasBody } from "../utils";
@@ -22,16 +23,18 @@ export declare function addEventListener<
   options?: EventTargetAddEventListenerOptions | boolean
 ): void;
 
-addEventListener("scheduled", (event) => {
-  return nitroApp.hooks.callHook("cloudflare:scheduled", event);
+addEventListener("scheduled", async (event) => {
+  await nitroApp.hooks.callHook("cloudflare:scheduled", event);
 });
 
-addEventListener("queue", (event) => {
-  return nitroApp.hooks.callHook("cloudflare:queue", event);
+addEventListener("queue", async (event) => {
+  await nitroApp.hooks.callHook("cloudflare:queue", event);
 });
 
-addEventListener("fetch", (event: any) => {
-  event.respondWith(handleEvent(event));
+addEventListener("fetch", (event) => {
+  event.respondWith(
+    handleEvent(event as unknown as FetchEvent) as unknown as CFResponse
+  );
 });
 
 async function handleEvent(event: FetchEvent) {

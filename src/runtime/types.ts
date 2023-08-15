@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   MessageBatch,
   QueueEvent,
+  ScheduledController,
 } from "@cloudflare/workers-types";
 import type { H3Event, AppOptions } from "h3";
 import type { RenderResponse } from "./renderer";
@@ -33,7 +34,7 @@ interface CloudflareModuleEnv {
 
 interface CloudflareModuleRuntimeHooks {
   "cloudflare:scheduled": (moduleArgs: {
-    event: ScheduledEvent;
+    controller: ScheduledController;
     env: CloudflareModuleEnv;
     context: ExecutionContext;
   }) => any;
