@@ -40,7 +40,7 @@ export function publicAssets(nitro: Nitro): Plugin {
           }
 
           assets[assetId] = {
-            type: nitro._prerenderMeta?.[id]?.contentType || mimeType,
+            type: nitro._prerenderMeta?.[assetId]?.contentType || mimeType,
             encoding,
             etag,
             mtime: stat.mtime.toJSON(),
