@@ -19,16 +19,12 @@ describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
         )
     );
     return async ({ url, headers, method, body }) => {
+      const isGet = ["get", "head"].includes((method || "get").toLowerCase());
       const res = await runtime.evaluate(
         `handleEvent(new Request(new URL("http://localhost${url}"), {
           headers: new Headers(${JSON.stringify(headers || {})}),
           method: ${JSON.stringify(method || "get")},
-          ${
-            ["get", "head"].includes((method || "get").toLowerCase())
-              ? ""
-              : `
-          body: ${JSON.stringify(body)},`
-          }
+          ${isGet ? "" : `body: ${JSON.stringify(body)},`}
         }))`
       );
       return res;
