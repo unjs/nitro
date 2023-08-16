@@ -305,6 +305,14 @@ export function testNitro(
         '"text/plain; charset=utf-8"'
       );
     });
+
+    it("stores content-type for prerendered routes", async () => {
+      const { data, headers } = await callHandler({
+        url: "/api/param/prerender4",
+      });
+      expect(data).toBe("prerender4");
+      expect(headers["content-type"]).toBe("text/plain; charset=utf-16");
+    });
   }
 
   it("shows 404 for /build/non-file", async () => {
