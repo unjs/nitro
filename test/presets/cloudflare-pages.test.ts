@@ -16,10 +16,14 @@ describe("nitro:preset:cloudflare-pages", async () => {
       bindings: {
         ASSETS: {
           fetch: async (request) => {
-            const contents = await fsp.readFile(
-              join(ctx.outDir, new URL(request.url).pathname)
-            );
-            return new _Response(contents);
+            try {
+              const contents = await fsp.readFile(
+                join(ctx.outDir, new URL(request.url).pathname)
+              );
+              return new _Response(contents);
+            } catch {
+              return new _Response(null, { status: 404 });
+            }
           },
         },
       },
