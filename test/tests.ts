@@ -320,6 +320,12 @@ export function testNitro(
       `);
     });
 
+    it("stores content-type for prerendered routes", async () => {
+      const { data, headers } = await callHandler({ url: "/api/param/prerender4" });
+      expect(data).toBe("prerender4");
+      expect(headers['content-type']).toBe('text/plain; charset=utf-16');
+    });
+
     it.skipIf(ctx.preset === "deno-server")(
       "resolve module version conflicts",
       async () => {
