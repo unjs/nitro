@@ -13,13 +13,14 @@ import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
 import type { Preset } from "unenv";
-import { sanitizeFilePath, resolvePath } from "mlly";
+import { sanitizeFilePath, resolvePath, parseNodeModulePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
 import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
 import { version } from "../../package.json";
+import { nitroRuntimeDependencies } from "../deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { wasm } from "./plugins/wasm";
@@ -35,6 +36,7 @@ import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
+import { sourcemapMininify } from "./plugins/sourcemap-min";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -105,8 +107,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       sanitizeFileName: sanitizeFilePath,
       sourcemap: nitro.options.sourceMap,
       sourcemapExcludeSources: true,
-      sourcemapPathTransform(relativePath, sourcemapPath) {
-        return resolve(dirname(sourcemapPath), relativePath);
+      sourcemapIgnoreList(relativePath, sourcemapPath) {
+        return relativePath.includes("node_modules");
       },
     },
     external: env.external,
@@ -398,6 +400,11 @@ export const plugins = [
             ...nitro.options.handlers
               .map((m) => m.handler)
               .filter((i) => typeof i === "string"),
+            ...(nitro.options.dev ||
+            nitro.options.preset === "nitro-prerender" ||
+            nitro.options.experimental.bundleRuntimeDependencies === false
+              ? []
+              : nitroRuntimeDependencies),
           ],
           traceOptions: {
             base: "/",
@@ -461,6 +468,15 @@ export const plugins = [
         },
       })
     );
+  }
+
+  // Minify sourcemaps
+  if (
+    nitro.options.sourceMap &&
+    !nitro.options.dev &&
+    nitro.options.experimental.sourcemapMinify !== false
+  ) {
+    rollupConfig.plugins.push(sourcemapMininify());
   }
 
   if (nitro.options.analyze) {
