@@ -225,6 +225,7 @@ export async function prerender(nitro: Nitro) {
     // Allow hooking before generate
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
     if (_route.contentType !== inferredContentType) {
+      nitro._prerenderMeta[_route.fileName] ||= {}
       nitro._prerenderMeta[_route.fileName].contentType = _route.contentType;
     }
 
