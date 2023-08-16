@@ -60,6 +60,7 @@ export interface Nitro {
 
   /* @internal */
   _prerenderedRoutes?: PrerenderRoute[];
+  _prerenderMeta?: Record<string, { contentType?: string }>;
 }
 
 export interface PrerenderRoute {
@@ -70,6 +71,7 @@ export interface PrerenderRoute {
   error?: Error & { statusCode: number; statusMessage: string };
   generateTimeMS?: number;
   skip?: boolean;
+  contentType?: string;
 }
 
 /** @deprecated Internal type will be removed in future versions */

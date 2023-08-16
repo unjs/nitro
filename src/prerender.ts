@@ -4,6 +4,7 @@ import { joinURL, parseURL, withBase, withoutBase } from "ufo";
 import chalk from "chalk";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
+import mime from "mime";
 import { createNitro } from "./nitro";
 import { build } from "./build";
 import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
@@ -49,6 +50,7 @@ export async function prerender(nitro: Nitro) {
   // Build with prerender preset
   nitro.logger.info("Initializing prerenderer");
   nitro._prerenderedRoutes = [];
+  nitro._prerenderMeta = nitro._prerenderMeta || {};
   const prerendererConfig = {
     ...nitro.options._config,
     static: false,
@@ -208,17 +210,23 @@ export async function prerender(nitro: Nitro) {
     _route.generateTimeMS = Date.now() - start;
 
     // Guess route type and populate fileName
+    const contentType = res.headers.get("content-type") || "";
     const isImplicitHTML =
-      !route.endsWith(".html") &&
-      (res.headers.get("content-type") || "").includes("html");
+      !route.endsWith(".html") && contentType.includes("html");
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
     _route.fileName = withoutBase(
       isImplicitHTML ? joinURL(route, "index.html") : routeWithIndex,
       nitro.options.baseURL
     );
+    // Allow overriding content-type in `prerender:generate` hook
+    const inferredContentType = mime.getType(_route.fileName) || "text/plain";
+    _route.contentType = contentType || inferredContentType;
 
     // Allow hooking before generate
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
+    if (_route.contentType !== inferredContentType) {
+      nitro._prerenderMeta[_route.fileName].contentType = _route.contentType;
+    }
 
     // Check if route is skipped or has errors
     if (_route.skip || _route.error) {
