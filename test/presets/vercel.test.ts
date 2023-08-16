@@ -28,21 +28,6 @@ describe("nitro:preset:vercel", async () => {
               "api/hey/index.html": {
                 "path": "api/hey",
               },
-              "api/param/foo.json/index.html": {
-                "path": "api/param/foo.json",
-              },
-              "api/param/hidden/index.html": {
-                "path": "api/param/hidden",
-              },
-              "api/param/prerender1/index.html": {
-                "path": "api/param/prerender1",
-              },
-              "api/param/prerender3/index.html": {
-                "path": "api/param/prerender3",
-              },
-              "api/param/prerender4/index.html": {
-                "path": "api/param/prerender4",
-              },
               "prerender/index.html": {
                 "path": "prerender",
               },
