@@ -48,6 +48,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const builtinPreset: Preset = {
     alias: {
       // General
+      "consola/core": "consola/core",
       consola: "unenv/runtime/npm/consola",
       // only mock debug in production
       ...(nitro.options.dev ? {} : { debug: "unenv/runtime/npm/debug" }),
