@@ -221,11 +221,12 @@ function deprecateSWR(nitro: Nitro) {
     }
     if (_hasProp(value, "static")) {
       value.isr = !(value as { static: boolean }).static;
+      hasLegacyOptions = true;
     }
     if (value && value.cache && _hasProp(value.cache, "swr")) {
       value.isr = value.cache.swr;
+      hasLegacyOptions = true;
     }
-    hasLegacyOptions = hasLegacyOptions || _hasProp(value, "isr");
   }
   if (hasLegacyOptions) {
     console.warn(
