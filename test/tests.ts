@@ -1,10 +1,13 @@
-import { resolve } from "pathe";
+import { tmpdir } from "node:os";
+import { promises as fsp } from "node:fs";
+import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll, beforeAll, describe } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
+import { defu } from "defu";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
 
@@ -22,6 +25,7 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  env: Record<string, string>;
   [key: string]: unknown;
 }
 
@@ -33,18 +37,32 @@ export const describeIf = (condition, title, factory) =>
         it.skip("skipped", () => {});
       });
 
-export async function setupTest(preset: string) {
-  const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
+export const fixtureDir = fileURLToPath(
+  new URL("fixture", import.meta.url).href
+);
 
-  const presetTempDir = fileURLToPath(
-    new URL(`presets/.tmp/${preset}`, import.meta.url).href
+export async function setupTest(
+  preset: string,
+  opts: { config?: _nitro.NitroConfig } = {}
+) {
+  const presetTempDir = resolve(
+    process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
+    preset
   );
+
+  await fsp.rm(presetTempDir, { recursive: true }).catch(() => {});
+  await fsp.mkdir(presetTempDir, { recursive: true });
 
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    env: {
+      NITRO_HELLO: "world",
+      CUSTOM_HELLO_THERE: "general",
+      SECRET: "secret",
+    },
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
         redirect: "manual",
@@ -52,25 +70,39 @@ export async function setupTest(preset: string) {
       }),
   };
 
-  const nitro = (ctx.nitro = await createNitro({
-    preset: ctx.preset,
-    dev: ctx.isDev,
-    rootDir: ctx.rootDir,
-    buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
-    serveStatic:
-      preset !== "cloudflare" &&
-      preset !== "cloudflare-module" &&
-      preset !== "cloudflare-pages" &&
-      preset !== "vercel-edge" &&
-      !ctx.isDev,
-    output: {
-      dir: ctx.outDir,
-    },
-    timing:
-      preset !== "cloudflare" &&
-      preset !== "cloudflare-pages" &&
-      preset !== "vercel-edge",
-  }));
+  // Set environment variables for process compatible presets
+  for (const [name, value] of Object.entries(ctx.env)) {
+    process.env[name] = value;
+  }
+
+  const nitro = (ctx.nitro = await createNitro(
+    defu(opts.config, {
+      preset: ctx.preset,
+      dev: ctx.isDev,
+      rootDir: ctx.rootDir,
+      runtimeConfig: {
+        nitro: {
+          envPrefix: "CUSTOM_",
+        },
+        hello: "",
+        helloThere: "",
+      },
+      buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
+      serveStatic:
+        preset !== "cloudflare" &&
+        preset !== "cloudflare-module" &&
+        preset !== "cloudflare-pages" &&
+        preset !== "vercel-edge" &&
+        !ctx.isDev,
+      output: {
+        dir: ctx.outDir,
+      },
+      timing:
+        preset !== "cloudflare" &&
+        preset !== "cloudflare-pages" &&
+        preset !== "vercel-edge",
+    })
+  ));
 
   if (ctx.isDev) {
     // Setup development server
@@ -300,70 +332,78 @@ export function testNitro(
       );
     });
 
-    it("shows 404 for /build/non-file", async () => {
-      const { status } = await callHandler({ url: "/build/non-file" });
-      expect(status).toBe(404);
+    it("stores content-type for prerendered routes", async () => {
+      const { data, headers } = await callHandler({
+        url: "/api/param/prerender4",
+      });
+      expect(data).toBe("prerender4");
+      expect(headers["content-type"]).toBe("text/plain; charset=utf-16");
     });
+  }
 
-    it("find auto imported utils", async () => {
-      const res = await callHandler({ url: "/imports" });
-      expect(res.data).toMatchInlineSnapshot(`
+  it("shows 404 for /build/non-file", async () => {
+    const { status } = await callHandler({ url: "/build/non-file" });
+    expect(status).toBe(404);
+  });
+
+  it("find auto imported utils", async () => {
+    const res = await callHandler({ url: "/imports" });
+    expect(res.data).toMatchInlineSnapshot(`
         {
           "testUtil": 123,
         }
       `);
-    });
+  });
 
-    it.skipIf(ctx.preset === "deno-server")(
-      "resolve module version conflicts",
-      async () => {
-        const { data } = await callHandler({ url: "/modules" });
-        expect(data).toMatchObject({
-          depA: "@fixture/nitro-lib@1.0.0+@fixture/nested-lib@1.0.0",
-          depB: "@fixture/nitro-lib@2.0.1+@fixture/nested-lib@2.0.1",
-          depLib: "@fixture/nitro-lib@2.0.0+@fixture/nested-lib@2.0.0",
-          subpathLib: "@fixture/nitro-lib@2.0.0",
-          extraUtils: "@fixture/nitro-utils/extra",
-        });
-      }
-    );
-
-    it("useStorage (with base)", async () => {
-      const putRes = await callHandler({
-        url: "/api/storage/item?key=test:hello",
-        method: "PUT",
-        body: "world",
+  it.skipIf(ctx.preset === "deno-server")(
+    "resolve module version conflicts",
+    async () => {
+      const { data } = await callHandler({ url: "/modules" });
+      expect(data).toMatchObject({
+        depA: "@fixture/nitro-lib@1.0.0+@fixture/nested-lib@1.0.0",
+        depB: "@fixture/nitro-lib@2.0.1+@fixture/nested-lib@2.0.1",
+        depLib: "@fixture/nitro-lib@2.0.0+@fixture/nested-lib@2.0.0",
+        subpathLib: "@fixture/nitro-lib@2.0.0",
+        extraUtils: "@fixture/nitro-utils/extra",
       });
-      expect(putRes.data).toMatchObject("world");
-
-      expect(
-        (
-          await callHandler({
-            url: "/api/storage/item?key=:",
-          })
-        ).data
-      ).toMatchObject(["test:hello"]);
-
-      expect(
-        (
-          await callHandler({
-            url: "/api/storage/item?base=test&key=:",
-          })
-        ).data
-      ).toMatchObject(["hello"]);
-
-      expect(
-        (
-          await callHandler({
-            url: "/api/storage/item?base=test&key=hello",
-          })
-        ).data
-      ).toBe("world");
-    });
-
-    if (additionalTests) {
-      additionalTests(ctx, callHandler);
     }
+  );
+
+  it("useStorage (with base)", async () => {
+    const putRes = await callHandler({
+      url: "/api/storage/item?key=test:hello",
+      method: "PUT",
+      body: "world",
+    });
+    expect(putRes.data).toMatchObject("world");
+
+    expect(
+      (
+        await callHandler({
+          url: "/api/storage/item?key=:",
+        })
+      ).data
+    ).toMatchObject(["test:hello"]);
+
+    expect(
+      (
+        await callHandler({
+          url: "/api/storage/item?base=test&key=:",
+        })
+      ).data
+    ).toMatchObject(["hello"]);
+
+    expect(
+      (
+        await callHandler({
+          url: "/api/storage/item?base=test&key=hello",
+        })
+      ).data
+    ).toBe("world");
+  });
+
+  if (additionalTests) {
+    additionalTests(ctx, callHandler);
   }
 
   it("runtime proxy", async () => {
@@ -389,7 +429,8 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        dynamic: "from-env",
+        // Cloudflare environment variables are only available within the fetch event
+        dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
         app: {
           baseURL: "/",
         },
@@ -484,7 +525,12 @@ export function testNitro(
       // TODO: Node presets do not split cookies
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
-      const notSplitingPresets = ["node", "nitro-dev", "vercel", nodeVersion < 18 && "deno-server"].filter(Boolean);
+      const notSplitingPresets = [
+        "node",
+        "nitro-dev",
+        "vercel",
+        nodeVersion < 18 && "deno-server",
+      ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
           nodeVersion < 18
@@ -521,6 +567,33 @@ export function testNitro(
         (entry) => entry.message
       );
       expect(allErrorMessages).to.includes("Service Unavailable");
+    });
+
+    it.skipIf(
+      !ctx.nitro.options.node || ctx.preset === "bun" /* TODO: Investigate */
+    )("sourcemap works", async () => {
+      const { data } = await callHandler({ url: "/error-stack" });
+      expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
+    });
+  });
+
+  describe("async context", () => {
+    it.skipIf(!ctx.nitro.options.node)("works", async () => {
+      const { data } = await callHandler({ url: "/context?foo" });
+      expect(data).toMatchObject({
+        context: {
+          path: "/context?foo",
+        },
+      });
+    });
+  });
+
+  describe("environment variables", () => {
+    it("can load environment variables from runtimeConfig", async () => {
+      const { data } = await callHandler({ url: "/config" });
+      expect(data.runtimeConfig.hello).toBe("world");
+      expect(data.runtimeConfig.helloThere).toBe("general");
+      expect(data.runtimeConfig.secret).toBeUndefined();
     });
   });
 }

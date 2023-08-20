@@ -68,5 +68,6 @@ Temporary Items
 .vercel
 staticwebapp.config.json
 .eslintcache
+playground/firebase.json
 
 test/fixture/functions

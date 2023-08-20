@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineNitroConfig } from "../../src/config";
 
 export default defineNitroConfig({
@@ -19,6 +20,11 @@ export default defineNitroConfig({
   ],
   devProxy: {
     "/proxy/example": { target: "https://example.com", changeOrigin: true },
+  },
+  alias: {
+    "#fixture-nitro-utils-extra-absolute": fileURLToPath(
+      new URL("node_modules/@fixture/nitro-utils/extra2.mjs", import.meta.url)
+    ),
   },
   serverAssets: [
     {
@@ -73,5 +79,17 @@ export default defineNitroConfig({
       // '/api/param/'
     ],
     routes: ["/prerender", "/icon.png", "/404"],
+  },
+  experimental: {
+    openAPI: true,
+    asyncContext: true,
+  },
+  cloudflare: {
+    pages: {
+      routes: {
+        include: ["/*", "/api/*", "/blog/*"],
+        exclude: ["/blog/static/*"],
+      },
+    },
   },
 });

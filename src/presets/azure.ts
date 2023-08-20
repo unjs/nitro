@@ -41,13 +41,17 @@ async function writeRoutes(nitro: Nitro) {
     }
   }
 
+  // Merge custom config into the generated config
   const config = {
+    ...nitro.options.azure?.config,
+    routes: [], // Overwrite routes for now, we will add existing routes after generating routes
     platform: {
       apiRuntime: `node:${nodeVersion}`,
+      ...nitro.options.azure?.config?.platform,
     },
-    routes: [],
     navigationFallback: {
       rewrite: "/api/server",
+      ...nitro.options.azure?.config?.navigationFallback,
     },
   };
 
@@ -97,6 +101,28 @@ async function writeRoutes(nitro: Nitro) {
       route,
       rewrite: fileName,
     });
+  }
+
+  // Prepend custom routes to the beginning of the routes array and override if they exist
+  if (
+    nitro.options.azure?.config &&
+    "routes" in nitro.options.azure.config &&
+    Array.isArray(nitro.options.azure.config.routes)
+  ) {
+    // We iterate through the reverse so the order in the custom config is persisted
+    for (const customRoute of nitro.options.azure.config.routes.reverse()) {
+      const existingRouteMatchIndex = config.routes.findIndex(
+        (value) => value.route === customRoute.route
+      );
+
+      if (existingRouteMatchIndex === -1) {
+        // If we don't find a match, put the customRoute at the beginning of the array
+        config.routes.unshift(customRoute);
+      } else {
+        // Otherwise override the existing route with our customRoute
+        config.routes[existingRouteMatchIndex] = customRoute;
+      }
+    }
   }
 
   const functionDefinition = {
