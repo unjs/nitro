@@ -447,7 +447,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const userPkg = await readPackageJSON(
         opts.rootDir || process.cwd()
       ).catch(() => ({}) as PackageJson);
-
       await writePackageJSON(resolve(opts.outDir, "package.json"), {
         name: (userPkg.name || "server") + "-prod",
         version: userPkg.version || "0.0.0",

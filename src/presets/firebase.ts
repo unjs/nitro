@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
-import { join, relative, resolve } from "pathe";
-import { readPackageJSON } from "pkg-types";
+import { join, relative } from "pathe";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -19,7 +19,8 @@ export const firebase = defineNitroPreset({
       await writeFirebaseConfig(nitro);
       await updatePackageJSON(nitro);
     },
-    "rollup:before": (nitro) => {
+    "rollup:before": (nitro, rollupConfig) => {
+      // Determine firebase generation and bundled app config
       const _gen = nitro.options.firebase?.gen as unknown;
       if (!_gen || _gen === "default") {
         nitro.logger.warn(
@@ -61,43 +62,24 @@ async function writeFirebaseConfig(nitro: Nitro) {
 }
 
 async function updatePackageJSON(nitro: Nitro) {
-  // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
-  // const supportedNodeVersions = new Set(["20", "18", "16"]);
-  const nodeVersion: string = nitro.options.firebase?.nodeVersion || "18";
-
-  const packageJSONPath = join(nitro.options.rootDir, "package.json");
-
+  const packageJSONPath = join(nitro.options.output.serverDir, "package.json");
   const packageJSON = await readPackageJSON(packageJSONPath);
-
-  delete packageJSON.bundledDependencies;
-
-  const newPackageJSON = {
-    ...packageJSON
-    private: true,
-    type: "module",
-    main: "./index.mjs",
-    bundledDependencies: undefined,
+  console.log("BBBB");
+  await writePackageJSON(packageJSONPath, {
+    ...packageJSON,
+    main: "index.mjs",
+    dependencies: Object.fromEntries(
+      Object.entries({
+        // Default to "latest" normally they should be overriden with user versions
+        "firebase-admin": "latest",
+        "firebase-functions": "latest",
+        ...packageJSON.dependencies,
+      }).sort(([a], [b]) => a[0].localeCompare(b[0]))
+    ),
+    engines: {
+      // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
+      // const supportedNodeVersions = new Set(["20", "18", "16"]);
+      node: nitro.options.firebase?.nodeVersion || "18",
+    },
   });
-
-  await writeFile(
-    resolve(nitro.options.output.serverDir, "package.json"),
-    JSON.stringify(
-      {
-        private: true,
-        type: "module",
-        main: "./index.mjs",
-        dependencies: Object.fromEntries(
-          Object.entries({
-            "firebase-functions-test": "latest",
-            "firebase-admin": await getPackageVersion("firebase-admin"),
-            "firebase-functions": await getPackageVersion("firebase-functions"),
-            ...dependencies,
-          }).sort(([a], [b]) => a[0].localeCompare(b[0]))
-        ),
-        engines: { node: nodeVersion },
-      },
-      null,
-      2
-    )
-  );
 }
