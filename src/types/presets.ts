@@ -122,6 +122,20 @@ export interface VercelServerlessFunctionConfig {
   [key: string]: unknown;
 }
 
+interface AzureOptions {
+  config?: {
+    platform?: {
+      apiRuntime?: string;
+      [key: string]: unknown;
+    };
+    navigationFallback?: {
+      rewrite?: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+}
+
 export interface PresetOptions {
   vercel: {
     config: VercelBuildConfigV3;
@@ -166,4 +180,5 @@ export interface PresetOptions {
       defaultRoutes?: boolean;
     };
   };
+  azure: AzureOptions;
 }

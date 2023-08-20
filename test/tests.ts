@@ -2,12 +2,12 @@ import { tmpdir } from "node:os";
 import { promises as fsp } from "node:fs";
 import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
-import fse from "fs-extra";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll, beforeAll, describe } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
+import { defu } from "defu";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
 
@@ -37,8 +37,14 @@ export const describeIf = (condition, title, factory) =>
         it.skip("skipped", () => {});
       });
 
-export async function setupTest(preset: string) {
-  const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
+export const fixtureDir = fileURLToPath(
+  new URL("fixture", import.meta.url).href
+);
+
+export async function setupTest(
+  preset: string,
+  opts: { config?: _nitro.NitroConfig } = {}
+) {
   const presetTempDir = resolve(
     process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
     preset
@@ -69,32 +75,34 @@ export async function setupTest(preset: string) {
     process.env[name] = value;
   }
 
-  const nitro = (ctx.nitro = await createNitro({
-    preset: ctx.preset,
-    dev: ctx.isDev,
-    rootDir: ctx.rootDir,
-    runtimeConfig: {
-      nitro: {
-        envPrefix: "CUSTOM_",
+  const nitro = (ctx.nitro = await createNitro(
+    defu(opts.config, {
+      preset: ctx.preset,
+      dev: ctx.isDev,
+      rootDir: ctx.rootDir,
+      runtimeConfig: {
+        nitro: {
+          envPrefix: "CUSTOM_",
+        },
+        hello: "",
+        helloThere: "",
       },
-      hello: "",
-      helloThere: "",
-    },
-    buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
-    serveStatic:
-      preset !== "cloudflare" &&
-      preset !== "cloudflare-module" &&
-      preset !== "cloudflare-pages" &&
-      preset !== "vercel-edge" &&
-      !ctx.isDev,
-    output: {
-      dir: ctx.outDir,
-    },
-    timing:
-      preset !== "cloudflare" &&
-      preset !== "cloudflare-pages" &&
-      preset !== "vercel-edge",
-  }));
+      buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
+      serveStatic:
+        preset !== "cloudflare" &&
+        preset !== "cloudflare-module" &&
+        preset !== "cloudflare-pages" &&
+        preset !== "vercel-edge" &&
+        !ctx.isDev,
+      output: {
+        dir: ctx.outDir,
+      },
+      timing:
+        preset !== "cloudflare" &&
+        preset !== "cloudflare-pages" &&
+        preset !== "vercel-edge",
+    })
+  ));
 
   if (ctx.isDev) {
     // Setup development server
