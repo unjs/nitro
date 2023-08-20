@@ -421,7 +421,7 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        // @note `cloudflare-pages` and `cloudflare-module` presets are only available in their `fetch` context.
+        // Cloudflare environment variables are only available within the fetch event
         dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
         app: {
           baseURL: "/",
