@@ -2,6 +2,7 @@ import "#internal/nitro/virtual/polyfill";
 import { Server as HttpServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { Server as HttpsServer } from "node:https";
+import { resolve } from "node:path";
 import destr from "destr";
 import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
@@ -24,7 +25,7 @@ const host = process.env.NITRO_HOST || process.env.HOST;
 const path = process.env.NITRO_SOCKET_PATH;
 
 // @ts-ignore
-const listener = server.listen({ port, host, path }, (err) => {
+const listener = server.listen(path ? { path } : { port, host }, (err) => {
   if (err) {
     console.error(err);
     // eslint-disable-next-line unicorn/no-process-exit
@@ -32,13 +33,17 @@ const listener = server.listen({ port, host, path }, (err) => {
   }
   const protocol = cert && key ? "https" : "http";
   const addressInfo = listener.address() as AddressInfo;
+  if (typeof addressInfo === "string") {
+    console.log(`Listening on unix socket ${resolve(addressInfo)}`);
+    return;
+  }
   const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
   const url = `${protocol}://${
     addressInfo.family === "IPv6"
       ? `[${addressInfo.address}]`
       : addressInfo.address
   }:${addressInfo.port}${baseURL}`;
-  console.log(`Listening ${url}`);
+  console.log(`Listening on ${url}`);
 });
 
 // Trap unhandled errors
