@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
 import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
 import type { PackageJson } from "pkg-types";
-import { readPackageJSON } from "pkg-types";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import {
@@ -26,6 +26,7 @@ export interface NodeExternalsOptions {
     | RegExp
     | ((id: string, importer?: string) => Promise<boolean> | boolean)
   >;
+  rootDir?: string;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -440,26 +441,20 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Write an informative package.json
-      const bundledDependencies = Object.fromEntries(
-        Object.values(tracedPackages)
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
-      );
-
-      await fsp.writeFile(
-        resolve(opts.outDir, "package.json"),
-        JSON.stringify(
-          {
-            name: "nitro-output",
-            version: "0.0.0",
-            private: true,
-            bundledDependencies,
-          },
-          null,
-          2
+      const userPkg = await readPackageJSON(
+        opts.rootDir || process.cwd()
+      ).catch(() => ({}) as PackageJson);
+      await writePackageJSON(resolve(opts.outDir, "package.json"), {
+        name: (userPkg.name || "server") + "-prod",
+        version: userPkg.version || "0.0.0",
+        type: "module",
+        private: true,
+        dependencies: Object.fromEntries(
+          Object.values(tracedPackages)
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
         ),
-        "utf8"
-      );
+      });
     },
   };
 }
