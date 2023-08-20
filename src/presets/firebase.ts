@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
-import { join, relative } from "pathe";
+import { join, relative, basename } from "pathe";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
+import type { Plugin } from "rollup";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -19,7 +20,7 @@ export const firebase = defineNitroPreset({
       await writeFirebaseConfig(nitro);
       await updatePackageJSON(nitro);
     },
-    "rollup:before": (nitro) => {
+    "rollup:before": (nitro, rollupConfig) => {
       const _gen = nitro.options.firebase?.gen as unknown;
       if (!_gen || _gen === "default") {
         nitro.logger.warn(
@@ -30,6 +31,22 @@ export const firebase = defineNitroPreset({
       }
       nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
       nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
+
+      // Replace __firebaseServerFunctionName__ to actual name in entries
+      (rollupConfig.plugins as Plugin[]).unshift({
+        name: "nitro:firebase",
+        transform: (code, id) => {
+          if (basename(id).startsWith("firebase-gen-")) {
+            return {
+              code: code.replace(
+                /__firebaseServerFunctionName__/g,
+                nitro.options.firebase?.serverFunctionName || "server"
+              ),
+              map: null,
+            };
+          }
+        },
+      } satisfies Plugin);
     },
   },
 });
