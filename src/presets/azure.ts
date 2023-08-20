@@ -43,18 +43,16 @@ async function writeRoutes(nitro: Nitro) {
 
   // Merge custom config into the generated config
   const config = {
+    ...nitro.options.azure?.config,
+    routes: [], // Overwrite routes for now, we will add existing routes after generating routes
     platform: {
       apiRuntime: `node:${nodeVersion}`,
+      ...nitro.options.azure?.config?.platform,
     },
     navigationFallback: {
       rewrite: "/api/server",
+      ...nitro.options.azure?.config?.navigationFallback,
     },
-
-    // This will overwrite the above properties if specified in the customConfig
-    ...nitro.options.azure?.config,
-
-    // Overwrite routes for now, we will add existing routes after generating routes
-    routes: [],
   };
 
   const routeFiles = nitro._prerenderedRoutes || [];

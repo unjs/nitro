@@ -123,7 +123,15 @@ export interface VercelServerlessFunctionConfig {
 }
 
 interface AzureOptions {
-  config: {
+  config?: {
+    platform?: {
+      apiRuntime?: string;
+      [key: string]: unknown;
+    };
+    navigationFallback?: {
+      rewrite?: string;
+      [key: string]: unknown;
+    };
     [key: string]: unknown;
   };
 }
