@@ -16,12 +16,33 @@ Azure Static Web Apps are designed to be deployed continuously in a [GitHub Acti
 
 ### Local preview
 
+Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) if you want to test locally.
+
 You can invoke a development environment to preview before deploying.
 
 ```bash
 NITRO_PRESET=azure yarn build
 npx @azure/static-web-apps-cli start .output/public --api-location .output/server
 ```
+
+### Configuration
+
+Azure Static Web Apps are [configured](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration) using the `staticwebapp.config.json` file.
+
+Nitro automatically generates this configuration file whenever the application is built with the `azure` preset.
+
+Nitro will automatically add the following properties based on the following criteria:
+| Property | Criteria | Default |
+| --- | --- | --- |
+| **[platform.apiRuntime](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#platform)** | Will automatically set to `node:16` or `node:14` depending on your package configuration. | `node:16` |
+| **[navigationFallback.rewrite](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#fallback-routes)** | Is always `/api/server` | `/api/server` |
+| **[routes](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#routes)** | All prerendered routes are added. Additionally, if you do not have an `index.html` file an empty one is created for you for compatibility purposes and also requests to `/index.html` are redirected to the root directory which is handled by `/api/server`.  | `[]` |
+
+### Custom Configuration
+
+You can alter the Nitro generated configuration using `azure.config` option.
+
+Custom routes will be added and matched first. In the case of a conflict (determined if an object has the same route property), custom routes will override generated ones.
 
 ### Deploy from CI/CD via GitHub Actions
 
@@ -53,7 +74,7 @@ If you are using runtimeConfig, you will likely want to configure the correspond
 
 ## Azure Functions
 
-**Preset:** `azure-functions`
+**Preset:** `azure_functions`
 
 **Note:** If you encounter any issues, please ensure you're using a Node.js 14+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#setting-the-node-version).
 
@@ -64,7 +85,7 @@ Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azur
 You can invoke a development environment from the serverless directory.
 
 ```bash
-NITRO_PRESET=azure-functions yarn build
+NITRO_PRESET=azure_functions yarn build
 cd .output
 func start
 ```
@@ -132,7 +153,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NITRO_PRESET: azure-functions
+          NITRO_PRESET: azure_functions
 
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1

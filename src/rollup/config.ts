@@ -4,27 +4,28 @@ import { dirname, join, normalize, relative, resolve } from "pathe";
 import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
-import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import commonjs from "@rollup/plugin-commonjs";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
 import json from "@rollup/plugin-json";
-import wasmPlugin from "@rollup/plugin-wasm";
 import inject from "@rollup/plugin-inject";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
 import type { Preset } from "unenv";
-import { sanitizeFilePath, resolvePath } from "mlly";
+import { sanitizeFilePath, resolvePath, parseNodeModulePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
-import type { Nitro } from "../types";
+import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
+import { version } from "../../package.json";
+import { nitroRuntimeDependencies } from "../deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
+import { wasm } from "./plugins/wasm";
 import { dynamicRequire } from "./plugins/dynamic-require";
-import { externals } from "./plugins/externals";
+import { NodeExternalsOptions, externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
 import { timing } from "./plugins/timing";
 import { publicAssets } from "./plugins/public-assets";
@@ -35,6 +36,7 @@ import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
+import { sourcemapMininify } from "./plugins/sourcemap-min";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -46,6 +48,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const builtinPreset: Preset = {
     alias: {
       // General
+      "consola/core": "consola/core",
       consola: "unenv/runtime/npm/consola",
       // only mock debug in production
       ...(nitro.options.dev ? {} : { debug: "unenv/runtime/npm/debug" }),
@@ -54,10 +57,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   };
 
   const env = unenv.env(nodePreset, builtinPreset, nitro.options.unenv);
-
-  if (nitro.options.sourceMap) {
-    env.polyfill.push("source-map-support/register.js");
-  }
 
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
   const runtimeAppDir = join(runtimeDir, "app");
@@ -73,9 +72,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       entryFileNames: "index.mjs",
       chunkFileNames(chunkInfo) {
         let prefix = "";
-        const lastModule = normalize(
-          chunkInfo.moduleIds[chunkInfo.moduleIds.length - 1]
-        );
+        const lastModule = normalize(chunkInfo.moduleIds.at(-1));
         if (lastModule.startsWith(buildServerDir)) {
           prefix = join("app", relative(buildServerDir, dirname(lastModule)));
         } else if (lastModule.startsWith(runtimeAppDir)) {
@@ -111,8 +108,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       sanitizeFileName: sanitizeFilePath,
       sourcemap: nitro.options.sourceMap,
       sourcemapExcludeSources: true,
-      sourcemapPathTransform(relativePath, sourcemapPath) {
-        return resolve(dirname(sourcemapPath), relativePath);
+      sourcemapIgnoreList(relativePath, sourcemapPath) {
+        return relativePath.includes("node_modules");
       },
     },
     external: env.external,
@@ -152,12 +149,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   // Raw asset loader
   rollupConfig.plugins.push(raw());
 
-  // WASM import support
+  // WASM support
   if (nitro.options.experimental.wasm) {
-    const options = {
-      ...(nitro.options.experimental.wasm as RollupWasmOptions),
-    };
-    rollupConfig.plugins.push(wasmPlugin(options));
+    rollupConfig.plugins.push(wasm(nitro.options.wasm || {}));
   }
 
   // Build-time environment variables
@@ -165,6 +159,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   if (nitro.options.preset === "nitro-prerender") {
     NODE_ENV = "prerender";
   }
+
   const buildEnvVars = {
     NODE_ENV,
     prerender: nitro.options.preset === "nitro-prerender",
@@ -172,6 +167,20 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     dev: String(nitro.options.dev),
     DEBUG: nitro.options.dev,
+  };
+
+  const staticFlags: NitroStaticBuildFlags = {
+    dev: nitro.options.dev,
+    preset: nitro.options.preset,
+    prerender: nitro.options.preset === "nitro-prerender",
+    server: true,
+    client: false,
+    nitro: true,
+    // @ts-expect-error
+    "versions.nitro": version,
+    "versions?.nitro": version,
+    // Internal
+    _asyncContext: nitro.options.experimental.asyncContext,
   };
 
   // Universal import.meta
@@ -184,6 +193,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       values: {
         "typeof window": '"undefined"',
         _import_meta_url_: "import.meta.url",
+        "globalThis.process.": "process.",
         "process.env.RUNTIME_CONFIG": () =>
           JSON.stringify(nitro.options.runtimeConfig, null, 2),
         ...Object.fromEntries(
@@ -207,6 +217,18 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         ...Object.fromEntries(
           Object.entries(buildEnvVars).map(([key, val]) => [
             `import.meta.env.${key}`,
+            JSON.stringify(val),
+          ])
+        ),
+        ...Object.fromEntries(
+          Object.entries(staticFlags).map(([key, val]) => [
+            `process.${key}`,
+            JSON.stringify(val),
+          ])
+        ),
+        ...Object.fromEntries(
+          Object.entries(staticFlags).map(([key, val]) => [
+            `import.meta.${key}`,
             JSON.stringify(val),
           ])
         ),
@@ -313,45 +335,7 @@ export const plugins = [
   );
 
   // Externals Plugin
-  if (!nitro.options.noExternals) {
-    const externalsPlugin = nitro.options.experimental.legacyExternals
-      ? legacyExternals
-      : externals;
-    rollupConfig.plugins.push(
-      externalsPlugin(
-        defu(nitro.options.externals, {
-          outDir: nitro.options.output.serverDir,
-          moduleDirectories: nitro.options.nodeModulesDirs,
-          external: [...(nitro.options.dev ? [nitro.options.buildDir] : [])],
-          inline: [
-            "#",
-            "~",
-            "@/",
-            "~~",
-            "@@/",
-            "virtual:",
-            runtimeDir,
-            nitro.options.srcDir,
-            ...nitro.options.handlers
-              .map((m) => m.handler)
-              .filter((i) => typeof i === "string"),
-          ],
-          traceOptions: {
-            base: "/",
-            processCwd: nitro.options.rootDir,
-            exportsOnly: true,
-          },
-          exportConditions: [
-            "default",
-            nitro.options.dev ? "development" : "production",
-            "module",
-            "node",
-            "import",
-          ],
-        })
-      )
-    );
-  } else {
+  if (nitro.options.noExternals) {
     rollupConfig.plugins.push({
       name: "no-externals",
       async resolveId(id, from, options) {
@@ -371,16 +355,19 @@ export const plugins = [
             conditions: [
               "default",
               nitro.options.dev ? "development" : "production",
-              "module",
               "node",
               "import",
+              "require",
             ],
           }).catch(() => null);
           if (_resolved) {
             return { id: _resolved, external: false };
           }
         }
-        if (!resolved || resolved.external) {
+        if (
+          !resolved ||
+          (resolved.external && resolved.resolvedBy !== "nitro:wasm-import")
+        ) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
               from
@@ -389,6 +376,50 @@ export const plugins = [
         }
       },
     });
+  } else {
+    const externalsPlugin = nitro.options.experimental.legacyExternals
+      ? legacyExternals
+      : externals;
+    rollupConfig.plugins.push(
+      externalsPlugin(
+        defu(nitro.options.externals, <NodeExternalsOptions>{
+          outDir: nitro.options.output.serverDir,
+          moduleDirectories: nitro.options.nodeModulesDirs,
+          external: [
+            ...(nitro.options.dev ? [nitro.options.buildDir] : []),
+            ...nitro.options.nodeModulesDirs,
+          ],
+          inline: [
+            "#",
+            "~",
+            "@/",
+            "~~",
+            "@@/",
+            "virtual:",
+            runtimeDir,
+            nitro.options.srcDir,
+            ...nitro.options.handlers
+              .map((m) => m.handler)
+              .filter((i) => typeof i === "string"),
+            ...(nitro.options.dev ||
+            nitro.options.preset === "nitro-prerender" ||
+            nitro.options.experimental.bundleRuntimeDependencies === false
+              ? []
+              : nitroRuntimeDependencies),
+          ],
+          traceOptions: {
+            base: "/",
+            processCwd: nitro.options.rootDir,
+            exportsOnly: true,
+          },
+          traceAlias: {
+            "h3-nightly": "h3",
+            ...nitro.options.externals?.traceAlias,
+          },
+          exportConditions: nitro.options.exportConditions,
+        })
+      )
+    );
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve
@@ -400,13 +431,7 @@ export const plugins = [
       modulePaths: nitro.options.nodeModulesDirs,
       // 'module' is intentionally not supported because of externals
       mainFields: ["main"],
-      exportConditions: [
-        "default",
-        nitro.options.dev ? "development" : "production",
-        "module",
-        "node",
-        "import",
-      ],
+      exportConditions: nitro.options.exportConditions,
     })
   );
 
@@ -444,6 +469,15 @@ export const plugins = [
         },
       })
     );
+  }
+
+  // Minify sourcemaps
+  if (
+    nitro.options.sourceMap &&
+    !nitro.options.dev &&
+    nitro.options.experimental.sourcemapMinify !== false
+  ) {
+    rollupConfig.plugins.push(sourcemapMininify());
   }
 
   if (nitro.options.analyze) {

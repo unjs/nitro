@@ -1,111 +1,102 @@
-import { createRequire } from "node:module";
 import { existsSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { join, relative, resolve } from "pathe";
-import { globby } from "globby";
-import { readPackageJSON } from "pkg-types";
+import { join, relative, basename } from "pathe";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
+import type { Plugin } from "rollup";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 
 export const firebase = defineNitroPreset({
-  entry: "#internal/nitro/entries/firebase",
+  entry: `#internal/nitro/entries/firebase-gen-{{ firebase.gen }}`,
   commands: {
-    deploy: "npx firebase deploy",
+    deploy: "npx firebase-tools deploy",
+  },
+  firebase: {
+    // we need this defined here so it's picked up by the template in firebase's entry
+    gen: (Number.parseInt(process.env.NITRO_FIREBASE_GEN) || "default") as any,
   },
   hooks: {
-    async compiled(ctx) {
-      await writeRoutes(ctx);
+    async compiled(nitro) {
+      await writeFirebaseConfig(nitro);
+      await updatePackageJSON(nitro);
+    },
+    "rollup:before": (nitro, rollupConfig) => {
+      const _gen = nitro.options.firebase?.gen as unknown;
+      if (!_gen || _gen === "default") {
+        nitro.logger.warn(
+          "Neither `firebase.gen` or `NITRO_FIREBASE_GEN` is set. Nitro will default to Cloud Functions 1st generation. It is recommended to set this to the latest generation (currently `2`). Set the version to remove this warning. See https://nitro.unjs.io/deploy/providers/firebase for more information."
+        );
+        // Using the gen 1 makes this preset backwards compatible for people already using it
+        nitro.options.firebase = { gen: 1 };
+      }
+      nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
+      nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
+
+      // Replace __firebaseServerFunctionName__ to actual name in entries
+      (rollupConfig.plugins as Plugin[]).unshift({
+        name: "nitro:firebase",
+        transform: (code, id) => {
+          if (basename(id).startsWith("firebase-gen-")) {
+            return {
+              code: code.replace(
+                /__firebaseServerFunctionName__/g,
+                nitro.options.firebase?.serverFunctionName || "server"
+              ),
+              map: null,
+            };
+          }
+        },
+      } satisfies Plugin);
     },
   },
 });
 
-async function writeRoutes(nitro: Nitro) {
-  if (!existsSync(join(nitro.options.rootDir, "firebase.json"))) {
-    const firebase = {
-      functions: {
-        source: relative(nitro.options.rootDir, nitro.options.output.serverDir),
-      },
-      hosting: [
-        {
-          site: "<your_project_id>",
-          public: relative(
-            nitro.options.rootDir,
-            nitro.options.output.publicDir
-          ),
-          cleanUrls: true,
-          rewrites: [
-            {
-              source: "**",
-              function: "server",
-            },
-          ],
-        },
-      ],
-    };
-    await writeFile(
-      resolve(nitro.options.rootDir, "firebase.json"),
-      JSON.stringify(firebase)
-    );
+async function writeFirebaseConfig(nitro: Nitro) {
+  const firebaseConfigPath = join(nitro.options.rootDir, "firebase.json");
+  if (existsSync(firebaseConfigPath)) {
+    return;
   }
-
-  const _require = createRequire(import.meta.url);
-
-  const jsons = await globby(
-    join(nitro.options.output.serverDir, "node_modules/**/package.json")
-  );
-  const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length;
-  const suffixLength = "/package.json".length;
-  // eslint-disable-next-line unicorn/no-array-reduce
-  const dependencies = jsons.reduce((obj, packageJson) => {
-    const dirname = packageJson.slice(prefixLength, -suffixLength);
-    if (!dirname.includes("node_modules")) {
-      obj[dirname] = _require(packageJson).version;
-    }
-    return obj;
-  }, {} as Record<string, string>);
-
-  let nodeVersion = "18";
-  const supportedNodeVersions = new Set(["18", "16", "14", "12", "10"]);
-  //    ^ See https://cloud.google.com/functions/docs/concepts/nodejs-runtime
-  try {
-    const currentNodeVersion = JSON.parse(
-      await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
-    ).engines.node;
-    if (supportedNodeVersions.has(currentNodeVersion)) {
-      nodeVersion = currentNodeVersion;
-    }
-  } catch {
-    const currentNodeVersion = process.versions.node.slice(0, 2);
-    if (supportedNodeVersions.has(currentNodeVersion)) {
-      nodeVersion = currentNodeVersion;
-    }
-  }
-
-  const getPackageVersion = async (id) => {
-    const pkg = await readPackageJSON(id, {
-      url: nitro.options.nodeModulesDirs,
-    });
-    return pkg.version;
-  };
-
-  await writeFile(
-    resolve(nitro.options.output.serverDir, "package.json"),
-    JSON.stringify(
+  const firebaseConfig = {
+    functions: {
+      source: relative(nitro.options.rootDir, nitro.options.output.serverDir),
+    },
+    hosting: [
       {
-        private: true,
-        type: "module",
-        main: "./index.mjs",
-        dependencies: {
-          "firebase-functions-test": "latest",
-          "firebase-admin": await getPackageVersion("firebase-admin"),
-          "firebase-functions": await getPackageVersion("firebase-functions"),
-          ...dependencies,
-        },
-        engines: { node: nodeVersion },
+        site: "<your_project_id>",
+        public: relative(nitro.options.rootDir, nitro.options.output.publicDir),
+        cleanUrls: true,
+        rewrites: [
+          {
+            source: "**",
+            function: "server",
+          },
+        ],
       },
-      null,
-      2
-    )
-  );
+    ],
+  };
+  await writeFile(firebaseConfigPath, JSON.stringify(firebaseConfig, null, 2));
+}
+
+async function updatePackageJSON(nitro: Nitro) {
+  const packageJSONPath = join(nitro.options.output.serverDir, "package.json");
+  const packageJSON = await readPackageJSON(packageJSONPath);
+  await writePackageJSON(packageJSONPath, {
+    ...packageJSON,
+    main: "index.mjs",
+    dependencies: Object.fromEntries(
+      Object.entries({
+        // Default to "latest" normally they should be overriden with user versions
+        "firebase-admin": "latest",
+        "firebase-functions": "latest",
+        ...packageJSON.dependencies,
+      })
+        .filter((e) => e[0] !== "fsevents")
+        .sort(([a], [b]) => a[0].localeCompare(b[0]))
+    ),
+    engines: {
+      // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
+      // const supportedNodeVersions = new Set(["20", "18", "16"]);
+      node: nitro.options.firebase?.nodeVersion || "18",
+    },
+  });
 }

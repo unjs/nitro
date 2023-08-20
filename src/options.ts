@@ -3,7 +3,11 @@ import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
-import { resolveModuleExportNames, resolvePath as resolveModule } from "mlly";
+import {
+  resolveModuleExportNames,
+  resolvePath as resolveModule,
+  parseNodeModulePath,
+} from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug } from "std-env";
@@ -19,6 +23,7 @@ import type {
   NitroOptions,
   NitroRouteConfig,
   NitroRouteRules,
+  NitroRuntimeConfig,
 } from "./types";
 import { runtimeDir, pkgDir } from "./dirs";
 import * as _PRESETS from "./presets";
@@ -27,6 +32,7 @@ import { nitroImports } from "./imports";
 const NitroDefaults: NitroConfig = {
   // General
   debug: isDebug,
+  timing: isDebug,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
   appConfig: {},
@@ -58,6 +64,7 @@ const NitroDefaults: NitroConfig = {
   },
   virtual: {},
   compressPublicAssets: false,
+  ignore: [],
 
   // Dev
   dev: false,
@@ -74,6 +81,7 @@ const NitroDefaults: NitroConfig = {
   prerender: {
     concurrency: 1,
     interval: 0,
+    failOnError: false,
     crawlLinks: false,
     ignore: [],
     routes: [],
@@ -94,6 +102,12 @@ const NitroDefaults: NitroConfig = {
   replace: {},
   node: true,
   sourceMap: true,
+  esbuild: {
+    options: {
+      jsxFactory: "h",
+      jsxFragment: "Fragment",
+    },
+  },
 
   // Advanced
   typescript: {
@@ -101,6 +115,7 @@ const NitroDefaults: NitroConfig = {
     generateTsConfig: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
+    tsConfig: {},
   },
   nodeModulesDirs: [],
   hooks: {},
@@ -125,6 +140,7 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
+  // @ts-ignore
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
@@ -138,7 +154,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: detectTarget() || "node-server",
+      preset: detectTarget({ static: configOverrides.static }),
     },
     defaults: NitroDefaults,
     jitiOptions: {
@@ -169,7 +185,7 @@ export async function loadOptions(
   options.preset =
     presetOverride ||
     (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
-    (detectTarget({ static: options.static }) ?? "node-server");
+    detectTarget({ static: options.static });
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(
@@ -304,9 +320,16 @@ export async function loadOptions(
     serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
   }
 
-  for (const pkg of ["defu", "h3", "radix3"]) {
-    if (!options.alias[pkg]) {
-      options.alias[pkg] = await resolveModule(pkg, { url: import.meta.url });
+  // Dedup built-in dependencies
+  for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
+    const entryPath = await resolveModule(pkg, { url: import.meta.url });
+    const { dir, name } = parseNodeModulePath(entryPath);
+    if (!dir || !name) {
+      continue;
+    }
+    if (!options.alias[pkg + "/"]) {
+      const pkgDir = join(dir, name);
+      options.alias[pkg + "/"] = pkgDir;
     }
   }
 
@@ -325,8 +348,31 @@ export async function loadOptions(
     };
   }
 
+  // Runtime storage
+  if (
+    options.dev &&
+    options.storage.data === undefined &&
+    options.devStorage.data === undefined
+  ) {
+    options.devStorage.data = {
+      driver: "fs",
+      base: resolve(options.rootDir, ".data/kv"),
+    };
+  } else if (options.node && options.storage.data === undefined) {
+    options.storage.data = {
+      driver: "fsLite",
+      base: "./.data/kv",
+    };
+  }
+
   // Resolve plugin paths
   options.plugins = options.plugins.map((p) => resolvePath(p, options));
+
+  // Export conditions
+  options.exportConditions = _resolveExportConditions(
+    options.exportConditions,
+    { dev: options.dev, node: options.node }
+  );
 
   // Add open-api endpoint
   if (options.dev && options.experimental.openAPI) {
@@ -359,7 +405,7 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     nitro: {},
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
-  return runtimeConfig;
+  return runtimeConfig as NitroRuntimeConfig;
 }
 
 export function normalizeRouteRules(
@@ -419,4 +465,44 @@ export function normalizeRouteRules(
     normalizedRules[path] = routeRules;
   }
   return normalizedRules;
+}
+
+function _resolveExportConditions(
+  conditions: string[] = [],
+  opts: { dev: boolean; node: boolean }
+) {
+  const resolvedConditions: string[] = [];
+
+  // 1. Add dev or production
+  resolvedConditions.push(opts.dev ? "development" : "production");
+
+  // 2. Add user specified conditions
+  resolvedConditions.push(...conditions);
+
+  // 3. Add runtime conditions (node or web)
+  if (opts.node) {
+    resolvedConditions.push("node");
+  } else {
+    // https://runtime-keys.proposal.wintercg.org/
+    resolvedConditions.push(
+      "wintercg",
+      "worker",
+      "web",
+      "browser",
+      "workerd",
+      "edge-light",
+      "lagon",
+      "netlify",
+      "edge-routine",
+      "deno"
+    );
+  }
+
+  // 4. Add default conditions
+  resolvedConditions.push("import", "default");
+
+  // Dedup with preserving order
+  return resolvedConditions.filter(
+    (c, i) => resolvedConditions.indexOf(c) === i
+  );
 }

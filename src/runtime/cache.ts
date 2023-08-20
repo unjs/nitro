@@ -4,10 +4,12 @@ import {
   defineEventHandler,
   createEvent,
   EventHandler,
+  isEvent,
 } from "h3";
 import type { H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "./storage";
+import { useNitroApp } from "./app";
 
 export interface CacheEntry<T = any> {
   value?: T;
@@ -38,10 +40,10 @@ const defaultCacheOptions = {
   maxAge: 1,
 };
 
-export function defineCachedFunction<T = any>(
-  fn: (...args) => T | Promise<T>,
+export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
+  fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
-) {
+): (...args: ArgsT) => Promise<T> {
   opts = { ...defaultCacheOptions, ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
@@ -55,7 +57,8 @@ export function defineCachedFunction<T = any>(
   async function get(
     key: string,
     resolver: () => T | Promise<T>,
-    shouldInvalidateCache?: boolean
+    shouldInvalidateCache?: boolean,
+    event?: H3Event
   ): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
     const cacheKey = [opts.base, group, name, key + ".json"]
@@ -110,18 +113,29 @@ export function defineCachedFunction<T = any>(
         entry.integrity = integrity;
         delete pending[key];
         if (validate(entry)) {
-          useStorage()
+          const promise = useStorage()
             .setItem(cacheKey, entry)
-            .catch((error) => console.error("[nitro] [cache]", error));
+            .catch((error) => {
+              useNitroApp().captureError(error, { event, tags: ["cache"] });
+            });
+          if (event && event.waitUntil) {
+            event.waitUntil(promise);
+          }
         }
       }
     };
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
 
+    if (expired && event && event.waitUntil) {
+      event.waitUntil(_resolvePromise);
+    }
+
     if (opts.swr && entry.value) {
       // eslint-disable-next-line no-console
-      _resolvePromise.catch(console.error);
+      _resolvePromise.catch((error) => {
+        useNitroApp().captureError(error, { event, tags: ["cache"] });
+      });
       // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return entry;
     }
@@ -136,7 +150,12 @@ export function defineCachedFunction<T = any>(
     }
     const key = await (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
-    const entry = await get(key, () => fn(...args), shouldInvalidateCache);
+    const entry = await get(
+      key,
+      () => fn(...args),
+      shouldInvalidateCache,
+      args[0] && isEvent(args[0]) ? args[0] : undefined
+    );
     let value = entry.value;
     if (opts.transform) {
       value = (await opts.transform(entry, ...args)) || value;
@@ -163,30 +182,40 @@ export interface CachedEventHandlerOptions<T = any>
   shouldBypassCache?: (event: H3Event) => boolean;
   getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
+  varies?: string[];
 }
 
-function escapeKey(key: string) {
-  return key.replace(/[^\dA-Za-z]/g, "");
+function escapeKey(key: string | string[]) {
+  return String(key).replace(/\W/g, "");
 }
 
 export function defineCachedEventHandler<T = any>(
   handler: EventHandler<T>,
   opts: CachedEventHandlerOptions<T> = defaultCacheOptions
 ): EventHandler<T> {
+  const variableHeaderNames = (opts.varies || [])
+    .filter(Boolean)
+    .map((h) => h.toLowerCase())
+    .sort();
+
   const _opts: CacheOptions<ResponseCacheEntry<T>> = {
     ...opts,
-    getKey: async (event) => {
-      const key = await opts.getKey?.(event);
-      if (key) {
-        return escapeKey(key);
+    getKey: async (event: H3Event) => {
+      // Custom user-defined key
+      const customKey = await opts.getKey?.(event);
+      if (customKey) {
+        return escapeKey(customKey);
       }
-      const url = event.node.req.originalUrl || event.node.req.url;
-      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
-        0,
-        16
-      );
-      const urlHash = hash(url);
-      return `${friendlyName}.${urlHash}`;
+      // Auto-generated key
+      const _path =
+        event.node.req.originalUrl || event.node.req.url || event.path;
+      const _pathname =
+        escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) || "index";
+      const _hashedPath = `${_pathname}.${hash(_path)}`;
+      const _headers = variableHeaderNames
+        .map((header) => [header, event.node.req.headers[header]])
+        .map(([name, value]) => `${escapeKey(name)}.${hash(value)}`);
+      return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
       if (entry.value.code >= 400) {
@@ -203,12 +232,24 @@ export function defineCachedEventHandler<T = any>(
 
   const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
     async (incomingEvent: H3Event) => {
+      // Only pass headers which are defined in opts.varies
+      const variableHeaders: Record<string, string | string[]> = {};
+      for (const header of variableHeaderNames) {
+        variableHeaders[header] = incomingEvent.node.req.headers[header];
+      }
+
       // Create proxies to avoid sharing state with user request
-      const reqProxy = cloneWithProxy(incomingEvent.node.req, { headers: {} });
+      const reqProxy = cloneWithProxy(incomingEvent.node.req, {
+        headers: variableHeaders,
+      });
       const resHeaders: Record<string, number | string | string[]> = {};
       let _resSendBody;
       const resProxy = cloneWithProxy(incomingEvent.node.res, {
         statusCode: 200,
+        writableEnded: false,
+        writableFinished: false,
+        headersSent: false,
+        closed: false,
         getHeader(name) {
           return resHeaders[name];
         },

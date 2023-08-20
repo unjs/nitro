@@ -5,6 +5,7 @@ jspm_packages
 # Nitro
 nitro.d.ts
 .nitro
+.data
 
 package-lock.json
 
@@ -67,5 +68,6 @@ Temporary Items
 .vercel
 staticwebapp.config.json
 .eslintcache
+playground/firebase.json
 
 test/fixture/functions

@@ -6,23 +6,14 @@ import { globby } from "globby";
 import type { Plugin } from "rollup";
 import type { Nitro } from "../../types";
 import { virtual } from "./virtual";
+import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
 
 export function publicAssets(nitro: Nitro): Plugin {
   return virtual(
     {
       // #internal/nitro/virtual/public-assets-data
       "#internal/nitro/virtual/public-assets-data": async () => {
-        const assets: Record<
-          string,
-          {
-            type: string;
-            etag: string;
-            mtime: string;
-            path: string;
-            size: number;
-            encoding?: string;
-          }
-        > = {};
+        const assets: Record<string, PublicAsset> = {};
         const files = await globby("**", {
           cwd: nitro.options.output.publicDir,
           absolute: false,
@@ -49,7 +40,7 @@ export function publicAssets(nitro: Nitro): Plugin {
           }
 
           assets[assetId] = {
-            type: mimeType,
+            type: nitro._prerenderMeta?.[assetId]?.contentType || mimeType,
             encoding,
             etag,
             mtime: stat.mtime.toJSON(),
@@ -78,7 +69,7 @@ export function readAsset (id) {
 import assets from '#internal/nitro/virtual/public-assets-data'
 export function readAsset (id) {
   // https://deno.com/deploy/docs/serve-static-assets
-  const path = '.' + new URL(\`../public\${id}\`, 'file://').pathname
+  const path = '.' + decodeURIComponent(new URL(\`../public\${id}\`, 'file://').pathname)
   return Deno.readFile(path);
 }`;
       },
@@ -95,7 +86,9 @@ import assets from '#internal/nitro/virtual/public-assets-data'
 ${
   nitro.options.serveStatic
     ? `export * from "#internal/nitro/virtual/public-assets-${
-        nitro.options.serveStatic === "deno" ? "deno" : "node"
+        ["deno"].includes(nitro.options.serveStatic as string)
+          ? nitro.options.serveStatic
+          : "node"
       }"`
     : "export const readAsset = () => Promise.resolve(null)"
 }

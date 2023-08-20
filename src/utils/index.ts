@@ -120,8 +120,8 @@ const autodetectableStaticProviders: Partial<
 
 export function detectTarget(options: { static?: boolean } = {}) {
   return options?.static
-    ? autodetectableStaticProviders[provider]
-    : autodetectableProviders[provider];
+    ? autodetectableStaticProviders[provider] || "static"
+    : autodetectableProviders[provider] || "node-server";
 }
 
 export async function isDirectory(path: string) {
@@ -222,7 +222,7 @@ export async function retry(fn: () => Promise<void>, retries: number) {
 
 export function provideFallbackValues(obj: Record<string, any>) {
   for (const key in obj) {
-    if (typeof obj[key] === "undefined" || obj[key] === null) {
+    if (obj[key] === undefined || obj[key] === null) {
       obj[key] = "";
     } else if (typeof obj[key] === "object") {
       provideFallbackValues(obj[key]);
