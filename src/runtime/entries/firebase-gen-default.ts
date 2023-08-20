@@ -1,2 +1,2 @@
-// we need this file to detect if the user is passing a `gen` property
-export { server } from "./firebase-gen-1";
+// We need this file to detect if the user is not passing a `gen` property
+export { __firebaseServerFunctionName__ } from "./firebase-gen-1";

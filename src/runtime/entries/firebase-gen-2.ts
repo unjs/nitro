@@ -6,7 +6,7 @@ import { useAppConfig } from "#internal/nitro";
 
 const firebaseConfig = useAppConfig().nitro.firebase;
 
-export const server = onRequest(
+export const __firebaseServerFunctionName__ = onRequest(
   {
     // Must be set to public to allow all public requests by default
     invoker: "public",

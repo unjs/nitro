@@ -244,3 +244,33 @@ You may be warned that other cloud functions will be deleted when you deploy you
 ```bash
 firebase deploy --only functions:server,hosting
 ```
+
+## Advanced
+
+### Renaming Function
+
+When deploying multiple apps within the same Firebase project, you must give your server a unique name in order to avoid overwriting
+your functions.
+
+You can specify a new name for the deployed Firebase function in your configuration:
+
+::code-group
+```ts [nitro.config.ts]
+import { defineNitroConfig } from 'nitropack/config'
+
+export default defineNitroConfig({
+  firebase: {
+    serverFunctionName: "<new_function_name>"
+  }
+})
+```
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    firebase: {
+      serverFunctionName: "<new_function_name>"
+    }
+  }
+})
+```
+::
