@@ -22,7 +22,7 @@ const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
   3000) as number;
 const host = process.env.NITRO_HOST || process.env.HOST;
 
-const path = process.env.NITRO_SOCKET_PATH;
+const path = process.env.NITRO_SOCKET;
 
 // @ts-ignore
 const listener = server.listen(path ? { path } : { port, host }, (err) => {
