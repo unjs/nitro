@@ -10,6 +10,7 @@ export default defineEventHandler((event) => {
     "../api/hey",
     "/api/param/foo.json",
     "/api/param/foo.css",
+    event.path.includes("?") ? "/api/param/hidden" : "/prerender?withQuery",
   ];
 
   appendHeader(
@@ -34,7 +35,6 @@ ${links.map((link) => `    <li><a href="${link}">${link}</a></li>`).join("\n")}
 
   /* Bad Link Examples */
   <a x-href="/500?x-href">x-href attr</a>
-
   &lt;a href=&quot;/500&lt;/a&gt;
 </body>
 </html>`;

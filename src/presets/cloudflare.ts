@@ -11,6 +11,9 @@ export const cloudflare = defineNitroPreset({
     preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
     deploy: "npx wrangler deploy",
   },
+  wasm: {
+    esmImport: true,
+  },
   hooks: {
     async compiled(nitro: Nitro) {
       await writeFile(

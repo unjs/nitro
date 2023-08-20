@@ -1,5 +1,8 @@
-import { resolve } from "pathe";
+import { tmpdir } from "node:os";
+import { promises as fsp } from "node:fs";
+import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
+import fse from "fs-extra";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll, beforeAll, describe } from "vitest";
@@ -36,10 +39,13 @@ export const describeIf = (condition, title, factory) =>
 
 export async function setupTest(preset: string) {
   const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
-
-  const presetTempDir = fileURLToPath(
-    new URL(`presets/.tmp/${preset}`, import.meta.url).href
+  const presetTempDir = resolve(
+    process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
+    preset
   );
+
+  await fsp.rm(presetTempDir, { recursive: true }).catch(() => {});
+  await fsp.mkdir(presetTempDir, { recursive: true });
 
   const ctx: Context = {
     preset,
@@ -318,70 +324,78 @@ export function testNitro(
       );
     });
 
-    it("shows 404 for /build/non-file", async () => {
-      const { status } = await callHandler({ url: "/build/non-file" });
-      expect(status).toBe(404);
+    it("stores content-type for prerendered routes", async () => {
+      const { data, headers } = await callHandler({
+        url: "/api/param/prerender4",
+      });
+      expect(data).toBe("prerender4");
+      expect(headers["content-type"]).toBe("text/plain; charset=utf-16");
     });
+  }
 
-    it("find auto imported utils", async () => {
-      const res = await callHandler({ url: "/imports" });
-      expect(res.data).toMatchInlineSnapshot(`
+  it("shows 404 for /build/non-file", async () => {
+    const { status } = await callHandler({ url: "/build/non-file" });
+    expect(status).toBe(404);
+  });
+
+  it("find auto imported utils", async () => {
+    const res = await callHandler({ url: "/imports" });
+    expect(res.data).toMatchInlineSnapshot(`
         {
           "testUtil": 123,
         }
       `);
-    });
+  });
 
-    it.skipIf(ctx.preset === "deno-server")(
-      "resolve module version conflicts",
-      async () => {
-        const { data } = await callHandler({ url: "/modules" });
-        expect(data).toMatchObject({
-          depA: "@fixture/nitro-lib@1.0.0+@fixture/nested-lib@1.0.0",
-          depB: "@fixture/nitro-lib@2.0.1+@fixture/nested-lib@2.0.1",
-          depLib: "@fixture/nitro-lib@2.0.0+@fixture/nested-lib@2.0.0",
-          subpathLib: "@fixture/nitro-lib@2.0.0",
-          extraUtils: "@fixture/nitro-utils/extra",
-        });
-      }
-    );
-
-    it("useStorage (with base)", async () => {
-      const putRes = await callHandler({
-        url: "/api/storage/item?key=test:hello",
-        method: "PUT",
-        body: "world",
+  it.skipIf(ctx.preset === "deno-server")(
+    "resolve module version conflicts",
+    async () => {
+      const { data } = await callHandler({ url: "/modules" });
+      expect(data).toMatchObject({
+        depA: "@fixture/nitro-lib@1.0.0+@fixture/nested-lib@1.0.0",
+        depB: "@fixture/nitro-lib@2.0.1+@fixture/nested-lib@2.0.1",
+        depLib: "@fixture/nitro-lib@2.0.0+@fixture/nested-lib@2.0.0",
+        subpathLib: "@fixture/nitro-lib@2.0.0",
+        extraUtils: "@fixture/nitro-utils/extra",
       });
-      expect(putRes.data).toMatchObject("world");
-
-      expect(
-        (
-          await callHandler({
-            url: "/api/storage/item?key=:",
-          })
-        ).data
-      ).toMatchObject(["test:hello"]);
-
-      expect(
-        (
-          await callHandler({
-            url: "/api/storage/item?base=test&key=:",
-          })
-        ).data
-      ).toMatchObject(["hello"]);
-
-      expect(
-        (
-          await callHandler({
-            url: "/api/storage/item?base=test&key=hello",
-          })
-        ).data
-      ).toBe("world");
-    });
-
-    if (additionalTests) {
-      additionalTests(ctx, callHandler);
     }
+  );
+
+  it("useStorage (with base)", async () => {
+    const putRes = await callHandler({
+      url: "/api/storage/item?key=test:hello",
+      method: "PUT",
+      body: "world",
+    });
+    expect(putRes.data).toMatchObject("world");
+
+    expect(
+      (
+        await callHandler({
+          url: "/api/storage/item?key=:",
+        })
+      ).data
+    ).toMatchObject(["test:hello"]);
+
+    expect(
+      (
+        await callHandler({
+          url: "/api/storage/item?base=test&key=:",
+        })
+      ).data
+    ).toMatchObject(["hello"]);
+
+    expect(
+      (
+        await callHandler({
+          url: "/api/storage/item?base=test&key=hello",
+        })
+      ).data
+    ).toBe("world");
+  });
+
+  if (additionalTests) {
+    additionalTests(ctx, callHandler);
   }
 
   it("runtime proxy", async () => {
@@ -545,6 +559,24 @@ export function testNitro(
         (entry) => entry.message
       );
       expect(allErrorMessages).to.includes("Service Unavailable");
+    });
+
+    it.skipIf(
+      !ctx.nitro.options.node || ctx.preset === "bun" /* TODO: Investigate */
+    )("sourcemap works", async () => {
+      const { data } = await callHandler({ url: "/error-stack" });
+      expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
+    });
+  });
+
+  describe("async context", () => {
+    it.skipIf(!ctx.nitro.options.node)("works", async () => {
+      const { data } = await callHandler({ url: "/context?foo" });
+      expect(data).toMatchObject({
+        context: {
+          path: "/context?foo",
+        },
+      });
     });
   });
 

@@ -40,7 +40,7 @@ export function publicAssets(nitro: Nitro): Plugin {
           }
 
           assets[assetId] = {
-            type: mimeType,
+            type: nitro._prerenderMeta?.[assetId]?.contentType || mimeType,
             encoding,
             etag,
             mtime: stat.mtime.toJSON(),
@@ -69,7 +69,7 @@ export function readAsset (id) {
 import assets from '#internal/nitro/virtual/public-assets-data'
 export function readAsset (id) {
   // https://deno.com/deploy/docs/serve-static-assets
-  const path = '.' + new URL(\`../public\${id}\`, 'file://').pathname
+  const path = '.' + decodeURIComponent(new URL(\`../public\${id}\`, 'file://').pathname)
   return Deno.readFile(path);
 }`;
       },

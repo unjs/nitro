@@ -15,7 +15,7 @@ const end = s => Date.now() - s;
 const _s = {};
 const metrics = [];
 const logStart = id => { _s[id] = Date.now(); };
-const logEnd = id => { const t = end(_s[id]); delete _s[id]; metrics.push([id, t]); console.debug('>', id + ' (' + t + 'ms)'); };
+const logEnd = id => { const t = end(_s[id]); delete _s[id]; metrics.push([id, t]); if (t > 0) { console.debug('>', id + ' (' + t + 'ms)'); } };
 ${TIMING} = { start, end, metrics, logStart, logEnd };
 `);
 

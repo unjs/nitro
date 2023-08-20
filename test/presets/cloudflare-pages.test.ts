@@ -18,10 +18,14 @@ describe("nitro:preset:cloudflare-pages", async () => {
         ...ctx.env,
         ASSETS: {
           fetch: async (request) => {
-            const contents = await fsp.readFile(
-              join(ctx.outDir, new URL(request.url).pathname)
-            );
-            return new _Response(contents);
+            try {
+              const contents = await fsp.readFile(
+                join(ctx.outDir, new URL(request.url).pathname)
+              );
+              return new _Response(contents);
+            } catch {
+              return new _Response(null, { status: 404 });
+            }
           },
         },
       },
@@ -44,6 +48,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
     expect(config).toMatchInlineSnapshot(`
       {
         "exclude": [
+          "/blog/static/*",
           "/build/*",
           "/favicon.ico",
           "/icon.png",
@@ -52,13 +57,16 @@ describe("nitro:preset:cloudflare-pages", async () => {
           "/prerender/index.html.br",
           "/prerender/index.html.gz",
           "/api/hey/index.html",
-          "/api/param/foo.json/index.html",
-          "/api/param/prerender1/index.html",
-          "/api/param/prerender3/index.html",
-          "/api/param/prerender4/index.html",
+          "/api/param/foo.json",
+          "/api/param/hidden",
+          "/api/param/prerender1",
+          "/api/param/prerender3",
+          "/api/param/prerender4",
         ],
         "include": [
           "/*",
+          "/api/*",
+          "/blog/*",
         ],
         "version": 1,
       }
