@@ -2,7 +2,6 @@ import "#internal/nitro/virtual/polyfill";
 import { Server as HttpServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { Server as HttpsServer } from "node:https";
-import { resolve } from "node:path";
 import destr from "destr";
 import { toNodeListener } from "h3";
 import { nitroApp } from "../app";
@@ -34,7 +33,7 @@ const listener = server.listen(path ? { path } : { port, host }, (err) => {
   const protocol = cert && key ? "https" : "http";
   const addressInfo = listener.address() as AddressInfo;
   if (typeof addressInfo === "string") {
-    console.log(`Listening on unix socket ${resolve(addressInfo)}`);
+    console.log(`Listening on unix socket ${addressInfo}`);
     return;
   }
   const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
