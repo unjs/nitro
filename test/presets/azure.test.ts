@@ -22,49 +22,33 @@ describe(
         .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")
         .then((r) => JSON.parse(r));
       expect(config).toMatchInlineSnapshot(`
-      {
-        "navigationFallback": {
-          "rewrite": "/api/server",
-        },
-        "platform": {
-          "apiRuntime": "node:16",
-        },
-        "routes": [
-          {
-            "rewrite": "/api/param/prerender3/index.html",
-            "route": "/api/param/prerender3",
-          },
-          {
-            "rewrite": "/api/param/prerender1/index.html",
-            "route": "/api/param/prerender1",
-          },
-          {
-            "rewrite": "/api/param/foo.json/index.html",
-            "route": "/api/param/foo.json",
-          },
-          {
-            "rewrite": "/api/hey/index.html",
-            "route": "/api/hey",
-          },
-          {
-            "rewrite": "/api/param/prerender4/index.html",
-            "route": "/api/param/prerender4",
-          },
-          {
-            "rewrite": "/prerender/index.html",
-            "route": "/prerender",
-          },
-          {
-            "redirect": "/",
-            "route": "/index.html",
-          },
-          {
+        {
+          "navigationFallback": {
             "rewrite": "/api/server",
-            "route": "/",
           },
-        ],
-      }
-    `);
+          "platform": {
+            "apiRuntime": "node:16",
+          },
+          "routes": [
+            {
+              "rewrite": "/api/hey/index.html",
+              "route": "/api/hey",
+            },
+            {
+              "rewrite": "/prerender/index.html",
+              "route": "/prerender",
+            },
+            {
+              "redirect": "/",
+              "route": "/index.html",
+            },
+            {
+              "rewrite": "/api/server",
+              "route": "/",
+            },
+          ],
+        }
+      `);
     });
 
     it("custom configuration applied correctly", async () => {
@@ -113,72 +97,56 @@ describe(
         .then((r) => JSON.parse(r));
 
       expect(config).toMatchInlineSnapshot(`
-      {
-        "navigationFallback": {
-          "rewrite": "/api/server",
-        },
-        "networking": {
-          "allowedIpRanges": [
-            "10.0.0.0/24",
-            "100.0.0.0/32",
-            "192.168.100.0/22",
-          ],
-        },
-        "platform": {
-          "apiRuntime": "custom-runtime",
-        },
-        "responseOverrides": {
-          "401": {
-            "redirect": "/.auth/login/aad",
-            "statusCode": 302,
+        {
+          "navigationFallback": {
+            "rewrite": "/api/server",
           },
-        },
-        "routes": [
-          {
-            "allowedRoles": [
-              "authenticated",
+          "networking": {
+            "allowedIpRanges": [
+              "10.0.0.0/24",
+              "100.0.0.0/32",
+              "192.168.100.0/22",
             ],
-            "route": "/admin",
           },
-          {
-            "redirect": "/.auth/logout",
-            "route": "/logout",
+          "platform": {
+            "apiRuntime": "custom-runtime",
           },
-          {
-            "rewrite": "/api/param/prerender3/index.html",
-            "route": "/api/param/prerender3",
+          "responseOverrides": {
+            "401": {
+              "redirect": "/.auth/login/aad",
+              "statusCode": 302,
+            },
           },
-          {
-            "rewrite": "/api/param/prerender1/index.html",
-            "route": "/api/param/prerender1",
-          },
-          {
-            "rewrite": "/api/param/foo.json/index.html",
-            "route": "/api/param/foo.json",
-          },
-          {
-            "rewrite": "/api/hey/index.html",
-            "route": "/api/hey",
-          },
-          {
-            "rewrite": "/api/param/prerender4/index.html",
-            "route": "/api/param/prerender4",
-          },
-          {
-            "rewrite": "/prerender/index.html",
-            "route": "/prerender",
-          },
-          {
-            "redirect": "/overridden-index",
-            "route": "/index.html",
-          },
-          {
-            "rewrite": "/api/server/overridden",
-            "route": "/",
-          },
-        ],
-      }
-    `);
+          "routes": [
+            {
+              "allowedRoles": [
+                "authenticated",
+              ],
+              "route": "/admin",
+            },
+            {
+              "redirect": "/.auth/logout",
+              "route": "/logout",
+            },
+            {
+              "rewrite": "/api/hey/index.html",
+              "route": "/api/hey",
+            },
+            {
+              "rewrite": "/prerender/index.html",
+              "route": "/prerender",
+            },
+            {
+              "redirect": "/overridden-index",
+              "route": "/index.html",
+            },
+            {
+              "rewrite": "/api/server/overridden",
+              "route": "/",
+            },
+          ],
+        }
+      `);
     });
   },
   { timeout: 10_000 }
