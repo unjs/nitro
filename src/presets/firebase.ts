@@ -72,7 +72,9 @@ async function updatePackageJSON(nitro: Nitro) {
         "firebase-admin": "latest",
         "firebase-functions": "latest",
         ...packageJSON.dependencies,
-      }).sort(([a], [b]) => a[0].localeCompare(b[0]))
+      })
+        .filter((e) => e[0] !== "fsevents")
+        .sort(([a], [b]) => a[0].localeCompare(b[0]))
     ),
     engines: {
       // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
