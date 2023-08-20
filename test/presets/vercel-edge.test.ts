@@ -10,13 +10,15 @@ describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
     // TODO: Add add-event-listener
     const entry = resolve(ctx.outDir, "functions/__nitro.func/index.mjs");
     const initialCode = await fsp.readFile(entry, "utf8");
-    const runtime = new EdgeRuntime();
+    const runtime = new EdgeRuntime({
+      extend: (context) =>
+        Object.assign(context, { process: { env: { ...ctx.env } } }),
+    });
     runtime.evaluate(
-      "globalThis.process = { env: {} };\n" +
-        initialCode.replace(
-          "export{handleEvent as default}",
-          "globalThis.handleEvent = handleEvent"
-        )
+      initialCode.replace(
+        "export{handleEvent as default}",
+        "globalThis.handleEvent = handleEvent"
+      )
     );
     return async ({ url, headers, method, body }) => {
       const isGet = ["get", "head"].includes((method || "get").toLowerCase());

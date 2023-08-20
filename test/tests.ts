@@ -25,6 +25,7 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  env: Record<string, string>;
   [key: string]: unknown;
 }
 
@@ -50,7 +51,12 @@ export async function setupTest(preset: string) {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
-    outDir: resolve(fixtureDir, presetTempDir, "output"),
+    outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    env: {
+      NITRO_HELLO: "world",
+      CUSTOM_HELLO_THERE: "general",
+      SECRET: "secret",
+    },
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
         redirect: "manual",
@@ -58,10 +64,22 @@ export async function setupTest(preset: string) {
       }),
   };
 
+  // Set environment variables for process compatible presets
+  for (const [name, value] of Object.entries(ctx.env)) {
+    process.env[name] = value;
+  }
+
   const nitro = (ctx.nitro = await createNitro({
     preset: ctx.preset,
     dev: ctx.isDev,
     rootDir: ctx.rootDir,
+    runtimeConfig: {
+      nitro: {
+        envPrefix: "CUSTOM_",
+      },
+      hello: "",
+      helloThere: "",
+    },
     buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
     serveStatic:
       preset !== "cloudflare" &&
@@ -403,7 +421,8 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        dynamic: "from-env",
+        // Cloudflare environment variables are only available within the fetch event
+        dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
         app: {
           baseURL: "/",
         },
@@ -558,6 +577,15 @@ export function testNitro(
           path: "/context?foo",
         },
       });
+    });
+  });
+
+  describe("environment variables", () => {
+    it("can load environment variables from runtimeConfig", async () => {
+      const { data } = await callHandler({ url: "/config" });
+      expect(data.runtimeConfig.hello).toBe("world");
+      expect(data.runtimeConfig.helloThere).toBe("general");
+      expect(data.runtimeConfig.secret).toBeUndefined();
     });
   });
 }

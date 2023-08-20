@@ -13,7 +13,9 @@ describe("nitro:preset:cloudflare-pages", async () => {
     const mf = new Miniflare({
       modules: true,
       scriptPath: resolve(ctx.outDir, "_worker.js"),
+      globals: { __env__: {} },
       bindings: {
+        ...ctx.env,
         ASSETS: {
           fetch: async (request) => {
             try {
