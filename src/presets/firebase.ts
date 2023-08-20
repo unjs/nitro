@@ -19,8 +19,7 @@ export const firebase = defineNitroPreset({
       await writeFirebaseConfig(nitro);
       await updatePackageJSON(nitro);
     },
-    "rollup:before": (nitro, rollupConfig) => {
-      // Determine firebase generation and bundled app config
+    "rollup:before": (nitro) => {
       const _gen = nitro.options.firebase?.gen as unknown;
       if (!_gen || _gen === "default") {
         nitro.logger.warn(
@@ -64,7 +63,6 @@ async function writeFirebaseConfig(nitro: Nitro) {
 async function updatePackageJSON(nitro: Nitro) {
   const packageJSONPath = join(nitro.options.output.serverDir, "package.json");
   const packageJSON = await readPackageJSON(packageJSONPath);
-  console.log("BBBB");
   await writePackageJSON(packageJSONPath, {
     ...packageJSON,
     main: "index.mjs",
