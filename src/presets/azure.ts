@@ -1,5 +1,4 @@
 import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
 import { join, resolve } from "pathe";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
