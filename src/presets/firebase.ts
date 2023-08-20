@@ -1,8 +1,6 @@
-import { createRequire } from "node:module";
 import { existsSync } from "node:fs";
-import { join, relative, resolve } from "pathe";
-import { globby } from "globby";
-import { readPackageJSON } from "pkg-types";
+import { join, relative } from "pathe";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -14,13 +12,13 @@ export const firebase = defineNitroPreset({
   },
   firebase: {
     // we need this defined here so it's picked up by the template in firebase's entry
-    gen: (process.env.NITRO_FIREBASE_GEN || "default") as any,
+    gen: (Number.parseInt(process.env.NITRO_FIREBASE_GEN) || "default") as any,
   },
   hooks: {
-    async compiled(ctx) {
-      await writeRoutes(ctx);
+    async compiled(nitro) {
+      await writeFirebaseConfig(nitro);
+      await updatePackageJSON(nitro);
     },
-
     "rollup:before": (nitro) => {
       const _gen = nitro.options.firebase?.gen as unknown;
       if (!_gen || _gen === "default") {
@@ -36,82 +34,50 @@ export const firebase = defineNitroPreset({
   },
 });
 
-async function writeRoutes(nitro: Nitro) {
-  if (!existsSync(join(nitro.options.rootDir, "firebase.json"))) {
-    const firebase = {
-      functions: {
-        source: relative(nitro.options.rootDir, nitro.options.output.serverDir),
-      },
-      hosting: [
-        {
-          site: "<your_project_id>",
-          public: relative(
-            nitro.options.rootDir,
-            nitro.options.output.publicDir
-          ),
-          cleanUrls: true,
-          rewrites: [
-            {
-              source: "**",
-              function: "server",
-            },
-          ],
-        },
-      ],
-    };
-    await writeFile(
-      resolve(nitro.options.rootDir, "firebase.json"),
-      JSON.stringify(firebase)
-    );
+async function writeFirebaseConfig(nitro: Nitro) {
+  const firebaseConfigPath = join(nitro.options.rootDir, "firebase.json");
+  if (existsSync(firebaseConfigPath)) {
+    return;
   }
-
-  const _require = createRequire(import.meta.url);
-
-  const jsons = await globby(
-    join(nitro.options.output.serverDir, "node_modules/**/package.json")
-  );
-  const prefixLength = `${nitro.options.output.serverDir}/node_modules/`.length;
-  const suffixLength = "/package.json".length;
-  // eslint-disable-next-line unicorn/no-array-reduce
-  const dependencies = jsons.reduce(
-    (obj, packageJson) => {
-      const dirname = packageJson.slice(prefixLength, -suffixLength);
-      if (!dirname.includes("node_modules")) {
-        obj[dirname] = _require(packageJson).version;
-      }
-      return obj;
+  const firebaseConfig = {
+    functions: {
+      source: relative(nitro.options.rootDir, nitro.options.output.serverDir),
     },
-    {} as Record<string, string>
-  );
-
-  // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
-  // const supportedNodeVersions = new Set(["20", "18", "16"]);
-  const nodeVersion: string = nitro.options.firebase?.nodeVersion || "18";
-
-  const getPackageVersion = async (id) => {
-    const pkg = await readPackageJSON(id, {
-      url: nitro.options.nodeModulesDirs,
-    });
-    return pkg.version;
-  };
-
-  await writeFile(
-    resolve(nitro.options.output.serverDir, "package.json"),
-    JSON.stringify(
+    hosting: [
       {
-        private: true,
-        type: "module",
-        main: "./index.mjs",
-        dependencies: {
-          "firebase-functions-test": "latest",
-          "firebase-admin": await getPackageVersion("firebase-admin"),
-          "firebase-functions": await getPackageVersion("firebase-functions"),
-          ...dependencies,
-        },
-        engines: { node: nodeVersion },
+        site: "<your_project_id>",
+        public: relative(nitro.options.rootDir, nitro.options.output.publicDir),
+        cleanUrls: true,
+        rewrites: [
+          {
+            source: "**",
+            function: "server",
+          },
+        ],
       },
-      null,
-      2
-    )
-  );
+    ],
+  };
+  await writeFile(firebaseConfigPath, JSON.stringify(firebaseConfig, null, 2));
+}
+
+async function updatePackageJSON(nitro: Nitro) {
+  const packageJSONPath = join(nitro.options.output.serverDir, "package.json");
+  const packageJSON = await readPackageJSON(packageJSONPath);
+  await writePackageJSON(packageJSONPath, {
+    ...packageJSON,
+    main: "index.mjs",
+    dependencies: Object.fromEntries(
+      Object.entries({
+        // Default to "latest" normally they should be overriden with user versions
+        "firebase-admin": "latest",
+        "firebase-functions": "latest",
+        ...packageJSON.dependencies,
+      }).sort(([a], [b]) => a[0].localeCompare(b[0]))
+    ),
+    engines: {
+      // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
+      // const supportedNodeVersions = new Set(["20", "18", "16"]);
+      node: nitro.options.firebase?.nodeVersion || "18",
+    },
+  });
 }
