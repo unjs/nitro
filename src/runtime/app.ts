@@ -91,8 +91,6 @@ function createNitroApp(): NitroApp {
     preemptive: true,
   });
 
-  h3App.use(createRouteRulesHandler());
-
   // Create local fetch callers
   const localCall = createCall(toNodeListener(h3App) as any);
   const _localFetch = createLocalFetch(localCall, globalThis.fetch);
@@ -109,6 +107,9 @@ function createNitroApp(): NitroApp {
 
   // @ts-ignore
   globalThis.$fetch = $fetch;
+
+  // Register route rule handlers
+  h3App.use(createRouteRulesHandler({ localFetch }));
 
   // A generic event handler give nitro access to the requests
   h3App.use(

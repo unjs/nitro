@@ -9,7 +9,6 @@ import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { joinURL, withQuery, getQuery, withoutBase } from "ufo";
 import { useRuntimeConfig } from "./config";
-import { nitroApp } from "./app";
 import type { NitroRouteRules } from "nitropack";
 
 const config = useRuntimeConfig();
@@ -17,7 +16,9 @@ const _routeRulesMatcher = toRouteMatcher(
   createRadixRouter({ routes: config.nitro.routeRules })
 );
 
-export function createRouteRulesHandler() {
+export function createRouteRulesHandler(ctx: {
+  localFetch: typeof globalThis.fetch;
+}) {
   return eventHandler((event) => {
     // Match route options against path
     const routeRules = getRouteRules(event);
@@ -48,7 +49,7 @@ export function createRouteRulesHandler() {
         target = withQuery(target, query);
       }
       return proxyRequest(event, target, {
-        fetch: nitroApp.localFetch,
+        fetch: ctx.localFetch,
         ...routeRules.proxy,
       });
     }
