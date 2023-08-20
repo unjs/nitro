@@ -10,18 +10,16 @@ async function attemptToDeleteExistingConfigs() {
   await fsp.rm(resolve(fixtureDir, "staticwebapp.config.json")).catch(() => {});
 }
 
-describe(
-  "nitro:preset:azure",
-  () => {
-    beforeEach(attemptToDeleteExistingConfigs);
-    afterEach(attemptToDeleteExistingConfigs);
+describe("nitro:preset:azure", () => {
+  beforeEach(attemptToDeleteExistingConfigs);
+  afterEach(attemptToDeleteExistingConfigs);
 
-    it("basic staticwebapp.config.json created successfully", async () => {
-      const ctx = await setupTest("azure");
-      const config = await fsp
-        .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")
-        .then((r) => JSON.parse(r));
-      expect(config).toMatchInlineSnapshot(`
+  it("basic staticwebapp.config.json created successfully", async () => {
+    const ctx = await setupTest("azure");
+    const config = await fsp
+      .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")
+      .then((r) => JSON.parse(r));
+    expect(config).toMatchInlineSnapshot(`
         {
           "navigationFallback": {
             "rewrite": "/api/server",
@@ -49,54 +47,55 @@ describe(
           ],
         }
       `);
+  });
+
+  it("custom configuration applied correctly", async () => {
+    const customConfig = {
+      routes: [
+        {
+          route: "/admin",
+          allowedRoles: ["authenticated"],
+        },
+        {
+          route: "/logout",
+          redirect: "/.auth/logout",
+        },
+        {
+          route: "/index.html",
+          redirect: "/overridden-index",
+        },
+        {
+          route: "/",
+          rewrite: "/api/server/overridden",
+        },
+      ],
+      responseOverrides: {
+        401: {
+          statusCode: 302,
+          redirect: "/.auth/login/aad",
+        },
+      },
+      networking: {
+        allowedIpRanges: ["10.0.0.0/24", "100.0.0.0/32", "192.168.100.0/22"],
+      },
+      platform: {
+        apiRuntime: "custom-runtime",
+      },
+    };
+
+    const ctx = await setupTest("azure", {
+      config: {
+        azure: {
+          config: customConfig,
+        },
+      },
     });
 
-    it("custom configuration applied correctly", async () => {
-      const customConfig = {
-        routes: [
-          {
-            route: "/admin",
-            allowedRoles: ["authenticated"],
-          },
-          {
-            route: "/logout",
-            redirect: "/.auth/logout",
-          },
-          {
-            route: "/index.html",
-            redirect: "/overridden-index",
-          },
-          {
-            route: "/",
-            rewrite: "/api/server/overridden",
-          },
-        ],
-        responseOverrides: {
-          401: {
-            statusCode: 302,
-            redirect: "/.auth/login/aad",
-          },
-        },
-        networking: {
-          allowedIpRanges: ["10.0.0.0/24", "100.0.0.0/32", "192.168.100.0/22"],
-        },
-        platform: {
-          apiRuntime: "custom-runtime",
-        },
-      };
+    const config = await fsp
+      .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")
+      .then((r) => JSON.parse(r));
 
-      // Write config out
-      await fsp.writeFile(
-        resolve(fixtureDir, "custom.staticwebapp.config.json"),
-        JSON.stringify(customConfig, null, 2)
-      );
-
-      const ctx = await setupTest("azure");
-      const config = await fsp
-        .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")
-        .then((r) => JSON.parse(r));
-
-      expect(config).toMatchInlineSnapshot(`
+    expect(config).toMatchInlineSnapshot(`
         {
           "navigationFallback": {
             "rewrite": "/api/server",
@@ -147,7 +146,5 @@ describe(
           ],
         }
       `);
-    });
-  },
-  { timeout: 10_000 }
-);
+  });
+});

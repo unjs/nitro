@@ -42,16 +42,6 @@ async function writeRoutes(nitro: Nitro) {
     }
   }
 
-  // Attempt to load custom config
-  let customConfig = {};
-  const customConfigPath = resolve(
-    nitro.options.rootDir,
-    "custom.staticwebapp.config.json"
-  );
-  if (existsSync(customConfigPath)) {
-    customConfig = JSON.parse(await readFile(customConfigPath, "utf8"));
-  }
-
   // Merge custom config into the generated config
   const config = {
     platform: {
@@ -62,7 +52,7 @@ async function writeRoutes(nitro: Nitro) {
     },
 
     // This will overwrite the above properties if specified in the customConfig
-    ...customConfig,
+    ...nitro.options.azure?.config,
 
     // Overwrite routes for now, we will add existing routes after generating routes
     routes: [],
@@ -117,9 +107,13 @@ async function writeRoutes(nitro: Nitro) {
   }
 
   // Prepend custom routes to the beginning of the routes array and override if they exist
-  if ("routes" in customConfig && Array.isArray(customConfig.routes)) {
+  if (
+    nitro.options.azure?.config &&
+    "routes" in nitro.options.azure.config &&
+    Array.isArray(nitro.options.azure.config.routes)
+  ) {
     // We iterate through the reverse so the order in the custom config is persisted
-    for (const customRoute of customConfig.routes.reverse()) {
+    for (const customRoute of nitro.options.azure.config.routes.reverse()) {
       const existingRouteMatchIndex = config.routes.findIndex(
         (value) => value.route === customRoute.route
       );
