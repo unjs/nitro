@@ -1,5 +1,7 @@
 import type { H3Event } from "h3";
-import { getRequestHeader } from "h3";
+import { getRequestHeader, splitCookiesString } from "h3";
+import { useNitroApp } from "./app";
+
 const METHOD_WITH_BODY_RE = /post|put|patch/i;
 const TEXT_MIME_RE = /application\/text|text\/html/;
 const JSON_MIME_RE = /application\/json/;
@@ -83,20 +85,49 @@ export function normalizeError(error: any) {
   };
 }
 
+function _captureError(error: Error, type: string) {
+  console.error(`[nitro] [${type}]`, error);
+  useNitroApp().captureError(error, { tags: [type] });
+}
+
 export function trapUnhandledNodeErrors() {
-  if (process.env.DEBUG) {
-    process.on("unhandledRejection", (err) =>
-      console.error("[nitro] [unhandledRejection]", err)
-    );
-    process.on("uncaughtException", (err) =>
-      console.error("[nitro] [uncaughtException]", err)
-    );
-  } else {
-    process.on("unhandledRejection", (err) =>
-      console.error("[nitro] [unhandledRejection] " + err)
-    );
-    process.on("uncaughtException", (err) =>
-      console.error("[nitro]  [uncaughtException] " + err)
-    );
+  process.on("unhandledRejection", (error: Error) =>
+    _captureError(error, "unhandledRejection")
+  );
+  process.on("uncaughtException", (error: Error) =>
+    _captureError(error, "uncaughtException")
+  );
+}
+
+export function joinHeaders(value: number | string | string[]) {
+  return Array.isArray(value) ? value.join(", ") : String(value);
+}
+
+export function normalizeFetchResponse(response: Response) {
+  if (!response.headers.has("set-cookie")) {
+    return response;
   }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: normalizeCookieHeaders(response.headers),
+  });
+}
+
+export function normalizeCookieHeader(header: number | string | string[] = "") {
+  return splitCookiesString(joinHeaders(header));
+}
+
+export function normalizeCookieHeaders(headers: Headers) {
+  const outgoingHeaders = new Headers();
+  for (const [name, header] of headers) {
+    if (name === "set-cookie") {
+      for (const cookie of normalizeCookieHeader(header)) {
+        outgoingHeaders.append("set-cookie", cookie);
+      }
+    } else {
+      outgoingHeaders.set(name, joinHeaders(header));
+    }
+  }
+  return outgoingHeaders;
 }

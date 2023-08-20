@@ -10,10 +10,6 @@ Deploy Nitro apps to CloudFlare.
 **Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
 ::
 
-::alert{type="warning"}
-**Warning:** Please be aware that `runtimeConfig` cannot be updated via Cloudflare's environment variables (see [#272](https://github.com/unjs/nitro/issues/272) for more). As a workaround, you can use the Cloudflare env variables as constants in the code.
-::
-
 Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
 
 Create a `wrangler.toml` in your root directory:
@@ -132,7 +128,7 @@ jobs:
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare-pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -143,6 +139,8 @@ jobs:
 :br
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
 ::
+
+Nitro automatically generates a `_routes.json` file that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overrided with the config option `cloudflare.pages.routes` ([read more](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)).
 
 ### Git integration
 
@@ -175,7 +173,7 @@ wrangler pages deploy
 
 ## Cloudflare Module Workers
 
-**Preset:** `cloudflare-module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
 **Note:** This is an experimental preset.
@@ -205,7 +203,7 @@ d1_databases = [
 ```ts
 // waitUntil allows cache writes, external logging, etc without blocking the event
 const { cloudflare } = event.context
-cloudflare.context.waitUntil(logRequest(event.node.req))
+cloudflare.context.waitUntil(logRequest(event.path))
 ```
 
 ### Access env and bindings
@@ -222,4 +220,78 @@ const { cloudflare } = event.context
 const stmt = await cloudflare.env.D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
 ```
+
+## Environment Variables
+
+Nitro allows to universally access environment variables using `process.env` or `import.meta.env` or runtime config.
+
+::alert
+Make sure to only access environment variables **within the event lifecycle**  and not in global contexts since cloudflare only makes them avaialble during the request lifecycle and not before.
+::
+
+**Example:** If you have set `SECRET` and `NITRO_HELLO_THERE` environment variables you can access them with either of these:
+
+```ts
+console.log(process.env.SECRET) // undefined (!)
+
+export default defineEventHandler((event) => {
+  // These are valid:
+  useRuntimeConfig(event).helloThere
+  useRuntimeConfig(event).secret
+  process.env.NITRO_HELLO_THERE
+  import.meta.env.SECRET
+});
+```
+
+#### Specify Variables in Development Mode
+
+For development, you can use a `.env` file to specify environment variables:
+
+```ini
+NITRO_HELLO_THERE="captain"
+SECRET="top-secret"
+```
+
+::alert{type="info"}
+**Note:** Make sure you add `.env` to the `.gitignore` file and do not commit it as it can contain sensitive information.
+::
+
+
+#### Specify Variables for Preview
+
+
+After build, when you try out your project locally with `wrangler dev` or `wrangler pages dev`, use a `.dev.vars` file in the root of your project.
+
+If you are using a `.env` file while developping, your `dev.vars` should be identical to it.
+
+#### Specify Variables for Production
+
+For production, use the cloudflare dashboard or the [`wrangler secret`](https://developers.cloudflare.com/workers/wrangler/commands/#secret) command to set environment variables and secrets.
+
+#### Specify Variables using `wrangler.toml`
+
+You can specify a custom `wrangler.toml` file and define vars inside.
+
+::alert{type="info"}
+**Note:** `wrangler.toml` isn't supported by cloudflare pages.
+::
+
+::alert{type="warning"}
+Note that this isn't recommend for sensitive data.
+::
+
+**Example:**
+
+```ini [wrangler.toml]
+# Shared
+[vars]
+NITRO_HELLO_THERE="general"
+SECRET="secret"
+
+# Override values for `--env production` usage
+[env.production.vars]
+NITRO_HELLO_THERE="captain"
+SECRET="top-secret"
+```
+
 

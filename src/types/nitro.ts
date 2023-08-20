@@ -59,7 +59,8 @@ export interface Nitro {
   updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
 
   /* @internal */
-  _prerenderedRoutes?: PrerenderGenerateRoute[];
+  _prerenderedRoutes?: PrerenderRoute[];
+  _prerenderMeta?: Record<string, { contentType?: string }>;
 }
 
 export interface PrerenderRoute {
@@ -69,11 +70,12 @@ export interface PrerenderRoute {
   fileName?: string;
   error?: Error & { statusCode: number; statusMessage: string };
   generateTimeMS?: number;
+  skip?: boolean;
+  contentType?: string;
 }
 
-export interface PrerenderGenerateRoute extends PrerenderRoute {
-  skip?: boolean;
-}
+/** @deprecated Internal type will be removed in future versions */
+export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
 export interface NitroHooks {
@@ -83,12 +85,16 @@ export interface NitroHooks {
   "rollup:reload": () => HookResult;
   restart: () => HookResult;
   close: () => HookResult;
+  // Prerender
   "prerender:routes": (routes: Set<string>) => HookResult;
+  "prerender:config": (config: NitroConfig) => HookResult;
+  "prerender:init": (prerenderer: Nitro) => HookResult;
+  "prerender:generate": (route: PrerenderRoute, nitro: Nitro) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;
-  "prerender:generate": (
-    route: PrerenderGenerateRoute,
-    nitro: Nitro
-  ) => HookResult;
+  "prerender:done": (result: {
+    prerenderedRoutes: PrerenderRoute[];
+    failedRoutes: PrerenderRoute[];
+  }) => HookResult;
 }
 
 type CustomDriverName = string & { _custom?: any };
@@ -140,7 +146,7 @@ export interface CompressOptions {
 
 type Enumerate<
   N extends number,
-  Acc extends number[] = []
+  Acc extends number[] = [],
 > = Acc["length"] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;
@@ -174,6 +180,20 @@ export interface NitroRouteRules
   extends Omit<NitroRouteConfig, "redirect" | "cors" | "swr" | "static"> {
   redirect?: { to: string; statusCode: HTTPStatusCode };
   proxy?: { to: string } & ProxyOptions;
+}
+
+export interface WasmOptions {
+  /**
+   * Direct import the wasm file instead of bundling, required in Cloudflare Workers
+   *
+   * @default false
+   */
+  esmImport?: boolean;
+
+  /**
+   * Options for `@rollup/plugin-wasm`, only used when `esmImport` is `false`
+   */
+  rollup?: RollupWasmOptions;
 }
 
 export interface NitroOptions extends PresetOptions {
@@ -211,14 +231,31 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
+  /** @experimental Requires `experimental.wasm` to be effective */
+  wasm?: WasmOptions;
   experimental?: {
-    wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
     /**
      * See https://github.com/microsoft/TypeScript/pull/51669
      */
     typescriptBundlerResolution?: boolean;
+    /**
+     * Enable native async context support for useEvent()
+     */
+    asyncContext?: boolean;
+    /**
+     * Enable Experimental WebAssembly Support
+     */
+    wasm?: boolean;
+    /**
+     * Disable Experimental bundling of Nitro Runtime Dependencies
+     */
+    bundleRuntimeDependencies?: false;
+    /**
+     * Disable Experimental Sourcemap Minification
+     */
+    sourcemapMinify?: false;
   };
   future: {
     nativeSWR: boolean;

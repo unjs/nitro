@@ -3,7 +3,9 @@ import { execaCommand } from "execa";
 import { resolve } from "pathe";
 import { globby } from "globby";
 
-// Temporary forked from nuxt/framework
+const nightlyPackages = {
+  h3: "h3-nightly",
+};
 
 async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, "package.json");
@@ -117,6 +119,11 @@ async function main() {
       `${pkg.data.version}-${date}.${commit}`
     );
     workspace.rename(pkg.data.name, pkg.data.name + "-edge");
+    pkg.updateDeps((dep) => {
+      if (nightlyPackages[dep.name]) {
+        dep.range = "npm:" + nightlyPackages[dep.name] + "@latest";
+      }
+    });
   }
 
   await workspace.save();
