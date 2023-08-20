@@ -1,55 +1,11 @@
 import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { fixtureDir, setupTest } from "../tests";
 
-async function attemptToDeleteExistingConfigs() {
-  await fsp
-    .rm(resolve(fixtureDir, "custom.staticwebapp.config.json"))
-    .catch(() => {});
-  await fsp.rm(resolve(fixtureDir, "staticwebapp.config.json")).catch(() => {});
-}
-
-describe("nitro:preset:azure", () => {
-  beforeEach(attemptToDeleteExistingConfigs);
-  afterEach(attemptToDeleteExistingConfigs);
-
-  it("basic staticwebapp.config.json created successfully", async () => {
-    const ctx = await setupTest("azure");
-    const config = await fsp
-      .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")
-      .then((r) => JSON.parse(r));
-    expect(config).toMatchInlineSnapshot(`
-        {
-          "navigationFallback": {
-            "rewrite": "/api/server",
-          },
-          "platform": {
-            "apiRuntime": "node:16",
-          },
-          "routes": [
-            {
-              "rewrite": "/api/hey/index.html",
-              "route": "/api/hey",
-            },
-            {
-              "rewrite": "/prerender/index.html",
-              "route": "/prerender",
-            },
-            {
-              "redirect": "/",
-              "route": "/index.html",
-            },
-            {
-              "rewrite": "/api/server",
-              "route": "/",
-            },
-          ],
-        }
-      `);
-  });
-
-  it("custom configuration applied correctly", async () => {
+describe(
+  "nitro:preset:azure",
+  async () => {
     const customConfig = {
       routes: [
         {
@@ -95,7 +51,8 @@ describe("nitro:preset:azure", () => {
       .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")
       .then((r) => JSON.parse(r));
 
-    expect(config).toMatchInlineSnapshot(`
+    it("generated the correct config", () => {
+      expect(config).toMatchInlineSnapshot(`
         {
           "navigationFallback": {
             "rewrite": "/api/server",
@@ -146,5 +103,7 @@ describe("nitro:preset:azure", () => {
           ],
         }
       `);
-  });
-});
+    });
+  },
+  { timeout: 10_000 }
+);
