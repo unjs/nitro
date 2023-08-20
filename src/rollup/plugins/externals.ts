@@ -291,6 +291,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         tracedFile.pkgVersion = pkgJSON.version;
       }
 
+      const usedAliases: Record<string, string> = {};
+
       const writePackage = async (
         name: string,
         version: string,
@@ -326,6 +328,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
         // Link aliases
         if (opts.traceAlias && pkgPath in opts.traceAlias) {
+          usedAliases[opts.traceAlias[pkgPath]] = version;
           await linkPackage(pkgPath, opts.traceAlias[pkgPath]);
         }
       };
@@ -444,15 +447,20 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const userPkg = await readPackageJSON(
         opts.rootDir || process.cwd()
       ).catch(() => ({}) as PackageJson);
+
       await writePackageJSON(resolve(opts.outDir, "package.json"), {
         name: (userPkg.name || "server") + "-prod",
         version: userPkg.version || "0.0.0",
         type: "module",
         private: true,
         dependencies: Object.fromEntries(
-          Object.values(tracedPackages)
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
+          [
+            ...Object.values(tracedPackages).map((pkg) => [
+              pkg.name,
+              Object.keys(pkg.versions)[0],
+            ]),
+            ...Object.entries(usedAliases),
+          ].sort(([a], [b]) => a[0].localeCompare(b[0]))
         ),
       });
     },
