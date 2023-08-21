@@ -294,7 +294,9 @@ NITRO_HELLO_THERE="captain"
 SECRET="top-secret"
 ```
 
-## Experimental Dynamic Imports
+## Advanced
+
+### Experimental Dynamic Imports
 
 By default cloudflare presets output to a single bundle file.
 
