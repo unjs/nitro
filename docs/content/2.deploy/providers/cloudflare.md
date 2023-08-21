@@ -294,4 +294,31 @@ NITRO_HELLO_THERE="captain"
 SECRET="top-secret"
 ```
 
+## Advanced
 
+### Experimental Dynamic Imports
+
+By default cloudflare presets output to a single bundle file.
+
+In order to try experimental dynamic imports you need to set the `NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS` environment variable for build command.
+
+::alert{type="warning"}
+This is an experimental mode and is likely not working at the moment!
+::
+
+With `cloudflare_module` preset, you need to add the following rule to your `wrangler.toml` file:
+
+```diff [wrangler.toml]
+  name = "playground"
+  main = "./.output/server/index.mjs"
+  workers_dev = true
+  compatibility_date = "2022-09-10"
+  account_id = "<the account_id you obtained (optional)>"
+  route = "<mainly useful when you want to setup custom domains (optional too)>"
++ rules = [
++   { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
++ ]
+
+  [site]
+  bucket = ".output/public"
+```
