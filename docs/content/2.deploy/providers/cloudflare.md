@@ -183,23 +183,6 @@ wrangler pages deploy
 **Note:** This preset uses [module syntax](https://developers.cloudflare.com/workers/learning/migrating-to-module-workers/) for deployment.
 ::
 
-This preset enables dynamic imports by default. You will need to add the following rule to your `wrangler.toml`:
-
-```diff
-  name = "playground"
-  main = "./.output/server/index.mjs"
-  workers_dev = true
-  compatibility_date = "2022-09-10"
-  account_id = "<the account_id you obtained (optional)>"
-  route = "<mainly useful when you want to setup custom domains (optional too)>"
-+ rules = [
-+   { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
-+ ]
-
-  [site]
-  bucket = ".output/public"
-```
-
 The module syntax allows you to use [Durable Objects](https://developers.cloudflare.com/workers/learning/using-durable-objects/), [D1](https://developers.cloudflare.com/d1/), and `waitUntil`. You can access the module bindings and context via `event.context.cloudflare`.
 
 For example, with the following additions to your `wrangler.toml`:
