@@ -25,13 +25,21 @@ export const cloudflarePages = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      dir: "dist/_worker.js",
-      inlineDynamicImports: false,
-      entryFileNames: "index.js",
+      entryFileNames: "_worker.js",
       format: "esm",
     },
   },
   hooks: {
+    "rollup:before"(nitro, rollupConfig) {
+      if (process.env.NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS) {
+        rollupConfig.output = {
+          ...rollupConfig.output,
+          entryFileNames: "index.js",
+          dir: resolve(nitro.options.output.serverDir, "_worker.js"),
+          inlineDynamicImports: false,
+        };
+      }
+    },
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
     },

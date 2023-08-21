@@ -17,10 +17,17 @@ export const cloudflareModule = defineNitroPreset({
     output: {
       format: "esm",
       exports: "named",
-      inlineDynamicImports: false,
     },
   },
   hooks: {
+    "rollup:before"(_nitro, rollupConfig) {
+      if (process.env.NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS) {
+        rollupConfig.output = {
+          ...rollupConfig.output,
+          inlineDynamicImports: false,
+        };
+      }
+    },
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "package.json"),
