@@ -1,5 +1,1 @@
-export default defineNitroConfig({
-  cloudflare: {
-    experimentalDynamicImports: true,
-  },
-});
+export default defineNitroConfig({});
