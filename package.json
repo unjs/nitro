@@ -11,19 +11,28 @@
       "import": "./dist/index.mjs"
     },
     "./config": {
-      "types": "./dist/config.d.ts",
+      "types": "./dist/config.d.mts",
       "import": "./dist/config.mjs"
     },
-    "./cli": "./dist/cli.mjs",
-    "./runtime/*": "./dist/runtime/*.mjs",
-    "./dist/runtime/*": "./dist/runtime/*.mjs",
+    "./cli": {
+      "types": "./dist/cli/index.d.mts",
+      "import": "./dist/cli/index.mjs"
+    },
+    "./runtime/*": {
+      "types": "./dist/runtime/*.d.mts",
+      "import": "./dist/runtime/*.mjs"
+    },
+    "./dist/runtime/*": {
+      "types": "./dist/runtime/*.d.mts",
+      "import": "./dist/runtime/*.mjs"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.mjs",
   "types": "./types.d.ts",
   "bin": {
-    "nitro": "./dist/cli.mjs",
-    "nitropack": "./dist/cli.mjs"
+    "nitro": "./dist/cli/index.mjs",
+    "nitropack": "./dist/cli/index.mjs"
   },
   "files": [
     "dist",
@@ -36,7 +45,7 @@
     "dev:start": "node playground/.output/server/index.mjs",
     "lint": "eslint --cache --ext .ts,.mjs,.cjs . && prettier -c src test",
     "lint:fix": "eslint --cache --fix --ext .ts,.mjs,.cjs . && prettier --write -c src test",
-    "nitro": "NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/cli.ts",
+    "nitro": "NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
@@ -136,7 +145,7 @@
     "miniflare": "^2.14.0",
     "prettier": "^3.0.2",
     "typescript": "^5.1.6",
-    "unbuild": "^1.2.1",
+    "unbuild": "^2.0.0",
     "undici": "^5.23.0",
     "vitest": "^0.34.2"
   },
