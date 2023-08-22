@@ -230,6 +230,7 @@ export async function loadOptions(
   options.nodeModulesDirs.push(resolve(options.workspaceDir, "node_modules"));
   options.nodeModulesDirs.push(resolve(options.rootDir, "node_modules"));
   options.nodeModulesDirs.push(resolve(pkgDir, "node_modules"));
+  options.nodeModulesDirs.push(resolve(pkgDir, "..")); // pnpm
   options.nodeModulesDirs = [
     ...new Set(
       options.nodeModulesDirs.map((dir) => resolve(options.rootDir, dir))
@@ -318,19 +319,6 @@ export async function loadOptions(
 
   for (const serverAsset of options.serverAssets) {
     serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
-  }
-
-  // Dedup built-in dependencies
-  for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
-    const entryPath = await resolveModule(pkg, { url: import.meta.url });
-    const { dir, name } = parseNodeModulePath(entryPath);
-    if (!dir || !name) {
-      continue;
-    }
-    if (!options.alias[pkg + "/"]) {
-      const pkgDir = join(dir, name);
-      options.alias[pkg + "/"] = pkgDir;
-    }
   }
 
   // Build-only storage
