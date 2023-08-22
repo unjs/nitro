@@ -136,7 +136,7 @@
     "miniflare": "^2.14.0",
     "prettier": "^3.0.2",
     "typescript": "^5.1.6",
-    "unbuild": "^1.2.1",
+    "unbuild": "^2.0.0",
     "undici": "^5.23.0",
     "vitest": "^0.34.2"
   },
