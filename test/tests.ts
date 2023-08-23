@@ -231,8 +231,8 @@ export function testNitro(
   });
 
   // aws lambda requires buffer responses to be base 64
-  const LambdaPresets = ["netlify", "aws-lambda"];
-  it.runIf(LambdaPresets.includes(ctx.preset))(
+  const LambdaPresets = new Set(["netlify", "aws-lambda"]);
+  it.runIf(LambdaPresets.has(ctx.preset))(
     "buffer image responses",
     async () => {
       const { data } = await callHandler({ url: "/icon.png" });
@@ -409,7 +409,7 @@ export function testNitro(
     additionalTests(ctx, callHandler);
   }
 
-  it.skipIf(ctx.preset === "netlify" /* TODO */)("runtime proxy", async () => {
+  it("runtime proxy", async () => {
     const { data } = await callHandler({
       url: "/api/proxy?foo=bar",
       headers: {
@@ -418,6 +418,15 @@ export function testNitro(
     });
     expect(data.headers["x-test"]).toBe("foobar");
     expect(data.url).toBe("/api/echo?foo=bar");
+  });
+
+  it.skipIf(ctx.preset === "bun" /* TODO */)("stream", async () => {
+    const { data } = await callHandler({
+      url: "/stream",
+    });
+    expect(data).toBe(
+      LambdaPresets.has(ctx.preset) ? btoa("nitroisawesome") : "nitroisawesome"
+    );
   });
 
   it("config", async () => {

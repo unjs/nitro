@@ -34,7 +34,7 @@ export const handler: Handler<StormkitEvent, StormkitResponse> =
       body: event.body,
     });
 
-    const normalizedBody = normalizeLambdaOutgoingBody(
+    const normalizedBody = await normalizeLambdaOutgoingBody(
       response.body,
       response.headers
     );
