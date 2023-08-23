@@ -25,7 +25,6 @@ export default defineCommand({
   },
   async run({ args }) {
     const rootDir = resolve((args.dir || args._dir || ".") as string);
-    console.log(args.minify);
     const nitro = await createNitro({
       rootDir,
       dev: false,
