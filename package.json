@@ -115,11 +115,11 @@
     "semver": "^7.5.4",
     "serve-placeholder": "^2.0.1",
     "serve-static": "^1.15.0",
-    "std-env": "^3.4.2",
+    "std-env": "^3.4.3",
     "ufo": "^1.2.0",
     "uncrypto": "^0.1.3",
     "unctx": "^2.3.1",
-    "unenv": "^1.7.2",
+    "unenv": "^1.7.3",
     "unimport": "^3.1.3",
     "unstorage": "^1.9.0"
   },
