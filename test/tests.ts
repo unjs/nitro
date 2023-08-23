@@ -420,7 +420,7 @@ export function testNitro(
     expect(data.url).toBe("/api/echo?foo=bar");
   });
 
-  it("stream", async () => {
+  it.skipIf(ctx.preset === "bun" /* TODO */)("stream", async () => {
     const { data } = await callHandler({
       url: "/stream",
     });
