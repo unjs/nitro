@@ -38,15 +38,11 @@ export async function normalizeLambdaOutgoingBody(
   if (!body) {
     return "";
   }
-  body = await _toBuffer(body as any);
-  if (Buffer.isBuffer(body)) {
-    const contentType = (headers["content-type"] as string) || "";
-    if (isTextType(contentType)) {
-      return body.toString("utf8");
-    }
-    return body.toString("base64");
-  }
-  throw new Error(`Unsupported body type: ${typeof body}`);
+  const buffer = await _toBuffer(body as any);
+  const contentType = (headers["content-type"] as string) || "";
+  return isTextType(contentType)
+    ? buffer.toString("utf8")
+    : buffer.toString("base64");
 }
 
 function _toBuffer(data: ReadableStream | Readable | Uint8Array) {
