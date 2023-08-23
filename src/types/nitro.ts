@@ -9,7 +9,7 @@ import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
-import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
+import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { TSConfig } from "pkg-types";
@@ -273,7 +273,7 @@ export interface NitroOptions extends PresetOptions {
   dev: boolean;
   devServer: DevServerOptions;
   watchOptions: WatchOptions;
-  devProxy: Record<string, string | HTTPProxyOptions>;
+  devProxy: Record<string, string | ProxyServerOptions>;
 
   // Routing
   baseURL: string;
