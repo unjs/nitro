@@ -3,10 +3,16 @@ import { resolve } from "pathe";
 import destr from "destr";
 import { describe, it, expect } from "vitest";
 import { Handler, APIGatewayEvent } from "aws-lambda";
-import { setupTest, testNitro } from "../tests";
+import { getPresetTmpDir, setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:netlify", async () => {
-  const ctx = await setupTest("netlify");
+  const ctx = await setupTest("netlify", {
+    config: {
+      output: {
+        publicDir: resolve(getPresetTmpDir("netlify"), "dist"),
+      },
+    },
+  });
   testNitro(ctx, async () => {
     const { handler } = (await import(
       resolve(ctx.outDir, "server/server.mjs")

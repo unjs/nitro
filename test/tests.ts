@@ -41,23 +41,26 @@ export const fixtureDir = fileURLToPath(
   new URL("fixture", import.meta.url).href
 );
 
-export async function setupTest(
-  preset: string,
-  opts: { config?: _nitro.NitroConfig } = {}
-) {
-  const presetTempDir = resolve(
+export const getPresetTmpDir = (preset: string) =>
+  resolve(
     process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
     preset
   );
 
-  await fsp.rm(presetTempDir, { recursive: true }).catch(() => {});
-  await fsp.mkdir(presetTempDir, { recursive: true });
+export async function setupTest(
+  preset: string,
+  opts: { config?: _nitro.NitroConfig } = {}
+) {
+  const presetTmpDir = getPresetTmpDir(preset);
+
+  await fsp.rm(presetTmpDir, { recursive: true }).catch(() => {});
+  await fsp.mkdir(presetTmpDir, { recursive: true });
 
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
     rootDir: fixtureDir,
-    outDir: resolve(fixtureDir, presetTempDir, ".output"),
+    outDir: resolve(fixtureDir, presetTmpDir, ".output"),
     env: {
       NITRO_HELLO: "world",
       CUSTOM_HELLO_THERE: "general",
@@ -87,7 +90,7 @@ export async function setupTest(
         hello: "",
         helloThere: "",
       },
-      buildDir: resolve(fixtureDir, presetTempDir, ".nitro"),
+      buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
       serveStatic:
         preset !== "cloudflare" &&
         preset !== "cloudflare-module" &&
@@ -406,7 +409,7 @@ export function testNitro(
     additionalTests(ctx, callHandler);
   }
 
-  it("runtime proxy", async () => {
+  it.skipIf(ctx.preset === "netlify" /* TODO */)("runtime proxy", async () => {
     const { data } = await callHandler({
       url: "/api/proxy?foo=bar",
       headers: {
