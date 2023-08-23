@@ -1,3 +1,4 @@
+import type { Readable } from "node:stream";
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
 
 export function normalizeLambdaIncomingHeaders(
@@ -27,16 +28,17 @@ export function normalizeLambdaOutgoingHeaders(
 // AWS Lambda proxy integrations requires base64 encoded buffers
 // binaryMediaTypes should be */*
 // see https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings.html
-export function normalizeLambdaOutgoingBody(
-  body: BodyInit,
+export async function normalizeLambdaOutgoingBody(
+  body: BodyInit | ReadableStream | Buffer | Readable | Uint8Array,
   headers: Record<string, number | string | string[] | undefined>
-): string {
+): Promise<string> {
   if (typeof body === "string") {
     return body;
   }
   if (!body) {
     return "";
   }
+  body = await _toBuffer(body as any);
   if (Buffer.isBuffer(body)) {
     const contentType = (headers["content-type"] as string) || "";
     if (isTextType(contentType)) {
@@ -45,6 +47,43 @@ export function normalizeLambdaOutgoingBody(
     return body.toString("base64");
   }
   throw new Error(`Unsupported body type: ${typeof body}`);
+}
+
+function _toBuffer(data: ReadableStream | Readable | Uint8Array) {
+  if ("pipeTo" in data && typeof data.pipeTo === "function") {
+    return new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      data
+        .pipeTo(
+          new WritableStream({
+            write(chunk) {
+              chunks.push(chunk);
+            },
+            close() {
+              resolve(Buffer.concat(chunks));
+            },
+            abort(reason) {
+              reject(reason);
+            },
+          })
+        )
+        .catch(reject);
+    });
+  }
+  if ("pipe" in data && typeof data.pipe === "function") {
+    return new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      data
+        .on("data", (chunk: any) => {
+          chunks.push(chunk);
+        })
+        .on("end", () => {
+          resolve(Buffer.concat(chunks));
+        })
+        .on("error", reject);
+    });
+  }
+  return Buffer.from(data as unknown as Uint16Array);
 }
 
 // -- Internal --
