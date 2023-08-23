@@ -106,8 +106,8 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
       httpxy:
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.2
+        version: 0.1.2
       is-primitive:
         specifier: ^3.0.1
         version: 3.0.1
@@ -4453,8 +4453,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /httpxy@0.1.1:
-    resolution: {integrity: sha512-dYx6Onf6/BrzaHhUKo02IrzWYskol6Atj2GtDOsch4jKk2mmP4N3NuX0VhJ8bnNNFSyMgb1sBgR25fCAxTh5Gg==}
+  /httpxy@0.1.2:
+    resolution: {integrity: sha512-8IldwriN7eS7Pe1pPRE6L7S1LW551lBJ3N9oI4HLYGZTXl2JBkdINEi+mDZwhwykw1OBVI2li3zhPSi7r1N8lQ==}
     dev: false
 
   /human-signals@2.1.0:
