@@ -31,18 +31,18 @@ export function normalizeLambdaOutgoingHeaders(
 export async function normalizeLambdaOutgoingBody(
   body: BodyInit | ReadableStream | Buffer | Readable | Uint8Array,
   headers: Record<string, number | string | string[] | undefined>
-): Promise<string> {
+): Promise<{ type: "text" | "binary"; body: string }> {
   if (typeof body === "string") {
-    return body;
+    return { type: "text", body };
   }
   if (!body) {
-    return "";
+    return { type: "text", body: "" };
   }
   const buffer = await _toBuffer(body as any);
   const contentType = (headers["content-type"] as string) || "";
   return isTextType(contentType)
-    ? buffer.toString("utf8")
-    : buffer.toString("base64");
+    ? { type: "text", body: buffer.toString("utf8") }
+    : { type: "binary", body: buffer.toString("base64") };
 }
 
 function _toBuffer(data: ReadableStream | Readable | Uint8Array) {

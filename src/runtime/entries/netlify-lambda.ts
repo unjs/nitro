@@ -40,7 +40,9 @@ export async function lambda(
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-    body: await normalizeLambdaOutgoingBody(r.body, r.headers),
+    body: await normalizeLambdaOutgoingBody(r.body, r.headers).then(
+      (r) => r.body
+    ),
     multiValueHeaders: {
       ...(cookies.length > 0 ? { "set-cookie": cookies } : {}),
     },

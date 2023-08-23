@@ -63,13 +63,17 @@ export async function handler(
       cookies,
       statusCode: r.status,
       headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-      body: await normalizeLambdaOutgoingBody(r.body, r.headers),
+      body: await normalizeLambdaOutgoingBody(r.body, r.headers).then(
+        (r) => r.body
+      ),
     };
   }
 
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers),
-    body: await normalizeLambdaOutgoingBody(r.body, r.headers),
+    body: await normalizeLambdaOutgoingBody(r.body, r.headers).then(
+      (r) => r.body
+    ),
   };
 }

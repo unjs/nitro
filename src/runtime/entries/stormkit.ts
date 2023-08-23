@@ -42,7 +42,7 @@ export const handler: Handler<StormkitEvent, StormkitResponse> =
     return <StormkitResponse>{
       statusCode: response.status,
       headers: normalizeOutgoingHeaders(response.headers),
-      [normalizedBody === response.body ? "body" : "buffer"]: normalizedBody,
+      [normalizedBody.type === "text" ? "body" : "buffer"]: normalizedBody.body,
     };
   };
 
