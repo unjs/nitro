@@ -45,7 +45,7 @@ describe("nitro:preset:netlify", async () => {
     () => {
       it("should add route rules - redirects", async () => {
         const redirects = await fsp.readFile(
-          resolve(ctx.rootDir, "dist/_redirects"),
+          resolve(ctx.outDir, "../dist/_redirects"),
           "utf8"
         );
         /* eslint-disable no-tabs */
@@ -69,7 +69,7 @@ describe("nitro:preset:netlify", async () => {
       });
       it("should add route rules - headers", async () => {
         const headers = await fsp.readFile(
-          resolve(ctx.rootDir, "dist/_headers"),
+          resolve(ctx.outDir, "../dist/_headers"),
           "utf8"
         );
         /* eslint-disable no-tabs */
