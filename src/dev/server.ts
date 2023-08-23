@@ -255,10 +255,10 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
 }
 
 function createProxy(defaults: ProxyServerOptions = {}) {
-  const proxy = createProxyServer({});
+  const proxy = createProxyServer(defaults);
   const handle = async (event: H3Event, opts: ProxyServerOptions = {}) => {
     try {
-      await proxy.web(event.node.req, event.node.res, { ...defaults, ...opts });
+      await proxy.web(event.node.req, event.node.res, opts);
     } catch (error) {
       if (error.code !== "ECONNRESET") {
         throw error;
