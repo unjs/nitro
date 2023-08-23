@@ -14,6 +14,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
       modules: true,
       scriptPath: resolve(ctx.outDir, "_worker.js"),
       globals: { __env__: {} },
+      compatibilityFlags: ["streams_enable_constructors"],
       bindings: {
         ...ctx.env,
         ASSETS: {
