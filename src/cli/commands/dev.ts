@@ -1,6 +1,7 @@
-import { defineCommand } from "citty";
+import { ParsedArgs, defineCommand } from "citty";
 import { resolve } from "pathe";
 import { consola } from "consola";
+import { getArgs, parseArgs } from "listhen/cli";
 import { createNitro } from "../../nitro";
 import { build, prepare } from "../../build";
 import { createDevServer } from "../../dev/server";
@@ -16,6 +17,7 @@ export default defineCommand({
   },
   args: {
     ...commonArgs,
+    ...getArgs(),
   },
   async run({ args }) {
     const rootDir = resolve((args.dir || args._dir || ".") as string);
@@ -58,7 +60,8 @@ export default defineCommand({
       );
       nitro.hooks.hookOnce("restart", reload);
       const server = createDevServer(nitro);
-      await server.listen({});
+      const listhenOptions = parseArgs(args);
+      await server.listen(listhenOptions.port, listhenOptions);
       await prepare(nitro);
       await build(nitro);
     };
