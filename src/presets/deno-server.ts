@@ -14,24 +14,23 @@ export const denoServer = defineNitroPreset({
   commands: {
     preview: "deno task --config ./deno.json start",
   },
+  unenv: {
+    inject: {
+      global: ["unenv/runtime/polyfill/global-this", "default"],
+      Buffer: ["buffer", "Buffer"],
+      setTimeout: ["timers", "setTimeout"],
+      clearTimeout: ["timers", "clearTimeout"],
+      setInterval: ["timers", "setInterval"],
+      clearInterval: ["timers", "clearInterval"],
+      setImmediate: ["timers", "setImmediate"],
+      clearImmediate: ["timers", "clearImmediate"],
+    },
+  },
   rollupConfig: {
     output: {
       hoistTransitiveImports: false,
     },
     plugins: [
-      inject({
-        modules: {
-          process: "process",
-          global: "global",
-          Buffer: ["buffer", "Buffer"],
-          setTimeout: ["timers", "setTimeout"],
-          clearTimeout: ["timers", "clearTimeout"],
-          setInterval: ["timers", "setInterval"],
-          clearInterval: ["timers", "clearInterval"],
-          setImmediate: ["timers", "setImmediate"],
-          clearImmediate: ["timers", "clearImmediate"],
-        },
-      }),
       {
         name: "rollup-plugin-node-deno",
         resolveId(id) {
@@ -95,7 +94,9 @@ export const denoServer = defineNitroPreset({
             }
 
             const s = new MagicString(code);
-            s.prepend("import process from 'node:process';");
+            s.prepend(
+              "import __process__ from 'node:process';globalThis.process=globalThis.process||__process__;"
+            );
 
             return {
               code: s.toString(),

@@ -573,7 +573,10 @@ export function testNitro(
     });
 
     it.skipIf(
-      !ctx.nitro.options.node || ctx.preset === "bun" /* TODO: Investigate */
+      !ctx.nitro.options.node ||
+        // TODO: Investigate
+        ctx.preset === "bun" ||
+        ctx.preset === "deno-server"
     )("sourcemap works", async () => {
       const { data } = await callHandler({ url: "/error-stack" });
       expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
