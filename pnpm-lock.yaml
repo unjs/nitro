@@ -139,8 +139,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       ofetch:
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.3.2
+        version: 1.3.2
       ohash:
         specifier: ^1.1.3
         version: 1.1.3
@@ -196,8 +196,8 @@ importers:
         specifier: ^1.7.3
         version: 1.7.3
       unimport:
-        specifier: ^3.1.3
-        version: 3.1.3(rollup@3.28.1)
+        specifier: ^3.2.0
+        version: 3.2.0(rollup@3.28.1)
       unstorage:
         specifier: ^1.9.0
         version: 1.9.0
@@ -233,8 +233,8 @@ importers:
         specifier: ^0.5.5
         version: 0.5.5
       edge-runtime:
-        specifier: ^2.4.5
-        version: 2.4.5
+        specifier: ^2.5.0
+        version: 2.5.0
       eslint:
         specifier: ^8.47.0
         version: 8.47.0
@@ -566,21 +566,21 @@ packages:
     resolution: {integrity: sha512-lVQSyr5E4CEkQw7WIdsrMTj+kHjsm28mJ0B5AhNFByKR+16KTFsU/RW/nGLKHHW2jxT5lvYI+HjNQMzC9QR8Ng==}
     dev: true
 
-  /@edge-runtime/format@2.1.0:
-    resolution: {integrity: sha512-gc2qbYEIIJRczBApBPznVI1c5vZgzrZQOsFZnAxxFiYah9qldHiu1YEitzSvXI8X8ZgvAguuIiyIbpWz17nlXA==}
-    engines: {node: '>=14'}
+  /@edge-runtime/format@2.2.0:
+    resolution: {integrity: sha512-gPrS6AVw/qJJL0vcxMXv4kFXCU3ZTCD1uuJpwX15YxHV8BgU9OG5v9LrkkXcr96PBT/9epypfNJMhlWADuEziw==}
+    engines: {node: '>=16'}
     dev: true
 
-  /@edge-runtime/primitives@3.0.4:
-    resolution: {integrity: sha512-ZisWDavCpjroNbXZ1FZ2qHqlNfTXjIcQx+7aRdC+n6DVsTShUW7S+urGj2Wags5CH0oICWRoksYX5GngW7SZzw==}
-    engines: {node: '>=14'}
+  /@edge-runtime/primitives@3.1.0:
+    resolution: {integrity: sha512-yxr1QM/lC8nrU38zxePeDqVeIjwsJ83gKGTH8YJ4CoHTv3q+6xEeqRIT+/9IPX/FApWYtnxHauhNqr6CHRj5YA==}
+    engines: {node: '>=16'}
     dev: true
 
-  /@edge-runtime/vm@3.0.4:
-    resolution: {integrity: sha512-/QvVIn2+nO48dO3cl5tD3cjoF/xJ7WfTKBIs/oKgfmmWbEQ4EixKlOTJEpcBdOni0E8FCHIc7yxoJGq1qcLdCg==}
-    engines: {node: '>=14'}
+  /@edge-runtime/vm@3.1.0:
+    resolution: {integrity: sha512-Y2JZgJP+4byI17SiDeEZhvBUvJ+om7E5ll/jrS7aGRpet5qKnJSsGep6xxhMjqT/j8ulFvTMN/kdlMMy5pEKBQ==}
+    engines: {node: '>=16'}
     dependencies:
-      '@edge-runtime/primitives': 3.0.4
+      '@edge-runtime/primitives': 3.1.0
     dev: true
 
   /@esbuild/android-arm64@0.18.20:
@@ -2438,8 +2438,8 @@ packages:
     resolution: {integrity: sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==}
     dev: true
 
-  /async-listen@3.0.0:
-    resolution: {integrity: sha512-V+SsTpDqkrWTimiotsyl33ePSjA5/KrithwupuvJ6ztsqPvGv6ge4OredFhPffVXiLN/QUWvE0XcqJaYgt6fOg==}
+  /async-listen@3.0.1:
+    resolution: {integrity: sha512-cWMaNwUJnf37C/S5TfCkk/15MwbPRwVYALA2jtjkbHjCmAPiDXyNJy2q3p1KAZzDLHAWyarUWSujUoHR4pEgrA==}
     engines: {node: '>= 14'}
     dev: true
 
@@ -2703,7 +2703,7 @@ packages:
       execa: 8.0.1
       mri: 1.2.0
       node-fetch-native: 1.4.0
-      ofetch: 1.2.1
+      ofetch: 1.3.2
       open: 9.1.0
       pathe: 1.1.1
       pkg-types: 1.0.3
@@ -3114,14 +3114,14 @@ packages:
       safe-buffer: 5.2.1
     dev: true
 
-  /edge-runtime@2.4.5:
-    resolution: {integrity: sha512-SavsXBll1aPBbD1wu1bHVdk2hxbmRhWe0GfeShwjrdKmFu/TUBWo1712Yk68YVhAfsaBSAqtcAF1ei7qLDKzPA==}
-    engines: {node: '>=14'}
+  /edge-runtime@2.5.0:
+    resolution: {integrity: sha512-QgDNX6R+RPwhY3+vqHpvYE4XUoB/cFG60nGBKu9pmPOJxQleeTCj2F5CHimIpNqex9h1Cy2Y3tuQ+Vq2GzmZIA==}
+    engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      '@edge-runtime/format': 2.1.0
-      '@edge-runtime/vm': 3.0.4
-      async-listen: 3.0.0
+      '@edge-runtime/format': 2.2.0
+      '@edge-runtime/vm': 3.1.0
+      async-listen: 3.0.1
       mri: 1.2.0
       picocolors: 1.0.0
       pretty-bytes: 5.6.0
@@ -5577,8 +5577,8 @@ packages:
       es-abstract: 1.22.1
     dev: true
 
-  /ofetch@1.2.1:
-    resolution: {integrity: sha512-WEX1TEfGuAFJhzRW6Qv9RcxCyek+YogEeXlCWl1XoqBSW2fc6jU4LTk3VotwC1YfXv8Uz06LSofU6uW/ZIT+6g==}
+  /ofetch@1.3.2:
+    resolution: {integrity: sha512-XphiqMCUugscBfS7EjEfe8s3Hb5kfrTqdk9QAYl9z/wvhI3g97EpQdldqd0zAWqQXInHEqkRBQ08reMFHQwjDA==}
     dependencies:
       destr: 2.0.1
       node-fetch-native: 1.4.0
@@ -6895,8 +6895,8 @@ packages:
       pathe: 1.1.1
     dev: false
 
-  /unimport@3.1.3(rollup@3.28.1):
-    resolution: {integrity: sha512-up4TE2yA+nMyyErGTjbYGVw95MriGa2hVRXQ3/JRp7984cwwqULcnBjHaovVpsO8tZc2j0fvgGu9yiBKOyxvYw==}
+  /unimport@3.2.0(rollup@3.28.1):
+    resolution: {integrity: sha512-9buxPxkNwxwxAlH/RfOFHxtQTUrlmBGi9Ai9HezY2yYbkoOhgJTYPI6+WqxI1EZphoM9cw1SHoCFRkXSb8/fjQ==}
     dependencies:
       '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
       escape-string-regexp: 5.0.0
@@ -6978,7 +6978,7 @@ packages:
       lru-cache: 10.0.1
       mri: 1.2.0
       node-fetch-native: 1.4.0
-      ofetch: 1.2.1
+      ofetch: 1.3.2
       ufo: 1.2.0
     transitivePeerDependencies:
       - supports-color
