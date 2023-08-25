@@ -6,12 +6,42 @@ import type { MatchedRoutes } from "./utils";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InternalApi {}
 
+export interface InternalFetch<
+  DefaultResponse = unknown,
+  DefaultFetchRequest extends string | Request | URL =
+    | Exclude<FetchRequest, string>
+    | URL,
+  Raw extends boolean = false,
+> {
+  <T = DefaultResponse, R extends string = string>(
+    url: MatchedRoutes<R> extends never ? R : never,
+    options?: FetchOptions
+  ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>;
+
+  <T = DefaultResponse, R extends Request | URL = Request | URL>(
+    url: R,
+    options?: FetchOptions
+  ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>;
+}
+
+export interface ExternalFetch<
+  DefaultResponse = unknown,
+  DefaultFetchRequest extends string | Request | URL = FetchRequest | URL,
+  Raw extends boolean = false,
+> {
+  <T = DefaultResponse, R extends string | Request | URL = DefaultFetchRequest>(
+    url: R
+  ): true extends Raw ? Promise<FetchResponse<T>> : Promise<T>;
+}
+
 export type NitroFetchRequest =
-  | Exclude<keyof InternalApi, `/_${string}` | `/api/_${string}`>
+  | keyof InternalApi
   | Exclude<FetchRequest, string>
   // eslint-disable-next-line @typescript-eslint/ban-types
-  | (string & {});
+  | (string & {})
+  | URL;
 
+/** @deprecated */
 export type MiddlewareOf<
   Route extends string,
   Method extends RouterMethod | "default",
@@ -19,6 +49,7 @@ export type MiddlewareOf<
   ? Exclude<InternalApi[MatchedRoutes<Route>][Method], Error | void>
   : never;
 
+/** @deprecated */
 export type TypedInternalResponse<
   Route,
   Default = unknown,
@@ -37,6 +68,7 @@ export type TypedInternalResponse<
 
 // Extracts the available http methods based on the route.
 // Defaults to all methods if there aren't any methods available or if there is a catch-all route.
+/** @deprecated */
 export type AvailableRouterMethod<R extends NitroFetchRequest> =
   R extends string
     ? keyof InternalApi[MatchedRoutes<R>] extends undefined
@@ -51,6 +83,7 @@ export type AvailableRouterMethod<R extends NitroFetchRequest> =
 
 // Argumented fetch options to include the correct request methods.
 // This overrides the default, which is only narrowed to a string.
+/** @deprecated */
 export interface NitroFetchOptions<
   R extends NitroFetchRequest,
   M extends AvailableRouterMethod<R> = AvailableRouterMethod<R>,
@@ -59,6 +92,7 @@ export interface NitroFetchOptions<
 }
 
 // Extract the route method from options which might be undefined or without a method parameter.
+/** @deprecated */
 export type ExtractedRouteMethod<
   R extends NitroFetchRequest,
   O extends NitroFetchOptions<R>,
@@ -69,30 +103,16 @@ export type ExtractedRouteMethod<
   : "get";
 
 export interface $Fetch<
-  DefaultT = unknown,
-  DefaultR extends NitroFetchRequest = NitroFetchRequest,
-> {
-  <
-    T = DefaultT,
-    R extends NitroFetchRequest = DefaultR,
-    O extends NitroFetchOptions<R> = NitroFetchOptions<R>,
-  >(
-    request: R,
-    opts?: O
-  ): Promise<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>;
-  raw<
-    T = DefaultT,
-    R extends NitroFetchRequest = DefaultR,
-    O extends NitroFetchOptions<R> = NitroFetchOptions<R>,
-  >(
-    request: R,
-    opts?: O
-  ): Promise<
-    FetchResponse<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>
-  >;
-  create<T = DefaultT, R extends NitroFetchRequest = DefaultR>(
-    defaults: FetchOptions
-  ): $Fetch<T, R>;
+  DefaultResponse = unknown,
+  DefaultFetchRequest extends string | Request | URL =
+    | Exclude<FetchRequest, string>
+    | URL,
+> extends InternalFetch<DefaultResponse, DefaultFetchRequest> {
+  raw: InternalFetch<DefaultResponse, DefaultFetchRequest, true>;
+  create(
+    defaults: Omit<FetchOptions, "baseURL">
+  ): InternalFetch<DefaultResponse>;
+  create(defaults: FetchOptions): ExternalFetch;
 }
 
 declare global {
