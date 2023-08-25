@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.6.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.6.0...v2.6.1)
+
+### 🩹 Fixes
+
+- Correctly mark `middleware: false` for scanned routes ([#1631](https://github.com/unjs/nitro/pull/1631))
+- Pass relative ignore paths when scanning public assets ([#1632](https://github.com/unjs/nitro/pull/1632))
+
+### 🏡 Chore
+
+- Update dependencies ([a779ae79](https://github.com/unjs/nitro/commit/a779ae79))
+- Force cf pages headers type ([81ec33a0](https://github.com/unjs/nitro/commit/81ec33a0))
+- Update mlly ([f76f0daa](https://github.com/unjs/nitro/commit/f76f0daa))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.6.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.5.2...v2.6.0)
