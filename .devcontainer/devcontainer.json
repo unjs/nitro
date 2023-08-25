@@ -1,0 +1,24 @@
+// https://code.visualstudio.com/docs/devcontainers/containers
+// https://containers.dev/implementors/json_reference/
+{
+  "name": "nitro-devcontainer",
+  "forwardPorts": [3000, 3001],
+  "dockerFile": "Dockerfile",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "devPort": 3000,
+      "settings": {},
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "dbaeumer.vscode-eslint",
+        "github.vscode-github-actions",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "postStartCommand": "pnpm install",
+  "mounts": [
+    "type=volume,target=${containerWorkspaceFolder}/node_modules"
+  ]
+}
