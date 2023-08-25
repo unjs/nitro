@@ -2,12 +2,11 @@
 // https://containers.dev/implementors/json_reference/
 {
   "name": "nitro-devcontainer",
-  "forwardPorts": [3000, 3001],
-  "dockerFile": "Dockerfile",
+  "forwardPorts": [3000],
+  "image": "node:18",
   "features": {},
   "customizations": {
     "vscode": {
-      "devPort": 3000,
       "settings": {},
       "extensions": [
         "ms-azuretools.vscode-docker",
@@ -17,8 +16,6 @@
       ]
     }
   },
-  "postStartCommand": "pnpm install",
-  "mounts": [
-    "type=volume,target=${containerWorkspaceFolder}/node_modules"
-  ]
+  "postStartCommand": "corepack enable && pnpm install",
+  "mounts": ["type=volume,target=${containerWorkspaceFolder}/node_modules"]
 }
