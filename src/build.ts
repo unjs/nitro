@@ -55,7 +55,7 @@ export async function copyPublicAssets(nitro: Nitro) {
         dot: true,
         ignore: nitro.options.ignore
           .map((p) =>
-            p.startsWith("*")
+            p.startsWith("*") || p.startsWith("!*")
               ? p
               : relative(srcDir, resolve(nitro.options.srcDir, p))
           )
