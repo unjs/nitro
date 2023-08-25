@@ -52,7 +52,7 @@ export default {
       host: url.hostname,
       protocol: url.protocol,
       method: request.method,
-      headers: request.headers,
+      headers: request.headers as unknown as Headers,
       body,
     });
   },
