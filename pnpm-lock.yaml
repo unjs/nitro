@@ -100,14 +100,14 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       h3:
-        specifier: ^1.8.0
-        version: 1.8.0
+        specifier: ^1.8.1
+        version: 1.8.1
       hookable:
         specifier: ^5.5.3
         version: 5.5.3
       httpxy:
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.1.4
+        version: 0.1.4
       is-primitive:
         specifier: ^3.0.1
         version: 3.0.1
@@ -121,8 +121,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       listhen:
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: ^1.4.1
+        version: 1.4.1
       magic-string:
         specifier: ^0.30.3
         version: 0.30.3
@@ -1539,13 +1539,12 @@ packages:
     dev: false
     optional: true
 
-  /@parcel/watcher-wasm@2.3.0-alpha.3:
-    resolution: {integrity: sha512-kTkqlYhGhCM9EaoZMyjNzqKRSdTyp/vN+/uoJ2fzN+UCiWUI+jMKacwnBgu13T1F0mrcNqEWtYEXTRaZmnml1w==}
+  /@parcel/watcher-wasm@2.3.0:
+    resolution: {integrity: sha512-ejBAX8H0ZGsD8lSICDNyMbSEtPMWgDL0WFCt/0z7hyf5v8Imz4rAM8xY379mBsECkq/Wdqa5WEDLqtjZ+6NxfA==}
     engines: {node: '>= 10.0.0'}
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
-      napi-wasm: 1.1.0
     dev: false
     bundledDependencies:
       - napi-wasm
@@ -2578,7 +2577,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001523
-      electron-to-chromium: 1.4.502
+      electron-to-chromium: 1.4.503
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
     dev: true
@@ -3152,8 +3151,8 @@ packages:
   /ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  /electron-to-chromium@1.4.502:
-    resolution: {integrity: sha512-xqeGw3Gr6o3uyHy/yKjdnDQHY2RQvXcGC2cfHjccK1IGkH6cX1WQBN8EeC/YpwPhGkBaikDTecJ8+ssxSVRQlw==}
+  /electron-to-chromium@1.4.503:
+    resolution: {integrity: sha512-LF2IQit4B0VrUHFeQkWhZm97KuJSGF2WJqq1InpY+ECpFRkXd8yTIaTtJxsO0OKDmiBYwWqcrNaXOurn2T2wiA==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -3907,7 +3906,7 @@ packages:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
     dependencies:
-      flat-cache: 3.0.4
+      flat-cache: 3.1.0
     dev: true
 
   /file-uri-to-path@1.0.0:
@@ -3990,11 +3989,12 @@ packages:
       - supports-color
     dev: true
 
-  /flat-cache@3.0.4:
-    resolution: {integrity: sha512-dm9s5Pw7Jc0GvMYbshN6zchCA9RgQlzzEZX3vylR9IqFfS8XciblUXOKfW6SiuJ0e13eDYZoZV5wdrev7P3Nwg==}
-    engines: {node: ^10.12.0 || >=12.0.0}
+  /flat-cache@3.1.0:
+    resolution: {integrity: sha512-OHx4Qwrrt0E4jEIcI5/Xb+f+QmJYNj2rrK8wiIdQOIrB9WrrJL8cjZvXdXuBTkkEwEqLycb5BeZDV1o2i9bTew==}
+    engines: {node: '>=12.0.0'}
     dependencies:
       flatted: 3.2.7
+      keyv: 4.5.3
       rimraf: 3.0.2
     dev: true
 
@@ -4351,8 +4351,8 @@ packages:
       duplexer: 0.1.2
     dev: false
 
-  /h3@1.8.0:
-    resolution: {integrity: sha512-057VY83X7Tg5n4XU2GV9M3dsCWUU4jtw2Lc/r4GjAcf9Jb6GI1mD5F8TCQHUcvLMEgtx6lbfobOFu7Vdmejihg==}
+  /h3@1.8.1:
+    resolution: {integrity: sha512-m5rFuu+5bpwBBHqqS0zexjK+Q8dhtFRvO9JXQG0RvSPL6QrIT6vv42vuBM22SLOgGMoZYsHk0y7VPidt9s+nkw==}
     dependencies:
       cookie-es: 1.0.0
       defu: 6.1.2
@@ -4472,8 +4472,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /httpxy@0.1.2:
-    resolution: {integrity: sha512-8IldwriN7eS7Pe1pPRE6L7S1LW551lBJ3N9oI4HLYGZTXl2JBkdINEi+mDZwhwykw1OBVI2li3zhPSi7r1N8lQ==}
+  /httpxy@0.1.4:
+    resolution: {integrity: sha512-ArXKNWhU5taozl6fFnu01M9HiInAqSOw4mUp+7DY/zbTHPmS8JBqH0IC3VLovRBd9b8ZE03ztemcxzeWT6pCoA==}
     dev: false
 
   /human-signals@2.1.0:
@@ -4887,6 +4887,10 @@ packages:
     dev: true
     optional: true
 
+  /json-buffer@3.0.1:
+    resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
+    dev: true
+
   /json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
     dev: true
@@ -4980,6 +4984,12 @@ packages:
     dev: true
     optional: true
 
+  /keyv@4.5.3:
+    resolution: {integrity: sha512-QCiSav9WaX1PgETJ+SpNnx2PRRapJ/oRSXM4VO5OGYGSjrxbKPVFVhB3l2OCbLCk329N8qyAtsJjSjvVBWzEug==}
+    dependencies:
+      json-buffer: 3.0.1
+    dev: true
+
   /klaw@3.0.0:
     resolution: {integrity: sha512-0Fo5oir+O9jnXu5EefYbVK+mHMBeEVEy2cmctR1O1NECcCkPRreJKrS6Qt/j3KC2C148Dfo9i3pCmCMsdqGr0g==}
     requiresBuild: true
@@ -5043,18 +5053,18 @@ packages:
     dev: true
     optional: true
 
-  /listhen@1.4.0:
-    resolution: {integrity: sha512-gEOMJKTak+WLjPITBVbv2kR0WKVUSnl5XPwvoFYheyaQPzh/jdA+pRZeUujJkjabNMDsBxwuaYH7HYLpzzGEJA==}
+  /listhen@1.4.1:
+    resolution: {integrity: sha512-uBDwzyhYtpxMm25WdWHDlC8rNov0e3lsylc4DR/33TpNMUy92VeXAWPkrdqpR+2rEeZZlCYGyOrRyN/fRrSPgg==}
     hasBin: true
     dependencies:
       '@parcel/watcher': 2.3.0
-      '@parcel/watcher-wasm': 2.3.0-alpha.3
+      '@parcel/watcher-wasm': 2.3.0
       citty: 0.1.3
       clipboardy: 3.0.0
       consola: 3.2.3
       defu: 6.1.2
       get-port-please: 3.0.1
-      h3: 1.8.0
+      h3: 1.8.1
       http-shutdown: 1.2.2
       jiti: 1.19.3
       mlly: 1.4.1
@@ -5438,10 +5448,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
-
-  /napi-wasm@1.1.0:
-    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
-    dev: false
 
   /natural-compare-lite@1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}
@@ -6991,9 +6997,9 @@ packages:
       anymatch: 3.1.3
       chokidar: 3.5.3
       destr: 2.0.1
-      h3: 1.8.0
+      h3: 1.8.1
       ioredis: 5.3.2
-      listhen: 1.4.0
+      listhen: 1.4.1
       lru-cache: 10.0.1
       mri: 1.2.0
       node-fetch-native: 1.4.0
