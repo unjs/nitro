@@ -69,11 +69,14 @@ export async function handler(
     };
   }
 
+  const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers).then(
+    (r) => r
+  )
+
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers),
-    body: await normalizeLambdaOutgoingBody(r.body, r.headers).then(
-      (r) => r.body
-    ),
+    body: outBody.body,
+    isBase64Encoded: outBody.type === "binary"
   };
 }
