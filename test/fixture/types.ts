@@ -261,8 +261,7 @@ describe("defineNitroConfig", () => {
 async function fixture() {
   await Promise.resolve();
   return {
-    status: 200,
-    body: "Hello world",
+    message: "Hello world",
   };
 }
 
@@ -275,8 +274,24 @@ describe("defineCachedEventHandler", () => {
       EventHandler<
         EventHandlerRequest,
         Promise<{
-          status: number;
-          body: string;
+          message: string;
+        }>
+      >
+    >();
+  });
+  it("is backwards compatible with old generic signature", () => {
+    const a = defineCachedEventHandler<
+      Promise<{
+        message: string;
+      }>
+    >(fixture);
+    const b = defineEventHandler(fixture);
+    expectTypeOf(a).toEqualTypeOf(b);
+    expectTypeOf(b).toEqualTypeOf<
+      EventHandler<
+        EventHandlerRequest,
+        Promise<{
+          message: string;
         }>
       >
     >();

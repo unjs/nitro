@@ -194,6 +194,30 @@ export function defineCachedEventHandler<
   Response = EventHandlerResponse,
 >(
   handler: EventHandler<Request, Response>,
+  opts?: CachedEventHandlerOptions<Response>
+): EventHandler<Request, Response>;
+// TODO: remove when appropriate
+// This signature provides backwards compatibility with previous signature where first generic was return type
+export function defineCachedEventHandler<
+  Request = EventHandlerRequest,
+  Response = EventHandlerResponse,
+>(
+  handler: EventHandler<
+    Request extends EventHandlerRequest ? Request : EventHandlerRequest,
+    Request extends EventHandlerRequest ? Response : Request
+  >,
+  opts?: CachedEventHandlerOptions<
+    Request extends EventHandlerRequest ? Response : Request
+  >
+): EventHandler<
+  Request extends EventHandlerRequest ? Request : EventHandlerRequest,
+  Request extends EventHandlerRequest ? Response : Request
+>;
+export function defineCachedEventHandler<
+  Request extends EventHandlerRequest = EventHandlerRequest,
+  Response = EventHandlerResponse,
+>(
+  handler: EventHandler<Request, Response>,
   opts: CachedEventHandlerOptions<Response> = defaultCacheOptions
 ): EventHandler<Request, Response> {
   const variableHeaderNames = (opts.varies || [])
@@ -408,5 +432,3 @@ function cloneWithProxy<T extends object = any>(
     },
   });
 }
-
-export const cachedEventHandler = defineCachedEventHandler;
