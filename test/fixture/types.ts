@@ -1,5 +1,6 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
+import { EventHandler, EventHandlerRequest, defineEventHandler } from "h3";
 import { $Fetch } from "../..";
 import { defineNitroConfig } from "../../src/config";
 
@@ -254,5 +255,30 @@ describe("defineNitroConfig", () => {
         },
       },
     });
+  });
+});
+
+async function fixture() {
+  await Promise.resolve();
+  return {
+    status: 200,
+    body: "Hello world",
+  };
+}
+
+describe("defineCachedEventHandler", () => {
+  it("should infer return type", () => {
+    const a = defineCachedEventHandler(fixture);
+    const b = defineEventHandler(fixture);
+    expectTypeOf(a).toEqualTypeOf(b);
+    expectTypeOf(b).toEqualTypeOf<
+      EventHandler<
+        EventHandlerRequest,
+        Promise<{
+          status: number;
+          body: string;
+        }>
+      >
+    >();
   });
 });
