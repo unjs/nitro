@@ -6,7 +6,6 @@ import {
   setResponseHeader,
   setResponseStatus,
   removeResponseHeader,
-  send,
 } from "h3";
 import {
   decodePath,
@@ -76,8 +75,7 @@ export default eventHandler((event) => {
   const ifNotMatch = getRequestHeader(event, "if-none-match") === asset.etag;
   if (ifNotMatch) {
     setResponseStatus(event, 304, "Not Modified");
-    send(event, "");
-    return;
+    return ""
   }
 
   const ifModifiedSinceH = getRequestHeader(event, "if-modified-since");
@@ -88,8 +86,7 @@ export default eventHandler((event) => {
     new Date(ifModifiedSinceH) >= mtimeDate
   ) {
     setResponseStatus(event, 304, "Not Modified");
-    send(event, "");
-    return;
+    return ""
   }
 
   if (asset.type && !getResponseHeader(event, "Content-Type")) {
