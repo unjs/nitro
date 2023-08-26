@@ -150,11 +150,13 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
     }
     const key = await (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
+    const [firstArg] = args;
+    const firstArgIsEvent = firstArg && typeof firstArg === 'object' && isEvent(firstArg);
     const entry = await get(
       key,
       () => fn(...args),
       shouldInvalidateCache,
-      args[0] && isEvent(args[0]) ? args[0] : undefined
+      firstArgIsEvent ? firstArg : undefined
     );
     let value = entry.value;
     if (opts.transform) {
