@@ -195,11 +195,11 @@ export function defineCachedEventHandler<
 >(
   handler: EventHandler<Request, Response>,
   opts?: CachedEventHandlerOptions<Response>
-): EventHandler<Omit<Request, 'body'>, Response>;
+): EventHandler<Omit<Request, "body">, Response>;
 // TODO: remove when appropriate
 // This signature provides backwards compatibility with previous signature where first generic was return type
 export function defineCachedEventHandler<
-  Request =  Omit<EventHandlerRequest, 'body'>,
+  Request = Omit<EventHandlerRequest, "body">,
   Response = EventHandlerResponse,
 >(
   handler: EventHandler<
