@@ -432,3 +432,5 @@ function cloneWithProxy<T extends object = any>(
     },
   });
 }
+
+export const cachedEventHandler = defineCachedEventHandler;
