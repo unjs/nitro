@@ -6,7 +6,7 @@ import {
   EventHandler,
   isEvent,
 } from "h3";
-import type { H3Event } from "h3";
+import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "./storage";
 import { useNitroApp } from "./app";
@@ -189,16 +189,19 @@ function escapeKey(key: string | string[]) {
   return String(key).replace(/\W/g, "");
 }
 
-export function defineCachedEventHandler<T = any>(
-  handler: EventHandler<T>,
-  opts: CachedEventHandlerOptions<T> = defaultCacheOptions
-): EventHandler<T> {
+export function defineCachedEventHandler<
+  Request extends EventHandlerRequest = EventHandlerRequest,
+  Response = EventHandlerResponse,
+>(
+  handler: EventHandler<Request, Response>,
+  opts: CachedEventHandlerOptions<Response> = defaultCacheOptions
+): EventHandler<Request, Response> {
   const variableHeaderNames = (opts.varies || [])
     .filter(Boolean)
     .map((h) => h.toLowerCase())
     .sort();
 
-  const _opts: CacheOptions<ResponseCacheEntry<T>> = {
+  const _opts: CacheOptions<ResponseCacheEntry<Response>> = {
     ...opts,
     getKey: async (event: H3Event) => {
       // Custom user-defined key
@@ -230,7 +233,7 @@ export function defineCachedEventHandler<T = any>(
     integrity: [opts.integrity, handler],
   };
 
-  const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
+  const _cachedHandler = cachedFunction<ResponseCacheEntry<Response>>(
     async (incomingEvent: H3Event) => {
       // Only pass headers which are defined in opts.varies
       const variableHeaders: Record<string, string | string[]> = {};
@@ -334,7 +337,7 @@ export function defineCachedEventHandler<T = any>(
       }
 
       // Create cache entry for response
-      const cacheEntry: ResponseCacheEntry<T> = {
+      const cacheEntry: ResponseCacheEntry<Response> = {
         code: event.node.res.statusCode,
         headers,
         body,
@@ -345,7 +348,7 @@ export function defineCachedEventHandler<T = any>(
     _opts
   );
 
-  return defineEventHandler<T>(async (event) => {
+  return defineEventHandler<Request, any>(async (event) => {
     // Headers-only mode
     if (opts.headersOnly) {
       // TODO: Send SWR too
