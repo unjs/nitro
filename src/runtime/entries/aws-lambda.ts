@@ -71,12 +71,12 @@ export async function handler(
 
   const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers).then(
     (r) => r
-  )
+  );
 
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers),
     body: outBody.body,
-    isBase64Encoded: outBody.type === "binary"
+    isBase64Encoded: outBody.type === "binary",
   };
 }
