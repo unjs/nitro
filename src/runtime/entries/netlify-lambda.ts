@@ -36,9 +36,7 @@ export async function lambda(
   });
 
   const cookies = normalizeCookieHeader(String(r.headers["set-cookie"]));
-  const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers).then(
-    (r) => r
-  );
+  const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
 
   return {
     statusCode: r.status,

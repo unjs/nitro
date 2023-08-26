@@ -69,9 +69,7 @@ export async function handler(
     };
   }
 
-  const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers).then(
-    (r) => r
-  );
+  const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
 
   return {
     statusCode: r.status,
