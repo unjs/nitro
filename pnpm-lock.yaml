@@ -43,8 +43,8 @@ importers:
         specifier: ^6.1.3
         version: 6.1.3(rollup@3.28.1)
       '@rollup/pluginutils':
-        specifier: ^5.0.3
-        version: 5.0.3(rollup@3.28.1)
+        specifier: ^5.0.4
+        version: 5.0.4(rollup@3.28.1)
       '@types/http-proxy':
         specifier: ^1.17.11
         version: 1.17.11
@@ -193,8 +193,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       unenv:
-        specifier: ^1.7.3
-        version: 1.7.3
+        specifier: ^1.7.4
+        version: 1.7.4
       unimport:
         specifier: ^3.2.0
         version: 3.2.0(rollup@3.28.1)
@@ -1664,7 +1664,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.4(rollup@3.28.1)
       commondir: 1.0.1
       estree-walker: 2.0.2
       glob: 8.1.0
@@ -1681,7 +1681,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.4(rollup@3.28.1)
       estree-walker: 2.0.2
       magic-string: 0.27.0
       rollup: 3.28.1
@@ -1696,7 +1696,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.4(rollup@3.28.1)
       rollup: 3.28.1
 
   /@rollup/plugin-node-resolve@15.2.1(rollup@3.28.1):
@@ -1708,7 +1708,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.4(rollup@3.28.1)
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-builtin-module: 3.2.1
@@ -1725,7 +1725,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.4(rollup@3.28.1)
       magic-string: 0.27.0
       rollup: 3.28.1
 
@@ -1764,8 +1764,8 @@ packages:
       picomatch: 2.3.1
     dev: false
 
-  /@rollup/pluginutils@5.0.3(rollup@3.28.1):
-    resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
+  /@rollup/pluginutils@5.0.4(rollup@3.28.1):
+    resolution: {integrity: sha512-0KJnIoRI8A+a1dqOYLxH8vBf8bphDmty5QvIm2hqm7oFCFYKCAZWWd2hXgMibaPsNDhI0AtpYfQZJG47pt/k4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0
@@ -4361,7 +4361,7 @@ packages:
       radix3: 1.1.0
       ufo: 1.3.0
       uncrypto: 0.1.3
-      unenv: 1.7.3
+      unenv: 1.7.4
     dev: false
 
   /has-bigints@1.0.2:
@@ -6854,7 +6854,7 @@ packages:
       '@rollup/plugin-json': 6.0.0(rollup@3.28.1)
       '@rollup/plugin-node-resolve': 15.2.1(rollup@3.28.1)
       '@rollup/plugin-replace': 5.0.2(rollup@3.28.1)
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.4(rollup@3.28.1)
       chalk: 5.3.0
       citty: 0.1.3
       consola: 3.2.3
@@ -6904,8 +6904,8 @@ packages:
     dependencies:
       busboy: 1.6.0
 
-  /unenv@1.7.3:
-    resolution: {integrity: sha512-5NGaBSP0acq5FAnjw9m6sA/QaImYkEjpYXPc99l/KUIb1qbxki1PSvX3ZNnK3pWIC2XwIHrOul2P7FiHyWgeXA==}
+  /unenv@1.7.4:
+    resolution: {integrity: sha512-fjYsXYi30It0YCQYqLOcT6fHfMXsBr2hw9XC7ycf8rTG7Xxpe3ZssiqUnD0khrjiZEmkBXWLwm42yCSCH46fMw==}
     dependencies:
       consola: 3.2.3
       defu: 6.1.2
@@ -6917,7 +6917,7 @@ packages:
   /unimport@3.2.0(rollup@3.28.1):
     resolution: {integrity: sha512-9buxPxkNwxwxAlH/RfOFHxtQTUrlmBGi9Ai9HezY2yYbkoOhgJTYPI6+WqxI1EZphoM9cw1SHoCFRkXSb8/fjQ==}
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.4(rollup@3.28.1)
       escape-string-regexp: 5.0.0
       fast-glob: 3.3.1
       local-pkg: 0.4.3
