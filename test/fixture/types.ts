@@ -279,6 +279,11 @@ describe("defineCachedEventHandler", () => {
       >
     >();
   });
+  it("should not allow typed input body", () => {
+    const b = defineCachedEventHandler<{ body: string }, Promise<{ message: string }>>(fixture);
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    expectTypeOf(b).toEqualTypeOf<EventHandler<{}, Promise<{ message: string }>>>()
+  })
   it("is backwards compatible with old generic signature", () => {
     const a = defineCachedEventHandler<
       Promise<{
