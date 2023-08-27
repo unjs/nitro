@@ -38,6 +38,7 @@ describe("nitro:preset:cloudflare-module", async () => {
 
   it("should handle scheduled events", async () => {
     const waitUntil = await mf.dispatchScheduled();
+    // console.log("WAIT:M", waitUntil); // Event is sent and hook is called, but waitUntil doesn't work.
     expect(waitUntil[0]).toBe("scheduled:cloudflare-module");
   });
 });
