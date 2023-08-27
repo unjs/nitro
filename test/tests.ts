@@ -1,9 +1,11 @@
+import { tmpdir } from "node:os";
 import { promises as fsp } from "node:fs";
-import { resolve } from "pathe";
+import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
 import destr from "destr";
 import { fetch, FetchOptions } from "ofetch";
 import { expect, it, afterAll, beforeAll, describe } from "vitest";
+import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import { defu } from "defu";
 import * as _nitro from "../src";
@@ -35,15 +37,21 @@ export const describeIf = (condition, title, factory) =>
         it.skip("skipped", () => {});
       });
 
+export const fixtureDir = fileURLToPath(
+  new URL("fixture", import.meta.url).href
+);
+
+export const getPresetTmpDir = (preset: string) =>
+  resolve(
+    process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
+    preset + "-" + Date.now()
+  );
+
 export async function setupTest(
   preset: string,
   opts: { config?: _nitro.NitroConfig } = {}
 ) {
-  const fixtureDir = fileURLToPath(new URL("fixture", import.meta.url).href);
-  const presetTempDir = resolve(
-    process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
-    preset + "-" + Date.now()
-  );
+  const presetTmpDir = getPresetTmpDir(preset);
 
   await fsp.rm(presetTmpDir, { recursive: true }).catch(() => {});
   await fsp.mkdir(presetTmpDir, { recursive: true });
