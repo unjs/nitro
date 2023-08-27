@@ -179,7 +179,6 @@ export async function prerender(nitro: Nitro) {
     // Data will be removed as soon as written to the disk
     let dataBuff: Buffer | undefined = Buffer.from(await res.arrayBuffer());
 
-    _route.data = await res.arrayBuffer();
     Object.defineProperty(_route, "contents", {
       get: () => {
         return dataBuff ? dataBuff.toString("utf8") : undefined;
