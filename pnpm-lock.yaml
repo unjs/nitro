@@ -121,8 +121,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       listhen:
-        specifier: ^1.4.1
-        version: 1.4.1
+        specifier: ^1.4.2
+        version: 1.4.2
       magic-string:
         specifier: ^0.30.3
         version: 0.30.3
@@ -254,8 +254,8 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1(firebase-admin@11.10.1)
       get-port-please:
-        specifier: ^3.0.1
-        version: 3.0.1
+        specifier: ^3.0.2
+        version: 3.0.2
       miniflare:
         specifier: ^2.14.1
         version: 2.14.1
@@ -2576,7 +2576,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001523
+      caniuse-lite: 1.0.30001524
       electron-to-chromium: 1.4.503
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
@@ -2662,8 +2662,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite@1.0.30001523:
-    resolution: {integrity: sha512-I5q5cisATTPZ1mc588Z//pj/Ox80ERYDfR71YnvY7raS/NOk8xXlZcB0sF7JdqaV//kOaa6aus7lRfpdnt1eBA==}
+  /caniuse-lite@1.0.30001524:
+    resolution: {integrity: sha512-Jj917pJtYg9HSJBF95HVX3Cdr89JUyLT4IZ8SvM5aDRni95swKgYi3TgYLH5hnGfPE/U1dg6IfZ50UsIlLkwSA==}
     dev: true
 
   /catharsis@0.9.0:
@@ -4146,8 +4146,8 @@ packages:
       has-symbols: 1.0.3
     dev: true
 
-  /get-port-please@3.0.1:
-    resolution: {integrity: sha512-R5pcVO8Z1+pVDu8Ml3xaJCEkBiiy1VQN9za0YqH8GIi1nIqD4IzQhzY6dDzMRtdS1lyiGlucRzm8IN8wtLIXng==}
+  /get-port-please@3.0.2:
+    resolution: {integrity: sha512-c14cAITf0E+uqdxGALvyYHwOL7UsnWcv3oDtgDAZksiVSGN87xlWVUWGZcmWQU3cICdaOxT+6LdQzUfK2ei1SA==}
 
   /get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
@@ -5053,8 +5053,8 @@ packages:
     dev: true
     optional: true
 
-  /listhen@1.4.1:
-    resolution: {integrity: sha512-uBDwzyhYtpxMm25WdWHDlC8rNov0e3lsylc4DR/33TpNMUy92VeXAWPkrdqpR+2rEeZZlCYGyOrRyN/fRrSPgg==}
+  /listhen@1.4.2:
+    resolution: {integrity: sha512-yWWwLYcuG1bEOboK+sGTMYp0yc5KIcVsGmADO8dkMdoRC4gQ7jGGZR6PUI/HvtnuF/QOt3VflWE75uGeU776BQ==}
     hasBin: true
     dependencies:
       '@parcel/watcher': 2.3.0
@@ -5063,7 +5063,7 @@ packages:
       clipboardy: 3.0.0
       consola: 3.2.3
       defu: 6.1.2
-      get-port-please: 3.0.1
+      get-port-please: 3.0.2
       h3: 1.8.1
       http-shutdown: 1.2.2
       jiti: 1.19.3
@@ -6999,7 +6999,7 @@ packages:
       destr: 2.0.1
       h3: 1.8.1
       ioredis: 5.3.2
-      listhen: 1.4.1
+      listhen: 1.4.2
       lru-cache: 10.0.1
       mri: 1.2.0
       node-fetch-native: 1.4.0
