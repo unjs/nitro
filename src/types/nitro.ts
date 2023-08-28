@@ -326,6 +326,10 @@ export interface NitroOptions extends PresetOptions {
     preview: string;
     deploy: string;
   };
+  iis?: {
+      mergeConfig?: boolean
+      overrideConfig?:boolean
+  }
 }
 
 declare global {

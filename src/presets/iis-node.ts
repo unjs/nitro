@@ -1,15 +1,15 @@
 import { resolve } from "pathe";
-import { writeFile } from "../utils";
+import { Parser, Builder, parseString } from "xml2js"
+import { readFile, resolveFile, writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-
 export const iisNode = defineNitroPreset({
   extends: "node-server",
   hooks: {
     async compiled(nitro: Nitro) {
-      await writeFile(
+        await writeFile(
         resolve(nitro.options.output.dir, "web.config"),
-        iisnodeXmlTemplate()
+        iisnodeXmlTemplate(nitro)
       );
 
       await writeFile(
@@ -20,8 +20,10 @@ export const iisNode = defineNitroPreset({
   },
 });
 
-function iisnodeXmlTemplate() {
-  return `<?xml version="1.0" encoding="utf-8"?>
+function iisnodeXmlTemplate(nitro: Nitro) {
+    const parser = new Parser()
+    const path = resolveFile( 'web.config', nitro.options.rootDir, ["config"])
+    const originalString = `<?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <system.webServer>
     <webSocket enabled="false" />
@@ -61,5 +63,21 @@ function iisnodeXmlTemplate() {
     <iisnode watchedFiles="web.config;*.js" node_env="production" debuggingEnabled="true" />
   </system.webServer>
 </configuration>
-`;
+`
+    const fileString = readFile(path)
+console.log({options: nitro.options.runtimeConfig})
+    let originalWebConfig: Record<string, unknown>, fileWebConfig: Record<string, unknown>
+
+    parser.parseString(originalString, function (e, r) {
+        originalWebConfig = r
+        return r
+    })
+    parser.parseString(fileString, function (e, r) {
+        fileWebConfig = r
+        return r
+    })
+
+    const builder = new Builder()
+    const xml = builder.buildObject({...originalWebConfig, ...fileWebConfig })
+    return xml;
 }
