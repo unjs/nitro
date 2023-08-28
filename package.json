@@ -121,7 +121,8 @@
     "unctx": "^2.3.1",
     "unenv": "^1.7.4",
     "unimport": "^3.2.0",
-    "unstorage": "^1.9.0"
+    "unstorage": "^1.9.0",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1",
