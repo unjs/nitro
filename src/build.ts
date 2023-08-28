@@ -53,13 +53,7 @@ export async function copyPublicAssets(nitro: Nitro) {
         cwd: srcDir,
         absolute: false,
         dot: true,
-        ignore: nitro.options.ignore
-          .map((p) =>
-            p.startsWith("*") || p.startsWith("!*")
-              ? p
-              : relative(srcDir, resolve(nitro.options.srcDir, p))
-          )
-          .filter((p) => !p.startsWith("../")),
+        ignore: nitro.options.ignore,
       });
       await Promise.all(
         publicAssets.map(async (file) => {

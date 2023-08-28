@@ -8,6 +8,7 @@ import chalk from "chalk";
 import { getProperty } from "dot-prop";
 import { provider } from "std-env";
 import type { ProviderName } from "std-env";
+import { Parser, Builder } from "xml2js";
 import { KebabCase, Nitro } from "../types";
 import type * as _PRESETS from "../presets";
 
@@ -41,6 +42,10 @@ export function tryImport(dir: string, path: string) {
   try {
     return jitiImport(dir, path);
   } catch {}
+}
+
+export function readFile(path: string) {
+  return readFileSync(path).toString();
 }
 
 export async function writeFile(
@@ -228,4 +233,22 @@ export function provideFallbackValues(obj: Record<string, any>) {
       provideFallbackValues(obj[key]);
     }
   }
+}
+
+// IIS XML Helpers
+export function parseXmlDoc(xml: string): Record<string, unknown> {
+  if (xml === undefined || !xml) {
+    return {};
+  }
+  const parser = new Parser();
+  let parsedRecord: Record<string, unknown>;
+  parser.parseString(xml, function (_, r) {
+    parsedRecord = r;
+  });
+  return parsedRecord;
+}
+
+export function buildNewXmlDoc(xmlObj: Record<string, unknown>): string {
+  const builder = new Builder();
+  return builder.buildObject({ ...xmlObj });
 }

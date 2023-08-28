@@ -67,7 +67,7 @@ export async function scanServerRoutes(
     return {
       handler: file.fullPath,
       lazy: true,
-      middleware: false,
+      middlweware: false,
       route,
       method,
     };
