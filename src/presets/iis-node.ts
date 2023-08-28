@@ -1,13 +1,19 @@
 import { resolve } from "pathe";
-import { Parser, Builder, parseString } from "xml2js"
-import { readFile, resolveFile, writeFile } from "../utils";
+import { Parser, Builder, parseString } from "xml2js";
+import {
+  buildNewXmlDoc,
+  parseXmlDoc,
+  readFile,
+  resolveFile,
+  writeFile,
+} from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 export const iisNode = defineNitroPreset({
   extends: "node-server",
   hooks: {
     async compiled(nitro: Nitro) {
-        await writeFile(
+      await writeFile(
         resolve(nitro.options.output.dir, "web.config"),
         iisnodeXmlTemplate(nitro)
       );
@@ -21,9 +27,8 @@ export const iisNode = defineNitroPreset({
 });
 
 function iisnodeXmlTemplate(nitro: Nitro) {
-    const parser = new Parser()
-    const path = resolveFile( 'web.config', nitro.options.rootDir, ["config"])
-    const originalString = `<?xml version="1.0" encoding="utf-8"?>
+  const path = resolveFile("web.config", nitro.options.rootDir, ["config"]);
+  const originalString = `<?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <system.webServer>
     <webSocket enabled="false" />
@@ -63,21 +68,18 @@ function iisnodeXmlTemplate(nitro: Nitro) {
     <iisnode watchedFiles="web.config;*.js" node_env="production" debuggingEnabled="true" />
   </system.webServer>
 </configuration>
-`
-    const fileString = readFile(path)
-console.log({options: nitro.options.runtimeConfig})
-    let originalWebConfig: Record<string, unknown>, fileWebConfig: Record<string, unknown>
+`;
+  if (path !== undefined) {
+    const fileString = readFile(path);
+    const originalWebConfig: Record<string, unknown> =
+      parseXmlDoc(originalString);
+    const fileWebConfig: Record<string, unknown> = parseXmlDoc(fileString);
 
-    parser.parseString(originalString, function (e, r) {
-        originalWebConfig = r
-        return r
-    })
-    parser.parseString(fileString, function (e, r) {
-        fileWebConfig = r
-        return r
-    })
-
-    const builder = new Builder()
-    const xml = builder.buildObject({...originalWebConfig, ...fileWebConfig })
-    return xml;
+    if (nitro.options.iis.mergeConfig && !nitro.options.iis.overrideConfig) {
+      return buildNewXmlDoc({ ...originalWebConfig, ...fileWebConfig });
+    } else if (nitro.options.iis.overrideConfig) {
+      return buildNewXmlDoc({ ...fileWebConfig });
+    }
+  }
+  return originalString;
 }
