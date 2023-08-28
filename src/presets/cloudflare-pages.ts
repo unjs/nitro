@@ -138,7 +138,7 @@ function comparePaths(a: string, b: string) {
 
 async function writeCFPagesHeaders(nitro: Nitro) {
   const headersPath = join(nitro.options.output.publicDir, "_headers");
-  let contents = "";
+  const contents = [];
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
@@ -154,7 +154,7 @@ async function writeCFPagesHeaders(nitro: Nitro) {
       ),
     ].join("\n");
 
-    contents += headers + "\n";
+    contents.push(headers);
   }
 
   if (existsSync(headersPath)) {
@@ -168,10 +168,10 @@ async function writeCFPagesHeaders(nitro: Nitro) {
     nitro.logger.info(
       "Adding Nitro fallback to `_headers` to handle all unmatched routes."
     );
-    contents = currentHeaders + "\n" + contents;
+    contents.unshift(currentHeaders);
   }
 
-  await fsp.writeFile(headersPath, contents);
+  await fsp.writeFile(headersPath, contents.join("\n"));
 }
 
 async function writeCFPagesRedirects(nitro: Nitro) {
@@ -181,8 +181,7 @@ async function writeCFPagesRedirects(nitro: Nitro) {
   )
     ? "/* /404.html 404"
     : "";
-  let contents = staticFallback;
-
+  const contents = [staticFallback];
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
   );
@@ -191,9 +190,9 @@ async function writeCFPagesRedirects(nitro: Nitro) {
     ([_, routeRules]) => routeRules.redirect
   )) {
     const code = routeRules.redirect.statusCode;
-    contents =
-      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}\n` +
-      contents;
+    contents.unshift(
+      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}`
+    );
   }
 
   if (existsSync(redirectsPath)) {
@@ -207,8 +206,8 @@ async function writeCFPagesRedirects(nitro: Nitro) {
     nitro.logger.info(
       "Adding Nitro fallback to `_redirects` to handle all unmatched routes."
     );
-    contents = currentRedirects + "\n" + contents;
+    contents.unshift(currentRedirects);
   }
 
-  await fsp.writeFile(redirectsPath, contents);
+  await fsp.writeFile(redirectsPath, contents.join("\n"));
 }
