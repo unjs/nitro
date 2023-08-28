@@ -121,8 +121,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       listhen:
-        specifier: ^1.4.2
-        version: 1.4.2
+        specifier: ^1.4.3
+        version: 1.4.3
       magic-string:
         specifier: ^0.30.3
         version: 0.30.3
@@ -5053,8 +5053,8 @@ packages:
     dev: true
     optional: true
 
-  /listhen@1.4.2:
-    resolution: {integrity: sha512-yWWwLYcuG1bEOboK+sGTMYp0yc5KIcVsGmADO8dkMdoRC4gQ7jGGZR6PUI/HvtnuF/QOt3VflWE75uGeU776BQ==}
+  /listhen@1.4.3:
+    resolution: {integrity: sha512-qVWeM07q7q5R3jwB+Zm603khFQ3yq5OLmAwLIlE3Ftv1K9yfwx4R6/tbCkkr0/SrIyKnHK9xY1C6j03uGOSnIQ==}
     hasBin: true
     dependencies:
       '@parcel/watcher': 2.3.0
@@ -6999,7 +6999,7 @@ packages:
       destr: 2.0.1
       h3: 1.8.1
       ioredis: 5.3.2
-      listhen: 1.4.2
+      listhen: 1.4.3
       lru-cache: 10.0.1
       mri: 1.2.0
       node-fetch-native: 1.4.0
