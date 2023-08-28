@@ -1,5 +1,11 @@
 import { resolve } from "pathe";
-import { writeFile } from "../utils";
+import {
+  buildNewXmlDoc,
+  parseXmlDoc,
+  readFile,
+  resolveFile,
+  writeFile,
+} from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 
@@ -9,14 +15,15 @@ export const iis = defineNitroPreset({
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "web.config"),
-        iisXmlTemplate()
+        iisXmlTemplate(nitro)
       );
     },
   },
 });
 
-function iisXmlTemplate() {
-  return `<?xml version="1.0" encoding="UTF-8"?>
+function iisXmlTemplate(nitro: Nitro) {
+  const path = resolveFile("web.config", nitro.options.rootDir, ["config"]);
+  const originalString = `<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <system.webServer>
     <handlers>
@@ -31,4 +38,17 @@ function iisXmlTemplate() {
   </system.webServer>
 </configuration>
 `;
+  if (path !== undefined) {
+    const fileString = readFile(path);
+    const originalWebConfig: Record<string, unknown> =
+      parseXmlDoc(originalString);
+    const fileWebConfig: Record<string, unknown> = parseXmlDoc(fileString);
+
+    if (nitro.options.iis.mergeConfig && !nitro.options.iis.overrideConfig) {
+      return buildNewXmlDoc({ ...originalWebConfig, ...fileWebConfig });
+    } else if (nitro.options.iis.overrideConfig) {
+      return buildNewXmlDoc({ ...fileWebConfig });
+    }
+  }
+  return originalString;
 }
