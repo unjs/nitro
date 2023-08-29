@@ -9,7 +9,7 @@ import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
-import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
+import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { TSConfig } from "pkg-types";
@@ -60,6 +60,7 @@ export interface Nitro {
 
   /* @internal */
   _prerenderedRoutes?: PrerenderRoute[];
+  _prerenderMeta?: Record<string, { contentType?: string }>;
 }
 
 export interface PrerenderRoute {
@@ -70,6 +71,7 @@ export interface PrerenderRoute {
   error?: Error & { statusCode: number; statusMessage: string };
   generateTimeMS?: number;
   skip?: boolean;
+  contentType?: string;
 }
 
 /** @deprecated Internal type will be removed in future versions */
@@ -180,6 +182,20 @@ export interface NitroRouteRules
   proxy?: { to: string } & ProxyOptions;
 }
 
+export interface WasmOptions {
+  /**
+   * Direct import the wasm file instead of bundling, required in Cloudflare Workers
+   *
+   * @default false
+   */
+  esmImport?: boolean;
+
+  /**
+   * Options for `@rollup/plugin-wasm`, only used when `esmImport` is `false`
+   */
+  rollup?: RollupWasmOptions;
+}
+
 export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
@@ -215,8 +231,9 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno";
   noPublicDir: boolean;
+  /** @experimental Requires `experimental.wasm` to be effective */
+  wasm?: WasmOptions;
   experimental?: {
-    wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
     /**
@@ -227,6 +244,18 @@ export interface NitroOptions extends PresetOptions {
      * Enable native async context support for useEvent()
      */
     asyncContext?: boolean;
+    /**
+     * Enable Experimental WebAssembly Support
+     */
+    wasm?: boolean;
+    /**
+     * Disable Experimental bundling of Nitro Runtime Dependencies
+     */
+    bundleRuntimeDependencies?: false;
+    /**
+     * Disable Experimental Sourcemap Minification
+     */
+    sourcemapMinify?: false;
   };
   future: {
     nativeSWR: boolean;
@@ -244,7 +273,7 @@ export interface NitroOptions extends PresetOptions {
   dev: boolean;
   devServer: DevServerOptions;
   watchOptions: WatchOptions;
-  devProxy: Record<string, string | HTTPProxyOptions>;
+  devProxy: Record<string, string | ProxyServerOptions>;
 
   // Routing
   baseURL: string;

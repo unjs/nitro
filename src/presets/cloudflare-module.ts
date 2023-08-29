@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
@@ -19,6 +20,14 @@ export const cloudflareModule = defineNitroPreset({
     },
   },
   hooks: {
+    "rollup:before"(_nitro, rollupConfig) {
+      if (process.env.NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS) {
+        rollupConfig.output = {
+          ...rollupConfig.output,
+          inlineDynamicImports: false,
+        };
+      }
+    },
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "package.json"),

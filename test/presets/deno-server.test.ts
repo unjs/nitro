@@ -8,7 +8,7 @@ const hasDeno =
   execaCommandSync("deno --version", { stdio: "ignore", reject: false })
     .exitCode === 0;
 
-describe.runIf(hasDeno && false /* h3 latest needed */)("nitro:preset:deno-server", async () => {
+describe.runIf(hasDeno)("nitro:preset:deno-server", async () => {
   const ctx = await setupTest("deno-server");
   testNitro(ctx, async () => {
     const port = await getRandomPort();

@@ -14,7 +14,7 @@ pnpm changelogen --bump
 pnpm jiti ./scripts/bump-edge
 
 # Resolve lockfile
-pnpm install
+# pnpm install
 
 # Update token
 if [[ ! -z ${NODE_AUTH_TOKEN} ]] ; then

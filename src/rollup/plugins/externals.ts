@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
 import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
 import type { PackageJson } from "pkg-types";
-import { readPackageJSON } from "pkg-types";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import {
@@ -26,6 +26,7 @@ export interface NodeExternalsOptions {
     | RegExp
     | ((id: string, importer?: string) => Promise<boolean> | boolean)
   >;
+  rootDir?: string;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -188,7 +189,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Trace used files using nft
       const _fileTrace = await nodeFileTrace([...trackedExternals], {
-        conditions: opts.exportConditions,
+        // https://github.com/unjs/nitro/pull/1562
+        conditions: opts.exportConditions.filter(
+          (c) => !["require", "import", "default"].includes(c)
+        ),
         ...opts.traceOptions,
       });
 
@@ -287,6 +291,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         tracedFile.pkgVersion = pkgJSON.version;
       }
 
+      const usedAliases: Record<string, string> = {};
+
       const writePackage = async (
         name: string,
         version: string,
@@ -322,6 +328,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
         // Link aliases
         if (opts.traceAlias && pkgPath in opts.traceAlias) {
+          usedAliases[opts.traceAlias[pkgPath]] = version;
           await linkPackage(pkgPath, opts.traceAlias[pkgPath]);
         }
       };
@@ -437,26 +444,25 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Write an informative package.json
-      const bundledDependencies = Object.fromEntries(
-        Object.values(tracedPackages)
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
-      );
+      const userPkg = await readPackageJSON(
+        opts.rootDir || process.cwd()
+      ).catch(() => ({}) as PackageJson);
 
-      await fsp.writeFile(
-        resolve(opts.outDir, "package.json"),
-        JSON.stringify(
-          {
-            name: "nitro-output",
-            version: "0.0.0",
-            private: true,
-            bundledDependencies,
-          },
-          null,
-          2
+      await writePackageJSON(resolve(opts.outDir, "package.json"), {
+        name: (userPkg.name || "server") + "-prod",
+        version: userPkg.version || "0.0.0",
+        type: "module",
+        private: true,
+        dependencies: Object.fromEntries(
+          [
+            ...Object.values(tracedPackages).map((pkg) => [
+              pkg.name,
+              Object.keys(pkg.versions)[0],
+            ]),
+            ...Object.entries(usedAliases),
+          ].sort(([a], [b]) => a[0].localeCompare(b[0]))
         ),
-        "utf8"
-      );
+      });
     },
   };
 }

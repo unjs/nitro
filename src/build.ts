@@ -53,7 +53,13 @@ export async function copyPublicAssets(nitro: Nitro) {
         cwd: srcDir,
         absolute: false,
         dot: true,
-        ignore: nitro.options.ignore,
+        ignore: nitro.options.ignore
+          .map((p) =>
+            p.startsWith("*") || p.startsWith("!*")
+              ? p
+              : relative(srcDir, resolve(nitro.options.srcDir, p))
+          )
+          .filter((p) => !p.startsWith("../")),
       });
       await Promise.all(
         publicAssets.map(async (file) => {
@@ -122,7 +128,9 @@ export async function writeTypes(nitro: Nitro) {
     // TODO: fully resolve utils exported from `#imports`
     autoImportExports = await nitro.unimport
       .toExports(typesDir)
-      .then((r) => r.replace(/#internal\/nitro/g, runtimeDir));
+      .then((r) =>
+        r.replace(/#internal\/nitro/g, relative(typesDir, runtimeDir))
+      );
 
     const resolvedImportPathMap = new Map<string, string>();
     const imports = await nitro.unimport
@@ -294,6 +302,44 @@ declare module 'nitropack' {
           : [join(relativeWithDot(tsconfigDir, nitro.options.srcDir), "**/*")]),
       ],
     });
+
+    for (const alias in tsConfig.compilerOptions!.paths) {
+      const paths = tsConfig.compilerOptions!.paths[alias];
+      tsConfig.compilerOptions!.paths[alias] = await Promise.all(
+        paths.map(async (path: string) => {
+          if (!isAbsolute(path)) {
+            return path;
+          }
+          const stats = await fsp
+            .stat(path)
+            .catch(() => null /* file does not exist */);
+          return relativeWithDot(
+            tsconfigDir,
+            stats?.isFile()
+              ? path.replace(/(?<=\w)\.\w+$/g, "") /* remove extension */
+              : path
+          );
+        })
+      );
+    }
+
+    tsConfig.include = [
+      ...new Set(
+        tsConfig.include.map((p) =>
+          isAbsolute(p) ? relativeWithDot(tsconfigDir, p) : p
+        )
+      ),
+    ];
+    if (tsConfig.exclude) {
+      tsConfig.exclude = [
+        ...new Set(
+          tsConfig.exclude!.map((p) =>
+            isAbsolute(p) ? relativeWithDot(tsconfigDir, p) : p
+          )
+        ),
+      ];
+    }
+
     buildFiles.push({
       path: tsConfigPath,
       contents: JSON.stringify(tsConfig, null, 2),

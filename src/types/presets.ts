@@ -63,6 +63,13 @@ interface FirebaseOptionsBase {
    * @see https://cloud.google.com/functions/docs/concepts/nodejs-runtime
    */
   nodeVersion?: "20" | "18" | "16";
+  /**
+   * When deploying multiple apps within the same Firebase project
+   * you must give your server a unique name in order to avoid overwriting your functions.
+   *
+   * @default "server"
+   */
+  serverFunctionName?: string;
 }
 
 interface FirebaseOptionsGen1 extends FirebaseOptionsBase {
@@ -115,6 +122,20 @@ export interface VercelServerlessFunctionConfig {
   [key: string]: unknown;
 }
 
+interface AzureOptions {
+  config?: {
+    platform?: {
+      apiRuntime?: string;
+      [key: string]: unknown;
+    };
+    navigationFallback?: {
+      rewrite?: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+}
+
 export interface PresetOptions {
   vercel: {
     config: VercelBuildConfigV3;
@@ -159,4 +180,5 @@ export interface PresetOptions {
       defaultRoutes?: boolean;
     };
   };
+  azure: AzureOptions;
 }

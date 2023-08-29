@@ -63,13 +63,18 @@ export async function handler(
       cookies,
       statusCode: r.status,
       headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-      body: normalizeLambdaOutgoingBody(r.body, r.headers),
+      body: await normalizeLambdaOutgoingBody(r.body, r.headers).then(
+        (r) => r.body
+      ),
     };
   }
+
+  const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
 
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers),
-    body: normalizeLambdaOutgoingBody(r.body, r.headers),
+    body: outBody.body,
+    isBase64Encoded: outBody.type === "binary",
   };
 }

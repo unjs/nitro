@@ -6,7 +6,7 @@ export default defineBuildConfig({
   entries: [
     "src/index",
     "src/config",
-    "src/cli/cli",
+    "src/cli/index",
     { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
   ],
   externals: ["@nuxt/schema", "firebase-functions"],
