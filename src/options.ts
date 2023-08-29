@@ -216,15 +216,18 @@ export async function loadOptions(
   }
   options.output.dir = resolvePath(
     options.output.dir || NitroDefaults.output.dir,
-    options
+    options,
+    options.rootDir
   );
   options.output.publicDir = resolvePath(
     options.output.publicDir || NitroDefaults.output.publicDir,
-    options
+    options,
+    options.rootDir
   );
   options.output.serverDir = resolvePath(
     options.output.serverDir || NitroDefaults.output.serverDir,
-    options
+    options,
+    options.rootDir
   );
 
   options.nodeModulesDirs.push(resolve(options.workspaceDir, "node_modules"));
