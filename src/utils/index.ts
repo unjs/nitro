@@ -121,6 +121,7 @@ const autodetectableStaticProviders: Partial<
 > = {
   netlify: "netlify-static",
   vercel: "vercel-static",
+  cloudflare_pages: "cloudflare-pages-static",
 };
 
 export function detectTarget(options: { static?: boolean } = {}) {
