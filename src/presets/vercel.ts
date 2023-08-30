@@ -24,6 +24,9 @@ export const vercel = defineNitroPreset({
     deploy: "",
     preview: "",
   },
+  experimental: {
+    prerenderIndexHTML: false,
+  },
   hooks: {
     "rollup:before": (nitro: Nitro) => {
       deprecateSWR(nitro);
@@ -102,6 +105,9 @@ export const vercelEdge = defineNitroPreset({
       process: undefined,
     },
   },
+  experimental: {
+    prerenderIndexHTML: false,
+  },
   hooks: {
     "rollup:before": (nitro: Nitro) => {
       deprecateSWR(nitro);
@@ -136,6 +142,9 @@ export const vercelStatic = defineNitroPreset({
   },
   commands: {
     preview: "npx serve ./static",
+  },
+  experimental: {
+    prerenderIndexHTML: false,
   },
   hooks: {
     "rollup:before": (nitro: Nitro) => {
