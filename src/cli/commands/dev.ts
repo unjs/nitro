@@ -53,7 +53,7 @@ export default defineCommand({
 
               await (diff.every((e) => hmrKeyRe.test(e.key))
                 ? nitro.updateConfig(newConfig.config) // Hot reload
-                : reload()); // Full reload 
+                : reload()); // Full reload
             },
           },
         }
