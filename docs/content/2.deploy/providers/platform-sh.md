@@ -35,15 +35,23 @@ hooks:
     corepack prepare pnpm@latest --activate
     corepack pnpm install
     corepack pnpm build
+
+# Required for storage
+# More info: https://unjs.io/blog/2023-08-25-nitro-2.6#default-persistent-data-storage
+disk: 128
+mounts:
+    '.data':
+        source: local
+        source_path: .data
 ```
 
 ## Node.js Filesystem
 
 ::alert{type="info"}
-**Note:** If you want to use the file system, you need to slightly modify the configuration file.
+**Note:** If you want to use the file system other than by default, you need to slightly modify the configuration file.
 ::
 
-You need to add variables: `disk` and `mounts`.
+You need to add additional variable to: `mounts`.
 
 On the example of using https://unstorage.unjs.io/drivers/fs#nodejs-filesystem
 
@@ -52,23 +60,25 @@ Edit `.nuxt.config.ts` and add:
 ```ts
 	nitro: {
 		storage: {
-			data: { driver: 'fs', base: 'storage' },
+			newData: { driver: 'fs', base: 'storage' },
 		},
 	}
 ```
 
 Then add:
 
-::alert{type="warning"}
-**Important:** The key and path name should match the one set in the `nuxt.config.ts` file.
-::
-
 ```yaml
-disk: 128
 mounts:
+    '.data':
+        source: local
+        source_path: .data
     'storage':
         source: local
         source_path: storage
 ```
 
 To the recently created `.platform.app.yaml`.
+
+::alert{type="warning"}
+**Important:** The key and path name should match the one set in the `nuxt.config.ts` file.
+::
