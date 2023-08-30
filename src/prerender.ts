@@ -214,9 +214,10 @@ export async function prerender(nitro: Nitro) {
     const isImplicitHTML =
       !route.endsWith(".html") && contentType.includes("html");
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
-    const htmlPath = route.endsWith("/") || nitro.options.experimental.prerenderIndexHTML
-      ? joinURL(route, "index.html")
-      : route + ".html";
+    const htmlPath =
+      route.endsWith("/") || nitro.options.experimental.prerenderIndexHTML
+        ? joinURL(route, "index.html")
+        : route + ".html";
     _route.fileName = withoutBase(
       isImplicitHTML ? htmlPath : routeWithIndex,
       nitro.options.baseURL
