@@ -1,6 +1,6 @@
 {
   "name": "nitropack",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "Build and Deploy Universal JavaScript Servers",
   "repository": "unjs/nitro",
   "license": "MIT",
@@ -88,14 +88,14 @@
     "fs-extra": "^11.1.1",
     "globby": "^13.2.2",
     "gzip-size": "^7.0.0",
-    "h3": "^1.8.0",
+    "h3": "^1.8.1",
     "hookable": "^5.5.3",
-    "httpxy": "^0.1.2",
+    "httpxy": "^0.1.4",
     "is-primitive": "^3.0.1",
     "jiti": "^1.19.3",
     "klona": "^2.0.6",
     "knitwork": "^1.0.0",
-    "listhen": "^1.4.0",
+    "listhen": "^1.4.3",
     "magic-string": "^0.30.3",
     "mime": "^3.0.0",
     "mlly": "^1.4.1",
@@ -141,7 +141,7 @@
     "expect-type": "^0.16.0",
     "firebase-admin": "^11.10.1",
     "firebase-functions": "^4.4.1",
-    "get-port-please": "^3.0.1",
+    "get-port-please": "^3.0.2",
     "miniflare": "^2.14.1",
     "prettier": "^3.0.2",
     "typescript": "^5.2.2",
@@ -149,7 +149,7 @@
     "undici": "^5.23.0",
     "vitest": "^0.34.3"
   },
-  "packageManager": "pnpm@8.6.12",
+  "packageManager": "pnpm@8.7.0",
   "engines": {
     "node": "^16.11.0 || >=17.0.0"
   },

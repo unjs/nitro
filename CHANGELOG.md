@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.6.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.6.1...v2.6.2)
+
+### 🩹 Fixes
+
+- Use new h3 generics for `defineCachedEventHandler` ([#1640](https://github.com/unjs/nitro/pull/1640))
+- **aws-lambda, netlify:** Add `isBase64Encoded` response field ([#1645](https://github.com/unjs/nitro/pull/1645))
+- Exclude typed body from `cachedEventHandler` ([#1647](https://github.com/unjs/nitro/pull/1647))
+- **static:** Send immediate empty responses for 304 handling ([#1639](https://github.com/unjs/nitro/pull/1639))
+
+### 🏡 Chore
+
+- **docs:** Update dependencies ([d4d622c2](https://github.com/unjs/nitro/commit/d4d622c2))
+- **docs:** Add hotfix for `micromark` import issue ([b1e676e6](https://github.com/unjs/nitro/commit/b1e676e6))
+- Update lockfile ([fffd8724](https://github.com/unjs/nitro/commit/fffd8724))
+- Update `listhen` ([62ac3065](https://github.com/unjs/nitro/commit/62ac3065))
+
+### ✅ Tests
+
+- Add test for prerender ignored `data:` urls ([#1431](https://github.com/unjs/nitro/pull/1431))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Markthree ([@markthree](http://github.com/markthree))
+- Daniel Roe <daniel@roe.dev>
+- Azcray
+
 ## v2.6.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.6.0...v2.6.1)
