@@ -48,9 +48,7 @@ const NitroDefaults: NitroConfig = {
   },
 
   // Features
-  experimental: {
-    prerenderIndexHTML: true,
-  },
+  experimental: {},
   future: {},
   storage: {},
   devStorage: {},
@@ -81,6 +79,7 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    autoSubfolderIndex: true,
     concurrency: 1,
     interval: 0,
     failOnError: false,
