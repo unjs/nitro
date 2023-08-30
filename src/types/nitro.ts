@@ -234,6 +234,12 @@ export interface NitroOptions extends PresetOptions {
   /** @experimental Requires `experimental.wasm` to be effective */
   wasm?: WasmOptions;
   experimental?: {
+    /**
+     * Prerender HTML routes within subfolders (`/test` would produce `/test/index.html`)
+     *
+     * @default true
+     */
+    prerenderIndexHTML?: boolean;
     legacyExternals?: boolean;
     openAPI?: boolean;
     /**

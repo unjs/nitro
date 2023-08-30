@@ -48,7 +48,9 @@ const NitroDefaults: NitroConfig = {
   },
 
   // Features
-  experimental: {},
+  experimental: {
+    prerenderIndexHTML: true,
+  },
   future: {},
   storage: {},
   devStorage: {},
