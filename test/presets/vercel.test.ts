@@ -25,10 +25,10 @@ describe("nitro:preset:vercel", async () => {
         expect(config).toMatchInlineSnapshot(`
           {
             "overrides": {
-              "api/hey/index.html": {
+              "api/hey.html": {
                 "path": "api/hey",
               },
-              "prerender/index.html": {
+              "prerender.html": {
                 "path": "prerender",
               },
             },
