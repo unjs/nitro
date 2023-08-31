@@ -283,6 +283,10 @@ export interface NitroOptions extends PresetOptions {
   errorHandler: string;
   devErrorHandler: NitroErrorHandler;
   prerender: {
+    /**
+     * Prerender HTML routes within subfolders (`/test` would produce `/test/index.html`)
+     */
+    autoSubfolderIndex: boolean;
     concurrency: number;
     interval: number;
     crawlLinks: boolean;
