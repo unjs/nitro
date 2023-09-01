@@ -542,6 +542,7 @@ export function testNitro(
         "nitro-dev",
         "vercel",
         nodeVersion < 18 && "deno-server",
+        nodeVersion < 18 && "bun",
       ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
