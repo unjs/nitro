@@ -65,13 +65,11 @@ describe("nitro:preset:aws-lambda", async () => {
 const makeResponse = (response: any, version: "v1" | "v2") => {
   const headers = { ...response.headers };
 
-  const cookies = version === "v2" ? "cookies" : "multiValueHeaders";
-
   if (version === "v1") {
-    headers["set-cookie"] = response[cookies]?.["set-cookie"];
+    headers["set-cookie"] = response?.multiValueHeaders?.["set-cookie"];
   }
   if (version === "v2") {
-    headers["set-cookie"] = response[cookies];
+    headers["set-cookie"] = response?.cookies;
   }
   return {
     data: destr(response.body),
