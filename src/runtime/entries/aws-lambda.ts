@@ -57,10 +57,7 @@ export async function handler(
 
   // ApiGateway v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
   const isApiGwV2 = "cookies" in event || "rawPath" in event;
-  const { body, bodyType } = await normalizeLambdaOutgoingBody(
-    r.body,
-    r.headers
-  );
+  const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
   const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
   return {
     ...(cookies.length > 0 && {
@@ -70,7 +67,7 @@ export async function handler(
     }),
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-    body,
-    isBase64Encoded: bodyType === "binary",
+    body: awsBody.body,
+    isBase64Encoded: awsBody.type === "binary",
   };
 }
