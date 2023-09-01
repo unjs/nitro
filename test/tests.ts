@@ -551,7 +551,7 @@ export function testNitro(
             : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
       }
 
-      // TODO: verce-ledge joins all cookies for some reason!
+      // TODO: vercel-edge joins all cookies for some reason!
       if (ctx.preset === "vercel-edge") {
         expectedCookies =
           "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
