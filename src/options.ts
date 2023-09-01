@@ -79,6 +79,7 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    autoSubfolderIndex: true,
     concurrency: 1,
     interval: 0,
     failOnError: false,
@@ -216,15 +217,18 @@ export async function loadOptions(
   }
   options.output.dir = resolvePath(
     options.output.dir || NitroDefaults.output.dir,
-    options
+    options,
+    options.rootDir
   );
   options.output.publicDir = resolvePath(
     options.output.publicDir || NitroDefaults.output.publicDir,
-    options
+    options,
+    options.rootDir
   );
   options.output.serverDir = resolvePath(
     options.output.serverDir || NitroDefaults.output.serverDir,
-    options
+    options,
+    options.rootDir
   );
 
   options.nodeModulesDirs.push(resolve(options.workspaceDir, "node_modules"));
