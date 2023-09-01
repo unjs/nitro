@@ -24,12 +24,7 @@ describe("nitro:preset:aws-lambda", async () => {
         body: body || "",
       };
       const res = await handler(event);
-      return {
-        data: destr(res.body),
-        status: res.statusCode,
-        headers: res.headers,
-        cookies: res.cookies,
-      };
+      return makeResponse(res, "v1");
     };
   });
   // Lambda v2 paylod
@@ -62,21 +57,25 @@ describe("nitro:preset:aws-lambda", async () => {
         body: body || "",
       };
       const res = await handler(event);
-      const resHeaders = { ...res.headers };
-      if (res.cookies) {
-        if (!resHeaders["set-cookie"]) {
-          resHeaders["set-cookie"] = [];
-        }
-        if (!Array.isArray(resHeaders["set-cookie"])) {
-          resHeaders["set-cookie"] = [resHeaders["set-cookie"]];
-        }
-        resHeaders["set-cookie"].push(...res.cookies);
-      }
-      return {
-        data: destr(res.body),
-        status: res.statusCode,
-        headers: resHeaders,
-      };
+      return makeResponse(res, "v2");
     };
   });
 });
+
+const makeResponse = (response: any, version: "v1" | "v2") => {
+  const headers = { ...response.headers };
+
+  const cookies = version === "v2" ? "cookies" : "multiValueHeaders";
+
+  if (version === "v1") {
+    headers["set-cookie"] = response[cookies]?.["set-cookie"];
+  }
+  if (version === "v2") {
+    headers["set-cookie"] = response[cookies];
+  }
+  return {
+    data: destr(response.body),
+    status: response.statusCode,
+    headers,
+  };
+};
