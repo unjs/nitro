@@ -21,10 +21,11 @@ const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
   3000) as number;
 const host = process.env.NITRO_HOST || process.env.HOST;
 
-const path = process.env.NITRO_UNIX_SOCKET;
+const path =
+  port && Number.isNaN(Number(port)) ? port : process.env.NITRO_UNIX_SOCKET;
 
 // @ts-ignore
-const listener = server.listen(isNaN(Number(process.env.PORT)) ? {path: port} : path ? { path } : { port, host }, (err) => {
+const listener = server.listen(path ? { path } : { port, host }, (err) => {
   if (err) {
     console.error(err);
     // eslint-disable-next-line unicorn/no-process-exit
