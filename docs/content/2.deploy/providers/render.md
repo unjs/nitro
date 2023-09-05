@@ -16,7 +16,7 @@ Nitro supports deploying on [Render](https://render.com/) with minimal configura
 
 1. Update the start command to `node .output/server/index.mjs`
 
-1. Click 'Advanced' and add an environment variable with `NITRO_PRESET` set to `render_com`. You may also need to add a `NODE_VERSION` environment variable set to `16/18` for the build to succeed (By default `render.com` uses `node v14.17.0`).
+1. Click 'Advanced' and add an environment variable with `NITRO_PRESET` set to `render_com`. You may also need to add a `NODE_VERSION` environment variable set to `18` for the build to succeed ([docs](https://render.com/docs/node-version)).
 
 1. Click 'Create Web Service'.
  
