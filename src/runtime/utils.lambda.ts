@@ -1,5 +1,9 @@
 import type { Readable } from "node:stream";
-import type { APIGatewayProxyEventHeaders } from "aws-lambda";
+import type {
+  APIGatewayProxyEventHeaders,
+  CloudFrontHeaders,
+  CloudFrontRequest,
+} from "aws-lambda";
 
 export function normalizeLambdaIncomingHeaders(
   headers?: APIGatewayProxyEventHeaders
@@ -88,4 +92,38 @@ const TEXT_TYPE_RE = /^text\/|\/(json|xml)|utf-?8/;
 
 function isTextType(contentType = "") {
   return TEXT_TYPE_RE.test(contentType);
+}
+
+export function normalizeCloudfrontOutgoingHeaders(
+  headers: Record<string, string | number | string[] | undefined>
+): CloudFrontHeaders {
+  return Object.fromEntries(
+    Object.entries(headers)
+      .filter(([key]) => !["content-length"].includes(key))
+      .map(([key, v]) => [
+        key,
+        Array.isArray(v)
+          ? v.map((value) => ({ key, value }))
+          : [{ key, value: v.toString() }],
+      ])
+  );
+}
+
+export function normalizeCloudfrontIncomingHeaders(headers: CloudFrontHeaders) {
+  return Object.fromEntries(
+    Object.entries(headers).map(([key, keyValues]) => [
+      key,
+      keyValues.map(({ value }) => value),
+    ])
+  );
+}
+
+export function normalizeCloudfrontBody(body?: CloudFrontRequest["body"]) {
+  if (body === undefined) {
+    return undefined;
+  }
+
+  return body.encoding === "base64"
+    ? decodeURIComponent(Buffer.from(body.data, "base64").toString("utf8"))
+    : body.data;
 }

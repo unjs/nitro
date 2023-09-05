@@ -144,6 +144,7 @@
     "get-port-please": "^3.0.2",
     "miniflare": "^2.14.1",
     "prettier": "^3.0.2",
+    "sst": "^2.24.16",
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
     "undici": "^5.23.0",

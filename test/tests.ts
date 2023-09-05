@@ -44,7 +44,7 @@ export const fixtureDir = fileURLToPath(
 export const getPresetTmpDir = (preset: string) =>
   resolve(
     process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
-    preset
+    preset + "-" + Date.now()
   );
 
 export async function setupTest(
@@ -557,8 +557,11 @@ export function testNitro(
           "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
       }
 
-      // Aws lambda v1
-      if (ctx.preset === "aws-lambda" && ctx.lambdaV1) {
+      // Aws lambda v1 && edge
+      if (
+        ctx.preset === "aws-lambda" &&
+        (ctx.lambdaV1 || ctx.nitro.options.awsLambda.target === "edge")
+      ) {
         expectedCookies =
           "foo=bar, bar=baz,test=value; Path=/,test2=value; Path=/";
       }

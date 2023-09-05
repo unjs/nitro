@@ -405,6 +405,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   const buildInfo = {
     date: new Date(),
     preset: nitro.options.preset,
+    entry: nitro.options.entry.split("/").pop(),
     commands: {
       preview: nitro.options.commands.preview,
       deploy: nitro.options.commands.deploy,
