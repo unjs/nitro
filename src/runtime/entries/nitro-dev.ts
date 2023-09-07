@@ -12,8 +12,8 @@ import { trapUnhandledNodeErrors } from "../utils";
 const server = new Server(toNodeListener(nitroApp.h3App));
 
 function getAddress() {
-  if (provider === "stackblitz" || process.env.NITRO_NO_UNIX_SOCKET) {
-    return "0";
+  if (provider === "stackblitz" || process.env.NITRO_NO_UNIX_SOCKET || process.versions.bun) {
+    return 0;
   }
   const socketName = `worker-${process.pid}-${threadId}.sock`;
   if (isWindows) {
