@@ -121,11 +121,6 @@ const NitroDefaults: NitroConfig = {
   nodeModulesDirs: [],
   hooks: {},
   commands: {},
-  // IIS
-  iis: {
-    mergeConfig: true,
-    overrideConfig: false,
-  },
 };
 
 export interface LoadConfigOptions {

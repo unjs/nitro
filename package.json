@@ -121,8 +121,7 @@
     "unctx": "^2.3.1",
     "unenv": "^1.7.4",
     "unimport": "^3.2.0",
-    "unstorage": "^1.9.0",
-    "xml2js": "^0.6.2"
+    "unstorage": "^1.9.0"
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1",
@@ -148,7 +147,16 @@
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
     "undici": "^5.23.0",
-    "vitest": "^0.34.3"
+    "vitest": "^0.34.3",
+    "xml2js": "^0.6.2"
+  },
+  "peerDependencies": {
+    "xml2js": "^0.6.2"
+  },
+  "peerDependenciesMeta": {
+    "xml2js": {
+      "optional": true
+    }
   },
   "packageManager": "pnpm@8.7.0",
   "engines": {

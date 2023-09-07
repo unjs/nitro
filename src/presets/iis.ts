@@ -1,11 +1,5 @@
 import { resolve } from "pathe";
-import {
-  buildNewXmlDoc,
-  parseXmlDoc,
-  readFile,
-  resolveFile,
-  writeFile,
-} from "../utils";
+import { readFile, resolveFile, writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 
@@ -15,13 +9,13 @@ export const iis = defineNitroPreset({
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "web.config"),
-        iisXmlTemplate(nitro)
+        await iisXmlTemplate(nitro)
       );
     },
   },
 });
 
-function iisXmlTemplate(nitro: Nitro) {
+async function iisXmlTemplate(nitro: Nitro) {
   const path = resolveFile("web.config", nitro.options.rootDir, ["config"]);
   const originalString = `<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
@@ -41,8 +35,9 @@ function iisXmlTemplate(nitro: Nitro) {
   if (path !== undefined) {
     const fileString = readFile(path);
     const originalWebConfig: Record<string, unknown> =
-      parseXmlDoc(originalString);
-    const fileWebConfig: Record<string, unknown> = parseXmlDoc(fileString);
+      await parseXmlDoc(originalString);
+    const fileWebConfig: Record<string, unknown> =
+      await parseXmlDoc(fileString);
 
     if (nitro.options.iis.mergeConfig && !nitro.options.iis.overrideConfig) {
       return buildNewXmlDoc({ ...originalWebConfig, ...fileWebConfig });
@@ -51,4 +46,27 @@ function iisXmlTemplate(nitro: Nitro) {
     }
   }
   return originalString;
+}
+
+//  XML Helpers
+async function parseXmlDoc(xml: string): Promise<Record<string, unknown>> {
+  const { Parser } = await import("xml2js");
+
+  if (xml === undefined || !xml) {
+    return {};
+  }
+  const parser = new Parser();
+  let parsedRecord: Record<string, unknown>;
+  parser.parseString(xml, function (_, r) {
+    parsedRecord = r;
+  });
+  return parsedRecord;
+}
+
+async function buildNewXmlDoc(
+  xmlObj: Record<string, unknown>
+): Promise<string> {
+  const { Builder } = await import("xml2js");
+  const builder = new Builder();
+  return builder.buildObject({ ...xmlObj });
 }
