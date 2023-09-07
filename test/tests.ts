@@ -557,12 +557,6 @@ export function testNitro(
           "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
       }
 
-      // Aws lambda v1
-      if (ctx.preset === "aws-lambda" && ctx.lambdaV1) {
-        expectedCookies =
-          "foo=bar, bar=baz,test=value; Path=/,test2=value; Path=/";
-      }
-
       expect(headers["set-cookie"]).toMatchObject(expectedCookies);
     });
   });
