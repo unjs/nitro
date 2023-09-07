@@ -43,10 +43,6 @@ export function tryImport(dir: string, path: string) {
   } catch {}
 }
 
-export function readFile(path: string) {
-  return readFileSync(path).toString();
-}
-
 export async function writeFile(
   file: string,
   contents: Buffer | string,

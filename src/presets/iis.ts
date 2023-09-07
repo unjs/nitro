@@ -1,5 +1,6 @@
+import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
-import { readFile, resolveFile, writeFile } from "../utils";
+import { resolveFile, writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 
@@ -76,7 +77,7 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
 </configuration>
 `;
   if (path !== undefined) {
-    const fileString = readFile(path);
+    const fileString = await readFile(path, "utf8");
     const originalWebConfig: Record<string, unknown> =
       await parseXmlDoc(originalString);
     const fileWebConfig: Record<string, unknown> =
@@ -109,7 +110,7 @@ async function iisXmlTemplate(nitro: Nitro) {
 </configuration>
 `;
   if (path !== undefined) {
-    const fileString = readFile(path);
+    const fileString = await readFile(path, "utf8");
     const originalWebConfig: Record<string, unknown> =
       await parseXmlDoc(originalString);
     const fileWebConfig: Record<string, unknown> =
