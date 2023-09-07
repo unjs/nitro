@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.6.3
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.6.2...v2.6.3)
+
+### 🩹 Fixes
+
+- **firebase:** Apply region for gen2 deployments ([#1657](https://github.com/unjs/nitro/pull/1657))
+- **cloudflare-pages:** Autodetect static preset ([#1659](https://github.com/unjs/nitro/pull/1659))
+- Resolve output dirs relative to `rootDir` ([#1666](https://github.com/unjs/nitro/pull/1666))
+- **prerender:** Allow disabling html sub-folders ([#1676](https://github.com/unjs/nitro/pull/1676))
+- **firebase:** Use correct key when importing firebase `httpsOptions` ([#1663](https://github.com/unjs/nitro/pull/1663))
+- Await on `send()` calls ([#1701](https://github.com/unjs/nitro/pull/1701))
+- Bun dev compatibility ([#1702](https://github.com/unjs/nitro/pull/1702))
+- **aws-lambda,netlify-lambda:** Binary body v2 and cookies v1 ([#1683](https://github.com/unjs/nitro/pull/1683))
+- **iis:** Merge `web.config` ([#1658](https://github.com/unjs/nitro/pull/1658))
+
+### 📖 Documentation
+
+- **render-com:** Add note about node version ([#1693](https://github.com/unjs/nitro/pull/1693))
+- Add instructions for using nuxt edge release channel ([#1688](https://github.com/unjs/nitro/pull/1688))
+- Add instructions for bun ([#1672](https://github.com/unjs/nitro/pull/1672))
+
+### 🏡 Chore
+
+- **release:** V2.6.2 ([9d0a383c](https://github.com/unjs/nitro/commit/9d0a383c))
+- Tiny internal typo ([#1668](https://github.com/unjs/nitro/pull/1668))
+- Fix code comments ([#1673](https://github.com/unjs/nitro/pull/1673))
+- Update dependencies ([3134ba6d](https://github.com/unjs/nitro/commit/3134ba6d))
+
+### ✅ Tests
+
+- Update test for bun headers ([#1684](https://github.com/unjs/nitro/pull/1684))
+
+### ❤️ Contributors
+
+- Gavin Hardaker ([@Hardaker587](http://github.com/Hardaker587))
+- Heb ([@Hebilicious](http://github.com/Hebilicious))
+- Colin McDonnell ([@colinhacks](http://github.com/colinhacks))
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Luke Nelson <luke@nelson.zone>
+- Rajeev R Sharma <i.rarsh@gmail.com>
+- Markthree ([@markthree](http://github.com/markthree))
+- Daniel Roe <daniel@roe.dev>
+- Yuichi Takebe
+
 ## v2.6.2
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.6.1...v2.6.2)
