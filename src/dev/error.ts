@@ -23,7 +23,7 @@ function errorHandler(error: any, event: H3Event) {
       "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
   }
 
-  send(
+  return send(
     event,
     `<!DOCTYPE html>
   <html lang="en">

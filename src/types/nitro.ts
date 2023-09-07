@@ -330,6 +330,12 @@ export interface NitroOptions extends PresetOptions {
     preview: string;
     deploy: string;
   };
+
+  // IIS
+  iis?: {
+    mergeConfig?: boolean;
+    overrideConfig?: boolean;
+  };
 }
 
 declare global {
