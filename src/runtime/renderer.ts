@@ -25,11 +25,10 @@ export function defineRenderHandler(handler: RenderHandler) {
     // TODO: Use serve-placeholder
     if (event.path.endsWith("/favicon.ico")) {
       setResponseHeader(event, "Content-Type", "image/x-icon");
-      send(
+      return send(
         event,
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
       );
-      return;
     }
 
     const response = await handler(event);

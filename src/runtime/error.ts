@@ -46,10 +46,10 @@ export default <NitroErrorHandler>function (error, event) {
 
   if (isJsonRequest(event)) {
     setResponseHeader(event, "Content-Type", "application/json");
-    send(event, JSON.stringify(errorObject));
+    return send(event, JSON.stringify(errorObject));
   } else {
     setResponseHeader(event, "Content-Type", "text/html");
-    send(event, renderHTMLError(errorObject));
+    return send(event, renderHTMLError(errorObject));
   }
 };
 
