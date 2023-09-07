@@ -147,7 +147,16 @@
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
     "undici": "^5.23.0",
-    "vitest": "^0.34.3"
+    "vitest": "^0.34.3",
+    "xml2js": "^0.6.2"
+  },
+  "peerDependencies": {
+    "xml2js": "^0.6.2"
+  },
+  "peerDependenciesMeta": {
+    "xml2js": {
+      "optional": true
+    }
   },
   "packageManager": "pnpm@8.7.0",
   "engines": {
