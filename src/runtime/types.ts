@@ -1,4 +1,4 @@
-import type { H3Event } from "h3";
+import type { H3Event, AppOptions } from "h3";
 import type { RenderResponse } from "./renderer";
 
 export type { NitroApp } from "./app";
@@ -11,10 +11,26 @@ export type {
 export type { NitroAppPlugin } from "./plugin";
 export type { RenderResponse, RenderHandler } from "./renderer";
 
+export type CapturedErrorContext = {
+  event?: H3Event;
+  [key: string]: unknown;
+};
+
+export type CaptureError = (
+  error: Error,
+  context: CapturedErrorContext
+) => void;
+
 export interface NitroRuntimeHooks {
+  close: () => void;
+  error: CaptureError;
+
+  request: AppOptions["onRequest"];
+  beforeResponse: AppOptions["onBeforeResponse"];
+  afterResponse: AppOptions["onAfterResponse"];
+
   "render:response": (
     response: Partial<RenderResponse>,
     context: { event: H3Event }
   ) => void;
-  close: () => void;
 }

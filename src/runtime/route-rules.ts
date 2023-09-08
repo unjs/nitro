@@ -16,7 +16,9 @@ const _routeRulesMatcher = toRouteMatcher(
   createRadixRouter({ routes: config.nitro.routeRules })
 );
 
-export function createRouteRulesHandler() {
+export function createRouteRulesHandler(ctx: {
+  localFetch: typeof globalThis.fetch;
+}) {
   return eventHandler((event) => {
     // Match route options against path
     const routeRules = getRouteRules(event);
@@ -47,7 +49,7 @@ export function createRouteRulesHandler() {
         target = withQuery(target, query);
       }
       return proxyRequest(event, target, {
-        fetch: $fetch.raw as any,
+        fetch: ctx.localFetch,
         ...routeRules.proxy,
       });
     }
@@ -57,9 +59,8 @@ export function createRouteRulesHandler() {
 export function getRouteRules(event: H3Event): NitroRouteRules {
   event.context._nitro = event.context._nitro || {};
   if (!event.context._nitro.routeRules) {
-    const path = new URL(event.node.req.url, "http://localhost").pathname;
     event.context._nitro.routeRules = getRouteRulesForPath(
-      withoutBase(path, useRuntimeConfig().app.baseURL)
+      withoutBase(event.path.split("?")[0], useRuntimeConfig().app.baseURL)
     );
   }
   return event.context._nitro.routeRules;

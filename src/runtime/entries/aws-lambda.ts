@@ -1,6 +1,5 @@
 import type {
   APIGatewayProxyEvent,
-  APIGatewayProxyEventHeaders,
   APIGatewayProxyEventV2,
   APIGatewayProxyResult,
   APIGatewayProxyResultV2,
@@ -9,6 +8,12 @@ import type {
 import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
+import {
+  normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingBody,
+  normalizeLambdaOutgoingHeaders,
+} from "../utils.lambda";
+import { normalizeCookieHeader } from "../utils";
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -44,51 +49,25 @@ export async function handler(
     event,
     url,
     context,
-    headers: normalizeIncomingHeaders(event.headers),
+    headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
-  if ("cookies" in event || "rawPath" in event) {
-    const outgoingCookies = r.headers["set-cookie"];
-    const cookies = Array.isArray(outgoingCookies)
-      ? outgoingCookies
-      : outgoingCookies?.split(",") || [];
-
-    return {
-      cookies,
-      statusCode: r.status,
-      headers: normalizeOutgoingHeaders(r.headers, true),
-      body: r.body.toString(),
-    };
-  }
-
+  // ApiGateway v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
+  const isApiGwV2 = "cookies" in event || "rawPath" in event;
+  const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
+  const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
   return {
+    ...(cookies.length > 0 && {
+      ...(isApiGwV2
+        ? { cookies }
+        : { multiValueHeaders: { "set-cookie": cookies } }),
+    }),
     statusCode: r.status,
-    headers: normalizeOutgoingHeaders(r.headers),
-    body: r.body.toString(),
+    headers: normalizeLambdaOutgoingHeaders(r.headers, true),
+    body: awsBody.body,
+    isBase64Encoded: awsBody.type === "binary",
   };
-}
-
-function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(
-    Object.entries(headers || {}).map(([key, value]) => [
-      key.toLowerCase(),
-      value!,
-    ])
-  );
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>,
-  stripCookies = false
-) {
-  const entries = stripCookies
-    ? Object.entries(headers).filter(([key]) => !["set-cookie"].includes(key))
-    : Object.entries(headers);
-
-  return Object.fromEntries(
-    entries.map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : v!])
-  );
 }

@@ -5,7 +5,10 @@ import { withoutLeadingSlash } from "ufo";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import type { VercelBuildConfigV3 } from "../types/presets";
+import type {
+  VercelBuildConfigV3,
+  VercelServerlessFunctionConfig,
+} from "../types/presets";
 
 // https://vercel.com/docs/build-output-api/v3
 
@@ -32,19 +35,17 @@ export const vercel = defineNitroPreset({
 
       const systemNodeVersion = process.versions.node.split(".")[0];
       const runtimeVersion = `nodejs${systemNodeVersion}.x`;
-      const customMemory = nitro.options.vercel?.functions?.memory;
-      const customMaxDuration = nitro.options.vercel?.functions?.maxDuration;
       const functionConfigPath = resolve(
         nitro.options.output.serverDir,
         ".vc-config.json"
       );
-      const functionConfig = {
+      const functionConfig: VercelServerlessFunctionConfig = {
         runtime: runtimeVersion,
         handler: "index.mjs",
         launcherType: "Nodejs",
         shouldAddHelpers: false,
-        memory: customMemory,
-        maxDuration: customMaxDuration,
+        supportsResponseStreaming: true,
+        ...nitro.options.vercel?.functions,
       };
       await writeFile(
         functionConfigPath,
@@ -81,6 +82,7 @@ export const vercel = defineNitroPreset({
 export const vercelEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/vercel-edge",
+  exportConditions: ["edge-light"],
   output: {
     dir: "{{ rootDir }}/.vercel/output",
     serverDir: "{{ output.dir }}/functions/__nitro.func",
@@ -276,11 +278,12 @@ function deprecateSWR(nitro: Nitro) {
     }
     if (_hasProp(value, "static")) {
       value.isr = !(value as { static: boolean }).static;
+      hasLegacyOptions = true;
     }
     if (value.cache && _hasProp(value.cache, "swr")) {
       value.isr = value.cache.swr;
+      hasLegacyOptions = true;
     }
-    hasLegacyOptions = hasLegacyOptions || _hasProp(value, "isr");
   }
   if (hasLegacyOptions) {
     console.warn(

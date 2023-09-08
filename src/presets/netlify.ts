@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import { name, version } from "../../package.json";
+import nitroPkg from "../../package.json";
 
 // Netlify functions
 export const netlify = defineNitroPreset({
@@ -53,6 +53,7 @@ export const netlifyBuilder = defineNitroPreset({
 export const netlifyEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/netlify-edge",
+  exportConditions: ["netlify"],
   output: {
     serverDir: "{{ rootDir }}/.netlify/edge-functions/server",
     publicDir: "{{ rootDir }}/dist",
@@ -79,7 +80,7 @@ export const netlifyEdge = defineNitroPreset({
             path: "/*",
             name: "nitro server handler",
             function: "server",
-            generator: `${name}@${version}`,
+            generator: `${nitroPkg.name}@${nitroPkg.version}`,
           },
         ],
       };
@@ -220,11 +221,12 @@ function deprecateSWR(nitro: Nitro) {
     }
     if (_hasProp(value, "static")) {
       value.isr = !(value as { static: boolean }).static;
+      hasLegacyOptions = true;
     }
     if (value && value.cache && _hasProp(value.cache, "swr")) {
       value.isr = value.cache.swr;
+      hasLegacyOptions = true;
     }
-    hasLegacyOptions = hasLegacyOptions || _hasProp(value, "isr");
   }
   if (hasLegacyOptions) {
     console.warn(

@@ -2,28 +2,45 @@ import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
 import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
 import type { PackageJson } from "pkg-types";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
 import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
-import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
+import {
+  resolvePath,
+  isValidNodeImport,
+  lookupNodeModuleSubpath,
+  normalizeid,
+  parseNodeModulePath,
+} from "mlly";
 import semver from "semver";
 import { isDirectory } from "../../utils";
 
 export interface NodeExternalsOptions {
-  inline?: string[];
-  external?: string[];
+  inline?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
+  external?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
+  rootDir?: string;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
   moduleDirectories?: string[];
   exportConditions?: string[];
   traceInclude?: string[];
+  traceAlias?: Record<string, string>;
 }
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
 
   const _resolveCache = new Map();
-  const _resolve = async (id: string) => {
+  const _resolve = async (id: string): Promise<string> => {
     let resolved = _resolveCache.get(id);
     if (resolved) {
       return resolved;
@@ -37,8 +54,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  opts.inline = (opts.inline || []).map((p) => normalize(p));
-  opts.external = (opts.external || []).map((p) => normalize(p));
+  const inlineMatchers = (opts.inline || [])
+    .map((p) => normalizeMatcher(p))
+    .sort((a, b) => b.score - a.score);
+  const externalMatchers = (opts.external || [])
+    .map((p) => normalizeMatcher(p))
+    .sort((a, b) => b.score - a.score);
 
   return {
     name: "node-externals",
@@ -61,25 +82,15 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Normalize path (windows)
       const id = normalize(originalId);
 
-      // Id without .../node_modules/
-      const idWithoutNodeModules = id.split("node_modules/").pop();
-
-      // Check for explicit inlines
+      // Check for explicit inlines and externals
+      const inlineMatch = inlineMatchers.find((m) => m(id, importer));
+      const externalMatch = externalMatchers.find((m) => m(id, importer));
       if (
-        opts.inline.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
+        inlineMatch &&
+        (!externalMatch ||
+          (externalMatch && inlineMatch.score > externalMatch.score))
       ) {
         return null;
-      }
-
-      // Check for explicit externals
-      if (
-        opts.external.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
-      ) {
-        return { id, external: true };
       }
 
       // Resolve id using rollup resolver
@@ -114,7 +125,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // -- Trace externals --
 
       // Try to extract package name from path
-      const { pkgName, subpath } = parseNodeModulePath(resolved.id);
+      const { name: pkgName } = parseNodeModulePath(resolved.id);
 
       // Inline if cannot detect package name
       if (!pkgName) {
@@ -138,15 +149,17 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Guess as main subpath export
         const packageEntry = await _resolve(pkgName).catch(() => null);
         if (packageEntry !== originalId) {
-          // Guess subpathexport
-          const guessedSubpath = pkgName + subpath.replace(/\.[a-z]+$/, "");
-          const resolvedGuess = await _resolve(guessedSubpath).catch(
-            () => null
-          );
+          // Reverse engineer subpath export
+          const guessedSubpath: string | null = await lookupNodeModuleSubpath(
+            originalId
+          ).catch(() => null);
+          const resolvedGuess =
+            guessedSubpath &&
+            (await _resolve(join(pkgName, guessedSubpath)).catch(() => null));
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
             return {
-              id: guessedSubpath,
+              id: join(pkgName, guessedSubpath),
               external: true,
             };
           }
@@ -175,23 +188,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Trace used files using nft
-      const _fileTrace = await nodeFileTrace(
-        [...trackedExternals],
-        opts.traceOptions
-      );
-
-      // Read package.json with cache
-      const packageJSONCache = new Map(); // pkgDir => contents
-      const getPackageJson = async (pkgDir: string) => {
-        if (packageJSONCache.has(pkgDir)) {
-          return packageJSONCache.get(pkgDir) as PackageJson;
-        }
-        const pkgJSON = JSON.parse(
-          await fsp.readFile(resolve(pkgDir, "package.json"), "utf8")
-        );
-        packageJSONCache.set(pkgDir, pkgJSON);
-        return pkgJSON as PackageJson;
-      };
+      const _fileTrace = await nodeFileTrace([...trackedExternals], {
+        // https://github.com/unjs/nitro/pull/1562
+        conditions: opts.exportConditions.filter(
+          (c) => !["require", "import", "default"].includes(c)
+        ),
+        ...opts.traceOptions,
+      });
 
       // Resolve traced files
       type TracedFile = {
@@ -218,7 +221,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             if (!(await isFile(path))) {
               return;
             }
-            const { baseDir, pkgName, subpath } = parseNodeModulePath(path);
+            const {
+              dir: baseDir,
+              name: pkgName,
+              subpath,
+            } = parseNodeModulePath(path);
             const pkgPath = join(baseDir, pkgName);
             const parents = await Promise.all(
               [...reasons.parents].map((p) => _resolveTracedPath(p))
@@ -255,7 +262,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         let tracedPackage = tracedPackages[pkgName];
 
         // Read package.json for file
-        let pkgJSON = await getPackageJson(tracedFile.pkgPath).catch(
+        let pkgJSON = await readPackageJSON(tracedFile.pkgPath, {
+          cache: true,
+        }).catch(
           () => {} // TODO: Only catch ENOENT
         );
         if (!pkgJSON) {
@@ -282,23 +291,21 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         tracedFile.pkgVersion = pkgJSON.version;
       }
 
+      const usedAliases: Record<string, string> = {};
+
       const writePackage = async (
         name: string,
         version: string,
-        outputName?: string
+        _pkgPath?: string
       ) => {
         // Find pkg
         const pkg = tracedPackages[name];
+        const pkgPath = _pkgPath || pkg.name;
 
         // Copy files
         for (const src of pkg.versions[version].files) {
           const { subpath } = parseNodeModulePath(src);
-          const dst = join(
-            opts.outDir,
-            "node_modules",
-            outputName || pkg.name,
-            subpath
-          );
+          const dst = join(opts.outDir, "node_modules", pkgPath, subpath);
           await fsp.mkdir(dirname(dst), { recursive: true });
           await fsp.copyFile(src, dst);
         }
@@ -309,7 +316,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const pkgJSONPath = join(
           opts.outDir,
           "node_modules",
-          outputName || pkg.name,
+          pkgPath,
           "package.json"
         );
         await fsp.mkdir(dirname(pkgJSONPath), { recursive: true });
@@ -318,6 +325,12 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           JSON.stringify(pkgJSON, null, 2),
           "utf8"
         );
+
+        // Link aliases
+        if (opts.traceAlias && pkgPath in opts.traceAlias) {
+          usedAliases[opts.traceAlias[pkgPath]] = version;
+          await linkPackage(pkgPath, opts.traceAlias[pkgPath]);
+        }
       };
 
       const isWindows = platform() === "win32";
@@ -431,26 +444,25 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Write an informative package.json
-      const bundledDependencies = Object.fromEntries(
-        Object.values(tracedPackages)
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((pkg) => [pkg.name, Object.keys(pkg.versions).join(" || ")])
-      );
+      const userPkg = await readPackageJSON(
+        opts.rootDir || process.cwd()
+      ).catch(() => ({}) as PackageJson);
 
-      await fsp.writeFile(
-        resolve(opts.outDir, "package.json"),
-        JSON.stringify(
-          {
-            name: "nitro-output",
-            version: "0.0.0",
-            private: true,
-            bundledDependencies,
-          },
-          null,
-          2
+      await writePackageJSON(resolve(opts.outDir, "package.json"), {
+        name: (userPkg.name || "server") + "-prod",
+        version: userPkg.version || "0.0.0",
+        type: "module",
+        private: true,
+        dependencies: Object.fromEntries(
+          [
+            ...Object.values(tracedPackages).map((pkg) => [
+              pkg.name,
+              Object.keys(pkg.versions)[0],
+            ]),
+            ...Object.entries(usedAliases),
+          ].sort(([a], [b]) => a[0].localeCompare(b[0]))
         ),
-        "utf8"
-      );
+      });
     },
   };
 }
@@ -461,24 +473,6 @@ function compareVersions(v1 = "0.0.0", v2 = "0.0.0") {
   } catch {
     return v1.localeCompare(v2);
   }
-}
-
-function parseNodeModulePath(path: string) {
-  if (!path) {
-    return {};
-  }
-  const match = /^(.+\/node_modules\/)([^/@]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(
-    normalize(path)
-  );
-  if (!match) {
-    return {};
-  }
-  const [, baseDir, pkgName, subpath] = match;
-  return {
-    baseDir,
-    pkgName,
-    subpath,
-  };
 }
 
 export function applyProductionCondition(exports: PackageJson["exports"]) {
@@ -507,4 +501,43 @@ async function isFile(file: string) {
     }
     throw err;
   }
+}
+
+type Matcher = ((
+  id: string,
+  importer?: string
+) => Promise<boolean> | boolean) & { score?: number };
+
+export function normalizeMatcher(input: string | RegExp | Matcher): Matcher {
+  if (typeof input === "function") {
+    input.score = input.score ?? 10_000;
+    return input;
+  }
+
+  if (input instanceof RegExp) {
+    const matcher = ((id: string) => input.test(id)) as Matcher;
+    matcher.score = input.toString().length;
+    Object.defineProperty(matcher, "name", { value: `match(${input})` });
+    return matcher;
+  }
+
+  if (typeof input === "string") {
+    const pattern = normalize(input);
+    const matcher = ((id: string) => {
+      const idWithoutNodeModules = id.split("node_modules/").pop();
+      return id.startsWith(pattern) || idWithoutNodeModules.startsWith(pattern);
+    }) as Matcher;
+    matcher.score = input.length;
+
+    // Increase score for npm package names to avoid breaking changes
+    // TODO: Remove in next major version
+    if (!isAbsolute(input) && input[0] !== ".") {
+      matcher.score += 1000;
+    }
+
+    Object.defineProperty(matcher, "name", { value: `match(${pattern})` });
+    return matcher;
+  }
+
+  throw new Error(`Invalid matcher or pattern: ${input}`);
 }

@@ -34,26 +34,21 @@ async function handleEvent(event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer());
   }
 
-  const r = await nitroApp.localCall({
-    event,
+  return nitroApp.localFetch(url.pathname + url.search, {
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
       cf: (event.request as any).cf,
+      waitUntil: (promise) => event.waitUntil(promise),
+      cloudflare: {
+        event,
+      },
     },
-    url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
-    headers: Object.fromEntries(event.request.headers.entries()),
+    headers: event.request.headers,
     method: event.request.method,
     redirect: event.request.redirect,
     body,
-  });
-
-  return new Response(r.body, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
   });
 }
 
@@ -73,12 +68,3 @@ const baseURLModifier = (request: Request) => {
   const url = withoutBase(request.url, useRuntimeConfig().app.baseURL);
   return mapRequestToAsset(new Request(url, request));
 };
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
-}

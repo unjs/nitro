@@ -10,6 +10,8 @@ describe("nitro:preset:cloudflare", async () => {
   testNitro(ctx, () => {
     const mf = new Miniflare({
       scriptPath: resolve(ctx.outDir, "server/index.mjs"),
+      globals: { ...ctx.env },
+      compatibilityFlags: ["streams_enable_constructors"],
     });
     return async ({ url, headers, method, body }) => {
       const res = await mf.dispatchFetch("http://localhost" + url, {

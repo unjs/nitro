@@ -6,16 +6,8 @@ export default defineBuildConfig({
   entries: [
     "src/index",
     "src/config",
-    "src/cli/cli",
+    "src/cli/index",
     { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
   ],
-  dependencies: [
-    "@cloudflare/kv-asset-handler",
-    "@netlify/functions",
-    "@nuxt/devalue",
-    "destr",
-    "ofetch",
-    "ora",
-  ],
-  externals: ["@nuxt/schema"],
+  externals: ["@nuxt/schema", "firebase-functions"],
 });

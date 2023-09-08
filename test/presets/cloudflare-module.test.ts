@@ -12,6 +12,11 @@ describe("nitro:preset:cloudflare-module", async () => {
       modules: true,
       scriptPath: resolve(ctx.outDir, "server/index.mjs"),
       sitePath: resolve(ctx.outDir, "public"),
+      compatibilityFlags: ["streams_enable_constructors"],
+      globals: { __env__: {} },
+      bindings: {
+        ...ctx.env,
+      },
     });
 
     return async ({ url, headers, method, body }) => {

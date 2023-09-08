@@ -1,14 +1,19 @@
 import "#internal/nitro/virtual/polyfill";
 import type {
-  Handler,
   HandlerResponse,
   HandlerContext,
   HandlerEvent,
-} from "@netlify/functions/dist/main";
-import type { APIGatewayProxyEventHeaders } from "aws-lambda";
+} from "@netlify/functions";
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
+import {
+  normalizeLambdaIncomingHeaders,
+  normalizeLambdaOutgoingBody,
+  normalizeLambdaOutgoingHeaders,
+} from "../utils.lambda";
+import { normalizeCookieHeader } from "../utils";
 
+// Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
 export async function lambda(
   event: HandlerEvent,
   context: HandlerContext
@@ -24,35 +29,22 @@ export async function lambda(
     event,
     url,
     context,
-    headers: normalizeIncomingHeaders(event.headers),
+    headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
     body: event.body, // TODO: handle event.isBase64Encoded
   });
 
+  const cookies = normalizeCookieHeader(String(r.headers["set-cookie"]));
+  const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
+
   return {
     statusCode: r.status,
-    headers: normalizeOutgoingHeaders(r.headers),
-    body: r.body.toString(),
+    headers: normalizeLambdaOutgoingHeaders(r.headers, true),
+    body: awsBody.body,
+    isBase64Encoded: awsBody.type === "binary",
+    ...(cookies.length > 0 && {
+      multiValueHeaders: { "set-cookie": cookies },
+    }),
   };
-}
-
-function normalizeIncomingHeaders(headers?: APIGatewayProxyEventHeaders) {
-  return Object.fromEntries(
-    Object.entries(headers || {}).map(([key, value]) => [
-      key.toLowerCase(),
-      value!,
-    ])
-  );
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.fromEntries(
-    Object.entries(headers).map(([k, v]) => [
-      k,
-      Array.isArray(v) ? v.join(",") : v!,
-    ])
-  );
 }

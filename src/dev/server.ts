@@ -10,7 +10,7 @@ import {
   H3Event,
   toNodeListener,
 } from "h3";
-import httpProxy, { ServerOptions as HTTPProxyOptions } from "http-proxy";
+import { createProxyServer, ProxyServerOptions } from "httpxy";
 import { listen, Listener, ListenOptions } from "listhen";
 import { servePlaceholder } from "serve-placeholder";
 import serveStatic from "serve-static";
@@ -254,22 +254,16 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   };
 }
 
-function createProxy(defaults: HTTPProxyOptions = {}) {
-  const proxy = httpProxy.createProxy();
-  const handle = (event: H3Event, opts: HTTPProxyOptions = {}) => {
-    return new Promise<void>((resolve, reject) => {
-      proxy.web(
-        event.node.req,
-        event.node.res,
-        { ...defaults, ...opts },
-        (error: any) => {
-          if (error.code !== "ECONNRESET") {
-            reject(error);
-          }
-          resolve();
-        }
-      );
-    });
+function createProxy(defaults: ProxyServerOptions = {}) {
+  const proxy = createProxyServer(defaults);
+  const handle = async (event: H3Event, opts: ProxyServerOptions = {}) => {
+    try {
+      await proxy.web(event.node.req, event.node.res, opts);
+    } catch (error) {
+      if (error.code !== "ECONNRESET") {
+        throw error;
+      }
+    }
   };
   return {
     proxy,

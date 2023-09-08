@@ -97,7 +97,7 @@ const _assets = {\n${Object.entries(assets)
     )
     .join(",\n")}\n}
 
-${normalizeKey.toString()}
+const normalizeKey = ${normalizeKey.toString()}
 
 export const assets = {
   getKeys() {

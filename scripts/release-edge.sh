@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Temporary forked from nuxt/framework
+# Temporary forked from nuxt/nuxt
 
 set -xe
 
@@ -14,7 +14,7 @@ pnpm changelogen --bump
 pnpm jiti ./scripts/bump-edge
 
 # Resolve lockfile
-pnpm install
+# pnpm install
 
 # Update token
 if [[ ! -z ${NODE_AUTH_TOKEN} ]] ; then
