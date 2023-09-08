@@ -91,7 +91,7 @@ async function updatePackageJSON(nitro: Nitro) {
         ...packageJSON.dependencies,
       })
         .filter((e) => e[0] !== "fsevents")
-        .sort(([a], [b]) => a[0].localeCompare(b[0]))
+        .sort(([a], [b]) => a.localeCompare(b))
     ),
     engines: {
       // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
