@@ -460,7 +460,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
               Object.keys(pkg.versions)[0],
             ]),
             ...Object.entries(usedAliases),
-          ].sort(([a], [b]) => a[0].localeCompare(b[0]))
+          ].sort(([a], [b]) => a.localeCompare(b))
         ),
       });
     },
