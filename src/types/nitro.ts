@@ -10,7 +10,7 @@ import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
-import type { ProxyOptions } from "h3";
+import type { ProxyOptions, RouterMethod } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { TSConfig } from "pkg-types";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
@@ -78,7 +78,13 @@ export interface PrerenderRoute {
 export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
+
+export type RouteType = Record<
+  string,
+  Partial<Record<RouterMethod | "default", string[]>>
+>;
 export interface NitroHooks {
+  "types:extend": ({ routeTypes }: { routeTypes: RouteType }) => HookResult;
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
