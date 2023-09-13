@@ -3,14 +3,10 @@ import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
-import {
-  resolveModuleExportNames,
-  resolvePath as resolveModule,
-  parseNodeModulePath,
-} from "mlly";
+import { resolveModuleExportNames } from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
-import { isTest, isDebug, nodeMajorVersion } from "std-env";
+import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
 import consola from "consola";
 import {
@@ -382,7 +378,7 @@ export async function loadOptions(
   // Native fetch
   if (options.experimental.nodeFetchCompat === undefined) {
     options.experimental.nodeFetchCompat = nodeMajorVersion < 18;
-    if (options.experimental.nodeFetchCompat) {
+    if (options.experimental.nodeFetchCompat && provider !== "stackblitz") {
       consola.warn(
         "Node fetch compatibility is enabled. Please consider upgrading to Node.js >= 18."
       );
