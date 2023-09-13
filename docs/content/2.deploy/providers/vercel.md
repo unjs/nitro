@@ -128,7 +128,7 @@ To revalidate a page on demand:
       nitro: {
         vercel: {
           config: { 
-            bypassToken: process.env.BYPASS_TOKEN
+            bypassToken: process.env.VERCEL_BYPASS_TOKEN
           }
         }
       }
