@@ -106,7 +106,7 @@ You can provide additional [build output configuration](https://vercel.com/docs/
 
 On-demand revalidation allows you to purge the cache for an ISR route whenever you want, foregoing the time interval required with background revalidation.
 
-To revalidate a page on demand with Next.js:
+To revalidate a page on demand:
 
 1. Create an Environment Variable which will store a revalidation secret
     * You can use the command `openssl rand -base64 32` or https://generate-secret.vercel.app/32 to generate a random value.
@@ -118,7 +118,7 @@ To revalidate a page on demand with Next.js:
     export default defineNitroConfig({
       vercel: {
         config: { 
-          bypassToken: process.env.BYPASS_TOKEN
+          bypassToken: process.env.VERCEL_BYPASS_TOKEN
         }
       }
     })
