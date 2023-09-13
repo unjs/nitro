@@ -10,8 +10,9 @@ import {
 } from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
-import { isTest, isDebug } from "std-env";
+import { isTest, isDebug, nodeMajorVersion } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
+import consola from "consola";
 import {
   resolvePath,
   resolveFile,
@@ -376,6 +377,23 @@ export async function loadOptions(
       route: "/_nitro/swagger",
       handler: "#internal/nitro/routes/swagger",
     });
+  }
+
+  // Native fetch
+  if (options.experimental.nodeFetchCompat === undefined) {
+    options.experimental.nodeFetchCompat = nodeMajorVersion < 18;
+    if (options.experimental.nodeFetchCompat) {
+      consola.warn(
+        "Node fetch compatibility is enabled. Please consider upgrading to Node.js >= 18."
+      );
+    }
+  }
+  if (!options.experimental.nodeFetchCompat) {
+    options.alias = {
+      "node-fetch-native/polyfill": "unenv/runtime/mock/empty",
+      "node-fetch-native": "node-fetch-native/native",
+      ...options.alias,
+    };
   }
 
   return options;
