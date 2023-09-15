@@ -53,7 +53,13 @@ export async function copyPublicAssets(nitro: Nitro) {
         cwd: srcDir,
         absolute: false,
         dot: true,
-        ignore: nitro.options.ignore,
+        ignore: nitro.options.ignore
+          .map((p) =>
+            p.startsWith("*") || p.startsWith("!*")
+              ? p
+              : relative(srcDir, resolve(nitro.options.srcDir, p))
+          )
+          .filter((p) => !p.startsWith("../")),
       });
       await Promise.all(
         publicAssets.map(async (file) => {
@@ -501,7 +507,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
   ]);
 
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);
-  const reloadWacher = watch(watchPatterns, { ignoreInitial: true }).on(
+  const reloadWatcher = watch(watchPatterns, { ignoreInitial: true }).on(
     "all",
     (event) => {
       if (watchReloadEvents.has(event)) {
@@ -512,7 +518,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
 
   nitro.hooks.hook("close", () => {
     rollupWatcher.close();
-    reloadWacher.close();
+    reloadWatcher.close();
   });
 
   nitro.hooks.hook("rollup:reload", () => reload());

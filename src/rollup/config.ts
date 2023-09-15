@@ -19,7 +19,7 @@ import { hash } from "ohash";
 import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
-import { version } from "../../package.json";
+import nitroPkg from "../../package.json";
 import { nitroRuntimeDependencies } from "../deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
@@ -177,8 +177,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     nitro: true,
     // @ts-expect-error
-    "versions.nitro": version,
-    "versions?.nitro": version,
+    "versions.nitro": nitroPkg.version,
+    "versions?.nitro": nitroPkg.version,
     // Internal
     _asyncContext: nitro.options.experimental.asyncContext,
   };

@@ -36,15 +36,15 @@ export async function lambda(
   });
 
   const cookies = normalizeCookieHeader(String(r.headers["set-cookie"]));
+  const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
 
   return {
     statusCode: r.status,
     headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-    body: await normalizeLambdaOutgoingBody(r.body, r.headers).then(
-      (r) => r.body
-    ),
-    multiValueHeaders: {
-      ...(cookies.length > 0 ? { "set-cookie": cookies } : {}),
-    },
+    body: awsBody.body,
+    isBase64Encoded: awsBody.type === "binary",
+    ...(cookies.length > 0 && {
+      multiValueHeaders: { "set-cookie": cookies },
+    }),
   };
 }

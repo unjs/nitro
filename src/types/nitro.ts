@@ -256,6 +256,10 @@ export interface NitroOptions extends PresetOptions {
      * Disable Experimental Sourcemap Minification
      */
     sourcemapMinify?: false;
+    /**
+     * Backward compatibility support for Node fetch (required for Node < 18)
+     */
+    nodeFetchCompat?: boolean;
   };
   future: {
     nativeSWR: boolean;
@@ -283,6 +287,10 @@ export interface NitroOptions extends PresetOptions {
   errorHandler: string;
   devErrorHandler: NitroErrorHandler;
   prerender: {
+    /**
+     * Prerender HTML routes within subfolders (`/test` would produce `/test/index.html`)
+     */
+    autoSubfolderIndex: boolean;
     concurrency: number;
     interval: number;
     crawlLinks: boolean;
@@ -325,6 +333,12 @@ export interface NitroOptions extends PresetOptions {
   commands: {
     preview: string;
     deploy: string;
+  };
+
+  // IIS
+  iis?: {
+    mergeConfig?: boolean;
+    overrideConfig?: boolean;
   };
 }
 

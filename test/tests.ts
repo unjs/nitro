@@ -542,6 +542,7 @@ export function testNitro(
         "nitro-dev",
         "vercel",
         nodeVersion < 18 && "deno-server",
+        nodeVersion < 18 && "bun",
       ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
@@ -550,22 +551,10 @@ export function testNitro(
             : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
       }
 
-      // TODO: verce-ledge joins all cookies for some reason!
+      // TODO: vercel-edge joins all cookies for some reason!
       if (ctx.preset === "vercel-edge") {
         expectedCookies =
           "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
-      }
-
-      // Aws lambda v1
-      if (ctx.preset === "aws-lambda" && ctx.lambdaV1) {
-        expectedCookies =
-          "foo=bar, bar=baz,test=value; Path=/,test2=value; Path=/";
-      }
-
-      // TODO: Bun does not handles set-cookie at all
-      // https://github.com/unjs/nitro/issues/1461
-      if (["bun"].includes(ctx.preset)) {
-        return;
       }
 
       expect(headers["set-cookie"]).toMatchObject(expectedCookies);
