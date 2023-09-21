@@ -6,6 +6,7 @@ import {
   setResponseHeader,
   setResponseHeaders,
   setResponseStatus,
+  isStream
 } from "h3";
 import { useNitroApp } from "./app";
 
@@ -58,7 +59,7 @@ export function defineRenderHandler(handler: RenderHandler) {
     }
 
     // Send response body
-    return typeof response.body === "string"
+    return typeof response.body === "string" || isStream(response.body)
       ? response.body
       : JSON.stringify(response.body);
   });
