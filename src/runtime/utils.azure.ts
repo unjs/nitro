@@ -12,7 +12,6 @@ export function getAzureParsedCookiesFromHeaders(
   const rawCookies = Array.isArray(raw) ? raw : splitCookiesString(String(raw));
   const cookies = rawCookies.flatMap((cookie) => {
     const entries = Object.entries(parse(cookie));
-    console.log(parse(cookie), cookie);
     if (entries.length > 0) {
       const [entry, ...rest] = entries;
       const options = Object.fromEntries(
