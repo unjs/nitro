@@ -6,7 +6,10 @@ import { gzipSize } from "gzip-size";
 import chalk from "chalk";
 import { isTest } from "std-env";
 
-export async function generateFSTree(dir: string) {
+export async function generateFSTree(
+  dir: string,
+  options: { showGzipSize?: boolean } = {}
+) {
   if (isTest) {
     return;
   }
@@ -19,7 +22,7 @@ export async function generateFSTree(dir: string) {
         const path = resolve(dir, file);
         const src = await fsp.readFile(path);
         const size = src.byteLength;
-        const gzip = await gzipSize(src);
+        const gzip = options.showGzipSize ? await gzipSize(src) : 0;
         return { file, path, size, gzip };
       })
     )
@@ -50,17 +53,23 @@ export async function generateFSTree(dir: string) {
     }
 
     treeText += chalk.gray(
-      `  ${treeChar} ${rpath} (${prettyBytes(item.size)}) (${prettyBytes(
-        item.gzip
-      )} gzip)\n`
+      `  ${treeChar} ${rpath} (${prettyBytes(item.size)})`
     );
+    if (options.showGzipSize) {
+      treeText += chalk.gray(` (${prettyBytes(item.gzip)} gzip)`);
+    }
+    treeText += "\n";
     totalSize += item.size;
     totalGzip += item.gzip;
   }
 
   treeText += `${chalk.cyan("Σ Total size:")} ${prettyBytes(
     totalSize + totalNodeModulesSize
-  )} (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)\n`;
+  )}`;
+  if (options.showGzipSize) {
+    treeText += ` (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)`;
+  }
+  treeText += "\n";
 
   return treeText;
 }

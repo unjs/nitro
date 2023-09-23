@@ -271,6 +271,7 @@ export interface NitroOptions extends PresetOptions {
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
+  showGzipSize: boolean;
   ignore: string[];
 
   // Dev

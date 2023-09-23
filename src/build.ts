@@ -416,7 +416,9 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     nitro.logger.success("Nitro server built");
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
-        await generateFSTree(nitro.options.output.serverDir)
+        await generateFSTree(nitro.options.output.serverDir, {
+          showGzipSize: nitro.options.showGzipSize,
+        })
       );
     }
   }
