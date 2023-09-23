@@ -6,7 +6,7 @@ import {
   setResponseHeader,
   setResponseHeaders,
   setResponseStatus,
-  isStream
+  isStream,
 } from "h3";
 import { useNitroApp } from "./app";
 
