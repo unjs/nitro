@@ -32,7 +32,7 @@ describe("getAzureParsedCookiesFromHeaders", () => {
       {
         name: "foo",
         value: "bar",
-        expires: "Thu, 01 Jan 1970 00:00:00 GMT",
+        expires: new Date("1970-01-01T00:00:00.000Z"),
       },
     ]);
   });
@@ -47,7 +47,7 @@ describe("getAzureParsedCookiesFromHeaders", () => {
       {
         name: "session",
         value: "xyz",
-        expires: "Sun, 24 Mar 2024 09:13:27 GMT",
+        expires: new Date("2024-03-24T09:13:27.000Z"),
         path: "/",
         // TODO: httponly: true,
         samesite: "Strict",

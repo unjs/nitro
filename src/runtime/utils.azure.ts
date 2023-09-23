@@ -1,7 +1,6 @@
 import type { Cookie } from "@azure/functions";
 import { parse } from "cookie-es";
 import { splitCookiesString } from "h3";
-import { satisfies } from "semver";
 
 export function getAzureParsedCookiesFromHeaders(
   headers: Record<string, number | string | string[] | undefined>
@@ -16,17 +15,51 @@ export function getAzureParsedCookiesFromHeaders(
     console.log(parse(cookie), cookie);
     if (entries.length > 0) {
       const [entry, ...rest] = entries;
-      return [
-        {
-          name: entry[0],
-          value: entry[1],
-          ...Object.fromEntries(
-            rest.map(([key, value]) => [key.toLowerCase(), value])
-          ),
-        },
-      ];
+      const options = Object.fromEntries(
+        rest.map(([k, v]) => [k.toLowerCase(), v])
+      );
+      const res = {
+        name: entry[0],
+        value: entry[1],
+        domain: options.domain,
+        path: options.path,
+        expires: parseNumberOrDate(options.expires),
+        // secure: options.secure,
+        // httponly: options.httponly,
+        samesite: options.samesite,
+        maxAge: parseNumber(options.maxAge),
+      } as Cookie;
+      for (const key in res) {
+        if (res[key] === undefined) {
+          delete res[key];
+        }
+      }
+      return [res];
     }
     return [];
   });
   return cookies;
+}
+
+function parseNumberOrDate(expires: string) {
+  const expiresAsNumber = parseNumber(expires);
+  if (expiresAsNumber !== undefined) {
+    return expiresAsNumber;
+  }
+  // Convert to Date if possible
+  const expiresAsDate = new Date(expires);
+  if (!Number.isNaN(expiresAsDate.getTime())) {
+    return expiresAsDate;
+  }
+}
+
+function parseNumber(maxAge: string) {
+  if (!maxAge) {
+    return undefined;
+  }
+  // Convert to number if possible
+  const maxAgeAsNumber = Number(maxAge);
+  if (!Number.isNaN(maxAgeAsNumber)) {
+    return maxAgeAsNumber;
+  }
 }
