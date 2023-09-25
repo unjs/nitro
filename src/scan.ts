@@ -1,6 +1,7 @@
 import { relative, join } from "pathe";
 import { globby } from "globby";
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
+import consola from "consola";
 import type { Nitro } from "./types";
 
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
@@ -16,9 +17,24 @@ type MatchedEnvSuffix = "dev" | "prod" | "prerender";
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
 
+  if (
+    nitro.options.apiPrefix &&
+    nitro.options.apiPrefix === nitro.options.routesPrefix
+  ) {
+    consola.warn("API prefix and routes prefix are the same.");
+  }
+
   const handlers = await Promise.all([
-    scanServerRoutes(nitro, "api", "/api"),
-    scanServerRoutes(nitro, "routes", "/"),
+    scanServerRoutes(
+      nitro,
+      nitro.options.apiDir || "api",
+      nitro.options.apiPrefix || "/api"
+    ),
+    scanServerRoutes(
+      nitro,
+      nitro.options.routesDir || "routes",
+      nitro.options.routesPrefix || "/"
+    ),
   ]).then((r) => r.flat());
 
   nitro.scannedHandlers = [
@@ -48,7 +64,7 @@ export async function scanMiddleware(nitro: Nitro) {
 
 export async function scanServerRoutes(
   nitro: Nitro,
-  dir: "routes" | "api",
+  dir: string,
   prefix = "/"
 ) {
   const files = await scanFiles(nitro, dir);
