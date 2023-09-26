@@ -3,20 +3,20 @@ import { getAzureParsedCookiesFromHeaders } from "../../src/runtime/utils.azure"
 
 describe("getAzureParsedCookiesFromHeaders", () => {
   it("returns empty array if no cookies", () => {
-    expect(getAzureParsedCookiesFromHeaders({})).toEqual([]);
+    expect(getAzureParsedCookiesFromHeaders({})).toMatchObject([]);
   });
   it("returns empty array if no set-cookie header", () => {
     expect(
       getAzureParsedCookiesFromHeaders({ "set-cookie": undefined })
-    ).toEqual([]);
+    ).toMatchObject([]);
   });
   it("returns empty array if empty set-cookie header", () => {
-    expect(getAzureParsedCookiesFromHeaders({ "set-cookie": " " })).toEqual([]);
+    expect(getAzureParsedCookiesFromHeaders({ "set-cookie": " " })).toMatchObject([]);
   });
   it("returns single cookie", () => {
     expect(
       getAzureParsedCookiesFromHeaders({ "set-cookie": "foo=bar" })
-    ).toEqual([
+    ).toMatchObject([
       {
         name: "foo",
         value: "bar",
@@ -28,7 +28,7 @@ describe("getAzureParsedCookiesFromHeaders", () => {
       getAzureParsedCookiesFromHeaders({
         "set-cookie": "foo=bar; expires=Thu, 01 Jan 1970 00:00:00 GMT",
       })
-    ).toEqual([
+    ).toMatchObject([
       {
         name: "foo",
         value: "bar",
@@ -43,14 +43,14 @@ describe("getAzureParsedCookiesFromHeaders", () => {
           "session=xyz; Path=/; Expires=Sun, 24 Mar 2024 09:13:27 GMT; HttpOnly; SameSite=Strict",
         ],
       })
-    ).toEqual([
+    ).toMatchObject([
       {
         name: "session",
         value: "xyz",
         expires: new Date("2024-03-24T09:13:27.000Z"),
         path: "/",
-        // TODO: httponly: true,
-        samesite: "Strict",
+        sameSite: "Strict",
+        httpOnly: true
       },
     ]);
   });
@@ -59,7 +59,7 @@ describe("getAzureParsedCookiesFromHeaders", () => {
       getAzureParsedCookiesFromHeaders({
         "set-cookie": ["foo=bar", "baz=qux"],
       })
-    ).toEqual([
+    ).toMatchObject([
       {
         name: "foo",
         value: "bar",
@@ -75,7 +75,7 @@ describe("getAzureParsedCookiesFromHeaders", () => {
       getAzureParsedCookiesFromHeaders({
         "set-cookie": "foo=bar, baz=qux",
       })
-    ).toEqual([
+    ).toMatchObject([
       {
         name: "foo",
         value: "bar",

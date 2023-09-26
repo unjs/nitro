@@ -5,39 +5,38 @@ import { splitCookiesString } from "h3";
 export function getAzureParsedCookiesFromHeaders(
   headers: Record<string, number | string | string[] | undefined>
 ): Cookie[] {
-  const raw = headers["set-cookie"];
-  if (!raw || typeof raw === "number" || raw.length === 0) {
+  const setCookieHeader = headers["set-cookie"];
+  if (
+    !setCookieHeader ||
+    typeof setCookieHeader === "number" ||
+    setCookieHeader.length === 0
+  ) {
     return [];
   }
-  const rawCookies = Array.isArray(raw) ? raw : splitCookiesString(String(raw));
-  const cookies = rawCookies.flatMap((cookie) => {
-    const entries = Object.entries(parse(cookie));
-    if (entries.length > 0) {
-      const [entry, ...rest] = entries;
-      const options = Object.fromEntries(
-        rest.map(([k, v]) => [k.toLowerCase(), v])
-      );
-      const res = {
-        name: entry[0],
-        value: entry[1],
-        domain: options.domain,
-        path: options.path,
-        expires: parseNumberOrDate(options.expires),
-        // secure: options.secure,
-        // httponly: options.httponly,
-        samesite: options.samesite,
-        maxAge: parseNumber(options.maxAge),
-      } as Cookie;
-      for (const key in res) {
-        if (res[key] === undefined) {
-          delete res[key];
-        }
-      }
-      return [res];
+  const azureCookies: Cookie[] = []
+  for (const setCookieStr of splitCookiesString(setCookieHeader)) {
+    const setCookie = Object.entries(parse(setCookieStr));
+    if (setCookie.length === 0) {
+      continue
     }
-    return [];
-  });
-  return cookies;
+    const [[key, value], ..._setCookieOptions] = setCookie;
+    const setCookieOptions = Object.fromEntries(
+      _setCookieOptions.map(([k, v]) => [k.toLowerCase(), v])
+    );
+    const cookieObject: Cookie = {
+      name: key,
+      value,
+      domain: setCookieOptions.domain,
+      path: setCookieOptions.path,
+      expires: parseNumberOrDate(setCookieOptions.expires),
+      sameSite: setCookieOptions.samesite as "Lax" | "Strict" | "None",
+      maxAge: parseNumber(setCookieOptions.maxAge),
+      secure: setCookieStr.includes('Secure') ? true : undefined,
+      httpOnly: setCookieStr.includes('HttpOnly') ? true : undefined,
+    };
+    azureCookies.push(cookieObject)
+  }
+  return azureCookies;
 }
 
 function parseNumberOrDate(expires: string) {
