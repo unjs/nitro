@@ -58,6 +58,6 @@ export function defineRenderHandler(handler: RenderHandler) {
     }
 
     // Send response body
-    return response.body
+    return response.body;
   });
 }
