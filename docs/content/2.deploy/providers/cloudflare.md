@@ -140,7 +140,7 @@ jobs:
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
 ::
 
-Nitro automatically generates a `_routes.json` file that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overrided with the config option `cloudflare.pages.routes` ([read more](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)).
+Nitro automatically generates a `_routes.json` file that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overridden with the config option `cloudflare.pages.routes` ([read more](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)).
 
 ### Git integration
 
@@ -226,7 +226,7 @@ const { results } = await stmt.all()
 Nitro allows to universally access environment variables using `process.env` or `import.meta.env` or runtime config.
 
 ::alert
-Make sure to only access environment variables **within the event lifecycle**  and not in global contexts since cloudflare only makes them avaialble during the request lifecycle and not before.
+Make sure to only access environment variables **within the event lifecycle**  and not in global contexts since cloudflare only makes them available during the request lifecycle and not before.
 ::
 
 **Example:** If you have set `SECRET` and `NITRO_HELLO_THERE` environment variables you can access them with either of these:

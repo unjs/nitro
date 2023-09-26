@@ -256,6 +256,10 @@ export interface NitroOptions extends PresetOptions {
      * Disable Experimental Sourcemap Minification
      */
     sourcemapMinify?: false;
+    /**
+     * Backward compatibility support for Node fetch (required for Node < 18)
+     */
+    nodeFetchCompat?: boolean;
   };
   future: {
     nativeSWR: boolean;
