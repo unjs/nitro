@@ -13,11 +13,11 @@ export function getAzureParsedCookiesFromHeaders(
   ) {
     return [];
   }
-  const azureCookies: Cookie[] = []
+  const azureCookies: Cookie[] = [];
   for (const setCookieStr of splitCookiesString(setCookieHeader)) {
     const setCookie = Object.entries(parse(setCookieStr));
     if (setCookie.length === 0) {
-      continue
+      continue;
     }
     const [[key, value], ..._setCookieOptions] = setCookie;
     const setCookieOptions = Object.fromEntries(
@@ -31,10 +31,10 @@ export function getAzureParsedCookiesFromHeaders(
       expires: parseNumberOrDate(setCookieOptions.expires),
       sameSite: setCookieOptions.samesite as "Lax" | "Strict" | "None",
       maxAge: parseNumber(setCookieOptions.maxAge),
-      secure: setCookieStr.includes('Secure') ? true : undefined,
-      httpOnly: setCookieStr.includes('HttpOnly') ? true : undefined,
+      secure: setCookieStr.includes("Secure") ? true : undefined,
+      httpOnly: setCookieStr.includes("HttpOnly") ? true : undefined,
     };
-    azureCookies.push(cookieObject)
+    azureCookies.push(cookieObject);
   }
   return azureCookies;
 }

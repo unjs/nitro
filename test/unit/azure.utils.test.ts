@@ -11,7 +11,9 @@ describe("getAzureParsedCookiesFromHeaders", () => {
     ).toMatchObject([]);
   });
   it("returns empty array if empty set-cookie header", () => {
-    expect(getAzureParsedCookiesFromHeaders({ "set-cookie": " " })).toMatchObject([]);
+    expect(
+      getAzureParsedCookiesFromHeaders({ "set-cookie": " " })
+    ).toMatchObject([]);
   });
   it("returns single cookie", () => {
     expect(
@@ -50,7 +52,7 @@ describe("getAzureParsedCookiesFromHeaders", () => {
         expires: new Date("2024-03-24T09:13:27.000Z"),
         path: "/",
         sameSite: "Strict",
-        httpOnly: true
+        httpOnly: true,
       },
     ]);
   });
