@@ -11,7 +11,7 @@ import {
 import { useNitroApp } from "./app";
 
 export interface RenderResponse {
-  body: string;
+  body: any;
   statusCode: number;
   statusMessage: string;
   headers: Record<string, string>;
@@ -59,8 +59,6 @@ export function defineRenderHandler(handler: RenderHandler) {
     }
 
     // Send response body
-    return typeof response.body === "string" || isStream(response.body)
-      ? response.body
-      : JSON.stringify(response.body);
+    return response.body
   });
 }
