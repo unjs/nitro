@@ -26,7 +26,7 @@ route = "<mainly useful when you want to setup custom domains (optional too)>"
 bucket = ".output/public"
 
 [build]
-command = "npm run NITRO_PRESET=cloudflare build" // Replace npm with your packagemanager (npm, pnpm, yarn, bun)
+command = "NITRO_PRESET=cloudflare npm run build" // Replace npm with your packagemanager (npm, pnpm, yarn, bun)
 cwd = "./"
 watch_dir = ["./routes", "./nitro.config.ts"]
 ```
