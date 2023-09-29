@@ -24,6 +24,11 @@ route = "<mainly useful when you want to setup custom domains (optional too)>"
 
 [site]
 bucket = ".output/public"
+
+[build]
+command = "npm run NITRO_PRESET=cloudflare build" // Replace npm with your packagemanager (npm, pnpm, yarn, bun)
+cwd = "./"
+watch_dir = ["./routes", "./nitro.config.ts"]
 ```
 
 ### Testing locally
@@ -31,13 +36,11 @@ bucket = ".output/public"
 You can use [wrangler2](https://github.com/cloudflare/wrangler2), to test your app locally:
 
 ```bash
-NITRO_PRESET=cloudflare yarn build
-
 # If you have added a 'wrangler.toml' file like above in the root of your project:
 npx wrangler dev --local
 
 # If you don't have a 'wrangler.toml', directly use:
-npx wrangler dev .output/server/index.mjs --site .output/public --local
+npm run build && npx wrangler dev .output/server/index.mjs --site .output/public --local
 ```
 
 ### Deploy from your local machine using wrangler
