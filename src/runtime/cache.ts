@@ -338,10 +338,10 @@ export function defineCachedEventHandler<
 
       // Collect cachable headers
       const headers = event.node.res.getHeaders();
-      headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`;
+      headers.etag =
+        String(headers.Etag || headers.etag) || `W/"${hash(body)}"`;
       headers["last-modified"] =
-        headers["Last-Modified"] ||
-        headers["last-modified"] ||
+        String(headers["Last-Modified"] || headers["last-modified"]) ||
         new Date().toUTCString();
       const cacheControl = [];
       if (opts.swr) {
