@@ -328,7 +328,7 @@ export function testNitro(
       const { status, headers } = await callHandler({ url: "/build/test.txt" });
       expect(status).toBe(200);
       expect(headers.etag).toMatchInlineSnapshot(
-        '"\\"7-vxGfAKTuGVGhpDZqQLqV60dnKPw\\""'
+        `""7-vxGfAKTuGVGhpDZqQLqV60dnKPw""`
       );
       expect(headers["content-type"]).toMatchInlineSnapshot(
         '"text/plain; charset=utf-8"'
