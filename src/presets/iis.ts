@@ -27,7 +27,13 @@ export const iisNode = defineNitroPreset({
 
       await writeFile(
         resolve(nitro.options.output.dir, "index.js"),
-        "import('./server/index.mjs');"
+        `
+        if (process.env.PORT.startsWith('\\')) {
+          process.env.NITRO_UNIX_SOCKET = process.env.PORT
+          delete process.env.PORT
+        }
+        import('./server/index.mjs');
+        `
       );
     },
   },
