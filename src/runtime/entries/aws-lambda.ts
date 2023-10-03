@@ -52,7 +52,9 @@ export async function handler(
     headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
-    body: event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('utf8') : event.body,
+    body: event.isBase64Encoded
+      ? Buffer.from(event.body, "base64").toString("utf8")
+      : event.body,
   });
 
   // ApiGateway v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
