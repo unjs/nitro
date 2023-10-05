@@ -51,8 +51,8 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
   // Normalize cache params
   const group = opts.group || "nitro/functions";
   const name = opts.name || fn.name || "_";
-  const integrity = hash([opts.integrity, fn, opts]);
-  const validate = opts.validate || (() => true);
+  const integrity = opts.integrity || hash([fn, opts]);
+  const validate = opts.validate || ((entry) => entry.value !== undefined);
 
   async function get(
     key: string,
@@ -77,7 +77,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       shouldInvalidateCache ||
       entry.integrity !== integrity ||
       (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
-      !validate(entry);
+      validate(entry) === false;
 
     const _resolve = async () => {
       const isPending = pending[key];
@@ -112,10 +112,11 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
         entry.mtime = Date.now();
         entry.integrity = integrity;
         delete pending[key];
-        if (validate(entry)) {
+        if (validate(entry) !== false) {
           const promise = useStorage()
             .setItem(cacheKey, entry)
             .catch((error) => {
+              console.error(`[nitro] [cache] Cache write error.`, error);
               useNitroApp().captureError(error, { event, tags: ["cache"] });
             });
           if (event && event.waitUntil) {
@@ -131,12 +132,11 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       event.waitUntil(_resolvePromise);
     }
 
-    if (opts.swr && entry.value) {
-      // eslint-disable-next-line no-console
+    if (opts.swr && validate(entry) !== false) {
       _resolvePromise.catch((error) => {
+        console.error(`[nitro] [cache] SWR handler error.`, error);
         useNitroApp().captureError(error, { event, tags: ["cache"] });
       });
-      // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return entry;
     }
 
@@ -338,10 +338,10 @@ export function defineCachedEventHandler<
 
       // Collect cachable headers
       const headers = event.node.res.getHeaders();
-      headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`;
+      headers.etag =
+        String(headers.Etag || headers.etag) || `W/"${hash(body)}"`;
       headers["last-modified"] =
-        headers["Last-Modified"] ||
-        headers["last-modified"] ||
+        String(headers["Last-Modified"] || headers["last-modified"]) ||
         new Date().toUTCString();
       const cacheControl = [];
       if (opts.swr) {

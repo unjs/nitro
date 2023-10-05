@@ -84,7 +84,7 @@ function _toBuffer(data: ReadableStream | Readable | Uint8Array) {
 
 // -- Internal --
 
-const TEXT_TYPE_RE = /^text\/|\/(json|xml)|utf-?8/;
+const TEXT_TYPE_RE = /^text\/|\/(javascript|json|xml)|utf-?8/;
 
 function isTextType(contentType = "") {
   return TEXT_TYPE_RE.test(contentType);
