@@ -120,7 +120,7 @@ export async function createNitro(
   // @ts-ignore
   globalThis.defineNitroModule = defineNitroModule;
   const scannedModules = await scanModules(nitro);
-  const modules = [...nitro.options.modules ?? [], ...scannedModules];
+  const modules = [...(nitro.options.modules ?? []), ...scannedModules];
   if (modules && modules.length > 0) {
     for (const module of modules) {
       if (typeof module === "function") {
