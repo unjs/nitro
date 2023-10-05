@@ -279,6 +279,11 @@ export interface NitroOptions extends PresetOptions {
   watchOptions: WatchOptions;
   devProxy: Record<string, string | ProxyServerOptions>;
 
+  // Logging
+  logging: {
+    compressedSizes: boolean;
+  };
+
   // Routing
   baseURL: string;
   handlers: NitroEventHandler[];
@@ -297,6 +302,16 @@ export interface NitroOptions extends PresetOptions {
     failOnError: boolean;
     ignore: string[];
     routes: string[];
+    /**
+     * Amount of retries. Pass Infinity to retry indefinitely.
+     * @default 3
+     */
+    retry: number;
+    /**
+     * Delay between each retry in ms.
+     * @default 500
+     */
+    retryDelay: number;
   };
 
   // Rollup
