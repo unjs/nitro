@@ -51,8 +51,9 @@ function initWorker(filename: string): Promise<NitroWorker> | null {
       );
     });
     worker.once("error", (err) => {
-      err.message = "[worker init] " + err.message;
-      reject(err);
+      const newErr = new Error("[worker init] " + err.message);
+      newErr.stack = err.stack;
+      reject(newErr);
     });
     const addressListener = (event) => {
       if (!event || !event.address) {
