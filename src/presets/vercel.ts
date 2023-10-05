@@ -72,6 +72,7 @@ export const vercel = defineNitroPreset({
           JSON.stringify({
             expiration: value.isr === true ? false : value.isr,
             allowQuery: key.includes("/**") ? ["url"] : undefined,
+            bypassToken: nitro.options.vercel?.config?.bypassToken,
           })
         );
       }

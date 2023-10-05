@@ -322,3 +322,25 @@ With `cloudflare_module` preset, you need to add the following rule to your `wra
   [site]
   bucket = ".output/public"
 ```
+
+### Local Wrangler Dev builds
+
+By default `wrangler dev` requires nitro to be built before it can be served by wrangler.
+
+This can become tiresome if you're making changes to your nitro app and keep rebuilding to test changes in wrangler.
+
+::alert{type="warning"}
+This is a temporary workaround until nitro has better support for wrangler dev mode!
+::
+
+To instruct wrangler to automatically rebuild nitro when it detects file changes, you need to add the following rule to your `wrangler.toml` file:
+
+```[wrangler.toml]
++ [env.development.build]
++ command = "NITRO_PRESET=cloudflare npm run build" // Replace npm with your packagemanager (npm, pnpm, yarn, bun)
++ cwd = "./"
++ watch_dir = ["./routes", "./nitro.config.ts"]
+```
+
+Now you need to run wrangler in development mode using `wrangler dev --env development`
+When files change in nitro, wrangler will rebuild and serve the new files
