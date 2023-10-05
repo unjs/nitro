@@ -25,7 +25,12 @@ import type {
 } from "./handler";
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
-import { ModuleDefinition, ModuleOptions, ModuleSetupReturn, NitroModule } from "./module";
+import {
+  ModuleDefinition,
+  ModuleOptions,
+  ModuleSetupReturn,
+  NitroModule,
+} from "./module";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
@@ -281,6 +286,11 @@ export interface NitroOptions extends PresetOptions {
   watchOptions: WatchOptions;
   devProxy: Record<string, string | ProxyServerOptions>;
 
+  // Logging
+  logging: {
+    compressedSizes: boolean;
+  };
+
   // Routing
   baseURL: string;
   handlers: NitroEventHandler[];
@@ -299,6 +309,16 @@ export interface NitroOptions extends PresetOptions {
     failOnError: boolean;
     ignore: string[];
     routes: string[];
+    /**
+     * Amount of retries. Pass Infinity to retry indefinitely.
+     * @default 3
+     */
+    retry: number;
+    /**
+     * Delay between each retry in ms.
+     * @default 500
+     */
+    retryDelay: number;
   };
 
   // Rollup
@@ -346,5 +366,7 @@ export interface NitroOptions extends PresetOptions {
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
-  const defineNitroModule: (definition: ModuleDefinition | NitroModule) => NitroModule;
+  const defineNitroModule: (
+    definition: ModuleDefinition | NitroModule
+  ) => NitroModule;
 }

@@ -9,10 +9,7 @@ export function defineNitroModule(definition: ModuleDefinition | NitroModule) {
   const module = defu(definition, { meta: {} });
   const options = {};
 
-  async function normalizedModule(
-    nitro: Nitro,
-    inlineOptions: any
-  ) {
+  async function normalizedModule(nitro: Nitro, inlineOptions: any) {
     const res = await module.setup(nitro, options);
 
     return res;

@@ -118,13 +118,13 @@ export async function createNitro(
 
   // Modules - Must come after basic initialization
   // @ts-ignore
-  globalThis.defineNitroModule = defineNitroModule
-  const scannedModules = await scanModules(nitro)
+  globalThis.defineNitroModule = defineNitroModule;
+  const scannedModules = await scanModules(nitro);
   const modules = [...nitro.options.modules, ...scannedModules];
   if (modules && modules.length > 0) {
     for (const module of modules) {
       if (typeof module === "function") {
-        module(nitro)
+        module(nitro);
       } else {
         const _module = await import(module).then((m) => m.default);
         _module(nitro);
