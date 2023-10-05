@@ -279,6 +279,11 @@ export interface NitroOptions extends PresetOptions {
   watchOptions: WatchOptions;
   devProxy: Record<string, string | ProxyServerOptions>;
 
+  // Logging
+  logging: {
+    compressedSizes: boolean;
+  };
+
   // Routing
   baseURL: string;
   handlers: NitroEventHandler[];

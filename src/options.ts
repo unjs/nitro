@@ -69,6 +69,11 @@ const NitroDefaults: NitroConfig = {
   watchOptions: { ignoreInitial: true },
   devProxy: {},
 
+  // Logging
+  logging: {
+    compressedSizes: true,
+  },
+
   // Routing
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
   handlers: [],
