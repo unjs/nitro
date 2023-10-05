@@ -269,7 +269,10 @@ export interface NitroOptions extends PresetOptions {
   publicAssets: PublicAssetDir[];
 
   imports: UnimportPluginOptions | false;
-  modules?: ((inlineOptions: ModuleOptions, nitro: Nitro) => void | Promise<void>)[];
+  modules?: ((
+    inlineOptions: ModuleOptions,
+    nitro: Nitro
+  ) => void | Promise<void>)[];
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
