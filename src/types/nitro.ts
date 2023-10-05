@@ -281,7 +281,7 @@ export interface NitroOptions extends PresetOptions {
 
   // Logging
   logging: {
-    showCompressedSize: boolean;
+    compressedSizes: boolean;
   };
 
   // Routing
