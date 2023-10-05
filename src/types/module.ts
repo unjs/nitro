@@ -1,15 +1,12 @@
 import { Nitro } from "./nitro";
 
-export type ModuleOptions = Record<string, unknown>;
-
 export interface ModuleSetupReturn {}
 
 export type Awaitable<T> = T | Promise<T>;
-export interface ModuleDefinition<T extends ModuleOptions = ModuleOptions> {
+export interface ModuleDefinition {
   setup?: (
     this: void,
     nitro: Nitro,
-    options: T
   ) => Awaitable<ModuleSetupReturn | void>;
 }
 

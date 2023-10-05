@@ -27,8 +27,6 @@ import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
 import {
   ModuleDefinition,
-  ModuleOptions,
-  ModuleSetupReturn,
   NitroModule,
 } from "./module";
 
