@@ -51,7 +51,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
   // Normalize cache params
   const group = opts.group || "nitro/functions";
   const name = opts.name || fn.name || "_";
-  const integrity = hash([opts.integrity, fn, opts]);
+  const integrity = opts.integrity || hash([fn, opts]);
   const validate = opts.validate || (() => true);
 
   async function get(
