@@ -79,12 +79,12 @@ export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
 
-export type RouteType = Record<
-  string,
-  Partial<Record<RouterMethod | "default", string[]>>
->;
+export type NitroTypes = {
+  routes: Record<string, Partial<Record<RouterMethod | "default", string[]>>>;
+};
+
 export interface NitroHooks {
-  "types:extend": ({ routeTypes }: { routeTypes: RouteType }) => HookResult;
+  "types:extend": (types: NitroTypes) => HookResult;
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
