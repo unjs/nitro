@@ -13,6 +13,8 @@ import {
 } from "./options";
 import { scanPlugins } from "./scan";
 import { createStorage } from "./storage";
+import { installModule } from "./module/install";
+import { nitroCtx } from "./context";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -41,6 +43,18 @@ export async function createNitro(
       consola.success("Nitro config hot reloaded!");
     },
   };
+
+  nitroCtx.set(nitro);
+  nitro.hooks.hook("close", () => nitroCtx.unset());
+
+  // Modules
+  if (nitro.options.modules) {
+    const modules = nitro.options.modules;
+
+    for (const module_ of modules) {
+      installModule(module_, {}, nitro);
+    }
+  }
 
   // Storage
   nitro.storage = await createStorage(nitro);
