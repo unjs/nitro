@@ -25,10 +25,7 @@ import type {
 } from "./handler";
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
-import {
-  ModuleDefinition,
-  NitroModule,
-} from "./module";
+import { ModuleDefinition, NitroModule } from "./module";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
