@@ -101,3 +101,39 @@ Instead, you have to use :
 ## Custom Build Output Configuration
 
 You can provide additional [build output configuration](https://vercel.com/docs/build-output-api/v3) using `vercel.config` key inside `nitro.config`. It will be merged with built-in auto generated config.
+
+## On-Demand Incremental Static Regeneration (ISR)
+
+On-demand revalidation allows you to purge the cache for an ISR route whenever you want, foregoing the time interval required with background revalidation.
+
+To revalidate a page on demand:
+
+1. Create an Environment Variable which will store a revalidation secret
+    * You can use the command `openssl rand -base64 32` or https://generate-secret.vercel.app/32 to generate a random value.
+
+2. Update your configuration:
+
+    ::code-group
+    ```ts [nitro.config.ts]
+    export default defineNitroConfig({
+      vercel: {
+        config: { 
+          bypassToken: process.env.VERCEL_BYPASS_TOKEN
+        }
+      }
+    })
+    ```
+    ```ts [nuxt.config.ts]
+    export default defineNuxtConfig({
+      nitro: {
+        vercel: {
+          config: { 
+            bypassToken: process.env.VERCEL_BYPASS_TOKEN
+          }
+        }
+      }
+    })
+    ```
+    ::
+
+3. To trigger "On-Demand Incremental Static Regeneration (ISR)" and revalidate a path to a Prerender Function, make a GET or HEAD request to that path with a header of x-prerender-revalidate: <bypassToken>. When that Prerender Function endpoint is accessed with this header set, the cache will be revalidated. The next request to that function should return a fresh response.
