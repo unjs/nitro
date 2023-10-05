@@ -77,7 +77,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       shouldInvalidateCache ||
       entry.integrity !== integrity ||
       (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
-      !validate(entry);
+      validate(entry) === false;
 
     const _resolve = async () => {
       const isPending = pending[key];
@@ -112,7 +112,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
         entry.mtime = Date.now();
         entry.integrity = integrity;
         delete pending[key];
-        if (validate(entry)) {
+        if (validate(entry) !== false) {
           const promise = useStorage()
             .setItem(cacheKey, entry)
             .catch((error) => {
@@ -132,7 +132,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       event.waitUntil(_resolvePromise);
     }
 
-    if (opts.swr && validate(entry)) {
+    if (opts.swr && validate(entry) !== false) {
       _resolvePromise.catch((error) => {
         console.error(`[nitro] [cache] SWR handler error.`, error);
         useNitroApp().captureError(error, { event, tags: ["cache"] });
