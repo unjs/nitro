@@ -116,6 +116,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
           const promise = useStorage()
             .setItem(cacheKey, entry)
             .catch((error) => {
+              console.error(`[nitro] [cache] Cache write error.`, error);
               useNitroApp().captureError(error, { event, tags: ["cache"] });
             });
           if (event && event.waitUntil) {
@@ -132,11 +133,10 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
     }
 
     if (opts.swr && entry.value) {
-      // eslint-disable-next-line no-console
       _resolvePromise.catch((error) => {
+        console.error(`[nitro] [cache] SWR handler error.`, error);
         useNitroApp().captureError(error, { event, tags: ["cache"] });
       });
-      // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return entry;
     }
 
