@@ -25,7 +25,7 @@ import type {
 } from "./handler";
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
-import { ModuleOptions } from "./module";
+import { ModuleDefinition, ModuleOptions, ModuleSetupReturn, NitroModule } from "./module";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
@@ -269,10 +269,7 @@ export interface NitroOptions extends PresetOptions {
   publicAssets: PublicAssetDir[];
 
   imports: UnimportPluginOptions | false;
-  modules?: ((
-    inlineOptions: ModuleOptions,
-    nitro: Nitro
-  ) => void | Promise<void>)[];
+  modules?: NitroModule[];
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
@@ -349,4 +346,5 @@ export interface NitroOptions extends PresetOptions {
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
+  const defineNitroModule: (definition: ModuleDefinition | NitroModule) => NitroModule;
 }

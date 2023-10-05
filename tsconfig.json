@@ -3,7 +3,10 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "lib": ["WebWorker", "DOM.Iterable"],
+    "lib": [
+      "WebWorker",
+      "DOM.Iterable"
+    ],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
@@ -14,12 +17,28 @@
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
     "paths": {
-      "nitropack": ["./src/index"],
-      "nitropack/config": ["./src/config"],
-      "#internal/nitro": ["./src/runtime/index"],
-      "#internal/nitro/*": ["./src/runtime/*"]
+      "nitropack": [
+        "./src/index"
+      ],
+      "nitropack/config": [
+        "./src/config"
+      ],
+      "#internal/nitro": [
+        "./src/runtime/index"
+      ],
+      "#internal/nitro/*": [
+        "./src/runtime/*"
+      ],
+      "#internal/module": [
+        "./src/module"
+      ]
     }
   },
-  "include": ["src", "test"],
-  "exclude": ["test/fixture"]
+  "include": [
+    "src",
+    "test"
+  ],
+  "exclude": [
+    "test/fixture"
+  ]
 }

@@ -1,6 +1,5 @@
 import { defu } from "defu";
-import type { ModuleDefinition, Nitro, NitroModule } from "../types";
-import { useNitro } from "../context";
+import type { ModuleDefinition, Nitro, NitroModule } from "./types";
 
 export function defineNitroModule(definition: ModuleDefinition | NitroModule) {
   if (typeof definition === "function") {
@@ -11,15 +10,10 @@ export function defineNitroModule(definition: ModuleDefinition | NitroModule) {
   const options = {};
 
   async function normalizedModule(
-    this: any,
-    inlineOptions: any,
-    nitro: Nitro = useNitro()
+    nitro: Nitro,
+    inlineOptions: any
   ) {
-    const res = (await module.setup?.call(null as any, options, nitro)) ?? {};
-
-    if (res === false) {
-      return false;
-    }
+    const res = await module.setup(nitro, options);
 
     return res;
   }

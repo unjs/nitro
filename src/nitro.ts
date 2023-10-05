@@ -11,10 +11,9 @@ import {
   normalizeRouteRules,
   normalizeRuntimeConfig,
 } from "./options";
-import { scanPlugins } from "./scan";
+import { scanModules, scanPlugins } from "./scan";
 import { createStorage } from "./storage";
-import { installModule } from "./module/install";
-import { nitroCtx } from "./context";
+import { defineNitroModule } from "./module";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -43,18 +42,6 @@ export async function createNitro(
       consola.success("Nitro config hot reloaded!");
     },
   };
-
-  nitroCtx.set(nitro);
-  nitro.hooks.hook("close", () => nitroCtx.unset());
-
-  // Modules
-  if (nitro.options.modules) {
-    const modules = nitro.options.modules;
-
-    for (const module_ of modules) {
-      installModule(module_, {}, nitro);
-    }
-  }
 
   // Storage
   nitro.storage = await createStorage(nitro);
@@ -127,6 +114,22 @@ export async function createNitro(
     nitro.options.virtual["#imports"] = () => nitro.unimport.toExports();
     // Backward compatibility
     nitro.options.virtual["#nitro"] = 'export * from "#imports"';
+  }
+
+  // Modules - Must come after basic initialization
+  // @ts-ignore
+  globalThis.defineNitroModule = defineNitroModule
+  const scannedModules = await scanModules(nitro)
+  const modules = [...nitro.options.modules, ...scannedModules];
+  if (modules && modules.length > 0) {
+    for (const module of modules) {
+      if (typeof module === "function") {
+        module(nitro)
+      } else {
+        const _module = await import(module).then((m) => m.default);
+        _module(nitro);
+      }
+    }
   }
 
   return nitro;
