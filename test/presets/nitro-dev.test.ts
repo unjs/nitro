@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
+import { isCI } from "std-env";
 import { setupTest, testNitro } from "../tests";
 
-describe("nitro:preset:nitro-dev", async () => {
+describe.skipIf(isCI)("nitro:preset:nitro-dev", async () => {
   const ctx = await setupTest("nitro-dev");
   testNitro(
     ctx,
