@@ -172,7 +172,7 @@ export async function prerender(nitro: Nitro) {
       withBase(encodedRoute, nitro.options.baseURL),
       {
         headers: { "x-nitro-prerender": encodedRoute },
-        retry: nitro.options.prerender.retries ?? 3, // default is 3 retries
+        retry: nitro.options.prerender.retry ?? 3, // default is 3 retries
         retryDelay: nitro.options.prerender.retryDelay ?? 500, // default is 500ms
       }
     );
