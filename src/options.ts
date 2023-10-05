@@ -3,15 +3,12 @@ import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
-import {
-  resolveModuleExportNames,
-  resolvePath as resolveModule,
-  parseNodeModulePath,
-} from "mlly";
+import { resolveModuleExportNames } from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
-import { isTest, isDebug } from "std-env";
+import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
+import consola from "consola";
 import {
   resolvePath,
   resolveFile,
@@ -82,6 +79,8 @@ const NitroDefaults: NitroConfig = {
     autoSubfolderIndex: true,
     concurrency: 1,
     interval: 0,
+    retry: 3,
+    retryDelay: 500,
     failOnError: false,
     crawlLinks: false,
     ignore: [],
@@ -376,6 +375,23 @@ export async function loadOptions(
       route: "/_nitro/swagger",
       handler: "#internal/nitro/routes/swagger",
     });
+  }
+
+  // Native fetch
+  if (options.experimental.nodeFetchCompat === undefined) {
+    options.experimental.nodeFetchCompat = nodeMajorVersion < 18;
+    if (options.experimental.nodeFetchCompat && provider !== "stackblitz") {
+      consola.warn(
+        "Node fetch compatibility is enabled. Please consider upgrading to Node.js >= 18."
+      );
+    }
+  }
+  if (!options.experimental.nodeFetchCompat) {
+    options.alias = {
+      "node-fetch-native/polyfill": "unenv/runtime/mock/empty",
+      "node-fetch-native": "node-fetch-native/native",
+      ...options.alias,
+    };
   }
 
   return options;

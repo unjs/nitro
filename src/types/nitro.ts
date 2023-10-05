@@ -262,6 +262,10 @@ export interface NitroOptions extends PresetOptions {
      * Disable Experimental Sourcemap Minification
      */
     sourcemapMinify?: false;
+    /**
+     * Backward compatibility support for Node fetch (required for Node < 18)
+     */
+    nodeFetchCompat?: boolean;
   };
   future: {
     nativeSWR: boolean;
@@ -299,6 +303,16 @@ export interface NitroOptions extends PresetOptions {
     failOnError: boolean;
     ignore: string[];
     routes: string[];
+    /**
+     * Amount of retries. Pass Infinity to retry indefinitely.
+     * @default 3
+     */
+    retry: number;
+    /**
+     * Delay between each retry in ms.
+     * @default 500
+     */
+    retryDelay: number;
   };
 
   // Rollup

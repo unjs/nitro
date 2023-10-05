@@ -71,3 +71,5 @@ staticwebapp.config.json
 playground/firebase.json
 
 test/fixture/functions
+
+.pnpm-store

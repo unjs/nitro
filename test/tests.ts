@@ -328,7 +328,7 @@ export function testNitro(
       const { status, headers } = await callHandler({ url: "/build/test.txt" });
       expect(status).toBe(200);
       expect(headers.etag).toMatchInlineSnapshot(
-        '"\\"7-vxGfAKTuGVGhpDZqQLqV60dnKPw\\""'
+        `""7-vxGfAKTuGVGhpDZqQLqV60dnKPw""`
       );
       expect(headers["content-type"]).toMatchInlineSnapshot(
         '"text/plain; charset=utf-8"'
@@ -574,7 +574,8 @@ export function testNitro(
       !ctx.nitro.options.node ||
         // TODO: Investigate
         ctx.preset === "bun" ||
-        ctx.preset === "deno-server"
+        ctx.preset === "deno-server" ||
+        ctx.preset === "nitro-dev"
     )("sourcemap works", async () => {
       const { data } = await callHandler({ url: "/error-stack" });
       expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");

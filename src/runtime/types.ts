@@ -25,9 +25,9 @@ export interface NitroRuntimeHooks {
   close: () => void;
   error: CaptureError;
 
-  request: AppOptions["onRequest"];
-  beforeResponse: AppOptions["onBeforeResponse"];
-  afterResponse: AppOptions["onAfterResponse"];
+  request: NonNullable<AppOptions["onRequest"]>;
+  beforeResponse: NonNullable<AppOptions["onBeforeResponse"]>;
+  afterResponse: NonNullable<AppOptions["onAfterResponse"]>;
 
   "render:response": (
     response: Partial<RenderResponse>,
