@@ -8,7 +8,7 @@ import { isTest } from "std-env";
 
 export async function generateFSTree(
   dir: string,
-  options: { showGzipSize?: boolean } = {}
+  options: { showCompressedSize?: boolean } = {}
 ) {
   if (isTest) {
     return;
@@ -22,7 +22,7 @@ export async function generateFSTree(
         const path = resolve(dir, file);
         const src = await fsp.readFile(path);
         const size = src.byteLength;
-        const gzip = options.showGzipSize ? await gzipSize(src) : 0;
+        const gzip = options.showCompressedSize ? await gzipSize(src) : 0;
         return { file, path, size, gzip };
       })
     )

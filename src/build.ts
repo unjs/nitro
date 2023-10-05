@@ -417,7 +417,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
         await generateFSTree(nitro.options.output.serverDir, {
-          showGzipSize: nitro.options.showGzipSize,
+          showCompressedSize: nitro.options.logging.showCompressedSize,
         })
       );
     }

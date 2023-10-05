@@ -271,7 +271,6 @@ export interface NitroOptions extends PresetOptions {
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
-  showGzipSize: boolean;
   ignore: string[];
 
   // Dev
@@ -279,6 +278,11 @@ export interface NitroOptions extends PresetOptions {
   devServer: DevServerOptions;
   watchOptions: WatchOptions;
   devProxy: Record<string, string | ProxyServerOptions>;
+
+  // Logging
+  logging: {
+    showCompressedSize: boolean;
+  };
 
   // Routing
   baseURL: string;
