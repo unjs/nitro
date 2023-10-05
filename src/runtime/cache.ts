@@ -52,7 +52,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
   const group = opts.group || "nitro/functions";
   const name = opts.name || fn.name || "_";
   const integrity = opts.integrity || hash([fn, opts]);
-  const validate = opts.validate || (() => true);
+  const validate = opts.validate || ((entry) => entry.value !== undefined);
 
   async function get(
     key: string,
@@ -132,7 +132,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       event.waitUntil(_resolvePromise);
     }
 
-    if (opts.swr && entry.value) {
+    if (opts.swr && validate(entry)) {
       _resolvePromise.catch((error) => {
         console.error(`[nitro] [cache] SWR handler error.`, error);
         useNitroApp().captureError(error, { event, tags: ["cache"] });
