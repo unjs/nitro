@@ -55,7 +55,7 @@ export async function generateFSTree(
     treeText += chalk.gray(
       `  ${treeChar} ${rpath} (${prettyBytes(item.size)})`
     );
-    if (options.showGzipSize) {
+    if (options.compressedSizes) {
       treeText += chalk.gray(` (${prettyBytes(item.gzip)} gzip)`);
     }
     treeText += "\n";
@@ -66,7 +66,7 @@ export async function generateFSTree(
   treeText += `${chalk.cyan("Σ Total size:")} ${prettyBytes(
     totalSize + totalNodeModulesSize
   )}`;
-  if (options.showGzipSize) {
+  if (options.compressedSizes) {
     treeText += ` (${prettyBytes(totalGzip + totalNodeModulesGzip)} gzip)`;
   }
   treeText += "\n";

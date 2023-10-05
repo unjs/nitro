@@ -61,7 +61,6 @@ const NitroDefaults: NitroConfig = {
   },
   virtual: {},
   compressPublicAssets: false,
-  showGzipSize: true,
   ignore: [],
 
   // Dev
@@ -69,6 +68,11 @@ const NitroDefaults: NitroConfig = {
   devServer: { watch: [] },
   watchOptions: { ignoreInitial: true },
   devProxy: {},
+
+  // Logging
+  logging: {
+    compressedSizes: true,
+  },
 
   // Routing
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
