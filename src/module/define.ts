@@ -1,5 +1,5 @@
 import { defu } from "defu";
-import { ModuleDefinition, Nitro, NitroModule } from "../types";
+import type { ModuleDefinition, Nitro, NitroModule } from "../types";
 import { useNitro } from "../context";
 
 export function defineNitroModule(definition: ModuleDefinition | NitroModule) {
