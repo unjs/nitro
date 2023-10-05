@@ -504,6 +504,8 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     join(dir, "api"),
     join(dir, "routes"),
     join(dir, "middleware", GLOB_SCAN_PATTERN),
+    join(dir, "plugins"),
+    join(dir, "modules"),
   ]);
 
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);
