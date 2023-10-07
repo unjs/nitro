@@ -10,10 +10,15 @@ export async function createStorage(nitro: Nitro) {
   };
 
   for (const [path, opts] of Object.entries(mounts)) {
-    const driver = await import(
-      builtinDrivers[opts.driver] || opts.driver
-    ).then((r) => r.default || r);
-    storage.mount(path, driver(opts));
+    if(opts.driver){
+      const driver = await import(
+        builtinDrivers[opts.driver] || opts.driver
+      ).then((r) => r.default || r);
+      storage.mount(path, driver(opts));
+    }
+    else{
+      console.log(`[Nitro warn]: No driver options selected for driver ${path}. Storage was not mounted.`)
+    }
   }
 
   return storage;
