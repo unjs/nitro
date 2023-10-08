@@ -17,7 +17,7 @@ export async function createStorage(nitro: Nitro) {
       storage.mount(path, driver(opts));
     }
     else{
-      console.log(`[Nitro warn]: No driver options selected for driver ${path}. Storage was not mounted.`)
+      console.log(`[Nitro warn]: No driver selected for mount point ${path}. Storage was not mounted.`)
     }
   }
 
