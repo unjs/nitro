@@ -254,7 +254,7 @@ export function defineCachedEventHandler<
       return true;
     },
     group: opts.group || "nitro/handlers",
-    integrity: [opts.integrity, handler],
+    integrity: hash([opts.integrity, handler]),
   };
 
   const _cachedHandler = cachedFunction<ResponseCacheEntry<Response>>(
