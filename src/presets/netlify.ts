@@ -129,16 +129,8 @@ async function writeRedirects(nitro: Nitro) {
   );
 
   if (!nitro.options.static) {
-    // Rewrite static ISR paths to builder functions
-    for (const [key, value] of rules.filter(
-      ([_, value]) => value.isr !== undefined
-    )) {
-      contents = value.isr
-        ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
-          contents
-        : `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
-          contents;
-    }
+    // Always redirect to nitro server when not in static mode
+    contents = `/*\t/.netlify/functions/server 200`;
   }
 
   for (const [key, routeRules] of rules.filter(
@@ -177,6 +169,29 @@ async function writeHeaders(nitro: Nitro) {
     (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
   );
 
+  // convert isr rules to header rules
+  for (const [path, routeRules] of rules.filter(
+    ([_, routeRules]) => routeRules.isr !== undefined
+  )) {
+    // create headers if missing
+    nitro.options.routeRules[path].headers ||= {};
+    // transform isr rules to SWR headers https://www.netlify.com/blog/swr-and-fine-grained-cache-control/
+    if (routeRules.isr === true || routeRules.isr === 0) {
+      // set SWR header
+      nitro.options.routeRules[path].headers["Cache-Control"] =
+        "public, max-age=0, must-revalidate"; // Tell browsers to always revalidate
+      nitro.options.routeRules[path].headers[
+        "Netlify-CDN-Cache-Control"
+      ] = `public, max-age=0, stale-while-revalidate=31536000`; // Tell Edge to cache asset for up to a year, but revalidate every call
+    } else if (Number.isInteger(routeRules.isr)) {
+      // set cache header
+      nitro.options.routeRules[path].headers["Cache-Control"] =
+        "public, max-age=0, must-revalidate"; // Tell browsers to always revalidate
+      nitro.options.routeRules[path].headers[
+        "Netlify-CDN-Cache-Control"
+      ] = `public, max-age=${routeRules.isr}, must-revalidate`; // Tell Edge to cache asset for set time
+    }
+  }
   for (const [path, routeRules] of rules.filter(
     ([_, routeRules]) => routeRules.headers
   )) {

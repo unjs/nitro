@@ -1,6 +1,7 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
 import { EventHandler, EventHandlerRequest, defineEventHandler } from "h3";
+// @ts-ignore
 import { $Fetch } from "../..";
 import { defineNitroConfig } from "../../src/config";
 

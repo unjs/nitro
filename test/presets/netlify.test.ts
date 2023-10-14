@@ -54,16 +54,7 @@ describe("nitro:preset:netlify", async () => {
         /rules/redirect/obj	https://nitro.unjs.io/	301
         /rules/nested/*	/base	302
         /rules/redirect	/base	302
-        /rules/_/cached/noncached	/.netlify/functions/server 200
-        /rules/_/noncached/cached	/.netlify/builders/server 200
-        /rules/_/cached/*	/.netlify/builders/server 200
-        /rules/_/noncached/*	/.netlify/functions/server 200
-        /rules/swr-ttl/*	/.netlify/builders/server 200
-        /rules/swr/*	/.netlify/builders/server 200
-        /rules/isr-ttl/*	/.netlify/builders/server 200
-        /rules/isr/*	/.netlify/builders/server 200
-        /rules/dynamic	/.netlify/functions/server 200
-        /* /.netlify/functions/server 200"
+        /*	/.netlify/functions/server 200"
       `);
         /* eslint-enable no-tabs */
       });
@@ -74,19 +65,39 @@ describe("nitro:preset:netlify", async () => {
         );
         /* eslint-disable no-tabs */
         expect(headers).toMatchInlineSnapshot(`
-        "/rules/headers
-          cache-control: s-maxage=60
-        /rules/cors
-          access-control-allow-origin: *
-          access-control-allow-methods: GET
-          access-control-allow-headers: *
-          access-control-max-age: 0
-        /rules/nested/*
-          x-test: test
-        /build/*
-          cache-control: public, max-age=3600, immutable
-        "
-      `);
+"/rules/_/noncached/cached
+  Cache-Control: public, max-age=0, must-revalidate
+  Netlify-CDN-Cache-Control: public, max-age=0, stale-while-revalidate=31536000
+/rules/_/cached/noncached
+/rules/_/noncached/*
+/rules/_/cached/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Netlify-CDN-Cache-Control: public, max-age=0, stale-while-revalidate=31536000
+/rules/headers
+  cache-control: s-maxage=60
+/rules/cors
+  access-control-allow-origin: *
+  access-control-allow-methods: GET
+  access-control-allow-headers: *
+  access-control-max-age: 0
+/rules/dynamic
+/rules/isr/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Netlify-CDN-Cache-Control: public, max-age=0, stale-while-revalidate=31536000
+/rules/isr-ttl/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Netlify-CDN-Cache-Control: public, max-age=60, must-revalidate
+/rules/swr/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Netlify-CDN-Cache-Control: public, max-age=0, stale-while-revalidate=31536000
+/rules/swr-ttl/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Netlify-CDN-Cache-Control: public, max-age=0, stale-while-revalidate=31536000
+/rules/nested/*
+  x-test: test
+/build/*
+  cache-control: public, max-age=3600, immutable
+"`);
         /* eslint-enable no-tabs */
       });
     }
