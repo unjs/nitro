@@ -361,7 +361,7 @@ const HTML_ENTITIES = {
 } as Record<string, string>;
 
 function escapeHtml(text: string) {
-  return text.replace(/&(lt|gt|amp|apos|quot);/g, (ch) => HTML_ENTITIES[ch]);
+  return text.replace(/&(lt|gt|amp|apos|quot);/g, (ch) => HTML_ENTITIES[ch] || ch);
 }
 
 function extractLinks(
