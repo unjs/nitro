@@ -4,7 +4,7 @@ import { withQuery } from "ufo";
 import { getRouteRulesForPath } from "../route-rules";
 import { lambda } from "./netlify-lambda";
 
-export const handler: Handler = async function handler(event, context) {
+export const handler: Handler = function handler(event, context) {
   const query = {
     ...event.queryStringParameters,
     ...event.multiValueQueryStringParameters,
