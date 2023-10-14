@@ -365,7 +365,7 @@ function extractLinks(
   if (crawlLinks) {
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
-        .map((m) => m[1])
+        .map((m) => m[1].replace(/&amp;/g, "&").replace(/&quot;/g, '"'))
         .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }
