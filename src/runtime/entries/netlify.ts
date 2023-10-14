@@ -11,17 +11,17 @@ export const handler: Handler = async function handler(event, context) {
   };
   const url = withQuery(event.path, query);
   const routeRules = getRouteRulesForPath(url);
-
   if (routeRules.isr) {
-    const builder = await import("@netlify/functions").then(
-      (r) => r.builder || r.default.builder
-    );
-    const ttl = typeof routeRules.isr === "number" ? routeRules.isr : false;
-    const builderHandler = ttl
-      ? (((event, context) =>
-          lambda(event, context).then((r) => ({ ...r, ttl }))) as Handler)
-      : lambda;
-    return builder(builderHandler)(event, context) as any;
+    event.headers["Cache-Control"] = "public,max-age=0,must-revalidate";
+    if (typeof routeRules.isr === "number") {
+      event.headers[
+        "Netlify-CDN-Cache-Control"
+      ] = `public,max-age=${routeRules.isr},must-revalidate`;
+    } else {
+      event.headers[
+        "Netlify-CDN-Cache-Control"
+      ] = `public,max-age=0,stale-while-revalidate=31536000`;
+    }
   }
 
   return lambda(event, context);
