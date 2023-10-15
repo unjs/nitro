@@ -48,15 +48,10 @@ export async function lambda(
       .includes("cache-control")
   ) {
     r.headers["Cache-Control"] = "public, max-age=0, must-revalidate";
-    if (typeof routeRules.isr === "number") {
-      r.headers[
-        "Netlify-CDN-Cache-Control"
-      ] = `public, max-age=${routeRules.isr}, must-revalidate`;
-    } else {
-      r.headers[
-        "Netlify-CDN-Cache-Control"
-      ] = `public, max-age=0, stale-while-revalidate=31536000`;
-    }
+    r.headers["Netlify-CDN-Cache-Control"] =
+      typeof routeRules.isr === "number"
+        ? `public, max-age=${routeRules.isr}, must-revalidate`
+        : `public, max-age=0, stale-while-revalidate=31536000`;
   }
 
   return {
