@@ -12,6 +12,7 @@ import {
   normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
 import { normalizeCookieHeader } from "../utils";
+import { getRouteRulesForPath } from "../route-rules";
 
 // Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
 export async function lambda(
@@ -37,6 +38,26 @@ export async function lambda(
 
   const cookies = normalizeCookieHeader(String(r.headers["set-cookie"]));
   const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
+
+  // adding cache headers to response if not already set manually by the end user
+  const routeRules = getRouteRulesForPath(url);
+  if (
+    routeRules.isr &&
+    !Object.keys(r.headers)
+      .map((hKey) => hKey.toLowerCase())
+      .includes("cache-control")
+  ) {
+    r.headers["Cache-Control"] = "public, max-age=0, must-revalidate";
+    if (typeof routeRules.isr === "number") {
+      r.headers[
+        "Netlify-CDN-Cache-Control"
+      ] = `public, max-age=${routeRules.isr}, must-revalidate`;
+    } else {
+      r.headers[
+        "Netlify-CDN-Cache-Control"
+      ] = `public, max-age=0, stale-while-revalidate=31536000`;
+    }
+  }
 
   return {
     statusCode: r.status,
