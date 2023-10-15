@@ -72,6 +72,8 @@ describe("nitro:preset:netlify", async () => {
   access-control-allow-methods: GET
   access-control-allow-headers: *
   access-control-max-age: 0
+/rules/nested/*
+  x-test: test
 /build/*
   cache-control: public, max-age=3600, immutable
 "`);
