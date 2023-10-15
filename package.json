@@ -45,14 +45,14 @@
     "dev:start": "node playground/.output/server/index.mjs",
     "lint": "eslint --cache --ext .ts,.mjs,.cjs . && prettier -c src test",
     "lint:fix": "eslint --cache --fix --ext .ts,.mjs,.cjs . && prettier --write -c src test",
-    "nitro": "NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
+    "nitro": "cross-env NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "pnpm lint && pnpm vitest-es run --silent",
     "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit",
     "test:types": "tsc --noEmit && pnpm test:fixture:types",
-    "vitest-es": "NODE_OPTIONS=\"--enable-source-maps --experimental-vm-modules\" vitest"
+    "vitest-es": "cross-env NODE_OPTIONS=\"--enable-source-maps --experimental-vm-modules\" vitest"
   },
   "resolutions": {
     "nitropack": "link:.",
@@ -132,10 +132,19 @@
     "@types/node-fetch": "^2.6.6",
     "@types/semver": "^7.5.3",
     "@types/serve-static": "^1.15.3",
+<<<<<<< HEAD
     "@vitest/coverage-v8": "^1.0.0-beta.2",
     "changelogen": "^0.5.5",
     "edge-runtime": "^2.5.4",
     "eslint": "^8.51.0",
+=======
+    "@vitest/coverage-v8": "^1.0.0-beta.0",
+    "add": "^2.0.6",
+    "changelogen": "^0.5.5",
+    "cross-env": "^7.0.3",
+    "edge-runtime": "^2.5.3",
+    "eslint": "^8.50.0",
+>>>>>>> db037ef (chore: dev on windows)
     "eslint-config-unjs": "^0.2.1",
     "execa": "^8.0.1",
     "expect-type": "^0.17.3",
@@ -143,6 +152,7 @@
     "firebase-functions": "^4.4.1",
     "get-port-please": "^3.1.1",
     "miniflare": "^2.14.1",
+    "pnpm": "^8.9.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",

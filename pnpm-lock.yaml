@@ -227,11 +227,22 @@ importers:
         specifier: ^1.15.3
         version: 1.15.3
       '@vitest/coverage-v8':
+<<<<<<< HEAD
         specifier: ^1.0.0-beta.2
         version: 1.0.0-beta.2(vitest@1.0.0-beta.2)
+=======
+        specifier: ^1.0.0-beta.0
+        version: 1.0.0-beta.0(vitest@1.0.0-beta.0)
+      add:
+        specifier: ^2.0.6
+        version: 2.0.6
+>>>>>>> db037ef (chore: dev on windows)
       changelogen:
         specifier: ^0.5.5
         version: 0.5.5
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       edge-runtime:
         specifier: ^2.5.4
         version: 2.5.4
@@ -259,6 +270,9 @@ importers:
       miniflare:
         specifier: ^2.14.1
         version: 2.14.1
+      pnpm:
+        specifier: ^8.9.0
+        version: 8.9.0
       prettier:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2258,6 +2272,10 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  /add@2.0.6:
+    resolution: {integrity: sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q==}
+    dev: true
+
   /agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
@@ -2917,6 +2935,14 @@ packages:
 
   /cron-schedule@3.0.6:
     resolution: {integrity: sha512-izfGgKyzzIyLaeb1EtZ3KbglkS6AKp9cv7LxmiyoOu+fXfol1tQDC0Cof0enVZGNtudTHW+3lfuW9ZkLQss4Wg==}
+    dev: true
+
+  /cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
     dev: true
 
   /cross-spawn@7.0.3:
@@ -5825,6 +5851,12 @@ packages:
   /pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
+    dev: true
+
+  /pnpm@8.9.0:
+    resolution: {integrity: sha512-74hZk44fBTe5/PAwkEQxE5Lzs4s0QXbmzU/e4hsiVSSwrCobCK4q4t3Vs/9LjKSW1neOlQ8+fJ9VW4EyWYJEHA==}
+    engines: {node: '>=16.14'}
+    hasBin: true
     dev: true
 
   /postcss@8.4.31:
