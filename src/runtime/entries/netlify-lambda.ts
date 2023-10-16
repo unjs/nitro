@@ -7,6 +7,7 @@ import type {
 import { withQuery } from "ufo";
 import { nitroApp } from "../app";
 import {
+  getNetlifyCacheHeaders,
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
@@ -39,20 +40,19 @@ export async function lambda(
   const cookies = normalizeCookieHeader(String(r.headers["set-cookie"]));
   const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
 
+  const isr = getRouteRulesForPath(url)?.isr;
   // adding cache headers to response if not already set manually by the end user
-  const routeRules = getRouteRulesForPath(url);
-  if (
-    routeRules.isr &&
-    !Object.keys(r.headers)
-      .map((hKey) => hKey.toLowerCase())
-      .includes("cache-control")
-  ) {
-    r.headers["Cache-Control"] = "public, max-age=0, must-revalidate";
-    r.headers["Netlify-CDN-Cache-Control"] =
-      typeof routeRules.isr === "number"
-        ? `public, max-age=${routeRules.isr}, must-revalidate`
-        : `public, max-age=0, stale-while-revalidate=31536000`;
-  }
+  r.headers = {
+    ...r.headers,
+    ...getNetlifyCacheHeaders(url, r.headers),
+  };
+
+  // preserving ttl in response for compatibility in netlify-builder preset
+  const ttlBuilderPolicy = isr
+    ? {
+        ttl: typeof isr === "number" ? isr : 0,
+      }
+    : {};
 
   return {
     statusCode: r.status,
@@ -62,5 +62,6 @@ export async function lambda(
     ...(cookies.length > 0 && {
       multiValueHeaders: { "set-cookie": cookies },
     }),
+    ...ttlBuilderPolicy,
   };
 }

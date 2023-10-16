@@ -1,5 +1,7 @@
 import type { Readable } from "node:stream";
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
+import { getRouteRulesForPath } from "./route-rules";
+import type { NitroApp } from "./app";
 
 export function normalizeLambdaIncomingHeaders(
   headers?: APIGatewayProxyEventHeaders
@@ -89,3 +91,27 @@ const TEXT_TYPE_RE = /^text\/|\/(javascript|json|xml)|utf-?8/;
 function isTextType(contentType = "") {
   return TEXT_TYPE_RE.test(contentType);
 }
+
+// -- Netlify headers utils
+
+type _THeaders = Record<string, string | number | string[]>;
+export const getNetlifyCacheHeaders = (url: string, currHeaders: _THeaders) => {
+  const routeRules = getRouteRulesForPath(url);
+  const headersToAdd: Partial<
+    Record<"Cache-Control" | "Netlify-CDN-Cache-Control", string>
+  > = {};
+  if (
+    routeRules.isr &&
+    !Object.keys(currHeaders)
+      .map((hKey) => hKey.toLowerCase())
+      .includes("cache-control")
+  ) {
+    headersToAdd["Cache-Control"] = "public, max-age=0, must-revalidate";
+    headersToAdd["Netlify-CDN-Cache-Control"] =
+      typeof routeRules.isr === "number"
+        ? `public, max-age=${routeRules.isr}, must-revalidate`
+        : `public, max-age=0, stale-while-revalidate=31536000`;
+  }
+
+  return headersToAdd;
+};
