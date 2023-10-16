@@ -68,11 +68,22 @@ function _applyEnv(obj: object, parentKey = "") {
     const subKey = parentKey ? `${parentKey}_${key}` : key;
     const envValue = _getEnv(subKey);
     if (_isObject(obj[key])) {
+      // Same as before
       if (_isObject(envValue)) {
-        obj[key] = { ...obj[key], ...(envValue as any) };
+        obj[key] = { ...obj[key], ...envValue as object };
+        _applyEnv(obj[key], subKey);
       }
-      _applyEnv(obj[key], subKey);
-    } else {
+      // If envValue is undefined 
+      // Then proceed to nested properties
+      else if (envValue === undefined) {
+        _applyEnv(obj[key], subKey);
+      }
+      // If envValue is a primitive other than undefined 
+      // Then set objValue and ignore the nested properties
+      else {
+        obj[key] = envValue ?? obj[key];
+      }
+     }  else {
       obj[key] = envValue ?? obj[key];
     }
   }
