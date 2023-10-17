@@ -207,7 +207,7 @@ importers:
         version: 3.5.1
       '@cloudflare/workers-types':
         specifier: ^4.20231010.0
-        version: 4.20231010.0
+        version: 4.20231016.0
       '@types/aws-lambda':
         specifier: ^8.10.124
         version: 8.10.124
@@ -227,28 +227,14 @@ importers:
         specifier: ^1.15.3
         version: 1.15.3
       '@vitest/coverage-v8':
-<<<<<<< HEAD
         specifier: ^1.0.0-beta.2
         version: 1.0.0-beta.2(vitest@1.0.0-beta.2)
-=======
-        specifier: ^1.0.0-beta.0
-        version: 1.0.0-beta.0(vitest@1.0.0-beta.0)
-<<<<<<< HEAD
-      add:
-        specifier: ^2.0.6
-        version: 2.0.6
->>>>>>> db037ef (chore: dev on windows)
-=======
->>>>>>> ce25d7e (chore: who hurt you)
       changelogen:
         specifier: ^0.5.5
         version: 0.5.5
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
       edge-runtime:
         specifier: ^2.5.4
-        version: 2.5.4
+        version: 2.5.5
       eslint:
         specifier: ^8.51.0
         version: 8.51.0
@@ -579,8 +565,8 @@ packages:
       mime: 3.0.0
     dev: false
 
-  /@cloudflare/workers-types@4.20231010.0:
-    resolution: {integrity: sha512-Jscqg52ScJMTMRHHVeoUvXYYiXPT4V59NKaClQVju9B6oPAzuePFYHwi5PLQ5Yr+xEbJ6+bHuq1aYV/69z6L0w==}
+  /@cloudflare/workers-types@4.20231016.0:
+    resolution: {integrity: sha512-eGB0cRVyoJpeyGJx2re5sbd9R316a61sY73xwnqm4cwGpb+OxCK2gc651RxGiN7H4w6LY1RpysUgeGLmj5B3+g==}
     dev: true
 
   /@edge-runtime/format@2.2.0:
@@ -588,16 +574,16 @@ packages:
     engines: {node: '>=16'}
     dev: true
 
-  /@edge-runtime/primitives@4.0.2:
-    resolution: {integrity: sha512-zIzzqvq62O0gxKv/PrfFBn2TEJtJYw6YlNyfLsWr16Lxz6bT8CB1IrfWa9vc5zsQPElP/orwZCu+x80+ihWQyQ==}
+  /@edge-runtime/primitives@4.0.3:
+    resolution: {integrity: sha512-1qldmcIwxxi69Hg6cmWB5erpyd+4GXUk7zCTBNh2EQJUvYbt5G46vtNyAtr5LbuHgM0gEYvAzdiFt2k2elsTsg==}
     engines: {node: '>=16'}
     dev: true
 
-  /@edge-runtime/vm@3.1.4:
-    resolution: {integrity: sha512-k3AdzA2Bfdr7NCezxER0Ch3MPwMbPqEFJqlgJ7xSIvsuuW+8c2rRQpPDMoy8ZSPbnwzg+SK3cyoLGDt4hFhexQ==}
+  /@edge-runtime/vm@3.1.5:
+    resolution: {integrity: sha512-vjSO7S9+iAeZJd/m8ulpiET2wmd3JpAt/twLPM5vYWe8JO8WH+R/JWGz7Vx9ih62Xq8VZucRcZJSWsi5G8+IRg==}
     engines: {node: '>=16'}
     dependencies:
-      '@edge-runtime/primitives': 4.0.2
+      '@edge-runtime/primitives': 4.0.3
     dev: true
 
   /@esbuild/android-arm64@0.18.20:
@@ -2933,14 +2919,6 @@ packages:
     resolution: {integrity: sha512-izfGgKyzzIyLaeb1EtZ3KbglkS6AKp9cv7LxmiyoOu+fXfol1tQDC0Cof0enVZGNtudTHW+3lfuW9ZkLQss4Wg==}
     dev: true
 
-  /cross-env@7.0.3:
-    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
-    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
-    hasBin: true
-    dependencies:
-      cross-spawn: 7.0.3
-    dev: true
-
   /cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -3143,13 +3121,13 @@ packages:
       safe-buffer: 5.2.1
     dev: true
 
-  /edge-runtime@2.5.4:
-    resolution: {integrity: sha512-s+FSmEuH9iUvrfBeGDrRrj7rGtGAGl0JoztV0OuUpDbxTWb6ZeBawW/CQjvFmcZRmOSm1aryk8rOsm96PNNuFg==}
+  /edge-runtime@2.5.5:
+    resolution: {integrity: sha512-wB/98qOwMffD1W+VGWVk+exu1KMbSrlZV1fMXEfEEquKJgitfmf4FoMc89pCAO1lg+bnGSz9Oka+5UMkk4esjQ==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
       '@edge-runtime/format': 2.2.0
-      '@edge-runtime/vm': 3.1.4
+      '@edge-runtime/vm': 3.1.5
       async-listen: 3.0.1
       mri: 1.2.0
       picocolors: 1.0.0
