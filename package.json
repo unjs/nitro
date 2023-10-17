@@ -134,6 +134,7 @@
     "@types/serve-static": "^1.15.3",
     "@vitest/coverage-v8": "^1.0.0-beta.2",
     "changelogen": "^0.5.5",
+    "cross-env": "^7.0.3",
     "edge-runtime": "^2.5.4",
     "eslint": "^8.51.0",
     "eslint-config-unjs": "^0.2.1",
