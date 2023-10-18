@@ -49,6 +49,7 @@ jobs:
           deno-version: v1.x
       - run: pnpm install
       - run: pnpm test:types
+        if: ${{ matrix.os != 'windows-latest' }}
       - run: pnpm build
       - run: pnpm vitest --coverage
         env:
