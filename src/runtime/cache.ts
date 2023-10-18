@@ -5,6 +5,7 @@ import {
   createEvent,
   EventHandler,
   isEvent,
+  splitCookiesString,
 } from "h3";
 import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
@@ -404,7 +405,12 @@ export function defineCachedEventHandler<
     // Send status and headers
     event.node.res.statusCode = response.code;
     for (const name in response.headers) {
-      event.node.res.setHeader(name, response.headers[name]);
+      const value = response.headers[name];
+      if (name === "set-cookie") {
+        event.node.res.appendHeader(name, splitCookiesString(value as string[]));
+      } else {
+        event.node.res.setHeader(name, value);
+      }
     }
 
     // Send body
