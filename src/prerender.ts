@@ -352,6 +352,21 @@ async function runParallel<T>(
 
 const LINK_REGEX = /(?<=\s)href=(?!&quot;)["']?([^"'>]+)/g;
 
+const HTML_ENTITIES = {
+  "&lt;": "<",
+  "&gt;": ">",
+  "&amp;": "&",
+  "&apos;": "'",
+  "&quot;": '"',
+} as Record<string, string>;
+
+function escapeHtml(text: string) {
+  return text.replace(
+    /&(lt|gt|amp|apos|quot);/g,
+    (ch) => HTML_ENTITIES[ch] || ch
+  );
+}
+
 function extractLinks(
   html: string,
   from: string,
@@ -365,7 +380,7 @@ function extractLinks(
   if (crawlLinks) {
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
-        .map((m) => m[1])
+        .map((m) => escapeHtml(m[1]))
         .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }
