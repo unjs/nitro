@@ -246,6 +246,9 @@ export function defineCachedEventHandler<
       return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
+      if (!entry.value) {
+        return false;
+      }
       if (entry.value.code >= 400) {
         return false;
       }
