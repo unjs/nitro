@@ -158,7 +158,7 @@ export function testNitro(
 
   async function callHandler(options): Promise<TestHandlerResult> {
     const result = await _handler(options);
-    if (result.constructor.name !== "Response") {
+    if (!["Response", "_Response"].includes(result.constructor.name)) {
       return result as TestHandlerResult;
     }
 
