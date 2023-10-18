@@ -407,6 +407,7 @@ export function defineCachedEventHandler<
     for (const name in response.headers) {
       const value = response.headers[name];
       if (name === "set-cookie") {
+        // TODO: Show warning and remove this header in the next major version of Nitro
         event.node.res.appendHeader(
           name,
           splitCookiesString(value as string[])
