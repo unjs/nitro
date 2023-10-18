@@ -407,7 +407,10 @@ export function defineCachedEventHandler<
     for (const name in response.headers) {
       const value = response.headers[name];
       if (name === "set-cookie") {
-        event.node.res.appendHeader(name, splitCookiesString(value as string[]));
+        event.node.res.appendHeader(
+          name,
+          splitCookiesString(value as string[])
+        );
       } else {
         event.node.res.setHeader(name, value);
       }
