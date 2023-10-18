@@ -132,7 +132,7 @@
     "@types/node-fetch": "^2.6.7",
     "@types/semver": "^7.5.3",
     "@types/serve-static": "^1.15.4",
-    "@vitest/coverage-v8": "^1.0.0-beta.2",
+    "@vitest/coverage-v8": "1.0.0-beta.2",
     "changelogen": "^0.5.5",
     "edge-runtime": "^2.5.5",
     "eslint": "^8.51.0",
@@ -147,7 +147,7 @@
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
     "undici": "^5.26.3",
-    "vitest": "^1.0.0-beta.2",
+    "vitest": "1.0.0-beta.2",
     "xml2js": "^0.6.2"
   },
   "peerDependencies": {
