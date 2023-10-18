@@ -10,14 +10,13 @@ export async function createStorage(nitro: Nitro) {
   };
 
   for (const [path, opts] of Object.entries(mounts)) {
-    if(opts.driver){
+    if (opts.driver) {
       const driver = await import(
         builtinDrivers[opts.driver] || opts.driver
       ).then((r) => r.default || r);
       storage.mount(path, driver(opts));
-    }
-    else{
-      console.log(`[Nitro warn]: No driver selected for mount point ${path}. Storage was not mounted.`)
+    } else {
+      nitro.logger.warn(`No \`driver\` set for storage mount point "${path}".`);
     }
   }
 
