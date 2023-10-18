@@ -45,14 +45,14 @@
     "dev:start": "node playground/.output/server/index.mjs",
     "lint": "eslint --cache --ext .ts,.mjs,.cjs . && prettier -c src test",
     "lint:fix": "eslint --cache --fix --ext .ts,.mjs,.cjs . && prettier --write -c src test",
-    "nitro": "cross-env NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
+    "nitro": "NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "pnpm lint && pnpm vitest-es run --silent",
     "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit",
     "test:types": "tsc --noEmit && pnpm test:fixture:types",
-    "vitest-es": "cross-env NODE_OPTIONS=\"--enable-source-maps --experimental-vm-modules\" vitest"
+    "vitest-es": "NODE_OPTIONS=\"--enable-source-maps --experimental-vm-modules\" vitest"
   },
   "resolutions": {
     "nitropack": "link:.",
@@ -134,7 +134,6 @@
     "@types/serve-static": "^1.15.3",
     "@vitest/coverage-v8": "^1.0.0-beta.2",
     "changelogen": "^0.5.5",
-    "cross-env": "^7.0.3",
     "edge-runtime": "^2.5.4",
     "eslint": "^8.51.0",
     "eslint-config-unjs": "^0.2.1",
