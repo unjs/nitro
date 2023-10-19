@@ -2,6 +2,111 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.7.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.6.3...v2.7.0)
+
+### 🚀 Enhancements
+
+- **vercel:** Support `bypassToken` for on-demand static reganaration ([#1723](https://github.com/unjs/nitro/pull/1723))
+- **prerender:** Support `retry` and `retryDelay` ([#1534](https://github.com/unjs/nitro/pull/1534))
+- Allow disabling compressed size calculation ([#1756](https://github.com/unjs/nitro/pull/1756))
+
+### 🔥 Performance
+
+- Use native fetch for `node >= 18` to reduce `%40` of bundle size ([#1724](https://github.com/unjs/nitro/pull/1724))
+
+### 🩹 Fixes
+
+- Sort dependencies in `.output/package.json` ([#1708](https://github.com/unjs/nitro/pull/1708))
+- Add `application/javascript` mime type in lambda utils ([#1737](https://github.com/unjs/nitro/pull/1737))
+- **renderer:** Allow all h3 handled body types ([#1755](https://github.com/unjs/nitro/pull/1755))
+- **dev:** Safe error message override ([#1712](https://github.com/unjs/nitro/pull/1712))
+- **azure:** Fix cookie format normalization ([#1753](https://github.com/unjs/nitro/pull/1753))
+- Exclude undefined from hook types ([#1769](https://github.com/unjs/nitro/pull/1769))
+- **iis-node:** Pass `PORT` as `NITRO_UNIX_SOCKET` ([#1783](https://github.com/unjs/nitro/pull/1783))
+- **aws-lambda:** Handle `event.isBase64Encoded` ([#1779](https://github.com/unjs/nitro/pull/1779))
+- **cache:** Allow overriding integrity ([#1791](https://github.com/unjs/nitro/pull/1791))
+- **cache:** Write swr and update errors to console ([#1794](https://github.com/unjs/nitro/pull/1794))
+- **cache:** Only return validated stale value ([#1795](https://github.com/unjs/nitro/pull/1795))
+- **cache:** Only invalidate if `validate` returns `false` ([#1796](https://github.com/unjs/nitro/pull/1796))
+- Watch plugins directory ([#1800](https://github.com/unjs/nitro/pull/1800))
+- **cache:** Allow setting multiple `set-cookie` headers (bad practice) ([#1838](https://github.com/unjs/nitro/pull/1838))
+- **prerender:** Decode html entities in rendered links ([#1824](https://github.com/unjs/nitro/pull/1824))
+- **storage:** Validate and skip invalid mounts ([#1805](https://github.com/unjs/nitro/pull/1805))
+- **cache:** Validate `entry.value` to have value for cached handlers ([84559382](https://github.com/unjs/nitro/commit/84559382))
+- **cache:** Fix event handler integrity hash generation ([#1820](https://github.com/unjs/nitro/pull/1820))
+- **cache:** Set cache item before returning response on first request ([#1813](https://github.com/unjs/nitro/pull/1813))
+
+### 💅 Refactors
+
+- **iis:** Improve preset and docs ([#1784](https://github.com/unjs/nitro/pull/1784))
+
+### 📖 Documentation
+
+- Update prerender options ([11a24124](https://github.com/unjs/nitro/commit/11a24124))
+- Fix typo ([#1722](https://github.com/unjs/nitro/pull/1722))
+- Register error handler using hook instead of `hookOnce` ([#1743](https://github.com/unjs/nitro/pull/1743))
+- Update lock file ([#1750](https://github.com/unjs/nitro/pull/1750))
+- Fix typo ([#1759](https://github.com/unjs/nitro/pull/1759))
+- Fix configuration file name of the custom preset ([#1760](https://github.com/unjs/nitro/pull/1760))
+- Typo in word "legacy" in Configuration docs ([#1780](https://github.com/unjs/nitro/pull/1780))
+- **cloudflare:** Add local dev section ([#1772](https://github.com/unjs/nitro/pull/1772))
+
+### 🏡 Chore
+
+- **release:** V2.6.3 ([9bb55262](https://github.com/unjs/nitro/commit/9bb55262))
+- Add `.devcontainer` ([#1633](https://github.com/unjs/nitro/pull/1633))
+- Update dependencies ([d225d3be](https://github.com/unjs/nitro/commit/d225d3be))
+- Fix lint issue ([c3565d8c](https://github.com/unjs/nitro/commit/c3565d8c))
+- Update non-major dependencies ([9c2cab26](https://github.com/unjs/nitro/commit/9c2cab26))
+- Update lockfile ([179846c7](https://github.com/unjs/nitro/commit/179846c7))
+- Fix type issues ([0ff72e29](https://github.com/unjs/nitro/commit/0ff72e29))
+- Update vitest to `1.0.0-beta` ([#1776](https://github.com/unjs/nitro/pull/1776))
+- Update dependencies ([553e4534](https://github.com/unjs/nitro/commit/553e4534))
+- **app:** Fix `localFetch` type ([5f3b287c](https://github.com/unjs/nitro/commit/5f3b287c))
+- Use pnpm `shell-emulator` for windows local development ([#1828](https://github.com/unjs/nitro/pull/1828))
+- Update lockfile ([f4e33332](https://github.com/unjs/nitro/commit/f4e33332))
+- Use `nitropack-nightly` for nightly release channel ([#1841](https://github.com/unjs/nitro/pull/1841))
+- Increase codecov threshold ([bc464032](https://github.com/unjs/nitro/commit/bc464032))
+- Update lockfile ([f53e3575](https://github.com/unjs/nitro/commit/f53e3575))
+
+### ✅ Tests
+
+- Temporaily disable dev test in ci ([53a96adb](https://github.com/unjs/nitro/commit/53a96adb))
+- Update deno test with explicit host ([8cce5085](https://github.com/unjs/nitro/commit/8cce5085))
+- Update reponse type check ([#1839](https://github.com/unjs/nitro/pull/1839))
+
+### 🤖 CI
+
+- Run tests against node 18 ([#1713](https://github.com/unjs/nitro/pull/1713))
+- Run vitest with es and sourcemap support ([c4c00467](https://github.com/unjs/nitro/commit/c4c00467))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Yasser Lahbibi ([@yassilah](http://github.com/yassilah))
+- Horu 
+- Michael Brevard <yonshi29@gmail.com>
+- Daniel Roe <daniel@roe.dev>
+- MiniDigger  < Martin>
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+- Heb ([@Hebilicious](http://github.com/Hebilicious))
+- Henrique Lopes 
+- McPizza <gh@l1.io>
+- Michael BOUVY <michael.bouvy@gmail.com>
+- Jeremy Graziani 
+- Tobias Diez <code@tobiasdiez.com>
+- VALERIY SINEVICH 
+- Roman Zipp <ich@ich.wtf>
+- Benjamin GAYMAY ([@BenjaminGaymay](http://github.com/BenjaminGaymay))
+- Alexander Lichter ([@manniL](http://github.com/manniL))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+- Nils K 
+- Jonas Thelemann ([@dargmuesli](http://github.com/dargmuesli))
+- Jenjen75 <jean-michel.khou@vivlab.com>
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v2.6.3
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.6.2...v2.6.3)
