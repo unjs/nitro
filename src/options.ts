@@ -6,6 +6,7 @@ import { defu } from "defu";
 import { resolveModuleExportNames } from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
+import { getAbsoluteFSPath } from "swagger-ui-dist";
 import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
 import consola from "consola";
@@ -380,6 +381,11 @@ export async function loadOptions(
       route: "/_nitro/swagger",
       handler: "#internal/nitro/routes/swagger",
     });
+    options.publicAssets.push({
+      baseURL: "_nitro/swagger-ui-dist",
+      dir: getAbsoluteFSPath(),
+      maxAge: 60 * 60 // 1 hour
+    })
   }
 
   // Native fetch

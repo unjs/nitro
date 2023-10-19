@@ -5,7 +5,7 @@ import { eventHandler } from "h3";
 // Served as /_nitro/swagger
 export default eventHandler((event) => {
   const title = "Nitro Swagger UI";
-  const CDN_BASE = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@^4";
+  const CDN_BASE = "/_nitro/swagger-ui-dist";
   return html`<!doctype html>
     <html lang="en">
       <head>
