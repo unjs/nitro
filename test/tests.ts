@@ -601,4 +601,20 @@ export function testNitro(
       expect(data.runtimeConfig.secret).toBeUndefined();
     });
   });
+
+  describe("cache", () => {
+    it("should setItem before returning response the first time", async () => {
+      const { data: timestamp } = await callHandler({ url: "/api/cached" });
+
+      const calls = await Promise.all([
+        callHandler({ url: "/api/cached" }),
+        callHandler({ url: "/api/cached" }),
+        callHandler({ url: "/api/cached" }),
+      ]);
+
+      for (const call of calls) {
+        expect(call.data).toBe(timestamp);
+      }
+    });
+  });
 }

@@ -129,7 +129,9 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
 
-    if (expired && event && event.waitUntil) {
+    if (entry.value === undefined) {
+      await _resolvePromise;
+    } else if (expired && event && event.waitUntil) {
       event.waitUntil(_resolvePromise);
     }
 
