@@ -55,8 +55,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       c12:
-        specifier: ^1.4.2
-        version: 1.4.2
+        specifier: ^1.5.1
+        version: 1.5.1
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
@@ -270,7 +270,7 @@ importers:
         version: 2.0.0(typescript@5.2.2)
       undici:
         specifier: ^5.26.3
-        version: 5.26.3
+        version: 5.26.4
       vitest:
         specifier: 1.0.0-beta.2
         version: 1.0.0-beta.2
@@ -1261,7 +1261,7 @@ packages:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
       http-cache-semantics: 4.1.1
-      undici: 5.26.3
+      undici: 5.26.4
     dev: true
 
   /@miniflare/cli-parser@2.14.1:
@@ -1284,7 +1284,7 @@ packages:
       dotenv: 10.0.0
       kleur: 4.1.5
       set-cookie-parser: 2.6.0
-      undici: 5.26.3
+      undici: 5.26.4
       urlpattern-polyfill: 4.0.3
     dev: true
 
@@ -1303,7 +1303,7 @@ packages:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
       '@miniflare/storage-memory': 2.14.1
-      undici: 5.26.3
+      undici: 5.26.4
     dev: true
 
   /@miniflare/html-rewriter@2.14.1:
@@ -1313,7 +1313,7 @@ packages:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
       html-rewriter-wasm: 0.4.1
-      undici: 5.26.3
+      undici: 5.26.4
     dev: true
 
   /@miniflare/http-server@2.14.1:
@@ -1325,7 +1325,7 @@ packages:
       '@miniflare/web-sockets': 2.14.1
       kleur: 4.1.5
       selfsigned: 2.1.1
-      undici: 5.26.3
+      undici: 5.26.4
       ws: 8.14.2
       youch: 2.2.2
     transitivePeerDependencies:
@@ -1353,7 +1353,7 @@ packages:
     dependencies:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
-      undici: 5.26.3
+      undici: 5.26.4
     dev: true
 
   /@miniflare/runner-vm@2.14.1:
@@ -1419,7 +1419,7 @@ packages:
     dependencies:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
-      undici: 5.26.3
+      undici: 5.26.4
       ws: 8.14.2
     transitivePeerDependencies:
       - bufferutil
@@ -2564,8 +2564,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001550
-      electron-to-chromium: 1.4.558
+      caniuse-lite: 1.0.30001551
+      electron-to-chromium: 1.4.559
       node-releases: 2.0.13
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
     dev: true
@@ -2610,8 +2610,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
-  /c12@1.4.2:
-    resolution: {integrity: sha512-3IP/MuamSVRVw8W8+CHWAz9gKN4gd+voF2zm/Ln6D25C2RhytEZ1ABbC8MjKr4BR9rhoV1JQ7jJA158LDiTkLg==}
+  /c12@1.5.1:
+    resolution: {integrity: sha512-BWZRJgDEveT8uI+cliCwvYSSSSvb4xKoiiu5S0jaDbKBopQLQF7E+bq9xKk1pTcG+mUa3yXuFO7bD9d8Lr9Xxg==}
     dependencies:
       chokidar: 3.5.3
       defu: 6.1.2
@@ -2644,8 +2644,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite@1.0.30001550:
-    resolution: {integrity: sha512-p82WjBYIypO0ukTsd/FG3Xxs+4tFeaY9pfT4amQL8KWtYH7H9nYwReGAbMTJ0hsmRO8IfDtsS6p3ZWj8+1c2RQ==}
+  /caniuse-lite@1.0.30001551:
+    resolution: {integrity: sha512-vtBAez47BoGMMzlbYhfXrMV1kvRF2WP/lqiMuDu1Sb4EE4LKEgjopFDSRtZfdVnslNRpOqV/woE+Xgrwj6VQlg==}
     dev: true
 
   /catharsis@0.9.0:
@@ -2696,7 +2696,7 @@ packages:
     resolution: {integrity: sha512-IzgToIJ/R9NhVKmL+PW33ozYkv53bXvufDNUSH3GTKXq1iCHGgkbgbtqEWbo8tnWNnt7nPDpjL8PwSG2iS8RVw==}
     hasBin: true
     dependencies:
-      c12: 1.4.2
+      c12: 1.5.1
       colorette: 2.0.20
       consola: 3.2.3
       convert-gitmoji: 0.1.3
@@ -3145,8 +3145,8 @@ packages:
   /ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  /electron-to-chromium@1.4.558:
-    resolution: {integrity: sha512-j9IcGmfkyN5MBH/0Xzg45GDHasXsnwEJDM6Xnr9H7GlGUni+JH4q6xp6Nk7NV5LjTmoEFBqhILIqg1McJrv6uA==}
+  /electron-to-chromium@1.4.559:
+    resolution: {integrity: sha512-iS7KhLYCSJbdo3rUSkhDTVuFNCV34RKs2UaB9Ecr7VlqzjjWW//0nfsFF5dtDmyXlZQaDYYtID5fjtC/6lpRug==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -5359,7 +5359,7 @@ packages:
       kleur: 4.1.5
       semiver: 1.1.0
       source-map-support: 0.5.21
-      undici: 5.26.3
+      undici: 5.26.4
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -5677,7 +5677,7 @@ packages:
       fast-glob: 3.3.1
       js-yaml: 4.1.0
       supports-color: 9.4.0
-      undici: 5.26.3
+      undici: 5.26.4
       yargs-parser: 21.1.1
     dev: false
 
@@ -6943,8 +6943,8 @@ packages:
   /undici-types@5.25.3:
     resolution: {integrity: sha512-Ga1jfYwRn7+cP9v8auvEXN1rX3sWqlayd4HP7OKk4mZWylEmu3KzXDUGrQUN6Ol7qo1gPvB2e5gX6udnyEPgdA==}
 
-  /undici@5.26.3:
-    resolution: {integrity: sha512-H7n2zmKEWgOllKkIUkLvFmsJQj062lSm3uA4EYApG8gLuiOM0/go9bIoC3HVaSnfg4xunowDE2i9p8drkXuvDw==}
+  /undici@5.26.4:
+    resolution: {integrity: sha512-OG+QOf0fTLtazL9P9X7yqWxQ+Z0395Wk6DSkyTxtaq3wQEjIroVe7Y4asCX/vcCxYpNGMnwz8F0qbRYUoaQVMw==}
     engines: {node: '>=14.0'}
     dependencies:
       '@fastify/busboy': 2.0.0
