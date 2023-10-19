@@ -109,7 +109,7 @@ export const getNetlifyCacheHeaders = (url: string, currHeaders: _THeaders) => {
     headersToAdd["Cache-Control"] = "public, max-age=0, must-revalidate";
     headersToAdd["Netlify-CDN-Cache-Control"] =
       typeof routeRules.isr === "number"
-        ? `public, max-age=${routeRules.isr}, must-revalidate`
+        ? `public, max-age=${routeRules.isr}, s-maxage=${routeRules.isr}, must-revalidate`
         : `public, max-age=0, stale-while-revalidate=31536000`;
   }
 
