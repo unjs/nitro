@@ -384,8 +384,8 @@ export async function loadOptions(
     options.publicAssets.push({
       baseURL: "_nitro/swagger-ui-dist",
       dir: getAbsoluteFSPath(),
-      maxAge: 60 * 60 // 1 hour
-    })
+      maxAge: 60 * 60, // 1 hour
+    });
   }
 
   // Native fetch
