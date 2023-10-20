@@ -350,6 +350,12 @@ export interface NitroOptions extends PresetOptions {
     deploy: string;
   };
 
+  // Framework
+  framework: {
+    name?: string;
+    version?: string;
+  };
+
   // IIS
   iis?: {
     mergeConfig?: boolean;
