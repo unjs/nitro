@@ -158,7 +158,7 @@ export function testNitro(
 
   async function callHandler(options): Promise<TestHandlerResult> {
     const result = await _handler(options);
-    if (result.constructor.name !== "Response") {
+    if (!["Response", "_Response"].includes(result.constructor.name)) {
       return result as TestHandlerResult;
     }
 
@@ -328,7 +328,7 @@ export function testNitro(
       const { status, headers } = await callHandler({ url: "/build/test.txt" });
       expect(status).toBe(200);
       expect(headers.etag).toMatchInlineSnapshot(
-        '"\\"7-vxGfAKTuGVGhpDZqQLqV60dnKPw\\""'
+        `""7-vxGfAKTuGVGhpDZqQLqV60dnKPw""`
       );
       expect(headers["content-type"]).toMatchInlineSnapshot(
         '"text/plain; charset=utf-8"'
@@ -542,6 +542,7 @@ export function testNitro(
         "nitro-dev",
         "vercel",
         nodeVersion < 18 && "deno-server",
+        nodeVersion < 18 && "bun",
       ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
@@ -550,22 +551,10 @@ export function testNitro(
             : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
       }
 
-      // TODO: verce-ledge joins all cookies for some reason!
+      // TODO: vercel-edge joins all cookies for some reason!
       if (ctx.preset === "vercel-edge") {
         expectedCookies =
           "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
-      }
-
-      // Aws lambda v1
-      if (ctx.preset === "aws-lambda" && ctx.lambdaV1) {
-        expectedCookies =
-          "foo=bar, bar=baz,test=value; Path=/,test2=value; Path=/";
-      }
-
-      // TODO: Bun does not handles set-cookie at all
-      // https://github.com/unjs/nitro/issues/1461
-      if (["bun"].includes(ctx.preset)) {
-        return;
       }
 
       expect(headers["set-cookie"]).toMatchObject(expectedCookies);
@@ -585,7 +574,8 @@ export function testNitro(
       !ctx.nitro.options.node ||
         // TODO: Investigate
         ctx.preset === "bun" ||
-        ctx.preset === "deno-server"
+        ctx.preset === "deno-server" ||
+        ctx.preset === "nitro-dev"
     )("sourcemap works", async () => {
       const { data } = await callHandler({ url: "/error-stack" });
       expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
@@ -609,6 +599,22 @@ export function testNitro(
       expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.helloThere).toBe("general");
       expect(data.runtimeConfig.secret).toBeUndefined();
+    });
+  });
+
+  describe("cache", () => {
+    it("should setItem before returning response the first time", async () => {
+      const { data: timestamp } = await callHandler({ url: "/api/cached" });
+
+      const calls = await Promise.all([
+        callHandler({ url: "/api/cached" }),
+        callHandler({ url: "/api/cached" }),
+        callHandler({ url: "/api/cached" }),
+      ]);
+
+      for (const call of calls) {
+        expect(call.data).toBe(timestamp);
+      }
     });
   });
 }

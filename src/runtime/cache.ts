@@ -5,6 +5,7 @@ import {
   createEvent,
   EventHandler,
   isEvent,
+  splitCookiesString,
 } from "h3";
 import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
@@ -51,8 +52,8 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
   // Normalize cache params
   const group = opts.group || "nitro/functions";
   const name = opts.name || fn.name || "_";
-  const integrity = hash([opts.integrity, fn, opts]);
-  const validate = opts.validate || (() => true);
+  const integrity = opts.integrity || hash([fn, opts]);
+  const validate = opts.validate || ((entry) => entry.value !== undefined);
 
   async function get(
     key: string,
@@ -77,7 +78,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       shouldInvalidateCache ||
       entry.integrity !== integrity ||
       (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
-      !validate(entry);
+      validate(entry) === false;
 
     const _resolve = async () => {
       const isPending = pending[key];
@@ -112,10 +113,11 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
         entry.mtime = Date.now();
         entry.integrity = integrity;
         delete pending[key];
-        if (validate(entry)) {
+        if (validate(entry) !== false) {
           const promise = useStorage()
             .setItem(cacheKey, entry)
             .catch((error) => {
+              console.error(`[nitro] [cache] Cache write error.`, error);
               useNitroApp().captureError(error, { event, tags: ["cache"] });
             });
           if (event && event.waitUntil) {
@@ -127,16 +129,17 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
 
-    if (expired && event && event.waitUntil) {
+    if (entry.value === undefined) {
+      await _resolvePromise;
+    } else if (expired && event && event.waitUntil) {
       event.waitUntil(_resolvePromise);
     }
 
-    if (opts.swr && entry.value) {
-      // eslint-disable-next-line no-console
+    if (opts.swr && validate(entry) !== false) {
       _resolvePromise.catch((error) => {
+        console.error(`[nitro] [cache] SWR handler error.`, error);
         useNitroApp().captureError(error, { event, tags: ["cache"] });
       });
-      // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return entry;
     }
 
@@ -245,6 +248,9 @@ export function defineCachedEventHandler<
       return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
+      if (!entry.value) {
+        return false;
+      }
       if (entry.value.code >= 400) {
         return false;
       }
@@ -254,7 +260,7 @@ export function defineCachedEventHandler<
       return true;
     },
     group: opts.group || "nitro/handlers",
-    integrity: [opts.integrity, handler],
+    integrity: opts.integrity || hash([handler, opts]),
   };
 
   const _cachedHandler = cachedFunction<ResponseCacheEntry<Response>>(
@@ -338,10 +344,10 @@ export function defineCachedEventHandler<
 
       // Collect cachable headers
       const headers = event.node.res.getHeaders();
-      headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`;
+      headers.etag =
+        String(headers.Etag || headers.etag) || `W/"${hash(body)}"`;
       headers["last-modified"] =
-        headers["Last-Modified"] ||
-        headers["last-modified"] ||
+        String(headers["Last-Modified"] || headers["last-modified"]) ||
         new Date().toUTCString();
       const cacheControl = [];
       if (opts.swr) {
@@ -404,7 +410,16 @@ export function defineCachedEventHandler<
     // Send status and headers
     event.node.res.statusCode = response.code;
     for (const name in response.headers) {
-      event.node.res.setHeader(name, response.headers[name]);
+      const value = response.headers[name];
+      if (name === "set-cookie") {
+        // TODO: Show warning and remove this header in the next major version of Nitro
+        event.node.res.appendHeader(
+          name,
+          splitCookiesString(value as string[])
+        );
+      } else {
+        event.node.res.setHeader(name, value);
+      }
     }
 
     // Send body

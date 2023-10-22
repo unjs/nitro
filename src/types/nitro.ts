@@ -256,6 +256,10 @@ export interface NitroOptions extends PresetOptions {
      * Disable Experimental Sourcemap Minification
      */
     sourcemapMinify?: false;
+    /**
+     * Backward compatibility support for Node fetch (required for Node < 18)
+     */
+    nodeFetchCompat?: boolean;
   };
   future: {
     nativeSWR: boolean;
@@ -275,6 +279,11 @@ export interface NitroOptions extends PresetOptions {
   watchOptions: WatchOptions;
   devProxy: Record<string, string | ProxyServerOptions>;
 
+  // Logging
+  logging: {
+    compressedSizes: boolean;
+  };
+
   // Routing
   baseURL: string;
   handlers: NitroEventHandler[];
@@ -283,12 +292,26 @@ export interface NitroOptions extends PresetOptions {
   errorHandler: string;
   devErrorHandler: NitroErrorHandler;
   prerender: {
+    /**
+     * Prerender HTML routes within subfolders (`/test` would produce `/test/index.html`)
+     */
+    autoSubfolderIndex: boolean;
     concurrency: number;
     interval: number;
     crawlLinks: boolean;
     failOnError: boolean;
     ignore: string[];
     routes: string[];
+    /**
+     * Amount of retries. Pass Infinity to retry indefinitely.
+     * @default 3
+     */
+    retry: number;
+    /**
+     * Delay between each retry in ms.
+     * @default 500
+     */
+    retryDelay: number;
   };
 
   // Rollup
@@ -325,6 +348,12 @@ export interface NitroOptions extends PresetOptions {
   commands: {
     preview: string;
     deploy: string;
+  };
+
+  // IIS
+  iis?: {
+    mergeConfig?: boolean;
+    overrideConfig?: boolean;
   };
 }
 

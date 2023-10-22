@@ -52,29 +52,24 @@ export async function handler(
     headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
-    body: event.body, // TODO: handle event.isBase64Encoded
+    body: event.isBase64Encoded
+      ? Buffer.from(event.body, "base64").toString("utf8")
+      : event.body,
   });
 
-  // Lambda v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
-  if ("cookies" in event || "rawPath" in event) {
-    const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
-
-    return {
-      cookies,
-      statusCode: r.status,
-      headers: normalizeLambdaOutgoingHeaders(r.headers, true),
-      body: await normalizeLambdaOutgoingBody(r.body, r.headers).then(
-        (r) => r.body
-      ),
-    };
-  }
-
-  const outBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
-
+  // ApiGateway v2 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
+  const isApiGwV2 = "cookies" in event || "rawPath" in event;
+  const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
+  const cookies = normalizeCookieHeader(r.headers["set-cookie"]);
   return {
+    ...(cookies.length > 0 && {
+      ...(isApiGwV2
+        ? { cookies }
+        : { multiValueHeaders: { "set-cookie": cookies } }),
+    }),
     statusCode: r.status,
-    headers: normalizeLambdaOutgoingHeaders(r.headers),
-    body: outBody.body,
-    isBase64Encoded: outBody.type === "binary",
+    headers: normalizeLambdaOutgoingHeaders(r.headers, true),
+    body: awsBody.body,
+    isBase64Encoded: awsBody.type === "binary",
   };
 }

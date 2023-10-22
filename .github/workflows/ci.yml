@@ -12,13 +12,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - run: corepack enable
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
           cache: pnpm
       - run: pnpm install
       - run: pnpm stub
@@ -31,13 +31,13 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - run: corepack enable
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
           cache: pnpm
       - uses: oven-sh/setup-bun@v1
         if: ${{ matrix.os != 'windows-latest' }}
@@ -49,17 +49,18 @@ jobs:
           deno-version: v1.x
       - run: pnpm install
       - run: pnpm test:types
+        if: ${{ matrix.os != 'windows-latest' }}
       - run: pnpm build
-      - run: pnpm vitest --coverage
+      - run: pnpm vitest-es --coverage
         env:
           NODE_OPTIONS: --experimental-vm-modules --enable-source-maps
       - uses: codecov/codecov-action@v3
-      - name: Release Edge
+      - name: Release Nightly
         if: |
           github.event_name == 'push' &&
           !contains(github.event.head_commit.message, '[skip-release]') &&
           !contains(github.event.head_commit.message, 'chore') &&
           !contains(github.event.head_commit.message, 'docs')
-        run: ./scripts/release-edge.sh
+        run: ./scripts/release-nightly.sh
         env:
           NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}

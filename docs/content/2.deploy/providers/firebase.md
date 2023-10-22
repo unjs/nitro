@@ -93,6 +93,9 @@ yarn add --dev firebase-admin firebase-functions firebase-functions-test
 ```bash [pnpm]
 pnpm install -D firebase-admin firebase-functions firebase-functions-test
 ```
+```bash [bun]
+bun add -D firebase-admin firebase-functions firebase-functions-test
+```
 ::
 
 #### 3. Log Into the Firebase CLI
