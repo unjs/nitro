@@ -352,7 +352,8 @@ export interface NitroOptions extends PresetOptions {
 
   // Framework
   framework: {
-    name?: string;
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    name?: "nitro" | (string & {});
     version?: string;
   };
 
