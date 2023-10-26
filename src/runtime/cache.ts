@@ -257,7 +257,7 @@ export function defineCachedEventHandler<
       if (entry.value.body === undefined) {
         return false;
       }
-      // https://github.com/unjs/nitro/issues/1850
+      // https://github.com/unjs/nitro/pull/1857
       if (
         entry.value.headers.etag === "undefined" ||
         entry.value.headers["last-modified"] === "undefined"
