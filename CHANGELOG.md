@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.7.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.7.1...v2.7.2)
+
+### 🩹 Fixes
+
+- **cloudflare-pages:** Filter out overlapping public assets dirs ([#1859](https://github.com/unjs/nitro/pull/1859))
+
+### ❤️ Contributors
+
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.7.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.7.0...v2.7.1)
@@ -107,23 +119,23 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Pooya Parsa ([@pi0](http://github.com/pi0))
 - Yasser Lahbibi ([@yassilah](http://github.com/yassilah))
-- Horu 
+- Horu
 - Michael Brevard <yonshi29@gmail.com>
 - Daniel Roe <daniel@roe.dev>
 - MiniDigger  < Martin>
 - Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
 - Heb ([@Hebilicious](http://github.com/Hebilicious))
-- Henrique Lopes 
+- Henrique Lopes
 - McPizza <gh@l1.io>
 - Michael BOUVY <michael.bouvy@gmail.com>
-- Jeremy Graziani 
+- Jeremy Graziani
 - Tobias Diez <code@tobiasdiez.com>
-- VALERIY SINEVICH 
+- VALERIY SINEVICH
 - Roman Zipp <ich@ich.wtf>
 - Benjamin GAYMAY ([@BenjaminGaymay](http://github.com/BenjaminGaymay))
 - Alexander Lichter ([@manniL](http://github.com/manniL))
 - Farnabaz ([@farnabaz](http://github.com/farnabaz))
-- Nils K 
+- Nils K
 - Jonas Thelemann ([@dargmuesli](http://github.com/dargmuesli))
 - Jenjen75 <jean-michel.khou@vivlab.com>
 - Sébastien Chopin ([@Atinux](http://github.com/Atinux))
@@ -394,32 +406,32 @@ All notable changes to this project will be documented in this file. See [standa
 - Pooya Parsa ([@pi0](http://github.com/pi0))
 - Daniel Roe <daniel@roe.dev>
 - Utsob Roy ([@uroybd](http://github.com/uroybd))
-- Nick Dawson 
+- Nick Dawson
 - AlexLavoie42 ([@AlexLavoie42](http://github.com/AlexLavoie42))
 - Heb ([@Hebilicious](http://github.com/Hebilicious))
 - Dave Caruso ([@paperdave](http://github.com/paperdave))
 - Anthony Fu <anthonyfu117@hotmail.com>
 - Luke Nelson <luke@nelson.zone>
-- Eduardo San Martin Morote 
+- Eduardo San Martin Morote
 - Asher White ([@AWBroch](http://github.com/AWBroch))
 - Nikhil Saraf ([@nksaraf](http://github.com/nksaraf))
-- Velka 
+- Velka
 - Andreas Botzler <andreas.botzler@googlemail.com>
 - Farnabaz <farnabaz@gmail.com>
-- Leo Bourbon 
+- Leo Bourbon
 - Gnoeley <leonpelech@gmail.com>
 - Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
 - Marshall Thompson ([@marshallswain](http://github.com/marshallswain))
 - Harlan Wilton ([@harlan-zw](http://github.com/harlan-zw))
 - Qin Guan <qinguan20040914@gmail.com>
 - Aaron Dewes <aaron@runcitadel.space>
-- Ccccccjh 
+- Ccccccjh
 - Antony Konstantinidis <ak@digitalessence.de>
-- Arjun-re 
+- Arjun-re
 - Morty Li <a0988891318@gmail.com>
 - Hebilicious ([@Hebilicious](http://github.com/Hebilicious))
 - Sébastien Chopin ([@Atinux](http://github.com/Atinux))
-- Rieger 
+- Rieger
 - James Ross ([@Cherry](http://github.com/Cherry))
 
 ## v2.5.2
@@ -532,7 +544,7 @@ All notable changes to this project will be documented in this file. See [standa
 - Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
 - Dunqing ([@Dunqing](http://github.com/Dunqing))
 - Frantz Kati <bahdcoder@gmail.com>
-- Mike Laumann Bellika 
+- Mike Laumann Bellika
 - Sébastien Chopin ([@Atinux](http://github.com/Atinux))
 - Hebilicious ([@Hebilicious](http://github.com/Hebilicious))
 
@@ -614,7 +626,7 @@ All notable changes to this project will be documented in this file. See [standa
 - Daniel Roe <daniel@roe.dev>
 - AaronBeaudoin <aaronjbeaudoin@gmail.com>
 - Oumar Barry ([@oumarbarry](http://github.com/oumarbarry))
-- G-Cyrille 
+- G-Cyrille
 - 魔王少年 <q267009886.work@gmail.com>
 - Iho Somnam <ihosomnam4741@gmail.com>
 - Timhanlon <tim@timhanlon.com>
@@ -656,8 +668,8 @@ All notable changes to this project will be documented in this file. See [standa
 - Gabriel Cipriano ([@gabrielcipriano](http://github.com/gabrielcipriano))
 - Daniel Roe <daniel@roe.dev>
 - Yassine El Ouazzani ([@kwarkjes](http://github.com/kwarkjes))
-- Inesh Bose 
-- Andre Hammons 
+- Inesh Bose
+- Andre Hammons
 - Michael BOUVY <michael.bouvy@gmail.com>
 
 ## v2.3.2
@@ -688,9 +700,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Mahdi Boomeri <mahdi@boomeri.dev>
 - Daniel Roe <daniel@roe.dev>
-- Shohei Maeda 
+- Shohei Maeda
 - Lucas ([@Draichi](http://github.com/Draichi))
-- Nobkd 
+- Nobkd
 - Honza Pobořil <honza@poboril.cz>
 
 ## v2.3.1
@@ -794,8 +806,8 @@ All notable changes to this project will be documented in this file. See [standa
 - Felix De Montis <hi@felix.dm>
 - Sébastien Chopin ([@Atinux](http://github.com/Atinux))
 - Hannes Küttner <kuettner.hannes@gmail.com>
-- Julie Saia 
-- Ted De Koning 
+- Julie Saia
+- Ted De Koning
 - Jan Johansen <nizopezo@gmail.com>
 - Tobias Diez <code@tobiasdiez.com>
 - Elian ☕️ <hello@elian.codes>
