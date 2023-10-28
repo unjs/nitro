@@ -57,7 +57,10 @@ export function publicAssets(nitro: Nitro): Plugin {
             mtime: stat.mtime.toJSON(),
             size: stat.size,
             path: relative(nitro.options.output.serverDir, fullPath),
-            data: assetData.toString("base64"),
+            data:
+              nitro.options.serveStatic === "inline"
+                ? assetData.toString("base64")
+                : undefined,
           };
         }
 
@@ -99,6 +102,7 @@ export function readAsset (id) {
   export function readAsset (id) {
     if (!assets[id]) { return undefined }
     if (assets[id]._data) { return assets[id]._data }
+    if (!assets[id].data) { return assets[id].data }
     assets[id]._data = Uint8Array.from(atob(assets[id].data), (c) => c.charCodeAt(0))
     return assets[id]._data
 }`;
