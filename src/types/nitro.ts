@@ -25,7 +25,7 @@ import type {
 } from "./handler";
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
-import { ModuleDefinition, NitroModule } from "./module";
+import { NitroModule } from "./module";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
@@ -361,7 +361,5 @@ export interface NitroOptions extends PresetOptions {
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
-  const defineNitroModule: (
-    definition: ModuleDefinition | NitroModule
-  ) => NitroModule;
+  const defineNitroModule: (definition: NitroModule) => NitroModule;
 }
