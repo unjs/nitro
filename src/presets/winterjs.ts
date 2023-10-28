@@ -3,7 +3,6 @@ import { defineNitroPreset } from "../preset";
 export const winterjs = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/winterjs",
-  inlineDynamicImports: true,
   minify: false,
   serveStatic: false,
   commands: {
