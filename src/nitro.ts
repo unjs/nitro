@@ -4,13 +4,7 @@ import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
-import { a } from "vitest/dist/suite-919dd548";
-import type {
-  NitroConfig,
-  Nitro,
-  NitroDynamicConfig,
-  NitroModule,
-} from "./types";
+import type { NitroConfig, Nitro, NitroModule } from "./types";
 import {
   LoadConfigOptions,
   loadOptions,
@@ -19,7 +13,7 @@ import {
 } from "./options";
 import { scanModules, scanPlugins } from "./scan";
 import { createStorage } from "./storage";
-import { defineNitroModule, resolveNitroModule } from "./module";
+import { resolveNitroModule } from "./module";
 
 export async function createNitro(
   config: NitroConfig = {},
