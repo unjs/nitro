@@ -11,4 +11,5 @@ export interface PublicAsset {
   path: string;
   size: number;
   encoding?: string;
+  data?: string;
 }
