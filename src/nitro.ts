@@ -122,13 +122,13 @@ export async function createNitro(
   const modules = await Promise.all(
     _modules.map((mod) => resolveNitroModule(mod, nitro.options))
   );
-  const _installedURLS = new Set<string>();
+  const _installedURLs = new Set<string>();
   for (const mod of modules) {
     if (mod._url) {
-      if (_installedURLS.has(mod._url)) {
+      if (_installedURLs.has(mod._url)) {
         continue;
       }
-      _installedURLS.add(mod._url);
+      _installedURLs.add(mod._url);
     }
     await mod.setup(nitro);
   }
