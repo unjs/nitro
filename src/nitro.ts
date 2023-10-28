@@ -4,7 +4,13 @@ import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
-import type { NitroConfig, Nitro, NitroDynamicConfig } from "./types";
+import { a } from "vitest/dist/suite-919dd548";
+import type {
+  NitroConfig,
+  Nitro,
+  NitroDynamicConfig,
+  NitroModule,
+} from "./types";
 import {
   LoadConfigOptions,
   loadOptions,
@@ -13,7 +19,7 @@ import {
 } from "./options";
 import { scanModules, scanPlugins } from "./scan";
 import { createStorage } from "./storage";
-import { defineNitroModule } from "./module";
+import { defineNitroModule, resolveNitroModule } from "./module";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -116,20 +122,14 @@ export async function createNitro(
     nitro.options.virtual["#nitro"] = 'export * from "#imports"';
   }
 
-  // Modules - must come after auto imports
-  // @ts-ignore
-  globalThis.defineNitroModule = defineNitroModule;
+  // Resolve and run modules after initial setup
   const scannedModules = await scanModules(nitro);
-  const modules = [...(nitro.options.modules ?? []), ...scannedModules];
-  if (modules && modules.length > 0) {
-    for (const module of modules) {
-      if (typeof module === "function") {
-        module(nitro);
-      } else {
-        const _module = await import(module).then((m) => m.default);
-        _module(nitro);
-      }
-    }
+  const _modules = [...(nitro.options.modules || []), ...scannedModules];
+  const modules = await Promise.all(
+    _modules.map((mod) => resolveNitroModule(mod))
+  );
+  for (const mod of modules) {
+    await mod.setup(nitro);
   }
 
   return nitro;
