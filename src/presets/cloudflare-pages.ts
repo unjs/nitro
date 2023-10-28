@@ -1,6 +1,11 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, join } from "pathe";
-import { joinURL, withLeadingSlash, withTrailingSlash, withoutLeadingSlash } from "ufo";
+import {
+  joinURL,
+  withLeadingSlash,
+  withTrailingSlash,
+  withoutLeadingSlash,
+} from "ufo";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -102,7 +107,8 @@ async function writeCFRoutes(nitro: Nitro) {
       !dir.fallthrough &&
       !array.some(
         (otherDir, otherIndex) =>
-          otherIndex !== index && dir.baseURL.startsWith(withTrailingSlash(otherDir.baseURL))
+          otherIndex !== index &&
+          dir.baseURL.startsWith(withTrailingSlash(otherDir.baseURL))
       )
   );
 
