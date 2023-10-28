@@ -58,6 +58,8 @@ addEventListener("fetch", async (event) => {
 // ------------------------------
 // Polyfills for missing APIs
 // ------------------------------
+
+// Headers.entries
 if (!Headers.prototype.entries) {
   // @ts-ignore
   Headers.prototype.entries = function () {
@@ -65,6 +67,7 @@ if (!Headers.prototype.entries) {
   };
 }
 
+// URL.pathname
 if (!URL.prototype.pathname) {
   Object.defineProperty(URL.prototype, "pathname", {
     get() {
@@ -73,6 +76,7 @@ if (!URL.prototype.pathname) {
   });
 }
 
+// URL constructor (relative support)
 const _URL = globalThis.URL;
 globalThis.URL = class URL extends _URL {
   constructor(url, base) {
@@ -81,5 +85,21 @@ globalThis.URL = class URL extends _URL {
       return;
     }
     super(joinURL(base, url));
+  }
+};
+
+// Response (avoid Promise body)
+const _Response = globalThis.Response;
+globalThis.Response = class Response extends _Response {
+  _body: BodyInit;
+
+  constructor(body, init) {
+    super(body, init);
+    this._body = body;
+  }
+
+  get body() {
+    // TODO: Return ReadableStream (should be iterable)
+    return this._body as any;
   }
 };

@@ -27,8 +27,9 @@ export interface Context {
   isDev: boolean;
   isWorker: boolean;
   isIsolated: boolean;
+  supportsEnv: boolean;
   env: Record<string, string>;
-  [key: string]: unknown;
+  // [key: string]: unknown;
 }
 
 // https://github.com/unjs/nitro/pull/1240
@@ -69,6 +70,7 @@ export async function setupTest(
       "winterjs",
     ].includes(preset),
     isIsolated: ["winterjs"].includes(preset),
+    supportsEnv: !["winterjs"].includes(preset),
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, presetTmpDir, ".output"),
     env: {
@@ -431,7 +433,7 @@ export function testNitro(
     );
   });
 
-  it("config", async () => {
+  it.skipIf(!ctx.supportsEnv)("config", async () => {
     const { data } = await callHandler({
       url: "/config",
     });
@@ -587,7 +589,7 @@ export function testNitro(
     });
   });
 
-  describe("environment variables", () => {
+  describe.skipIf(!ctx.supportsEnv)("environment variables", () => {
     it("can load environment variables from runtimeConfig", async () => {
       const { data } = await callHandler({ url: "/config" });
       expect(data.runtimeConfig.hello).toBe("world");
