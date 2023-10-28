@@ -33,7 +33,12 @@ async function _handleEvent(event: FetchEvent) {
       method: event.request.getMethod() || "GET",
       body: event.request.body,
       headers: event.request.headers,
-      context: {},
+      context: {
+        waitUntil: (promise) => event.waitUntil(promise),
+        winterjs: {
+          event,
+        },
+      },
     });
     const body =
       typeof res.body === "string" ? res.body : await toBuffer(res.body as any);
