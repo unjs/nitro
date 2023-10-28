@@ -84,6 +84,7 @@ export default defineNitroConfig({
     openAPI: true,
     asyncContext: true,
   },
+  serveStatic: "inline",
   cloudflare: {
     pages: {
       routes: {
