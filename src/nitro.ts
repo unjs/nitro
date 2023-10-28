@@ -4,7 +4,7 @@ import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
-import type { NitroConfig, Nitro, NitroModule } from "./types";
+import type { NitroConfig, Nitro } from "./types";
 import {
   LoadConfigOptions,
   loadOptions,
