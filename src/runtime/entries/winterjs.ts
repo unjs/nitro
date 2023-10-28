@@ -1,5 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { toPlainHandler } from "h3";
+import { hasProtocol, joinURL } from "ufo";
 import { toBuffer } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 
@@ -61,6 +62,7 @@ if (!Headers.prototype.entries) {
     return []; // TODO
   };
 }
+
 if (!URL.prototype.pathname) {
   Object.defineProperty(URL.prototype, "pathname", {
     get() {
@@ -68,3 +70,14 @@ if (!URL.prototype.pathname) {
     },
   });
 }
+
+const _URL = globalThis.URL;
+globalThis.URL = class URL extends _URL {
+  constructor(url, base) {
+    if (!base || hasProtocol(url)) {
+      super(url);
+      return;
+    }
+    super(joinURL(base, url));
+  }
+};
