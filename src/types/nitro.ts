@@ -230,7 +230,7 @@ export interface NitroOptions extends PresetOptions {
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;
-  serveStatic: boolean | "node" | "deno";
+  serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
   /** @experimental Requires `experimental.wasm` to be effective */
   wasm?: WasmOptions;
