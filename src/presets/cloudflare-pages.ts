@@ -1,6 +1,11 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, join } from "pathe";
-import { joinURL, withLeadingSlash, withoutLeadingSlash } from "ufo";
+import {
+  joinURL,
+  withLeadingSlash,
+  withTrailingSlash,
+  withoutLeadingSlash,
+} from "ufo";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -98,7 +103,21 @@ async function writeCFRoutes(nitro: Nitro) {
 
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
-    (i) => !i.fallthrough
+    (dir, index, array) => {
+      if (dir.fallthrough) {
+        return false;
+      }
+
+      const normalizedBase = withoutLeadingSlash(dir.baseURL);
+
+      return !array.some(
+        (otherDir, otherIndex) =>
+          otherIndex !== index &&
+          normalizedBase.startsWith(
+            withoutLeadingSlash(withTrailingSlash(otherDir.baseURL))
+          )
+      );
+    }
   );
 
   // Explicit prefixes

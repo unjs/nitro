@@ -158,7 +158,7 @@ export function testNitro(
 
   async function callHandler(options): Promise<TestHandlerResult> {
     const result = await _handler(options);
-    if (result.constructor.name !== "Response") {
+    if (!["Response", "_Response"].includes(result.constructor.name)) {
       return result as TestHandlerResult;
     }
 
@@ -599,6 +599,22 @@ export function testNitro(
       expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.helloThere).toBe("general");
       expect(data.runtimeConfig.secret).toBeUndefined();
+    });
+  });
+
+  describe("cache", () => {
+    it("should setItem before returning response the first time", async () => {
+      const { data: timestamp } = await callHandler({ url: "/api/cached" });
+
+      const calls = await Promise.all([
+        callHandler({ url: "/api/cached" }),
+        callHandler({ url: "/api/cached" }),
+        callHandler({ url: "/api/cached" }),
+      ]);
+
+      for (const call of calls) {
+        expect(call.data).toBe(timestamp);
+      }
     });
   });
 }

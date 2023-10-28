@@ -10,8 +10,8 @@ git restore -s@ -SW  -- .
 # Bump acording to changelog
 pnpm changelogen --bump
 
-# Bump versions to edge
-pnpm jiti ./scripts/bump-edge
+# Bump versions to nightly
+pnpm jiti ./scripts/bump-nightly
 
 # Resolve lockfile
 # pnpm install

@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: "pnpm"
@@ -22,6 +22,6 @@ jobs:
       - run: pnpm stub
       - name: Fix lint issues
         run: npm run lint:fix
-      - uses: autofix-ci/action@8caa572fd27b0019a65e4c695447089c8d3138b9
+      - uses: autofix-ci/action@d3e591514b99d0fca6779455ff8338516663f7cc
         with:
           commit-message: "chore: apply automated fixes"

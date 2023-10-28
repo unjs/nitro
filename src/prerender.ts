@@ -5,6 +5,7 @@ import chalk from "chalk";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import mime from "mime";
+import type { $Fetch } from "ofetch";
 import { createNitro } from "./nitro";
 import { build } from "./build";
 import type { Nitro, NitroRouteRules, PrerenderRoute } from "./types";
@@ -77,7 +78,9 @@ export async function prerender(nitro: Nitro) {
     nitroRenderer.options.output.serverDir,
     "index.mjs"
   );
-  const { localFetch } = await import(pathToFileURL(serverEntrypoint).href);
+  const { localFetch } = (await import(
+    pathToFileURL(serverEntrypoint).href
+  )) as { localFetch: $Fetch };
 
   // Create route rule matcher
   const _routeRulesMatcher = toRouteMatcher(
@@ -164,13 +167,15 @@ export async function prerender(nitro: Nitro) {
 
     // Fetch the route
     const encodedRoute = encodeURI(route);
-    const res = await (localFetch(
+
+    const res = await localFetch<Response>(
       withBase(encodedRoute, nitro.options.baseURL),
       {
         headers: { "x-nitro-prerender": encodedRoute },
+        retry: nitro.options.prerender.retry,
+        retryDelay: nitro.options.prerender.retryDelay,
       }
-    ) as ReturnType<typeof fetch>);
-
+    );
     // Data will be removed as soon as written to the disk
     let dataBuff: Buffer | undefined = Buffer.from(await res.arrayBuffer());
 
@@ -347,6 +352,21 @@ async function runParallel<T>(
 
 const LINK_REGEX = /(?<=\s)href=(?!&quot;)["']?([^"'>]+)/g;
 
+const HTML_ENTITIES = {
+  "&lt;": "<",
+  "&gt;": ">",
+  "&amp;": "&",
+  "&apos;": "'",
+  "&quot;": '"',
+} as Record<string, string>;
+
+function escapeHtml(text: string) {
+  return text.replace(
+    /&(lt|gt|amp|apos|quot);/g,
+    (ch) => HTML_ENTITIES[ch] || ch
+  );
+}
+
 function extractLinks(
   html: string,
   from: string,
@@ -360,7 +380,7 @@ function extractLinks(
   if (crawlLinks) {
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
-        .map((m) => m[1])
+        .map((m) => escapeHtml(m[1]))
         .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }
