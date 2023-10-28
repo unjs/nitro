@@ -61,7 +61,7 @@ addEventListener("fetch", async (event) => {
 if (!Headers.prototype.entries) {
   // @ts-ignore
   Headers.prototype.entries = function () {
-    return []; // TODO
+    return [...this];
   };
 }
 
