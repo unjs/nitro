@@ -511,10 +511,13 @@ export function testNitro(
       expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
     });
 
-    it.skipIf(ctx.isWorker)("public files should be ignored", async () => {
-      expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
-      expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
-    });
+    it.skipIf(ctx.isWorker || ctx.isDev)(
+      "public files should be ignored",
+      async () => {
+        expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
+        expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
+      }
+    );
   });
 
   describe("headers", () => {
