@@ -25,6 +25,7 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  isWorker: boolean;
   env: Record<string, string>;
   [key: string]: unknown;
 }
@@ -59,6 +60,13 @@ export async function setupTest(
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
+    isWorker: [
+      "cloudflare",
+      "cloudflare-module",
+      "cloudflare-pages",
+      "vercel-edge",
+      "winterjs",
+    ].includes(preset),
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, presetTmpDir, ".output"),
     env: {
@@ -91,19 +99,11 @@ export async function setupTest(
         helloThere: "",
       },
       buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
-      serveStatic:
-        preset !== "cloudflare" &&
-        preset !== "cloudflare-module" &&
-        preset !== "cloudflare-pages" &&
-        preset !== "vercel-edge" &&
-        !ctx.isDev,
+      serveStatic: !ctx.isDev && !ctx.isWorker,
       output: {
         dir: ctx.outDir,
       },
-      timing:
-        preset !== "cloudflare" &&
-        preset !== "cloudflare-pages" &&
-        preset !== "vercel-edge",
+      timing: !ctx.isWorker,
     })
   ));
 
@@ -506,15 +506,7 @@ export function testNitro(
       expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
     });
 
-    it.skipIf(
-      [
-        "nitro-dev",
-        "cloudflare",
-        "cloudflare-pages",
-        "cloudflare-module",
-        "vercel-edge",
-      ].includes(ctx.preset)
-    )("public files should be ignored", async () => {
+    it.skipIf(ctx.isWorker)("public files should be ignored", async () => {
       expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
       expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
     });

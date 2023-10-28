@@ -1,0 +1,13 @@
+import { defineNitroPreset } from "../preset";
+
+export const winterjs = defineNitroPreset({
+  extends: "base-worker",
+  entry: "#internal/nitro/entries/winterjs",
+  inlineDynamicImports: true,
+  minify: false,
+  serveStatic: false,
+  commands: {
+    preview:
+      "wasmer run wasmer/winterjs --forward-host-env --net --mapdir app:./ app/server/index.mjs",
+  },
+});
