@@ -79,6 +79,11 @@ export async function scanPlugins(nitro: Nitro) {
   return files.map((f) => f.fullPath);
 }
 
+export async function scanModules(nitro: Nitro) {
+  const files = await scanFiles(nitro, "modules");
+  return files.map((f) => f.fullPath);
+}
+
 async function scanFiles(nitro: Nitro, name: string): Promise<FileInfo[]> {
   const files = await Promise.all(
     nitro.options.scanDirs.map((dir) => scanDir(nitro, dir, name))
