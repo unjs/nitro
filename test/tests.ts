@@ -26,6 +26,7 @@ export interface Context {
   server?: Listener;
   isDev: boolean;
   isWorker: boolean;
+  isIsolated: boolean;
   env: Record<string, string>;
   [key: string]: unknown;
 }
@@ -67,6 +68,7 @@ export async function setupTest(
       "vercel-edge",
       "winterjs",
     ].includes(preset),
+    isIsolated: ["winterjs"].includes(preset),
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, presetTmpDir, ".output"),
     env: {
@@ -372,7 +374,7 @@ export function testNitro(
     }
   );
 
-  it("useStorage (with base)", async () => {
+  it.skipIf(ctx.isIsolated)("useStorage (with base)", async () => {
     const putRes = await callHandler({
       url: "/api/storage/item?key=test:hello",
       method: "PUT",
@@ -554,7 +556,7 @@ export function testNitro(
   });
 
   describe("errors", () => {
-    it("captures errors", async () => {
+    it.skipIf(ctx.isIsolated)("captures errors", async () => {
       const { data } = await callHandler({ url: "/api/errors" });
       const allErrorMessages = (data.allErrors || []).map(
         (entry) => entry.message
@@ -595,18 +597,21 @@ export function testNitro(
   });
 
   describe("cache", () => {
-    it("should setItem before returning response the first time", async () => {
-      const { data: timestamp } = await callHandler({ url: "/api/cached" });
+    it.skipIf(ctx.isIsolated)(
+      "should setItem before returning response the first time",
+      async () => {
+        const { data: timestamp } = await callHandler({ url: "/api/cached" });
 
-      const calls = await Promise.all([
-        callHandler({ url: "/api/cached" }),
-        callHandler({ url: "/api/cached" }),
-        callHandler({ url: "/api/cached" }),
-      ]);
+        const calls = await Promise.all([
+          callHandler({ url: "/api/cached" }),
+          callHandler({ url: "/api/cached" }),
+          callHandler({ url: "/api/cached" }),
+        ]);
 
-      for (const call of calls) {
-        expect(call.data).toBe(timestamp);
+        for (const call of calls) {
+          expect(call.data).toBe(timestamp);
+        }
       }
-    });
+    );
   });
 }
