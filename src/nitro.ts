@@ -4,7 +4,7 @@ import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
-import type { NitroConfig, Nitro } from "./types";
+import type { NitroConfig, NitroDynamicConfig, Nitro } from "./types";
 import {
   LoadConfigOptions,
   loadOptions,
@@ -120,7 +120,7 @@ export async function createNitro(
   const scannedModules = await scanModules(nitro);
   const _modules = [...(nitro.options.modules || []), ...scannedModules];
   const modules = await Promise.all(
-    _modules.map((mod) => resolveNitroModule(mod))
+    _modules.map((mod) => resolveNitroModule(mod, nitro.options))
   );
   for (const mod of modules) {
     await mod.setup(nitro);

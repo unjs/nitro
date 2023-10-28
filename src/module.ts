@@ -1,18 +1,21 @@
-import type { NitroModule, NitroModuleInput } from "./types";
+import type { Nitro, NitroModule, NitroModuleInput } from "./types";
+import { jitiImport, resolvePath } from "./utils";
 
 export function defineNitroModule(def: NitroModule) {
   return def;
 }
 
 export async function resolveNitroModule(
-  mod: NitroModuleInput
+  mod: NitroModuleInput,
+  nitroOptions: Nitro["options"]
 ): Promise<NitroModule> {
   if (typeof mod === "string") {
     // @ts-ignore
     globalThis.defineNitroModule =
       // @ts-ignore
       globalThis.defineNitroModule || defineNitroModule;
-    mod = (await import(mod).then((m) => m.default)) as NitroModule;
+    const _modPath = resolvePath(mod, nitroOptions);
+    mod = (await jitiImport(nitroOptions.rootDir, _modPath)) as NitroModule;
   }
 
   if (typeof mod === "function") {
