@@ -29,6 +29,7 @@ export interface Context {
   isIsolated: boolean;
   supportsEnv: boolean;
   env: Record<string, string>;
+  lambdaV1?: boolean;
   // [key: string]: unknown;
 }
 
