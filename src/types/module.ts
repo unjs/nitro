@@ -1,12 +1,5 @@
-import { Nitro } from "./nitro";
-
-export interface ModuleSetupReturn {}
-
-export type Awaitable<T> = T | Promise<T>;
-export interface ModuleDefinition {
-  setup?: (this: void, nitro: Nitro) => Awaitable<ModuleSetupReturn | void>;
-}
+import type { Nitro } from "./nitro";
 
 export interface NitroModule {
-  (this: void, nitro: Nitro): Awaitable<ModuleSetupReturn | void>;
+  setup?: (this: void, nitro: Nitro) => void | Promise<void>;
 }

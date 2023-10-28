@@ -1,18 +1,8 @@
-import { defu } from "defu";
-import type { ModuleDefinition, Nitro, NitroModule } from "./types";
+import type { NitroModule } from "./types";
 
-export function defineNitroModule(definition: ModuleDefinition | NitroModule) {
-  if (typeof definition === "function") {
-    return defineNitroModule({ setup: definition });
+export function defineNitroModule(def: NitroModule) {
+  if (!def.setup) {
+    def.setup = () => {};
   }
-
-  const module = definition;
-
-  async function normalizedModule(nitro: Nitro) {
-    const res = await module.setup(nitro);
-
-    return res;
-  }
-
-  return normalizedModule;
+  return def;
 }
