@@ -129,16 +129,8 @@ async function writeRedirects(nitro: Nitro) {
   );
 
   if (!nitro.options.static) {
-    // Rewrite static ISR paths to builder functions
-    for (const [key, value] of rules.filter(
-      ([_, value]) => value.isr !== undefined
-    )) {
-      contents = value.isr
-        ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
-          contents
-        : `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
-          contents;
-    }
+    // Always redirect to nitro server when not in static mode
+    contents = `/*\t/.netlify/functions/server 200`;
   }
 
   for (const [key, routeRules] of rules.filter(
