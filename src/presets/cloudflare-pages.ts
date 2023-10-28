@@ -98,7 +98,12 @@ async function writeCFRoutes(nitro: Nitro) {
 
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
-    (dir, index, array) => !dir.fallthrough && !array.some((otherDir, otherIndex) => otherIndex !== index && dir.baseURL.startsWith(otherDir.baseURL + '/'))
+    (dir, index, array) =>
+      !dir.fallthrough &&
+      !array.some(
+        (otherDir, otherIndex) =>
+          otherIndex !== index && dir.baseURL.startsWith(otherDir.baseURL + "/")
+      )
   );
 
   // Explicit prefixes
