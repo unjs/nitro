@@ -27,7 +27,9 @@ const _handler = toPlainHandler(nitroApp.h3App);
 async function _handleEvent(event: FetchEvent) {
   try {
     const res = await _handler({
-      path: event.request.url.pathname,
+      path:
+        event.request.url.pathname +
+        (event.request.url.search ? `?${event.request.url.search}` : ""),
       method: event.request.getMethod() || "GET",
       body: event.request.body,
       headers: event.request.headers,
