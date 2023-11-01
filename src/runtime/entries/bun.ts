@@ -1,6 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
+import fs from "node:fs";
 import { nitroApp } from "../app";
-import fs from "fs";
 
 const options: any = {};
 let listeningOn = "";
@@ -10,7 +10,7 @@ if (process.env.NITRO_UNIX_SOCKET) {
   listeningOn = `unix://${process.env.NITRO_UNIX_SOCKET}`;
 } else {
   options.port = process.env.NITRO_PORT || process.env.PORT || 3000;
-  listeningOn = `http://localhost:${options.port}`
+  listeningOn = `http://localhost:${options.port}`;
 }
 
 const options: any = {};
@@ -51,7 +51,10 @@ if (process.env.NITRO_UNIX_SOCKET && process.env.NITRO_UNIX_SOCKET_PERMISSION) {
   let chmodStatus = false;
   while (chmodStatus === false) {
     try {
-      fs.chmodSync(process.env.NITRO_UNIX_SOCKET, process.env.NITRO_UNIX_SOCKET_PERMISSION);
+      fs.chmodSync(
+        process.env.NITRO_UNIX_SOCKET,
+        process.env.NITRO_UNIX_SOCKET_PERMISSION
+      );
       chmodStatus = true;
     } catch (e) {
       console.log("chmod error", e);
@@ -59,6 +62,5 @@ if (process.env.NITRO_UNIX_SOCKET && process.env.NITRO_UNIX_SOCKET_PERMISSION) {
     }
   }
 }
-
 
 console.log(`Listening on ${listeningOn}...`);
