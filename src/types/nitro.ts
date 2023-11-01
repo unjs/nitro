@@ -25,6 +25,7 @@ import type {
 } from "./handler";
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
+import { NitroModule, NitroModuleInput } from "./module";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
@@ -229,7 +230,7 @@ export interface NitroOptions extends PresetOptions {
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;
-  serveStatic: boolean | "node" | "deno";
+  serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
   /** @experimental Requires `experimental.wasm` to be effective */
   wasm?: WasmOptions;
@@ -268,6 +269,7 @@ export interface NitroOptions extends PresetOptions {
   publicAssets: PublicAssetDir[];
 
   imports: UnimportPluginOptions | false;
+  modules?: NitroModuleInput[];
   plugins: string[];
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
@@ -278,6 +280,11 @@ export interface NitroOptions extends PresetOptions {
   devServer: DevServerOptions;
   watchOptions: WatchOptions;
   devProxy: Record<string, string | ProxyServerOptions>;
+
+  // Logging
+  logging: {
+    compressedSizes: boolean;
+  };
 
   // Routing
   baseURL: string;
@@ -297,6 +304,16 @@ export interface NitroOptions extends PresetOptions {
     failOnError: boolean;
     ignore: string[];
     routes: string[];
+    /**
+     * Amount of retries. Pass Infinity to retry indefinitely.
+     * @default 3
+     */
+    retry: number;
+    /**
+     * Delay between each retry in ms.
+     * @default 500
+     */
+    retryDelay: number;
   };
 
   // Rollup
@@ -344,4 +361,5 @@ export interface NitroOptions extends PresetOptions {
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
+  const defineNitroModule: (definition: NitroModule) => NitroModule;
 }

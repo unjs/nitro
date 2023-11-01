@@ -118,7 +118,7 @@ async function main() {
       pkg.data.name,
       `${pkg.data.version}-${date}.${commit}`
     );
-    workspace.rename(pkg.data.name, pkg.data.name + "-edge");
+    workspace.rename(pkg.data.name, pkg.data.name + "-nightly");
     pkg.updateDeps((dep) => {
       if (nightlyPackages[dep.name]) {
         dep.range = "npm:" + nightlyPackages[dep.name] + "@latest";

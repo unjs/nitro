@@ -416,7 +416,9 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     nitro.logger.success("Nitro server built");
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
-        await generateFSTree(nitro.options.output.serverDir)
+        await generateFSTree(nitro.options.output.serverDir, {
+          compressedSizes: nitro.options.logging.compressedSizes,
+        })
       );
     }
   }
@@ -426,7 +428,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
   const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/(\S*)/g, ` ${rOutput}/$1`);
+    return input.replace(/([\s:])\.\/(\S*)/g, `$1${rOutput}/$2`);
   };
   if (buildInfo.commands.preview) {
     nitro.logger.success(
@@ -504,6 +506,8 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     join(dir, "api"),
     join(dir, "routes"),
     join(dir, "middleware", GLOB_SCAN_PATTERN),
+    join(dir, "plugins"),
+    join(dir, "modules"),
   ]);
 
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);

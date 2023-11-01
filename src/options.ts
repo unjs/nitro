@@ -69,6 +69,11 @@ const NitroDefaults: NitroConfig = {
   watchOptions: { ignoreInitial: true },
   devProxy: {},
 
+  // Logging
+  logging: {
+    compressedSizes: true,
+  },
+
   // Routing
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
   handlers: [],
@@ -79,6 +84,8 @@ const NitroDefaults: NitroConfig = {
     autoSubfolderIndex: true,
     concurrency: 1,
     interval: 0,
+    retry: 3,
+    retryDelay: 500,
     failOnError: false,
     crawlLinks: false,
     ignore: [],
@@ -131,7 +138,9 @@ export async function loadOptions(
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
-    (configOverrides.preset as string) || process.env.NITRO_PRESET;
+    (configOverrides.preset as string) ||
+    process.env.NITRO_PRESET ||
+    process.env.SERVER_PRESET;
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
   }

@@ -26,6 +26,7 @@ export * from "./cleavr";
 export * from "./layer0";
 export * from "./flightcontrol";
 export * from "./lagon";
-export { iis, iisNode } from "./iis";
+export { iis, iisHandler, iisNode } from "./iis";
 export { _static as static } from "./static";
 export * from "./github-pages";
+export * from "./winterjs";
