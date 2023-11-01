@@ -20,3 +20,11 @@ After building with bun preset using `NITRO_PRESET=bun`, you can run server in p
 ```bash
 bun run ./.output/server/index.mjs
 ```
+
+### Environment Variables
+
+You can customize server behavior using following environment variables:
+
+- `NITRO_PORT` or `PORT` (defaults to `3000`)
+- `NITRO_UNIX_SOCKET` - if provided (a path to the desired socket file) the service will be served over the provided UNIX socket.
+- `NITRO_UNIX_SOCKET_PERMISSION` - if provided (an octal number) the socket file will be updated with the provided permission.

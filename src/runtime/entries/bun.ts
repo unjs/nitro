@@ -1,6 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
-
+import fs from "fs";
 
 const options: any = {};
 let listeningOn = "";
@@ -34,5 +34,20 @@ const server = Bun.serve({
     });
   },
 });
+
+// Set socket permission if provided. The permission must be provided in Octal format. e.g. 0o770
+if (process.env.NITRO_UNIX_SOCKET && process.env.NITRO_UNIX_SOCKET_PERMISSION) {
+  let chmodStatus = false;
+  while (chmodStatus === false) {
+    try {
+      fs.chmodSync(process.env.NITRO_UNIX_SOCKET, process.env.NITRO_UNIX_SOCKET_PERMISSION);
+      chmodStatus = true;
+    } catch (e) {
+      console.log("chmod error", e);
+      console.log("retrying setting socket permission...");
+    }
+  }
+}
+
 
 console.log(`Listening on ${listeningOn}...`);
