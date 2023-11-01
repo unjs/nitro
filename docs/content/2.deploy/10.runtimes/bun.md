@@ -15,7 +15,7 @@ Bun preset is experimental and available to try via [edge channel](/guide/gettin
 
 ## Building for Bun
 
-After building with bun preset using `NITRO_PRESET=bun`, you can run server in production using:
+After building with bun preset using `NITRO_PRESET=bun`, you can run the server in production using:
 
 ```bash
 bun run ./.output/server/index.mjs

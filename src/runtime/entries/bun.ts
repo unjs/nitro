@@ -13,6 +13,17 @@ if (process.env.NITRO_UNIX_SOCKET) {
   listeningOn = `http://localhost:${options.port}`
 }
 
+const options: any = {};
+let listeningOn = "";
+
+if (process.env.NITRO_UNIX_SOCKET) {
+  options.unix = process.env.NITRO_UNIX_SOCKET;
+  listeningOn = `unix://${process.env.NITRO_UNIX_SOCKET}`;
+} else {
+  options.port = process.env.NITRO_PORT || process.env.PORT || 3000;
+  listeningOn = `http://localhost:${options.port}`;
+}
+
 // @ts-expect-error: Bun global
 const server = Bun.serve({
   ...options,
