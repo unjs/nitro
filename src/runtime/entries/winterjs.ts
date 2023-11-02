@@ -54,10 +54,8 @@ async function _handleEvent(event: FetchEvent) {
   }
 }
 
-globalThis._handleEvent = _handleEvent;
-
-addEventListener("fetch", async (event) => {
-  return await globalThis._handleEvent(event as FetchEvent);
+addEventListener("fetch", async (event: FetchEvent) => {
+  event.respondWith(await _handleEvent(event));
 });
 
 // ------------------------------
