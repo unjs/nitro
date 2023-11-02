@@ -28,6 +28,9 @@ export interface CacheOptions<T = any> {
   shouldBypassCache?: (...args: any[]) => boolean;
   group?: string;
   integrity?: any;
+  /**
+   * Number of seconds to cache the response. Defaults to 1.
+   */
   maxAge?: number;
   swr?: boolean;
   staleMaxAge?: number;
