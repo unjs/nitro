@@ -25,8 +25,12 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  isWorker: boolean;
+  isIsolated: boolean;
+  supportsEnv: boolean;
   env: Record<string, string>;
-  [key: string]: unknown;
+  lambdaV1?: boolean;
+  // [key: string]: unknown;
 }
 
 // https://github.com/unjs/nitro/pull/1240
@@ -59,6 +63,15 @@ export async function setupTest(
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
+    isWorker: [
+      "cloudflare",
+      "cloudflare-module",
+      "cloudflare-pages",
+      "vercel-edge",
+      "winterjs",
+    ].includes(preset),
+    isIsolated: ["winterjs"].includes(preset),
+    supportsEnv: !["winterjs"].includes(preset),
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, presetTmpDir, ".output"),
     env: {
@@ -91,19 +104,11 @@ export async function setupTest(
         helloThere: "",
       },
       buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
-      serveStatic:
-        preset !== "cloudflare" &&
-        preset !== "cloudflare-module" &&
-        preset !== "cloudflare-pages" &&
-        preset !== "vercel-edge" &&
-        !ctx.isDev,
+      serveStatic: !ctx.isDev && !ctx.isWorker,
       output: {
         dir: ctx.outDir,
       },
-      timing:
-        preset !== "cloudflare" &&
-        preset !== "cloudflare-pages" &&
-        preset !== "vercel-edge",
+      timing: !ctx.isWorker,
     })
   ));
 
@@ -372,7 +377,7 @@ export function testNitro(
     }
   );
 
-  it("useStorage (with base)", async () => {
+  it.skipIf(ctx.isIsolated)("useStorage (with base)", async () => {
     const putRes = await callHandler({
       url: "/api/storage/item?key=test:hello",
       method: "PUT",
@@ -429,7 +434,7 @@ export function testNitro(
     );
   });
 
-  it("config", async () => {
+  it.skipIf(!ctx.supportsEnv)("config", async () => {
     const { data } = await callHandler({
       url: "/config",
     });
@@ -506,18 +511,13 @@ export function testNitro(
       expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
     });
 
-    it.skipIf(
-      [
-        "nitro-dev",
-        "cloudflare",
-        "cloudflare-pages",
-        "cloudflare-module",
-        "vercel-edge",
-      ].includes(ctx.preset)
-    )("public files should be ignored", async () => {
-      expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
-      expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
-    });
+    it.skipIf(ctx.isWorker || ctx.isDev)(
+      "public files should be ignored",
+      async () => {
+        expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
+        expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
+      }
+    );
   });
 
   describe("headers", () => {
@@ -562,7 +562,7 @@ export function testNitro(
   });
 
   describe("errors", () => {
-    it("captures errors", async () => {
+    it.skipIf(ctx.isIsolated)("captures errors", async () => {
       const { data } = await callHandler({ url: "/api/errors" });
       const allErrorMessages = (data.allErrors || []).map(
         (entry) => entry.message
@@ -593,7 +593,7 @@ export function testNitro(
     });
   });
 
-  describe("environment variables", () => {
+  describe.skipIf(!ctx.supportsEnv)("environment variables", () => {
     it("can load environment variables from runtimeConfig", async () => {
       const { data } = await callHandler({ url: "/config" });
       expect(data.runtimeConfig.hello).toBe("world");
@@ -603,18 +603,21 @@ export function testNitro(
   });
 
   describe("cache", () => {
-    it("should setItem before returning response the first time", async () => {
-      const { data: timestamp } = await callHandler({ url: "/api/cached" });
+    it.skipIf(ctx.isIsolated)(
+      "should setItem before returning response the first time",
+      async () => {
+        const { data: timestamp } = await callHandler({ url: "/api/cached" });
 
-      const calls = await Promise.all([
-        callHandler({ url: "/api/cached" }),
-        callHandler({ url: "/api/cached" }),
-        callHandler({ url: "/api/cached" }),
-      ]);
+        const calls = await Promise.all([
+          callHandler({ url: "/api/cached" }),
+          callHandler({ url: "/api/cached" }),
+          callHandler({ url: "/api/cached" }),
+        ]);
 
-      for (const call of calls) {
-        expect(call.data).toBe(timestamp);
+        for (const call of calls) {
+          expect(call.data).toBe(timestamp);
+        }
       }
-    });
+    );
   });
 }

@@ -138,7 +138,9 @@ export async function loadOptions(
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
-    (configOverrides.preset as string) || process.env.NITRO_PRESET;
+    (configOverrides.preset as string) ||
+    process.env.NITRO_PRESET ||
+    process.env.SERVER_PRESET;
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
   }

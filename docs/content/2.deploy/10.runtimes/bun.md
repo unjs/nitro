@@ -1,3 +1,8 @@
+---
+icon: simple-icons:bun
+
+---
+
 # Bun
 
 Run Nitro apps with [Bun](https://bun.sh/) runtime.

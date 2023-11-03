@@ -1,6 +1,6 @@
 {
   "name": "nitropack",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Build and Deploy Universal JavaScript Servers",
   "repository": "unjs/nitro",
   "license": "MIT",
@@ -56,7 +56,7 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^5.26.3"
+    "undici": "^5.27.0"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.0",
@@ -66,7 +66,7 @@
     "@rollup/plugin-inject": "^5.0.5",
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-replace": "^5.0.4",
+    "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-wasm": "^6.2.2",
     "@rollup/pluginutils": "^5.0.5",
@@ -79,8 +79,8 @@
     "citty": "^0.1.4",
     "consola": "^3.2.3",
     "cookie-es": "^1.0.0",
-    "defu": "^6.1.2",
-    "destr": "^2.0.1",
+    "defu": "^6.1.3",
+    "destr": "^2.0.2",
     "dot-prop": "^8.0.2",
     "esbuild": "^0.19.5",
     "escape-string-regexp": "^5.0.0",
@@ -92,7 +92,7 @@
     "hookable": "^5.5.3",
     "httpxy": "^0.1.5",
     "is-primitive": "^3.0.1",
-    "jiti": "^1.20.0",
+    "jiti": "^1.21.0",
     "klona": "^2.0.6",
     "knitwork": "^1.0.0",
     "listhen": "^1.5.5",
@@ -100,7 +100,7 @@
     "mime": "^3.0.0",
     "mlly": "^1.4.2",
     "mri": "^1.2.0",
-    "node-fetch-native": "^1.4.0",
+    "node-fetch-native": "^1.4.1",
     "ofetch": "^1.3.3",
     "ohash": "^1.1.3",
     "openapi-typescript": "^6.7.0",
@@ -125,17 +125,17 @@
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1",
-    "@cloudflare/workers-types": "^4.20231016.0",
+    "@cloudflare/workers-types": "^4.20231025.0",
     "@types/aws-lambda": "^8.10.125",
     "@types/etag": "^1.8.2",
     "@types/fs-extra": "^11.0.3",
-    "@types/node-fetch": "^2.6.7",
+    "@types/node-fetch": "^2.6.8",
     "@types/semver": "^7.5.4",
     "@types/serve-static": "^1.15.4",
-    "@vitest/coverage-v8": "1.0.0-beta.2",
+    "@vitest/coverage-v8": "1.0.0-beta.3",
     "changelogen": "^0.5.5",
-    "edge-runtime": "^2.5.5",
-    "eslint": "^8.51.0",
+    "edge-runtime": "^2.5.6",
+    "eslint": "^8.52.0",
     "eslint-config-unjs": "^0.2.1",
     "execa": "^8.0.1",
     "expect-type": "^0.17.3",
@@ -146,8 +146,8 @@
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
-    "undici": "^5.26.4",
-    "vitest": "1.0.0-beta.2",
+    "undici": "^5.27.0",
+    "vitest": "1.0.0-beta.3",
     "xml2js": "^0.6.2"
   },
   "peerDependencies": {
@@ -158,7 +158,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@8.9.2",
+  "packageManager": "pnpm@8.10.1",
   "engines": {
     "node": "^16.11.0 || >=17.0.0"
   },
