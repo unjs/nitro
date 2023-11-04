@@ -37,7 +37,7 @@ describe('nitro:preset:aws-lambda-edge', async () => {
         ]
       }
       const res: CloudFrontResultResponse = await handler(event)
-      // responsed CloudFrontHeaders are special, so modify them for testing.
+      // The headers that CloudFront responds to are in array format, so normalise them to the string format expected by testNitro.
       const resHeaders = Object.fromEntries(Object.entries(res.headers).map(([key, keyValues]) => [key, keyValues.map(kv => kv.value).join(',')]))
 
       return {
