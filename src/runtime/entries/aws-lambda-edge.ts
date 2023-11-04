@@ -1,6 +1,7 @@
 import type {
   CloudFrontHeaders,
   Context,
+  CloudFrontRequest,
   CloudFrontRequestEvent,
   CloudFrontResultResponse,
 } from "aws-lambda";
@@ -20,7 +21,7 @@ export const handler = async function handler(
     headers: normalizeIncomingHeaders(request.headers),
     method: request.method,
     query: request.querystring,
-    body: request.body,
+    body: normalizeIncomingBody(request.body),
   });
 
   return {
@@ -45,7 +46,18 @@ function normalizeOutgoingHeaders(
   return Object.fromEntries(
     Object.entries(headers).map(([k, v]) => [
       k,
-      Array.isArray(v) ? v.map((value) => ({ value })) : [{ value: v }],
+      Array.isArray(v) ? v.map((value) => ({ value })) : [{ value: v ?? "" }],
     ])
   );
+}
+
+function normalizeIncomingBody(body?: CloudFrontRequest["body"]) {
+  switch (body?.encoding) {
+    case "base64":
+      return Buffer.from(body.data, "base64");
+    case "text":
+      return body.data;
+    default:
+      return "";
+  }
 }
