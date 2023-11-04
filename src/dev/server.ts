@@ -1,5 +1,5 @@
 import { Worker } from "node:worker_threads";
-import { existsSync, promises as fsp } from "node:fs";
+import { existsSync, accessSync, promises as fsp } from "node:fs";
 import { debounce } from "perfect-debounce";
 import {
   App,
@@ -10,7 +10,7 @@ import {
   H3Event,
   toNodeListener,
 } from "h3";
-import httpProxy, { ServerOptions as HTTPProxyOptions } from "http-proxy";
+import { createProxyServer, ProxyServerOptions } from "httpxy";
 import { listen, Listener, ListenOptions } from "listhen";
 import { servePlaceholder } from "serve-placeholder";
 import serveStatic from "serve-static";
@@ -51,8 +51,9 @@ function initWorker(filename: string): Promise<NitroWorker> | null {
       );
     });
     worker.once("error", (err) => {
-      err.message = "[worker init] " + err.message;
-      reject(err);
+      const newErr = new Error("[worker init] " + err.message);
+      newErr.stack = err.stack;
+      reject(newErr);
     });
     const addressListener = (event) => {
       if (!event || !event.address) {
@@ -95,7 +96,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
     worker.worker = null;
   }
   if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
-    await fsp.rm(worker.address.socketPath);
+    await fsp.rm(worker.address.socketPath).catch(() => {});
   }
 }
 
@@ -186,11 +187,30 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       proxyReq.setHeader("X-Forwarded-Proto", req.socket.remoteFamily);
     }
   });
+
+  const getWorkerAddress = () => {
+    const address = currentWorker?.address;
+    if (!address) {
+      return;
+    }
+    if (address.socketPath) {
+      try {
+        accessSync(address.socketPath);
+      } catch (err) {
+        if (!lastError) {
+          lastError = err;
+        }
+        return;
+      }
+    }
+    return address;
+  };
+
   app.use(
     eventHandler(async (event) => {
       await reloadPromise;
-      const address = currentWorker && currentWorker.address;
-      if (!address || (address.socketPath && !existsSync(address.socketPath))) {
+      const address = getWorkerAddress();
+      if (!address) {
         return errorHandler(lastError, event);
       }
       await proxy.handle(event, { target: address }).catch((err) => {
@@ -235,22 +255,16 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   };
 }
 
-function createProxy(defaults: HTTPProxyOptions = {}) {
-  const proxy = httpProxy.createProxy();
-  const handle = (event: H3Event, opts: HTTPProxyOptions = {}) => {
-    return new Promise<void>((resolve, reject) => {
-      proxy.web(
-        event.node.req,
-        event.node.res,
-        { ...defaults, ...opts },
-        (error: any) => {
-          if (error.code !== "ECONNRESET") {
-            reject(error);
-          }
-          resolve();
-        }
-      );
-    });
+function createProxy(defaults: ProxyServerOptions = {}) {
+  const proxy = createProxyServer(defaults);
+  const handle = async (event: H3Event, opts: ProxyServerOptions = {}) => {
+    try {
+      await proxy.web(event.node.req, event.node.res, opts);
+    } catch (error) {
+      if (error.code !== "ECONNRESET") {
+        throw error;
+      }
+    }
   };
   return {
     proxy,

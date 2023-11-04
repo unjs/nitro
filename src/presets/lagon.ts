@@ -18,6 +18,7 @@ export interface LagonFunctionConfig {
 export const lagon = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/lagon",
+  exportConditions: ["lagon"],
   commands: {
     preview: "npm run dev --prefix ./",
     deploy: "npm run deploy --prefix ./",

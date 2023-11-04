@@ -1,8 +1,11 @@
 import "#internal/nitro/virtual/polyfill";
+import type { HttpResponse, HttpRequest } from "@azure/functions";
 import { parseURL } from "ufo";
 import { nitroApp } from "../app";
+import { getAzureParsedCookiesFromHeaders } from "../utils.azure";
+import { normalizeLambdaOutgoingHeaders } from "../utils.lambda";
 
-export async function handle(context, req) {
+export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
   let url: string;
   if (req.headers["x-ms-original-url"]) {
     // This URL has been proxied as there was no static file matching it.
@@ -24,7 +27,9 @@ export async function handle(context, req) {
 
   context.res = {
     status,
-    headers,
+    // cookies https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#http-response
+    cookies: getAzureParsedCookiesFromHeaders(headers),
+    headers: normalizeLambdaOutgoingHeaders(headers, true),
     body: body ? body.toString() : statusText,
   };
 }

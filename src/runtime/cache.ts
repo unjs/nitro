@@ -4,10 +4,13 @@ import {
   defineEventHandler,
   createEvent,
   EventHandler,
+  isEvent,
+  splitCookiesString,
 } from "h3";
-import type { H3Event } from "h3";
+import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "./storage";
+import { useNitroApp } from "./app";
 
 export interface CacheEntry<T = any> {
   value?: T;
@@ -25,6 +28,9 @@ export interface CacheOptions<T = any> {
   shouldBypassCache?: (...args: any[]) => boolean;
   group?: string;
   integrity?: any;
+  /**
+   * Number of seconds to cache the response. Defaults to 1.
+   */
   maxAge?: number;
   swr?: boolean;
   staleMaxAge?: number;
@@ -38,10 +44,10 @@ const defaultCacheOptions = {
   maxAge: 1,
 };
 
-export function defineCachedFunction<T = any>(
-  fn: (...args) => T | Promise<T>,
+export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
+  fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
-) {
+): (...args: ArgsT) => Promise<T> {
   opts = { ...defaultCacheOptions, ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
@@ -49,13 +55,14 @@ export function defineCachedFunction<T = any>(
   // Normalize cache params
   const group = opts.group || "nitro/functions";
   const name = opts.name || fn.name || "_";
-  const integrity = hash([opts.integrity, fn, opts]);
-  const validate = opts.validate || (() => true);
+  const integrity = opts.integrity || hash([fn, opts]);
+  const validate = opts.validate || ((entry) => entry.value !== undefined);
 
   async function get(
     key: string,
     resolver: () => T | Promise<T>,
-    shouldInvalidateCache?: boolean
+    shouldInvalidateCache?: boolean,
+    event?: H3Event
   ): Promise<CacheEntry<T>> {
     // Use extension for key to avoid conflicting with parent namespace (foo/bar and foo/bar/baz)
     const cacheKey = [opts.base, group, name, key + ".json"]
@@ -74,7 +81,7 @@ export function defineCachedFunction<T = any>(
       shouldInvalidateCache ||
       entry.integrity !== integrity ||
       (ttl && Date.now() - (entry.mtime || 0) > ttl) ||
-      !validate(entry);
+      validate(entry) === false;
 
     const _resolve = async () => {
       const isPending = pending[key];
@@ -109,20 +116,33 @@ export function defineCachedFunction<T = any>(
         entry.mtime = Date.now();
         entry.integrity = integrity;
         delete pending[key];
-        if (validate(entry)) {
-          useStorage()
+        if (validate(entry) !== false) {
+          const promise = useStorage()
             .setItem(cacheKey, entry)
-            .catch((error) => console.error("[nitro] [cache]", error));
+            .catch((error) => {
+              console.error(`[nitro] [cache] Cache write error.`, error);
+              useNitroApp().captureError(error, { event, tags: ["cache"] });
+            });
+          if (event && event.waitUntil) {
+            event.waitUntil(promise);
+          }
         }
       }
     };
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
 
-    if (opts.swr && entry.value) {
-      // eslint-disable-next-line no-console
-      _resolvePromise.catch(console.error);
-      // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
+    if (entry.value === undefined) {
+      await _resolvePromise;
+    } else if (expired && event && event.waitUntil) {
+      event.waitUntil(_resolvePromise);
+    }
+
+    if (opts.swr && validate(entry) !== false) {
+      _resolvePromise.catch((error) => {
+        console.error(`[nitro] [cache] SWR handler error.`, error);
+        useNitroApp().captureError(error, { event, tags: ["cache"] });
+      });
       return entry;
     }
 
@@ -136,7 +156,12 @@ export function defineCachedFunction<T = any>(
     }
     const key = await (opts.getKey || getKey)(...args);
     const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
-    const entry = await get(key, () => fn(...args), shouldInvalidateCache);
+    const entry = await get(
+      key,
+      () => fn(...args),
+      shouldInvalidateCache,
+      args[0] && isEvent(args[0]) ? args[0] : undefined
+    );
     let value = entry.value;
     if (opts.transform) {
       value = (await opts.transform(entry, ...args)) || value;
@@ -163,52 +188,111 @@ export interface CachedEventHandlerOptions<T = any>
   shouldBypassCache?: (event: H3Event) => boolean;
   getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
+  varies?: string[];
 }
 
-function escapeKey(key: string) {
-  return key.replace(/[^\dA-Za-z]/g, "");
+function escapeKey(key: string | string[]) {
+  return String(key).replace(/\W/g, "");
 }
 
-export function defineCachedEventHandler<T = any>(
-  handler: EventHandler<T>,
-  opts: CachedEventHandlerOptions<T> = defaultCacheOptions
-): EventHandler<T> {
-  const _opts: CacheOptions<ResponseCacheEntry<T>> = {
+export function defineCachedEventHandler<
+  Request extends EventHandlerRequest = EventHandlerRequest,
+  Response = EventHandlerResponse,
+>(
+  handler: EventHandler<Request, Response>,
+  opts?: CachedEventHandlerOptions<Response>
+): EventHandler<Omit<Request, "body">, Response>;
+// TODO: remove when appropriate
+// This signature provides backwards compatibility with previous signature where first generic was return type
+export function defineCachedEventHandler<
+  Request = Omit<EventHandlerRequest, "body">,
+  Response = EventHandlerResponse,
+>(
+  handler: EventHandler<
+    Request extends EventHandlerRequest ? Request : EventHandlerRequest,
+    Request extends EventHandlerRequest ? Response : Request
+  >,
+  opts?: CachedEventHandlerOptions<
+    Request extends EventHandlerRequest ? Response : Request
+  >
+): EventHandler<
+  Request extends EventHandlerRequest ? Request : EventHandlerRequest,
+  Request extends EventHandlerRequest ? Response : Request
+>;
+export function defineCachedEventHandler<
+  Request extends EventHandlerRequest = EventHandlerRequest,
+  Response = EventHandlerResponse,
+>(
+  handler: EventHandler<Request, Response>,
+  opts: CachedEventHandlerOptions<Response> = defaultCacheOptions
+): EventHandler<Request, Response> {
+  const variableHeaderNames = (opts.varies || [])
+    .filter(Boolean)
+    .map((h) => h.toLowerCase())
+    .sort();
+
+  const _opts: CacheOptions<ResponseCacheEntry<Response>> = {
     ...opts,
-    getKey: async (event) => {
-      const key = await opts.getKey?.(event);
-      if (key) {
-        return escapeKey(key);
+    getKey: async (event: H3Event) => {
+      // Custom user-defined key
+      const customKey = await opts.getKey?.(event);
+      if (customKey) {
+        return escapeKey(customKey);
       }
-      const url = event.node.req.originalUrl || event.node.req.url;
-      const friendlyName = escapeKey(decodeURI(parseURL(url).pathname)).slice(
-        0,
-        16
-      );
-      const urlHash = hash(url);
-      return `${friendlyName}.${urlHash}`;
+      // Auto-generated key
+      const _path =
+        event.node.req.originalUrl || event.node.req.url || event.path;
+      const _pathname =
+        escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) || "index";
+      const _hashedPath = `${_pathname}.${hash(_path)}`;
+      const _headers = variableHeaderNames
+        .map((header) => [header, event.node.req.headers[header]])
+        .map(([name, value]) => `${escapeKey(name)}.${hash(value)}`);
+      return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
+      if (!entry.value) {
+        return false;
+      }
       if (entry.value.code >= 400) {
         return false;
       }
       if (entry.value.body === undefined) {
         return false;
       }
+      // https://github.com/unjs/nitro/pull/1857
+      if (
+        entry.value.headers.etag === "undefined" ||
+        entry.value.headers["last-modified"] === "undefined"
+      ) {
+        return false;
+      }
       return true;
     },
     group: opts.group || "nitro/handlers",
-    integrity: [opts.integrity, handler],
+    integrity: opts.integrity || hash([handler, opts]),
   };
 
-  const _cachedHandler = cachedFunction<ResponseCacheEntry<T>>(
+  const _cachedHandler = cachedFunction<ResponseCacheEntry<Response>>(
     async (incomingEvent: H3Event) => {
+      // Only pass headers which are defined in opts.varies
+      const variableHeaders: Record<string, string | string[]> = {};
+      for (const header of variableHeaderNames) {
+        variableHeaders[header] = incomingEvent.node.req.headers[header];
+      }
+
       // Create proxies to avoid sharing state with user request
-      const reqProxy = cloneWithProxy(incomingEvent.node.req, { headers: {} });
+      const reqProxy = cloneWithProxy(incomingEvent.node.req, {
+        headers: variableHeaders,
+      });
       const resHeaders: Record<string, number | string | string[]> = {};
       let _resSendBody;
       const resProxy = cloneWithProxy(incomingEvent.node.res, {
         statusCode: 200,
+        writableEnded: false,
+        writableFinished: false,
+        headersSent: false,
+        closed: false,
         getHeader(name) {
           return resHeaders[name];
         },
@@ -270,11 +354,14 @@ export function defineCachedEventHandler<T = any>(
 
       // Collect cachable headers
       const headers = event.node.res.getHeaders();
-      headers.etag = headers.Etag || headers.etag || `W/"${hash(body)}"`;
-      headers["last-modified"] =
+      headers.etag = String(
+        headers.Etag || headers.etag || `W/"${hash(body)}"`
+      );
+      headers["last-modified"] = String(
         headers["Last-Modified"] ||
-        headers["last-modified"] ||
-        new Date().toUTCString();
+          headers["last-modified"] ||
+          new Date().toUTCString()
+      );
       const cacheControl = [];
       if (opts.swr) {
         if (opts.maxAge) {
@@ -293,7 +380,7 @@ export function defineCachedEventHandler<T = any>(
       }
 
       // Create cache entry for response
-      const cacheEntry: ResponseCacheEntry<T> = {
+      const cacheEntry: ResponseCacheEntry<Response> = {
         code: event.node.res.statusCode,
         headers,
         body,
@@ -304,7 +391,7 @@ export function defineCachedEventHandler<T = any>(
     _opts
   );
 
-  return defineEventHandler<T>(async (event) => {
+  return defineEventHandler<Request, any>(async (event) => {
     // Headers-only mode
     if (opts.headersOnly) {
       // TODO: Send SWR too
@@ -336,7 +423,16 @@ export function defineCachedEventHandler<T = any>(
     // Send status and headers
     event.node.res.statusCode = response.code;
     for (const name in response.headers) {
-      event.node.res.setHeader(name, response.headers[name]);
+      const value = response.headers[name];
+      if (name === "set-cookie") {
+        // TODO: Show warning and remove this header in the next major version of Nitro
+        event.node.res.appendHeader(
+          name,
+          splitCookiesString(value as string[])
+        );
+      } else {
+        event.node.res.setHeader(name, value);
+      }
     }
 
     // Send body

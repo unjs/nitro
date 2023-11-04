@@ -4,6 +4,7 @@ import type {
   PathItemObject,
   OperationObject,
   ParameterObject,
+  PathsObject,
 } from "openapi-typescript";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 
@@ -23,47 +24,72 @@ export default eventHandler((event) => {
       },
     ],
     schemes: ["http"],
-    paths: {
-      ...Object.fromEntries(
-        handlersMeta.map((h) => {
-          const parameters: ParameterObject[] = [];
-
-          let anonymouseCtr = 0;
-          const route = h.route
-            .replace(/:(\w+)/g, (_, name) => `{${name}}`)
-            .replace(/\/(\*)\//g, () => `/{param${++anonymouseCtr}}/`)
-            .replace(/\*\*{/, "{")
-            .replace(/\/(\*\*)$/g, () => `/{*param${++anonymouseCtr}}`);
-
-          const paramMatches = route.matchAll(/{(\*?\w+)}/g);
-          for (const match of paramMatches) {
-            const name = match[1];
-            if (!parameters.some((p) => p.name === name)) {
-              parameters.push({ name, in: "path", required: true });
-            }
-          }
-
-          const tags: string[] = [];
-          if (route.startsWith("/api/")) {
-            tags.push("API Routes");
-          } else if (route.startsWith("/_")) {
-            tags.push("Internal");
-          } else {
-            tags.push("App Routes");
-          }
-
-          const item: PathItemObject = {
-            [(h.method || "get").toLowerCase()]: <OperationObject>{
-              tags,
-              parameters,
-              responses: {
-                200: { description: "OK" },
-              },
-            },
-          };
-          return [route, item];
-        })
-      ),
-    },
+    paths: getPaths(),
   };
 });
+
+function getPaths(): PathsObject {
+  const paths: PathsObject = {};
+
+  for (const h of handlersMeta) {
+    const { route, parameters } = normalizeRoute(h.route);
+    const tags = defaultTags(h.route);
+    const method = (h.method || "get").toLowerCase();
+
+    const item: PathItemObject = {
+      [method]: <OperationObject>{
+        tags,
+        parameters,
+        responses: {
+          200: { description: "OK" },
+        },
+      },
+    };
+
+    if (paths[route] === undefined) {
+      paths[route] = item;
+    } else {
+      Object.assign(paths[route], item);
+    }
+  }
+
+  return paths;
+}
+
+function normalizeRoute(_route: string) {
+  const parameters: ParameterObject[] = [];
+
+  let anonymousCtr = 0;
+  const route = _route
+    .replace(/:(\w+)/g, (_, name) => `{${name}}`)
+    .replace(/\/(\*)\//g, () => `/{param${++anonymousCtr}}/`)
+    .replace(/\*\*{/, "{")
+    .replace(/\/(\*\*)$/g, () => `/{*param${++anonymousCtr}}`);
+
+  const paramMatches = route.matchAll(/{(\*?\w+)}/g);
+  for (const match of paramMatches) {
+    const name = match[1];
+    if (!parameters.some((p) => p.name === name)) {
+      parameters.push({ name, in: "path", required: true });
+    }
+  }
+
+  return {
+    route,
+    parameters,
+  };
+}
+
+function defaultTags(route: string) {
+  const tags: string[] = [];
+
+  if (route.startsWith("/api/")) {
+    tags.push("API Routes");
+  } else if (route.startsWith("/_")) {
+    tags.push("Internal");
+  } else {
+    tags.push("App Routes");
+  }
+
+  return tags;
+}

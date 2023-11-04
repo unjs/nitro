@@ -1,8 +1,16 @@
-import { H3Event, eventHandler, setResponseStatus } from "h3";
+import {
+  H3Event,
+  eventHandler,
+  getResponseStatus,
+  send,
+  setResponseHeader,
+  setResponseHeaders,
+  setResponseStatus,
+} from "h3";
 import { useNitroApp } from "./app";
 
 export interface RenderResponse {
-  body: string;
+  body: any;
   statusCode: number;
   statusMessage: string;
   headers: Record<string, string>;
@@ -15,24 +23,22 @@ export type RenderHandler = (
 export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder
-    if (event.node.req.url.endsWith("/favicon.ico")) {
-      event.node.res.setHeader("Content-Type", "image/x-icon");
-      event.node.res.end(
+    if (event.path.endsWith("/favicon.ico")) {
+      setResponseHeader(event, "Content-Type", "image/x-icon");
+      return send(
+        event,
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
       );
-      return;
     }
 
     const response = await handler(event);
     if (!response) {
-      if (!event.node.res.writableEnded) {
-        event.node.res.statusCode =
-          event.node.res.statusCode === 200 ? 500 : event.node.res.statusCode;
-        event.node.res.end(
-          "No response returned from render handler: " + event.node.req.url
-        );
-      }
-      return;
+      const _currentStatus = getResponseStatus(event);
+      setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
+      return send(
+        event,
+        "No response returned from render handler: " + event.path
+      );
     }
 
     // Allow hooking and modifying response
@@ -44,16 +50,14 @@ export function defineRenderHandler(handler: RenderHandler) {
     // TODO: Caching support
 
     // Send headers
-    if (!event.node.res.headersSent && response.headers) {
-      for (const header in response.headers) {
-        event.node.res.setHeader(header, response.headers[header]);
-      }
+    if (response.headers) {
+      setResponseHeaders(event, response.headers);
+    }
+    if (response.statusCode || response.statusMessage) {
       setResponseStatus(event, response.statusCode, response.statusMessage);
     }
 
     // Send response body
-    return typeof response.body === "string"
-      ? response.body
-      : JSON.stringify(response.body);
+    return response.body;
   });
 }
