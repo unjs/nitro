@@ -1,4 +1,4 @@
-import { resolve } from "pathe";
+import { resolve, basename } from "pathe";
 import { defineNitroPreset } from "../preset";
 import { Nitro } from "../types";
 import { writeFile } from "../utils";
@@ -6,7 +6,7 @@ import { writeFile } from "../utils";
 export const awsLambdaEdge = defineNitroPreset({
   entry: "#internal/nitro/entries/aws-lambda-edge",
   commands: {
-    deploy: "cd ./cdk && APP_ID=<your app id> npm run deploy --all",
+    deploy: "cd ./cdk && APP_ID=<your app id> npm run deploy -- --all",
   },
   hooks: {
     async compiled(nitro: Nitro) {
@@ -20,7 +20,7 @@ async function generateCdkApp(nitro: Nitro) {
   await writeFile(resolve(cdkDir, "bin/nitro-lambda-edge.ts"), entryTemplate());
   await writeFile(
     resolve(cdkDir, "lib/nitro-lambda-edge-stack.ts"),
-    nitroLambdaEdgeStackTemplate()
+    nitroLambdaEdgeStackTemplate(nitro)
   );
   await writeFile(
     resolve(cdkDir, "package.json"),
@@ -99,8 +99,9 @@ new NitroLambdaEdgeStack(app, process.env.APP_ID, {
 `.trim();
 }
 
-function nitroLambdaEdgeStackTemplate() {
+function nitroLambdaEdgeStackTemplate(nitro: Nitro) {
   return `
+import * as path from "node:path";
 import { CfnOutput, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
@@ -115,8 +116,8 @@ export class NitroLambdaEdgeStack extends Stack {
     super(scope, id, props);
 
     const nitro = new NitroAsset(this, "NitroAsset", {
-      path: "../../",
-      exclude: ["cdk"],
+      path: path.join(__dirname, "../../../"),
+      outputDir: "${basename(nitro.options.output.dir)}",
     });
     const edgeFunction = new cloudfront.experimental.EdgeFunction(
       this,
