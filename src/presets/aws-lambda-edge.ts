@@ -33,7 +33,7 @@ async function generateCdkApp(nitro: Nitro) {
       devDependencies: {
         "@types/node": "18",
         "aws-cdk": "^2",
-        "ts-node": "^10.7.0",
+        jiti: "^1",
         typescript: "~3.9.7",
       },
       dependencies: {
@@ -47,7 +47,7 @@ async function generateCdkApp(nitro: Nitro) {
   await writeFile(
     resolve(cdkDir, "cdk.json"),
     JSON.stringify({
-      app: "npx ts-node --prefer-ts-exts bin/nitro-lambda-edge.ts",
+      app: "npx jiti bin/nitro-lambda-edge.ts",
     })
   );
   await writeFile(
