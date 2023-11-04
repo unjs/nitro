@@ -5,7 +5,6 @@ import { writeFile } from "../utils";
 
 export const awsLambdaEdge = defineNitroPreset({
   entry: "#internal/nitro/entries/aws-lambda-edge",
-  externals: true,
   commands: {
     deploy: "cd ./cdk && APP_ID=<your app id> npm run deploy --all",
   },
