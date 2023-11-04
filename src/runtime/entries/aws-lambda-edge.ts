@@ -7,6 +7,7 @@ import type {
 } from "aws-lambda";
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "../app";
+import { normalizeLambdaOutgoingBody } from "../utils.lambda";
 
 export const handler = async function handler(
   event: CloudFrontRequestEvent,
@@ -24,10 +25,12 @@ export const handler = async function handler(
     body: normalizeIncomingBody(request.body),
   });
 
+  const awsBody = await normalizeLambdaOutgoingBody(r.body, r.headers);
   return {
     status: r.status.toString(),
     headers: normalizeOutgoingHeaders(r.headers),
-    body: r.body.toString(),
+    body: awsBody.body,
+    bodyEncoding: awsBody.type === "binary" ? "base64" : awsBody.type,
   };
 };
 
@@ -41,12 +44,19 @@ function normalizeIncomingHeaders(headers: CloudFrontHeaders) {
 }
 
 function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | number | string[] | undefined>
 ): CloudFrontHeaders {
   return Object.fromEntries(
     Object.entries(headers).map(([k, v]) => [
       k,
-      Array.isArray(v) ? v.map((value) => ({ value })) : [{ value: v ?? "" }],
+      Array.isArray(v)
+        ? v.flatMap((values) =>
+            values.split(",").map((value) => ({ value: value.trim() }))
+          )
+        : v
+            ?.toString()
+            .split(",")
+            .map((splited) => ({ value: splited.trim() })) ?? [],
     ])
   );
 }
@@ -54,7 +64,7 @@ function normalizeOutgoingHeaders(
 function normalizeIncomingBody(body?: CloudFrontRequest["body"]) {
   switch (body?.encoding) {
     case "base64": {
-      return Buffer.from(body.data, "base64");
+      return Buffer.from(body.data, "base64").toString("utf8");
     }
     case "text": {
       return body.data;

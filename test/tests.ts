@@ -236,7 +236,7 @@ export function testNitro(
   });
 
   // aws lambda requires buffer responses to be base 64
-  const LambdaPresets = new Set(["netlify", "aws-lambda"]);
+  const LambdaPresets = new Set(["netlify", "aws-lambda", "aws-lambda-edge"]);
   it.runIf(LambdaPresets.has(ctx.preset))(
     "buffer image responses",
     async () => {

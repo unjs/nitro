@@ -14,7 +14,7 @@ describe("nitro:preset:aws-lambda-edge", async () => {
     const { handler } = await import(resolve(ctx.outDir, "server/index.mjs"));
     return async ({ url: rawRelativeUrl, headers, method, body }) => {
       // creating new URL object to parse query easier
-      const url = new URL(`https://example.com${rawRelativeUrl}`);
+      const [uri, querystring] = rawRelativeUrl.split("?");
       // modify headers to CloudFrontHeaders.
       const reqHeaders: CloudFrontHeaders = Object.fromEntries(
         Object.entries(headers || {}).map(([k, v]) => [
@@ -37,8 +37,8 @@ describe("nitro:preset:aws-lambda-edge", async () => {
               request: {
                 clientIp: "203.0.113.178",
                 method: method || "GET",
-                uri: url.pathname,
-                querystring: url.searchParams.toString(),
+                uri,
+                querystring,
                 headers: reqHeaders,
                 body: body
                   ? {
@@ -58,7 +58,9 @@ describe("nitro:preset:aws-lambda-edge", async () => {
       const resHeaders = Object.fromEntries(
         Object.entries(res.headers).map(([key, keyValues]) => [
           key,
-          keyValues.map((kv) => kv.value).join(","),
+          keyValues.length === 1
+            ? keyValues[0].value
+            : keyValues.map((kv) => kv.value),
         ])
       );
 
