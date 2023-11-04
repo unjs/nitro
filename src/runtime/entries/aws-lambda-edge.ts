@@ -53,11 +53,14 @@ function normalizeOutgoingHeaders(
 
 function normalizeIncomingBody(body?: CloudFrontRequest["body"]) {
   switch (body?.encoding) {
-    case "base64":
+    case "base64": {
       return Buffer.from(body.data, "base64");
-    case "text":
+    }
+    case "text": {
       return body.data;
-    default:
+    }
+    default: {
       return "";
+    }
   }
 }
