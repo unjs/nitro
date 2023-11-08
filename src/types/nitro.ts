@@ -279,7 +279,9 @@ export interface NitroOptions extends PresetOptions {
   dev: boolean;
   devServer: DevServerOptions;
   watchOptions: WatchOptions;
-  devProxy: Record<string, string | ProxyServerOptions>;
+  devProxy: Record<string, string | ProxyServerOptions & {
+    rewrite?: (string) => string;
+  }>;
 
   // Logging
   logging: {
