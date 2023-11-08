@@ -7,7 +7,7 @@ export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
 type FileInfo = { path: string; fullPath: string };
 
 const httpMethodRegex =
-  /\.(connect|delete|get|head|options|patch|post|put|trace)/;
+  /\.(connect|delete|get|head|options|patch|post|put|trace)$/;
 
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
