@@ -5,7 +5,6 @@ import {
   App,
   createApp,
   eventHandler,
-  getRequestPath,
   fromNodeMiddleware,
   H3Error,
   H3Event,
@@ -171,8 +170,8 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       eventHandler(async (event) => {
         const { rewrite } = opts;
         if (rewrite) {
-          const path = getRequestPath(event);
-          event.node.req.url = rewrite(path);
+          event.path = rewrite(event.path);
+          event.node.req.url = event.path;
         }
         await proxy.handle(event);
       })
