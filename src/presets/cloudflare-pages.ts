@@ -31,12 +31,15 @@ export const cloudflarePages = defineNitroPreset({
   rollupConfig: {
     output: {
       entryFileNames: "index.js",
-      dir: resolve("{{ output.dir }}", "_worker.js"),
+      dir: "{{ output.dir }}/_worker.js",
       format: "esm",
       inlineDynamicImports: false,
     },
   },
   hooks: {
+    "rollup:before": (nitro, rollupConfig) => {
+      rollupConfig.output.dir = resolve(nitro.options.output.serverDir, "_worker.js");
+    },
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
     },
