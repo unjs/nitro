@@ -11,20 +11,23 @@ import {
   Router,
   toNodeListener,
 } from "h3";
-import {createFetch, Headers} from "ofetch";
+import { createFetch, Headers } from "ofetch";
 import destr from "destr";
-import {createCall, createFetch as createLocalFetch,} from "unenv/runtime/fetch/index";
-import {createHooks, Hookable} from "hookable";
-import type {CaptureError, NitroRuntimeHooks} from "./types";
-import {useRuntimeConfig} from "./config";
-import {cachedEventHandler} from "./cache";
-import {normalizeFetchResponse} from "./utils";
-import {createRouteRulesHandler, getRouteRulesForPath} from "./route-rules";
-import {NitroAsyncContext, nitroAsyncContext} from "./context";
-import type {$Fetch, NitroFetchRequest} from "nitropack";
-import {plugins} from "#internal/nitro/virtual/plugins";
+import {
+  createCall,
+  createFetch as createLocalFetch,
+} from "unenv/runtime/fetch/index";
+import { createHooks, Hookable } from "hookable";
+import type { CaptureError, NitroRuntimeHooks } from "./types";
+import { useRuntimeConfig } from "./config";
+import { cachedEventHandler } from "./cache";
+import { normalizeFetchResponse } from "./utils";
+import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
+import { NitroAsyncContext, nitroAsyncContext } from "./context";
+import type { $Fetch, NitroFetchRequest } from "nitropack";
+import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
-import {handlers} from "#internal/nitro/virtual/server-handlers";
+import { handlers } from "#internal/nitro/virtual/server-handlers";
 
 export interface NitroApp {
   h3App: H3App;
@@ -190,6 +193,7 @@ function createNitroApp(): NitroApp {
 }
 
 function runPlugins(app: NitroApp) {
+  console.log('calling plugins', plugins)
   for (const plugin of plugins) {
     try {
       plugin(app);
@@ -203,4 +207,4 @@ function runPlugins(app: NitroApp) {
 export const nitroApp: NitroApp = createNitroApp();
 export const useNitroApp = () => nitroApp;
 
-runPlugins(nitroApp)
+runPlugins(nitroApp);
