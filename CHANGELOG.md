@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.7.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.7.0...v2.7.1)
+
+### 🩹 Fixes
+
+- Recursively simplify returned objects ([#1847](https://github.com/unjs/nitro/pull/1847))
+- **cache:** Fix `etag` and `last-modified` values ([#1855](https://github.com/unjs/nitro/pull/1855))
+- **cache:** Invalidate wrongly cached  handler entities ([#1857](https://github.com/unjs/nitro/pull/1857))
+
+### 🏡 Chore
+
+- Update dependencies ([7a6c61db](https://github.com/unjs/nitro/commit/7a6c61db))
+- Update lockfile ([9b5ed9a1](https://github.com/unjs/nitro/commit/9b5ed9a1))
+- Update lockfile ([b0ec181d](https://github.com/unjs/nitro/commit/b0ec181d))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+
 ## v2.7.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.6.3...v2.7.0)

@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: corepack enable
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: pnpm
@@ -35,7 +35,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: corepack enable
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: pnpm
@@ -54,7 +54,7 @@ jobs:
       - run: pnpm vitest-es --coverage
         env:
           NODE_OPTIONS: --experimental-vm-modules --enable-source-maps
-      - uses: codecov/codecov-action@v3
+      # - uses: codecov/codecov-action@v3
       - name: Release Nightly
         if: |
           github.event_name == 'push' &&

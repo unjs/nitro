@@ -1,9 +1,9 @@
 import "#internal/nitro/virtual/polyfill";
 // @ts-ignore
-import { serve } from "https://deno.land/std/http/server.ts";
 import { nitroApp } from "../app";
 
-serve((request: Request) => {
+// @ts-expect-error unknown global Deno
+Deno.serve((request: Request) => {
   return handleRequest(request);
 });
 

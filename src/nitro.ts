@@ -4,15 +4,16 @@ import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
-import type { NitroConfig, Nitro, NitroDynamicConfig } from "./types";
+import type { NitroConfig, NitroDynamicConfig, Nitro } from "./types";
 import {
   LoadConfigOptions,
   loadOptions,
   normalizeRouteRules,
   normalizeRuntimeConfig,
 } from "./options";
-import { scanPlugins } from "./scan";
+import { scanModules, scanPlugins } from "./scan";
 import { createStorage } from "./storage";
+import { resolveNitroModule } from "./module";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -113,6 +114,23 @@ export async function createNitro(
     nitro.options.virtual["#imports"] = () => nitro.unimport.toExports();
     // Backward compatibility
     nitro.options.virtual["#nitro"] = 'export * from "#imports"';
+  }
+
+  // Resolve and run modules after initial setup
+  const scannedModules = await scanModules(nitro);
+  const _modules = [...(nitro.options.modules || []), ...scannedModules];
+  const modules = await Promise.all(
+    _modules.map((mod) => resolveNitroModule(mod, nitro.options))
+  );
+  const _installedURLs = new Set<string>();
+  for (const mod of modules) {
+    if (mod._url) {
+      if (_installedURLs.has(mod._url)) {
+        continue;
+      }
+      _installedURLs.add(mod._url);
+    }
+    await mod.setup(nitro);
   }
 
   return nitro;

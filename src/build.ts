@@ -19,7 +19,12 @@ import {
 } from "mlly";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
-import { prettyPath, writeFile, isDirectory } from "./utils";
+import {
+  prettyPath,
+  writeFile,
+  isDirectory,
+  resolvePath as resolveNitroPath,
+} from "./utils";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
 import type { Nitro } from "./types";
 import { runtimeDir } from "./dirs";
@@ -102,10 +107,10 @@ export async function writeTypes(nitro: Nitro) {
     if (typeof mw.handler !== "string" || !mw.route) {
       continue;
     }
-    const relativePath = relative(typesDir, mw.handler).replace(
-      /\.[a-z]+$/,
-      ""
-    );
+    const relativePath = relative(
+      typesDir,
+      resolveNitroPath(mw.handler, nitro.options)
+    ).replace(/\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/, "");
 
     if (!routeTypes[mw.route]) {
       routeTypes[mw.route] = {};
@@ -428,7 +433,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
   const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/(\S*)/g, ` ${rOutput}/$1`);
+    return input.replace(/([\s:])\.\/(\S*)/g, `$1${rOutput}/$2`);
   };
   if (buildInfo.commands.preview) {
     nitro.logger.success(
@@ -507,6 +512,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     join(dir, "routes"),
     join(dir, "middleware", GLOB_SCAN_PATTERN),
     join(dir, "plugins"),
+    join(dir, "modules"),
   ]);
 
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);

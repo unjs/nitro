@@ -1,6 +1,11 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, join } from "pathe";
-import { joinURL, withLeadingSlash, withoutLeadingSlash } from "ufo";
+import {
+  joinURL,
+  withLeadingSlash,
+  withTrailingSlash,
+  withoutLeadingSlash,
+} from "ufo";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -16,7 +21,7 @@ export const cloudflarePages = defineNitroPreset({
   output: {
     dir: "{{ rootDir }}/dist",
     publicDir: "{{ output.dir }}",
-    serverDir: "{{ output.dir }}",
+    serverDir: "{{ output.dir }}/_worker.js",
   },
   alias: {
     // Hotfix: Cloudflare appends /index.html if mime is not found and things like ico are not in standard lite.js!
@@ -25,21 +30,12 @@ export const cloudflarePages = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      entryFileNames: "_worker.js",
+      entryFileNames: "index.js",
       format: "esm",
+      inlineDynamicImports: false,
     },
   },
   hooks: {
-    "rollup:before"(nitro, rollupConfig) {
-      if (process.env.NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS) {
-        rollupConfig.output = {
-          ...rollupConfig.output,
-          entryFileNames: "index.js",
-          dir: resolve(nitro.options.output.serverDir, "_worker.js"),
-          inlineDynamicImports: false,
-        };
-      }
-    },
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
     },
@@ -98,7 +94,21 @@ async function writeCFRoutes(nitro: Nitro) {
 
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
-    (i) => !i.fallthrough
+    (dir, index, array) => {
+      if (dir.fallthrough) {
+        return false;
+      }
+
+      const normalizedBase = withoutLeadingSlash(dir.baseURL);
+
+      return !array.some(
+        (otherDir, otherIndex) =>
+          otherIndex !== index &&
+          normalizedBase.startsWith(
+            withoutLeadingSlash(withTrailingSlash(otherDir.baseURL))
+          )
+      );
+    }
   );
 
   // Explicit prefixes
