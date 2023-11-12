@@ -352,6 +352,13 @@ export interface NitroOptions extends PresetOptions {
     deploy: string;
   };
 
+  // Framework
+  framework: {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    name?: "nitro" | (string & {});
+    version?: string;
+  };
+
   // IIS
   iis?: {
     mergeConfig?: boolean;
