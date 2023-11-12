@@ -21,7 +21,7 @@ export const cloudflarePages = defineNitroPreset({
   output: {
     dir: "{{ rootDir }}/dist",
     publicDir: "{{ output.dir }}",
-    serverDir: "{{ output.dir }}",
+    serverDir: "{{ output.dir }}/_worker.js",
   },
   alias: {
     // Hotfix: Cloudflare appends /index.html if mime is not found and things like ico are not in standard lite.js!
@@ -30,21 +30,12 @@ export const cloudflarePages = defineNitroPreset({
   },
   rollupConfig: {
     output: {
-      entryFileNames: "_worker.js",
+      entryFileNames: "index.js",
       format: "esm",
+      inlineDynamicImports: false,
     },
   },
   hooks: {
-    "rollup:before"(nitro, rollupConfig) {
-      if (process.env.NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS) {
-        rollupConfig.output = {
-          ...rollupConfig.output,
-          entryFileNames: "index.js",
-          dir: resolve(nitro.options.output.serverDir, "_worker.js"),
-          inlineDynamicImports: false,
-        };
-      }
-    },
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
     },

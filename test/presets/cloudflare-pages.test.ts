@@ -12,7 +12,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
   testNitro(ctx, () => {
     const mf = new Miniflare({
       modules: true,
-      scriptPath: resolve(ctx.outDir, "_worker.js"),
+      scriptPath: resolve(ctx.outDir, "_worker.js", "index.js"),
       globals: { __env__: {} },
       compatibilityFlags: ["streams_enable_constructors"],
       bindings: {
