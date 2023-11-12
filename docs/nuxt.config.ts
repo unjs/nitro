@@ -4,4 +4,9 @@ export default defineNuxtConfig({
   routeRules: {
     "/deploy/node": { redirect: "/deploy/runtimes/node" },
   },
+  nitro: {
+    prerender: {
+      failOnError: false,
+    },
+  },
 });
