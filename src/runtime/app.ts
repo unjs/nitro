@@ -193,7 +193,6 @@ function createNitroApp(): NitroApp {
 }
 
 function runPlugins(app: NitroApp) {
-  console.log('calling plugins', plugins)
   for (const plugin of plugins) {
     try {
       plugin(app);
