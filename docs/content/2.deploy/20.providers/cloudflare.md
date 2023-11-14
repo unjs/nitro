@@ -32,7 +32,7 @@ bucket = ".output/public"
 
 ### Testing locally
 
-You can use [wrangler2](https://github.com/cloudflare/wrangler2), to test your app locally:
+You can use [wrangler2](https://github.com/cloudflare/workers-sdk), to test your app locally:
 
 ```bash
 NITRO_PRESET=cloudflare yarn build
@@ -152,11 +152,11 @@ If you use the GitHub/GitLab [integration](https://developers.cloudflare.com/pag
 
 ### Direct Upload
 
-Alternatively, you can use [wrangler](https://github.com/cloudflare/wrangler2) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
+Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/wrangler) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk) and login to your Cloudflare account:
 
 ```bash
 npm i wrangler -g
