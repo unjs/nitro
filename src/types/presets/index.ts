@@ -1,3 +1,4 @@
+import { AWSAmplifyOptions } from "./aws-amplify";
 import { AzureOptions } from "./azure";
 import { CloudflareOptions } from "./cloudflare";
 import { FirebaseOptions } from "./firebase";
@@ -8,4 +9,5 @@ export interface PresetOptions {
   cloudflare: CloudflareOptions;
   firebase: FirebaseOptions;
   vercel: VercelOptions;
+  awsAmplify: AWSAmplifyOptions;
 }
