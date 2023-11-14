@@ -8,7 +8,7 @@ import type { Nitro } from "../types";
 import type {
   VercelBuildConfigV3,
   VercelServerlessFunctionConfig,
-} from "../types/presets";
+} from "../types/presets/vercel";
 
 // https://vercel.com/docs/build-output-api/v3
 
