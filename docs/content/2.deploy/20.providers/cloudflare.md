@@ -156,7 +156,7 @@ Alternatively, you can use [wrangler](https://github.com/cloudflare/wrangler2) t
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/wrangler) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/wrangler2) and login to your Cloudflare account:
 
 ```bash
 npm i wrangler -g
