@@ -9,6 +9,7 @@ import {
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
+import { CloudflarePagesRoutes } from "../types/presets/cloudflare";
 
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
@@ -58,20 +59,6 @@ export const cloudflarePagesStatic = defineNitroPreset({
     },
   },
 });
-
-/**
- * https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
- */
-export interface CloudflarePagesRoutes {
-  /** Defines the version of the schema. Currently there is only one version of the schema (version 1), however, we may add more in the future and aim to be backwards compatible. */
-  version?: 1;
-
-  /** Defines routes that will be invoked by Functions. Accepts wildcard behavior. */
-  include?: string[];
-
-  /** Defines routes that will not be invoked by Functions. Accepts wildcard behavior. `exclude` always take priority over `include`. */
-  exclude?: string[];
-}
 
 async function writeCFRoutes(nitro: Nitro) {
   const _cfPagesConfig = nitro.options.cloudflare?.pages || {};

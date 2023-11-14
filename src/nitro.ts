@@ -110,6 +110,7 @@ export async function createNitro(
   // Auto imports
   if (nitro.options.imports) {
     nitro.unimport = createUnimport(nitro.options.imports);
+    await nitro.unimport.init();
     // Support for importing from '#imports'
     nitro.options.virtual["#imports"] = () => nitro.unimport.toExports();
     // Backward compatibility
