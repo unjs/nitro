@@ -81,11 +81,12 @@ async function writeAmplifyFiles(nitro: Nitro) {
   routes.push({
     path: "/*",
     target: computeTarget,
-    fallback: hasWildcardPublicAsset
-      ? {
-          kind: "Static",
-        }
-      : undefined,
+    fallback:
+      hasWildcardPublicAsset && nitro.options.awsAmplify.computeStaticFallback
+        ? {
+            kind: "Static",
+          }
+        : undefined,
   });
 
   // Prefix with baseURL
