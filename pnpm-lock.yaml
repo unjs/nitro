@@ -199,8 +199,8 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0(rollup@3.29.4)
       unstorage:
-        specifier: ^1.10.0
-        version: 1.10.0
+        specifier: ^1.10.1
+        version: 1.10.1
     devDependencies:
       '@azure/functions':
         specifier: ^3.5.1
@@ -2586,7 +2586,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001562
-      electron-to-chromium: 1.4.582
+      electron-to-chromium: 1.4.583
       node-releases: 2.0.13
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
     dev: true
@@ -3168,8 +3168,8 @@ packages:
   /ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  /electron-to-chromium@1.4.582:
-    resolution: {integrity: sha512-89o0MGoocwYbzqUUjc+VNpeOFSOK9nIdC5wY4N+PVUarUK0MtjyTjks75AZS2bW4Kl8MdewdFsWaH0jLy+JNoA==}
+  /electron-to-chromium@1.4.583:
+    resolution: {integrity: sha512-93y1gcONABZ7uqYe/JWDVQP/Pj/sQSunF0HVAPdlg/pfBnOyBMLlQUxWvkqcljJg1+W6cjvPuYD+r1Th9Tn8mA==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -5453,12 +5453,12 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  /mkdist@1.3.0(typescript@5.2.2):
-    resolution: {integrity: sha512-ZQrUvcL7LkRdzMREpDyg9AT18N9Tl5jc2qeKAUeEw0KGsgykbHbuRvysGAzTuGtwuSg0WQyNit5jh/k+Er3JEg==}
+  /mkdist@1.3.1(typescript@5.2.2):
+    resolution: {integrity: sha512-S7C0kObf9Wumw1zCtDkiqwaACKlGpJs2YrmDuirFfgHXtwK/ZLpLRMzPn5CPnGPjO+28xAQwepBxnjhnch9sHQ==}
     hasBin: true
     peerDependencies:
-      sass: ^1.63.6
-      typescript: '>=5.1.6'
+      sass: ^1.69.5
+      typescript: '>=5.2.2'
     peerDependenciesMeta:
       sass:
         optional: true
@@ -5467,7 +5467,7 @@ packages:
     dependencies:
       citty: 0.1.4
       defu: 6.1.3
-      esbuild: 0.18.20
+      esbuild: 0.19.5
       fs-extra: 11.1.1
       globby: 13.2.2
       jiti: 1.21.0
@@ -6978,7 +6978,7 @@ packages:
       hookable: 5.5.3
       jiti: 1.21.0
       magic-string: 0.30.5
-      mkdist: 1.3.0(typescript@5.2.2)
+      mkdist: 1.3.1(typescript@5.2.2)
       mlly: 1.4.2
       pathe: 1.1.1
       pkg-types: 1.0.3
@@ -7072,8 +7072,8 @@ packages:
       webpack-virtual-modules: 0.5.0
     dev: false
 
-  /unstorage@1.10.0:
-    resolution: {integrity: sha512-azLoAeUMi1d1U823lR+eipFJjBydDAXFXoDAu6R9YCxQbkHzpoWaahqZUSkFFSfQSUZiWCqH3GmT3KuzffbcCQ==}
+  /unstorage@1.10.1:
+    resolution: {integrity: sha512-rWQvLRfZNBpF+x8D3/gda5nUCQL2PgXy2jNG4U7/Rc9BGEv9+CAJd0YyGCROUBKs9v49Hg8huw3aih5Bf5TAVw==}
     peerDependencies:
       '@azure/app-configuration': ^1.4.1
       '@azure/cosmos': ^4.0.0
