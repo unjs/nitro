@@ -86,7 +86,7 @@
     "escape-string-regexp": "^5.0.0",
     "etag": "^1.8.1",
     "fs-extra": "^11.1.1",
-    "globby": "^13.2.2",
+    "globby": "^14.0.0",
     "gzip-size": "^7.0.0",
     "h3": "^1.8.2",
     "hookable": "^5.5.3",
@@ -121,7 +121,7 @@
     "unctx": "^2.3.1",
     "unenv": "^1.7.4",
     "unimport": "^3.5.0",
-    "unstorage": "^1.9.0"
+    "unstorage": "^1.10.1"
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1",
