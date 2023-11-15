@@ -380,7 +380,7 @@ function extractLinks(
   if (crawlLinks) {
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
-        .map((m) => escapeHtml(m[1]))
+        .map((m) => decodeURIComponent(escapeHtml(m[1])))
         .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }
