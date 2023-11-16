@@ -1,3 +1,4 @@
+export * from "./aws-amplify";
 export * from "./aws-lambda";
 export * from "./azure-functions";
 export * from "./azure";

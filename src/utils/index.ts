@@ -103,6 +103,7 @@ export function replaceAll(input: string, from: string, to: string) {
 const autodetectableProviders: Partial<
   Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
 > = {
+  aws_amplify: "aws-amplify",
   azure_static: "azure",
   cloudflare_pages: "cloudflare-pages",
   netlify: "netlify",

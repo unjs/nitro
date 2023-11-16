@@ -1,4 +1,3 @@
-import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { writeFile } from "node:fs/promises";
 import { joinURL } from "ufo";
@@ -12,7 +11,7 @@ import {
 
 export const awsAmplify = defineNitroPreset({
   extends: "node-server",
-  entry: fileURLToPath(new URL("entry.ts", import.meta.url)),
+  entry: "#internal/nitro/entries/aws-amplify",
   output: {
     dir: "{{ rootDir }}/.amplify-hosting",
     serverDir: "{{ output.dir }}/compute/default",
