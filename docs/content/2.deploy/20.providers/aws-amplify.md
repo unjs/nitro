@@ -34,7 +34,7 @@ You can configure advanced options of this preset using `awsAmplify` option.
 export default defineNitroConfig({
   awsAmplify: {
       // catchAllStaticFallback: true,
-      // imageOptimization: true,
+      // imageOptimization: { path: "/_image", cacheControl: "public, max-age=3600, immutable" },
       // imageSettings: { ... },
   }
 })
@@ -45,7 +45,7 @@ export default defineNuxtConfig({
   nitro: {
     awsAmplify: {
       // catchAllStaticFallback: true,
-      // imageOptimization: true,
+      // imageOptimization: { "/_image", cacheControl: "public, max-age=3600, immutable" },
       // imageSettings: { ... },
     }
   }
