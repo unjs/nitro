@@ -5,7 +5,11 @@ Deploy Nitro apps to [AWS Amplify Hosting](https://aws.amazon.com/amplify/).
 **Preset:** `aws_amplify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 ::alert{type="warning"}
-You can experiment with deploying to AWS Amplify hosting using [nightly release channel](https://nitro.unjs.io/guide/getting-started#nightly-release-channel)
+You can **experiment** with deploying to AWS Amplify hosting using [nightly release channel](https://nitro.unjs.io/guide/getting-started#nightly-release-channel)
+::
+
+::alert{type="warning"}
+Currently you might need a custom `amplify.yml` file in order to have a working deployment ([see examples](https://nitro.unjs.io/deploy/providers/aws-amplify#amplifyyml)).
 ::
 
 ## Deploy to AWS Amplify Hosting
@@ -50,5 +54,55 @@ export default defineNuxtConfig({
     }
   }
 })
+```
+::
+
+### `amplify.yml`
+
+You might need a custom `amplify.yml` file for advanced configuration. Here are two template examples:
+
+::code-group
+```yml [amplify.yml]
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm use 18 && node --version
+        - corepack enable && npx --yes nypm install
+    build:
+      commands:
+        - pnpm build
+  artifacts:
+    baseDirectory: .amplify-hosting
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*
+
+```
+
+```yml [amplify.yml (monorepo)]
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+          - nvm use 18 && node --version
+          - corepack enable && npx --yes nypm install
+        build:
+          commands:
+            - pnpm --filter website1 build
+      artifacts:
+        baseDirectory: apps/website1/.amplify-hosting
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+      buildPath: /
+    appRoot: apps/website1
 ```
 ::
