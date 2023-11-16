@@ -155,6 +155,9 @@ export async function prerender(nitro: Nitro) {
   const generateRoute = async (route: string) => {
     const start = Date.now();
 
+    // Ensure route is decoded to start with
+    route = decodeURI(route);
+
     // Check if we should render route
     if (!canPrerender(route)) {
       skippedRoutes.add(route);
@@ -387,12 +390,7 @@ function extractLinks(
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get("x-nitro-prerender") || "";
-  _links.push(
-    ...header
-      .split(",")
-      .map((i) => i.trim())
-      .map((i) => decodeURIComponent(i))
-  );
+  _links.push(...header.split(",").map((i) => i.trim()));
 
   for (const link of _links.filter(Boolean)) {
     const _link = parseURL(link);
