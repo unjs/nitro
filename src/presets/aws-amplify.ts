@@ -82,7 +82,7 @@ async function writeAmplifyFiles(nitro: Nitro) {
     path: "/*",
     target: computeTarget,
     fallback:
-      hasWildcardPublicAsset && nitro.options.awsAmplify.computeStaticFallback
+      hasWildcardPublicAsset && nitro.options.awsAmplify.catchAllStaticFallback
         ? {
             kind: "Static",
           }

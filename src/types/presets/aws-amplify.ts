@@ -152,7 +152,7 @@ export interface AmplifyDeployManifest {
 }
 
 export interface AWSAmplifyOptions {
-  computeStaticFallback?: boolean;
+  catchAllStaticFallback?: boolean;
   imageOptimization?: {
     path?: string;
     cacheControl?: string;
