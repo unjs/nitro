@@ -85,7 +85,7 @@ export type AmplifyImageSettings = {
   }[];
 
   /** Array of allowed output image formats. */
-  formats?: (
+  formats: (
     | "image/avif"
     | "image/webp"
     | "image/gif"
@@ -94,10 +94,10 @@ export type AmplifyImageSettings = {
   )[];
 
   /** Cache duration (in seconds) for the optimized images. */
-  minimumCacheTTL?: number;
+  minimumCacheTTL: number;
 
   /** Allow SVG input image URLs. This is disabled by default for security purposes. */
-  dangerouslyAllowSVG?: boolean;
+  dangerouslyAllowSVG: boolean;
 };
 
 export interface AmplifyDeployManifest {
