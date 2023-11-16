@@ -77,10 +77,6 @@ frontend:
     baseDirectory: .amplify-hosting
     files:
       - "**/*"
-  cache:
-    paths:
-      - node_modules/**/*
-
 ```
 
 ```yml [amplify.yml (monorepo)]
@@ -99,9 +95,6 @@ applications:
         baseDirectory: apps/website1/.amplify-hosting
         files:
           - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
       buildPath: /
     appRoot: apps/website1
 ```
