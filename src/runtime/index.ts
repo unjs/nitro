@@ -6,5 +6,4 @@ export * from "./renderer";
 export { getRouteRules } from "./route-rules";
 export { useStorage } from "./storage";
 export { useEvent } from "./context";
-export { defineErrorHandler } from "./error"; 
- 
+export { defineErrorHandler } from "./error";
