@@ -6,7 +6,7 @@ Deploy Nitro apps to [CodeSphere](https://codesphere.com/).
 
 ## Setup
 
-1. Push your code to your git repository (GitHub, GitLab, Bitbucket).
+1. Push your code to your git repository (GitHub, GitLab).
 2. [Import your project](https://codesphere.com/ide/menu/workspaces) into CodeSphere.
 3. Configure your CI/CD pipeline to deploy your application.
 
