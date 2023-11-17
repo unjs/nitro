@@ -17,7 +17,7 @@ interface ParsedError {
   stack?: string[];
 }
 
-export default defineErrorHandler(function (error, event) {
+export default defineErrorHandler(function defaultNitroErrorHandler(error, event) {
   const { stack, statusCode, statusMessage, message } = normalizeError(error);
 
   const showDetails = isDev && statusCode !== 404;
