@@ -3,6 +3,10 @@ import { setResponseHeader, setResponseStatus, send } from "h3";
 import type { NitroErrorHandler } from "../types";
 import { normalizeError, isJsonRequest } from "./utils";
 
+export function defineErrorHandler(handler: NitroErrorHandler): NitroErrorHandler {
+  return handler;
+}
+
 const isDev = process.env.NODE_ENV === "development";
 
 interface ParsedError {
@@ -13,7 +17,7 @@ interface ParsedError {
   stack?: string[];
 }
 
-export default <NitroErrorHandler>function (error, event) {
+export default defineErrorHandler(function (error, event) {
   const { stack, statusCode, statusMessage, message } = normalizeError(error);
 
   const showDetails = isDev && statusCode !== 404;
@@ -51,7 +55,7 @@ export default <NitroErrorHandler>function (error, event) {
     setResponseHeader(event, "Content-Type", "text/html");
     return send(event, renderHTMLError(errorObject));
   }
-};
+});
 
 function renderHTMLError(error: ParsedError): string {
   const statusCode = error.statusCode || 500;
