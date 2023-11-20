@@ -384,6 +384,7 @@ function extractLinks(
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
         .map((m) => escapeHtml(m[1]))
+        .filter((m) => !decodeURIComponent(m).startsWith("#"))
         .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }

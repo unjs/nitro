@@ -39,6 +39,9 @@ ${links.map((link) => `    <li><a href="${link}">${link}</a></li>`).join("\n")}
   <link rel="icon" href="data:image/png;base64,aaa//bbbbbb/ccc">
   <a x-href="/500?x-href">x-href attr</a>
   &lt;a href=&quot;/500&lt;/a&gt;
+
+
+  <stroke fill='%23FFA712' fill-rule='evenodd' href='%23a'/%3E%3Cuse filter='url(%23b)' href='%23a'/%3E%3Cpath fill='%23F4BD62' d='m135.005 150.38 32.955-33.75-32.965-62.93c-3.129-5.957-11.866-5.975-14.962 0L102.42 87.287v2.86l32.584 60.233Z'/%3E%3Cuse
 </body>
 </html>`;
 });
