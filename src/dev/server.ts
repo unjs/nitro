@@ -1,5 +1,6 @@
 import { Worker } from "node:worker_threads";
 import { existsSync, accessSync, promises as fsp } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { debounce } from "perfect-debounce";
 import {
   App,
@@ -17,13 +18,14 @@ import serveStatic from "serve-static";
 import { resolve } from "pathe";
 import { joinURL } from "ufo";
 import { FSWatcher, watch } from "chokidar";
-import type { Nitro } from "../types";
+import type { Nitro, NitroBuildInfo } from "../types";
+import { version as nitroVersion } from "../../package.json";
 import { createVFSHandler } from "./vfs";
 import defaultErrorHandler from "./error";
 
 export interface NitroWorker {
   worker: Worker;
-  address: { host: string; port: number; socketPath?: string };
+  address: { host: string; port: number } | { socketPath: string };
 }
 
 export interface NitroDevServer {
@@ -95,7 +97,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
     await worker.worker.terminate();
     worker.worker = null;
   }
-  if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
+  if ("socketPath" in worker.address && existsSync(worker.address.socketPath)) {
     await fsp.rm(worker.address.socketPath).catch(() => {});
   }
 }
@@ -122,6 +124,21 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     await killWorker(oldWorker, nitro);
     // Create a new worker
     currentWorker = await initWorker(workerEntry);
+    // Write nitro.json
+    const buildInfoPath = resolve(nitro.options.buildDir, "nitro.json");
+    const buildInfo: NitroBuildInfo = {
+      date: new Date().toJSON(),
+      preset: nitro.options.preset,
+      framework: nitro.options.framework,
+      versions: {
+        nitro: nitroVersion,
+      },
+      dev: {
+        pid: process.pid,
+        workerAddress: currentWorker.address,
+      },
+    };
+    await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));
   }
   const reload = debounce(() => {
     reloadPromise = _reload()
@@ -193,7 +210,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     if (!address) {
       return;
     }
-    if (address.socketPath) {
+    if ("socketPath" in address) {
       try {
         accessSync(address.socketPath);
       } catch (err) {
@@ -213,7 +230,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       if (!address) {
         return errorHandler(lastError, event);
       }
-      await proxy.handle(event, { target: address }).catch((err) => {
+      await proxy.handle(event, { target: address as any }).catch((err) => {
         lastError = err;
         throw err;
       });
