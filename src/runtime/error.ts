@@ -3,7 +3,7 @@ import { setResponseHeader, setResponseStatus, send } from "h3";
 import type { NitroErrorHandler } from "../types";
 import { normalizeError, isJsonRequest } from "./utils";
 
-export function defineErrorHandler(
+export function defineNitroErrorHandler(
   handler: NitroErrorHandler
 ): NitroErrorHandler {
   return handler;
@@ -19,7 +19,7 @@ interface ParsedError {
   stack?: string[];
 }
 
-export default defineErrorHandler(
+export default defineNitroErrorHandler(
   function defaultNitroErrorHandler(error, event) {
     const { stack, statusCode, statusMessage, message } = normalizeError(error);
 

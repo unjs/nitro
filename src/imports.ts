@@ -8,7 +8,7 @@ export const nitroImports: Preset[] = [
       "cachedFunction",
       "defineCachedEventHandler",
       "defineCachedFunction",
-      "defineErrorHandler",
+      "defineNitroErrorHandler",
       "defineNitroPlugin",
       "defineRenderHandler",
       "getRouteRules",
