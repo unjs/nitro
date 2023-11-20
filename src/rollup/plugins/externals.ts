@@ -94,10 +94,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Resolve id using rollup resolver
-      const resolved = (await this.resolve(originalId, importer, {
-        ...options,
-        skipSelf: true,
-      })) || { id };
+      const resolved = (await this.resolve(originalId, importer, options)) || {
+        id,
+      };
 
       // Try resolving with mlly as fallback
       if (

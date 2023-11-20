@@ -6,6 +6,8 @@ export default defineEventHandler((event) => {
     "https://about.google/products/",
     "/api/hello",
     "/api/hello?bar=baz",
+    "/api/hello?bar=baz&bing=bap",
+    "/api/hello?bar=baz&amp;foo=qux",
     "/prerender#foo",
     "../api/hey",
     "/api/param/foo.json",

@@ -155,6 +155,9 @@ export async function prerender(nitro: Nitro) {
   const generateRoute = async (route: string) => {
     const start = Date.now();
 
+    // Ensure route is decoded to start with
+    route = decodeURI(route);
+
     // Check if we should render route
     if (!canPrerender(route)) {
       skippedRoutes.add(route);
@@ -352,6 +355,21 @@ async function runParallel<T>(
 
 const LINK_REGEX = /(?<=\s)href=(?!&quot;)["']?([^"'>]+)/g;
 
+const HTML_ENTITIES = {
+  "&lt;": "<",
+  "&gt;": ">",
+  "&amp;": "&",
+  "&apos;": "'",
+  "&quot;": '"',
+} as Record<string, string>;
+
+function escapeHtml(text: string) {
+  return text.replace(
+    /&(lt|gt|amp|apos|quot);/g,
+    (ch) => HTML_ENTITIES[ch] || ch
+  );
+}
+
 function extractLinks(
   html: string,
   from: string,
@@ -365,19 +383,14 @@ function extractLinks(
   if (crawlLinks) {
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
-        .map((m) => m[1])
+        .map((m) => escapeHtml(m[1]))
         .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get("x-nitro-prerender") || "";
-  _links.push(
-    ...header
-      .split(",")
-      .map((i) => i.trim())
-      .map((i) => decodeURIComponent(i))
-  );
+  _links.push(...header.split(",").map((i) => decodeURIComponent(i.trim())));
 
   for (const link of _links.filter(Boolean)) {
     const _link = parseURL(link);

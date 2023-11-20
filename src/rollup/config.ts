@@ -345,10 +345,7 @@ export const plugins = [
         ) {
           return { id, external: true };
         }
-        const resolved = await this.resolve(id, from, {
-          ...options,
-          skipSelf: true,
-        });
+        const resolved = await this.resolve(id, from, options);
         if (!resolved) {
           const _resolved = await resolvePath(id, {
             url: nitro.options.nodeModulesDirs,

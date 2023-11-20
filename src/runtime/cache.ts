@@ -5,6 +5,7 @@ import {
   createEvent,
   EventHandler,
   isEvent,
+  splitCookiesString,
 } from "h3";
 import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
@@ -27,6 +28,9 @@ export interface CacheOptions<T = any> {
   shouldBypassCache?: (...args: any[]) => boolean;
   group?: string;
   integrity?: any;
+  /**
+   * Number of seconds to cache the response. Defaults to 1.
+   */
   maxAge?: number;
   swr?: boolean;
   staleMaxAge?: number;
@@ -128,7 +132,9 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
 
-    if (expired && event && event.waitUntil) {
+    if (entry.value === undefined) {
+      await _resolvePromise;
+    } else if (expired && event && event.waitUntil) {
       event.waitUntil(_resolvePromise);
     }
 
@@ -245,16 +251,26 @@ export function defineCachedEventHandler<
       return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
+      if (!entry.value) {
+        return false;
+      }
       if (entry.value.code >= 400) {
         return false;
       }
       if (entry.value.body === undefined) {
         return false;
       }
+      // https://github.com/unjs/nitro/pull/1857
+      if (
+        entry.value.headers.etag === "undefined" ||
+        entry.value.headers["last-modified"] === "undefined"
+      ) {
+        return false;
+      }
       return true;
     },
     group: opts.group || "nitro/handlers",
-    integrity: [opts.integrity, handler],
+    integrity: opts.integrity || hash([handler, opts]),
   };
 
   const _cachedHandler = cachedFunction<ResponseCacheEntry<Response>>(
@@ -338,11 +354,14 @@ export function defineCachedEventHandler<
 
       // Collect cachable headers
       const headers = event.node.res.getHeaders();
-      headers.etag =
-        String(headers.Etag || headers.etag) || `W/"${hash(body)}"`;
-      headers["last-modified"] =
-        String(headers["Last-Modified"] || headers["last-modified"]) ||
-        new Date().toUTCString();
+      headers.etag = String(
+        headers.Etag || headers.etag || `W/"${hash(body)}"`
+      );
+      headers["last-modified"] = String(
+        headers["Last-Modified"] ||
+          headers["last-modified"] ||
+          new Date().toUTCString()
+      );
       const cacheControl = [];
       if (opts.swr) {
         if (opts.maxAge) {
@@ -404,7 +423,16 @@ export function defineCachedEventHandler<
     // Send status and headers
     event.node.res.statusCode = response.code;
     for (const name in response.headers) {
-      event.node.res.setHeader(name, response.headers[name]);
+      const value = response.headers[name];
+      if (name === "set-cookie") {
+        // TODO: Show warning and remove this header in the next major version of Nitro
+        event.node.res.appendHeader(
+          name,
+          splitCookiesString(value as string[])
+        );
+      } else {
+        event.node.res.setHeader(name, value);
+      }
     }
 
     // Send body

@@ -25,8 +25,7 @@ export function wasmImport(): Plugin {
         };
       }
       if (wasmRegex.test(id)) {
-        const { id: filepath } =
-          (await this.resolve(id, importer, { skipSelf: true })) || {};
+        const { id: filepath } = (await this.resolve(id, importer)) || {};
         if (!filepath || filepath === id) {
           return null;
         }

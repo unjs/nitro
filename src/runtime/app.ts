@@ -94,11 +94,10 @@ function createNitroApp(): NitroApp {
   // Create local fetch callers
   const localCall = createCall(toNodeListener(h3App) as any);
   const _localFetch = createLocalFetch(localCall, globalThis.fetch);
-  const localFetch = (...args: Parameters<typeof _localFetch>) => {
-    return _localFetch(...args).then((response) =>
+  const localFetch: typeof fetch = (input, init) =>
+    _localFetch(input, init).then((response) =>
       normalizeFetchResponse(response)
     );
-  };
   const $fetch = createFetch({
     fetch: localFetch,
     Headers,

@@ -1,3 +1,4 @@
+export * from "./aws-amplify";
 export * from "./aws-lambda";
 export * from "./azure-functions";
 export * from "./azure";
@@ -29,3 +30,4 @@ export * from "./lagon";
 export { iis, iisHandler, iisNode } from "./iis";
 export { _static as static } from "./static";
 export * from "./github-pages";
+export * from "./winterjs";
