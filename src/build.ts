@@ -17,6 +17,7 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
+import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
 import {
@@ -26,7 +27,7 @@ import {
   resolvePath as resolveNitroPath,
 } from "./utils";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
-import type { Nitro } from "./types";
+import type { Nitro, NitroBuildInfo } from "./types";
 import { runtimeDir } from "./dirs";
 import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
@@ -405,17 +406,21 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     await build.write(rollupConfig.output);
   }
 
-  // Write build info
-  const nitroConfigPath = resolve(nitro.options.output.dir, "nitro.json");
-  const buildInfo = {
-    date: new Date(),
+  // Write .output/nitro.json
+  const buildInfoPath = resolve(nitro.options.output.dir, "nitro.json");
+  const buildInfo: NitroBuildInfo = {
+    date: new Date().toJSON(),
     preset: nitro.options.preset,
+    framework: nitro.options.framework,
+    versions: {
+      nitro: nitroVersion,
+    },
     commands: {
       preview: nitro.options.commands.preview,
       deploy: nitro.options.commands.deploy,
     },
   };
-  await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
+  await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));
 
   if (!nitro.options.static) {
     nitro.logger.success("Nitro server built");

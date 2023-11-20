@@ -197,6 +197,31 @@ export interface WasmOptions {
   rollup?: RollupWasmOptions;
 }
 
+export interface NitroFrameworkInfo {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  name?: "nitro" | (string & {});
+  version?: string;
+}
+
+/** Build info written to `.output/nitro.json` or `.nitro/dev/nitro.json` */
+export interface NitroBuildInfo {
+  date: string;
+  preset: string;
+  framework: NitroFrameworkInfo;
+  versions: {
+    nitro: string;
+    [key: string]: string;
+  };
+  commands?: {
+    preview?: string;
+    deploy?: string;
+  };
+  dev?: {
+    pid: number;
+    workerAddress: { host: string; port: number } | { socketPath: string };
+  };
+}
+
 export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
@@ -353,11 +378,7 @@ export interface NitroOptions extends PresetOptions {
   };
 
   // Framework
-  framework: {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    name?: "nitro" | (string & {});
-    version?: string;
-  };
+  framework: NitroFrameworkInfo;
 
   // IIS
   iis?: {
