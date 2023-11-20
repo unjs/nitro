@@ -17,6 +17,8 @@ export const nitroImports: Preset[] = [
       "getRouteRules",
       "useAppConfig",
       "useEvent",
+      "defineNitroTask",
+      "runNitroTask",
     ],
   },
 ];

@@ -54,6 +54,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
+  tasks: {},
   imports: {
     exclude: [],
     dirs: [],

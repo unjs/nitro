@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { resolve } from "pathe";
+import { resolve, normalize } from "pathe";
 import { createHooks, createDebugger } from "hookable";
 import { createUnimport } from "unimport";
 import { defu } from "defu";
@@ -11,7 +11,7 @@ import {
   normalizeRouteRules,
   normalizeRuntimeConfig,
 } from "./options";
-import { scanModules, scanPlugins } from "./scan";
+import { scanModules, scanPlugins, scanTasks } from "./scan";
 import { createStorage } from "./storage";
 import { resolveNitroModule } from "./module";
 
@@ -106,6 +106,39 @@ export async function createNitro(
       nitro.options.plugins.push(plugin);
     }
   }
+
+  // Tasks
+  const scannedTasks = await scanTasks(nitro);
+  for (const scannedTask of scannedTasks) {
+    if (scannedTask.name in nitro.options.tasks) {
+      nitro.logger.warn(
+        `Task \`${scannedTask.name}\` already configured! skipping scanned file...`
+      );
+      continue;
+    }
+    nitro.options.tasks[scannedTask.name] = { handler: scannedTask.handler };
+  }
+  const taskNames = Object.keys(nitro.options.tasks).sort();
+  if (taskNames.length > 0) {
+    consola.warn(
+      `Nitro tasks are experimental and API may change in the future releases!`
+    );
+    consola.log(
+      `Available Tasks:\n\n${taskNames.map((t) => `- \`${t}\``).join("\n ")}`
+    );
+  }
+  nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => `
+export const tasks = {
+  ${Object.entries(nitro.options.tasks)
+    .map(
+      ([name, task]) =>
+        `"${name}": {
+          get: () => import("${normalize(task.handler)}")
+        }`
+    )
+    .join("\n")}
+};
+  `;
 
   // Auto imports
   if (nitro.options.imports) {

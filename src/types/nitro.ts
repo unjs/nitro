@@ -271,6 +271,7 @@ export interface NitroOptions extends PresetOptions {
   imports: UnimportPluginOptions | false;
   modules?: NitroModuleInput[];
   plugins: string[];
+  tasks: { [name: string]: { handler: string } };
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
