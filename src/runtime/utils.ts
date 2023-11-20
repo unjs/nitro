@@ -40,15 +40,12 @@ export function hasReqHeader(event: H3Event, name: string, includes: string) {
 }
 
 export function isJsonRequest(event: H3Event) {
-  // First adhere to the "Accept" header, to match what the client expects to receive.
-  if (hasReqHeader(event, "accept", "application/json")) {
-    return true;
-  }
+  // If the client specifically requests HTML, then avoid classifying as JSON.
   if (hasReqHeader(event, "accept", "text/html")) {
     return false;
   }
-  // Fallback rules, when no explicit request for the content type is made.
   return (
+    hasReqHeader(event, "accept", "application/json") ||
     hasReqHeader(event, "user-agent", "curl/") ||
     hasReqHeader(event, "user-agent", "httpie/") ||
     hasReqHeader(event, "sec-fetch-mode", "cors") ||
