@@ -4,10 +4,6 @@ Deploy Nitro apps to [AWS Amplify Hosting](https://aws.amazon.com/amplify/).
 
 **Preset:** `aws_amplify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-::alert{type="warning"}
-Currently you might need a custom `amplify.yml` file in order to have a working deployment ([see examples](https://nitro.unjs.io/deploy/providers/aws-amplify#amplifyyml)).
-::
-
 ## Deploy to AWS Amplify Hosting
 
 ::alert
