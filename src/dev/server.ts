@@ -25,7 +25,7 @@ import defaultErrorHandler from "./error";
 
 export interface NitroWorker {
   worker: Worker;
-  address: { host: string; port: number } | { socketPath: string };
+  address: { host: string; port: number; socketPath?: string };
 }
 
 export interface NitroDevServer {
@@ -97,7 +97,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
     await worker.worker.terminate();
     worker.worker = null;
   }
-  if ("socketPath" in worker.address && existsSync(worker.address.socketPath)) {
+  if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
     await fsp.rm(worker.address.socketPath).catch(() => {});
   }
 }
@@ -210,7 +210,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     if (!address) {
       return;
     }
-    if ("socketPath" in address) {
+    if (address.socketPath) {
       try {
         accessSync(address.socketPath);
       } catch (err) {

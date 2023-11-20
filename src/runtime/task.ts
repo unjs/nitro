@@ -1,3 +1,4 @@
+import { createError } from "h3";
 import { useNitroApp, type NitroApp } from "./app";
 import { tasks } from "#internal/nitro/virtual/tasks";
 
@@ -40,7 +41,7 @@ export async function runNitroTask<RT = unknown>(
   payload: NitroTaskPayload = {}
 ): Promise<{ result: RT }> {
   if (!(name in tasks)) {
-    throw new ReferenceError(`Nitro task \`${name}\` not found!`);
+    throw createError(`Nitro task \`${name}\` not found!`);
   }
   const nitroApp = useNitroApp();
   const context: NitroTaskContext = { nitroApp };
