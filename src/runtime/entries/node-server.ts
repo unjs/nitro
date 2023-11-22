@@ -23,6 +23,14 @@ const host = process.env.NITRO_HOST || process.env.HOST;
 
 const path = process.env.NITRO_UNIX_SOCKET;
 
+const requestTimeout = (destr(process.env.NITRO_NODE_REQUEST_TIMEOUT) || 300000) as number
+const keepAliveTimeout = (destr(process.env.NITRO_NODE_KEEPALIVE_TIMEOUT) || 5000) as number
+const headersTimeout = Math.min(destr(process.env.NITRO_NODE_HEADERS_TIMEOUT) || 60000, requestTimeout)
+
+server.requestTimeout = requestTimeout
+server.keepAliveTimeout = keepAliveTimeout
+server.headersTimeout = headersTimeout
+
 // @ts-ignore
 const listener = server.listen(path ? { path } : { port, host }, (err) => {
   if (err) {
