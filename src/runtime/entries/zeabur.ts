@@ -4,6 +4,6 @@ import { nitroApp } from "../app";
 
 const handler = toNodeListener(nitroApp.h3App);
 
-export default <NodeListener>function(req, res) {
+export default <NodeListener>function (req, res) {
   return handler(req, res);
 };
