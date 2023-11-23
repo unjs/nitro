@@ -83,6 +83,7 @@ export default defineNitroConfig({
   experimental: {
     openAPI: true,
     asyncContext: true,
+    wasm: true,
   },
   cloudflare: {
     pages: {

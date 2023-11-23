@@ -629,4 +629,13 @@ export function testNitro(
       );
     });
   });
+
+  describe("wasm", () => {
+    it.skipIf(ctx.isWorker || ctx.preset === "deno-server")(
+      "sum works",
+      async () => {
+        expect((await callHandler({ url: "/wasm/sum" })).data).toBe("2+3=5");
+      }
+    );
+  });
 }
