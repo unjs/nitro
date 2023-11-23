@@ -8,6 +8,7 @@ import { expect, it, afterAll, beforeAll, describe } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import { defu } from "defu";
+import { isWindows } from "std-env";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
 
@@ -631,7 +632,7 @@ export function testNitro(
   });
 
   describe("wasm", () => {
-    it.skipIf(ctx.isWorker || ctx.preset === "deno-server")(
+    it.skipIf(ctx.isWorker || ctx.preset === "deno-server" || isWindows)(
       "sum works",
       async () => {
         expect((await callHandler({ url: "/wasm/sum" })).data).toBe("2+3=5");
