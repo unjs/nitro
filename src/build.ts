@@ -482,8 +482,9 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       // Finished building all bundles
       case "END": {
         nitro.hooks.callHook("compiled", nitro);
+        const { framework } = nitro.options;
         nitro.logger.success(
-          "Nitro built",
+          `${framework.name} v${framework.version} built`,
           start ? `in ${Date.now() - start} ms` : ""
         );
         nitro.hooks.callHook("dev:reload");
