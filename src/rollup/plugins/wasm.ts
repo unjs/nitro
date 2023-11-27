@@ -3,13 +3,16 @@ import { extname, basename } from "node:path";
 import { promises as fs } from "node:fs";
 import type { Plugin } from "rollup";
 import wasmBundle from "@rollup/plugin-wasm";
+import { isWindows } from "std-env";
 import { WasmOptions } from "../../types";
 
 const PLUGIN_NAME = "nitro:wasm-import";
 const wasmRegex = /\.wasm$/;
 
 export function wasm(options: WasmOptions): Plugin {
-  return options.esmImport ? wasmImport() : wasmBundle(options.rollup);
+  return options.esmImport && !isWindows /* TODO */
+    ? wasmImport()
+    : wasmBundle(options.rollup);
 }
 
 export function wasmImport(): Plugin {
