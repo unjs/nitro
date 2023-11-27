@@ -483,14 +483,24 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       case "END": {
         nitro.hooks.callHook("compiled", nitro);
         const { framework } = nitro.options;
-        let successReport = `Nitro Server v${nitroVersion} built`;
+        let successReport = `Nitro Server`;
 
-        if (framework.name !== 'nitro') {
-           successReport += ` for ${framework.name} v${framework.version}`;
+        if (framework.showBuildSuccess) {
+          if (framework.showBuildSuccess === 'verbose') {
+            successReport += ` v${nitroVersion}`;
+          }
+
+          if (framework.name !== 'nitro') {
+            successReport += ` for ${framework.name}`;
+          }
+
+          if (framework.version !== nitroVersion && framework.showBuildSuccess === 'verbose') {
+            successReport += ` for v${framework.version}`;
+          }
         }
 
         nitro.logger.success(
-          successReport,
+          `${successReport} built`,
           start ? `in ${Date.now() - start} ms` : ""
         );
         nitro.hooks.callHook("dev:reload");
