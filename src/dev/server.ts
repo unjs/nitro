@@ -135,7 +135,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       },
       dev: {
         pid: process.pid,
-        workerAddress: currentWorker.address,
+        workerAddress: currentWorker?.address,
       },
     };
     await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));

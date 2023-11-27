@@ -2,6 +2,97 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.8.0
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.7.1...v2.8.0)
+
+### 🚀 Enhancements
+
+- Support modules to extend nitro builder ([#1789](https://github.com/unjs/nitro/pull/1789))
+- Support `inline` mode for `serveStatic` ([#1864](https://github.com/unjs/nitro/pull/1864))
+- Add experimental `winterjs` preset ([#1863](https://github.com/unjs/nitro/pull/1863))
+- Allow setting preset using `SERVER_PRESET` environment variable ([#1870](https://github.com/unjs/nitro/pull/1870))
+- **cloudflare-pages, cloudflare-module:** Enable code splitting by default ([#1905](https://github.com/unjs/nitro/pull/1905))
+- Support `framework` config ([#1843](https://github.com/unjs/nitro/pull/1843))
+- Add aws amplify hosting preset ([#1912](https://github.com/unjs/nitro/pull/1912))
+- Upgrade to rollup v4 ([#1927](https://github.com/unjs/nitro/pull/1927))
+- Improve `nitro.json` build info ([#1930](https://github.com/unjs/nitro/pull/1930))
+- **aws-amplify:** Support static builds ([#1933](https://github.com/unjs/nitro/pull/1933))
+- Add `defineNitroErrorHandler` type helper ([#1923](https://github.com/unjs/nitro/pull/1923))
+
+### 🩹 Fixes
+
+- **cloudflare-pages:** Filter out overlapping public assets dirs ([#1859](https://github.com/unjs/nitro/pull/1859))
+- **winterjs:** 0.1.7 compatibility ([#1876](https://github.com/unjs/nitro/pull/1876))
+- **scanner:** Allow having http method as part of the route name ([#1895](https://github.com/unjs/nitro/pull/1895))
+- Generate route types with resolve path and stripped extension ([#1897](https://github.com/unjs/nitro/pull/1897))
+- Scan dirs for unimport on initialization ([#1908](https://github.com/unjs/nitro/pull/1908))
+- **aws-amplify:** Register and auto detect ([0f38eb6f](https://github.com/unjs/nitro/commit/0f38eb6f))
+- **prerender:** Decode generated routes ([#1914](https://github.com/unjs/nitro/pull/1914))
+- Disabled public asset handler name is `null` ([b7a6a1a6](https://github.com/unjs/nitro/commit/b7a6a1a6))
+- **prerender:** Decode uris in headers ([#1932](https://github.com/unjs/nitro/pull/1932))
+- **error:** Respect `accept: text/html` request header ([#1921](https://github.com/unjs/nitro/pull/1921))
+- **prerender:** Filter encoded links starting with `#` ([#1936](https://github.com/unjs/nitro/pull/1936))
+
+### 💅 Refactors
+
+- **deno-deploy:** Use `Deno.serve` ([#1879](https://github.com/unjs/nitro/pull/1879))
+- Split preset types ([#1910](https://github.com/unjs/nitro/pull/1910))
+
+### 📖 Documentation
+
+- **deploy:** Split runtimes from providers ([#1865](https://github.com/unjs/nitro/pull/1865))
+- **routing:** Add note about middleware returns ([#1884](https://github.com/unjs/nitro/pull/1884))
+- Update edge links to nightly ([#1902](https://github.com/unjs/nitro/pull/1902))
+- **deploy:** Add deno to runtime list ([#1899](https://github.com/unjs/nitro/pull/1899))
+- **cloudflare:** Updatge wrangler link ([#1913](https://github.com/unjs/nitro/pull/1913))
+- **aws-amplify:** Add custom `amplify.yml` ([f412af16](https://github.com/unjs/nitro/commit/f412af16))
+- **amplify:** Remove cache from config ([7bbb723e](https://github.com/unjs/nitro/commit/7bbb723e))
+- Hide winterjs due to unstability ([048c8ff0](https://github.com/unjs/nitro/commit/048c8ff0))
+- **aws-amplify:** Update regions ([#1931](https://github.com/unjs/nitro/pull/1931))
+- **aws-amplify:** Add step to enable SSR logging and remove experimental ([#1934](https://github.com/unjs/nitro/pull/1934))
+- **aws-amplify:** Remove workaround banner ([#1935](https://github.com/unjs/nitro/pull/1935))
+
+### 🌊 Types
+
+- Export `SerializeTuple` and `SerializeObject` ([#1907](https://github.com/unjs/nitro/pull/1907))
+
+### 🏡 Chore
+
+- **release:** V2.7.1 ([2d803a3c](https://github.com/unjs/nitro/commit/2d803a3c))
+- Add jsdoc for `cache.maxAge` ([#1878](https://github.com/unjs/nitro/pull/1878))
+- Update lockfile ([dbff232e](https://github.com/unjs/nitro/commit/dbff232e))
+- **docs:** Update dependencies ([28867009](https://github.com/unjs/nitro/commit/28867009))
+- **docs:** Fix prerender issues ([d2a7d84d](https://github.com/unjs/nitro/commit/d2a7d84d))
+- Update unstorage ([110bc4a3](https://github.com/unjs/nitro/commit/110bc4a3))
+- Update unstorage ([441db6ca](https://github.com/unjs/nitro/commit/441db6ca))
+- Fix typos in aws amplify ([963716dd](https://github.com/unjs/nitro/commit/963716dd))
+- Update lockfile ([926bcef4](https://github.com/unjs/nitro/commit/926bcef4))
+
+### ✅ Tests
+
+- Hide winterjs due to unstability ([1b50a9a1](https://github.com/unjs/nitro/commit/1b50a9a1))
+
+### 🤖 CI
+
+- Disable codecov and codeql ([fd4671ce](https://github.com/unjs/nitro/commit/fd4671ce))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Siegerts <stephen.siegert@gmail.com>
+- Passionate-bram 
+- Daniel Roe <daniel@roe.dev>
+- Neil Richter ([@noook](http://github.com/noook))
+- Xin Du (Clark) <clark.duxin@gmail.com>
+- Anthony Fu <anthonyfu117@hotmail.com>
+- Dario Piotrowicz ([@dario-piotrowicz](http://github.com/dario-piotrowicz))
+- Kalwabed Rizki 
+- Thunfisch987 
+- Oof2win2 <honza.koco44@gmail.com>
+- Markthree ([@markthree](http://github.com/markthree))
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+
 ## v2.7.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.7.0...v2.7.1)

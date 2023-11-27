@@ -4,14 +4,6 @@ Deploy Nitro apps to [AWS Amplify Hosting](https://aws.amazon.com/amplify/).
 
 **Preset:** `aws_amplify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
-::alert{type="warning"}
-You can **experiment** with deploying to AWS Amplify hosting using [nightly release channel](https://nitro.unjs.io/guide/getting-started#nightly-release-channel)
-::
-
-::alert{type="warning"}
-Currently you might need a custom `amplify.yml` file in order to have a working deployment ([see examples](https://nitro.unjs.io/deploy/providers/aws-amplify#amplifyyml)).
-::
-
 ## Deploy to AWS Amplify Hosting
 
 ::alert
@@ -20,12 +12,12 @@ Currently you might need a custom `amplify.yml` file in order to have a working 
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
 ::
 
-0. Switch to [nitro nightly release channel](https://nitro.unjs.io/guide/getting-started#nightly-release-channel)
 1. Login to the [AWS Amplify Hosting Console](https://console.aws.amazon.com/amplify/)
 2. Click on "Get Started" > Amplify Hosting (Host your web app)
 3. Select and authorize access to your Git repository provider and select the main branch
 4. Choose a name for your app, make sure build settings are auto-detected and optionally set requirement environment variables under the advanced section
-5. Confirm configuration and click on "Save and Deploy"
+5. Optionally, select Enable SSR logging to enable server-side logging to your Amazon CloudWatch account 
+6. Confirm configuration and click on "Save and Deploy"
 
 
 ## Advanced Configuration
