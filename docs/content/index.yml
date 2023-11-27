@@ -1,0 +1,60 @@
+navigation: false
+title: "Create web servers that run anywhere."
+description: "Nitro is an open source TypeScript framework to build ultra-fast web servers.<br /> The open engine powering Nuxt and open to everyone."
+landing:
+  title: "Create web servers that run <i>anywhere</i>."
+  description: "Nitro is an open source TypeScript framework to build ultra-fast web servers.<br /> The open engine powering <u><a href='https://www.nuxt.com' target='_blank'>Nuxt</a></u> and <u><a href='https://github.com/unjs/nitro/discussions/1015' target='_blank'>open to everyone.</a></u>"
+  links:
+    - label: Get Started
+      to: /guide/getting-started
+      size: lg
+      icon: i-heroicons-rocket-launch
+    - label: View on GitHub
+      to: 'https://github.com/unjs/nitro'
+      color: gray
+      icon: i-heroicons-credit-card
+      size: lg
+  code: |
+      ```bash [terminal]
+        $ npx giget@latest nitro
+        $ cd nitro-app
+        $ npm install
+        $ npm run dev
+      ```
+  features:
+    - title: "Rapid Development"
+      icon: 🐇
+      description: "Zero config setup with hot module replacement for server code in development."
+    - title: "Deploy Anywhere"
+      description: "Zero config setup with hot module replacement for server code in development."
+      icon: 😌
+    - title: "Portable and Compact"
+      description: "Say goodbye to <pre>node_modules</pre>, output size is less than 1MB."
+      icon: 💼
+    - title: "Filesystem Routing"
+      description: "<u><a href='https://nitro.unjs.io/guide/routing' target='_blank'>Automatically registers</a></u> server and API routes."
+      icon: 📁
+    - title: "Minimal Design"
+      description: "Minimal design to fit into any solution with minimum overhead."
+      icon: 🤏
+    - title: "Code-Splitting"
+      description: "Async chunk loading for fast server startup time and answer."
+      icon: 🚀
+    - title: "TypeScript"
+      description: "TypeScript support out of the box with few more goodies."
+      icon: 👕
+    - title: "Storage Layer"
+      description: "Multi driver and platform-agnostic storage system."
+      icon: 💾
+    - title: "Cache API"
+      description: "Powerful built-in caching API."
+      icon: 💰
+    - title: "Hackable"
+      description: "Built to be customized with the plugins hooks system."
+      icon: 🐱
+    - title: "Auto Imports"
+      description: "Automatically import utilities for a minimal and clean codebase. Only the used ones will be added to the final bundle."
+      icon: ✨
+    - title: "Backward Compatible"
+      description: "So you can use legacy npm packages, CommonJS and mocking Node.js modules for workers."
+      icon: 🏛️
