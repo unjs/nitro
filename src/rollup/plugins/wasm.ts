@@ -112,10 +112,13 @@ export function wasmImport(): Plugin {
           }
         },
       });
-      return {
-        code: s.toString(),
-        map: s.generateMap({ includeContent: true }),
-      };
+
+      if (s.hasChanged()) {
+        return {
+          code: s.toString(),
+          map: s.generateMap({ includeContent: true }),
+        };
+      }
     },
     // --- [temporary] IIFE/UMD support for cloudflare (non module targets) ---
     renderStart(options) {
