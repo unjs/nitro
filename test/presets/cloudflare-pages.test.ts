@@ -66,8 +66,6 @@ describe("nitro:preset:cloudflare-pages", async () => {
         ],
         "include": [
           "/*",
-          "/api/*",
-          "/blog/*",
         ],
         "version": 1,
       }

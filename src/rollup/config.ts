@@ -361,10 +361,7 @@ export const plugins = [
             return { id: _resolved, external: false };
           }
         }
-        if (
-          !resolved ||
-          (resolved.external && resolved.resolvedBy !== "nitro:wasm-import")
-        ) {
+        if (!resolved || (resolved.external && !id.endsWith(".wasm"))) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
               from
