@@ -220,7 +220,9 @@ export async function prerender(nitro: Nitro) {
     // Guess route type and populate fileName
     const contentType = res.headers.get("content-type") || "";
     const isImplicitHTML =
-      !route.endsWith(".html") && contentType.includes("html");
+      !route.endsWith(".html") &&
+      !route.endsWith(".json") &&
+      contentType.includes("html");
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
     const htmlPath =
       route.endsWith("/") || nitro.options.prerender.autoSubfolderIndex
