@@ -74,3 +74,4 @@ playground/firebase.json
 test/fixture/functions
 
 .pnpm-store
+.wrangler
