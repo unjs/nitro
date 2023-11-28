@@ -633,10 +633,20 @@ export function testNitro(
 
   describe("wasm", () => {
     it.skipIf(ctx.isWorker || ctx.preset === "deno-server" || isWindows)(
-      "sum works",
+      "dynamic import wasm",
       async () => {
-        expect((await callHandler({ url: "/wasm/sum" })).data).toBe("2+3=5");
+        expect((await callHandler({ url: "/wasm/dynamic" })).data).toBe(
+          "2+3=5"
+        );
       }
     );
+    // it.skipIf(ctx.isWorker || ctx.preset === "deno-server" || isWindows)(
+    //   "static import wasm",
+    //   async () => {
+    //     expect((await callHandler({ url: "/wasm/dynamic" })).data).toBe(
+    //       "2+3=5"
+    //     );
+    //   }
+    // );
   });
 }
