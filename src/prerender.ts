@@ -14,7 +14,7 @@ import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
 
-const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
+const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/; // From unjs/destr
 
 const linkParents = new Map<string, Set<string>>();
 
