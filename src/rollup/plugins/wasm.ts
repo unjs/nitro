@@ -3,10 +3,8 @@ import { promises as fs, existsSync } from "node:fs";
 import { basename, normalize } from "pathe";
 import type { Plugin } from "rollup";
 import wasmBundle from "@rollup/plugin-wasm";
-import { isWindows } from "std-env";
 import MagicString from "magic-string";
 import { walk } from "estree-walker";
-import { filename } from "pathe/utils";
 import { WasmOptions } from "../../types";
 
 export function wasm(options: WasmOptions): Plugin {
@@ -73,7 +71,7 @@ export function wasmImport(): Plugin {
         external: true,
       };
     },
-    renderChunk(code, chunk, options) {
+    renderChunk(code, chunk) {
       if (!code.includes(WASM_IMPORT_PREFIX)) {
         return null;
       }
