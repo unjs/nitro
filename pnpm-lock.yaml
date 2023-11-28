@@ -45,9 +45,6 @@ importers:
       '@rollup/pluginutils':
         specifier: ^5.0.5
         version: 5.0.5(rollup@4.5.0)
-      '@types/estree':
-        specifier: ^1.0.5
-        version: 1.0.5
       '@types/http-proxy':
         specifier: ^1.17.14
         version: 1.17.14
@@ -217,6 +214,9 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.126
         version: 8.10.126
+      '@types/estree':
+        specifier: ^1.0.5
+        version: 1.0.5
       '@types/etag':
         specifier: ^1.8.3
         version: 1.8.3
