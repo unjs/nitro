@@ -10,9 +10,7 @@ import { filename } from "pathe/utils";
 import { WasmOptions } from "../../types";
 
 export function wasm(options: WasmOptions): Plugin {
-  return options.esmImport && !isWindows /* TODO */
-    ? wasmImport()
-    : wasmBundle(options.rollup);
+  return options.esmImport ? wasmImport() : wasmBundle(options.rollup);
 }
 
 const WASM_IMPORT_PREFIX = "\0nitro:wasm/";
