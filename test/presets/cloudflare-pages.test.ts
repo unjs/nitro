@@ -53,6 +53,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
           "/build/*",
           "/favicon.ico",
           "/icon.png",
+          "/json-string",
           "/api/hello",
           "/prerender/index.html",
           "/prerender/index.html.br",
@@ -66,8 +67,6 @@ describe("nitro:preset:cloudflare-pages", async () => {
         ],
         "include": [
           "/*",
-          "/api/*",
-          "/blog/*",
         ],
         "version": 1,
       }
