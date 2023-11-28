@@ -14,6 +14,8 @@ import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
 
+const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
+
 const linkParents = new Map<string, Set<string>>();
 
 export async function prerender(nitro: Nitro) {
@@ -220,7 +222,9 @@ export async function prerender(nitro: Nitro) {
     // Guess route type and populate fileName
     const contentType = res.headers.get("content-type") || "";
     const isImplicitHTML =
-      !route.endsWith(".html") && contentType.includes("html");
+      !route.endsWith(".html") &&
+      contentType.includes("html") &&
+      !JsonSigRx.test(dataBuff.subarray(0, 32).toString("utf8"));
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
     const htmlPath =
       route.endsWith("/") || nitro.options.prerender.autoSubfolderIndex
