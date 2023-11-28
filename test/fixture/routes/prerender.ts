@@ -12,6 +12,7 @@ export default defineEventHandler((event) => {
     "../api/hey",
     "/api/param/foo.json",
     "/api/param/foo.css",
+    "/json-string",
     event.path.includes("?") ? "/api/param/hidden" : "/prerender?withQuery",
   ];
 
