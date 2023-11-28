@@ -70,8 +70,6 @@ export function wasmImport(): Plugin {
       // Resolve as external
       return {
         id: wasmAsset.id,
-        attributes: { name: "foobar" },
-        meta: { name: "foobar" },
         external: true,
       };
     },
