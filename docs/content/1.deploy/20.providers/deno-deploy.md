@@ -1,6 +1,8 @@
-# Deno Deploy
+---
+description: 'Deploy Nitro apps to Deno Deploy'
+---
 
-Deploy Nitro apps to [Deno Deploy](https://deno.com/deploy).
+Learn more about [Deno Deploy](https://deno.com/deploy).
 
 **Preset:** `deno_deploy` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

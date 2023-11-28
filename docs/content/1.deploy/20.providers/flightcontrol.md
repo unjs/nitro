@@ -1,4 +1,6 @@
-# Flightcontrol
+---
+description: 'Deploy Nitro apps to Flightcontrol.'
+---
 
 **Preset:** `flightcontrol` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

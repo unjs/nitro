@@ -1,8 +1,7 @@
 ---
 icon: i-simple-icons-deno
+description: ''
 ---
-
-# Deno
 
 Run Nitro apps with [Deno](https://deno.com/) runtime.
 

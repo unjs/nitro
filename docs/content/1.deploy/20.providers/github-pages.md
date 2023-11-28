@@ -1,6 +1,7 @@
-# GitHub Pages
-
-Deploy Nitro apps to GitHub Pages.
+---
+title: 'GitHub Pages'
+description: 'Deploy Nitro apps to GitHub Pages.'
+---
 
 **Preset:** `github_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

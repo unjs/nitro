@@ -1,6 +1,6 @@
-# AWS Lambda
-
-Deploy Nitro apps to AWS Lambda.
+---
+description: 'Deploy Nitro apps to AWS Lambda.'
+---
 
 **Preset:** `aws_lambda` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

@@ -1,6 +1,6 @@
-# Heroku
-
-Deploy Nitro apps to Heroku.
+---
+description: 'Deploy Nitro apps to Heroku.'
+---
 
 **Preset:** `heroku` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
@@ -76,6 +76,3 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
    web: bin/start-nginx node apprunner.mjs
 
 1. Bonus: create file 'config/nginx.conf.erb' to customize your nginx config. With the node preset, by default, static files handlers will not be generated, you can use nginx to server static files, just add the right location rule to the server block(s), or, force the node preset to generate handlers for the static files by setting serveStatic to true
-
-
-

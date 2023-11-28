@@ -1,6 +1,8 @@
-# AWS Amplify
+---
+description: 'Deploy Nitro apps to AWS Amplify'
+---
 
-Deploy Nitro apps to [AWS Amplify Hosting](https://aws.amazon.com/amplify/).
+Learn more about [AWS Amplify Hosting](https://aws.amazon.com/amplify/).
 
 **Preset:** `aws_amplify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

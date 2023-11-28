@@ -1,6 +1,7 @@
-# StormKit
-
-Deploy Nitro apps to StormKit.
+---
+title: 'StormKit'
+description: 'Deploy Nitro apps to StormKit.'
+---
 
 **Preset:** `stormkit` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

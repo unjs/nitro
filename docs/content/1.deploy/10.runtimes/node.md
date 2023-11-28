@@ -1,10 +1,7 @@
 ---
 icon: i-simple-icons-nodedotjs
+description: 'Node.js deployment is the default Nitro preset.'
 ---
-
-# Node.js
-
-Node.js deployment is the default Nitro preset.
 
 ## Node.js Server
 

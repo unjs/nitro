@@ -1,6 +1,6 @@
-# Edgio
-
-Deploy Nitro apps to Edgio (formerly Layer0).
+---
+decription: 'Deploy Nitro apps to Edgio (formerly Layer0).'
+---
 
 **Preset:** `edgio` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

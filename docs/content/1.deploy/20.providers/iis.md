@@ -1,6 +1,7 @@
-# IIS
-
-Deploy Nitro apps to IIS.
+---
+title: 'IIS'
+description: 'Deploy Nitro apps to IIS.'
+---
 
 ::callout{icon="i-ph-shield-warning-duotone" color="red"}
 This is an experimental preset.

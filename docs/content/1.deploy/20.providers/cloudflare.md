@@ -1,6 +1,6 @@
-# Cloudflare
-
-Deploy Nitro apps to CloudFlare.
+---
+description: 'Deploy Nitro apps to CloudFlare.'
+---
 
 ## Cloudflare Workers
 

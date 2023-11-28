@@ -1,6 +1,6 @@
-# Lagon
-
-Deploy Nitro apps to Lagon.
+---
+description: 'Deploy Nitro apps to Lagon.'
+---
 
 **Preset:** `lagon` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

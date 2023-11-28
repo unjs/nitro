@@ -1,6 +1,7 @@
-# DigitalOcean
-
-Deploy Nitro apps to DigitalOcean.
+---
+title: 'DigitalOcean'
+description: 'Deploy Nitro apps to DigitalOcean.'
+---
 
 **Preset:** `digital-ocean` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

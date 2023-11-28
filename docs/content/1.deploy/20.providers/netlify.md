@@ -1,6 +1,6 @@
-# Netlify
-
-Deploy Nitro apps to Netlify.
+---
+description: 'Deploy Nitro apps to Netlify.'
+---
 
 **Preset:** `netlify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 

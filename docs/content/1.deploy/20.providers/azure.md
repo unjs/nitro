@@ -1,6 +1,6 @@
-# Azure
-
-Deploy Nitro apps to Azure.
+---
+description: 'Deploy Nitro apps to Azure.'
+---
 
 ## Azure Static Web Apps
 
