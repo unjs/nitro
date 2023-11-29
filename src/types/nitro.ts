@@ -327,7 +327,9 @@ export interface NitroOptions extends PresetOptions {
     interval: number;
     crawlLinks: boolean;
     failOnError: boolean;
-    ignore: string[];
+    ignore: Array<
+      string | RegExp | ((path: string) => undefined | null | boolean)
+    >;
     routes: string[];
     /**
      * Amount of retries. Pass Infinity to retry indefinitely.

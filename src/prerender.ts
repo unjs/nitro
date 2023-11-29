@@ -104,8 +104,8 @@ export async function prerender(nitro: Nitro) {
     }
 
     // Check for explicitly ignored routes
-    for (const ignore of nitro.options.prerender.ignore) {
-      if (route.startsWith(ignore)) {
+    for (const pattern of nitro.options.prerender.ignore) {
+      if (matchesIgnorePattern(route, pattern)) {
         return false;
       }
     }
@@ -447,4 +447,18 @@ function formatPrerenderRoute(route: PrerenderRoute) {
   }
 
   return chalk.gray(str);
+}
+
+// prettier-ignore
+type IgnorePattern = string | RegExp | ((path: string) => undefined | null | boolean);
+
+function matchesIgnorePattern(path: string, pattern: IgnorePattern) {
+  // TODO: support radix3 patterns
+  if (typeof pattern === "string") {
+    return path.startsWith(pattern);
+  }
+  if (pattern instanceof RegExp) {
+    return pattern.test(path);
+  }
+  return pattern(path);
 }
