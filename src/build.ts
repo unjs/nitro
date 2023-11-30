@@ -425,7 +425,9 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));
 
   if (!nitro.options.static) {
-    nitro.logger.success(`${nitroServerName(nitro)} built`);
+    if (nitro.options.logging.buildSuccess) {
+      nitro.logger.success(`${nitroServerName(nitro)} built`);
+    }
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
         await generateFSTree(nitro.options.output.serverDir, {
