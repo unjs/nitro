@@ -32,6 +32,9 @@ describe("env utils", () => {
         expect(applyEnv(test.config, { prefix: "NITRO_" })).toEqual(
           test.expected
         );
+        for (const key in test.env) {
+          delete process.env[key];
+        }
       });
     }
   });
