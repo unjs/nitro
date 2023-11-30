@@ -18,7 +18,10 @@ export interface NitroTaskMeta {
 
 /** @experimental */
 export interface NitroTask<RT = unknown> extends NitroTaskMeta {
-  run(payload: NitroTaskPayload, context: NitroTaskContext): RT | Promise<RT>;
+  run(
+    payload: NitroTaskPayload,
+    context: NitroTaskContext
+  ): { result: RT | Promise<RT> };
 }
 
 /** @experimental */
@@ -43,8 +46,8 @@ export async function runNitroTask<RT = unknown>(
   }
   const context: NitroTaskContext = {};
   const handler = await tasks[name].get().then((mod) => mod.default);
-  const result = handler.run(payload, context) as RT;
+  const { result } = handler.run(payload, context);
   return {
-    result,
+    result: result as RT,
   };
 }
