@@ -309,6 +309,7 @@ export interface NitroOptions extends PresetOptions {
   // Logging
   logging: {
     compressedSizes: boolean;
+    devBuildSuccess: boolean;
   };
 
   // Routing
