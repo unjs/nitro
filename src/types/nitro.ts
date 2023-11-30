@@ -218,7 +218,7 @@ export interface NitroBuildInfo {
   };
   dev?: {
     pid: number;
-    workerAddress: { host: string; port: number } | { socketPath: string };
+    workerAddress: { host: string; port: number; socketPath?: string };
   };
 }
 
@@ -296,6 +296,7 @@ export interface NitroOptions extends PresetOptions {
   imports: UnimportPluginOptions | false;
   modules?: NitroModuleInput[];
   plugins: string[];
+  tasks: { [name: string]: { handler: string; description: string } };
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
