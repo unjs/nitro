@@ -237,7 +237,10 @@ export function defineCachedEventHandler<
     transform(entry) {
       // TODO use unstorage raw API https://github.com/unjs/unstorage/issues/142
       if (entry.value._base64Encoded) {
-        entry.value.body = Buffer.from(entry.value.body as any as string, 'base64') as Response;
+        entry.value.body = Buffer.from(
+          entry.value.body as any as string,
+          "base64"
+        ) as Response;
         delete entry.value._base64Encoded;
       }
     },
