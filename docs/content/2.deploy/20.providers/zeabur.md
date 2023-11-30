@@ -10,6 +10,10 @@ Deploy Nitro apps to [Zeabur](https://zeabur.com).
 Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
 ::
 
+::alert{type="warning"}
+This preset is experimental and available to try via [nightly channel](/guide/getting-started#nightly-release-channel).
+::
+
 ## Deploy using Git
 
 1. Push your code to your git repository (Currently only GitHub supported).
