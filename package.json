@@ -1,6 +1,6 @@
 {
   "name": "nitropack",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Build and Deploy Universal JavaScript Servers",
   "repository": "unjs/nitro",
   "license": "MIT",
@@ -98,7 +98,7 @@
     "knitwork": "^1.0.0",
     "listhen": "^1.5.5",
     "magic-string": "^0.30.5",
-    "mime": "^3.0.0",
+    "mime": "^4.0.0",
     "mlly": "^1.4.2",
     "mri": "^1.2.0",
     "node-fetch-native": "^1.4.1",

@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.8.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.8.0...v2.8.1)
+
+### 🩹 Fixes
+
+- **dev:** Conditionally access worker address for build info ([#1947](https://github.com/unjs/nitro/pull/1947))
+- Force use wasm import strategy for windows ([e73b849f](https://github.com/unjs/nitro/commit/e73b849f))
+- **netlify-lambda:** Handle base64 encoded body ([#1940](https://github.com/unjs/nitro/pull/1940))
+- **cloudflare:** Wasm support with dynamic chunks ([#1957](https://github.com/unjs/nitro/pull/1957))
+- **prerenderer:** Write responses with json signature to original path ([#1963](https://github.com/unjs/nitro/pull/1963))
+
+### 📖 Documentation
+
+- **cache:** Make default value `swr: true` more clear ([#1949](https://github.com/unjs/nitro/pull/1949))
+
+### 🏡 Chore
+
+- Update lockfile ([716edd52](https://github.com/unjs/nitro/commit/716edd52))
+- **docs:** Update lockfile ([b4386f8c](https://github.com/unjs/nitro/commit/b4386f8c))
+
+### ✅ Tests
+
+- Add tests for wasm ([#1951](https://github.com/unjs/nitro/pull/1951))
+- **cloudflare-pages:** Remover overlapping include rules ([789a13d3](https://github.com/unjs/nitro/commit/789a13d3))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Becem <becem.gharbi@live.com>
+- Mick Lawitzke ([@MickL](http://github.com/MickL))
+
 ## v2.8.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.7.1...v2.8.0)

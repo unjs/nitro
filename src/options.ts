@@ -54,6 +54,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
+  tasks: {},
   imports: {
     exclude: [],
     dirs: [],
@@ -73,6 +74,7 @@ const NitroDefaults: NitroConfig = {
   // Logging
   logging: {
     compressedSizes: true,
+    buildSuccess: true,
   },
 
   // Routing

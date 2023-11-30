@@ -113,8 +113,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       },
     },
     external: env.external,
-    // https://github.com/rollup/rollup/pull/4021#issuecomment-809985618
-    makeAbsoluteExternalsRelative: false,
     plugins: [],
     onwarn(warning, rollupWarn) {
       if (

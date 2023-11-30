@@ -48,6 +48,10 @@ export default defineNitroConfig({
       maxAge: 3600,
     },
   ],
+  tasks: {
+    "db:migrate": { description: "Migrate database" },
+    "db:seed": { description: "Seed database" },
+  },
   routeRules: {
     "/api/param/prerender4": { prerender: true },
     "/api/param/prerender2": { prerender: false },

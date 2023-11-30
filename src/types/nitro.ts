@@ -10,7 +10,7 @@ import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
-import type { ProxyOptions } from "h3";
+import type { ProxyOptions, RouterMethod } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { TSConfig } from "pkg-types";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
@@ -79,7 +79,13 @@ export interface PrerenderRoute {
 export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
+
+export type NitroTypes = {
+  routes: Record<string, Partial<Record<RouterMethod | "default", string[]>>>;
+};
+
 export interface NitroHooks {
+  "types:extend": (types: NitroTypes) => HookResult;
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
@@ -218,7 +224,7 @@ export interface NitroBuildInfo {
   };
   dev?: {
     pid: number;
-    workerAddress: { host: string; port: number } | { socketPath: string };
+    workerAddress: { host: string; port: number; socketPath?: string };
   };
 }
 
@@ -296,6 +302,7 @@ export interface NitroOptions extends PresetOptions {
   imports: UnimportPluginOptions | false;
   modules?: NitroModuleInput[];
   plugins: string[];
+  tasks: { [name: string]: { handler: string; description: string } };
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
@@ -309,6 +316,7 @@ export interface NitroOptions extends PresetOptions {
   // Logging
   logging: {
     compressedSizes: boolean;
+    buildSuccess: boolean;
   };
 
   // Routing
@@ -327,7 +335,9 @@ export interface NitroOptions extends PresetOptions {
     interval: number;
     crawlLinks: boolean;
     failOnError: boolean;
-    ignore: string[];
+    ignore: Array<
+      string | RegExp | ((path: string) => undefined | null | boolean)
+    >;
     routes: string[];
     /**
      * Amount of retries. Pass Infinity to retry indefinitely.
