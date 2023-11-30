@@ -3,9 +3,7 @@ import { useNitroApp, type NitroApp } from "./app";
 import { tasks } from "#internal/nitro/virtual/tasks";
 
 /** @experimental */
-export interface NitroTaskContext {
-  nitroApp: NitroApp;
-}
+export interface NitroTaskContext {}
 
 /** @experimental */
 export interface NitroTaskPayload {
@@ -43,8 +41,7 @@ export async function runNitroTask<RT = unknown>(
   if (!(name in tasks)) {
     throw createError(`Nitro task \`${name}\` not found!`);
   }
-  const nitroApp = useNitroApp();
-  const context: NitroTaskContext = { nitroApp };
+  const context: NitroTaskContext = {};
   const handler = await tasks[name].get().then((mod) => mod.default);
   const result = handler.run(payload, context) as RT;
   return {
