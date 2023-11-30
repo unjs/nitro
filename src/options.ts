@@ -9,6 +9,7 @@ import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
 import consola from "consola";
+import { version } from "../package.json";
 import {
   resolvePath,
   resolveFile,
@@ -53,6 +54,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
+  tasks: {},
   imports: {
     exclude: [],
     dirs: [],
@@ -68,6 +70,12 @@ const NitroDefaults: NitroConfig = {
   devServer: { watch: [] },
   watchOptions: { ignoreInitial: true },
   devProxy: {},
+
+  // Logging
+  logging: {
+    compressedSizes: true,
+    buildSuccess: true,
+  },
 
   // Routing
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
@@ -120,6 +128,12 @@ const NitroDefaults: NitroConfig = {
   nodeModulesDirs: [],
   hooks: {},
   commands: {},
+
+  // Framework
+  framework: {
+    name: "nitro",
+    version,
+  },
 };
 
 export interface LoadConfigOptions {
@@ -133,7 +147,9 @@ export async function loadOptions(
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
-    (configOverrides.preset as string) || process.env.NITRO_PRESET;
+    (configOverrides.preset as string) ||
+    process.env.NITRO_PRESET ||
+    process.env.SERVER_PRESET;
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
   }

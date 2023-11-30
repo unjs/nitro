@@ -22,13 +22,17 @@ compatibility_date = "2022-09-10"
 account_id = "<the account_id you obtained (optional)>"
 route = "<mainly useful when you want to setup custom domains (optional too)>"
 
+rules = [
+  { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
+]
+
 [site]
 bucket = ".output/public"
 ```
 
 ### Testing locally
 
-You can use [wrangler2](https://github.com/cloudflare/wrangler2), to test your app locally:
+You can use [wrangler2](https://github.com/cloudflare/workers-sdk), to test your app locally:
 
 ```bash
 NITRO_PRESET=cloudflare yarn build
@@ -148,11 +152,11 @@ If you use the GitHub/GitLab [integration](https://developers.cloudflare.com/pag
 
 ### Direct Upload
 
-Alternatively, you can use [wrangler](https://github.com/cloudflare/wrangler2) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
+Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/wrangler) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk) and login to your Cloudflare account:
 
 ```bash
 npm i wrangler -g
@@ -295,33 +299,6 @@ SECRET="top-secret"
 ```
 
 ## Advanced
-
-### Experimental Dynamic Imports
-
-By default cloudflare presets output to a single bundle file.
-
-In order to try experimental dynamic imports you need to set the `NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS` environment variable for build command.
-
-::alert{type="warning"}
-This is an experimental mode and is likely not working at the moment!
-::
-
-With `cloudflare_module` preset, you need to add the following rule to your `wrangler.toml` file:
-
-```diff [wrangler.toml]
-  name = "playground"
-  main = "./.output/server/index.mjs"
-  workers_dev = true
-  compatibility_date = "2022-09-10"
-  account_id = "<the account_id you obtained (optional)>"
-  route = "<mainly useful when you want to setup custom domains (optional too)>"
-+ rules = [
-+   { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
-+ ]
-
-  [site]
-  bucket = ".output/public"
-```
 
 ### Local Wrangler Dev builds
 

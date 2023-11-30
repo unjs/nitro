@@ -39,12 +39,12 @@ export type Serialize<T> =
  never;
 
 /** JSON serialize [tuples](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types) */
-type SerializeTuple<T extends [unknown, ...unknown[]]> = {
+export type SerializeTuple<T extends [unknown, ...unknown[]]> = {
   [k in keyof T]: T[k] extends NonJsonPrimitive ? null : Serialize<T[k]>;
 };
 
 /** JSON serialize objects (not including arrays) and classes */
-type SerializeObject<T extends object> = {
+export type SerializeObject<T extends object> = {
   [k in keyof Omit<T, FilterKeys<T, NonJsonPrimitive>>]: Serialize<T[k]>;
 };
 
@@ -53,4 +53,4 @@ type SerializeObject<T extends object> = {
  */
 export type Simplify<TType> = TType extends any[] | Date
   ? TType
-  : { [K in keyof TType]: TType[K] };
+  : { [K in keyof TType]: Simplify<TType[K]> };

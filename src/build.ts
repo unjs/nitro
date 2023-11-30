@@ -16,11 +16,19 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
+import { upperFirst } from "scule";
+import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
-import { prettyPath, writeFile, isDirectory } from "./utils";
+import {
+  prettyPath,
+  writeFile,
+  isDirectory,
+  resolvePath as resolveNitroPath,
+  nitroServerName,
+} from "./utils";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
-import type { Nitro, NitroTypes } from "./types";
+import type { Nitro, NitroTypes, NitroBuildInfo } from "./types";
 import { runtimeDir } from "./dirs";
 import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
@@ -100,10 +108,10 @@ export async function writeTypes(nitro: Nitro) {
     if (typeof mw.handler !== "string" || !mw.route) {
       continue;
     }
-    const relativePath = relative(typesDir, mw.handler).replace(
-      /\.[a-z]+$/,
-      ""
-    );
+    const relativePath = relative(
+      typesDir,
+      resolveNitroPath(mw.handler, nitro.options)
+    ).replace(/\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/, "");
 
     if (!types.routes[mw.route]) {
       types.routes[mw.route] = {};
@@ -390,7 +398,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
 
   if (!nitro.options.static) {
     nitro.logger.info(
-      `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
+      `Building ${nitroServerName(nitro)} (preset: \`${nitro.options.preset}\`)`
     );
     const build = await rollup.rollup(rollupConfig).catch((error) => {
       nitro.logger.error(formatRollupError(error));
@@ -400,23 +408,31 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     await build.write(rollupConfig.output);
   }
 
-  // Write build info
-  const nitroConfigPath = resolve(nitro.options.output.dir, "nitro.json");
-  const buildInfo = {
-    date: new Date(),
+  // Write .output/nitro.json
+  const buildInfoPath = resolve(nitro.options.output.dir, "nitro.json");
+  const buildInfo: NitroBuildInfo = {
+    date: new Date().toJSON(),
     preset: nitro.options.preset,
+    framework: nitro.options.framework,
+    versions: {
+      nitro: nitroVersion,
+    },
     commands: {
       preview: nitro.options.commands.preview,
       deploy: nitro.options.commands.deploy,
     },
   };
-  await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
+  await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));
 
   if (!nitro.options.static) {
-    nitro.logger.success("Nitro server built");
+    if (nitro.options.logging.buildSuccess) {
+      nitro.logger.success(`${nitroServerName(nitro)} built`);
+    }
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
-        await generateFSTree(nitro.options.output.serverDir)
+        await generateFSTree(nitro.options.output.serverDir, {
+          compressedSizes: nitro.options.logging.compressedSizes,
+        })
       );
     }
   }
@@ -426,7 +442,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
   const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/(\S*)/g, ` ${rOutput}/$1`);
+    return input.replace(/([\s:])\.\/(\S*)/g, `$1${rOutput}/$2`);
   };
   if (buildInfo.commands.preview) {
     nitro.logger.success(
@@ -470,10 +486,14 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       // Finished building all bundles
       case "END": {
         nitro.hooks.callHook("compiled", nitro);
-        nitro.logger.success(
-          "Nitro built",
-          start ? `in ${Date.now() - start} ms` : ""
-        );
+
+        if (nitro.options.logging.buildSuccess) {
+          nitro.logger.success(
+            `${nitroServerName(nitro)} built`,
+            start ? `in ${Date.now() - start} ms` : ""
+          );
+        }
+
         nitro.hooks.callHook("dev:reload");
         return;
       }
@@ -504,6 +524,8 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     join(dir, "api"),
     join(dir, "routes"),
     join(dir, "middleware", GLOB_SCAN_PATTERN),
+    join(dir, "plugins"),
+    join(dir, "modules"),
   ]);
 
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);

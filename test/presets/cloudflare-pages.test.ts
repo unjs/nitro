@@ -12,7 +12,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
   testNitro(ctx, () => {
     const mf = new Miniflare({
       modules: true,
-      scriptPath: resolve(ctx.outDir, "_worker.js"),
+      scriptPath: resolve(ctx.outDir, "_worker.js", "index.js"),
       globals: { __env__: {} },
       compatibilityFlags: ["streams_enable_constructors"],
       bindings: {
@@ -53,6 +53,7 @@ describe("nitro:preset:cloudflare-pages", async () => {
           "/build/*",
           "/favicon.ico",
           "/icon.png",
+          "/json-string",
           "/api/hello",
           "/prerender/index.html",
           "/prerender/index.html.br",
@@ -66,8 +67,6 @@ describe("nitro:preset:cloudflare-pages", async () => {
         ],
         "include": [
           "/*",
-          "/api/*",
-          "/blog/*",
         ],
         "version": 1,
       }

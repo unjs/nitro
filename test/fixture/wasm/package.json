@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "build:sum": "npx --yes --package=assemblyscript -c 'asc ./sum.asc.ts -o sum.wasm'",
+    "buld": "npm run build:sum",
+    "test:sum": "NODE_OPTIONS='--experimental-wasm-modules' node -e 'import(`./sum.wasm`).then(mod => console.log(mod.sum(2,3)))'",
+    "test": "npm run build:sum && npm run test:sum"
+  }
+}
