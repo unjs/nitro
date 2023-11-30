@@ -54,7 +54,12 @@ nitroApp.router.get(
   "/_nitro/tasks",
   defineEventHandler((event) => {
     return {
-      tasks: Object.keys(tasks),
+      tasks: Object.fromEntries(
+        Object.entries(tasks).map(([name, task]) => [
+          name,
+          { description: task.description },
+        ])
+      ),
     };
   })
 );

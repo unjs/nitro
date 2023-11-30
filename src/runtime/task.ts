@@ -42,7 +42,16 @@ export async function runNitroTask<RT = unknown>(
   payload: NitroTaskPayload = {}
 ): Promise<{ result: RT }> {
   if (!(name in tasks)) {
-    throw createError(`Nitro task \`${name}\` not found!`);
+    throw createError({
+      message: `Nitro task \`${name}\` is not available!`,
+      statusCode: 404,
+    });
+  }
+  if (!tasks[name].get) {
+    throw createError({
+      message: `Nitro task \`${name}\` is not implemented!`,
+      statusCode: 501,
+    });
   }
   const context: NitroTaskContext = {};
   const handler = await tasks[name].get().then((mod) => mod.default);

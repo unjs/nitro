@@ -111,12 +111,15 @@ export async function createNitro(
   const scannedTasks = await scanTasks(nitro);
   for (const scannedTask of scannedTasks) {
     if (scannedTask.name in nitro.options.tasks) {
-      nitro.logger.warn(
-        `Task \`${scannedTask.name}\` already configured! skipping scanned file...`
-      );
-      continue;
+      if (!nitro.options.tasks[scannedTask.name].handler) {
+        nitro.options.tasks[scannedTask.name].handler = scannedTask.handler;
+      }
+    } else {
+      nitro.options.tasks[scannedTask.name] = {
+        handler: scannedTask.handler,
+        description: "",
+      };
     }
-    nitro.options.tasks[scannedTask.name] = { handler: scannedTask.handler };
   }
   const taskNames = Object.keys(nitro.options.tasks).sort();
   if (taskNames.length > 0) {
@@ -124,7 +127,16 @@ export async function createNitro(
       `Nitro tasks are experimental and API may change in the future releases!`
     );
     consola.log(
-      `Available Tasks:\n\n${taskNames.map((t) => `- \`${t}\``).join("\n ")}`
+      `Available Tasks:\n\n${taskNames
+        .map(
+          (t) =>
+            ` - \`${t}\`${
+              nitro.options.tasks[t].description
+                ? ` - ${nitro.options.tasks[t].description}`
+                : ""
+            }`
+        )
+        .join("\n")}`
     );
   }
   nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => `
@@ -133,10 +145,15 @@ export const tasks = {
     .map(
       ([name, task]) =>
         `"${name}": {
-          get: () => import("${normalize(task.handler)}")
+          description: ${JSON.stringify(task.description)},
+          get: ${
+            task.handler
+              ? `() => import("${normalize(task.handler)}")`
+              : "undefined"
+          },
         }`
     )
-    .join("\n")}
+    .join(",\n")}
 };
   `;
 

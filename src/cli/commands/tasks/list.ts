@@ -1,5 +1,6 @@
 import { defineCommand } from "citty";
 import { resolve } from "pathe";
+import { consola } from "consola";
 import { listNitroTasks } from "../../../task";
 
 export default defineCommand({
@@ -16,6 +17,10 @@ export default defineCommand({
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
     const tasks = await listNitroTasks({ cwd, buildDir: ".nitro" });
-    console.log(tasks);
+    for (const [name, task] of Object.entries(tasks)) {
+      consola.log(
+        ` - \`${name}\`${task.description ? ` - ${task.description}` : ""}`
+      );
+    }
   },
 });

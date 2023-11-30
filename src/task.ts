@@ -14,7 +14,7 @@ export async function runNitroTask(
   name: string,
   payload?: NitroTaskPayload,
   opts?: TaskRunnerOptions
-) {
+): Promise<{ result: unknown }> {
   const ctx = await getTasksContext(opts);
   const result = await ctx.devFetch("/_nitro/tasks/" + name);
   return result;
@@ -22,7 +22,9 @@ export async function runNitroTask(
 
 export async function listNitroTasks(opts?: TaskRunnerOptions) {
   const ctx = await getTasksContext(opts);
-  const res = (await ctx.devFetch("/_nitro/tasks")) as { tasks: string[] };
+  const res = (await ctx.devFetch("/_nitro/tasks")) as {
+    tasks: Record<string, { description: string }>;
+  };
   return res.tasks;
 }
 
