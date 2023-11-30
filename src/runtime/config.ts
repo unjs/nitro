@@ -1,19 +1,20 @@
-import destr from "destr";
-import { snakeCase } from "scule";
 import { klona } from "klona";
 import { H3Event } from "h3";
+import { type EnvOptions, applyEnv } from "./utils.env";
 import { appConfig as _inlineAppConfig } from "#internal/nitro/virtual/app-config";
 import type { NitroRuntimeConfig } from "nitropack";
 
 // Static runtime config inlined by nitro build
 const _inlineRuntimeConfig = process.env.RUNTIME_CONFIG as any;
-const ENV_PREFIX = "NITRO_";
-const ENV_PREFIX_ALT =
-  _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_";
+const envOptions: EnvOptions = {
+  prefix: "NITRO_",
+  altPrefix:
+    _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_",
+};
 
 // Runtime config
 const _sharedRuntimeConfig = _deepFreeze(
-  _applyEnv(klona(_inlineRuntimeConfig))
+  applyEnv(klona(_inlineRuntimeConfig), envOptions)
 );
 export function useRuntimeConfig<
   T extends NitroRuntimeConfig = NitroRuntimeConfig,
@@ -28,7 +29,7 @@ export function useRuntimeConfig<
   }
   // Prepare runtime config for event context
   const runtimeConfig = klona(_inlineRuntimeConfig) as T;
-  _applyEnv(runtimeConfig);
+  applyEnv(runtimeConfig, envOptions);
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;
 }
@@ -51,33 +52,6 @@ export function useAppConfig(event?: H3Event) {
 }
 
 // --- Utils ---
-
-function _getEnv(key: string) {
-  const envKey = snakeCase(key).toUpperCase();
-  return destr(
-    process.env[ENV_PREFIX + envKey] ?? process.env[ENV_PREFIX_ALT + envKey]
-  );
-}
-
-function _isObject(input: unknown) {
-  return typeof input === "object" && !Array.isArray(input);
-}
-
-function _applyEnv(obj: object, parentKey = "") {
-  for (const key in obj) {
-    const subKey = parentKey ? `${parentKey}_${key}` : key;
-    const envValue = _getEnv(subKey);
-    if (_isObject(obj[key])) {
-      if (_isObject(envValue)) {
-        obj[key] = { ...obj[key], ...(envValue as any) };
-      }
-      _applyEnv(obj[key], subKey);
-    } else {
-      obj[key] = envValue ?? obj[key];
-    }
-  }
-  return obj;
-}
 
 function _deepFreeze(object: Record<string, any>) {
   const propNames = Object.getOwnPropertyNames(object);
