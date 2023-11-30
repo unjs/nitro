@@ -40,6 +40,10 @@ export function hasReqHeader(event: H3Event, name: string, includes: string) {
 }
 
 export function isJsonRequest(event: H3Event) {
+  // If the client specifically requests HTML, then avoid classifying as JSON.
+  if (hasReqHeader(event, "accept", "text/html")) {
+    return false;
+  }
   return (
     hasReqHeader(event, "accept", "application/json") ||
     hasReqHeader(event, "user-agent", "curl/") ||

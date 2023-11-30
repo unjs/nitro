@@ -74,6 +74,7 @@ const NitroDefaults: NitroConfig = {
   // Logging
   logging: {
     compressedSizes: true,
+    buildSuccess: true,
   },
 
   // Routing

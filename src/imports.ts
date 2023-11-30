@@ -19,6 +19,7 @@ export const nitroImports: Preset[] = [
       "useEvent",
       "defineNitroTask",
       "runNitroTask",
+      "defineNitroErrorHandler",
     ],
   },
 ];

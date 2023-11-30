@@ -35,7 +35,7 @@ async function writeAmplifyFiles(nitro: Nitro) {
 
   let hasWildcardPublicAsset = false;
 
-  if (nitro.options.awsAmplify?.imageOptimization) {
+  if (nitro.options.awsAmplify?.imageOptimization && !nitro.options.static) {
     const { path, cacheControl } = nitro.options.awsAmplify?.imageOptimization;
     routes.push({
       path,
@@ -46,10 +46,9 @@ async function writeAmplifyFiles(nitro: Nitro) {
     });
   }
 
-  const computeTarget = {
-    kind: "Compute",
-    src: "default",
-  } as AmplifyRouteTarget;
+  const computeTarget: AmplifyRouteTarget = nitro.options.static
+    ? { kind: "Static" }
+    : { kind: "Compute", src: "default" };
 
   for (const publicAsset of nitro.options.publicAssets) {
     if (!publicAsset.baseURL || publicAsset.baseURL === "/") {
@@ -59,16 +58,16 @@ async function writeAmplifyFiles(nitro: Nitro) {
     routes.push({
       path: `${publicAsset.baseURL!.replace(/\/$/, "")}/*`,
       target: {
+        kind: "Static",
         cacheControl:
           publicAsset.maxAge > 0
             ? `public, max-age=${publicAsset.maxAge}, immutable`
             : undefined,
-        kind: "Static",
       },
       fallback: publicAsset.fallthrough ? computeTarget : undefined,
     });
   }
-  if (hasWildcardPublicAsset) {
+  if (hasWildcardPublicAsset && !nitro.options.static) {
     routes.push({
       path: "/*.*",
       target: {
@@ -100,13 +99,15 @@ async function writeAmplifyFiles(nitro: Nitro) {
     version: 1,
     routes,
     imageSettings: nitro.options.awsAmplify?.imageSettings || undefined,
-    computeResources: [
-      {
-        name: "default",
-        entrypoint: "server.js",
-        runtime: "nodejs18.x",
-      },
-    ],
+    computeResources: nitro.options.static
+      ? undefined
+      : [
+          {
+            name: "default",
+            entrypoint: "server.js",
+            runtime: "nodejs18.x",
+          },
+        ],
     framework: {
       name: nitro.options.framework.name || "nitro",
       version: nitro.options.framework.version || "0.0.0",
@@ -118,8 +119,10 @@ async function writeAmplifyFiles(nitro: Nitro) {
   );
 
   // Write server.js (CJS)
-  await writeFile(
-    resolve(outDir, "compute/default/server.js"),
-    `import("./index.mjs")`
-  );
+  if (!nitro.options.static) {
+    await writeFile(
+      resolve(outDir, "compute/default/server.js"),
+      `import("./index.mjs")`
+    );
+  }
 }

@@ -113,8 +113,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       },
     },
     external: env.external,
-    // https://github.com/rollup/rollup/pull/4021#issuecomment-809985618
-    makeAbsoluteExternalsRelative: false,
     plugins: [],
     onwarn(warning, rollupWarn) {
       if (
@@ -361,10 +359,7 @@ export const plugins = [
             return { id: _resolved, external: false };
           }
         }
-        if (
-          !resolved ||
-          (resolved.external && resolved.resolvedBy !== "nitro:wasm-import")
-        ) {
+        if (!resolved || (resolved.external && !id.endsWith(".wasm"))) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
               from

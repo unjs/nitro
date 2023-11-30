@@ -17,6 +17,7 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
+import { upperFirst } from "scule";
 import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
@@ -25,6 +26,7 @@ import {
   writeFile,
   isDirectory,
   resolvePath as resolveNitroPath,
+  nitroServerName,
 } from "./utils";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
 import type { Nitro, NitroBuildInfo } from "./types";
@@ -396,7 +398,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
 
   if (!nitro.options.static) {
     nitro.logger.info(
-      `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
+      `Building ${nitroServerName(nitro)} (preset: \`${nitro.options.preset}\`)`
     );
     const build = await rollup.rollup(rollupConfig).catch((error) => {
       nitro.logger.error(formatRollupError(error));
@@ -423,7 +425,9 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));
 
   if (!nitro.options.static) {
-    nitro.logger.success("Nitro server built");
+    if (nitro.options.logging.buildSuccess) {
+      nitro.logger.success(`${nitroServerName(nitro)} built`);
+    }
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
         await generateFSTree(nitro.options.output.serverDir, {
@@ -482,10 +486,14 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       // Finished building all bundles
       case "END": {
         nitro.hooks.callHook("compiled", nitro);
-        nitro.logger.success(
-          "Nitro built",
-          start ? `in ${Date.now() - start} ms` : ""
-        );
+
+        if (nitro.options.logging.buildSuccess) {
+          nitro.logger.success(
+            `${nitroServerName(nitro)} built`,
+            start ? `in ${Date.now() - start} ms` : ""
+          );
+        }
+
         nitro.hooks.callHook("dev:reload");
         return;
       }

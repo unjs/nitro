@@ -14,6 +14,8 @@ import { compressPublicAssets } from "./compress";
 
 const allowedExtensions = new Set(["", ".json"]);
 
+const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/; // From unjs/destr
+
 const linkParents = new Map<string, Set<string>>();
 
 export async function prerender(nitro: Nitro) {
@@ -102,8 +104,8 @@ export async function prerender(nitro: Nitro) {
     }
 
     // Check for explicitly ignored routes
-    for (const ignore of nitro.options.prerender.ignore) {
-      if (route.startsWith(ignore)) {
+    for (const pattern of nitro.options.prerender.ignore) {
+      if (matchesIgnorePattern(route, pattern)) {
         return false;
       }
     }
@@ -220,7 +222,9 @@ export async function prerender(nitro: Nitro) {
     // Guess route type and populate fileName
     const contentType = res.headers.get("content-type") || "";
     const isImplicitHTML =
-      !route.endsWith(".html") && contentType.includes("html");
+      !route.endsWith(".html") &&
+      contentType.includes("html") &&
+      !JsonSigRx.test(dataBuff.subarray(0, 32).toString("utf8"));
     const routeWithIndex = route.endsWith("/") ? route + "index" : route;
     const htmlPath =
       route.endsWith("/") || nitro.options.prerender.autoSubfolderIndex
@@ -384,13 +388,14 @@ function extractLinks(
     _links.push(
       ...[...html.matchAll(LINK_REGEX)]
         .map((m) => escapeHtml(m[1]))
+        .filter((m) => !decodeURIComponent(m).startsWith("#"))
         .filter((link) => allowedExtensions.has(getExtension(link)))
     );
   }
 
   // Extract from x-nitro-prerender headers
   const header = res.headers.get("x-nitro-prerender") || "";
-  _links.push(...header.split(",").map((i) => i.trim()));
+  _links.push(...header.split(",").map((i) => decodeURIComponent(i.trim())));
 
   for (const link of _links.filter(Boolean)) {
     const _link = parseURL(link);
@@ -442,4 +447,24 @@ function formatPrerenderRoute(route: PrerenderRoute) {
   }
 
   return chalk.gray(str);
+}
+
+// prettier-ignore
+type IgnorePattern = string | RegExp | ((path: string) => undefined | null | boolean);
+
+function matchesIgnorePattern(path: string, pattern: IgnorePattern) {
+  if (typeof pattern === "string") {
+    // TODO: support radix3 patterns
+    return path.startsWith(pattern as string);
+  }
+
+  if (typeof pattern === "function") {
+    return pattern(path) === true;
+  }
+
+  if (pattern instanceof RegExp) {
+    return pattern.test(path);
+  }
+
+  return false;
 }
