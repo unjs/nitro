@@ -484,14 +484,14 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       case "END": {
         nitro.hooks.callHook("compiled", nitro);
 
-        if (nitro.options.logging.showBuildSuccess) {
-          let successReport = `Nitro Server`;
+        if (nitro.options.logging.devBuildSuccess) {
+          let message = `Nitro Server`;
           if (nitro.options.framework.name !== "nitro") {
             const _name = upperFirst(nitro.options.framework.name);
-            successReport = `${_name} ${successReport}`;
+            message = `${_name} ${message}`;
           }
           nitro.logger.success(
-            `${successReport} built`,
+            `${message} built`,
             start ? `in ${Date.now() - start} ms` : ""
           );
         }
