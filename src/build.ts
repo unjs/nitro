@@ -17,6 +17,7 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
+import { upperFirst } from "scule";
 import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
@@ -482,27 +483,19 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       // Finished building all bundles
       case "END": {
         nitro.hooks.callHook("compiled", nitro);
-        const { framework } = nitro.options;
-        let successReport = `Nitro Server`;
 
-        if (framework.showBuildSuccess) {
-          if (framework.showBuildSuccess === 'verbose') {
-            successReport += ` v${nitroVersion}`;
+        if (nitro.options.logging.showBuildSuccess) {
+          let successReport = `Nitro Server`;
+          if (nitro.options.framework.name !== "nitro") {
+            const _name = upperFirst(nitro.options.framework.name);
+            successReport = `${_name} ${successReport}`;
           }
-
-          if (framework.name !== 'nitro') {
-            successReport += ` for ${framework.name}`;
-          }
-
-          if (framework.version !== nitroVersion && framework.showBuildSuccess === 'verbose') {
-            successReport += ` for v${framework.version}`;
-          }
+          nitro.logger.success(
+            `${successReport} built`,
+            start ? `in ${Date.now() - start} ms` : ""
+          );
         }
 
-        nitro.logger.success(
-          `${successReport} built`,
-          start ? `in ${Date.now() - start} ms` : ""
-        );
         nitro.hooks.callHook("dev:reload");
         return;
       }

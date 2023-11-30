@@ -201,7 +201,6 @@ export interface NitroFrameworkInfo {
   // eslint-disable-next-line @typescript-eslint/ban-types
   name?: "nitro" | (string & {});
   version?: string;
-  showBuildSuccess?: boolean | 'verbose';
 }
 
 /** Build info written to `.output/nitro.json` or `.nitro/dev/nitro.json` */
@@ -310,6 +309,7 @@ export interface NitroOptions extends PresetOptions {
   // Logging
   logging: {
     compressedSizes: boolean;
+    showBuildSuccess: boolean;
   };
 
   // Routing
