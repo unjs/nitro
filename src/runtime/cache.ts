@@ -349,6 +349,8 @@ export function defineCachedEventHandler<
 
       // Call handler
       const event = createEvent(reqProxy, resProxy);
+      event.fetch = incomingEvent.fetch
+      event.$fetch = incomingEvent.$fetch
       event.context = incomingEvent.context;
       const body = (await handler(event)) || _resSendBody;
 
