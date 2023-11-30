@@ -44,16 +44,6 @@ const defaultCacheOptions = {
   maxAge: 1,
 };
 
-function base64ToArray(base64: string) {
-  const str = atob(base64);
-  const bytes = new Uint8Array(str.length);
-  for (let i = 0; i < str.length; i++) {
-    // eslint-disable-next-line unicorn/prefer-code-point
-    bytes[i] = str.charCodeAt(i);
-  }
-  return bytes;
-}
-
 export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
   fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
@@ -245,10 +235,9 @@ export function defineCachedEventHandler<
   const _opts: CacheOptions<ResponseCacheEntry<Response>> = {
     ...opts,
     transform(entry) {
+      // TODO use unstorage raw API https://github.com/unjs/unstorage/issues/142
       if (entry.value._base64Encoded) {
-        entry.value.body = Buffer.from(
-          base64ToArray(entry.value.body as any as string)
-        ) as Response;
+        entry.value.body = Buffer.from(entry.value.body as any as string, 'base64') as Response;
         delete entry.value._base64Encoded;
       }
     },
@@ -404,6 +393,7 @@ export function defineCachedEventHandler<
         headers,
         body,
       };
+      // TODO use unstorage raw API https://github.com/unjs/unstorage/issues/142
       if (cacheEntry.body instanceof Buffer) {
         cacheEntry.body = Buffer.from(body as ArrayBuffer).toString(
           "base64"
