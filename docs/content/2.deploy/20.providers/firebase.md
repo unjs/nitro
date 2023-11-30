@@ -15,7 +15,7 @@ Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with
 ::
 
 ::alert{type="warning"}
-**Note:** Firebase preset is under development. Consider using [Edge Release Channel](/guide/getting-started#edge-release-channel) in order to use latest updates and gen 2.
+**Note:** Firebase preset is under development. Consider using [Edge Release Channel](/guide/getting-started#nightly-release-channel) in order to use latest updates and gen 2.
 ::
 
 ## Project Setup

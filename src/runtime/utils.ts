@@ -1,3 +1,4 @@
+import type { Readable } from "node:stream";
 import type { H3Event } from "h3";
 import { getRequestHeader, splitCookiesString } from "h3";
 import { useNitroApp } from "./app";
@@ -39,6 +40,10 @@ export function hasReqHeader(event: H3Event, name: string, includes: string) {
 }
 
 export function isJsonRequest(event: H3Event) {
+  // If the client specifically requests HTML, then avoid classifying as JSON.
+  if (hasReqHeader(event, "accept", "text/html")) {
+    return false;
+  }
   return (
     hasReqHeader(event, "accept", "application/json") ||
     hasReqHeader(event, "user-agent", "curl/") ||
@@ -130,4 +135,41 @@ export function normalizeCookieHeaders(headers: Headers) {
     }
   }
   return outgoingHeaders;
+}
+
+export function toBuffer(data: ReadableStream | Readable | Uint8Array) {
+  if ("pipeTo" in data && typeof data.pipeTo === "function") {
+    return new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      data
+        .pipeTo(
+          new WritableStream({
+            write(chunk) {
+              chunks.push(chunk);
+            },
+            close() {
+              resolve(Buffer.concat(chunks));
+            },
+            abort(reason) {
+              reject(reason);
+            },
+          })
+        )
+        .catch(reject);
+    });
+  }
+  if ("pipe" in data && typeof data.pipe === "function") {
+    return new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      data
+        .on("data", (chunk: any) => {
+          chunks.push(chunk);
+        })
+        .on("end", () => {
+          resolve(Buffer.concat(chunks));
+        })
+        .on("error", reject);
+    });
+  }
+  return Buffer.from(data as unknown as Uint16Array);
 }

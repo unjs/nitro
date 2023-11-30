@@ -27,13 +27,13 @@ export type TypedInternalResponse<
   ? // Allow user overrides
     Default
   : Route extends string
-  ? MiddlewareOf<Route, Method> extends never
-    ? MiddlewareOf<Route, "default"> extends never
-      ? // Bail if only types are Error or void (for example, from middleware)
-        Default
-      : MiddlewareOf<Route, "default">
-    : MiddlewareOf<Route, Method>
-  : Default;
+    ? MiddlewareOf<Route, Method> extends never
+      ? MiddlewareOf<Route, "default"> extends never
+        ? // Bail if only types are Error or void (for example, from middleware)
+          Default
+        : MiddlewareOf<Route, "default">
+      : MiddlewareOf<Route, Method>
+    : Default;
 
 // Extracts the available http methods based on the route.
 // Defaults to all methods if there aren't any methods available or if there is a catch-all route.
@@ -42,11 +42,11 @@ export type AvailableRouterMethod<R extends NitroFetchRequest> =
     ? keyof InternalApi[MatchedRoutes<R>] extends undefined
       ? RouterMethod
       : Extract<
-          keyof InternalApi[MatchedRoutes<R>],
-          "default"
-        > extends undefined
-      ? Extract<RouterMethod, keyof InternalApi[MatchedRoutes<R>]>
-      : RouterMethod
+            keyof InternalApi[MatchedRoutes<R>],
+            "default"
+          > extends undefined
+        ? Extract<RouterMethod, keyof InternalApi[MatchedRoutes<R>]>
+        : RouterMethod
     : RouterMethod;
 
 // Argumented fetch options to include the correct request methods.
@@ -65,8 +65,8 @@ export type ExtractedRouteMethod<
 > = O extends undefined
   ? "get"
   : Lowercase<O["method"]> extends RouterMethod
-  ? Lowercase<O["method"]>
-  : "get";
+    ? Lowercase<O["method"]>
+    : "get";
 
 export interface $Fetch<
   DefaultT = unknown,

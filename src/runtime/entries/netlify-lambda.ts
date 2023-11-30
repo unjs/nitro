@@ -32,7 +32,9 @@ export async function lambda(
     headers: normalizeLambdaIncomingHeaders(event.headers),
     method,
     query,
-    body: event.body, // TODO: handle event.isBase64Encoded
+    body: event.isBase64Encoded
+      ? Buffer.from(event.body, "base64")
+      : event.body,
   });
 
   const cookies = normalizeCookieHeader(String(r.headers["set-cookie"]));

@@ -8,6 +8,17 @@ import type { Nitro } from "../../types";
 import { virtual } from "./virtual";
 import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
 
+const readAssetHandler: Record<
+  Exclude<Nitro["options"]["serveStatic"] | "true" | "false", boolean>,
+  "node" | "deno" | "null" | "inline"
+> = {
+  true: "node",
+  node: "node",
+  false: "null",
+  deno: "deno",
+  inline: "inline",
+};
+
 export function publicAssets(nitro: Nitro): Plugin {
   return virtual(
     {
@@ -46,6 +57,10 @@ export function publicAssets(nitro: Nitro): Plugin {
             mtime: stat.mtime.toJSON(),
             size: stat.size,
             path: relative(nitro.options.output.serverDir, fullPath),
+            data:
+              nitro.options.serveStatic === "inline"
+                ? assetData.toString("base64")
+                : undefined,
           };
         }
 
@@ -73,6 +88,25 @@ export function readAsset (id) {
   return Deno.readFile(path);
 }`;
       },
+      // #internal/nitro/virtual/public-assets-null
+      "#internal/nitro/virtual/public-assets-null": () => {
+        return `
+    export function readAsset (id) {
+        return Promise.resolve(null);
+    }`;
+      },
+      // #internal/nitro/virtual/public-assets-inline
+      "#internal/nitro/virtual/public-assets-inline": () => {
+        return `
+  import assets from '#internal/nitro/virtual/public-assets-data'
+  export function readAsset (id) {
+    if (!assets[id]) { return undefined }
+    if (assets[id]._data) { return assets[id]._data }
+    if (!assets[id].data) { return assets[id].data }
+    assets[id]._data = Uint8Array.from(atob(assets[id].data), (c) => c.charCodeAt(0))
+    return assets[id]._data
+}`;
+      },
       // #internal/nitro/virtual/public-assets
       "#internal/nitro/virtual/public-assets": () => {
         const publicAssetBases = Object.fromEntries(
@@ -81,18 +115,13 @@ export function readAsset (id) {
             .map((dir) => [dir.baseURL, { maxAge: dir.maxAge }])
         );
 
+        const readAssetImport = `#internal/nitro/virtual/public-assets-${
+          readAssetHandler[nitro.options.serveStatic as string] || "null"
+        }`;
+
         return `
 import assets from '#internal/nitro/virtual/public-assets-data'
-${
-  nitro.options.serveStatic
-    ? `export * from "#internal/nitro/virtual/public-assets-${
-        ["deno"].includes(nitro.options.serveStatic as string)
-          ? nitro.options.serveStatic
-          : "node"
-      }"`
-    : "export const readAsset = () => Promise.resolve(null)"
-}
-
+export { readAsset } from "${readAssetImport}"
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 
 export function isPublicAssetURL(id = '') {

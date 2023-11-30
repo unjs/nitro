@@ -8,6 +8,7 @@ import chalk from "chalk";
 import { getProperty } from "dot-prop";
 import { provider } from "std-env";
 import type { ProviderName } from "std-env";
+import { upperFirst } from "scule";
 import { KebabCase, Nitro } from "../types";
 import type * as _PRESETS from "../presets";
 
@@ -103,6 +104,7 @@ export function replaceAll(input: string, from: string, to: string) {
 const autodetectableProviders: Partial<
   Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
 > = {
+  aws_amplify: "aws-amplify",
   azure_static: "azure",
   cloudflare_pages: "cloudflare-pages",
   netlify: "netlify",
@@ -229,4 +231,10 @@ export function provideFallbackValues(obj: Record<string, any>) {
       provideFallbackValues(obj[key]);
     }
   }
+}
+
+export function nitroServerName(nitro: Nitro) {
+  return nitro.options.framework.name === "nitro"
+    ? "Nitro Server"
+    : `${upperFirst(nitro.options.framework.name)} Nitro server`;
 }

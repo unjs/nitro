@@ -12,6 +12,7 @@ const main = defineCommand({
     dev: () => import("./commands/dev").then((r) => r.default),
     build: () => import("./commands/build").then((r) => r.default),
     prepare: () => import("./commands/prepare").then((r) => r.default),
+    tasks: () => import("./commands/tasks").then((r) => r.default),
   },
 });
 

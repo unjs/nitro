@@ -10,7 +10,7 @@ import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
-import type { ProxyOptions } from "h3";
+import type { ProxyOptions, RouterMethod } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { TSConfig } from "pkg-types";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
@@ -25,6 +25,7 @@ import type {
 } from "./handler";
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
+import { NitroModule, NitroModuleInput } from "./module";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
@@ -78,7 +79,13 @@ export interface PrerenderRoute {
 export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
+
+export type NitroTypes = {
+  routes: Record<string, Partial<Record<RouterMethod | "default", string[]>>>;
+};
+
 export interface NitroHooks {
+  "types:extend": (types: NitroTypes) => HookResult;
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
@@ -196,6 +203,31 @@ export interface WasmOptions {
   rollup?: RollupWasmOptions;
 }
 
+export interface NitroFrameworkInfo {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  name?: "nitro" | (string & {});
+  version?: string;
+}
+
+/** Build info written to `.output/nitro.json` or `.nitro/dev/nitro.json` */
+export interface NitroBuildInfo {
+  date: string;
+  preset: string;
+  framework: NitroFrameworkInfo;
+  versions: {
+    nitro: string;
+    [key: string]: string;
+  };
+  commands?: {
+    preview?: string;
+    deploy?: string;
+  };
+  dev?: {
+    pid: number;
+    workerAddress: { host: string; port: number; socketPath?: string };
+  };
+}
+
 export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
@@ -233,7 +265,7 @@ export interface NitroOptions extends PresetOptions {
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;
-  serveStatic: boolean | "node" | "deno";
+  serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
   /** @experimental Requires `experimental.wasm` to be effective */
   wasm?: WasmOptions;
@@ -272,7 +304,9 @@ export interface NitroOptions extends PresetOptions {
   publicAssets: PublicAssetDir[];
 
   imports: UnimportPluginOptions | false;
+  modules?: NitroModuleInput[];
   plugins: string[];
+  tasks: { [name: string]: { handler: string; description: string } };
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
@@ -286,6 +320,7 @@ export interface NitroOptions extends PresetOptions {
   // Logging
   logging: {
     compressedSizes: boolean;
+    buildSuccess: boolean;
   };
 
   // Routing
@@ -304,7 +339,9 @@ export interface NitroOptions extends PresetOptions {
     interval: number;
     crawlLinks: boolean;
     failOnError: boolean;
-    ignore: string[];
+    ignore: Array<
+      string | RegExp | ((path: string) => undefined | null | boolean)
+    >;
     routes: string[];
     /**
      * Amount of retries. Pass Infinity to retry indefinitely.
@@ -354,6 +391,9 @@ export interface NitroOptions extends PresetOptions {
     deploy: string;
   };
 
+  // Framework
+  framework: NitroFrameworkInfo;
+
   // IIS
   iis?: {
     mergeConfig?: boolean;
@@ -363,4 +403,5 @@ export interface NitroOptions extends PresetOptions {
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
+  const defineNitroModule: (definition: NitroModule) => NitroModule;
 }
