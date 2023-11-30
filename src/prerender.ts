@@ -453,12 +453,18 @@ function formatPrerenderRoute(route: PrerenderRoute) {
 type IgnorePattern = string | RegExp | ((path: string) => undefined | null | boolean);
 
 function matchesIgnorePattern(path: string, pattern: IgnorePattern) {
-  // TODO: support radix3 patterns
   if (typeof pattern === "string") {
-    return path.startsWith(pattern);
+    // TODO: support radix3 patterns
+    return path.startsWith(pattern as string);
   }
+
+  if (typeof pattern === "function") {
+    return pattern(path) === true;
+  }
+
   if (pattern instanceof RegExp) {
     return pattern.test(path);
   }
-  return pattern(path);
+
+  return false;
 }
