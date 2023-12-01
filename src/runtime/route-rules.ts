@@ -28,11 +28,19 @@ export function createRouteRulesHandler(ctx: {
     }
     // Apply redirect options
     if (routeRules.redirect) {
-      return sendRedirect(
-        event,
-        routeRules.redirect.to,
-        routeRules.redirect.statusCode
-      );
+      let target = routeRules.redirect.to;
+      if (target.endsWith("/**")) {
+        let targetPath = event.path;
+        const strpBase = (routeRules.redirect as any)._redirectStripBase;
+        if (strpBase) {
+          targetPath = withoutBase(targetPath, strpBase);
+        }
+        target = joinURL(target.slice(0, -3), targetPath);
+      } else if (event.path.includes("?")) {
+        const query = getQuery(event.path);
+        target = withQuery(target, query);
+      }
+      return sendRedirect(event, target, routeRules.redirect.statusCode);
     }
     // Apply proxy options
     if (routeRules.proxy) {

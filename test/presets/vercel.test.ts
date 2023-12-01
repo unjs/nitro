@@ -42,6 +42,13 @@ describe("nitro:preset:vercel", async () => {
               },
               {
                 "headers": {
+                  "Location": "https://nitro.unjs.io/$1",
+                },
+                "src": "/rules/redirect/wildcard/(.*)",
+                "status": 307,
+              },
+              {
+                "headers": {
                   "Location": "/other",
                 },
                 "src": "/rules/nested/override",
@@ -74,14 +81,14 @@ describe("nitro:preset:vercel", async () => {
                   "Location": "/base",
                   "x-test": "test",
                 },
-                "src": "/rules/nested/.*",
+                "src": "/rules/nested/(.*)",
                 "status": 307,
               },
               {
                 "headers": {
                   "cache-control": "public, max-age=3600, immutable",
                 },
-                "src": "/build/.*",
+                "src": "/build/(.*)",
               },
               {
                 "continue": true,

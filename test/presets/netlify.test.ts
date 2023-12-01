@@ -51,6 +51,7 @@ describe("nitro:preset:netlify", async () => {
         /* eslint-disable no-tabs */
         expect(redirects).toMatchInlineSnapshot(`
         "/rules/nested/override	/other	302
+        /rules/redirect/wildcard/*	https://nitro.unjs.io/:splat	302
         /rules/redirect/obj	https://nitro.unjs.io/	301
         /rules/nested/*	/base	302
         /rules/redirect	/base	302

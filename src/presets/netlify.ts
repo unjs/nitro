@@ -148,7 +148,7 @@ async function writeRedirects(nitro: Nitro) {
     let code = routeRules.redirect.statusCode;
     code = { 307: 302, 308: 301 }[code] || code;
     contents =
-      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}\n` +
+      `${key.replace("/**", "/*")}\t${routeRules.redirect.to.replace("/**", "/:splat")}\t${code}\n` +
       contents;
   }
 

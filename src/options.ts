@@ -454,6 +454,10 @@ export function normalizeRouteRules(
           ? { to: routeConfig.redirect }
           : routeConfig.redirect),
       };
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.redirect as any)._redirectStripBase = path.slice(0, -3);
+      }
     }
     // Proxy
     if (routeConfig.proxy) {
