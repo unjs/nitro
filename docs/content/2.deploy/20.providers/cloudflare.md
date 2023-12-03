@@ -77,7 +77,7 @@ npx wrangler deploy
 
 ### Deploy within CI/CD using GitHub Actions
 
-Create a token according to [the wrangler action docs](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler#authentication) and set `CF_API_TOKEN` in your repository config on GitHub.
+Create a token according to [the wrangler action docs](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler#authentication) and set `CLOUDFLARE_API_TOKEN` in your repository config on GitHub.
 
 Create `.github/workflows/cloudflare.yml`:
 
@@ -93,41 +93,31 @@ on:
       - main
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        node: [ 14 ]
-
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
     steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
-      - name: Cache node_modules
-        uses: actions/cache@v2
+      - name: Setup Node.js 16.x
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          node-version: 16.x
 
-      - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn
+      - name: Install npm dependencies
+        run: npm ci
 
       - name: Build
-        run: yarn build
+        run: npm run build
         env:
           NITRO_PRESET: cloudflare
 
-      - name: Publish to Cloudflare
-        uses: cloudflare/wrangler-action@2.0.0
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
 ```
 
 ## Cloudflare Pages
