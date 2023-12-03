@@ -38,10 +38,10 @@ You can use [wrangler2](https://github.com/cloudflare/workers-sdk), to test your
 NITRO_PRESET=cloudflare yarn build
 
 # If you have added a 'wrangler.toml' file like above in the root of your project:
-npx wrangler dev --local
+npx wrangler dev
 
 # If you don't have a 'wrangler.toml', directly use:
-npx wrangler dev .output/server/index.mjs --site .output/public --local
+npx wrangler dev .output/server/index.mjs --site .output/public
 ```
 
 ### Deploy from your local machine using wrangler
