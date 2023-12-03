@@ -30,7 +30,7 @@ bucket = ".output/public"
 
 ### Preview your app locally
 
-You can use [wrangler](https://github.com/cloudflare/workers-sdk), to preview your app locally:
+You can use [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler), to preview your app locally:
 
 ```bash
 NITRO_PRESET=cloudflare npm run build
@@ -44,7 +44,7 @@ npx wrangler dev .output/server/index.mjs --site .output/public
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler#quick-start) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler) and login to your Cloudflare account:
 
 ```bash
 npm i wrangler
@@ -136,7 +136,7 @@ Nitro automatically generates a `_routes.json` file that controls which routes g
 
 ### Preview your app locally
 
-You can use [wrangler](https://github.com/cloudflare/workers-sdk), to preview your app locally:
+You can use [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler), to preview your app locally:
 
 ```bash
 NITRO_PRESET=cloudflare-pages npm run build
@@ -150,7 +150,7 @@ If you use the GitHub/GitLab [integration](https://developers.cloudflare.com/pag
 
 ### Direct Upload
 
-Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
+Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
 
 ```bash
 NITRO_PRESET=cloudflare-pages npm run build
@@ -158,7 +158,7 @@ NITRO_PRESET=cloudflare-pages npm run build
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/workers-sdk) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler) and login to your Cloudflare account:
 
 ```bash
 npm i wrangler
