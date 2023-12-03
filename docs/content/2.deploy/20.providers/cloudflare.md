@@ -35,7 +35,7 @@ bucket = ".output/public"
 You can use [wrangler](https://github.com/cloudflare/workers-sdk), to test your app locally:
 
 ```bash
-NITRO_PRESET=cloudflare yarn build
+NITRO_PRESET=cloudflare npm run build
 
 # If you have added a 'wrangler.toml' file like above in the root of your project:
 npx wrangler dev
@@ -49,30 +49,30 @@ npx wrangler dev .output/server/index.mjs --site .output/public
 Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler#quick-start) and login to your Cloudflare account:
 
 ```bash
-npm i wrangler -g
+npm i wrangler
 wrangler login
 ```
 
 Generate website with `cloudflare` preset:
 
 ```bash
-NITRO_PRESET=cloudflare yarn build
+NITRO_PRESET=cloudflare npm run build
 ```
 
 You can preview locally:
 
 ```bash
 # If you have a 'wrangler.toml' like above:
-wrangler dev
+npx wrangler dev
 
 # If you don't have a 'wrangler.toml':
-wrangler dev .output/server/index.mjs --site .output/public
+npx wrangler dev .output/server/index.mjs --site .output/public
 ```
 
 Publish:
 
 ```bash
-wrangler deploy
+npx wrangler deploy
 ```
 
 ### Deploy within CI/CD using GitHub Actions
@@ -159,20 +159,20 @@ Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk)
 Install [wrangler](https://github.com/cloudflare/workers-sdk) and login to your Cloudflare account:
 
 ```bash
-npm i wrangler -g
-wrangler login
+npm i wrangler
+npx wrangler login
 ```
 
 Create project:
 
 ```bash
-wrangler pages project create <project-name>
+npx wrangler pages project create <project-name>
 ```
 
 Deploy:
 
 ```bash
-wrangler pages deploy
+npx wrangler pages deploy
 ```
 
 ## Cloudflare Module Workers
@@ -314,7 +314,7 @@ To instruct wrangler to automatically rebuild nitro when it detects file changes
 
 ```[wrangler.toml]
 + [env.development.build]
-+ command = "NITRO_PRESET=cloudflare npm run build" // Replace npm with your packagemanager (npm, pnpm, yarn, bun)
++ command = "NITRO_PRESET=cloudflare npm run build" // Replace npm with your package manager (npm, pnpm, yarn, bun)
 + cwd = "./"
 + watch_dir = ["./routes", "./nitro.config.ts"]
 ```
