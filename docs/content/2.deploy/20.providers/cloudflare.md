@@ -10,8 +10,6 @@ Deploy Nitro apps to CloudFlare.
 **Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
 ::
 
-Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
-
 Create a `wrangler.toml` in your root directory:
 
 ```ini
@@ -19,8 +17,8 @@ name = "playground"
 main = "./.output/server/index.mjs"
 workers_dev = true
 compatibility_date = "2023-12-01"
-account_id = "<the account_id you obtained (optional)>"
-route = "<mainly useful when you want to setup custom domains (optional too)>"
+account_id = "<(optional) your Cloudflare account id, retrievable from the Cloudflare dashboard>"
+route = "<(optional) mainly useful when you want to setup custom domains>"
 
 rules = [
   { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
@@ -30,9 +28,9 @@ rules = [
 bucket = ".output/public"
 ```
 
-### Testing locally
+### Preview your app locally
 
-You can use [wrangler](https://github.com/cloudflare/workers-sdk), to test your app locally:
+You can use [wrangler](https://github.com/cloudflare/workers-sdk), to preview your app locally:
 
 ```bash
 NITRO_PRESET=cloudflare npm run build
@@ -53,7 +51,7 @@ npm i wrangler
 wrangler login
 ```
 
-Generate website with `cloudflare` preset:
+Generate website with the `cloudflare` preset:
 
 ```bash
 NITRO_PRESET=cloudflare npm run build
