@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
