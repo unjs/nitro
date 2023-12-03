@@ -162,7 +162,7 @@ npx wrangler pages project create <project-name>
 Deploy:
 
 ```bash
-npx wrangler pages deploy
+npx wrangler pages deploy dist
 ```
 
 ## Cloudflare Module Workers
