@@ -144,6 +144,10 @@ If you use the GitHub/GitLab [integration](https://developers.cloudflare.com/pag
 
 Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
 
+```bash
+NITRO_PRESET=cloudflare-pages npm run build
+```
+
 ### Deploy from your local machine using wrangler
 
 Install [wrangler](https://github.com/cloudflare/workers-sdk) and login to your Cloudflare account:
