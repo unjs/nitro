@@ -32,7 +32,7 @@ bucket = ".output/public"
 
 ### Testing locally
 
-You can use [wrangler2](https://github.com/cloudflare/workers-sdk), to test your app locally:
+You can use [wrangler](https://github.com/cloudflare/workers-sdk), to test your app locally:
 
 ```bash
 NITRO_PRESET=cloudflare yarn build
