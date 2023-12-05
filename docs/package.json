@@ -9,7 +9,7 @@
   "devDependencies": {
     "@nuxt-themes/docus": "^1.15.0",
     "@nuxt/content": "2.9.0",
-    "@nuxtjs/plausible": "^0.2.3",
+    "@nuxtjs/plausible": "^0.2.4",
     "nuxt": "^3.8.2"
   }
 }
