@@ -45,7 +45,6 @@ const route = useRoute()
 const { data: page } = await useAsyncData(route.path, () => queryContent(route.path).findOne())
 
 useSeoMeta({
-    titleTemplate: '',
     title: page.value?.title,
     ogTitle: page.value?.title,
     description: page.value?.description,
