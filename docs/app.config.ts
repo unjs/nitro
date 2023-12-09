@@ -30,7 +30,7 @@ export default defineAppConfig({
       iconLinks: [
         {
           href: "https://unjs.io",
-          icon: "IconUnJS",
+          icon: "IconUnJs",
           label: "UnJS",
         },
       ],
