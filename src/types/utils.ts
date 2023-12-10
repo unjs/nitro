@@ -111,5 +111,5 @@ export type KebabCase<
   : A;
 
 export type StorageKeys<T> = {
-			[K in keyof T]: K;
+  [K in keyof T]: K;
 }[keyof T];
