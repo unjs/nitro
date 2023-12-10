@@ -109,3 +109,7 @@ export type KebabCase<
 > = T extends `${infer F}${infer R}`
   ? KebabCase<R, `${A}${F extends Lowercase<F> ? "" : "-"}${Lowercase<F>}`>
   : A;
+
+export type StorageKeys<T> = {
+			[K in keyof T]: K;
+}[keyof T];
