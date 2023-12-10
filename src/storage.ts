@@ -17,7 +17,7 @@ export async function createStorage(nitro: Nitro) {
         builtinDrivers[opts.driver] || opts.driver
       ).then((r) => r.default || r);
       storage.mount(path, driver(opts));
-      mountPoints[path]=1;
+      mountPoints[path] = 1;
     } else {
       nitro.logger.warn(`No \`driver\` set for storage mount point "${path}".`);
     }

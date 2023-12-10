@@ -4,7 +4,7 @@ import { mountPoints } from "../../utils/storage";
 import { storage } from "#internal/nitro/virtual/storage";
 
 export function useStorage<T extends StorageValue = StorageValue>(
-  base?: keyof typeof mountPoints | "" = "" 
+  base?: keyof typeof mountPoints | "" = ""
 ): Storage<T> {
   return base ? prefixStorage<T>(storage, base) : storage;
 }
