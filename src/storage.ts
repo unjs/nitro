@@ -1,7 +1,7 @@
 import { createStorage as _createStorage, builtinDrivers } from "unstorage";
 import type { Nitro } from "./types";
 
-export const mountPoints = {};
+export const mountPoints: Record<string,any> = {};
 
 export async function createStorage(nitro: Nitro) {
   const storage = _createStorage();
