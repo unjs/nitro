@@ -1,5 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
+import { deno as _unenvDenoPreset } from "unenv";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 import nitroPkg from "../../package.json";
@@ -65,9 +66,7 @@ export const netlifyEdge = defineNitroPreset({
       format: "esm",
     },
   },
-  unenv: {
-    polyfill: ["#internal/nitro/polyfill/deno-env"],
-  },
+  unenv: _unenvDenoPreset,
   hooks: {
     "rollup:before": (nitro: Nitro) => {
       deprecateSWR(nitro);

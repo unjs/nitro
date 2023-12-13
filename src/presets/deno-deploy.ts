@@ -1,9 +1,12 @@
+import { deno as _unenvDenoPreset } from "unenv";
 import { defineNitroPreset } from "../preset";
+
+// https://docs.deno.com/runtime/manual/node/compatibility
+// https://docs.deno.com/deploy/api/runtime-node
 
 export const denoDeploy = defineNitroPreset({
   entry: "#internal/nitro/entries/deno-deploy",
   exportConditions: ["deno"],
-  node: true,
   noExternals: true,
   serveStatic: "deno",
   commands: {
@@ -11,9 +14,7 @@ export const denoDeploy = defineNitroPreset({
     deploy:
       "cd ./ && deployctl deploy --project=<project_name> server/index.ts",
   },
-  unenv: {
-    polyfill: ["#internal/nitro/polyfill/deno-env"],
-  },
+  unenv: _unenvDenoPreset,
   rollupConfig: {
     preserveEntrySignatures: false,
     external: (id) => id.startsWith("https://"),
