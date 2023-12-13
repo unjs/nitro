@@ -89,7 +89,7 @@ export function wasmImport(): Plugin {
         return null;
       }
 
-      const isIIFE = options.format === "iife" || options.format === "umd"
+      const isIIFE = options.format === "iife" || options.format === "umd";
 
       const s = new MagicString(code);
       const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
@@ -114,9 +114,9 @@ export function wasmImport(): Plugin {
           );
           continue;
         }
-        let code = `await import("${resolved}").then(r => r?.default || r);`
+        let code = `await import("${resolved}").then(r => r?.default || r);`;
         if (isIIFE) {
-          code = `undefined /* not supported */`
+          code = `undefined /* not supported */`;
         }
         s.overwrite(match.index, match.index + match[0].length, code);
       }
