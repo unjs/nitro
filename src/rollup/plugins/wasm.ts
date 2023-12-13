@@ -4,7 +4,6 @@ import { basename, normalize } from "pathe";
 import type { Plugin } from "rollup";
 import wasmBundle from "@rollup/plugin-wasm";
 import MagicString from "magic-string";
-import { walk } from "estree-walker";
 import { WasmOptions } from "../../types";
 
 export function wasm(options: WasmOptions): Plugin {
@@ -82,13 +81,16 @@ export function wasmImport(): Plugin {
         };
       }
     },
-    renderChunk(code, chunk) {
+    renderChunk(code, chunk, options) {
       if (
         !chunk.moduleIds.some((id) => id.startsWith(WASM_ID_PREFIX)) ||
         !code.includes(WASM_ID_PREFIX)
       ) {
         return null;
       }
+
+      const isIIFE = options.format === "iife" || options.format === "umd"
+
       const s = new MagicString(code);
       const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
       const resolveImport = (id) => {
@@ -112,11 +114,11 @@ export function wasmImport(): Plugin {
           );
           continue;
         }
-        s.overwrite(
-          match.index,
-          match.index + match[0].length,
-          `await import("${resolved}").then(r => r?.default || r);`
-        );
+        let code = `await import("${resolved}").then(r => r?.default || r);`
+        if (isIIFE) {
+          code = `undefined /* not supported */`
+        }
+        s.overwrite(match.index, match.index + match[0].length, code);
       }
       if (s.hasChanged()) {
         return {
