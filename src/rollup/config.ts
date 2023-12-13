@@ -70,8 +70,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     [runtimeDir, "nitro"],
     [buildServerDir, "app"],
     ["\0raw:", "raw"],
-    ["\0", "internal"],
-  ];
+    ["\0nitro-wasm:", "wasm"],
+    ["\0", "virtual"],
+  ] as const;
   function getChunkName(id: string) {
     // Known path prefixes
     for (const [dir, name] of chunkNamePrefixes) {
@@ -98,11 +99,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     );
     if (taskHandler) {
       return `chunks/tasks/[name].mjs`;
-    }
-
-    // Wasm
-    if (id.endsWith(".wasm")) {
-      return `chunks/wasm/[name].mjs`;
     }
 
     // Unknown path
