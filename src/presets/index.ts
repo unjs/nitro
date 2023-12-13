@@ -5,7 +5,7 @@ export { azure } from "./azure";
 export { baseWorker } from "./base-worker";
 export { bun } from "./bun";
 export { cloudflareModule } from "./cloudflare-module";
-export { cloudflarePages } from "./cloudflare-pages";
+export { cloudflarePages, cloudflarePagesStatic } from "./cloudflare-pages";
 export { cloudflare } from "./cloudflare";
 export { deno, denoDeploy } from "./deno-deploy";
 export { denoServer } from "./deno-server";
