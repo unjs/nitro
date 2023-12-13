@@ -71,28 +71,29 @@ export function wasmImport(): Plugin {
     },
     load(id) {
       if (!id.startsWith(WASM_ID_PREFIX)) {
-        return null;
+        return;
       }
       const asset = wasmImports.get(id);
-      if (asset) {
-        return {
-          code: `export default "${asset.id}";`,
-          map: null,
-        };
+      if (!asset) {
+        return;
       }
+      return {
+        code: `export default "${asset.id}";`,
+        map: null,
+      };
     },
     renderChunk(code, chunk, options) {
       if (
         !chunk.moduleIds.some((id) => id.startsWith(WASM_ID_PREFIX)) ||
         !code.includes(WASM_ID_PREFIX)
       ) {
-        return null;
+        return;
       }
 
       const isIIFE = options.format === "iife" || options.format === "umd";
 
       const s = new MagicString(code);
-      const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
+
       const resolveImport = (id) => {
         if (typeof id !== "string" || !id.startsWith(WASM_ID_PREFIX)) {
           return null;
@@ -106,6 +107,8 @@ export function wasmImport(): Plugin {
           (nestedLevel ? "../".repeat(nestedLevel) : "./") + asset.fileName
         );
       };
+
+      const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
       for (const match of code.matchAll(ReplaceRE)) {
         const resolved = resolveImport(match[1]);
         if (!resolved) {
