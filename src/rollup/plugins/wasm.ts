@@ -10,7 +10,7 @@ export function wasm(options: WasmOptions): Plugin {
   return options.esmImport ? wasmImport() : wasmBundle(options.rollup);
 }
 
-const WASM_ID_PREFIX = "\0nitro:wasm/";
+const WASM_ID_PREFIX = "\0nitro-wasm:";
 
 export function wasmImport(): Plugin {
   type WasmAssetInfo = {
