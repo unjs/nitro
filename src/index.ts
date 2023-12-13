@@ -9,3 +9,4 @@ export * from "./deps";
 
 export { loadOptions } from "./options";
 export type { LoadConfigOptions } from "./options";
+export { defineNitroModule } from "./module";
