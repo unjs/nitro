@@ -17,8 +17,8 @@ name = "playground"
 main = "./.output/server/index.mjs"
 workers_dev = true
 compatibility_date = "2023-12-01"
-account_id = "<(optional) your Cloudflare account id, retrievable from the Cloudflare dashboard>"
-route = "<(optional) mainly useful when you want to setup custom domains>"
+# account_id = "<(optional) your Cloudflare account id, retrievable from the Cloudflare dashboard>"
+# route = "<(optional) mainly useful when you want to setup custom domains>"
 
 rules = [
   { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
@@ -98,10 +98,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js 16.x
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       - name: Install npm dependencies
         run: npm ci
