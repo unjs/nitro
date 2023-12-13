@@ -54,6 +54,7 @@ export const netlifyEdge = defineNitroPreset({
   extends: "base-worker",
   entry: "#internal/nitro/entries/netlify-edge",
   exportConditions: ["netlify"],
+  node: true,
   output: {
     serverDir: "{{ rootDir }}/.netlify/edge-functions/server",
     publicDir: "{{ rootDir }}/dist",
