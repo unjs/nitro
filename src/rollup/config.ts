@@ -67,13 +67,17 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   const chunkNamePrefixes = [
     [nitro.options.buildDir, "build"],
-    [runtimeDir, "nitro"],
     [buildServerDir, "app"],
     ["\0raw:", "raw"],
     ["\0nitro-wasm:", "wasm"],
     ["\0", "virtual"],
   ] as const;
   function getChunkName(id: string) {
+    // Runtime
+    if (id.startsWith(runtimeDir)) {
+      return `chunks/runtime.mjs`;
+    }
+
     // Known path prefixes
     for (const [dir, name] of chunkNamePrefixes) {
       if (id.startsWith(dir)) {
