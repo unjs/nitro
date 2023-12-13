@@ -4,14 +4,13 @@ import { basename, normalize } from "pathe";
 import type { Plugin } from "rollup";
 import wasmBundle from "@rollup/plugin-wasm";
 import MagicString from "magic-string";
-import { walk } from "estree-walker";
 import { WasmOptions } from "../../types";
 
 export function wasm(options: WasmOptions): Plugin {
   return options.esmImport ? wasmImport() : wasmBundle(options.rollup);
 }
 
-const WASM_IMPORT_PREFIX = "\0nitro:wasm/";
+const WASM_ID_PREFIX = "\0nitro:wasm/";
 
 export function wasmImport(): Plugin {
   type WasmAssetInfo = {
@@ -32,6 +31,9 @@ export function wasmImport(): Plugin {
       if (!id.endsWith(".wasm")) {
         return null;
       }
+      if (id.startsWith(WASM_ID_PREFIX)) {
+        return id;
+      }
 
       // Resolve the source file real path
       const sourceFile = await this.resolve(id, importer, options).then((r) =>
@@ -45,7 +47,7 @@ export function wasmImport(): Plugin {
       let wasmAsset: WasmAssetInfo | undefined = wasmSources.get(sourceFile);
       if (!wasmAsset) {
         wasmAsset = {
-          id: WASM_IMPORT_PREFIX + sourceFile,
+          id: WASM_ID_PREFIX + sourceFile,
           fileName: "",
           source: undefined,
           hash: "",
@@ -65,27 +67,38 @@ export function wasmImport(): Plugin {
         });
       }
 
-      // Resolve as external
+      return { id: wasmAsset.id };
+    },
+    load(id) {
+      if (!id.startsWith(WASM_ID_PREFIX)) {
+        return;
+      }
+      const asset = wasmImports.get(id);
+      if (!asset) {
+        return;
+      }
       return {
-        id: wasmAsset.id,
-        external: true,
+        code: `export default "${asset.id}";`,
+        map: null,
       };
     },
-    renderChunk(code, chunk) {
-      if (!code.includes(WASM_IMPORT_PREFIX)) {
-        return null;
+    renderChunk(code, chunk, options) {
+      if (
+        !chunk.moduleIds.some((id) => id.startsWith(WASM_ID_PREFIX)) ||
+        !code.includes(WASM_ID_PREFIX)
+      ) {
+        return;
       }
+
+      const isIIFE = options.format === "iife" || options.format === "umd";
 
       const s = new MagicString(code);
 
-      const resolveImport = (specifier?: string) => {
-        if (
-          typeof specifier !== "string" ||
-          !specifier.startsWith(WASM_IMPORT_PREFIX)
-        ) {
+      const resolveImport = (id) => {
+        if (typeof id !== "string" || !id.startsWith(WASM_ID_PREFIX)) {
           return null;
         }
-        const asset = wasmImports.get(specifier);
+        const asset = wasmImports.get(id);
         if (!asset) {
           return null;
         }
@@ -95,61 +108,26 @@ export function wasmImport(): Plugin {
         );
       };
 
-      walk(this.parse(code) as any, {
-        enter(node, parent, prop, index) {
-          if (
-            // prettier-ignore
-            (node.type === "ImportDeclaration" || node.type === "ImportExpression") &&
-            "value" in node.source && typeof node.source.value === "string" &&
-            "start" in node.source && typeof node.source.start === "number" &&
-            "end" in node.source && typeof node.source.end === "number"
-          ) {
-            const resolved = resolveImport(node.source.value);
-            if (resolved) {
-              // prettier-ignore
-              s.update(node.source.start, node.source.end, JSON.stringify(resolved));
-            }
-          }
-        },
-      });
-
+      const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
+      for (const match of code.matchAll(ReplaceRE)) {
+        const resolved = resolveImport(match[1]);
+        if (!resolved) {
+          console.warn(
+            `Failed to resolve WASM import: ${JSON.stringify(match[1])}`
+          );
+          continue;
+        }
+        let code = `await import("${resolved}").then(r => r?.default || r);`;
+        if (isIIFE) {
+          code = `undefined /* not supported */`;
+        }
+        s.overwrite(match.index, match.index + match[0].length, code);
+      }
       if (s.hasChanged()) {
         return {
           code: s.toString(),
           map: s.generateMap({ includeContent: true }),
         };
-      }
-    },
-    // --- [temporary] IIFE/UMD support for cloudflare (non module targets) ---
-    renderStart(options) {
-      if (options.format === "iife" || options.format === "umd") {
-        for (const [importName, wasmAsset] of wasmImports.entries()) {
-          if (!(importName in options.globals)) {
-            const globalName = `_wasm_${wasmAsset.hash}`;
-            wasmGlobals.set(globalName, wasmAsset);
-            options.globals[importName] = globalName;
-          }
-        }
-      }
-    },
-    generateBundle(options, bundle) {
-      if (wasmGlobals.size > 0) {
-        for (const [fileName, chunkInfo] of Object.entries(bundle)) {
-          if (chunkInfo.type !== "chunk" || !chunkInfo.isEntry) {
-            continue;
-          }
-          const imports: string[] = [];
-          for (const [globalName, wasmAsset] of wasmGlobals.entries()) {
-            if (chunkInfo.code.includes(globalName)) {
-              imports.push(
-                `import ${globalName} from "${wasmAsset.fileName}";`
-              );
-            }
-          }
-          if (imports.length > 0) {
-            chunkInfo.code = imports.join("\n") + "\n" + chunkInfo.code;
-          }
-        }
       }
     },
   };

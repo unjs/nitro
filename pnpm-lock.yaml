@@ -87,9 +87,6 @@ importers:
       escape-string-regexp:
         specifier: ^5.0.0
         version: 5.0.0
-      estree-walker:
-        specifier: ^3.0.3
-        version: 3.0.3
       etag:
         specifier: ^1.8.1
         version: 1.8.1
