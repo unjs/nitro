@@ -84,7 +84,6 @@
     "dot-prop": "^8.0.2",
     "esbuild": "^0.19.9",
     "escape-string-regexp": "^5.0.0",
-    "estree-walker": "^3.0.3",
     "etag": "^1.8.1",
     "fs-extra": "^11.2.0",
     "globby": "^14.0.0",
