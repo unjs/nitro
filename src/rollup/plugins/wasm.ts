@@ -33,7 +33,7 @@ export function wasmImport(): Plugin {
         return null;
       }
       if (id.startsWith(WASM_ID_PREFIX)) {
-        return id
+        return id;
       }
 
       // Resolve the source file real path
@@ -78,13 +78,13 @@ export function wasmImport(): Plugin {
       if (asset) {
         return {
           code: `export default "${asset.id}";`,
-          map: null
-        }
+          map: null,
+        };
       }
     },
     renderChunk(code, chunk) {
       if (
-        !chunk.moduleIds.some(id => id.startsWith(WASM_ID_PREFIX)) ||
+        !chunk.moduleIds.some((id) => id.startsWith(WASM_ID_PREFIX)) ||
         !code.includes(WASM_ID_PREFIX)
       ) {
         return null;
@@ -92,10 +92,7 @@ export function wasmImport(): Plugin {
       const s = new MagicString(code);
       const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
       const resolveImport = (id) => {
-        if (
-          typeof id !== "string" ||
-          !id.startsWith(WASM_ID_PREFIX)
-        ) {
+        if (typeof id !== "string" || !id.startsWith(WASM_ID_PREFIX)) {
           return null;
         }
         const asset = wasmImports.get(id);
@@ -110,8 +107,10 @@ export function wasmImport(): Plugin {
       for (const match of code.matchAll(ReplaceRE)) {
         const resolved = resolveImport(match[1]);
         if (!resolved) {
-          console.warn(`Failed to resolve WASM import: ${JSON.stringify(match[1])}`);
-          continue
+          console.warn(
+            `Failed to resolve WASM import: ${JSON.stringify(match[1])}`
+          );
+          continue;
         }
         s.overwrite(
           match.index,
@@ -122,10 +121,10 @@ export function wasmImport(): Plugin {
       if (s.hasChanged()) {
         return {
           code: s.toString(),
-          map: s.generateMap({ includeContent: true })
+          map: s.generateMap({ includeContent: true }),
         };
       }
-    }
+    },
   };
 }
 
