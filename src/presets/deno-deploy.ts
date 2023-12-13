@@ -1,9 +1,6 @@
 import { deno as _unenvDenoPreset } from "unenv";
 import { defineNitroPreset } from "../preset";
 
-// https://docs.deno.com/runtime/manual/node/compatibility
-// https://docs.deno.com/deploy/api/runtime-node
-
 export const denoDeploy = defineNitroPreset({
   entry: "#internal/nitro/entries/deno-deploy",
   exportConditions: ["deno"],
