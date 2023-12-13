@@ -1,7 +1,12 @@
 import { pathToFileURL } from "node:url";
 import { createRequire, builtinModules } from "node:module";
 import { dirname, join, normalize, relative, resolve } from "pathe";
-import type { InputOptions, OutputOptions, Plugin } from "rollup";
+import type {
+  InputOptions,
+  OutputOptions,
+  Plugin,
+  PreRenderedChunk,
+} from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import commonjs from "@rollup/plugin-commonjs";
@@ -59,7 +64,50 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const env = unenv.env(nodePreset, builtinPreset, nitro.options.unenv);
 
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
-  const runtimeAppDir = join(runtimeDir, "app");
+
+  const chunkNamePrefixes = [
+    [nitro.options.buildDir, "build"],
+    [runtimeDir, "nitro"],
+    [buildServerDir, "app"],
+    ["\0raw:", "raw"],
+    ["\0", "internal"],
+  ];
+  function getChunkName(id: string) {
+    // Known path prefixes
+    for (const [dir, name] of chunkNamePrefixes) {
+      if (id.startsWith(dir)) {
+        return `chunks/${name}/[name].mjs`;
+      }
+    }
+
+    // Route handlers
+    const routeHandler =
+      nitro.options.handlers.find((h) => id.startsWith(h.handler as string)) ||
+      nitro.scannedHandlers.find((h) => id.startsWith(h.handler as string));
+    if (routeHandler) {
+      const path =
+        routeHandler.route
+          .replace(/:([^/]+)/g, "_$1")
+          .replace(/\/[^/]+$/g, "") || "/";
+      return `chunks/routes${path}/[name].mjs`;
+    }
+
+    // Task handlers
+    const taskHandler = Object.entries(nitro.options.tasks).find(
+      ([_, task]) => task.handler === id
+    );
+    if (taskHandler) {
+      return `chunks/tasks/[name].mjs`;
+    }
+
+    // Wasm
+    if (id.endsWith(".wasm")) {
+      return `chunks/wasm/[name].mjs`;
+    }
+
+    // Unknown path
+    return `chunks/_/[name].mjs`;
+  }
 
   type _RollupConfig = Omit<RollupConfig, "plugins"> & { plugins: Plugin[] };
 
@@ -70,32 +118,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     output: {
       dir: nitro.options.output.serverDir,
       entryFileNames: "index.mjs",
-      chunkFileNames(chunkInfo) {
-        let prefix = "";
-        const lastModule = normalize(chunkInfo.moduleIds.at(-1));
-        if (lastModule.startsWith(buildServerDir)) {
-          prefix = join("app", relative(buildServerDir, dirname(lastModule)));
-        } else if (lastModule.startsWith(runtimeAppDir)) {
-          prefix = "app";
-        } else if (lastModule.startsWith(nitro.options.buildDir)) {
-          prefix = "build";
-        } else if (lastModule.startsWith(runtimeDir)) {
-          prefix = "nitro";
-        } else if (
-          nitro.options.handlers.some((m) =>
-            lastModule.startsWith(m.handler as string)
-          )
-        ) {
-          prefix = "handlers";
-        } else if (
-          lastModule.includes("assets") ||
-          lastModule.startsWith("\0raw:")
-        ) {
-          prefix = "raw";
-        } else if (lastModule.startsWith("\0")) {
-          prefix = "rollup";
-        }
-        return join("chunks", prefix, "[name].mjs");
+      chunkFileNames(chunk) {
+        const lastModule = normalize(chunk.moduleIds.at(-1));
+        return getChunkName(lastModule);
       },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: "esm",
