@@ -48,7 +48,6 @@ export const zeabur = defineNitroPreset({
   },
 });
 
-
 export const zeaburStatic = defineNitroPreset({
   extends: "static",
   output: {
@@ -57,5 +56,5 @@ export const zeaburStatic = defineNitroPreset({
   },
   commands: {
     preview: "npx serve ./static",
-  }
+  },
 });
