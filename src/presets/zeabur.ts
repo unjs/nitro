@@ -47,3 +47,15 @@ export const zeabur = defineNitroPreset({
     },
   },
 });
+
+
+export const zeaburStatic = defineNitroPreset({
+  extends: "static",
+  output: {
+    dir: "{{ rootDir }}/.zeabur/output",
+    publicDir: "{{ output.dir }}/static",
+  },
+  commands: {
+    preview: "npx serve ./static",
+  }
+});

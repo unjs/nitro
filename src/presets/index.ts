@@ -31,4 +31,4 @@ export { iis, iisHandler, iisNode } from "./iis";
 export { _static as static } from "./static";
 export { githubPages } from "./github-pages";
 export { winterjs } from "./winterjs";
-export { zeabur } from "./zeabur";
+export { zeabur, zeaburStatic } from "./zeabur";
