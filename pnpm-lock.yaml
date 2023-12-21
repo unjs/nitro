@@ -39,9 +39,6 @@ importers:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
         version: 0.4.4(rollup@4.8.0)
-      '@rollup/plugin-wasm':
-        specifier: ^6.2.2
-        version: 6.2.2(rollup@4.8.0)
       '@rollup/pluginutils':
         specifier: ^5.1.0
         version: 5.1.0(rollup@4.8.0)
@@ -1640,19 +1637,6 @@ packages:
       serialize-javascript: 6.0.1
       smob: 1.4.1
       terser: 5.24.0
-    dev: false
-
-  /@rollup/plugin-wasm@6.2.2(rollup@4.8.0):
-    resolution: {integrity: sha512-gpC4R1G9Ni92ZIRTexqbhX7U+9estZrbhP+9SRb0DW9xpB9g7j34r+J2hqrcW/lRI7dJaU84MxZM0Rt82tqYPQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.8.0)
-      rollup: 4.8.0
     dev: false
 
   /@rollup/pluginutils@4.2.1:
