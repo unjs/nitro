@@ -56,7 +56,7 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^5.28.2"
+    "undici": "^6.2.0"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.0",
@@ -124,7 +124,7 @@
     "unstorage": "^1.10.1"
   },
   "devDependencies": {
-    "@azure/functions": "^3.5.1",
+    "@azure/functions": "^4.1.0",
     "@cloudflare/workers-types": "^4.20231218.0",
     "@types/aws-lambda": "^8.10.130",
     "@types/estree": "^1.0.5",
@@ -140,14 +140,14 @@
     "eslint-config-unjs": "^0.2.1",
     "execa": "^8.0.1",
     "expect-type": "^0.17.3",
-    "firebase-admin": "^11.11.1",
+    "firebase-admin": "^12.0.0",
     "firebase-functions": "^4.5.0",
     "get-port-please": "^3.1.1",
     "miniflare": "^2.14.1",
     "prettier": "^3.1.1",
     "typescript": "^5.3.3",
     "unbuild": "^2.0.0",
-    "undici": "^5.28.2",
+    "undici": "^6.2.0",
     "vitest": "1.1.0",
     "xml2js": "^0.6.2"
   },
