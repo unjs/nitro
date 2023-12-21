@@ -2,17 +2,12 @@ import { createHash } from "node:crypto";
 import { promises as fs, existsSync } from "node:fs";
 import { basename, normalize } from "pathe";
 import type { Plugin } from "rollup";
-import wasmBundle from "@rollup/plugin-wasm";
 import MagicString from "magic-string";
 import { WasmOptions } from "../../types";
 
-export function wasm(options: WasmOptions): Plugin {
-  return options.esmImport ? wasmImport() : wasmBundle(options.rollup);
-}
-
 const WASM_ID_PREFIX = "\0nitro-wasm:";
 
-export function wasmImport(): Plugin {
+export function wasm(opts: WasmOptions): Plugin {
   type WasmAssetInfo = {
     fileName: string;
     id: string;
@@ -22,7 +17,6 @@ export function wasmImport(): Plugin {
 
   const wasmSources = new Map<string /* sourceFile */, WasmAssetInfo>();
   const wasmImports = new Map<string /* id */, WasmAssetInfo>();
-  const wasmGlobals = new Map<string /* global id */, WasmAssetInfo>();
 
   return <Plugin>{
     name: "nitro:wasm",
@@ -80,6 +74,7 @@ export function wasmImport(): Plugin {
       return {
         code: `export default "${asset.id}";`,
         map: null,
+        syntheticNamedExports: true,
       };
     },
     renderChunk(code, chunk, options) {
@@ -89,8 +84,6 @@ export function wasmImport(): Plugin {
       ) {
         return;
       }
-
-      const isIIFE = options.format === "iife" || options.format === "umd";
 
       const s = new MagicString(code);
 
@@ -103,9 +96,12 @@ export function wasmImport(): Plugin {
           return null;
         }
         const nestedLevel = chunk.fileName.split("/").length - 1;
-        return (
-          (nestedLevel ? "../".repeat(nestedLevel) : "./") + asset.fileName
-        );
+        const relativeId =
+          (nestedLevel ? "../".repeat(nestedLevel) : "./") + asset.fileName;
+        return {
+          relativeId,
+          asset,
+        };
       };
 
       const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
@@ -117,10 +113,17 @@ export function wasmImport(): Plugin {
           );
           continue;
         }
-        let code = `await import("${resolved}").then(r => r?.default || r);`;
-        if (isIIFE) {
-          code = `undefined /* not supported */`;
+
+        let dataCode: string;
+        if (opts.esmImport) {
+          dataCode = `await import("${resolved.relativeId}").then(r => r?.default || r)`;
+        } else {
+          const base64Str = resolved.asset.source.toString("base64");
+          dataCode = `(()=>{const d=atob("${base64Str}");const s=d.length;const b=new Uint8Array(s);for(let i=0;i<s;i++) b[i]=d.charCodeAt(i);return b})()`;
         }
+
+        const code = `await WebAssembly.instantiate(${dataCode}).then(r => r?.exports || r?.instance?.exports || r);`;
+
         s.overwrite(match.index, match.index + match[0].length, code);
       }
       if (s.hasChanged()) {
