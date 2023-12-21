@@ -124,7 +124,7 @@
     "unstorage": "^1.10.1"
   },
   "devDependencies": {
-    "@azure/functions": "^4.1.0",
+    "@azure/functions": "^3",
     "@cloudflare/workers-types": "^4.20231218.0",
     "@types/aws-lambda": "^8.10.130",
     "@types/estree": "^1.0.5",
