@@ -6,7 +6,7 @@ settings:
 
 overrides:
   nitropack: link:.
-  undici: ^6.2.0
+  undici: ^5
 
 importers:
 
@@ -272,8 +272,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(typescript@5.3.3)
       undici:
-        specifier: ^6.2.0
-        version: 6.2.0
+        specifier: ^5
+        version: 5.28.2
       vitest:
         specifier: 1.1.0
         version: 1.1.0
@@ -1074,7 +1074,7 @@ packages:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
       http-cache-semantics: 4.1.1
-      undici: 6.2.0
+      undici: 5.28.2
     dev: true
 
   /@miniflare/cli-parser@2.14.1:
@@ -1097,7 +1097,7 @@ packages:
       dotenv: 10.0.0
       kleur: 4.1.5
       set-cookie-parser: 2.6.0
-      undici: 6.2.0
+      undici: 5.28.2
       urlpattern-polyfill: 4.0.3
     dev: true
 
@@ -1116,7 +1116,7 @@ packages:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
       '@miniflare/storage-memory': 2.14.1
-      undici: 6.2.0
+      undici: 5.28.2
     dev: true
 
   /@miniflare/html-rewriter@2.14.1:
@@ -1126,7 +1126,7 @@ packages:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
       html-rewriter-wasm: 0.4.1
-      undici: 6.2.0
+      undici: 5.28.2
     dev: true
 
   /@miniflare/http-server@2.14.1:
@@ -1138,7 +1138,7 @@ packages:
       '@miniflare/web-sockets': 2.14.1
       kleur: 4.1.5
       selfsigned: 2.4.1
-      undici: 6.2.0
+      undici: 5.28.2
       ws: 8.15.1
       youch: 2.2.2
     transitivePeerDependencies:
@@ -1166,7 +1166,7 @@ packages:
     dependencies:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
-      undici: 6.2.0
+      undici: 5.28.2
     dev: true
 
   /@miniflare/runner-vm@2.14.1:
@@ -1232,7 +1232,7 @@ packages:
     dependencies:
       '@miniflare/core': 2.14.1
       '@miniflare/shared': 2.14.1
-      undici: 6.2.0
+      undici: 5.28.2
       ws: 8.15.1
     transitivePeerDependencies:
       - bufferutil
@@ -5425,7 +5425,7 @@ packages:
       kleur: 4.1.5
       semiver: 1.1.0
       source-map-support: 0.5.21
-      undici: 6.2.0
+      undici: 5.28.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -5762,7 +5762,7 @@ packages:
       fast-glob: 3.3.2
       js-yaml: 4.1.0
       supports-color: 9.4.0
-      undici: 6.2.0
+      undici: 5.28.2
       yargs-parser: 21.1.1
     dev: false
 
@@ -7289,9 +7289,9 @@ packages:
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  /undici@6.2.0:
-    resolution: {integrity: sha512-bglzaehBOLMe+BfK+Gv5Vpwpgdq2skaEBbSH92tcAv37wHHHTEGu43boyfTaHB+mwSo3VjyD/8d+ytPGeqsFIg==}
-    engines: {node: '>=18.0'}
+  /undici@5.28.2:
+    resolution: {integrity: sha512-wh1pHJHnUeQV5Xa8/kyQhO7WFa8M34l026L5P/+2TYiakvGy5Rdc8jWZVyG7ieht/0WgJLEd3kcU5gKx+6GC8w==}
+    engines: {node: '>=14.0'}
     dependencies:
       '@fastify/busboy': 2.1.0
 
