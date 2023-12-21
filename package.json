@@ -68,7 +68,6 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-wasm": "^6.2.2",
     "@rollup/pluginutils": "^5.1.0",
     "@types/http-proxy": "^1.17.14",
     "@vercel/nft": "^0.26.0",
