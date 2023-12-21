@@ -104,6 +104,7 @@ export const vercelEdge = defineNitroPreset({
     },
   },
   wasm: {
+    lazy: true,
     esmImport: true,
   },
   hooks: {

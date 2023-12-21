@@ -197,8 +197,11 @@ export interface WasmOptions {
   esmImport?: boolean;
 
   /**
-   * @deprecated
+   * Import `.wasm` files using a lazily evaluated promise for compatibility
    */
+  lazy?: boolean;
+
+  /** @deprecated */
   rollup?: unknown;
 }
 

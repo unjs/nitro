@@ -119,10 +119,14 @@ export function wasm(opts: WasmOptions): Plugin {
           dataCode = `await import("${resolved.relativeId}").then(r => r?.default || r)`;
         } else {
           const base64Str = resolved.asset.source.toString("base64");
-          dataCode = `(()=>{const d=atob("${base64Str}");const s=d.length;const b=new Uint8Array(s);for(let i=0;i<s;i++) b[i]=d.charCodeAt(i);return b})()`;
+          dataCode = `(()=>{const d=atob("${base64Str}");const s=d.length;const b=new Uint8Array(s);for(let i=0;i<s;i++)b[i]=d.charCodeAt(i);return b})()`;
         }
 
-        const code = `await WebAssembly.instantiate(${dataCode}).then(r => r?.exports || r?.instance?.exports || r);`;
+        let code = `await WebAssembly.instantiate(${dataCode}).then(r => r?.exports||r?.instance?.exports || r);`;
+
+        if (opts.lazy) {
+          code = `(()=>{const e=async()=>{return ${code}};let _p;const p=()=>{if(!_p)_p=e();return _p;};return {then:cb=>p().then(cb),catch:cb=>p().catch(cb)}})()`;
+        }
 
         s.overwrite(match.index, match.index + match[0].length, code);
       }

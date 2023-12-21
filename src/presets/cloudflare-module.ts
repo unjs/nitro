@@ -19,6 +19,10 @@ export const cloudflareModule = defineNitroPreset({
       inlineDynamicImports: false,
     },
   },
+  wasm: {
+    lazy: false,
+    esmImport: true,
+  },
   hooks: {
     async compiled(nitro: Nitro) {
       await writeFile(
