@@ -13,22 +13,22 @@ describe("nitro:preset:cloudflare-pages", async () => {
     const mf = new Miniflare({
       modules: true,
       scriptPath: resolve(ctx.outDir, "_worker.js", "index.js"),
-      globals: { __env__: {} },
       compatibilityFlags: ["streams_enable_constructors"],
+      modulesRules: [{ type: "CompiledWasm", include: ["**/*.wasm"] }],
       bindings: {
         ...ctx.env,
-        ASSETS: {
-          fetch: async (request) => {
-            try {
-              const contents = await fsp.readFile(
-                join(ctx.outDir, new URL(request.url).pathname)
-              );
-              return new _Response(contents);
-            } catch {
-              return new _Response(null, { status: 404 });
-            }
-          },
-        },
+        // ASSETS: {
+        //   fetch: async (request) => {
+        //     try {
+        //       const contents = await fsp.readFile(
+        //         join(ctx.outDir, new URL(request.url).pathname)
+        //       );
+        //       return new _Response(contents);
+        //     } catch {
+        //       return new _Response(null, { status: 404 });
+        //     }
+        //   },
+        // },
       },
     });
 

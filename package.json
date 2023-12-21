@@ -143,7 +143,7 @@
     "firebase-admin": "^12.0.0",
     "firebase-functions": "^4.5.0",
     "get-port-please": "^3.1.1",
-    "miniflare": "^2.14.1",
+    "miniflare": "^3.20231030.4",
     "prettier": "^3.1.1",
     "typescript": "^5.3.3",
     "unbuild": "^2.0.0",
