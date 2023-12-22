@@ -7,7 +7,6 @@ import type { NestedHooks, Hookable } from "hookable";
 import type { ConsolaInstance, LogLevel } from "consola";
 import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
-import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions, RouterMethod } from "h3";
@@ -198,9 +197,12 @@ export interface WasmOptions {
   esmImport?: boolean;
 
   /**
-   * Options for `@rollup/plugin-wasm`, only used when `esmImport` is `false`
+   * Import `.wasm` files using a lazily evaluated promise for compatibility
    */
-  rollup?: RollupWasmOptions;
+  lazy?: boolean;
+
+  /** @deprecated */
+  rollup?: unknown;
 }
 
 export interface NitroFrameworkInfo {

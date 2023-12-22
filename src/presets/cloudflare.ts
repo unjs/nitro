@@ -12,7 +12,7 @@ export const cloudflare = defineNitroPreset({
     deploy: "npx wrangler deploy",
   },
   wasm: {
-    esmImport: true,
+    lazy: true,
   },
   hooks: {
     async compiled(nitro: Nitro) {

@@ -29,6 +29,10 @@ export const cloudflarePages = defineNitroPreset({
     // https://github.com/unjs/nitro/pull/933
     _mime: "mime/index.js",
   },
+  wasm: {
+    lazy: false,
+    esmImport: true,
+  },
   rollupConfig: {
     output: {
       entryFileNames: "index.js",
