@@ -3,10 +3,7 @@ import { defineNitroConfig } from "../../src/config";
 
 export default defineNitroConfig({
   compressPublicAssets: true,
-  modules: [
-    '@fixture/nitro-module',
-    './user-modules/add-route',
-  ],
+  modules: ["@fixture/nitro-module", "./user-modules/add-route"],
   imports: {
     presets: [
       {
