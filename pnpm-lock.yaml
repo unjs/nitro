@@ -335,6 +335,8 @@ importers:
         specifier: link:../..
         version: link:../..
 
+  test/fixture: {}
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
