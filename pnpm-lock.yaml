@@ -6,7 +6,7 @@ settings:
 
 overrides:
   nitropack: link:.
-  undici: ^5
+  undici: ^5.28.2
 
 importers:
 
@@ -133,8 +133,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       node-fetch-native:
-        specifier: ^1.4.1
-        version: 1.4.1
+        specifier: ^1.6.1
+        version: 1.6.1
       ofetch:
         specifier: ^1.3.3
         version: 1.3.3
@@ -178,8 +178,8 @@ importers:
         specifier: ^1.15.0
         version: 1.15.0
       std-env:
-        specifier: ^3.6.0
-        version: 3.6.0
+        specifier: ^3.7.0
+        version: 3.7.0
       ufo:
         specifier: ^1.3.2
         version: 1.3.2
@@ -193,14 +193,14 @@ importers:
         specifier: ^1.8.0
         version: 1.8.0
       unimport:
-        specifier: ^3.6.1
-        version: 3.6.1(rollup@4.9.1)
+        specifier: ^3.7.0
+        version: 3.7.0(rollup@4.9.1)
       unstorage:
         specifier: ^1.10.1
         version: 1.10.1
     devDependencies:
       '@azure/functions':
-        specifier: ^3
+        specifier: ^3.5.1
         version: 3.5.1
       '@cloudflare/workers-types':
         specifier: ^4.20231218.0
@@ -269,7 +269,7 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(typescript@5.3.3)
       undici:
-        specifier: ^5
+        specifier: ^5.28.2
         version: 5.28.2
       vitest:
         specifier: 1.1.0
@@ -2161,7 +2161,7 @@ packages:
       magic-string: 0.30.5
       magicast: 0.3.2
       picocolors: 1.0.0
-      std-env: 3.6.0
+      std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
       vitest: 1.1.0
@@ -2713,14 +2713,14 @@ packages:
       convert-gitmoji: 0.1.3
       execa: 8.0.1
       mri: 1.2.0
-      node-fetch-native: 1.4.1
+      node-fetch-native: 1.6.1
       ofetch: 1.3.3
       open: 9.1.0
       pathe: 1.1.1
       pkg-types: 1.0.3
       scule: 1.1.1
       semver: 7.5.4
-      std-env: 3.6.0
+      std-env: 3.7.0
       yaml: 2.3.4
     transitivePeerDependencies:
       - supports-color
@@ -4298,7 +4298,7 @@ packages:
       defu: 6.1.3
       https-proxy-agent: 7.0.2
       mri: 1.2.0
-      node-fetch-native: 1.4.1
+      node-fetch-native: 1.6.1
       pathe: 1.1.1
       tar: 6.2.0
     transitivePeerDependencies:
@@ -5134,7 +5134,7 @@ packages:
       mlly: 1.4.2
       node-forge: 1.3.1
       pathe: 1.1.1
-      std-env: 3.6.0
+      std-env: 3.7.0
       ufo: 1.3.2
       untun: 0.1.3
       uqr: 0.1.2
@@ -5538,8 +5538,8 @@ packages:
     resolution: {integrity: sha512-vgbBJTS4m5/KkE16t5Ly0WW9hz46swAstv0hYYwMtbG7AznRhNyfLRe8HZAiWIpcHzoO7HxhLuBQj9rJ/Ho0ZA==}
     dev: false
 
-  /node-fetch-native@1.4.1:
-    resolution: {integrity: sha512-NsXBU0UgBxo2rQLOeWNZqS3fvflWePMECr8CoSWoSTqCqGbVVsvl9vZu1HfQicYN0g5piV9Gh8RTEvo/uP752w==}
+  /node-fetch-native@1.6.1:
+    resolution: {integrity: sha512-bW9T/uJDPAJB2YNYEpWzE54U5O3MQidXsOyTfnbKYtTtFexRvGzb1waphBN4ZwP6EcIvYYEOwW0b72BpAqydTw==}
 
   /node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -5689,7 +5689,7 @@ packages:
     resolution: {integrity: sha512-s1ZCMmQWXy4b5K/TW9i/DtiN8Ku+xCiHcjQ6/J/nDdssirrQNOoB165Zu8EqLMA2lln1JUth9a0aW9Ap2ctrUg==}
     dependencies:
       destr: 2.0.2
-      node-fetch-native: 1.4.1
+      node-fetch-native: 1.6.1
       ufo: 1.3.2
 
   /ohash@1.1.3:
@@ -6812,8 +6812,8 @@ packages:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
 
-  /std-env@3.6.0:
-    resolution: {integrity: sha512-aFZ19IgVmhdB2uX599ve2kE6BIE3YMnQ6Gp6BURhW/oIzpXGKr878TQfAQZn1+i0Flcc/UKUy1gOlcfaUBCryg==}
+  /std-env@3.7.0:
+    resolution: {integrity: sha512-JPbdCEQLj1w5GilpiHAx3qJvFndqybBysA3qUOnznweH4QbNYUsW/ea8QzSrnh0vNsezMMw5bcVool8lM0gwzg==}
 
   /stream-events@1.0.5:
     resolution: {integrity: sha512-E1GUzBSgvct8Jsb3v2X15pjzN1tYebtbLaMg+eBOUOAxgbLoSbT2NS91ckc5lJD1KfLjId+jXJRgo0qnV5Nerg==}
@@ -7285,7 +7285,7 @@ packages:
       consola: 3.2.3
       defu: 6.1.3
       mime: 3.0.0
-      node-fetch-native: 1.4.1
+      node-fetch-native: 1.6.1
       pathe: 1.1.1
     dev: false
 
@@ -7294,11 +7294,13 @@ packages:
     engines: {node: '>=18'}
     dev: false
 
-  /unimport@3.6.1(rollup@4.9.1):
-    resolution: {integrity: sha512-zKzbp8AQ+l8QK3XrONtUBdgBbMI8TkGh8hBYF77ZkVqMLLIAHwGSwJRFolPQMBx/5pezeRKvmu2gzlqnxRZeqQ==}
+  /unimport@3.7.0(rollup@4.9.1):
+    resolution: {integrity: sha512-vesCVjU3CYk41UZNY10kwii7l77vcP4IxPbBMgpve+vean7g7zJWrcCqSoG7u0eB9LZ5bM5BP+3vr3W2uYk0Yg==}
     dependencies:
       '@rollup/pluginutils': 5.1.0(rollup@4.9.1)
+      acorn: 8.11.2
       escape-string-regexp: 5.0.0
+      estree-walker: 3.0.3
       fast-glob: 3.3.2
       local-pkg: 0.5.0
       magic-string: 0.30.5
@@ -7379,7 +7381,7 @@ packages:
       listhen: 1.5.5
       lru-cache: 10.1.0
       mri: 1.2.0
-      node-fetch-native: 1.4.1
+      node-fetch-native: 1.6.1
       ofetch: 1.3.3
       ufo: 1.3.2
     transitivePeerDependencies:
@@ -7586,7 +7588,7 @@ packages:
       magic-string: 0.30.5
       pathe: 1.1.1
       picocolors: 1.0.0
-      std-env: 3.6.0
+      std-env: 3.7.0
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
