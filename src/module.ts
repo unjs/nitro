@@ -21,7 +21,7 @@ export async function resolveNitroModule(
       globalThis.defineNitroModule || defineNitroModule;
 
     const _jiti = jiti(nitroOptions.rootDir, { interopDefault: true, esmResolve: true });
-    const _modPath = _jiti.resolve(await resolvePath(mod, {url: nitroOptions.rootDir}))
+    const _modPath = _jiti.resolve(await resolvePath(mod, {url: nitroOptions.rootDir, extensions: ['.mjs', '.mts', '.js', '.ts', '.cjs']}))
     _url = _modPath;
     mod = _jiti(_modPath) as NitroModule;
   }
