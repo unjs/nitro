@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { promises as fs } from "node:fs";
+import { promises as fs, existsSync } from "node:fs";
 import { basename } from "pathe";
 import type { Plugin } from "rollup";
 import MagicString from "magic-string";
@@ -18,7 +18,7 @@ export function wasm(opts: WasmOptions): Plugin {
 
   return <Plugin>{
     name: "nitro:wasm",
-    resolveId(id) {
+    async resolveId(id, importer) {
       if (id === WASM_HELPERS_ID) {
         return id;
       }
@@ -28,18 +28,30 @@ export function wasm(opts: WasmOptions): Plugin {
           external: true,
         };
       }
+      if (id.endsWith(".wasm")) {
+        const r = await this.resolve(id, importer, { skipSelf: true });
+        if (r?.id && r?.id !== id) {
+          return {
+            id: r.id.startsWith("file://") ? r.id.slice(7) : r.id,
+            external: false,
+            moduleSideEffects: false,
+            syntheticNamedExports: false,
+          };
+        }
+      }
     },
     async load(id) {
       if (id === WASM_HELPERS_ID) {
-        return `/* TODO */`;
+        return "";
       }
-      if (!id.endsWith(".wasm")) {
+      if (!id.endsWith(".wasm") || !existsSync(id)) {
         return null;
       }
       const source = await fs.readFile(id);
       const name = `wasm/${basename(id, ".wasm")}-${sha1(source)}.wasm`;
       assets[id] = <WasmAsset>{ name, source };
-      return `export default "${name}";`;
+      // TODO: Can we parse wasm to extract exports and avoid syntheticNamedExports?
+      return `export default "WASM";`; // dummy
     },
     transform(_code, id) {
       if (!id.endsWith(".wasm")) {
