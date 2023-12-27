@@ -5,6 +5,9 @@ export const winterjs = defineNitroPreset({
   entry: "#internal/nitro/entries/winterjs",
   minify: false,
   serveStatic: "inline",
+  wasm: {
+    lazy: true,
+  },
   commands: {
     preview:
       "wasmer run wasmer/winterjs --forward-host-env --net --mapdir app:./ app/server/index.mjs",

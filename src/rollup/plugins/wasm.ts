@@ -1,110 +1,113 @@
 import { createHash } from "node:crypto";
 import { promises as fs, existsSync } from "node:fs";
-import { basename, normalize } from "pathe";
+import { basename } from "pathe";
 import type { Plugin } from "rollup";
 import MagicString from "magic-string";
 import { WasmOptions } from "../../types";
 
-const WASM_ID_PREFIX = "\0nitro-wasm:";
+const WASM_EXTERNAL_ID = "\0nitro:wasm:external:";
+const WASM_HELPERS_ID = "\0nitro:wasm:helpers";
 
 export function wasm(opts: WasmOptions): Plugin {
-  type WasmAssetInfo = {
-    fileName: string;
-    id: string;
+  type WasmAsset = {
+    name: string;
     source: Buffer;
-    hash: string;
   };
 
-  const wasmSources = new Map<string /* sourceFile */, WasmAssetInfo>();
-  const wasmImports = new Map<string /* id */, WasmAssetInfo>();
+  const assets: Record<string, WasmAsset> = Object.create(null);
 
   return <Plugin>{
     name: "nitro:wasm",
-    async resolveId(id, importer, options) {
-      // Only handle .wasm imports
+    async resolveId(id, importer) {
+      if (id.startsWith(WASM_EXTERNAL_ID)) {
+        return {
+          id,
+          external: true,
+        };
+      }
+      if (id.endsWith(".wasm")) {
+        const r = await this.resolve(id, importer, { skipSelf: true });
+        if (r?.id && r?.id !== id) {
+          return {
+            id: r.id.startsWith("file://") ? r.id.slice(7) : r.id,
+            external: false,
+            moduleSideEffects: false,
+            syntheticNamedExports: false,
+          };
+        }
+      }
+    },
+    async load(id) {
+      if (!id.endsWith(".wasm") || !existsSync(id)) {
+        return null;
+      }
+      const source = await fs.readFile(id);
+      const name = `wasm/${basename(id, ".wasm")}-${sha1(source)}.wasm`;
+      assets[id] = <WasmAsset>{ name, source };
+      // TODO: Can we parse wasm to extract exports and avoid syntheticNamedExports?
+      return `export default "WASM";`; // dummy
+    },
+    transform(_code, id) {
       if (!id.endsWith(".wasm")) {
         return null;
       }
-      if (id.startsWith(WASM_ID_PREFIX)) {
-        return id;
-      }
-
-      // Resolve the source file real path
-      const sourceFile = await this.resolve(id, importer, options).then((r) =>
-        r?.id ? normalize(r.id) : null
-      );
-      if (!sourceFile || !existsSync(sourceFile)) {
+      const asset = assets[id];
+      if (!asset) {
         return null;
       }
-
-      // Read (cached) Asset
-      let wasmAsset: WasmAssetInfo | undefined = wasmSources.get(sourceFile);
-      if (!wasmAsset) {
-        wasmAsset = {
-          id: WASM_ID_PREFIX + sourceFile,
-          fileName: "",
-          source: undefined,
-          hash: "",
-        };
-        wasmSources.set(sourceFile, wasmAsset);
-        wasmImports.set(wasmAsset.id, wasmAsset);
-
-        wasmAsset.source = await fs.readFile(sourceFile);
-        wasmAsset.hash = sha1(wasmAsset.source);
-        const _baseName = basename(sourceFile, ".wasm");
-        wasmAsset.fileName = `wasm/${_baseName}-${wasmAsset.hash}.wasm`;
-
-        await this.emitFile({
-          type: "asset",
-          source: wasmAsset.source,
-          fileName: wasmAsset.fileName,
-        });
+      let _dataStr: string;
+      if (opts.esmImport) {
+        _dataStr = `await import("${WASM_EXTERNAL_ID}${id}").then(r => r?.default || r)`;
+      } else {
+        const base64Str = asset.source.toString("base64");
+        _dataStr = `(()=>{const d=atob("${base64Str}");const s=d.length;const b=new Uint8Array(s);for(let i=0;i<s;i++)b[i]=d.charCodeAt(i);return b})()`;
       }
-
-      return { id: wasmAsset.id };
-    },
-    load(id) {
-      if (!id.startsWith(WASM_ID_PREFIX)) {
-        return;
-      }
-      const asset = wasmImports.get(id);
-      if (!asset) {
-        return;
+      let _str = `await WebAssembly.instantiate(${_dataStr}).then(r => r?.exports||r?.instance?.exports || r);`;
+      if (opts.lazy) {
+        _str = `(()=>{const e=async()=>{return ${_str}};let _p;const p=()=>{if(!_p)_p=e();return _p;};return {then:cb=>p().then(cb),catch:cb=>p().catch(cb)}})()`;
       }
       return {
-        code: `export default "${asset.id}";`,
-        map: null,
+        code: `export default ${_str};`,
+        map: { mappings: "" },
         syntheticNamedExports: true,
       };
     },
-    renderChunk(code, chunk, options) {
+    generateBundle() {
+      if (opts.esmImport) {
+        for (const asset of Object.values(assets)) {
+          this.emitFile({
+            type: "asset",
+            source: asset.source,
+            fileName: asset.name,
+          });
+        }
+      }
+    },
+    renderChunk(code, chunk) {
       if (
-        !chunk.moduleIds.some((id) => id.startsWith(WASM_ID_PREFIX)) ||
-        !code.includes(WASM_ID_PREFIX)
+        !chunk.moduleIds.some((id) => id.endsWith(".wasm")) ||
+        !code.includes(WASM_EXTERNAL_ID)
       ) {
         return;
       }
-
       const s = new MagicString(code);
-
       const resolveImport = (id) => {
-        if (typeof id !== "string" || !id.startsWith(WASM_ID_PREFIX)) {
+        if (typeof id !== "string") {
           return null;
         }
-        const asset = wasmImports.get(id);
+        const asset = assets[id];
         if (!asset) {
           return null;
         }
         const nestedLevel = chunk.fileName.split("/").length - 1;
         const relativeId =
-          (nestedLevel ? "../".repeat(nestedLevel) : "./") + asset.fileName;
+          (nestedLevel ? "../".repeat(nestedLevel) : "./") + asset.name;
         return {
           relativeId,
           asset,
         };
       };
-
-      const ReplaceRE = new RegExp(`"(${WASM_ID_PREFIX}[^"]+)"`, "g");
+      const ReplaceRE = new RegExp(`${WASM_EXTERNAL_ID}([^"']+)`, "g");
       for (const match of code.matchAll(ReplaceRE)) {
         const resolved = resolveImport(match[1]);
         if (!resolved) {
@@ -113,22 +116,11 @@ export function wasm(opts: WasmOptions): Plugin {
           );
           continue;
         }
-
-        let dataCode: string;
-        if (opts.esmImport) {
-          dataCode = `await import("${resolved.relativeId}").then(r => r?.default || r)`;
-        } else {
-          const base64Str = resolved.asset.source.toString("base64");
-          dataCode = `(()=>{const d=atob("${base64Str}");const s=d.length;const b=new Uint8Array(s);for(let i=0;i<s;i++)b[i]=d.charCodeAt(i);return b})()`;
-        }
-
-        let code = `await WebAssembly.instantiate(${dataCode}).then(r => r?.exports||r?.instance?.exports || r);`;
-
-        if (opts.lazy) {
-          code = `(()=>{const e=async()=>{return ${code}};let _p;const p=()=>{if(!_p)_p=e();return _p;};return {then:cb=>p().then(cb),catch:cb=>p().catch(cb)}})()`;
-        }
-
-        s.overwrite(match.index, match.index + match[0].length, code);
+        s.overwrite(
+          match.index,
+          match.index + match[0].length,
+          resolved.relativeId
+        );
       }
       if (s.hasChanged()) {
         return {

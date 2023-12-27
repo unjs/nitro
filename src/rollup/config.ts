@@ -413,6 +413,9 @@ export const plugins = [
             "~~",
             "@@/",
             "virtual:",
+            ...(nitro.options.experimental.wasm
+              ? [(id) => id.endsWith(".wasm")]
+              : []),
             runtimeDir,
             nitro.options.srcDir,
             ...nitro.options.handlers
