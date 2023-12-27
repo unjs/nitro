@@ -21,6 +21,10 @@ If you want to add custom redirects, you can do so with [`routeRules`](/config#r
 
 For deployment, just push to your git repository [as you would normally do for Netlify](https://docs.netlify.com/configure-builds/get-started/).
 
+::alert{type="warning"}
+Do not forget to update the publish directory to `dist`. By default, Netlify will use `.nuxt/dist` which is not correct.
+::
+
 ## Netlify Edge Functions
 
 **Preset:** `netlify_edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
@@ -29,9 +33,12 @@ Netlify Edge Functions use Deno and the powerful V8 JavaScript runtime to let yo
 
 Nitro output can directly run the server at the edge. Closer to your users.
 
+::alert{type="warning"}
+Do not forget to update the publish directory to `dist`. By default, Netlify will use `.nuxt/dist` which is not correct.
+::
+
 ## On-demand Builders
 
 **Preset:** `netlify_builder` ([switch to this preset](/deploy/#changing-the-deployment-preset))
 
 On-demand Builders are serverless functions used to generate web content as needed that’s automatically cached on Netlify’s Edge CDN. They enable you to build pages for your site when a user visits them for the first time and then cache them at the edge for subsequent visits.  ([Read More](https://docs.netlify.com/configure-builds/on-demand-builders/))
-
