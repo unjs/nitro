@@ -1,6 +1,5 @@
 import jiti from "jiti";
 import type { Nitro, NitroModule, NitroModuleInput } from "./types";
-import { normalizeAliases, resolveAlias } from "pathe/utils";
 
 export function defineNitroModule(def: NitroModule) {
   return def;
