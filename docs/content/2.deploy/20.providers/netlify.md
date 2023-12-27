@@ -21,8 +21,8 @@ If you want to add custom redirects, you can do so with [`routeRules`](/config#r
 
 For deployment, just push to your git repository [as you would normally do for Netlify](https://docs.netlify.com/configure-builds/get-started/).
 
-::alert{type="warning"}
-Do not forget to update the publish directory to `dist`. By default, Netlify will use `.nuxt/dist` which is not correct.
+::alert{type="note"}
+Make sure the publish directory is set to `dist` when creating a new project.
 ::
 
 ## Netlify Edge Functions
@@ -33,8 +33,8 @@ Netlify Edge Functions use Deno and the powerful V8 JavaScript runtime to let yo
 
 Nitro output can directly run the server at the edge. Closer to your users.
 
-::alert{type="warning"}
-Do not forget to update the publish directory to `dist`. By default, Netlify will use `.nuxt/dist` which is not correct.
+::alert{type="note"}
+Make sure the publish directory is set to `dist` when creating a new project.
 ::
 
 ## On-demand Builders
