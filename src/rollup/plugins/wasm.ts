@@ -19,9 +19,6 @@ export function wasm(opts: WasmOptions): Plugin {
   return <Plugin>{
     name: "nitro:wasm",
     async resolveId(id, importer) {
-      if (id === WASM_HELPERS_ID) {
-        return id;
-      }
       if (id.startsWith(WASM_EXTERNAL_ID)) {
         return {
           id,
@@ -41,9 +38,6 @@ export function wasm(opts: WasmOptions): Plugin {
       }
     },
     async load(id) {
-      if (id === WASM_HELPERS_ID) {
-        return "";
-      }
       if (!id.endsWith(".wasm") || !existsSync(id)) {
         return null;
       }
