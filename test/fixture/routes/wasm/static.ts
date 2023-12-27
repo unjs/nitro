@@ -1,4 +1,4 @@
-import _mod from "~/wasm/sum.wasm";
+import _mod from "@fixture/wasm/sum.wasm";
 
 export default eventHandler(async () => {
   const { sum } = await _mod;

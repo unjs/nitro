@@ -9,8 +9,7 @@
     "paths": {
       "nitropack": ["../../src/index"],
       "#internal/nitro": ["../../src/runtime/index"],
-      "#internal/nitro/*": ["../../src/runtime/*"],
-      "~/wasm/sum.wasm": ["./wasm/sum.d.ts"]
+      "#internal/nitro/*": ["../../src/runtime/*"]
     }
   }
 }
