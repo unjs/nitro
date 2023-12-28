@@ -631,13 +631,16 @@ export function testNitro(
   });
 
   describe("wasm", () => {
-    it.skipIf(ctx.isWorker || ctx.preset === "deno-server")(
-      "dynamic import wasm",
-      async () => {
-        expect((await callHandler({ url: "/wasm/dynamic" })).data).toBe(
-          "2+3=5"
-        );
-      }
-    );
+    it("dynamic import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
+
+    it("static import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/static-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
   });
 }

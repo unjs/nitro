@@ -13,6 +13,7 @@ describe("nitro:preset:cloudflare-module", async () => {
     const mf = new Miniflare({
       modules: true,
       scriptPath: resolve(ctx.outDir, "server/index.mjs"),
+      modulesRules: [{ type: "CompiledWasm", include: ["**/*.wasm"] }],
       sitePath: resolve(ctx.outDir, "public"),
       compatibilityFlags: ["streams_enable_constructors"],
       globals: { __env__: {} },
