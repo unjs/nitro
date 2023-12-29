@@ -16,7 +16,7 @@ describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
     });
     runtime.evaluate(
       initialCode.replace(
-        "export{handleEvent as default}",
+        /export ?{ ?handleEvent as default ?}/,
         "globalThis.handleEvent = handleEvent"
       )
     );
