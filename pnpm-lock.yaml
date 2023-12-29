@@ -199,8 +199,8 @@ importers:
         specifier: ^1.10.1
         version: 1.10.1
       unwasm:
-        specifier: ^0.3.1
-        version: 0.3.1
+        specifier: ^0.3.2
+        version: 0.3.2
     devDependencies:
       '@azure/functions':
         specifier: ^3.5.1
@@ -7491,8 +7491,8 @@ packages:
       - supports-color
     dev: true
 
-  /unwasm@0.3.1:
-    resolution: {integrity: sha512-LXx3TUDLutyHj1PX65W+6blrSZi8eBE8d7OxzAHzsTQgu2FlQbtmsRhJL2VsEYDQ5OkArcILyi8O/EDopYKCZA==}
+  /unwasm@0.3.2:
+    resolution: {integrity: sha512-GGgW8Fo+16UBklAQx+n3Vze2E8xr8jkOPXzXVh1Zdfkre9yrgFacfChQoK5fdZt5XtpS+4I/xmLL0ujiOIkU5w==}
     dependencies:
       '@webassemblyjs/wasm-parser': 1.11.6
       magic-string: 0.30.5
