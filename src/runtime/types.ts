@@ -1,3 +1,4 @@
+import type { Server } from "node:http";
 import type { H3Event, AppOptions } from "h3";
 import type { RenderResponse } from "./renderer";
 
@@ -23,6 +24,7 @@ export type CaptureError = (
 
 export interface NitroRuntimeHooks {
   close: () => void;
+  server: (server: Server) => void;
   error: CaptureError;
 
   request: NonNullable<AppOptions["onRequest"]>;
