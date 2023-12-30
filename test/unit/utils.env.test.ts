@@ -38,4 +38,54 @@ describe("env utils", () => {
       });
     }
   });
+
+  describe("envExpansion", () => {
+    const tests = [
+      // envExpansion is false by default
+      {
+        config: { mail: "{{MAIL_HOST}}:3366" },
+        envOptions: {},
+        env: { MAIL_HOST: "http://localhost" },
+        expected: { mail: "{{MAIL_HOST}}:3366" },
+      },
+      // Fallback to undefined
+      {
+        config: { mail: "{{MAIL_HOST}}:3366" },
+        envOptions: { envExpansion: true },
+        env: {},
+        expected: { mail: "undefined:3366" },
+      },
+      // Base usage
+      {
+        config: { mail: "{{MAIL_HOST}}" },
+        envOptions: { envExpansion: true },
+        env: { MAIL_HOST: "http://localhost" },
+        expected: { mail: "http://localhost" },
+      },
+      // With multiple envs
+      {
+        config: { mail: "{{MAIL_SCHEME}}://{{MAIL_HOST}}:{{MAIL_PORT}}" },
+        envOptions: { envExpansion: true },
+        env: { MAIL_SCHEME: "http", MAIL_HOST: "localhost", MAIL_PORT: "3366" },
+        expected: { mail: "http://localhost:3366" },
+      },
+    ];
+    for (const test of tests) {
+      it(`Config: ${JSON.stringify(test.config)} ${JSON.stringify(test.envOptions)} Env: { ${Object.entries(
+        test.env
+      )
+        .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
+        .join(" ")} }`, () => {
+        for (const key in test.env) {
+          process.env[key] = test.env[key];
+        }
+        expect(applyEnv(test.config, test.envOptions)).toEqual(
+          test.expected
+        );
+        for (const key in test.env) {
+          delete process.env[key];
+        }
+      });
+    }
+  })
 });
