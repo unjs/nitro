@@ -114,6 +114,7 @@ const COMPRESSIBLE_MIMES_RE = new Set([
   "font/opentype",
   "font/otf",
   "font/ttf",
+  "font/woff2",
   "image/svg+xml",
   "text/css",
   "text/csv",
