@@ -1,6 +1,7 @@
 import { Worker } from "node:worker_threads";
 import { existsSync, accessSync, promises as fsp } from "node:fs";
 import { writeFile } from "node:fs/promises";
+import { IncomingMessage } from "node:http";
 import { debounce } from "perfect-debounce";
 import {
   App,
@@ -192,7 +193,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
 
   // Main worker proxy
   const proxy = createProxy();
-  proxy.proxy.on("proxyReq", (proxyReq, req) => {
+  proxy.proxy.on("proxyReq", (proxyReq, req: IncomingMessage) => {
     const proxyRequestHeaders = proxyReq.getHeaders();
     if (req.socket.remoteAddress && !proxyRequestHeaders["x-forwarded-for"]) {
       proxyReq.setHeader("X-Forwarded-For", req.socket.remoteAddress);
@@ -200,8 +201,10 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     if (req.socket.remotePort && !proxyRequestHeaders["x-forwarded-port"]) {
       proxyReq.setHeader("X-Forwarded-Port", req.socket.remotePort);
     }
-    if (req.socket.remoteFamily && !proxyRequestHeaders["x-forwarded-proto"]) {
-      proxyReq.setHeader("X-Forwarded-Proto", req.socket.remoteFamily);
+    if (!proxyRequestHeaders["x-forwarded-proto"]) {
+      const url = new URL(req.url);
+      const forwardedProto = url.protocol === "https:" ? "https" : "http";
+      proxyReq.setHeader("x-forwarded-proto", forwardedProto);
     }
   });
 
