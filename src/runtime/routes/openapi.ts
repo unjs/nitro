@@ -11,7 +11,7 @@ import { useRuntimeConfig } from "#internal/nitro";
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
-  const base = useRuntimeConfig()?.app?.baseURL
+  const base = useRuntimeConfig()?.app?.baseURL;
 
   return <OpenAPI3>{
     openapi: "3.0.0",
