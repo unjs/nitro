@@ -1,9 +1,11 @@
 import destr from "destr";
 import { snakeCase } from "scule";
+import { klona } from "klona";
 
 export type EnvOptions = {
   prefix?: string;
   altPrefix?: string;
+  envExpansion?: boolean;
 };
 
 export function getEnv(key: string, opts: EnvOptions) {
@@ -40,6 +42,18 @@ export function applyEnv(obj: object, opts: EnvOptions, parentKey = "") {
     } else {
       obj[key] = envValue ?? obj[key];
     }
+    // Experimental env expansion
+    if (opts.envExpansion && typeof obj[key] === "string") {
+      obj[key] = _expandFromEnv(obj[key]);
+    }
   }
   return obj;
+}
+
+const envExpandRx = /{{(.*?)}}/g;
+
+function _expandFromEnv(value: string) {
+  return value.replace(envExpandRx, (match, key) => {
+    return process.env[key] || match;
+  });
 }

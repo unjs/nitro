@@ -41,6 +41,7 @@ export interface NitroRuntimeConfig {
   app: NitroRuntimeConfigApp;
   nitro: {
     envPrefix?: string;
+    envExpansion?: boolean;
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
@@ -284,6 +285,12 @@ export interface NitroOptions extends PresetOptions {
      * Backward compatibility support for Node fetch (required for Node < 18)
      */
     nodeFetchCompat?: boolean;
+    /**
+     * Allow env expansion in runtime config
+     *
+     * @see https://github.com/unjs/nitro/pull/2043
+     */
+    envExpansion?: boolean;
   };
   future: {
     nativeSWR: boolean;

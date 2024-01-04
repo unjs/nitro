@@ -39,6 +39,7 @@ export default defineNitroConfig({
   },
   runtimeConfig: {
     dynamic: "initial",
+    url: "https://{{APP_DOMAIN}}",
   },
   appConfigFiles: ["~/server.config.ts"],
   publicAssets: [
@@ -88,6 +89,7 @@ export default defineNitroConfig({
     openAPI: true,
     asyncContext: true,
     wasm: true,
+    envExpansion: true,
   },
   cloudflare: {
     pages: {

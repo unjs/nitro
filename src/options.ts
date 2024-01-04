@@ -426,7 +426,9 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     app: {
       baseURL: config.baseURL,
     },
-    nitro: {},
+    nitro: {
+      envExpansion: config.experimental.envExpansion,
+    },
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
   return runtimeConfig as NitroRuntimeConfig;
