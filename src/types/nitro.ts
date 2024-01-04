@@ -285,6 +285,10 @@ export interface NitroOptions extends PresetOptions {
      * Backward compatibility support for Node fetch (required for Node < 18)
      */
     nodeFetchCompat?: boolean;
+    /**
+     * Allow env expansion in runtime config
+     */
+    envExpansion?: boolean;
   };
   future: {
     nativeSWR: boolean;
