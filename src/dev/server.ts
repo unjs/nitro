@@ -1,6 +1,7 @@
 import { Worker } from "node:worker_threads";
 import { existsSync, accessSync, promises as fsp } from "node:fs";
 import { writeFile } from "node:fs/promises";
+import { TLSSocket } from "node:tls";
 import { debounce } from "perfect-debounce";
 import {
   App,
@@ -193,15 +194,19 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   // Main worker proxy
   const proxy = createProxy();
   proxy.proxy.on("proxyReq", (proxyReq, req) => {
-    const proxyRequestHeaders = proxyReq.getHeaders();
-    if (req.socket.remoteAddress && !proxyRequestHeaders["x-forwarded-for"]) {
-      proxyReq.setHeader("X-Forwarded-For", req.socket.remoteAddress);
+    // TODO: Use httpxy to set these headers
+    if (!proxyReq.hasHeader("x-forwarded-for")) {
+      proxyReq.appendHeader("x-forwarded-for", req.socket.remoteAddress);
     }
-    if (req.socket.remotePort && !proxyRequestHeaders["x-forwarded-port"]) {
-      proxyReq.setHeader("X-Forwarded-Port", req.socket.remotePort);
+    if (!proxyReq.hasHeader("x-forwarded-port")) {
+      const localPort = req?.socket?.localPort;
+      if (localPort) {
+        proxyReq.setHeader("x-forwarded-port", req.socket.localPort);
+      }
     }
-    if (req.socket.remoteFamily && !proxyRequestHeaders["x-forwarded-proto"]) {
-      proxyReq.setHeader("X-Forwarded-Proto", req.socket.remoteFamily);
+    if (!proxyReq.hasHeader("x-forwarded-Proto")) {
+      const encrypted = (req?.connection as TLSSocket)?.encrypted;
+      proxyReq.setHeader("x-forwarded-proto", encrypted ? "https" : "http");
     }
   });
 
