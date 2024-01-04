@@ -10,17 +10,15 @@ Deploy Nitro apps to CloudFlare.
 **Note:** This preset uses [service-worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
 ::
 
-Login to your [Cloudflare Workers](https://workers.cloudflare.com) account and obtain your `account_id` from the sidebar.
-
 Create a `wrangler.toml` in your root directory:
 
 ```ini
 name = "playground"
 main = "./.output/server/index.mjs"
 workers_dev = true
-compatibility_date = "2022-09-10"
-account_id = "<the account_id you obtained (optional)>"
-route = "<mainly useful when you want to setup custom domains (optional too)>"
+compatibility_date = "2023-12-01"
+# account_id = "<(optional) your Cloudflare account id, retrievable from the Cloudflare dashboard>"
+# route = "<(optional) mainly useful when you want to setup custom domains>"
 
 rules = [
   { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
@@ -30,54 +28,54 @@ rules = [
 bucket = ".output/public"
 ```
 
-### Testing locally
+### Preview your app locally
 
-You can use [wrangler2](https://github.com/cloudflare/workers-sdk), to test your app locally:
+You can use [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler), to preview your app locally:
 
 ```bash
-NITRO_PRESET=cloudflare yarn build
+NITRO_PRESET=cloudflare npm run build
 
 # If you have added a 'wrangler.toml' file like above in the root of your project:
-npx wrangler dev --local
+npx wrangler dev
 
 # If you don't have a 'wrangler.toml', directly use:
-npx wrangler dev .output/server/index.mjs --site .output/public --local
+npx wrangler dev .output/server/index.mjs --site .output/public
 ```
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler#quick-start) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler) and login to your Cloudflare account:
 
 ```bash
-npm i wrangler -g
+npm i wrangler
 wrangler login
 ```
 
-Generate website with `cloudflare` preset:
+Generate website with the `cloudflare` preset:
 
 ```bash
-NITRO_PRESET=cloudflare yarn build
+NITRO_PRESET=cloudflare npm run build
 ```
 
 You can preview locally:
 
 ```bash
 # If you have a 'wrangler.toml' like above:
-wrangler dev
+npx wrangler dev
 
 # If you don't have a 'wrangler.toml':
-wrangler dev .output/server/index.mjs --site .output/public
+npx wrangler dev .output/server/index.mjs --site .output/public
 ```
 
 Publish:
 
 ```bash
-wrangler deploy
+npx wrangler deploy
 ```
 
 ### Deploy within CI/CD using GitHub Actions
 
-Create a token according to [the wrangler action docs](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler#authentication) and set `CF_API_TOKEN` in your repository config on GitHub.
+Create a token according to [the wrangler action docs](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler#authentication) and set `CLOUDFLARE_API_TOKEN` in your repository config on GitHub.
 
 Create `.github/workflows/cloudflare.yml`:
 
@@ -93,41 +91,31 @@ on:
       - main
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        node: [ 14 ]
-
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
     steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
-      - name: Cache node_modules
-        uses: actions/cache@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          node-version: 20.x
 
-      - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn
+      - name: Install npm dependencies
+        run: npm ci
 
       - name: Build
-        run: yarn build
+        run: npm run build
         env:
           NITRO_PRESET: cloudflare
 
-      - name: Publish to Cloudflare
-        uses: cloudflare/wrangler-action@2.0.0
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
 ```
 
 ## Cloudflare Pages
@@ -146,33 +134,47 @@ Integration with this provider is possible with zero configuration. ([Learn More
 
 Nitro automatically generates a `_routes.json` file that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overridden with the config option `cloudflare.pages.routes` ([read more](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)).
 
+### Preview your app locally
+
+You can use [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler), to preview your app locally:
+
+```bash
+NITRO_PRESET=cloudflare-pages npm run build
+
+npx wrangler pages dev dist
+```
+
 ### Git integration
 
 If you use the GitHub/GitLab [integration](https://developers.cloudflare.com/pages/get-started/#connect-your-git-provider-to-pages) with Pages, Nitro does not require any configuration. When you push to the repository, Pages will automatically build your project, and Nitro will detect the environment.
 
 ### Direct Upload
 
-Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
+Alternatively, you can use [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler) to upload your project to Cloudflare. In this case, you will have to set the preset manually:
+
+```bash
+NITRO_PRESET=cloudflare-pages npm run build
+```
 
 ### Deploy from your local machine using wrangler
 
-Install [wrangler](https://github.com/cloudflare/workers-sdk) and login to your Cloudflare account:
+Install [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler) and login to your Cloudflare account:
 
 ```bash
-npm i wrangler -g
-wrangler login
+npm i wrangler
+npx wrangler login
 ```
 
 Create project:
 
 ```bash
-wrangler pages project create <project-name>
+npx wrangler pages project create <project-name>
 ```
 
 Deploy:
 
 ```bash
-wrangler pages deploy
+npx wrangler pages deploy dist
 ```
 
 ## Cloudflare Module Workers
@@ -314,7 +316,7 @@ To instruct wrangler to automatically rebuild nitro when it detects file changes
 
 ```[wrangler.toml]
 + [env.development.build]
-+ command = "NITRO_PRESET=cloudflare npm run build" // Replace npm with your packagemanager (npm, pnpm, yarn, bun)
++ command = "NITRO_PRESET=cloudflare npm run build" // Replace npm with your package manager (npm, pnpm, yarn, bun)
 + cwd = "./"
 + watch_dir = ["./routes", "./nitro.config.ts"]
 ```
