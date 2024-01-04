@@ -24,7 +24,8 @@ async function handleRequest(request: Request, info: ServeHandlerInfo) {
     headers.set("x-forwarded-for", info.remoteAddr.hostname);
   }
   if (!headers.has("x-forwarded-proto")) {
-    // TODO: There is currently no way to know if the request was made over HTTP or HTTPS but deno deploy force redirects to HTTPS so we assume HTTPS by default.
+    // There is currently no way to know if the request was made over HTTP or HTTPS
+    // Deno deploy force redirects to HTTPS so we assume HTTPS by default
     headers.set("x-forwarded-proto", "https");
   }
 
