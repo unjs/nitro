@@ -11,6 +11,7 @@ import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions, RouterMethod } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
@@ -188,23 +189,6 @@ export interface NitroRouteRules
   proxy?: { to: string } & ProxyOptions;
 }
 
-export interface WasmOptions {
-  /**
-   * Direct import the wasm file instead of bundling, required in Cloudflare Workers
-   *
-   * @default false
-   */
-  esmImport?: boolean;
-
-  /**
-   * Import `.wasm` files using a lazily evaluated promise for compatibility
-   */
-  lazy?: boolean;
-
-  /** @deprecated */
-  rollup?: unknown;
-}
-
 export interface NitroFrameworkInfo {
   // eslint-disable-next-line @typescript-eslint/ban-types
   name?: "nitro" | (string & {});
@@ -265,8 +249,12 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
-  /** @experimental Requires `experimental.wasm` to be effective */
-  wasm?: WasmOptions;
+  /**
+   * @experimental Requires `experimental.wasm` to work
+   *
+   * @see https://github.com/unjs/unwasm
+   */
+  wasm?: UnwasmPluginOptions;
   experimental?: {
     legacyExternals?: boolean;
     openAPI?: boolean;
@@ -280,6 +268,8 @@ export interface NitroOptions extends PresetOptions {
     asyncContext?: boolean;
     /**
      * Enable Experimental WebAssembly Support
+     *
+     * @see https://github.com/unjs/unwasm
      */
     wasm?: boolean;
     /**

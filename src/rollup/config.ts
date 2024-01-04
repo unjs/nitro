@@ -1,12 +1,7 @@
 import { pathToFileURL } from "node:url";
 import { createRequire, builtinModules } from "node:module";
-import { dirname, join, normalize, relative, resolve } from "pathe";
-import type {
-  InputOptions,
-  OutputOptions,
-  Plugin,
-  PreRenderedChunk,
-} from "rollup";
+import { join, normalize, resolve } from "pathe";
+import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import commonjs from "@rollup/plugin-commonjs";
@@ -18,9 +13,10 @@ import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
 import type { Preset } from "unenv";
-import { sanitizeFilePath, resolvePath, parseNodeModulePath } from "mlly";
+import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
+import { rollup as unwasm } from "unwasm/plugin";
 import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
@@ -28,7 +24,6 @@ import nitroPkg from "../../package.json";
 import { nitroRuntimeDependencies } from "../deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
-import { wasm } from "./plugins/wasm";
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { NodeExternalsOptions, externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
@@ -174,7 +169,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   // WASM support
   if (nitro.options.experimental.wasm) {
-    rollupConfig.plugins.push(wasm(nitro.options.wasm || {}));
+    rollupConfig.plugins.push(unwasm(nitro.options.wasm || {}));
   }
 
   // Build-time environment variables
@@ -413,6 +408,9 @@ export const plugins = [
             "~~",
             "@@/",
             "virtual:",
+            ...(nitro.options.experimental.wasm
+              ? [(id) => id.endsWith(".wasm")]
+              : []),
             runtimeDir,
             nitro.options.srcDir,
             ...nitro.options.handlers
