@@ -71,21 +71,19 @@ describe("env utils", () => {
       },
     ];
     for (const test of tests) {
-      it(`Config: ${JSON.stringify(test.config)} ${JSON.stringify(test.envOptions)} Env: { ${Object.entries(
-        test.env
-      )
+      it(`Config: ${JSON.stringify(test.config)} ${JSON.stringify(
+        test.envOptions
+      )} Env: { ${Object.entries(test.env)
         .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
         .join(" ")} }`, () => {
         for (const key in test.env) {
           process.env[key] = test.env[key];
         }
-        expect(applyEnv(test.config, test.envOptions)).toEqual(
-          test.expected
-        );
+        expect(applyEnv(test.config, test.envOptions)).toEqual(test.expected);
         for (const key in test.env) {
           delete process.env[key];
         }
       });
     }
-  })
+  });
 });

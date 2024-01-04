@@ -39,6 +39,10 @@ export default defineNitroConfig({
   },
   runtimeConfig: {
     dynamic: "initial",
+    url: "https://{{APP_DOMAIN}}",
+    nitro: {
+      envExpansion: true,
+    },
   },
   appConfigFiles: ["~/server.config.ts"],
   publicAssets: [

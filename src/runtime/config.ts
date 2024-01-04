@@ -11,7 +11,9 @@ const envOptions: EnvOptions = {
   altPrefix:
     _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_",
   envExpansion:
-    _inlineRuntimeConfig.nitro.envExpansion ?? process.env.NITRO_ENV_EXPANSION ?? false,
+    _inlineRuntimeConfig.nitro.envExpansion ??
+    process.env.NITRO_ENV_EXPANSION ??
+    false,
 };
 
 // Runtime config
