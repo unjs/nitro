@@ -7,9 +7,12 @@ import type {
   PathsObject,
 } from "openapi-typescript";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
+import { useRuntimeConfig } from "#internal/nitro";
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
+  const base = useRuntimeConfig()?.app?.baseURL
+
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
@@ -18,7 +21,7 @@ export default eventHandler((event) => {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: `http://localhost:3000${base}`,
         description: "Local Development Server",
         variables: {},
       },
