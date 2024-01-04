@@ -111,6 +111,7 @@ const autodetectableProviders: Partial<
   stormkit: "stormkit",
   vercel: "vercel",
   cleavr: "cleavr",
+  zeabur: "zeabur",
 };
 
 const autodetectableStaticProviders: Partial<
@@ -119,6 +120,7 @@ const autodetectableStaticProviders: Partial<
   netlify: "netlify-static",
   vercel: "vercel-static",
   cloudflare_pages: "cloudflare-pages-static",
+  zeabur: "zeabur-static",
 };
 
 export function detectTarget(options: { static?: boolean } = {}) {
