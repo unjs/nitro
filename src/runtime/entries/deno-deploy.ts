@@ -2,15 +2,31 @@ import "#internal/nitro/virtual/polyfill";
 // @ts-ignore
 import { nitroApp } from "../app";
 
+// https://deno.land/api?s=Deno.ServeHandlerInfo
+type ServeHandlerInfo = {
+  remoteAddr: {
+    transport: "tcp" | "udp";
+    hostname: string;
+    port: number;
+  };
+};
+
 // @ts-expect-error unknown global Deno
-Deno.serve((request,info) => {
-  return handleRequest(request,info);
+Deno.serve((request, info) => {
+  return handleRequest(request, info);
 });
 
-async function handleRequest(request: Request,info) {
+async function handleRequest(request: Request, info: ServeHandlerInfo) {
   const url = new URL(request.url);
+
   const headers = new Headers(request.headers);
-  headers.set("x-forwarded-for", info.remoteAddr.hostname);//add x-forwarded-for header.
+  if (!headers.has("x-forwarded-for") && info?.remoteAddr?.hostname) {
+    headers.set("x-forwarded-for", info.remoteAddr.hostname);
+  }
+  if (!headers.has("x-forwarded-proto")) {
+    // TODO: There is currently no way to know if the request was made over HTTP or HTTPS but deno deploy force redirects to HTTPS so we assume HTTPS by default.
+    headers.set("x-forwarded-proto", "https");
+  }
 
   // https://deno.land/api?s=Body
   let body;
@@ -21,7 +37,7 @@ async function handleRequest(request: Request,info) {
   return nitroApp.localFetch(url.pathname + url.search, {
     host: url.hostname,
     protocol: url.protocol,
-    headers: request.headers,
+    headers,
     method: request.method,
     redirect: request.redirect,
     body,
