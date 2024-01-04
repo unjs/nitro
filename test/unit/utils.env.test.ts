@@ -48,12 +48,12 @@ describe("env utils", () => {
         env: { MAIL_HOST: "http://localhost" },
         expected: { mail: "{{MAIL_HOST}}:3366" },
       },
-      // Fallback to undefined
+      // Fallback to the original string
       {
         config: { mail: "{{MAIL_HOST}}:3366" },
         envOptions: { envExpansion: true },
         env: {},
-        expected: { mail: "undefined:3366" },
+        expected: { mail: "{{MAIL_HOST}}:3366" },
       },
       // Base usage
       {

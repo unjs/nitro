@@ -42,24 +42,18 @@ export function applyEnv(obj: object, opts: EnvOptions, parentKey = "") {
     } else {
       obj[key] = envValue ?? obj[key];
     }
+    // Experimental env expansion
     if (opts.envExpansion && typeof obj[key] === "string") {
-      const expandedValue = _getEnvFromValue(obj[key]);
-      obj[key] = expandedValue;
+      obj[key] = _expandFromEnv(obj[key]);
     }
   }
   return obj;
 }
 
-function _getEnvFromValue(value: string) {
-  let newValue = klona(value);
-  const reg = /{{(.*?)}}/g;
-  const matches = String(value).matchAll(reg);
-  for (const match of matches) {
-    newValue = newValue.replace(match[0], _getEnvRaw(match[1]) as string);
-  }
-  return newValue;
-}
+const envExpandRx = /{{(.*?)}}/g;
 
-function _getEnvRaw(key: string) {
-  return destr(process.env[key]);
+function _expandFromEnv(value: string) {
+  return value.replace(envExpandRx, (match, key) => {
+    return process.env[key] || match;
+  });
 }
