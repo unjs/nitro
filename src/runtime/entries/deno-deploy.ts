@@ -20,12 +20,14 @@ async function handleRequest(request: Request, info: ServeHandlerInfo) {
   const url = new URL(request.url);
 
   const headers = new Headers(request.headers);
-  if (!headers.has("x-forwarded-for") && info?.remoteAddr?.hostname) {
-    headers.set("x-forwarded-for", info.remoteAddr.hostname);
-  }
+
+  // Add client IP address to headers
+  // (rightmost is most trustable)
+  headers.append("x-forwarded-for", info.remoteAddr.hostname);
+
+  // There is currently no way to know if the request was made over HTTP or HTTPS
+  // Deno deploy force redirects to HTTPS so we assume HTTPS by default
   if (!headers.has("x-forwarded-proto")) {
-    // There is currently no way to know if the request was made over HTTP or HTTPS
-    // Deno deploy force redirects to HTTPS so we assume HTTPS by default
     headers.set("x-forwarded-proto", "https");
   }
 
