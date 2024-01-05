@@ -47,7 +47,7 @@ const listener = server.listen(listenAddress, () => {
         ? { socketPath: _address }
         : { host: "localhost", port: _address.port },
   });
-  nitroApp.hooks.callHook("server", server);
+  nitroApp.hooks.callHook("dev:server", server);
 });
 
 // Register tasks handlers
