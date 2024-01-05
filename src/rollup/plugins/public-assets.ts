@@ -40,9 +40,14 @@ export function publicAssets(nitro: Nitro): Plugin {
           const assetData = await fsp.readFile(fullPath);
           const etag = createEtag(assetData);
           const stat = await fsp.stat(fullPath);
-
-          const assetId = "/" + decodeURIComponent(id);
-
+          
+          let assetId;
+          try {
+            assetId = "/" + decodeURIComponent(id)
+          } catch (error) {
+            assetId = id;
+          }
+          
           let encoding;
           if (id.endsWith(".gz")) {
             encoding = "gzip";
