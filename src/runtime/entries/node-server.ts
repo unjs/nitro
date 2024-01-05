@@ -42,7 +42,7 @@ const listener = server.listen(path ? { path } : { port, host }, (err) => {
       ? `[${addressInfo.address}]`
       : addressInfo.address
   }:${addressInfo.port}${baseURL}`;
-  nitroApp.hooks.callHook("server", server);
+  nitroApp.hooks.callHook("node:server", server);
   console.log(`Listening on ${url}`);
 });
 
