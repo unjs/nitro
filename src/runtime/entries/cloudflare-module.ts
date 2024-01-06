@@ -11,7 +11,11 @@ import manifest from "__STATIC_CONTENT_MANIFEST";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import {
+  getPublicAssetMatch,
+  getPublicAssetMeta,
+  isPublicAssetURL,
+} from "#internal/nitro/virtual/public-assets";
 
 interface CFModuleEnv {
   [key: string]: any;
@@ -23,27 +27,31 @@ export default {
     env: CFModuleEnv,
     context: ExecutionContext
   ) {
+    const url = new URL(request.url);
     try {
-      // https://github.com/cloudflare/kv-asset-handler#es-modules
-      return await getAssetFromKV(
-        {
-          request,
-          waitUntil(promise) {
-            return context.waitUntil(promise);
+      if (isPublicAssetURL(url.pathname)) {
+        const [match] = getPublicAssetMatch(url.pathname);
+        // https://github.com/cloudflare/kv-asset-handler#es-modules
+        return await getAssetFromKV(
+          {
+            request: new Request(new URL("http://localhost" + match)),
+            waitUntil(promise) {
+              return context.waitUntil(promise);
+            },
           },
-        },
-        {
-          cacheControl: assetsCacheControl,
-          mapRequestToAsset: baseURLModifier,
-          ASSET_NAMESPACE: env.__STATIC_CONTENT,
-          ASSET_MANIFEST: JSON.parse(manifest),
-        }
-      );
+          {
+            cacheControl: assetsCacheControl,
+            mapRequestToAsset: baseURLModifier,
+            ASSET_NAMESPACE: env.__STATIC_CONTENT,
+            ASSET_MANIFEST: JSON.parse(manifest),
+          }
+        );
+      }
     } catch {
-      // Ignore
+      // getAssetFromKV fail to return files with no extensions,
+      // so we can catch here and let Nitro handle it.
     }
 
-    const url = new URL(request.url);
     let body;
     if (requestHasBody(request)) {
       body = Buffer.from(await request.arrayBuffer());
@@ -51,7 +59,6 @@ export default {
 
     // Expose latest env to the global context
     globalThis.__env__ = env;
-
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: (request as any).cf,

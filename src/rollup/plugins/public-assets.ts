@@ -124,14 +124,29 @@ import assets from '#internal/nitro/virtual/public-assets-data'
 export { readAsset } from "${readAssetImport}"
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 
-export function isPublicAssetURL(id = '') {
-  if (assets[id]) {
+
+const keyStartsWith = (literalObj, needle) => Object.keys(literalObj).some((k) => k.startsWith(needle));
+const findKey = (literalObj, needle) => Object.keys(literalObj).find((k) => k.startsWith(needle));
+
+export const isPublicAssetURL = (id = "") => {
+  if (
+    assets[id] ||
+    keyStartsWith(assets, id) ||
+    keyStartsWith(publicAssetBases, id)
+  ) {
     return true
   }
-  for (const base in publicAssetBases) {
-    if (id.startsWith(base)) { return true }
-  }
   return false
+}
+
+export const getPublicAssetMatch = (id = "") => {
+  const assetMatch = findKey(assets, id)
+  if(assetMatch) return [assetMatch, assets[assetMatch]]
+
+  const publicAssetMatch = findKey(publicAssetBases, id)
+  if(publicAssetMatch) return [publicAssetMatch, publicAssetBases[publicAssetMatch]]
+
+  return null
 }
 
 export function getPublicAssetMeta(id = '') {

@@ -5,7 +5,10 @@ import type {
 } from "@cloudflare/workers-types";
 import { requestHasBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
-import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import {
+  isPublicAssetURL,
+  getPublicAssetMatch,
+} from "#internal/nitro/virtual/public-assets";
 
 /**
  * Reference: https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#parameters
@@ -28,7 +31,10 @@ export default {
   ) {
     const url = new URL(request.url);
     if (isPublicAssetURL(url.pathname)) {
-      return env.ASSETS.fetch(request);
+      const [match] = getPublicAssetMatch(url.pathname);
+      return await env.ASSETS.fetch(
+        new Request(new URL("http://localhost" + match))
+      );
     }
 
     let body;
