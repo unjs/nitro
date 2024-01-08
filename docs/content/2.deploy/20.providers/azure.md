@@ -21,7 +21,8 @@ Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azur
 You can invoke a development environment to preview before deploying.
 
 ```bash
-NITRO_PRESET=azure yarn build
+NITRO_PRESET=azure
+yarn build
 npx @azure/static-web-apps-cli start .output/public --api-location .output/server
 ```
 
