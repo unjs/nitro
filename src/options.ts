@@ -216,9 +216,9 @@ export async function loadOptions(
   options.alias = {
     ...options.alias,
     "~/": join(options.srcDir, "/"),
-    "@": join(options.srcDir, "/"),
+    "@/": join(options.srcDir, "/"),
     "~~/": join(options.rootDir, "/"),
-    "@@": join(options.rootDir, "/"),
+    "@@/": join(options.rootDir, "/"),
   };
 
   // Resolve possibly template paths
