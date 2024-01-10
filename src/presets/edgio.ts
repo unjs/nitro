@@ -27,12 +27,8 @@ export const edgio = defineNitroPreset({
         resolve(nitro.options.output.dir, "edgio.config.js"),
         `module.exports = ${JSON.stringify(
           {
-            connector: "./edgio",
+            connector: "@edgio/nitropack",
             routes: "./routes.js",
-            backends: {},
-            includeFiles: {
-              "server/**": true,
-            },
           },
           null,
           2
@@ -43,32 +39,18 @@ export const edgio = defineNitroPreset({
       await writeFile(
         resolve(nitro.options.output.dir, "routes.js"),
         `
-import { Router } from '@edgio/core/router'
-import { isProductionBuild } from '@edgio/core/environment'
+import { isProductionBuild } from "@edgio/core/environment";
+import { Router } from "@edgio/core/router";
+import { nitropackRoutes } from "@edgio/nitropack";
 
-const router = new Router()
+const router = new Router().use(nitropackRoutes);
 
 if (isProductionBuild()) {
-  router.static('public')
+  router.static("public");
 }
 
-router.fallback(({ renderWithApp }) => { renderWithApp() })
-
-export default router
+export default router;
     `.trim()
-      );
-
-      // Write edgio/prod.js
-      await writeFile(
-        resolve(nitro.options.output.dir, "edgio/prod.js"),
-        `
-module.exports = async function entry (port) {
-  process.env.PORT = process.env.NITRO_PORT = port.toString()
-  console.log('Starting Edgio server on port', port)
-  await import('../server/index.mjs')
-  console.log('Edgio server started')
-}
-      `.trim()
       );
 
       // Write and prepare package.json for deployment
@@ -86,8 +68,9 @@ module.exports = async function entry (port) {
               preview: "npm i && edgio build && edgio run --production",
             },
             devDependencies: {
-              "@edgio/cli": "^6",
-              "@edgio/core": "^6",
+              "@edgio/cli": "^7",
+              "@edgio/core": "^7",
+              "@edgio/nitropack": "^7",
             },
           },
           null,
