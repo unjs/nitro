@@ -78,6 +78,7 @@ export async function setupTest(
       NITRO_HELLO: "world",
       CUSTOM_HELLO_THERE: "general",
       SECRET: "secret",
+      APP_DOMAIN: "test.com",
     },
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
@@ -448,6 +449,7 @@ export function testNitro(
       runtimeConfig: {
         // Cloudflare environment variables are only available within the fetch event
         dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
+        url: "https://test.com",
         app: {
           baseURL: "/",
         },
@@ -466,6 +468,7 @@ export function testNitro(
           ctx.preset === "nitro-dev"
             ? "initial"
             : "from-env",
+        // url: "https://test.com",
         app: {
           baseURL: "/",
         },
@@ -631,13 +634,16 @@ export function testNitro(
   });
 
   describe("wasm", () => {
-    it.skipIf(ctx.isWorker || ctx.preset === "deno-server")(
-      "dynamic import wasm",
-      async () => {
-        expect((await callHandler({ url: "/wasm/dynamic" })).data).toBe(
-          "2+3=5"
-        );
-      }
-    );
+    it("dynamic import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
+
+    it("static import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/static-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
   });
 }

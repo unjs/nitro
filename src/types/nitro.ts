@@ -7,11 +7,11 @@ import type { NestedHooks, Hookable } from "hookable";
 import type { ConsolaInstance, LogLevel } from "consola";
 import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
-import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions, RouterMethod } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
@@ -41,6 +41,7 @@ export interface NitroRuntimeConfig {
   app: NitroRuntimeConfigApp;
   nitro: {
     envPrefix?: string;
+    envExpansion?: boolean;
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
@@ -189,20 +190,6 @@ export interface NitroRouteRules
   proxy?: { to: string } & ProxyOptions;
 }
 
-export interface WasmOptions {
-  /**
-   * Direct import the wasm file instead of bundling, required in Cloudflare Workers
-   *
-   * @default false
-   */
-  esmImport?: boolean;
-
-  /**
-   * Options for `@rollup/plugin-wasm`, only used when `esmImport` is `false`
-   */
-  rollup?: RollupWasmOptions;
-}
-
 export interface NitroFrameworkInfo {
   // eslint-disable-next-line @typescript-eslint/ban-types
   name?: "nitro" | (string & {});
@@ -263,8 +250,12 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
-  /** @experimental Requires `experimental.wasm` to be effective */
-  wasm?: WasmOptions;
+  /**
+   * @experimental Requires `experimental.wasm` to work
+   *
+   * @see https://github.com/unjs/unwasm
+   */
+  wasm?: UnwasmPluginOptions;
   experimental?: {
     legacyExternals?: boolean;
     openAPI?: boolean;
@@ -278,6 +269,8 @@ export interface NitroOptions extends PresetOptions {
     asyncContext?: boolean;
     /**
      * Enable Experimental WebAssembly Support
+     *
+     * @see https://github.com/unjs/unwasm
      */
     wasm?: boolean;
     /**
@@ -292,6 +285,12 @@ export interface NitroOptions extends PresetOptions {
      * Backward compatibility support for Node fetch (required for Node < 18)
      */
     nodeFetchCompat?: boolean;
+    /**
+     * Allow env expansion in runtime config
+     *
+     * @see https://github.com/unjs/nitro/pull/2043
+     */
+    envExpansion?: boolean;
   };
   future: {
     nativeSWR: boolean;

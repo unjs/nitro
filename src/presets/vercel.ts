@@ -103,6 +103,10 @@ export const vercelEdge = defineNitroPreset({
       process: undefined,
     },
   },
+  wasm: {
+    lazy: true,
+    esmImport: false,
+  },
   hooks: {
     "rollup:before": (nitro: Nitro) => {
       deprecateSWR(nitro);
