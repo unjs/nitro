@@ -208,7 +208,7 @@ describe("API routes", () => {
       Promise<{
         statusCode: number;
         statusMessage?: string;
-        data?: {};
+        data?: NonNullable<unknown>;
         message: string;
       }>
     >();
