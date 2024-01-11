@@ -14,7 +14,6 @@ describe("nitro:preset:cloudflare-pages", async () => {
       modules: true,
       scriptPath: resolve(ctx.outDir, "_worker.js", "index.js"),
       modulesRules: [{ type: "CompiledWasm", include: ["**/*.wasm"] }],
-      globals: { __env__: {} },
       compatibilityFlags: ["streams_enable_constructors"],
       sitePath: "",
       bindings: { ...ctx.env },
