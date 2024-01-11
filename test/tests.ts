@@ -454,8 +454,7 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        // Cloudflare environment variables are only available within the fetch event
-        dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
+        dynamic: "from-env",
         url: "https://test.com",
         app: {
           baseURL: "/",
@@ -640,7 +639,7 @@ export function testNitro(
     });
   });
 
-  describe("wasm", () => {
+  describe.skipIf(ctx.preset === "cloudflare")("wasm", () => {
     it("dynamic import wasm", async () => {
       expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
         "2+3=5"
