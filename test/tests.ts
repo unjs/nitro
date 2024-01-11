@@ -45,11 +45,18 @@ export const fixtureDir = fileURLToPath(
   new URL("fixture", import.meta.url).href
 );
 
-export const getPresetTmpDir = (preset: string) =>
-  resolve(
+export const getPresetTmpDir = (preset: string) => {
+  if (preset.startsWith("cloudflare")) {
+    return fileURLToPath(
+      new URL(`.tmp/${preset}`, import.meta.url) as any /* remove me */
+    );
+  }
+
+  return resolve(
     process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
     preset
   );
+};
 
 export async function setupTest(
   preset: string,
