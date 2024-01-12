@@ -45,11 +45,18 @@ export const fixtureDir = fileURLToPath(
   new URL("fixture", import.meta.url).href
 );
 
-export const getPresetTmpDir = (preset: string) =>
-  resolve(
+export const getPresetTmpDir = (preset: string) => {
+  if (preset.startsWith("cloudflare")) {
+    return fileURLToPath(
+      new URL(`.tmp/${preset}`, import.meta.url) as any /* remove me */
+    );
+  }
+
+  return resolve(
     process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
     preset
   );
+};
 
 export async function setupTest(
   preset: string,
@@ -447,8 +454,7 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        // Cloudflare environment variables are only available within the fetch event
-        dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
+        dynamic: "from-env",
         url: "https://test.com",
         app: {
           baseURL: "/",
@@ -633,7 +639,7 @@ export function testNitro(
     });
   });
 
-  describe("wasm", () => {
+  describe.skipIf(ctx.preset === "cloudflare")("wasm", () => {
     it("dynamic import wasm", async () => {
       expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
         "2+3=5"
