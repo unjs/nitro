@@ -16,24 +16,14 @@ describe("nitro:preset:cloudflare-module", async () => {
       modulesRules: [{ type: "CompiledWasm", include: ["**/*.wasm"] }],
       sitePath: resolve(ctx.outDir, "public"),
       compatibilityFlags: ["streams_enable_constructors"],
-      globals: { __env__: {} },
-      bindings: {
-        ...ctx.env,
-        ASSETS: {
-          fetch: async (request) => {
-            const contents = await fsp.readFile(
-              join(ctx.outDir, new URL(request.url).pathname)
-            );
-            return new _Response(contents);
-          },
-        },
-      },
+      bindings: { ...ctx.env },
     });
 
     return async ({ url, headers, method, body }) => {
       const res = await mf.dispatchFetch("http://localhost" + url, {
         headers: headers || {},
         method: method || "GET",
+        redirect: "manual",
         body,
       });
       return res as unknown as Response;
