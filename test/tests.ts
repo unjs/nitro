@@ -245,12 +245,16 @@ export function testNitro(
 
   // aws lambda requires buffer responses to be base 64
   const LambdaPresets = new Set(["netlify", "aws-lambda"]);
+
   it.runIf(LambdaPresets.has(ctx.preset))(
-    "buffer image responses",
+    "binary image responses",
     async () => {
       const { data } = await callHandler({ url: "/icon.png" });
-      expect(typeof data).toBe("string");
-      const buffer = Buffer.from(data, "base64");
+      let buffer: Buffer;
+      if (LambdaPresets.has(ctx.preset)) {
+        expect(typeof data).toBe("string");
+        buffer = Buffer.from(data, "base64");
+      }
       // check if buffer is a png
       function isBufferPng(buffer: Buffer) {
         return (
