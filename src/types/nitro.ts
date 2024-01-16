@@ -114,9 +114,10 @@ export interface StorageMounts {
   };
 }
 
-type DeepPartial<T> = T extends Record<string, any>
-  ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
-  : T;
+type DeepPartial<T> =
+  T extends Record<string, any>
+    ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
+    : T;
 
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
