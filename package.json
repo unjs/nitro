@@ -125,6 +125,7 @@
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1",
+    "@azure/static-web-apps-cli": "^1.1.6",
     "@cloudflare/workers-types": "^4.20231218.0",
     "@types/aws-lambda": "^8.10.131",
     "@types/estree": "^1.0.5",
