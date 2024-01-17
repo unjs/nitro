@@ -74,6 +74,10 @@ If you are using runtimeConfig, you will likely want to configure the correspond
 
 ## Azure Functions
 
+::alert{type="warning"}
+There are several known issues with Azure Function deployments [#48](https://github.com/unjs/nitro-deploys/issues/48).
+::
+
 **Preset:** `azure_functions`
 
 **Note:** If you encounter any issues, please ensure you're using a Node.js 14+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#setting-the-node-version).
