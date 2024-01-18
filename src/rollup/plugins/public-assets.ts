@@ -37,9 +37,10 @@ export function publicAssets(nitro: Nitro): Plugin {
             mimeType += "; charset=utf-8";
           }
           const fullPath = resolve(nitro.options.output.publicDir, id);
-          const data = nitro.options.serveStatic === "inline"
-            ? (await fsp.readFile(fullPath)).toString("base64")
-            : undefined;
+          const data =
+            nitro.options.serveStatic === "inline"
+              ? (await fsp.readFile(fullPath)).toString("base64")
+              : undefined;
           const etag = createEtag(assetData);
           const stat = await fsp.stat(fullPath);
 
