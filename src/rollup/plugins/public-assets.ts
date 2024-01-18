@@ -41,7 +41,7 @@ export function publicAssets(nitro: Nitro): Plugin {
             nitro.options.serveStatic === "inline"
               ? (await fsp.readFile(fullPath)).toString("base64")
               : undefined;
-          const etag = createEtag(assetData);
+          const etag = createEtag(data);
           const stat = await fsp.stat(fullPath);
 
           const assetId = "/" + decodeURIComponent(id);
