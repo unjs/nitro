@@ -38,8 +38,8 @@ export function publicAssets(nitro: Nitro): Plugin {
           }
           const fullPath = resolve(nitro.options.output.publicDir, id);
           const data = nitro.options.serveStatic === "inline"
-            ? (await fsp.readFile(fullPath)).toString("base64");
-            : undefined
+            ? (await fsp.readFile(fullPath)).toString("base64")
+            : undefined;
           const etag = createEtag(assetData);
           const stat = await fsp.stat(fullPath);
 
