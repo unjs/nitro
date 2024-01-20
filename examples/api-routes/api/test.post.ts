@@ -1,4 +1,4 @@
-import { defineOpenAPISchema } from "../../../src/runtime/routes/openapi";
+import { defineOpenAPISchema } from "#internal/nitro/routes/openapi";
 
 export default defineEventHandler(() => "Test post handler");
 
