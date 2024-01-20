@@ -23,9 +23,10 @@ export default eventHandler( async () => {
       if (hasItem) {
         const storage = await useStorage(path).getItem(`openapi-${method}`)
         if (typeof storage === 'object') {
+          const schema = storage as NitroOpenapiSchema
           paths[path][method] = {
             ...paths[path][method],
-            ...storage
+            ...schema.schema
           }
         }
       }

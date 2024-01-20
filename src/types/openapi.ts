@@ -2,7 +2,8 @@ import type { RouterMethod } from "h3";
 import type { OperationObject } from "openapi-typescript";
 
 
-export interface NitroOpenapiSchema extends OperationObject {
+export type NitroOpenapiSchema = {
     routeBase: string,
-    method: RouterMethod
+    method: RouterMethod,
+    schema: OperationObject
 }
