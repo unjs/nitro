@@ -1,6 +1,7 @@
-import { relative, join } from "pathe";
 import { globby } from "globby";
+import { join, relative } from "pathe";
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
+import { useAppConfig } from "./runtime";
 import type { Nitro } from "./types";
 
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
@@ -16,6 +17,10 @@ export async function scanHandlers(nitro: Nitro) {
     scanServerRoutes(nitro, "api", "/api"),
     scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
+
+  await scanServerRoutesJson(nitro, "api", "/api");
+  await scanServerRoutesJson(nitro, "routes", "/api");
+
 
   nitro.scannedHandlers = [
     ...middleware,
@@ -74,6 +79,30 @@ export async function scanServerRoutes(
   });
 }
 
+export async function scanServerRoutesJson(
+  nitro: Nitro,
+  dir: "routes" | "api",
+  prefix = "/"
+) {
+  const otherFiles = await scanFiles(nitro, dir, "**/*-openapi.json")
+
+  const openapiSchemas: {associatedPath: string, tag: string}[] = [];
+
+  for (const file of otherFiles) {
+    const data = await import(file.fullPath)
+    const cleanPath = prefix + file.path.replace("-openapi.json", "");
+    openapiSchemas.push({
+    associatedPath: cleanPath,
+    tag: data.tag,  
+   })
+  }
+
+  useAppConfig().app.oapischemas = [
+    ...useAppConfig().app.oapischemas,
+    ...openapiSchemas
+  ];
+}
+
 export async function scanPlugins(nitro: Nitro) {
   const files = await scanFiles(nitro, "plugins");
   return files.map((f) => f.fullPath);
@@ -95,9 +124,9 @@ export async function scanModules(nitro: Nitro) {
   return files.map((f) => f.fullPath);
 }
 
-async function scanFiles(nitro: Nitro, name: string): Promise<FileInfo[]> {
+async function scanFiles(nitro: Nitro, name: string, scanPattern?: string): Promise<FileInfo[]> {
   const files = await Promise.all(
-    nitro.options.scanDirs.map((dir) => scanDir(nitro, dir, name))
+    nitro.options.scanDirs.map((dir) => scanDir(nitro, dir, name, scanPattern))
   ).then((r) => r.flat());
   return files;
 }
@@ -105,9 +134,10 @@ async function scanFiles(nitro: Nitro, name: string): Promise<FileInfo[]> {
 async function scanDir(
   nitro: Nitro,
   dir: string,
-  name: string
+  name: string,
+  scanPattern?: string,
 ): Promise<FileInfo[]> {
-  const fileNames = await globby(join(name, GLOB_SCAN_PATTERN), {
+  const fileNames = await globby(join(name, scanPattern || GLOB_SCAN_PATTERN), {
     cwd: dir,
     dot: true,
     ignore: nitro.options.ignore,

@@ -1,1 +1,10 @@
-export default defineNitroConfig({});
+export default defineNitroConfig({
+    experimental: {
+        openAPI: true,
+    },
+    runtimeConfig: {
+        app: {
+            oapischemas: [],
+        }
+    }
+});

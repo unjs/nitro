@@ -1,37 +1,36 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { relative, resolve, join, dirname, isAbsolute } from "pathe";
-import { resolveAlias } from "pathe/utils";
-import * as rollup from "rollup";
-import fse from "fs-extra";
-import { defu } from "defu";
 import { watch } from "chokidar";
-import { genTypeImport } from "knitwork";
-import { debounce } from "perfect-debounce";
-import type { TSConfig } from "pkg-types";
-import type { RollupError } from "rollup";
+import { defu } from "defu";
 import type { OnResolveResult, PartialMessage } from "esbuild";
+import fse from "fs-extra";
 import { globby } from "globby";
+import { genTypeImport } from "knitwork";
 import {
   lookupNodeModuleSubpath,
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
-import { upperFirst } from "scule";
+import { dirname, isAbsolute, join, relative, resolve } from "pathe";
+import { resolveAlias } from "pathe/utils";
+import { debounce } from "perfect-debounce";
+import type { TSConfig } from "pkg-types";
+import type { RollupError } from "rollup";
+import * as rollup from "rollup";
 import { version as nitroVersion } from "../package.json";
-import { generateFSTree } from "./utils/tree";
-import { getRollupConfig, RollupConfig } from "./rollup/config";
-import {
-  prettyPath,
-  writeFile,
-  isDirectory,
-  resolvePath as resolveNitroPath,
-  nitroServerName,
-} from "./utils";
-import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
-import type { Nitro, NitroTypes, NitroBuildInfo } from "./types";
-import { runtimeDir } from "./dirs";
-import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
+import { runtimeDir } from "./dirs";
+import { RollupConfig, getRollupConfig } from "./rollup/config";
+import { GLOB_SCAN_PATTERN, scanHandlers, scanServerRoutesJson } from "./scan";
+import { snapshotStorage } from "./storage";
+import type { Nitro, NitroBuildInfo, NitroTypes } from "./types";
+import {
+  isDirectory,
+  nitroServerName,
+  prettyPath,
+  resolvePath as resolveNitroPath,
+  writeFile,
+} from "./utils";
+import { generateFSTree } from "./utils/tree";
 
 export async function prepare(nitro: Nitro) {
   await prepareDir(nitro.options.output.dir);
@@ -515,6 +514,9 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
       await rollupWatcher.close();
     }
     await scanHandlers(nitro);
+    
+    await scanServerRoutesJson(nitro, "api", "/api");
+    await scanServerRoutesJson(nitro, "routes", "/api");
     rollupWatcher = startRollupWatcher(nitro, rollupConfig);
     await writeTypes(nitro);
   }

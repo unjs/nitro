@@ -1,18 +1,23 @@
 import { eventHandler } from "h3";
 import type {
   OpenAPI3,
-  PathItemObject,
   OperationObject,
   ParameterObject,
+  PathItemObject,
   PathsObject,
 } from "openapi-typescript";
+import { useAppConfig, useRuntimeConfig } from "#internal/nitro";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
-import { useRuntimeConfig } from "#internal/nitro";
 
+const nitro = useRuntimeConfig().nitro
+
+ 
 // Served as /_nitro/openapi.json
-export default eventHandler((event) => {
+export default eventHandler(() => {
   const base = useRuntimeConfig()?.app?.baseURL;
+  const schemas = useAppConfig()?.app?.oapischemas;
 
+  console.log(schemas);
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
@@ -96,3 +101,6 @@ function defaultTags(route: string) {
 
   return tags;
 }
+
+
+function getResponses(route: string) {}
