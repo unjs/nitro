@@ -1,10 +1,8 @@
+import type { RouterMethod } from "h3";
 import type { OperationObject } from "openapi-typescript";
 
 
-export type NitroOpenapiSchema = {
+export interface NitroOpenapiSchema extends OperationObject {
     routeBase: string,
-    tags?: string[],
-    methods: {
-        [key in "get" | "put" | "post" | "delete"]?: OperationObject
-    },
+    method: RouterMethod
 }

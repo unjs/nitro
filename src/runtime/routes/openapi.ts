@@ -8,13 +8,29 @@ import type {
 } from "openapi-typescript";
 import { NitroOpenapiSchema } from "../../types";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
-import { useRuntimeConfig } from "#internal/nitro";
+import { useRuntimeConfig, useStorage } from "#internal/nitro";
 
  
 // Served as /_nitro/openapi.json
-export default eventHandler(() => {
+export default eventHandler( async () => {
   const base = useRuntimeConfig()?.app?.baseURL;
+  const paths = getPaths()
 
+  for (const path in paths) {
+    const methods = Object.keys(paths[path]);
+    for (const method of methods) {
+      const hasItem = await useStorage(path).hasItem(`openapi-${method}`)
+      if (hasItem) {
+        const storage = await useStorage(path).getItem(`openapi-${method}`)
+        if (typeof storage === 'object') {
+          paths[path][method] = {
+            ...paths[path][method],
+            ...storage
+          }
+        }
+      }
+    }
+  }
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
@@ -29,19 +45,16 @@ export default eventHandler(() => {
       },
     ],
     schemes: ["http"],
-    paths: getPaths(),
+    paths: paths,
   };
 });
 
 function getPaths(): PathsObject {
   const paths: PathsObject = {};
-  const schemas = useRuntimeConfig()?.app?.openapi?.schemas || [];
-
-  console.log(schemas);
 
   for (const h of handlersMeta) {
     const { route, parameters } = normalizeRoute(h.route);
-    const tags = defaultTags(h.route, schemas);
+    const tags = defaultTags(h.route);
     const method = (h.method || "get").toLowerCase();
 
     const item: PathItemObject = {
@@ -88,23 +101,12 @@ function normalizeRoute(_route: string) {
   };
 }
 
-function defaultTags(route: string, schemas?: NitroOpenapiSchema[]) {
+function defaultTags(route: string) {
   const tags: string[] = [];
   const defaultTagAPI = "API Routes"
 
   if (route.startsWith("/api/")) {
-    if (schemas) {
-      const tag = schemas.find((schema) => schema.routeBase === route);
-      if (tag && 'tags' in tag) {
-        for (const item in tag.tags) {
-          tags.push(item);
-        }
-      } else {
-        tags.push(defaultTagAPI);
-      }
-    } else {
-      tags.push(defaultTagAPI);
-    }
+    tags.push(defaultTagAPI);
   } else if (route.startsWith("/_")) {
     tags.push("Internal");
   } else {
@@ -116,5 +118,6 @@ function defaultTags(route: string, schemas?: NitroOpenapiSchema[]) {
 
 
 export function defineOpenAPISchema(schema: NitroOpenapiSchema) {
+  useStorage(schema.routeBase).setItem(`openapi-${schema.method}`, schema);
   return schema
 }

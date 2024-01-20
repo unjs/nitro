@@ -16,7 +16,7 @@ export async function scanHandlers(nitro: Nitro) {
     scanServerRoutes(nitro, "api", "/api"),
     scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
-
+  
 
   nitro.scannedHandlers = [
     ...middleware,
