@@ -105,7 +105,7 @@ async function scanFiles(nitro: Nitro, name: string): Promise<FileInfo[]> {
 async function scanDir(
   nitro: Nitro,
   dir: string,
-  name: string,
+  name: string
 ): Promise<FileInfo[]> {
   const fileNames = await globby(join(name, GLOB_SCAN_PATTERN), {
     cwd: dir,

@@ -10,28 +10,28 @@ import { NitroOpenapiSchema } from "../../types";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig, useStorage } from "#internal/nitro";
 
- 
 // Served as /_nitro/openapi.json
-export default eventHandler( async () => {
+export default eventHandler(async () => {
   const base = useRuntimeConfig()?.app?.baseURL;
-  const paths = getPaths()
+  const paths = getPaths();
 
   for (const path in paths) {
     const methods = Object.keys(paths[path]);
     for (const method of methods) {
-      const hasItem = await useStorage(path).hasItem(`openapi-${method}`)
+      const hasItem = await useStorage(path).hasItem(`openapi-${method}`);
       if (hasItem) {
-        const storage = await useStorage(path).getItem(`openapi-${method}`)
-        if (typeof storage === 'object') {
-          const schema = storage as NitroOpenapiSchema
+        const storage = await useStorage(path).getItem(`openapi-${method}`);
+        if (typeof storage === "object") {
+          const schema = storage as NitroOpenapiSchema;
           paths[path][method] = {
             ...paths[path][method],
-            ...schema.schema
-          }
+            ...schema.schema,
+          };
         }
       }
     }
   }
+
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
@@ -46,7 +46,7 @@ export default eventHandler( async () => {
       },
     ],
     schemes: ["http"],
-    paths: paths,
+    paths,
   };
 });
 
@@ -116,8 +116,8 @@ function defaultTags(route: string) {
   return tags;
 }
 
-
 export function defineOpenAPISchema(schema: NitroOpenapiSchema) {
   useStorage(schema.routeBase).setItem(`openapi-${schema.method}`, schema);
-  return schema
+
+  return schema;
 }

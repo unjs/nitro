@@ -10,5 +10,5 @@ defineOpenAPISchema({
         summary: "some test",
         description: "some test description",
         deprecated: false,
-    }
-})
+    },
+});

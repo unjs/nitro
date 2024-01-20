@@ -14,15 +14,15 @@ defineOpenAPISchema({
                 in: "query",
                 name: 'test',
                 required: true
-            }
+            },
         ],
         responses: {
-            "200": {
+            200: {
                 description: "OK"
             },
-            "404": {
+            404: {
                 description: "Not found"
-            }
-        }
-    }
-})
+            },
+        },
+    },
+});
