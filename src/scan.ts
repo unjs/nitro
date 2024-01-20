@@ -1,7 +1,6 @@
 import { globby } from "globby";
 import { join, relative } from "pathe";
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
-import { useAppConfig } from "./runtime";
 import type { Nitro } from "./types";
 
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
@@ -17,9 +16,6 @@ export async function scanHandlers(nitro: Nitro) {
     scanServerRoutes(nitro, "api", "/api"),
     scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
-
-  await scanServerRoutesJson(nitro, "api", "/api");
-  await scanServerRoutesJson(nitro, "routes", "/api");
 
 
   nitro.scannedHandlers = [
@@ -77,30 +73,6 @@ export async function scanServerRoutes(
       method,
     };
   });
-}
-
-export async function scanServerRoutesJson(
-  nitro: Nitro,
-  dir: "routes" | "api",
-  prefix = "/"
-) {
-  const otherFiles = await scanFiles(nitro, dir, "**/*-openapi.json")
-
-  const openapiSchemas: {associatedPath: string, tag: string}[] = [];
-
-  for (const file of otherFiles) {
-    const data = await import(file.fullPath)
-    const cleanPath = prefix + file.path.replace("-openapi.json", "");
-    openapiSchemas.push({
-    associatedPath: cleanPath,
-    tag: data.tag,  
-   })
-  }
-
-  useAppConfig().app.oapischemas = [
-    ...useAppConfig().app.oapischemas,
-    ...openapiSchemas
-  ];
 }
 
 export async function scanPlugins(nitro: Nitro) {

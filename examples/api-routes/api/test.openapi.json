@@ -1,5 +1,5 @@
 {
-    "tag": "Test",
+    "tags": ["Test"],
     "methods": {
         "get": {
             "query": {
@@ -15,6 +15,11 @@
             "body": {
                 "userId": "number",
                 "username": ["string", "undefined"] 
+            },
+            "responses": {
+                "200": "Ok",
+                "404": "Error",
+                "500": "Unhandled Error"
             }
         }
     }

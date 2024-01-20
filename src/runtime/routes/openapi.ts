@@ -6,18 +6,15 @@ import type {
   PathItemObject,
   PathsObject,
 } from "openapi-typescript";
-import { useAppConfig, useRuntimeConfig } from "#internal/nitro";
+import { NitroOpenapiSchema } from "../../types";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
-
-const nitro = useRuntimeConfig().nitro
+import { useRuntimeConfig } from "#internal/nitro";
 
  
 // Served as /_nitro/openapi.json
 export default eventHandler(() => {
   const base = useRuntimeConfig()?.app?.baseURL;
-  const schemas = useAppConfig()?.app?.oapischemas;
 
-  console.log(schemas);
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
@@ -38,10 +35,13 @@ export default eventHandler(() => {
 
 function getPaths(): PathsObject {
   const paths: PathsObject = {};
+  const schemas = useRuntimeConfig()?.app?.openapi?.schemas || [];
+
+  console.log(schemas);
 
   for (const h of handlersMeta) {
     const { route, parameters } = normalizeRoute(h.route);
-    const tags = defaultTags(h.route);
+    const tags = defaultTags(h.route, schemas);
     const method = (h.method || "get").toLowerCase();
 
     const item: PathItemObject = {
@@ -88,11 +88,23 @@ function normalizeRoute(_route: string) {
   };
 }
 
-function defaultTags(route: string) {
+function defaultTags(route: string, schemas?: NitroOpenapiSchema[]) {
   const tags: string[] = [];
+  const defaultTagAPI = "API Routes"
 
   if (route.startsWith("/api/")) {
-    tags.push("API Routes");
+    if (schemas) {
+      const tag = schemas.find((schema) => schema.routeBase === route);
+      if (tag && 'tags' in tag) {
+        for (const item in tag.tags) {
+          tags.push(item);
+        }
+      } else {
+        tags.push(defaultTagAPI);
+      }
+    } else {
+      tags.push(defaultTagAPI);
+    }
   } else if (route.startsWith("/_")) {
     tags.push("Internal");
   } else {
@@ -103,4 +115,6 @@ function defaultTags(route: string) {
 }
 
 
-function getResponses(route: string) {}
+export function defineOpenAPISchema(schema: NitroOpenapiSchema) {
+  return schema
+}

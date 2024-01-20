@@ -18,7 +18,7 @@
       "nitropack/config": ["./src/config"],
       "#internal/nitro": ["./src/runtime/index"],
       "#internal/nitro/*": ["./src/runtime/*"]
-    }
+    },
   },
   "include": ["src", "test"],
   "exclude": ["test/fixture"]

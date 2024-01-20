@@ -20,7 +20,7 @@ import { version as nitroVersion } from "../package.json";
 import { compressPublicAssets } from "./compress";
 import { runtimeDir } from "./dirs";
 import { RollupConfig, getRollupConfig } from "./rollup/config";
-import { GLOB_SCAN_PATTERN, scanHandlers, scanServerRoutesJson } from "./scan";
+import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
 import { snapshotStorage } from "./storage";
 import type { Nitro, NitroBuildInfo, NitroTypes } from "./types";
 import {
@@ -96,7 +96,7 @@ export async function build(nitro: Nitro) {
 
 export async function writeTypes(nitro: Nitro) {
   const types: NitroTypes = {
-    routes: {},
+    routes: {}, 
   };
 
   const typesDir = resolve(nitro.options.buildDir, "types");
@@ -515,8 +515,6 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     }
     await scanHandlers(nitro);
     
-    await scanServerRoutesJson(nitro, "api", "/api");
-    await scanServerRoutesJson(nitro, "routes", "/api");
     rollupWatcher = startRollupWatcher(nitro, rollupConfig);
     await writeTypes(nitro);
   }

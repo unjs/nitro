@@ -4,7 +4,9 @@ export default defineNitroConfig({
     },
     runtimeConfig: {
         app: {
-            oapischemas: [],
+            openapi: {
+                schemas: []
+            }
         }
     }
 });
