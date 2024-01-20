@@ -1,5 +1,5 @@
+import { relative, join } from "pathe";
 import { globby } from "globby";
-import { join, relative } from "pathe";
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
 import type { Nitro } from "./types";
 
@@ -16,7 +16,6 @@ export async function scanHandlers(nitro: Nitro) {
     scanServerRoutes(nitro, "api", "/api"),
     scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
-  
 
   nitro.scannedHandlers = [
     ...middleware,
@@ -96,9 +95,9 @@ export async function scanModules(nitro: Nitro) {
   return files.map((f) => f.fullPath);
 }
 
-async function scanFiles(nitro: Nitro, name: string, scanPattern?: string): Promise<FileInfo[]> {
+async function scanFiles(nitro: Nitro, name: string): Promise<FileInfo[]> {
   const files = await Promise.all(
-    nitro.options.scanDirs.map((dir) => scanDir(nitro, dir, name, scanPattern))
+    nitro.options.scanDirs.map((dir) => scanDir(nitro, dir, name))
   ).then((r) => r.flat());
   return files;
 }
@@ -109,7 +108,7 @@ async function scanDir(
   name: string,
   scanPattern?: string,
 ): Promise<FileInfo[]> {
-  const fileNames = await globby(join(name, scanPattern || GLOB_SCAN_PATTERN), {
+  const fileNames = await globby(join(name, GLOB_SCAN_PATTERN), {
     cwd: dir,
     dot: true,
     ignore: nitro.options.ignore,

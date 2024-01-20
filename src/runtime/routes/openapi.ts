@@ -1,9 +1,9 @@
 import { eventHandler } from "h3";
 import type {
   OpenAPI3,
+  PathItemObject,
   OperationObject,
   ParameterObject,
-  PathItemObject,
   PathsObject,
 } from "openapi-typescript";
 import { NitroOpenapiSchema } from "../../types";
@@ -103,10 +103,9 @@ function normalizeRoute(_route: string) {
 
 function defaultTags(route: string) {
   const tags: string[] = [];
-  const defaultTagAPI = "API Routes"
 
   if (route.startsWith("/api/")) {
-    tags.push(defaultTagAPI);
+    tags.push("API Routes");
   } else if (route.startsWith("/_")) {
     tags.push("Internal");
   } else {
