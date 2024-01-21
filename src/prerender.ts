@@ -357,7 +357,7 @@ async function runParallel<T>(
   await refillQueue();
 }
 
-const LINK_REGEX = /(?<=\s)href=(?!&quot;)["']?([^"'>]+)/g;
+const LINK_REGEX = /(?<=\s)href=["']([^"'>]+)/g;
 
 const HTML_ENTITIES = {
   "&lt;": "<",
