@@ -1,14 +1,23 @@
-import { defineOpenAPISchema } from "#internal/nitro/routes/openapi";
+import { defineRouteMeta } from "#internal/nitro";
 
 export default defineEventHandler(() => "Test get handler");
 
-defineOpenAPISchema({
-    routeBase: '/api/test',
-    method: 'get',
-    schema: {
+// defineRouteMeta({
+//     openAPI: {
+//         tags: ["Test"],
+//         summary: "some test",
+//         description: "some test description",
+//         deprecated: false,
+//     },
+//     name: 'Something'
+// })
+
+defineRouteMeta({
+    openAPI: {
         tags: ["Test"],
         summary: "some test",
         description: "some test description",
         deprecated: false,
     },
-});
+    name: 'Something'
+})

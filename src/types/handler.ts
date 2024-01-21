@@ -1,4 +1,5 @@
-import type { EventHandler, H3Event, H3Error } from "h3";
+import type { EventHandler, H3Error, H3Event } from "h3";
+import type { ServerRouteMeta } from "#internal/nitro/virtual/server-handlers";
 
 export interface NitroEventHandler {
   /**
@@ -29,6 +30,11 @@ export interface NitroEventHandler {
    * Router method matcher
    */
   method?: string;
+  
+  /**
+   * Route meta
+   */
+  meta?: ServerRouteMeta;
 }
 
 export interface NitroDevEventHandler {

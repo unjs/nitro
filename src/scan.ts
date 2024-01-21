@@ -1,10 +1,12 @@
+import fs from "node:fs";
 import { relative, join } from "pathe";
 import { globby } from "globby";
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
 import type { Nitro } from "./types";
+import type { ServerRouteMeta } from "#internal/nitro/virtual/server-handlers";
 
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
-type FileInfo = { path: string; fullPath: string };
+type FileInfo = { path: string; fullPath: string};
 
 const httpMethodRegex =
   /\.(connect|delete|get|head|options|patch|post|put|trace)$/;
@@ -55,6 +57,8 @@ export async function scanServerRoutes(
       .replace(/\[(\w+)]/g, ":$1");
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)));
 
+    const meta = scanRouteForMeta(file.fullPath)
+
     let method;
     const methodMatch = route.match(httpMethodRegex);
     if (methodMatch) {
@@ -70,6 +74,7 @@ export async function scanServerRoutes(
       middleware: false,
       route,
       method,
+      meta
     };
   });
 }
@@ -121,4 +126,35 @@ async function scanDir(
       };
     })
     .sort((a, b) => a.path.localeCompare(b.path));
+}
+
+export function scanRouteForMeta(
+  fullPath: string,
+) {
+  const file = fs.readFileSync(fullPath, { encoding: 'utf8', flag: 'r' });
+  const defineRouteMetaRegex = /^(?!\/\/)(\S?)defineRouteMeta+\([^)]*\)(\.[^)]*\))?/gm;
+  const routeMeta = defineRouteMetaRegex.exec(file);
+  if (routeMeta) {
+    const objectDetectRegex = /{[^)]*}(\.[^)]*})?/;
+    const metaStringObject = objectDetectRegex.exec(routeMeta[0]);
+    const metaObject = 
+      JSON.stringify(metaStringObject[0])
+        .replace(/(?:\\[nr])+\s{4,}/g, '')
+        .replace(/(?:\\[nr])+/g, '')
+        .replace(/'/g, '"')
+        .replace(/\\"/g, '"')
+        .replace(/[^,{]\w+:(\s?)/g, (match) => {
+          const str = match.replace(/: /g, "")
+          const adjustedStr = "\"" + str + "\":"
+          return adjustedStr
+        })
+        .replace(/,}/g, "}")
+        .replace(/,]/g, "]");
+
+    const parsedMeta = JSON.parse(objectDetectRegex.exec(metaObject)[0]);
+
+    const meta: ServerRouteMeta = Object.assign({}, parsedMeta);
+   
+    return meta;
+  }
 }
