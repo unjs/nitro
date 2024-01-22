@@ -19,7 +19,7 @@ export function raw(opts: RawOptions = {}): Plugin {
   ]);
 
   // TODO: use ext=>mime
-  const isBinary = id => !extensions.has(extname(id))
+  const isBinary = (id) => !extensions.has(extname(id));
 
   return {
     name: "raw",
@@ -48,7 +48,7 @@ export function raw(opts: RawOptions = {}): Plugin {
     },
     transform(code, id) {
       if (!id.startsWith("\0raw:")) {
-        return
+        return;
       }
       if (isBinary(id)) {
         const serialized = Buffer.from(code, "binary").toString("base64");
@@ -67,7 +67,7 @@ export function raw(opts: RawOptions = {}): Plugin {
 }
 
 function getHelpers() {
-  const js = String.raw
+  const js = String.raw;
   return js`
 function base64ToUint8Array(str) {
   const data = atob(str);
@@ -78,5 +78,5 @@ function base64ToUint8Array(str) {
   }
   return bytes;
 }
-  `
+  `;
 }
