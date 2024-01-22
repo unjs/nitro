@@ -1,5 +1,10 @@
 import fs from "node:fs";
+import { runInNewContext } from "node:vm";
 import { relative, join } from "pathe";
+import acorn from 'acorn';
+import { transform } from "esbuild";
+import { CallExpression, Node } from "estree";
+import { walk } from 'estree-walker';
 import { globby } from "globby";
 import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
 import type { Nitro } from "./types";
@@ -49,7 +54,7 @@ export async function scanServerRoutes(
   prefix = "/"
 ) {
   const files = await scanFiles(nitro, dir);
-  return files.map((file) => {
+  return await Promise.all(files.map(async (file) => {
     let route = file.path
       .replace(/\.[A-Za-z]+$/, "")
       .replace(/\[\.{3}]/g, "**")
@@ -57,7 +62,7 @@ export async function scanServerRoutes(
       .replace(/\[(\w+)]/g, ":$1");
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)));
 
-    const meta = scanRouteForMeta(file.fullPath)
+    const meta = await scanRouteMeta(file.fullPath)
 
     let method;
     const methodMatch = route.match(httpMethodRegex);
@@ -76,7 +81,8 @@ export async function scanServerRoutes(
       method,
       meta
     };
-  });
+  })
+  );
 }
 
 export async function scanPlugins(nitro: Nitro) {
@@ -128,33 +134,33 @@ async function scanDir(
     .sort((a, b) => a.path.localeCompare(b.path));
 }
 
-export function scanRouteForMeta(
+export async function scanRouteMeta(
   fullPath: string,
-) {
+): Promise<ServerRouteMeta> {
   const file = fs.readFileSync(fullPath, { encoding: 'utf8', flag: 'r' });
-  const defineRouteMetaRegex = /^(?!\/\/)(\S?)defineRouteMeta+\([^)]*\)(\.[^)]*\))?/gm;
-  const routeMeta = defineRouteMetaRegex.exec(file);
-  if (routeMeta) {
-    const objectDetectRegex = /{[^)]*}(\.[^)]*})?/;
-    const metaStringObject = objectDetectRegex.exec(routeMeta[0]);
-    const metaObject = 
-      JSON.stringify(metaStringObject[0])
-        .replace(/(?:\\[nr])+\s{4,}/g, '')
-        .replace(/(?:\\[nr])+/g, '')
-        .replace(/'/g, '"')
-        .replace(/\\"/g, '"')
-        .replace(/[^,{]\w+:(\s?)/g, (match) => {
-          const str = match.replace(/: /g, "")
-          const adjustedStr = "\"" + str + "\":"
-          return adjustedStr
-        })
-        .replace(/,}/g, "}")
-        .replace(/,]/g, "]");
 
-    const parsedMeta = JSON.parse(objectDetectRegex.exec(metaObject)[0]);
+  let routeMeta: ServerRouteMeta | null = null; 
 
-    const meta: ServerRouteMeta = Object.assign({}, parsedMeta);
-   
-    return meta;
-  }
+  const js = await transform(file, { loader: 'ts' });
+  const fileAST = acorn.parse(js.code, { ecmaVersion: "latest", sourceType: "module" }) as Node;
+
+
+  walk(fileAST, {
+    enter(_node) {
+      if (_node.type !== "CallExpression" || (_node as CallExpression).callee.type !== 'Identifier') { return }
+      const node = _node as CallExpression & { start: number, end: number};
+      const name = 'name' in node.callee && node.callee.name
+
+      if (name === "defineRouteMeta") {
+        const metaString = js.code.slice(node.start, node.end)
+        try {
+          routeMeta = JSON.parse(runInNewContext(metaString.replace('defineRouteMeta', 'JSON.stringify'), {}))
+        } catch {
+          throw new Error("[nitro] Error parsing route meta. They should be JSON-serializable")
+        }
+      }
+    }
+  })
+
+  return routeMeta
 }

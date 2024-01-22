@@ -1,5 +1,3 @@
-import { defineRouteMeta } from "#internal/nitro";
-
 export default defineEventHandler(() => "Test get handler");
 
 // defineRouteMeta({
