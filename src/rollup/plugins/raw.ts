@@ -18,6 +18,9 @@ export function raw(opts: RawOptions = {}): Plugin {
     ...(opts.extensions || []),
   ]);
 
+  // TODO: use ext=>mime
+  const isBinary = id => !extensions.has(extname(id))
+
   return {
     name: "raw",
     resolveId(id) {
@@ -40,18 +43,40 @@ export function raw(opts: RawOptions = {}): Plugin {
     load(id) {
       if (id.startsWith("\0raw:")) {
         // this.addWatchFile(id.substring(5))
-        return fsp.readFile(id.slice(5), "utf8");
+        return fsp.readFile(id.slice(5), isBinary(id) ? "binary" : "utf8");
       }
     },
     transform(code, id) {
-      if (id.startsWith("\0raw:")) {
+      if (!id.startsWith("\0raw:")) {
+        return
+      }
+      if (isBinary(id)) {
+        const serialized = Buffer.from(code, "binary").toString("base64");
         return {
-          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(
-            code
-          )}`,
+          code: `// ROLLUP_NO_REPLACE \n ${getHelpers()}\n export default base64ToUint8Array("${serialized}")`,
+          map: null,
+        };
+      } else {
+        return {
+          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
           map: null,
         };
       }
     },
   };
+}
+
+function getHelpers() {
+  const js = String.raw
+  return js`
+function base64ToUint8Array(str) {
+  const data = atob(str);
+  const size = data.length;
+  const bytes = new Uint8Array(size);
+  for (let i = 0; i < size; i++) {
+    bytes[i] = data.charCodeAt(i);
+  }
+  return bytes;
+}
+  `
 }
