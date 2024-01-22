@@ -30,7 +30,7 @@ export interface NitroEventHandler {
    * Router method matcher
    */
   method?: string;
-  
+
   /**
    * Route meta
    */

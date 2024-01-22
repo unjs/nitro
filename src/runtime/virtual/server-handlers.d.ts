@@ -1,11 +1,10 @@
 import type { H3EventHandler, LazyEventHandler, RouterMethod } from "h3";
 import type { OperationObject } from "openapi-typescript";
 
-
 export type ServerRouteMeta = {
-    openAPI?: OperationObject,
-    [key: string] : any,
-}
+  openAPI?: OperationObject;
+  [key: string]: any;
+};
 
 export type HandlerDefinition = {
   route: string;

@@ -58,8 +58,8 @@ function getPaths(): PathsObject {
     if (h.meta && h.meta.openAPI) {
       paths[route][method] = {
         ...paths[route][method],
-        ...h.meta.openAPI
-      }
+        ...h.meta.openAPI,
+      };
     }
   }
 

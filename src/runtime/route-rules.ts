@@ -72,5 +72,5 @@ export function getRouteRulesForPath(path: string): NitroRouteRules {
 }
 
 export function defineRouteMeta(meta: ServerRouteMeta) {
-    return meta
+  return meta;
 }
