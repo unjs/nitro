@@ -6,6 +6,8 @@ export interface RawOptions {
   extensions?: string[];
 }
 
+const HELPER_ID = "\0raw-helpers";
+
 export function raw(opts: RawOptions = {}): Plugin {
   const extensions = new Set([
     ".md",
@@ -24,6 +26,10 @@ export function raw(opts: RawOptions = {}): Plugin {
   return {
     name: "raw",
     resolveId(id) {
+      if (id === HELPER_ID) {
+        return id;
+      }
+
       if (id[0] === "\0") {
         return;
       }
@@ -41,6 +47,9 @@ export function raw(opts: RawOptions = {}): Plugin {
       }
     },
     load(id) {
+      if (id === HELPER_ID) {
+        return getHelpers();
+      }
       if (id.startsWith("\0raw:")) {
         // this.addWatchFile(id.substring(5))
         return fsp.readFile(id.slice(5), isBinary(id) ? "binary" : "utf8");
@@ -53,7 +62,7 @@ export function raw(opts: RawOptions = {}): Plugin {
       if (isBinary(id)) {
         const serialized = Buffer.from(code, "binary").toString("base64");
         return {
-          code: `// ROLLUP_NO_REPLACE \n ${getHelpers()}\n export default base64ToUint8Array("${serialized}")`,
+          code: `// ROLLUP_NO_REPLACE \n import {base64ToUint8Array } from "${HELPER_ID}" \n export default base64ToUint8Array("${serialized}")`,
           map: null,
         };
       } else {
@@ -69,7 +78,7 @@ export function raw(opts: RawOptions = {}): Plugin {
 function getHelpers() {
   const js = String.raw;
   return js`
-function base64ToUint8Array(str) {
+export function base64ToUint8Array(str) {
   const data = atob(str);
   const size = data.length;
   const bytes = new Uint8Array(size);
