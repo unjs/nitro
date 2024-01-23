@@ -49,9 +49,13 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     alias: {
       // General
       "consola/core": "consola/core",
-      consola: "unenv/runtime/npm/consola",
-      // only mock debug in production
-      ...(nitro.options.dev ? {} : { debug: "unenv/runtime/npm/debug" }),
+      // only mock debug and consola in production
+      ...(nitro.options.dev
+        ? {}
+        : {
+            debug: "unenv/runtime/npm/debug",
+            consola: "unenv/runtime/npm/consola",
+          }),
       ...nitro.options.alias,
     },
   };
