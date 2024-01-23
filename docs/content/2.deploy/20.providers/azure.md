@@ -75,7 +75,7 @@ If you are using runtimeConfig, you will likely want to configure the correspond
 ## Azure Functions
 
 ::alert{type="warning"}
-There are several known issues with Azure Function deployments [#48](https://github.com/unjs/nitro-deploys/issues/48).
+There are several known issues with Azure Function deployments. Please see [unjs/nitro#2114](https://github.com/unjs/nitro/issues/2114).
 ::
 
 **Preset:** `azure_functions`
