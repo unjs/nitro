@@ -80,7 +80,7 @@ npx wrangler pages deploy dist
 ::
 
 ::alert{type="warning"}
-**Note:** This preset is deprecated.
+**Note:** Using this preset is not recommended.
 ::
 
 When using Workers you will need a `wrangler.toml` file, in your root directory.
