@@ -1,7 +1,10 @@
-import { promises as fsp } from "node:fs";
+import { promises as fsp, existsSync } from "node:fs";
+import { Worker } from "node:worker_threads";
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
-import { fixtureDir, setupTest } from "../tests";
+import { execa, execaCommandSync } from "execa";
+import { getRandomPort, waitForPort } from "get-port-please";
+import { fixtureDir, setupTest, testNitro } from "../tests";
 
 describe(
   "nitro:preset:azure",
@@ -46,6 +49,36 @@ describe(
         },
       },
     });
+
+    if (process.env.TEST_AZURE) {
+      testNitro(ctx, async () => {
+        const port = await getRandomPort();
+        const apiPort = await getRandomPort(); // Avoids conflicts with other tests
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Make sure output is written to disk
+        expect(existsSync(ctx.outDir));
+        const p = execa(
+          "swa",
+          `start .output/public --api-location .output/server --host 127.0.0.1 --port ${port} --api-port ${apiPort}`.split(
+            " "
+          ),
+          {
+            cwd: resolve(ctx.outDir, ".."),
+            stdio: "inherit",
+            // stderr: "inherit",
+            // stdout: "ignore",
+          }
+        );
+        ctx.server = {
+          url: `http://127.0.0.1:${port}`,
+          close: () => p.kill(),
+        } as any;
+        await waitForPort(port, { host: "127.0.0.1", retries: 20 });
+        return async ({ url, ...opts }) => {
+          const res = await ctx.fetch(url, opts);
+          return res;
+        };
+      });
+    }
 
     const config = await fsp
       .readFile(resolve(ctx.rootDir, "staticwebapp.config.json"), "utf8")

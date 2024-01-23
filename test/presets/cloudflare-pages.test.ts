@@ -40,7 +40,6 @@ describe("nitro:preset:cloudflare-pages", async () => {
           "/blog/static/*",
           "/build/*",
           "/favicon.ico",
-          "/icon.png",
           "/json-string",
           "/api/hello",
           "/prerender/index.html",
