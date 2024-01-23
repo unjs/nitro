@@ -83,7 +83,7 @@ export default defineNitroConfig({
     ignore: [
       // '/api/param/'
     ],
-    routes: ["/prerender", "/icon.png", "/404"],
+    routes: ["/prerender", "/404"],
   },
   experimental: {
     openAPI: true,
