@@ -274,9 +274,9 @@ declare module 'nitropack' {
         strict: nitro.options.typescript.strict,
         target: "ESNext",
         module: "ESNext",
-        moduleResolution: nitro.options.experimental.typescriptBundlerResolution
-          ? "Bundler"
-          : "Node",
+        moduleResolution: nitro.options.experimental.typescriptBundlerResolution === false
+          ? "Node"
+          : "Bundler",
         allowJs: true,
         resolveJsonModule: true,
         jsx: "preserve",
