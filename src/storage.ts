@@ -5,7 +5,7 @@ export type Mounts = Record<string, number>;
 
 export async function createStorage(nitro: Nitro) {
   const storage = _createStorage();
-  const mountPoints:Mounts={}
+  const mountPoints: Mounts = {};
   const mounts = {
     ...nitro.options.storage,
     ...nitro.options.devStorage,

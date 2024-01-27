@@ -3,8 +3,8 @@ import { prefixStorage } from "unstorage";
 import { Mounts } from "#internal/storage";
 import { storage } from "#internal/nitro/virtual/storage";
 
-export function useStorage<
-  T extends StorageValue = StorageValue,
->(base: keyof Mounts = ""): Storage<T> {
+export function useStorage<T extends StorageValue = StorageValue>(
+  base: keyof Mounts = ""
+): Storage<T> {
   return base ? prefixStorage<T>(storage, base) : storage;
 }
