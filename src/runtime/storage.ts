@@ -1,6 +1,6 @@
 import type { Storage, StorageValue } from "unstorage";
 import { prefixStorage } from "unstorage";
-import { mountPoints } from "../storage";
+import { mountPoints } from "#internal/storage";
 import { storage } from "#internal/nitro/virtual/storage";
 
 export function useStorage<
