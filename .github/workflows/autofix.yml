@@ -22,6 +22,6 @@ jobs:
       - run: pnpm stub
       - name: Fix lint issues
         run: npm run lint:fix
-      - uses: autofix-ci/action@bee19d72e71787c12ca0f29de72f2833e437e4c9
+      - uses: autofix-ci/action@ea32e3a12414e6d3183163c3424a7d7a8631ad84
         with:
           commit-message: "chore: apply automated fixes"

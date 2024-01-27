@@ -26,6 +26,7 @@ export interface Context {
   server?: Listener;
   isDev: boolean;
   isWorker: boolean;
+  isLambda: boolean;
   isIsolated: boolean;
   supportsEnv: boolean;
   env: Record<string, string>;
@@ -45,11 +46,18 @@ export const fixtureDir = fileURLToPath(
   new URL("fixture", import.meta.url).href
 );
 
-export const getPresetTmpDir = (preset: string) =>
-  resolve(
+export const getPresetTmpDir = (preset: string) => {
+  if (preset.startsWith("cloudflare")) {
+    return fileURLToPath(
+      new URL(`.tmp/${preset}`, import.meta.url) as any /* remove me */
+    );
+  }
+
+  return resolve(
     process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
     preset
   );
+};
 
 export async function setupTest(
   preset: string,
@@ -70,6 +78,7 @@ export async function setupTest(
       "vercel-edge",
       "winterjs",
     ].includes(preset),
+    isLambda: ["netlify", "aws-lambda"].includes(preset),
     isIsolated: ["winterjs"].includes(preset),
     supportsEnv: !["winterjs"].includes(preset),
     rootDir: fixtureDir,
@@ -78,6 +87,7 @@ export async function setupTest(
       NITRO_HELLO: "world",
       CUSTOM_HELLO_THERE: "general",
       SECRET: "secret",
+      APP_DOMAIN: "test.com",
     },
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
@@ -161,7 +171,10 @@ export function testNitro(
 ) {
   let _handler: TestHandler;
 
-  async function callHandler(options): Promise<TestHandlerResult> {
+  async function callHandler(
+    options,
+    callOpts: { binary?: boolean } = {}
+  ): Promise<TestHandlerResult> {
     const result = await _handler(options);
     if (!["Response", "_Response"].includes(result.constructor.name)) {
       return result as TestHandlerResult;
@@ -184,7 +197,9 @@ export function testNitro(
     }
 
     return {
-      data: destr(await (result as Response).text()),
+      data: callOpts.binary
+        ? Buffer.from(await (result as Response).arrayBuffer())
+        : destr(await (result as Response).text()),
       status: result.status,
       headers,
     };
@@ -235,26 +250,27 @@ export function testNitro(
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
   });
 
-  // aws lambda requires buffer responses to be base 64
-  const LambdaPresets = new Set(["netlify", "aws-lambda"]);
-  it.runIf(LambdaPresets.has(ctx.preset))(
-    "buffer image responses",
-    async () => {
-      const { data } = await callHandler({ url: "/icon.png" });
+  it("binary response", async () => {
+    const { data } = await callHandler({ url: "/icon.png" }, { binary: true });
+    let buffer: Buffer;
+    if (ctx.isLambda) {
+      // TODO: Handle base64 decoding in lambda tests themselves
       expect(typeof data).toBe("string");
-      const buffer = Buffer.from(data, "base64");
-      // check if buffer is a png
-      function isBufferPng(buffer: Buffer) {
-        return (
-          buffer[0] === 0x89 &&
-          buffer[1] === 0x50 &&
-          buffer[2] === 0x4e &&
-          buffer[3] === 0x47
-        );
-      }
-      expect(isBufferPng(buffer)).toBe(true);
+      buffer = Buffer.from(data, "base64");
+    } else {
+      buffer = data;
     }
-  );
+    // Check if buffer is a png
+    function isBufferPng(buffer: Buffer) {
+      return (
+        buffer[0] === 0x89 &&
+        buffer[1] === 0x50 &&
+        buffer[2] === 0x4e &&
+        buffer[3] === 0x47
+      );
+    }
+    expect(isBufferPng(buffer)).toBe(true);
+  });
 
   it("render JSX", async () => {
     const { data } = await callHandler({ url: "/jsx" });
@@ -429,9 +445,7 @@ export function testNitro(
     const { data } = await callHandler({
       url: "/stream",
     });
-    expect(data).toBe(
-      LambdaPresets.has(ctx.preset) ? btoa("nitroisawesome") : "nitroisawesome"
-    );
+    expect(data).toBe(ctx.isLambda ? btoa("nitroisawesome") : "nitroisawesome");
   });
 
   it.skipIf(!ctx.supportsEnv)("config", async () => {
@@ -446,8 +460,8 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        // Cloudflare environment variables are only available within the fetch event
-        dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
+        dynamic: "from-env",
+        url: "https://test.com",
         app: {
           baseURL: "/",
         },
@@ -466,6 +480,7 @@ export function testNitro(
           ctx.preset === "nitro-dev"
             ? "initial"
             : "from-env",
+        // url: "https://test.com",
         app: {
           baseURL: "/",
         },
@@ -630,14 +645,17 @@ export function testNitro(
     });
   });
 
-  describe("wasm", () => {
-    it.skipIf(ctx.isWorker || ctx.preset === "deno-server")(
-      "dynamic import wasm",
-      async () => {
-        expect((await callHandler({ url: "/wasm/dynamic" })).data).toBe(
-          "2+3=5"
-        );
-      }
-    );
+  describe.skipIf(ctx.preset === "cloudflare")("wasm", () => {
+    it("dynamic import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
+
+    it("static import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/static-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
   });
 }

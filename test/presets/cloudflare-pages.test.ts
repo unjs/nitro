@@ -13,29 +13,17 @@ describe("nitro:preset:cloudflare-pages", async () => {
     const mf = new Miniflare({
       modules: true,
       scriptPath: resolve(ctx.outDir, "_worker.js", "index.js"),
-      globals: { __env__: {} },
+      modulesRules: [{ type: "CompiledWasm", include: ["**/*.wasm"] }],
       compatibilityFlags: ["streams_enable_constructors"],
-      bindings: {
-        ...ctx.env,
-        ASSETS: {
-          fetch: async (request) => {
-            try {
-              const contents = await fsp.readFile(
-                join(ctx.outDir, new URL(request.url).pathname)
-              );
-              return new _Response(contents);
-            } catch {
-              return new _Response(null, { status: 404 });
-            }
-          },
-        },
-      },
+      sitePath: "",
+      bindings: { ...ctx.env },
     });
 
     return async ({ url, headers, method, body }) => {
       const res = await mf.dispatchFetch("http://localhost" + url, {
         headers: headers || {},
         method: method || "GET",
+        redirect: "manual",
         body,
       });
       return res as unknown as Response;
@@ -52,7 +40,6 @@ describe("nitro:preset:cloudflare-pages", async () => {
           "/blog/static/*",
           "/build/*",
           "/favicon.ico",
-          "/icon.png",
           "/json-string",
           "/api/hello",
           "/prerender/index.html",
