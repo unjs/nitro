@@ -1,6 +1,6 @@
 import type { Storage, StorageValue } from "unstorage";
 import { prefixStorage } from "unstorage";
-import { Mounts } from "#internal/storage";
+import { Mounts } from "../storage";
 import { storage } from "#internal/nitro/virtual/storage";
 
 export function useStorage<T extends StorageValue = StorageValue>(
