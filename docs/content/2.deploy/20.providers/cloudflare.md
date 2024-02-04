@@ -261,6 +261,52 @@ const stmt = await cloudflare.env.MY_D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
 ```
 
+### Local usage
+
+In order to access bindings during local dev mode, regardless of the chosen preset, it is recommended to use a `wrangler.toml` file (as well as a `.dev.vars` one) in combination with the [`nitro-cloudflare-dev` module](https://github.com/pi0/nitro-cloudflare-dev) as illustrated below.
+
 ::alert{type="warning"}
-Note that bindings cannot be accessed during dev mode, they will be available only when you preview your Nitro app through `wrangler` or in the production deployment, and in both cases they need to be properly configured (as presented in the Cloudflare [Pages](https://developers.cloudflare.com/pages/functions/bindings/) and [Workers](https://developers.cloudflare.com/workers/configuration/bindings/#bindings) documentation).
+**Note:** The `nitro-cloudflare-dev` module is experimental and likely a temporary solution for allowing local bindings usage. The Nitro team is actively looking into a more advanced integration with Cloudflare which could in the near future make the module unneeded.
+::
+
+In order to access bindings in dev mode we start by defining the bindings in a `wrangler.toml` file, this is for example how you would define a variable and a KV namespace:
+```ini [wrangler.toml]
+[vars]
+MY_VARIABLE="my-value"
+
+[[kv_namespaces]]
+binding = "MY_KV"
+id = "xxx"
+```
+
+::alert{type="warning"}
+**Note:** Only bindings in the default environment are recognized.
+::
+
+Next we install the `nitro-cloudflare-dev` module as well as the required `wrangler` package (if not already installed):
+
+```bash
+npm i -D nitro-cloudflare-dev wrangler
+```
+
+and use the module in the `nitro.config.js` file:
+
+```js [nitro.config.js]
+import nitroCloudflareBindings from "nitro-cloudflare-dev";
+
+export default defineNitroConfig({
+  modules: [nitroCloudflareBindings],
+});
+```
+
+From this moment, when running
+```bash
+npm run dev
+```
+you will be able to access the `MY_VARIABLE` and `MY_KV` from the request event just as illustrated above.
+
+::alert
+**Note:** Both `wrangler dev` and `wrangler pages dev` also pick up the bindings from the `wrangler.toml` file (as well as the `.dev.vars` one) meaning that after having set the variables once in your toml file they will be made available for both local development and preview.
+<br><br>
+If you're using Workers such bindings will also be picked up by `wrangler deploy`. If you're using Pages however, in order to access such bindings in your deployed application, you will still need to properly configure them in the [appropriate Cloudflare Dashboard settings page](https://dash.cloudflare.com/?to=/:account/pages/view/:pages-project/settings/functions).
 ::
