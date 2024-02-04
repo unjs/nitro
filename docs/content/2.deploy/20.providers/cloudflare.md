@@ -56,7 +56,7 @@ After having built your application you can preview it locally with wrangler by 
 npx wrangler pages dev dist
 ```
 
-### Deploy your app locally
+### Deploy from your local machine using wrangler
 
 After having built your application you can manually deploy it with wrangler, in order to do so first make sure to be
 logged into your Cloudflare account:
