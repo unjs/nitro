@@ -132,7 +132,7 @@ export async function writeTypes(nitro: Nitro) {
   if (nitro.unimport) {
     await nitro.unimport.init();
     // Remove file extension for benefit of TypeScript
-    const stripExtension = (path: string) => path.replace(/\.[a-z]+$/, "")
+    const stripExtension = (path: string) => path.replace(/\.[a-z]+$/, "");
 
     // TODO: fully resolve utils exported from `#imports`
     autoImportExports = await nitro.unimport
@@ -164,9 +164,6 @@ export async function writeTypes(nitro: Nitro) {
             path = join(dir, name, subpath || "");
           }
         }
-      }
-      if (existsSync(path) && !isDirectory(path)) {
-        path = path.replace(/\.[a-z]+$/, "");
       }
       if (isAbsolute(path)) {
         path = relative(typesDir, path);
