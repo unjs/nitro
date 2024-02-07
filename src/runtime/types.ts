@@ -24,13 +24,14 @@ export type CaptureError = (
 
 export interface NitroRuntimeHooks {
   close: () => void;
-  server: (server: Server) => void;
   error: CaptureError;
 
   request: NonNullable<AppOptions["onRequest"]>;
   beforeResponse: NonNullable<AppOptions["onBeforeResponse"]>;
   afterResponse: NonNullable<AppOptions["onAfterResponse"]>;
 
+  "dev:server": (server: Server) => void;
+  "node:server": (server: Server) => void;
   "render:response": (
     response: Partial<RenderResponse>,
     context: { event: H3Event }
