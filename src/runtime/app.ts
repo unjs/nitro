@@ -78,7 +78,7 @@ function createNitroApp(): NitroApp {
         .catch((error) => {
           captureError(error, { event, tags: ["request", "response"] });
         });
-      removeResponseHeader(event, "x-powered-by")
+      removeResponseHeader(event, "x-powered-by");
     },
     onAfterResponse: async (event, response) => {
       await nitroApp.hooks
