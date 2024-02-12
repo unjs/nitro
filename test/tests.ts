@@ -232,7 +232,7 @@ export function testNitro(
 
   it("removes the x-powered-by header", async () => {
     const res = await callHandler({ url: "/api/hello" });
-    expect(res.headers["x-powered-by"]).toBe(null);
+    expect(res.headers["x-powered-by"]).toBe(undefined);
   });
 
   it("Handle 404 not found", async () => {
