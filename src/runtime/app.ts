@@ -147,7 +147,7 @@ function createNitroApp(): NitroApp {
       event.captureError = (error, context) => {
         captureError(error, { event, ...context });
       };
-      //removeResponseHeader(event, "x-powered-by");
+      // removeResponseHeader(event, "x-powered-by");
     })
   );
 
