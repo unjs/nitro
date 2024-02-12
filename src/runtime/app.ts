@@ -10,6 +10,7 @@ import {
   H3Error,
   isEvent,
   H3Event,
+  removeResponseHeader,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -77,6 +78,7 @@ function createNitroApp(): NitroApp {
         .catch((error) => {
           captureError(error, { event, tags: ["request", "response"] });
         });
+      removeResponseHeader(event, "x-powered-by")
     },
     onAfterResponse: async (event, response) => {
       await nitroApp.hooks
