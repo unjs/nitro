@@ -230,6 +230,11 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("removes the x-powered-by header", async () => {
+    const res = await callHandler({ url: "/api/hello" });
+    expect(res.headers["x-powered-by"]).toBe(null);
+  })
+  
   it("Handle 404 not found", async () => {
     const res = await callHandler({ url: "/api/not-found" });
     expect(res.status).toBe(404);
