@@ -12,8 +12,7 @@ const server = Bun.serve({
       body = await request.arrayBuffer();
     }
 
-    const response = await nitroApp.localFetch(url.pathname + url.search, {
-      url: url.pathname + url.search,
+    return nitroApp.localFetch(url.pathname + url.search, {
       host: url.hostname,
       protocol: url.protocol,
       headers: request.headers,
@@ -21,8 +20,6 @@ const server = Bun.serve({
       redirect: request.redirect,
       body,
     });
-
-    return response;
   },
 });
 

@@ -1,14 +1,35 @@
 import "#internal/nitro/virtual/polyfill";
 // @ts-ignore
-import { serve } from "https://deno.land/std/http/server.ts";
 import { nitroApp } from "../app";
 
-serve((request: Request) => {
-  return handleRequest(request);
+// https://deno.land/api?s=Deno.ServeHandlerInfo
+type ServeHandlerInfo = {
+  remoteAddr: {
+    transport: "tcp" | "udp";
+    hostname: string;
+    port: number;
+  };
+};
+
+// @ts-expect-error unknown global Deno
+Deno.serve((request, info) => {
+  return handleRequest(request, info);
 });
 
-async function handleRequest(request: Request) {
+async function handleRequest(request: Request, info: ServeHandlerInfo) {
   const url = new URL(request.url);
+
+  const headers = new Headers(request.headers);
+
+  // Add client IP address to headers
+  // (rightmost is most trustable)
+  headers.append("x-forwarded-for", info.remoteAddr.hostname);
+
+  // There is currently no way to know if the request was made over HTTP or HTTPS
+  // Deno deploy force redirects to HTTPS so we assume HTTPS by default
+  if (!headers.has("x-forwarded-proto")) {
+    headers.set("x-forwarded-proto", "https");
+  }
 
   // https://deno.land/api?s=Body
   let body;
@@ -16,29 +37,12 @@ async function handleRequest(request: Request) {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
-    url: url.pathname + url.search,
+  return nitroApp.localFetch(url.pathname + url.search, {
     host: url.hostname,
     protocol: url.protocol,
-    headers: Object.fromEntries(request.headers.entries()),
+    headers,
     method: request.method,
     redirect: request.redirect,
     body,
   });
-
-  return new Response(r.body || undefined, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
-  });
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
 }

@@ -1,4 +1,4 @@
-import { promises as fsp } from "node:fs";
+import { existsSync, promises as fsp } from "node:fs";
 import { relative, resolve, join, dirname, isAbsolute } from "pathe";
 import { resolveAlias } from "pathe/utils";
 import * as rollup from "rollup";
@@ -10,12 +10,25 @@ import { debounce } from "perfect-debounce";
 import type { TSConfig } from "pkg-types";
 import type { RollupError } from "rollup";
 import type { OnResolveResult, PartialMessage } from "esbuild";
-import type { RouterMethod } from "h3";
+import { globby } from "globby";
+import {
+  lookupNodeModuleSubpath,
+  parseNodeModulePath,
+  resolvePath,
+} from "mlly";
+import { upperFirst } from "scule";
+import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
-import { prettyPath, writeFile, isDirectory } from "./utils";
+import {
+  prettyPath,
+  writeFile,
+  isDirectory,
+  resolvePath as resolveNitroPath,
+  nitroServerName,
+} from "./utils";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
-import type { Nitro } from "./types";
+import type { Nitro, NitroTypes, NitroBuildInfo } from "./types";
 import { runtimeDir } from "./dirs";
 import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
@@ -40,11 +53,29 @@ export async function copyPublicAssets(nitro: Nitro) {
     return;
   }
   for (const asset of nitro.options.publicAssets) {
-    if (await isDirectory(asset.dir)) {
-      await fse.copy(
-        asset.dir,
-        join(nitro.options.output.publicDir, asset.baseURL!),
-        { overwrite: false }
+    const srcDir = asset.dir;
+    const dstDir = join(nitro.options.output.publicDir, asset.baseURL!);
+    if (await isDirectory(srcDir)) {
+      const publicAssets = await globby("**", {
+        cwd: srcDir,
+        absolute: false,
+        dot: true,
+        ignore: nitro.options.ignore
+          .map((p) =>
+            p.startsWith("*") || p.startsWith("!*")
+              ? p
+              : relative(srcDir, resolve(nitro.options.srcDir, p))
+          )
+          .filter((p) => !p.startsWith("../")),
+      });
+      await Promise.all(
+        publicAssets.map(async (file) => {
+          const src = join(srcDir, file);
+          const dst = join(dstDir, file);
+          if (!existsSync(dst)) {
+            await fsp.cp(src, dst);
+          }
+        })
       );
     }
   }
@@ -65,10 +96,9 @@ export async function build(nitro: Nitro) {
 }
 
 export async function writeTypes(nitro: Nitro) {
-  const routeTypes: Record<
-    string,
-    Partial<Record<RouterMethod | "default", string[]>>
-  > = {};
+  const types: NitroTypes = {
+    routes: {},
+  };
 
   const typesDir = resolve(nitro.options.buildDir, "types");
 
@@ -78,20 +108,20 @@ export async function writeTypes(nitro: Nitro) {
     if (typeof mw.handler !== "string" || !mw.route) {
       continue;
     }
-    const relativePath = relative(typesDir, mw.handler).replace(
-      /\.[a-z]+$/,
-      ""
-    );
+    const relativePath = relative(
+      typesDir,
+      resolveNitroPath(mw.handler, nitro.options)
+    ).replace(/\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/, "");
 
-    if (!routeTypes[mw.route]) {
-      routeTypes[mw.route] = {};
+    if (!types.routes[mw.route]) {
+      types.routes[mw.route] = {};
     }
 
     const method = mw.method || "default";
-    if (!routeTypes[mw.route][method]) {
-      routeTypes[mw.route][method] = [];
+    if (!types.routes[mw.route][method]) {
+      types.routes[mw.route][method] = [];
     }
-    routeTypes[mw.route][method].push(
+    types.routes[mw.route][method].push(
       `Simplify<Serialize<Awaited<ReturnType<typeof import('${relativePath}').default>>>>`
     );
   }
@@ -101,23 +131,57 @@ export async function writeTypes(nitro: Nitro) {
 
   if (nitro.unimport) {
     await nitro.unimport.init();
+    // TODO: fully resolve utils exported from `#imports`
     autoImportExports = await nitro.unimport
       .toExports(typesDir)
-      .then((r) => r.replace(/#internal\/nitro/g, runtimeDir));
+      .then((r) =>
+        r.replace(/#internal\/nitro/g, relative(typesDir, runtimeDir))
+      );
+
+    const resolvedImportPathMap = new Map<string, string>();
+    const imports = await nitro.unimport
+      .getImports()
+      .then((r) => r.filter((i) => !i.type));
+
+    for (const i of imports) {
+      if (resolvedImportPathMap.has(i.from)) {
+        continue;
+      }
+      let path = resolveAlias(i.from, nitro.options.alias);
+      if (!isAbsolute(path)) {
+        const resolvedPath = await resolvePath(i.from, {
+          url: nitro.options.nodeModulesDirs,
+        }).catch(() => null);
+        if (resolvedPath) {
+          const { dir, name } = parseNodeModulePath(resolvedPath);
+          if (!dir || !name) {
+            path = resolvedPath;
+          } else {
+            const subpath = await lookupNodeModuleSubpath(resolvedPath);
+            path = join(dir, name, subpath || "");
+          }
+        }
+      }
+      if (existsSync(path) && !isDirectory(path)) {
+        path = path.replace(/\.[a-z]+$/, "");
+      }
+      if (isAbsolute(path)) {
+        path = relative(typesDir, path);
+      }
+      resolvedImportPathMap.set(i.from, path);
+    }
+
     autoImportedTypes = [
       (
         await nitro.unimport.generateTypeDeclarations({
           exportHelper: false,
-          resolvePath: (i) => {
-            if (i.from.startsWith("#internal/nitro")) {
-              return resolveAlias(i.from, nitro.options.alias);
-            }
-            return i.from;
-          },
+          resolvePath: (i) => resolvedImportPathMap.get(i.from) ?? i.from,
         })
       ).trim(),
     ];
   }
+
+  await nitro.hooks.callHook("types:extend", types);
 
   const routes = [
     "// Generated by nitro",
@@ -125,7 +189,7 @@ export async function writeTypes(nitro: Nitro) {
     "declare module 'nitropack' {",
     "  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T",
     "  interface InternalApi {",
-    ...Object.entries(routeTypes).map(([path, methods]) =>
+    ...Object.entries(types.routes).map(([path, methods]) =>
       [
         `    '${path}': {`,
         ...Object.entries(methods).map(
@@ -210,7 +274,10 @@ declare module 'nitropack' {
         strict: nitro.options.typescript.strict,
         target: "ESNext",
         module: "ESNext",
-        moduleResolution: "Node",
+        moduleResolution:
+          nitro.options.experimental.typescriptBundlerResolution === false
+            ? "Node"
+            : "Bundler",
         allowJs: true,
         resolveJsonModule: true,
         jsx: "preserve",
@@ -218,26 +285,70 @@ declare module 'nitropack' {
         jsxFactory: "h",
         jsxFragmentFactory: "Fragment",
         paths: {
-          "#imports": [join(typesDir, "nitro-imports")],
+          "#imports": [
+            relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports")),
+          ],
           ...(nitro.options.typescript.internalPaths
             ? {
-                "#internal/nitro": [join(runtimeDir, "index")],
-                "#internal/nitro/*": [join(runtimeDir, "*")],
+                "#internal/nitro": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
+                ],
+                "#internal/nitro/*": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
+                ],
               }
             : {}),
         },
       },
       include: [
-        relative(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
+        relativeWithDot(tsconfigDir, join(typesDir, "nitro.d.ts")).replace(
           /^(?=[^.])/,
           "./"
         ),
-        join(relative(tsconfigDir, nitro.options.rootDir), "**/*"),
+        join(relativeWithDot(tsconfigDir, nitro.options.rootDir), "**/*"),
         ...(nitro.options.srcDir === nitro.options.rootDir
           ? []
-          : [join(relative(tsconfigDir, nitro.options.srcDir), "**/*")]),
+          : [join(relativeWithDot(tsconfigDir, nitro.options.srcDir), "**/*")]),
       ],
     });
+
+    for (const alias in tsConfig.compilerOptions!.paths) {
+      const paths = tsConfig.compilerOptions!.paths[alias];
+      tsConfig.compilerOptions!.paths[alias] = await Promise.all(
+        paths.map(async (path: string) => {
+          if (!isAbsolute(path)) {
+            return path;
+          }
+          const stats = await fsp
+            .stat(path)
+            .catch(() => null /* file does not exist */);
+          return relativeWithDot(
+            tsconfigDir,
+            stats?.isFile()
+              ? path.replace(/(?<=\w)\.\w+$/g, "") /* remove extension */
+              : path
+          );
+        })
+      );
+    }
+
+    tsConfig.include = [
+      ...new Set(
+        tsConfig.include.map((p) =>
+          isAbsolute(p) ? relativeWithDot(tsconfigDir, p) : p
+        )
+      ),
+    ];
+    if (tsConfig.exclude) {
+      tsConfig.exclude = [
+        ...new Set(
+          tsConfig.exclude!.map((p) =>
+            isAbsolute(p) ? relativeWithDot(tsconfigDir, p) : p
+          )
+        ),
+      ];
+    }
+
     buildFiles.push({
       path: tsConfigPath,
       contents: JSON.stringify(tsConfig, null, 2),
@@ -288,7 +399,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
 
   if (!nitro.options.static) {
     nitro.logger.info(
-      `Building Nitro Server (preset: \`${nitro.options.preset}\`)`
+      `Building ${nitroServerName(nitro)} (preset: \`${nitro.options.preset}\`)`
     );
     const build = await rollup.rollup(rollupConfig).catch((error) => {
       nitro.logger.error(formatRollupError(error));
@@ -298,23 +409,31 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     await build.write(rollupConfig.output);
   }
 
-  // Write build info
-  const nitroConfigPath = resolve(nitro.options.output.dir, "nitro.json");
-  const buildInfo = {
-    date: new Date(),
+  // Write .output/nitro.json
+  const buildInfoPath = resolve(nitro.options.output.dir, "nitro.json");
+  const buildInfo: NitroBuildInfo = {
+    date: new Date().toJSON(),
     preset: nitro.options.preset,
+    framework: nitro.options.framework,
+    versions: {
+      nitro: nitroVersion,
+    },
     commands: {
       preview: nitro.options.commands.preview,
       deploy: nitro.options.commands.deploy,
     },
   };
-  await writeFile(nitroConfigPath, JSON.stringify(buildInfo, null, 2));
+  await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));
 
   if (!nitro.options.static) {
-    nitro.logger.success("Nitro server built");
+    if (nitro.options.logging.buildSuccess) {
+      nitro.logger.success(`${nitroServerName(nitro)} built`);
+    }
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
-        await generateFSTree(nitro.options.output.serverDir)
+        await generateFSTree(nitro.options.output.serverDir, {
+          compressedSizes: nitro.options.logging.compressedSizes,
+        })
       );
     }
   }
@@ -324,7 +443,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   // Show deploy and preview hints
   const rOutput = relative(process.cwd(), nitro.options.output.dir);
   const rewriteRelativePaths = (input: string) => {
-    return input.replace(/\s\.\/(\S*)/g, ` ${rOutput}/$1`);
+    return input.replace(/([\s:])\.\/(\S*)/g, `$1${rOutput}/$2`);
   };
   if (buildInfo.commands.preview) {
     nitro.logger.success(
@@ -368,10 +487,14 @@ function startRollupWatcher(nitro: Nitro, rollupConfig: RollupConfig) {
       // Finished building all bundles
       case "END": {
         nitro.hooks.callHook("compiled", nitro);
-        nitro.logger.success(
-          "Nitro built",
-          start ? `in ${Date.now() - start} ms` : ""
-        );
+
+        if (nitro.options.logging.buildSuccess) {
+          nitro.logger.success(
+            `${nitroServerName(nitro)} built`,
+            start ? `in ${Date.now() - start} ms` : ""
+          );
+        }
+
         nitro.hooks.callHook("dev:reload");
         return;
       }
@@ -402,10 +525,12 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
     join(dir, "api"),
     join(dir, "routes"),
     join(dir, "middleware", GLOB_SCAN_PATTERN),
+    join(dir, "plugins"),
+    join(dir, "modules"),
   ]);
 
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);
-  const reloadWacher = watch(watchPatterns, { ignoreInitial: true }).on(
+  const reloadWatcher = watch(watchPatterns, { ignoreInitial: true }).on(
     "all",
     (event) => {
       if (watchReloadEvents.has(event)) {
@@ -416,7 +541,7 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
 
   nitro.hooks.hook("close", () => {
     rollupWatcher.close();
-    reloadWacher.close();
+    reloadWatcher.close();
   });
 
   nitro.hooks.hook("rollup:reload", () => reload());
@@ -447,4 +572,10 @@ function formatRollupError(_error: RollupError | OnResolveResult) {
   } catch {
     return _error?.toString();
   }
+}
+
+const RELATIVE_RE = /^\.{1,2}\//;
+function relativeWithDot(from: string, to: string) {
+  const rel = relative(from, to);
+  return RELATIVE_RE.test(rel) ? rel : "./" + rel;
 }

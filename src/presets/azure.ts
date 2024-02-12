@@ -26,28 +26,34 @@ async function writeRoutes(nitro: Nitro) {
     version: "2.0",
   };
 
-  let nodeVersion = "16";
+  // https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#supported-versions
+  const supportedNodeVersions = new Set(["16", "18", "20"]);
+  let nodeVersion = "18";
   try {
     const currentNodeVersion = JSON.parse(
       await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
     ).engines.node;
-    if (["16", "14"].includes(currentNodeVersion)) {
+    if (supportedNodeVersions.has(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
     }
   } catch {
     const currentNodeVersion = process.versions.node.slice(0, 2);
-    if (["16", "14"].includes(currentNodeVersion)) {
+    if (supportedNodeVersions.has(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
     }
   }
 
+  // Merge custom config into the generated config
   const config = {
+    ...nitro.options.azure?.config,
+    routes: [], // Overwrite routes for now, we will add existing routes after generating routes
     platform: {
       apiRuntime: `node:${nodeVersion}`,
+      ...nitro.options.azure?.config?.platform,
     },
-    routes: [],
     navigationFallback: {
       rewrite: "/api/server",
+      ...nitro.options.azure?.config?.navigationFallback,
     },
   };
 
@@ -97,6 +103,28 @@ async function writeRoutes(nitro: Nitro) {
       route,
       rewrite: fileName,
     });
+  }
+
+  // Prepend custom routes to the beginning of the routes array and override if they exist
+  if (
+    nitro.options.azure?.config &&
+    "routes" in nitro.options.azure.config &&
+    Array.isArray(nitro.options.azure.config.routes)
+  ) {
+    // We iterate through the reverse so the order in the custom config is persisted
+    for (const customRoute of nitro.options.azure.config.routes.reverse()) {
+      const existingRouteMatchIndex = config.routes.findIndex(
+        (value) => value.route === customRoute.route
+      );
+
+      if (existingRouteMatchIndex === -1) {
+        // If we don't find a match, put the customRoute at the beginning of the array
+        config.routes.unshift(customRoute);
+      } else {
+        // Otherwise override the existing route with our customRoute
+        config.routes[existingRouteMatchIndex] = customRoute;
+      }
+    }
   }
 
   const functionDefinition = {

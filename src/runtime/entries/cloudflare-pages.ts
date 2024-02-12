@@ -27,7 +27,7 @@ export default {
     context: EventContext<CFPagesEnv, string, any>
   ) {
     const url = new URL(request.url);
-    if (isPublicAssetURL(url.pathname)) {
+    if (env.ASSETS /* !miniflare */ && isPublicAssetURL(url.pathname)) {
       return env.ASSETS.fetch(request);
     }
 
@@ -52,7 +52,7 @@ export default {
       host: url.hostname,
       protocol: url.protocol,
       method: request.method,
-      headers: request.headers,
+      headers: request.headers as unknown as Headers,
       body,
     });
   },

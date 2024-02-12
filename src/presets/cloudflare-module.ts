@@ -8,7 +8,7 @@ export const cloudflareModule = defineNitroPreset({
   entry: "#internal/nitro/entries/cloudflare-module",
   exportConditions: ["workerd"],
   commands: {
-    preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
+    preview: "npx wrangler dev ./server/index.mjs --site ./public",
     deploy: "npx wrangler deploy",
   },
   rollupConfig: {
@@ -16,7 +16,12 @@ export const cloudflareModule = defineNitroPreset({
     output: {
       format: "esm",
       exports: "named",
+      inlineDynamicImports: false,
     },
+  },
+  wasm: {
+    lazy: false,
+    esmImport: true,
   },
   hooks: {
     async compiled(nitro: Nitro) {

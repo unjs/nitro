@@ -3,15 +3,13 @@ import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
-import {
-  resolveModuleExportNames,
-  resolvePath as resolveModule,
-  parseNodeModulePath,
-} from "mlly";
+import { resolveModuleExportNames } from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
-import { isTest, isDebug } from "std-env";
+import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
+import consola from "consola";
+import { version } from "../package.json";
 import {
   resolvePath,
   resolveFile,
@@ -32,6 +30,7 @@ import { nitroImports } from "./imports";
 const NitroDefaults: NitroConfig = {
   // General
   debug: isDebug,
+  timing: isDebug,
   logLevel: isTest ? 1 : 3,
   runtimeConfig: { app: {}, nitro: {} },
   appConfig: {},
@@ -55,6 +54,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
+  tasks: {},
   imports: {
     exclude: [],
     dirs: [],
@@ -63,12 +63,19 @@ const NitroDefaults: NitroConfig = {
   },
   virtual: {},
   compressPublicAssets: false,
+  ignore: [],
 
   // Dev
   dev: false,
   devServer: { watch: [] },
   watchOptions: { ignoreInitial: true },
   devProxy: {},
+
+  // Logging
+  logging: {
+    compressedSizes: true,
+    buildSuccess: true,
+  },
 
   // Routing
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
@@ -77,8 +84,11 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    autoSubfolderIndex: true,
     concurrency: 1,
     interval: 0,
+    retry: 3,
+    retryDelay: 500,
     failOnError: false,
     crawlLinks: false,
     ignore: [],
@@ -118,6 +128,12 @@ const NitroDefaults: NitroConfig = {
   nodeModulesDirs: [],
   hooks: {},
   commands: {},
+
+  // Framework
+  framework: {
+    name: "nitro",
+    version,
+  },
 };
 
 export interface LoadConfigOptions {
@@ -131,7 +147,9 @@ export async function loadOptions(
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
-    (configOverrides.preset as string) || process.env.NITRO_PRESET;
+    (configOverrides.preset as string) ||
+    process.env.NITRO_PRESET ||
+    process.env.SERVER_PRESET;
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
   }
@@ -214,20 +232,24 @@ export async function loadOptions(
   }
   options.output.dir = resolvePath(
     options.output.dir || NitroDefaults.output.dir,
-    options
+    options,
+    options.rootDir
   );
   options.output.publicDir = resolvePath(
     options.output.publicDir || NitroDefaults.output.publicDir,
-    options
+    options,
+    options.rootDir
   );
   options.output.serverDir = resolvePath(
     options.output.serverDir || NitroDefaults.output.serverDir,
-    options
+    options,
+    options.rootDir
   );
 
   options.nodeModulesDirs.push(resolve(options.workspaceDir, "node_modules"));
   options.nodeModulesDirs.push(resolve(options.rootDir, "node_modules"));
   options.nodeModulesDirs.push(resolve(pkgDir, "node_modules"));
+  options.nodeModulesDirs.push(resolve(pkgDir, "..")); // pnpm
   options.nodeModulesDirs = [
     ...new Set(
       options.nodeModulesDirs.map((dir) => resolve(options.rootDir, dir))
@@ -318,19 +340,6 @@ export async function loadOptions(
     serverAsset.dir = resolve(options.srcDir, serverAsset.dir);
   }
 
-  // Dedup built-in dependencies
-  for (const pkg of ["defu", "h3", "radix3", "unstorage"]) {
-    const entryPath = await resolveModule(pkg, { url: import.meta.url });
-    const { dir, name } = parseNodeModulePath(entryPath);
-    if (!dir || !name) {
-      continue;
-    }
-    if (!options.alias[pkg + "/"]) {
-      const pkgDir = join(dir, name);
-      options.alias[pkg + "/"] = pkgDir;
-    }
-  }
-
   // Build-only storage
   const fsMounts = {
     root: resolve(options.rootDir),
@@ -358,7 +367,7 @@ export async function loadOptions(
     };
   } else if (options.node && options.storage.data === undefined) {
     options.storage.data = {
-      driver: "fs",
+      driver: "fsLite",
       base: "./.data/kv",
     };
   }
@@ -384,6 +393,23 @@ export async function loadOptions(
     });
   }
 
+  // Native fetch
+  if (options.experimental.nodeFetchCompat === undefined) {
+    options.experimental.nodeFetchCompat = nodeMajorVersion < 18;
+    if (options.experimental.nodeFetchCompat && provider !== "stackblitz") {
+      consola.warn(
+        "Node fetch compatibility is enabled. Please consider upgrading to Node.js >= 18."
+      );
+    }
+  }
+  if (!options.experimental.nodeFetchCompat) {
+    options.alias = {
+      "node-fetch-native/polyfill": "unenv/runtime/mock/empty",
+      "node-fetch-native": "node-fetch-native/native",
+      ...options.alias,
+    };
+  }
+
   return options;
 }
 
@@ -400,7 +426,9 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     app: {
       baseURL: config.baseURL,
     },
-    nitro: {},
+    nitro: {
+      envExpansion: config.experimental.envExpansion,
+    },
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
   return runtimeConfig as NitroRuntimeConfig;
@@ -497,7 +525,7 @@ function _resolveExportConditions(
   }
 
   // 4. Add default conditions
-  resolvedConditions.push("import", "module", "default");
+  resolvedConditions.push("import", "default");
 
   // Dedup with preserving order
   return resolvedConditions.filter(
