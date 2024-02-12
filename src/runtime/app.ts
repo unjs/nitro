@@ -78,7 +78,6 @@ function createNitroApp(): NitroApp {
         .catch((error) => {
           captureError(error, { event, tags: ["request", "response"] });
         });
-      // removeResponseHeader(event, "x-powered-by");
     },
     onAfterResponse: async (event, response) => {
       await nitroApp.hooks
@@ -148,6 +147,7 @@ function createNitroApp(): NitroApp {
       event.captureError = (error, context) => {
         captureError(error, { event, ...context });
       };
+      removeResponseHeader(event, "x-powered-by");
     })
   );
 
