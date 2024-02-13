@@ -6,11 +6,11 @@ import type {
   ParameterObject,
   PathsObject,
 } from "openapi-typescript";
-import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig } from "#internal/nitro";
+import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 
 // Served as /_nitro/openapi.json
-export default eventHandler((event) => {
+export default eventHandler(() => {
   const base = useRuntimeConfig()?.app?.baseURL;
 
   return <OpenAPI3>{
@@ -53,6 +53,13 @@ function getPaths(): PathsObject {
       paths[route] = item;
     } else {
       Object.assign(paths[route], item);
+    }
+
+    if (h.meta && h.meta.openAPI) {
+      paths[route][method] = {
+        ...paths[route][method],
+        ...h.meta.openAPI,
+      };
     }
   }
 
