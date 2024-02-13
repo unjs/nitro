@@ -186,6 +186,11 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     app.use(
       route,
       eventHandler(async (event) => {
+        const { rewrite } = opts;
+        if (rewrite) {
+          event.path = rewrite(event.path);
+          event.node.req.url = event.path;
+        }
         await proxy.handle(event);
       })
     );
