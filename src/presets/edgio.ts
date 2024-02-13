@@ -29,10 +29,6 @@ export const edgio = defineNitroPreset({
           {
             connector: "./edgio",
             routes: "./routes.js",
-            backends: {},
-            includeFiles: {
-              "server/**": true,
-            },
           },
           null,
           2
@@ -43,32 +39,117 @@ export const edgio = defineNitroPreset({
       await writeFile(
         resolve(nitro.options.output.dir, "routes.js"),
         `
-import { Router } from '@edgio/core/router'
-import { isProductionBuild } from '@edgio/core/environment'
+import { edgioRoutes } from "@edgio/core";
+import { isProductionBuild } from "@edgio/core/environment";
+import { Router } from "@edgio/core/router";
 
-const router = new Router()
-
+const router = new Router();
+router.match("/:path*", ({ renderWithApp }) => {
+  renderWithApp();
+});
 if (isProductionBuild()) {
-  router.static('public')
+  router.static("public");
+}
+router.use(edgioRoutes);
+
+export default router;
+        `.trim()
+      );
+
+      // Write edgio/build.js
+      await writeFile(
+        resolve(nitro.options.output.dir, "edgio/build.js"),
+        `
+const path = require("path");
+const deploy = require("@edgio/core/deploy");
+const FrameworkBuildError = require("@edgio/core/errors/FrameworkBuildError");
+
+function _interopDefaultCompat(e) {
+  return e && typeof e === "object" && "default" in e ? e.default : e;
 }
 
-router.fallback(({ renderWithApp }) => { renderWithApp() })
+const FrameworkBuildError__default =
+  /*#__PURE__*/ _interopDefaultCompat(FrameworkBuildError);
 
-export default router
-    `.trim()
+const appDir = process.cwd();
+async function build(options) {
+  const builder = new deploy.DeploymentBuilder();
+  builder.clearPreviousBuildOutput();
+  if (!options.skipFramework) {
+    const command = "node ./server/index.mjs";
+    try {
+      await builder.exec(command);
+    } catch (e) {
+      throw new FrameworkBuildError__default("Nitropack", command, e);
+    }
+  }
+  builder.addJSAsset(path.join(appDir, "server"));
+  await builder.build();
+}
+
+module.exports = build;
+        `.trim()
+      );
+
+      // Write edgio/dev.js
+      await writeFile(
+        resolve(nitro.options.output.dir, "edgio/dev.js"),
+        `
+const dev$1 = require("@edgio/core/dev");
+
+function dev() {
+  const isWin = process.platform === "win32";
+  return dev$1.createDevServer({
+    label: "Nitropack",
+    command: (port) =>
+      isWin
+        ? ${"`set PORT=${port} && node ./server/index.mjs`"}
+        : ${"`PORT=${port} node ./server/index.mjs`"},
+    ready: [/localhost:/i],
+  });
+}
+
+module.exports = dev;
+        `.trim()
+      );
+
+      // Write edgio/init.js
+      await writeFile(
+        resolve(nitro.options.output.dir, "edgio/init.js"),
+        `
+const path = require("path");
+const deploy = require("@edgio/core/deploy");
+
+function init() {
+  new deploy.DeploymentBuilder(process.cwd())
+    .addDefaultAppResources(path.join(__dirname, "default-app"))
+    .addDefaultEdgioScripts();
+}
+
+module.exports = init;
+        `.trim()
       );
 
       // Write edgio/prod.js
       await writeFile(
         resolve(nitro.options.output.dir, "edgio/prod.js"),
         `
-module.exports = async function entry (port) {
-  process.env.PORT = process.env.NITRO_PORT = port.toString()
-  console.log('Starting Edgio server on port', port)
-  await import('../server/index.mjs')
-  console.log('Edgio server started')
+const path = require("path");
+const fs = require("fs");
+
+async function prod(port) {
+  const appFilePath = path.resolve("server", "index.mjs");
+  if (fs.existsSync(appFilePath)) {
+    process.env.NITRO_PORT = port.toString();
+    return await import(
+      /* webpackIgnore: true */
+      appFilePath
+    );
+  }
 }
-      `.trim()
+
+module.exports = prod;
+        `.trim()
       );
 
       // Write and prepare package.json for deployment
@@ -86,8 +167,8 @@ module.exports = async function entry (port) {
               preview: "npm i && edgio build && edgio run --production",
             },
             devDependencies: {
-              "@edgio/cli": "^6",
-              "@edgio/core": "^6",
+              "@edgio/cli": "^7",
+              "@edgio/core": "^7",
             },
           },
           null,

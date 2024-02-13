@@ -24,10 +24,11 @@ You can use Nitropack to test your app's developement experience locally:
 NITRO_PRESET=edgio npx nitropack build
 ```
 
-To simulate on local how your app would run in production with Edgio, run the following command:
+To simulate on local how your app would run in production with Edgio, locate the output directory and run the following command:
 
 ```bash
-edgio build && edgio run --production
+# cd `.output` dir and install dependencies before then
+npm run preview
 ```
 
 ## Deploying from your local machine
@@ -35,7 +36,7 @@ edgio build && edgio run --production
 Once you have tested your application locally, you may deploy using:
 
 ```bash
-edgio deploy
+npm run deploy
 ```
 
 ## Deploying using CI/CD
@@ -43,5 +44,5 @@ edgio deploy
 If you are deploying from a non-interactive environment, you will need to create an account on [Edgio Developer Console](https://app.layer0.co) first and setup a [deploy token](https://docs.edg.io/guides/basics/deployments#deploy-from-ci). Once the deploy token is created, save it as a secret to your environment. You can start the deploy by running:
 
 ```bash
-edgio deploy --token=XXX
+npm run deploy --token=XXX
 ```
