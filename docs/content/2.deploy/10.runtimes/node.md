@@ -44,6 +44,9 @@ You can customize server behavior using following environment variables:
 - `NITRO_SHUTDOWN_SIGNALS` - Allows you to specify which signals should be handled. Each signal should be separated with a space. Defaults to `'SIGINT SIGTERM'`.
 - `NITRO_SHUTDOWN_TIMEOUT` - Sets the amount of time (in milliseconds) before a forced shutdown occurs. Defaults to `'30000'` milliseconds.
 - `NITRO_SHUTDOWN_FORCE` - When set to true, it triggers `process.exit()` at the end of the shutdown process. If it's set to `'false'`, the process will simply let the event loop clear. Defaults to `'true'`.
+- `NITRO_NODE_REQUEST_TIMEOUT` - Sets the timeout value in milliseconds for receiving the entire request from the client. Defaults to `'300000'` milliseconds.
+- `NITRO_NODE_KEEPALIVE_TIMEOUT` - The number of milliseconds of inactivity a server needs to wait for additional incoming data, after it has finished writing the last response, before a socket will be destroyed. If the server receives new data before the keep-alive timeout has fired, it will reset the regular inactivity timeout, i.e., server.timeout. Defaults to `'5000'` milliseconds.
+- `NITRO_NODE_HEADERS_TIMEOUT` - Limit the amount of time the parser will wait to receive the complete HTTP headers. Defaults to minimum between `'60000'` or `NITRO_NODE_REQUEST_TIMEOUT` milliseconds.
 
 ## Cluster mode
 
