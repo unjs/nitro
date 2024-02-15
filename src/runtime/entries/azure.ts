@@ -17,7 +17,7 @@ export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
     url = "/api/" + (req.params.url || "");
   }
 
-  const { body, status, statusText, headers } = await nitroApp.localCall({
+  const { body, status, headers } = await nitroApp.localCall({
     url,
     headers: req.headers,
     method: req.method,
@@ -25,11 +25,12 @@ export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
     body: req.rawBody,
   });
 
+  // (v3 - current) https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v3#http-response
+  // (v4) https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#http-response
   context.res = {
     status,
-    // cookies https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#http-response
     cookies: getAzureParsedCookiesFromHeaders(headers),
     headers: normalizeLambdaOutgoingHeaders(headers, true),
-    body: body ? body.toString() : statusText,
+    body,
   };
 }

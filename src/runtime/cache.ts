@@ -28,6 +28,9 @@ export interface CacheOptions<T = any> {
   shouldBypassCache?: (...args: any[]) => boolean;
   group?: string;
   integrity?: any;
+  /**
+   * Number of seconds to cache the response. Defaults to 1.
+   */
   maxAge?: number;
   swr?: boolean;
   staleMaxAge?: number;
@@ -129,7 +132,9 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
 
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
 
-    if (expired && event && event.waitUntil) {
+    if (entry.value === undefined) {
+      await _resolvePromise;
+    } else if (expired && event && event.waitUntil) {
       event.waitUntil(_resolvePromise);
     }
 
@@ -255,10 +260,17 @@ export function defineCachedEventHandler<
       if (entry.value.body === undefined) {
         return false;
       }
+      // https://github.com/unjs/nitro/pull/1857
+      if (
+        entry.value.headers.etag === "undefined" ||
+        entry.value.headers["last-modified"] === "undefined"
+      ) {
+        return false;
+      }
       return true;
     },
     group: opts.group || "nitro/handlers",
-    integrity: [opts.integrity, handler],
+    integrity: opts.integrity || hash([handler, opts]),
   };
 
   const _cachedHandler = cachedFunction<ResponseCacheEntry<Response>>(
@@ -342,11 +354,14 @@ export function defineCachedEventHandler<
 
       // Collect cachable headers
       const headers = event.node.res.getHeaders();
-      headers.etag =
-        String(headers.Etag || headers.etag) || `W/"${hash(body)}"`;
-      headers["last-modified"] =
-        String(headers["Last-Modified"] || headers["last-modified"]) ||
-        new Date().toUTCString();
+      headers.etag = String(
+        headers.Etag || headers.etag || `W/"${hash(body)}"`
+      );
+      headers["last-modified"] = String(
+        headers["Last-Modified"] ||
+          headers["last-modified"] ||
+          new Date().toUTCString()
+      );
       const cacheControl = [];
       if (opts.swr) {
         if (opts.maxAge) {

@@ -1,5 +1,7 @@
 import { Worker } from "node:worker_threads";
 import { existsSync, accessSync, promises as fsp } from "node:fs";
+import { writeFile } from "node:fs/promises";
+import { TLSSocket } from "node:tls";
 import { debounce } from "perfect-debounce";
 import {
   App,
@@ -17,7 +19,8 @@ import serveStatic from "serve-static";
 import { resolve } from "pathe";
 import { joinURL } from "ufo";
 import { FSWatcher, watch } from "chokidar";
-import type { Nitro } from "../types";
+import type { Nitro, NitroBuildInfo } from "../types";
+import { version as nitroVersion } from "../../package.json";
 import { createVFSHandler } from "./vfs";
 import defaultErrorHandler from "./error";
 
@@ -122,6 +125,21 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     await killWorker(oldWorker, nitro);
     // Create a new worker
     currentWorker = await initWorker(workerEntry);
+    // Write nitro.json
+    const buildInfoPath = resolve(nitro.options.buildDir, "nitro.json");
+    const buildInfo: NitroBuildInfo = {
+      date: new Date().toJSON(),
+      preset: nitro.options.preset,
+      framework: nitro.options.framework,
+      versions: {
+        nitro: nitroVersion,
+      },
+      dev: {
+        pid: process.pid,
+        workerAddress: currentWorker?.address,
+      },
+    };
+    await writeFile(buildInfoPath, JSON.stringify(buildInfo, null, 2));
   }
   const reload = debounce(() => {
     reloadPromise = _reload()
@@ -176,15 +194,19 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   // Main worker proxy
   const proxy = createProxy();
   proxy.proxy.on("proxyReq", (proxyReq, req) => {
-    const proxyRequestHeaders = proxyReq.getHeaders();
-    if (req.socket.remoteAddress && !proxyRequestHeaders["x-forwarded-for"]) {
-      proxyReq.setHeader("X-Forwarded-For", req.socket.remoteAddress);
+    // TODO: Use httpxy to set these headers
+    if (!proxyReq.hasHeader("x-forwarded-for")) {
+      proxyReq.appendHeader("x-forwarded-for", req.socket.remoteAddress);
     }
-    if (req.socket.remotePort && !proxyRequestHeaders["x-forwarded-port"]) {
-      proxyReq.setHeader("X-Forwarded-Port", req.socket.remotePort);
+    if (!proxyReq.hasHeader("x-forwarded-port")) {
+      const localPort = req?.socket?.localPort;
+      if (localPort) {
+        proxyReq.setHeader("x-forwarded-port", req.socket.localPort);
+      }
     }
-    if (req.socket.remoteFamily && !proxyRequestHeaders["x-forwarded-proto"]) {
-      proxyReq.setHeader("X-Forwarded-Proto", req.socket.remoteFamily);
+    if (!proxyReq.hasHeader("x-forwarded-Proto")) {
+      const encrypted = (req?.connection as TLSSocket)?.encrypted;
+      proxyReq.setHeader("x-forwarded-proto", encrypted ? "https" : "http");
     }
   });
 
@@ -213,7 +235,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       if (!address) {
         return errorHandler(lastError, event);
       }
-      await proxy.handle(event, { target: address }).catch((err) => {
+      await proxy.handle(event, { target: address as any }).catch((err) => {
         lastError = err;
         throw err;
       });

@@ -7,7 +7,7 @@ export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
 type FileInfo = { path: string; fullPath: string };
 
 const httpMethodRegex =
-  /\.(connect|delete|get|head|options|patch|post|put|trace)/;
+  /\.(connect|delete|get|head|options|patch|post|put|trace)$/;
 
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
@@ -76,6 +76,22 @@ export async function scanServerRoutes(
 
 export async function scanPlugins(nitro: Nitro) {
   const files = await scanFiles(nitro, "plugins");
+  return files.map((f) => f.fullPath);
+}
+
+export async function scanTasks(nitro: Nitro) {
+  const files = await scanFiles(nitro, "tasks");
+  return files.map((f) => {
+    const name = f.path
+      .replace(/\/index$/, "")
+      .replace(/\.[A-Za-z]+$/, "")
+      .replace(/\//g, ":");
+    return { name, handler: f.fullPath };
+  });
+}
+
+export async function scanModules(nitro: Nitro) {
+  const files = await scanFiles(nitro, "modules");
   return files.map((f) => f.fullPath);
 }
 

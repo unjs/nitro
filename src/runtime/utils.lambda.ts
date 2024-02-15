@@ -1,5 +1,6 @@
 import type { Readable } from "node:stream";
 import type { APIGatewayProxyEventHeaders } from "aws-lambda";
+import { toBuffer } from "./utils";
 
 export function normalizeLambdaIncomingHeaders(
   headers?: APIGatewayProxyEventHeaders
@@ -38,48 +39,11 @@ export async function normalizeLambdaOutgoingBody(
   if (!body) {
     return { type: "text", body: "" };
   }
-  const buffer = await _toBuffer(body as any);
+  const buffer = await toBuffer(body as any);
   const contentType = (headers["content-type"] as string) || "";
   return isTextType(contentType)
     ? { type: "text", body: buffer.toString("utf8") }
     : { type: "binary", body: buffer.toString("base64") };
-}
-
-function _toBuffer(data: ReadableStream | Readable | Uint8Array) {
-  if ("pipeTo" in data && typeof data.pipeTo === "function") {
-    return new Promise<Buffer>((resolve, reject) => {
-      const chunks: Buffer[] = [];
-      data
-        .pipeTo(
-          new WritableStream({
-            write(chunk) {
-              chunks.push(chunk);
-            },
-            close() {
-              resolve(Buffer.concat(chunks));
-            },
-            abort(reason) {
-              reject(reason);
-            },
-          })
-        )
-        .catch(reject);
-    });
-  }
-  if ("pipe" in data && typeof data.pipe === "function") {
-    return new Promise<Buffer>((resolve, reject) => {
-      const chunks: Buffer[] = [];
-      data
-        .on("data", (chunk: any) => {
-          chunks.push(chunk);
-        })
-        .on("end", () => {
-          resolve(Buffer.concat(chunks));
-        })
-        .on("error", reject);
-    });
-  }
-  return Buffer.from(data as unknown as Uint16Array);
 }
 
 // -- Internal --
