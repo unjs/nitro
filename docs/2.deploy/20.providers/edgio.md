@@ -1,16 +1,16 @@
 # Edgio
 
-Deploy Nitro apps to Edgio (formerly Layer0).
+> Deploy Nitro apps to Edgio.
 
-**Preset:** `edgio` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `edgio`
 
-Nitro provides a built-in preset to generate output format compatible with [Edgio (formerly Layer0)](https://edg.io/).
+:read-more{title="edgio.io" to="https://edg.io/"}
 
 Edgio (formerly Layer0) extends the capabilities of a traditional CDN by not only hosting your static content, but also providing server-side rendering for progressive web applications as well as caching both your APIs and HTML at the network edge to provide your users with the fastest browsing experience.
 
 If this is your first time deploying to Edgio, the interactive CLI as part of the `deploy` command will prompt to authenticate using your browser. You may also [sign up](https://app.layer0.co/signup) prior to deployment.
 
-## Install the Edgio CLI
+## Install the Eedgio CLI
 
 ```bash
 npm i -g @edgio/cli

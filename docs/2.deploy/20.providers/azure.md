@@ -1,18 +1,18 @@
 # Azure
 
-Deploy Nitro apps to Azure.
+> Deploy Nitro apps to Azure Static Web apps or functions.
 
-## Azure Static Web Apps
+## Azure static web apps
 
-**Preset:** `azure` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `azure`
 
-::alert
-**Zero Config Provider**
-:br
-Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+:read-more{title="Azure Static Web Apps" to="https://azure.microsoft.com/en-us/products/app-service/static"}
+
+::note
+Integration with this provider is possible with [zero configuration](/deploy/#zero-config-providers).
 ::
 
-Azure Static Web Apps are designed to be deployed continuously in a [GitHub Actions workflow](https://docs.microsoft.com/en-us/azure/static-web-apps/github-actions-workflow). By default, Nitro will detect this deployment environment and enable the `azure` preset.
+[Azure Static Web Apps](https://azure.microsoft.com/en-us/products/app-service/static) are designed to be deployed continuously in a [GitHub Actions workflow](https://docs.microsoft.com/en-us/azure/static-web-apps/github-actions-workflow). By default, Nitro will detect this deployment environment and enable the `azure` preset.
 
 ### Local preview
 
@@ -38,13 +38,13 @@ Nitro will automatically add the following properties based on the following cri
 | **[navigationFallback.rewrite](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#fallback-routes)** | Is always `/api/server` | `/api/server` |
 | **[routes](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#routes)** | All prerendered routes are added. Additionally, if you do not have an `index.html` file an empty one is created for you for compatibility purposes and also requests to `/index.html` are redirected to the root directory which is handled by `/api/server`.  | `[]` |
 
-### Custom Configuration
+### Custom configuration
 
 You can alter the Nitro generated configuration using `azure.config` option.
 
 Custom routes will be added and matched first. In the case of a conflict (determined if an object has the same route property), custom routes will override generated ones.
 
-### Deploy from CI/CD via GitHub Actions
+### Deploy from CI/CD via GitHub actions
 
 When you link your GitHub repository to Azure Static Web Apps, a workflow file is added to the repository.
 
@@ -72,15 +72,14 @@ That's it! Now Azure Static Web Apps will automatically deploy your Nitro-powere
 
 If you are using runtimeConfig, you will likely want to configure the corresponding [environment variables on Azure](https://docs.microsoft.com/en-us/azure/static-web-apps/application-settings).
 
-## Azure Functions
-
-::alert{type="warning"}
-There are several known issues with Azure Function deployments. Please see [unjs/nitro#2114](https://github.com/unjs/nitro/issues/2114).
-::
+## Azure functions
 
 **Preset:** `azure_functions`
 
-**Note:** If you encounter any issues, please ensure you're using a Node.js 14+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#setting-the-node-version).
+::important
+If you encounter any issues, please ensure you're using a Node.js 16+ runtime. You can find more information about [how to set the Node version in the Azure docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#setting-the-node-version).
+Please see [unjs/nitro#2114](https://github.com/unjs/nitro/issues/2114) for some common issues.
+::
 
 ### Local preview
 
@@ -107,7 +106,7 @@ az functionapp deployment source config-zip -g <resource-group> -n <app-name> --
 cd dist && func azure functionapp publish --javascript <app-name>
 ```
 
-### Deploy from CI/CD via GitHub Actions
+### Deploy from CI/CD via GitHub actions
 
 First, obtain your Azure Functions Publish Profile and add it as a secret to your GitHub repository settings following [these instructions](https://github.com/Azure/functions-action#using-publish-profile-as-deployment-credential-recommended).
 
@@ -167,6 +166,6 @@ jobs:
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
 ```
 
-### Optimizing Azure Functions
+### Optimizing Azure functions
 
 Consider [turning on immutable packages](https://docs.microsoft.com/en-us/azure/app-service/deploy-run-package) to support running your app from the zip file. This can speed up cold starts.

@@ -1,20 +1,21 @@
 # Cloudflare
 
-Deploy Nitro apps to CloudFlare.
+> Deploy Nitro apps to Cloudflare.
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_pages`
 
-::alert
-**Note:** This is the recommended preset for Cloudflare deployments, please consider using the alternative ones only if you have special requirements or needs.
+:read-more{title="Cloudflare Pages" to="https://pages.cloudflare.com/"}
+
+::note
+This is the recommended preset for Cloudflare deployments, please consider using the alternative ones only if you have special requirements or needs.
 ::
 
-::alert
-**Zero Config Provider**
-:br
-Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+::note
+Integration with this provider is possible with zero configuration.
 ::
+
 
 Nitro automatically generates a `_routes.json` file that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overridden with the config option `cloudflare.pages.routes` ([read more](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)).
 
@@ -73,13 +74,13 @@ npx wrangler pages deploy dist
 
 ## Cloudflare Module Workers
 
-**Preset:** `cloudflare_module` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare_module`
 
-::alert{type="info"}
+::note
 **Note:** This preset uses the [module worker syntax](https://developers.cloudflare.com/workers/learning/migrating-to-module-workers/) for deployment.
 ::
 
-::alert{type="warning"}
+::warning
 **Note:** Using this preset is not recommended.
 ::
 
@@ -150,13 +151,13 @@ npx wrangler deploy
 
 ## Cloudflare Service Workers
 
-**Preset:** `cloudflare` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cloudflare`
 
-::alert{type="info"}
+::note
 **Note:** This preset uses the [service worker syntax](https://developers.cloudflare.com/workers/learning/service-worker/) for deployment.
 ::
 
-::alert{type="warning"}
+::warning
 **Note:** This preset is deprecated.
 ::
 
@@ -166,7 +167,7 @@ The way this preset works is identical to that of the `cloudflare_module` one pr
 
 Regardless on whether you're using Cloudflare Pages or Cloudflare workers, you can use the [Wrangler GitHub actions](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler) to deploy your application.
 
-::alert{type="info"}
+::note
 **Note:** Remember to [instruct Nitro to use the correct preset](/deploy/#changing-the-deployment-preset) (note that this is necessary for all presets including the `cloudflare_pages` one).
 ::
 
@@ -174,7 +175,7 @@ Regardless on whether you're using Cloudflare Pages or Cloudflare workers, you c
 
 Nitro allows you to universally access environment variables using `process.env` or `import.meta.env` or the runtime config.
 
-::alert
+::note
 Make sure to only access environment variables **within the event lifecycle**  and not in global contexts since Cloudflare only makes them available during the request lifecycle and not before.
 ::
 
@@ -201,7 +202,7 @@ NITRO_HELLO_THERE="captain"
 SECRET="top-secret"
 ```
 
-::alert{type="info"}
+::note
 **Note:** Make sure you add `.env` to the `.gitignore` file so that you don't commit it as it can contain sensitive information.
 ::
 
@@ -212,7 +213,7 @@ After build, when you try out your project locally with `wrangler dev` or `wrang
 
 If you are using a `.env` file while developing, your `.dev.vars` should be identical to it.
 
-::alert{type="info"}
+::note
 **Note:** Make sure you add `.dev.vars` to the `.gitignore` file so that you don't commit it as it can contain sensitive information.
 ::
 
@@ -225,11 +226,11 @@ For production, use the cloudflare dashboard or the [`wrangler secret`](https://
 
 You can specify a custom `wrangler.toml` file and define vars inside.
 
-::alert{type="info"}
+::note
 **Note:** `wrangler.toml` isn't supported by cloudflare pages.
 ::
 
-::alert{type="warning"}
+::warning
 Note that this isn't recommend for sensitive data.
 ::
 
@@ -261,6 +262,6 @@ const stmt = await cloudflare.env.MY_D1.prepare('SELECT id FROM table')
 const { results } = await stmt.all()
 ```
 
-::alert{type="warning"}
+::warning
 Note that bindings cannot be accessed during dev mode, they will be available only when you preview your Nitro app through `wrangler` or in the production deployment, and in both cases they need to be properly configured (as presented in the Cloudflare [Pages](https://developers.cloudflare.com/pages/functions/bindings/) and [Workers](https://developers.cloudflare.com/workers/configuration/bindings/#bindings) documentation).
 ::

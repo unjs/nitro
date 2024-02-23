@@ -1,12 +1,12 @@
 # Heroku
 
-Deploy Nitro apps to Heroku.
+> Deploy Nitro apps to Heroku.
 
-**Preset:** `heroku` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `heroku`
 
-Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configuration.
+:read-more{title="heroku.com" to="https://heroku.com/"}
 
-## Using the Heroku CLI
+## Using the heroku CLI
 
 1. Create a new Heroku app.
 
@@ -36,7 +36,7 @@ Nitro supports deploying on [Heroku](https://heroku.com/) with minimal configura
    ```
 
 
-## With Nginx
+## With nginx
 
 1. Add the heroku Nginx buildpack [here](https://github.com/heroku/heroku-buildpack-nginx.git)
 

@@ -1,10 +1,10 @@
 # GitHub Pages
 
-Deploy Nitro apps to GitHub Pages.
+> Deploy Nitro apps to GitHub Pages.
 
-**Preset:** `github_pages` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `github_pages`
 
-Nitro supports deploying on [GitHub Pages](https://pages.github.com/) with minimal configuration.
+:read-more{title="Github Pages" to="https://pages.github.com/"}
 
 ## Setup
 

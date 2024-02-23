@@ -1,11 +1,12 @@
 # AWS Lambda
 
-Deploy Nitro apps to AWS Lambda.
+> Deploy Nitro apps to AWS Lambda.
 
-**Preset:** `aws_lambda` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `aws_lambda`
+
+:read-more{title="AWS Lambda" to="https://aws.amazon.com/lambda/"}
 
 Nitro provides a built-in preset to generate output format compatible with [AWS Lambda](https://aws.amazon.com/lambda/).
-
 The output entrypoint in `.output/server/index.mjs` is compatible with [AWS Lambda format](https://docs.aws.amazon.com/lex/latest/dg/lambda-input-response-format.html).
 
 It can be used programmatically or as part of a deployment.

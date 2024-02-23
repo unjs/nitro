@@ -1,12 +1,10 @@
 # Deno Deploy
 
-Deploy Nitro apps to [Deno Deploy](https://deno.com/deploy).
+> Deploy Nitro apps to [Deno Deploy](https://deno.com/deploy).
 
-**Preset:** `deno_deploy` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `deno_deploy`
 
-::alert{type="warning"}
-Deno deploy preset is experimental.
-::
+:read-more{title="Deno Deploy" to="https://deno.com/deploy"}
 
 ## Deploy with the CLI
 
@@ -23,7 +21,7 @@ cd .output
 deployctl deploy --project=my-project server/index.ts
 ```
 
-## Deploy within CI/CD using GitHub Actions
+## Deploy within CI/CD using gitHub actions
 
 You just need to include the deployctl GitHub Action as a step in your workflow.
 
@@ -62,3 +60,7 @@ jobs:
           entrypoint: server/index.ts
           root: .output
 ```
+
+## Deno runtime
+
+:read-more{to="/deploy/runtimes/deno"}

@@ -1,22 +1,19 @@
 ---
 icon: simple-icons:bun
-
 ---
 
 # Bun
 
-Run Nitro apps with [Bun](https://bun.sh/) runtime.
+> Run Nitro apps with Bun runtime.
 
-**Preset:** `bun` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `bun`
 
-::alert{type="warning"}
-Bun preset is experimental and available to try via [edge channel](/guide/getting-started#nightly-release-channel).
-::
+Nitro output is compatible with Bun runtime. While using default [Node.js](/deploy/runtimes/node) you can also run the output in bun, using `bun` preset has advantage of better optimizations.
 
-## Building for Bun
-
-After building with bun preset using `NITRO_PRESET=bun`, you can run server in production using:
+After building with bun preset using `bun` as preset, you can run server in production using:
 
 ```bash
 bun run ./.output/server/index.mjs
 ```
+
+:read-more{to="https://bun.sh"}

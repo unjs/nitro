@@ -1,30 +1,26 @@
 # Firebase
 
-Deploy Nitro apps to Firebase.
+> Deploy Nitro apps to Firebase.
 
-**Preset:** `firebase` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `firebase`
 
-Nitro supports [Firebase Hosting](https://firebase.google.com/docs/hosting) with Cloud Functions out of the box.
+:read-more{title="Firebase Hosting" to="https://firebase.google.com/docs/hosting"}
 
-::alert{type=""}
-**Note**: You need to be on the **Blaze plan** to use Nitro with Cloud Functions.
+::note
+You need to be on the **Blaze plan** to use Nitro with cloud functions.
 ::
 
-::alert
-**Note**: This preset will deploy to firebase functions 1st gen by default. If you want to deploy to firebase functions 2nd gen, see the [instructions below](#using-2nd-generation-firebase-functions).
-::
-
-::alert{type="warning"}
-**Note:** Firebase preset is under development. Consider using [Edge Release Channel](/guide/getting-started#nightly-release-channel) in order to use latest updates and gen 2.
+::important
+This preset will deploy to firebase functions 1st gen by default. If you want to deploy to firebase functions 2nd gen, see the [instructions below](#using-2nd-generation-firebase-functions).
 ::
 
 ## Project Setup
 
-### Using Firebase CLI (recommended)
+### Using firebase CLI (recommended)
 
 You may instead prefer to set up your project with the Firebase CLI, which will fetch your project ID for you, add required dependencies (see above) and even set up automated deployments via GitHub Actions (for hosting only). [Learn about installing the firebase CLI](https://firebase.google.com/docs/cli#windows-npm).
 
-#### 1. Install Firebase CLI Globally
+#### 1. Install firebase CLI globally
 
 Always try to use the latest version of the Firebase CLI.
 
@@ -34,7 +30,7 @@ npm install -g firebase-tools@latest
 
 **Note**: You need to be on [^11.18.0](https://github.com/firebase/firebase-tools/releases/tag/v11.18.0) to deploy a `nodejs18` function.
 
-#### 2. Initialize your Firebase Project
+#### 2. Initialize your firebase project
 
 ```bash
 firebase login
@@ -61,7 +57,7 @@ Once complete, add the following to your `firebase.json` to enable server render
 
 You can find more details in the [Firebase documentation](https://firebase.google.com/docs/hosting/quickstart).
 
-### Alternative Method
+### Alternative method
 
 If you don't already have a `firebase.json` in your root directory, Nitro will create one the first time you run it. In this file, you will need to replace `<your_project_id>` with the ID of your Firebase project. This file should then be committed to the git.
 
@@ -79,7 +75,7 @@ It is recommended to create a `.firebaserc` file so you don't need to manually p
 
 This file is usually generated when you initialize your project with the Firebase CLI. But if you don't have one, you can create it manually.
 
-#### 2. Install Firebase Dependencies
+#### 2. Install firebase dependencies
 
 Then, add Firebase dependencies to your project:
 
@@ -98,7 +94,7 @@ bun add -D firebase-admin firebase-functions firebase-functions-test
 ```
 ::
 
-#### 3. Log Into the Firebase CLI
+#### 3. Log into the firebase CLI
 
 Make sure you are authenticated with the firebase cli. Run this command and follow the prompts:
 
@@ -107,7 +103,7 @@ npx firebase-tools login
 ```
 
 
-## Local Preview
+## Local preview
 
 You can preview a local version of your site if you need to test things out without deploying.
 
@@ -116,7 +112,7 @@ NITRO_PRESET=firebase npm run build
 firebase emulators:start
 ```
 
-## Build and Deploy
+## Build and dploy
 
 Deploy to Firebase Hosting by running a Nitro build and then running the `firebase deploy` command.
 
@@ -134,7 +130,7 @@ If you installed the Firebase CLI globally, you can also run:
 firebase deploy
 ```
 
-## Using 2nd Generation Firebase Functions
+## Using 2nd generation firebase functions
 
 - [Comparison between 1st and 2nd generation functions](https://firebase.google.com/docs/functions/version-comparison)
 
@@ -161,7 +157,7 @@ export default defineNuxtConfig({
 ```
 ::
 
-::alert
+::note
 If you cannot use configuration for any reason, alternatively you can use `NITRO_FIREBASE_GEN` environment variable.
 ::
 
@@ -201,7 +197,7 @@ export default defineNuxtConfig({
 
 You can also set options for 1st generation Cloud Functions if the `gen` option is set to `1`. Note these are different from the options for 2nd generation Cloud Functions.
 
-### Runtime Node.js Version
+### Runtime Node.js version
 
 You can set custom Node.js version in configuration:
 
@@ -250,7 +246,7 @@ firebase deploy --only functions:server,hosting
 
 ## Advanced
 
-### Renaming Function
+### Renaming function
 
 When deploying multiple apps within the same Firebase project, you must give your server a unique name in order to avoid overwriting
 your functions.

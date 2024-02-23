@@ -1,14 +1,10 @@
 # IIS
 
-Deploy Nitro apps to IIS.
-
-::alert{type="warning"}
-This is an experimental preset.
-::
+> Deploy Nitro apps to IIS.
 
 ## Using [IISnode](https://github.com/Azure/iisnode)
 
-**Preset:** `iis_node` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `iis_node`
 
 1. Install the latest LTS version of [Node.js](https://nodejs.org/en/) on your Windows Server.
 1. Install [IISnode](https://github.com/azure/iisnode/releases)
@@ -16,9 +12,9 @@ This is an experimental preset.
 3. In IIS, add `.mjs` as a new mime type and set its content type to `application/javascript`.
 4. Deploy the contents of your `.output` folder to your website in IIS.
 
-## Using IIS Handler
+## Using IIS handler
 
-**Preset:** `iis_handler` / `iis` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `iis_handler` / `iis`
 
 You can use IIS http handler directly.
 
@@ -26,7 +22,7 @@ You can use IIS http handler directly.
 2. Install [IIS `HttpPlatformHandler` Module](https://www.iis.net/downloads/microsoft/httpplatformhandler)
 3. Copy your `.output` directory into the Windows Server, and create a website on IIS pointing to that exact directory.
 
-## IIS Config options
+## IIS config options
 
 ::code-group
 

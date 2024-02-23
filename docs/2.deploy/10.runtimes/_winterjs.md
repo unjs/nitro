@@ -4,19 +4,19 @@ icon: game-icons:cold-heart
 
 # WinterJS
 
-**Preset:** `winterjs` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `winterjs`
 
 You can easily build Nitro powered applications to run with [wasmerio/winterjs](https://github.com/wasmerio/winterjs) runtime.
 
 [WinterJS](https://github.com/wasmerio/winterjs) is a JavaScript Service Workers server written in Rust, that uses the SpiderMonkey runtime to execute JavaScript (the same runtime that Firefox uses) ([announcement](https://wasmer.io/posts/announcing-winterjs-service-workers)).
 
 
-::alert{type="warning"}
+::warning
 🌙 WinterJS is currently supported in **nightly release channel**. Read the docs for using [Nightly Release Channel](/guide/getting-started#nightly-release-channel).
 ::
 
 
-::alert{type="warning"}
+::warning
 🚧 WinterJS runtime is unstable and under heavy development. Follow [unjs/nitro#1861](https://github.com/unjs/nitro/issues/1861) for status and information.
 ::
 

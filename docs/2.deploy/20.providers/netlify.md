@@ -1,13 +1,13 @@
 # Netlify
 
-Deploy Nitro apps to Netlify.
+> Deploy Nitro apps to Netlify functions or edge.
 
-**Preset:** `netlify` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `netlify`
 
-::alert
-**Zero Config Provider**
-:br
-Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+:read-more{title="Netlify Functions" to="https://www.netlify.com/platform/core/functions/"}
+
+::note
+Integration with this provider is possible with [zero configuration](/deploy/#zero-config-providers).
 ::
 
 Normally, the deployment to Netlify does not require any configuration.
@@ -21,24 +21,28 @@ If you want to add custom redirects, you can do so with [`routeRules`](/config#r
 
 For deployment, just push to your git repository [as you would normally do for Netlify](https://docs.netlify.com/configure-builds/get-started/).
 
-::alert{type="note"}
+::note{type="note"}
 Make sure the publish directory is set to `dist` when creating a new project.
 ::
 
-## Netlify Edge Functions
+## Netlify edge functions
 
-**Preset:** `netlify_edge` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `netlify_edge`
 
-Netlify Edge Functions use Deno and the powerful V8 JavaScript runtime to let you run globally distributed functions for the fastest possible response times. ([Read More](https://www.netlify.com/blog/announcing-serverless-compute-with-edge-functions))
+Netlify Edge Functions use Deno and the powerful V8 JavaScript runtime to let you run globally distributed functions for the fastest possible response times.
+
+:read-more{title="Netlify Edge functions" to="https://docs.netlify.com/edge-functions/overview/"}
 
 Nitro output can directly run the server at the edge. Closer to your users.
 
-::alert{type="note"}
+::note{type="note"}
 Make sure the publish directory is set to `dist` when creating a new project.
 ::
 
-## On-demand Builders
+## On-demand builders
 
-**Preset:** `netlify_builder` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `netlify_builder`
 
-On-demand Builders are serverless functions used to generate web content as needed that’s automatically cached on Netlify’s Edge CDN. They enable you to build pages for your site when a user visits them for the first time and then cache them at the edge for subsequent visits.  ([Read More](https://docs.netlify.com/configure-builds/on-demand-builders/))
+On-demand Builders are serverless functions used to generate web content as needed that’s automatically cached on Netlify’s Edge CDN. They enable you to build pages for your site when a user visits them for the first time and then cache them at the edge for subsequent visits.
+
+:read-more{title="Netlify On-demand Builders" to="https://docs.netlify.com/configure-builds/on-demand-builders/"}

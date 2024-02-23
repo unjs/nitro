@@ -1,13 +1,13 @@
 # StormKit
 
-Deploy Nitro apps to StormKit.
+> Deploy Nitro apps to StormKit.
 
-**Preset:** `stormkit` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `stormkit`
 
-::alert
-**Zero Config Provider**
-:br
-Integration with [Stormkit](https://www.stormkit.io/) is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+:read-more{title="Stormkit" to="https://www.stormkit.io"}
+
+::note
+Integration with [Stormkit](https://www.stormkit.io/) is possible with zero configuration.
 ::
 
 ## Setup

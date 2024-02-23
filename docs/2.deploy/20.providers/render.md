@@ -1,10 +1,10 @@
 # Render.com
 
-Deploy Nitro apps to Render.
+> Deploy Nitro apps to Render.com.
 
-**Preset:** `render_com` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `render_com`
 
-Nitro supports deploying on [Render](https://render.com/) with minimal configuration.
+:read-more{title="render.com" to="https://render.com"}
 
 ## Set up application
 

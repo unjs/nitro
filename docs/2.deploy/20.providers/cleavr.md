@@ -1,16 +1,15 @@
 # Cleavr
 
-Deploy Nitro apps to Cleavr.
+> Deploy Nitro apps to Cleavr.
 
-**Preset:** `cleavr` ([switch to this preset](/deploy/#changing-the-deployment-preset))
+**Preset:** `cleavr`
 
-::alert
-**Zero Config Provider**
-:br
-Integration with this provider is possible with zero configuration. ([Learn More](/deploy/#zero-config-providers))
+:read-more{title="cleavr.io" to="https://cleavr.io"}
+
+::note
+Integration with this provider is possible with [zero configuration](/deploy/#zero-config-providers).
 ::
 
-Nitro provides a built-in preset to generate output format compatible with [Cleavr.io](https://cleavr.io/).
 
 ## Set up your web app
 

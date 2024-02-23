@@ -1,9 +1,10 @@
 # yaml-language-server: $schema=https://unpkg.com/undocs/schema/config.json
 name: Nitro
 shortDescription: Next Generation Server Toolkit
-description: Create web servers with everything you need and deploy anywhere you want.
+description: Create web servers with everything you need and deploy them wherever you prefer.
 github: unjs/nitro
 url: https://nitro.unjs.io
+themeColor: "red"
 # automd: true
 redirects:
   /deploy/node: /deploy/runtimes/node
@@ -14,7 +15,7 @@ landing:
       icon: "i-simple-icons-lightning"
       to: "https://stackblitz.com/github/unjs/nitro/tree/main/examples/hello-world"
   contributors: true
-  featuresTitle: "A Server Toolkit for the Modern Web"
+  featuresTitle: "A Server for the Modern Web"
   features:
     - title: "Rapid Development"
       description: "Zero config setup with hot module replacement for server code in development."
