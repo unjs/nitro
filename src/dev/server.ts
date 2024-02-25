@@ -249,7 +249,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     listener.server.on("upgrade", (req, sock, head) => {
       proxy.proxy.ws(
         req,
-        sock,
+        sock as any,
         {
           target: getWorkerAddress(),
         },
