@@ -70,8 +70,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       crossws:
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.2.3
+        version: 0.2.3
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -3638,8 +3638,8 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  /crossws@0.2.2:
-    resolution: {integrity: sha512-SsxhRN2sKF7HstaSPxeQWSGygOhRm8GdROwk1Av1Yn2yvC1xkuVNQcOpCVXKo6GceaTi5E5fKfmaP4Cszr19FA==}
+  /crossws@0.2.3:
+    resolution: {integrity: sha512-bAdbYPj/ej8+WCVRVnjEr54WYI/LncI25G/pJPZteO2CXUQFrhj5IOCscw9qsYKGKTWs9NkimUtTjdp9SoLD9A==}
     peerDependencies:
       uWebSockets.js: '*'
     peerDependenciesMeta:
@@ -5416,7 +5416,7 @@ packages:
     resolution: {integrity: sha512-AbaH6IDnZN6nmbnJOH72y3c5Wwh9P97soSVdGSBbcDACRdkC0FEWf25pzx4f/NuOCK6quHmW18yF2Wx+G4Zi1A==}
     dependencies:
       cookie-es: 1.0.0
-      crossws: 0.2.2
+      crossws: 0.2.3
       defu: 6.1.4
       destr: 2.0.3
       iron-webcrypto: 1.0.0
@@ -6232,7 +6232,7 @@ packages:
       citty: 0.1.6
       clipboardy: 4.0.0
       consola: 3.2.3
-      crossws: 0.2.2
+      crossws: 0.2.3
       defu: 6.1.4
       get-port-please: 3.1.2
       h3: 1.11.1
