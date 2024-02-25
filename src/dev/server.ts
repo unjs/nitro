@@ -246,6 +246,16 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   let listeners: Listener[] = [];
   const _listen: NitroDevServer["listen"] = async (port, opts?) => {
     const listener = await listen(toNodeListener(app), { port, ...opts });
+    listener.server.on("upgrade", (req, sock, head) => {
+      proxy.proxy.ws(
+        req,
+        sock,
+        {
+          target: getWorkerAddress(),
+        },
+        head
+      );
+    });
     listeners.push(listener);
     return listener;
   };
