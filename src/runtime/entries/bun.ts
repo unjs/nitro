@@ -11,7 +11,11 @@ const server = Bun.serve({
   port: process.env.NITRO_PORT || process.env.PORT || 3000,
   websocket,
   async fetch(req, server) {
-    if (handleUpgrade && (await handleUpgrade(req, server))) {
+    if (
+      import.meta._websocket &&
+      handleUpgrade &&
+      (await handleUpgrade(req, server))
+    ) {
       return;
     }
 

@@ -20,7 +20,10 @@ const { handleUpgrade } = import.meta._websocket
 
 async function handleEvent(event: FetchEvent) {
   // Websocket upgrade
-  if (event.request.headers.get("upgrade") === "websocket") {
+  if (
+    import.meta._websocket &&
+    event.request.headers.get("upgrade") === "websocket"
+  ) {
     return handleUpgrade(event.request as any, {}, event as any);
   }
 

@@ -16,7 +16,10 @@ const { handleUpgrade } = import.meta._websocket
   : undefined;
 
 Deno.serve((request, info) => {
-  if (request.headers.get("upgrade") === "websocket") {
+  if (
+    import.meta._websocket &&
+    request.headers.get("upgrade") === "websocket"
+  ) {
     return handleUpgrade(request, info);
   }
   return handleRequest(request, info);

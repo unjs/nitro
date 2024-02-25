@@ -25,7 +25,10 @@ interface CFModuleEnv {
 export default {
   async fetch(request: Request, env: CFModuleEnv, context: ExecutionContext) {
     // Websocket upgrade
-    if (request.headers.get("upgrade") === "websocket") {
+    if (
+      import.meta._websocket &&
+      request.headers.get("upgrade") === "websocket"
+    ) {
       return handleUpgrade(request as any, env, context);
     }
 

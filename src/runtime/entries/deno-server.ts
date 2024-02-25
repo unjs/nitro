@@ -42,11 +42,12 @@ const { handleUpgrade } = import.meta._websocket
   : undefined;
 
 async function handler(request: Request, info: any) {
-  if (request.headers.get("upgrade") === "websocket") {
+  if (
+    import.meta._websocket &&
+    request.headers.get("upgrade") === "websocket"
+  ) {
     return handleUpgrade(request, info);
   }
-
-  const url = new URL(request.url);
 
   // https://deno.land/api?s=Body
   let body;
