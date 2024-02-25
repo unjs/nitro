@@ -1,5 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
-// @ts-ignore
+import wsAdapter from "crossws/adapters/deno";
 import { nitroApp } from "../app";
 
 // https://deno.land/api?s=Deno.ServeHandlerInfo
@@ -11,8 +11,14 @@ type ServeHandlerInfo = {
   };
 };
 
-// @ts-expect-error unknown global Deno
+const { handleUpgrade } = import.meta._websocket
+  ? wsAdapter(nitroApp.h3App.websocket)
+  : undefined;
+
 Deno.serve((request, info) => {
+  if (request.headers.get("upgrade") === "websocket") {
+    return handleUpgrade(request, info);
+  }
   return handleRequest(request, info);
 });
 

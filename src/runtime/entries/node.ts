@@ -5,6 +5,9 @@ import { trapUnhandledNodeErrors } from "../utils";
 
 export const listener = toNodeListener(nitroApp.h3App);
 
+/** @experimental */
+export const websocket = nitroApp.h3App.websocket;
+
 /** @deprecated use new `listener` export instead */
 export const handler = listener;
 

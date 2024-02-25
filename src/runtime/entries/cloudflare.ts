@@ -4,6 +4,7 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
+import wsAdapter from "crossws/adapters/cloudflare";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
@@ -13,7 +14,16 @@ addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
 });
 
+const { handleUpgrade } = import.meta._websocket
+  ? wsAdapter(nitroApp.h3App.websocket)
+  : undefined;
+
 async function handleEvent(event: FetchEvent) {
+  // Websocket upgrade
+  if (event.request.headers.get("upgrade") === "websocket") {
+    return handleUpgrade(event.request as any, {}, event as any);
+  }
+
   try {
     return await getAssetFromKV(event, {
       cacheControl: assetsCacheControl,

@@ -202,6 +202,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     "versions?.nitro": nitroPkg.version,
     // Internal
     _asyncContext: nitro.options.experimental.asyncContext,
+    _websocket: nitro.options.experimental.websocket,
   };
 
   // Universal import.meta

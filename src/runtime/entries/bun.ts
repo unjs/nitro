@@ -1,23 +1,33 @@
 import "#internal/nitro/virtual/polyfill";
+import type {} from "bun";
+import wsAdapter from "crossws/adapters/bun";
 import { nitroApp } from "../app";
 
-// @ts-expect-error: Bun global
+const { handleUpgrade, websocket } = import.meta._websocket
+  ? wsAdapter(nitroApp.h3App.websocket)
+  : undefined;
+
 const server = Bun.serve({
   port: process.env.NITRO_PORT || process.env.PORT || 3000,
-  async fetch(request: Request) {
-    const url = new URL(request.url);
+  websocket,
+  async fetch(req, server) {
+    if (handleUpgrade && (await handleUpgrade(req, server))) {
+      return;
+    }
+
+    const url = new URL(req.url);
 
     let body;
-    if (request.body) {
-      body = await request.arrayBuffer();
+    if (req.body) {
+      body = await req.arrayBuffer();
     }
 
     return nitroApp.localFetch(url.pathname + url.search, {
       host: url.hostname,
       protocol: url.protocol,
-      headers: request.headers,
-      method: request.method,
-      redirect: request.redirect,
+      headers: req.headers,
+      method: req.method,
+      redirect: req.redirect,
       body,
     });
   },

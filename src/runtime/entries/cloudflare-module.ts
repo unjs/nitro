@@ -8,21 +8,27 @@ import {
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from "__STATIC_CONTENT_MANIFEST";
+import wsAdapter from "crossws/adapters/cloudflare";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+
+const { handleUpgrade } = import.meta._websocket
+  ? wsAdapter(nitroApp.h3App.websocket)
+  : undefined;
 
 interface CFModuleEnv {
   [key: string]: any;
 }
 
 export default {
-  async fetch(
-    request: Request, // CFRequest,
-    env: CFModuleEnv,
-    context: ExecutionContext
-  ) {
+  async fetch(request: Request, env: CFModuleEnv, context: ExecutionContext) {
+    // Websocket upgrade
+    if (request.headers.get("upgrade") === "websocket") {
+      return handleUpgrade(request as any, env, context);
+    }
+
     try {
       // https://github.com/cloudflare/kv-asset-handler#es-modules
       return await getAssetFromKV(

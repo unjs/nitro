@@ -4,6 +4,7 @@ import type { AddressInfo } from "node:net";
 import { Server as HttpsServer } from "node:https";
 import destr from "destr";
 import { toNodeListener } from "h3";
+import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { setupGracefulShutdown } from "../shutdown";
 import { trapUnhandledNodeErrors } from "../utils";
@@ -50,5 +51,11 @@ trapUnhandledNodeErrors();
 
 // Graceful shutdown
 setupGracefulShutdown(listener, nitroApp);
+
+// Websocket support
+if (import.meta._websocket) {
+  const { handleUpgrade } = wsAdapter(nitroApp.h3App.websocket);
+  server.on("upgrade", handleUpgrade);
+}
 
 export default {};
