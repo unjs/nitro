@@ -37,7 +37,7 @@ Deno.serve(
 );
 
 // Websocket support
-const { handleUpgrade } = import.meta._websocket
+const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
@@ -46,7 +46,7 @@ async function handler(request: Request, info: any) {
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"
   ) {
-    return handleUpgrade(request, info);
+    return ws.handleUpgrade(request, info);
   }
 
   // https://deno.land/api?s=Body

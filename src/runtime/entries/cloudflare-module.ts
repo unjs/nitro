@@ -14,7 +14,7 @@ import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
 
-const { handleUpgrade } = import.meta._websocket
+const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
@@ -29,7 +29,7 @@ export default {
       import.meta._websocket &&
       request.headers.get("upgrade") === "websocket"
     ) {
-      return handleUpgrade(request as any, env, context);
+      return ws.handleUpgrade(request as any, env, context);
     }
 
     try {

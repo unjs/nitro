@@ -14,7 +14,7 @@ addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
 });
 
-const { handleUpgrade } = import.meta._websocket
+const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
@@ -24,7 +24,7 @@ async function handleEvent(event: FetchEvent) {
     import.meta._websocket &&
     event.request.headers.get("upgrade") === "websocket"
   ) {
-    return handleUpgrade(event.request as any, {}, event as any);
+    return ws.handleUpgrade(event.request as any, {}, event as any);
   }
 
   try {

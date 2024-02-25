@@ -11,7 +11,7 @@ type ServeHandlerInfo = {
   };
 };
 
-const { handleUpgrade } = import.meta._websocket
+const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
@@ -20,7 +20,7 @@ Deno.serve((request, info) => {
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"
   ) {
-    return handleUpgrade(request, info);
+    return ws.handleUpgrade(request, info);
   }
   return handleRequest(request, info);
 });
