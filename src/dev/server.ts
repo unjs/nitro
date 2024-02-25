@@ -252,6 +252,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
         sock as any,
         {
           target: getWorkerAddress(),
+          xfwd: true,
         },
         head
       );
