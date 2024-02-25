@@ -49,6 +49,8 @@ async function handler(request: Request, info: any) {
     return ws.handleUpgrade(request, info);
   }
 
+  const url = new URL(request.url);
+
   // https://deno.land/api?s=Body
   let body;
   if (request.body) {
