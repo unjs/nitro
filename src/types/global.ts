@@ -2,6 +2,7 @@ import type { NitroOptions } from "./nitro";
 
 export interface NitroStaticBuildFlags {
   _asyncContext?: boolean;
+  _websocket?: boolean;
   dev?: boolean;
   client?: boolean;
   nitro?: boolean;

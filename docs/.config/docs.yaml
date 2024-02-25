@@ -5,7 +5,7 @@ description: Create web servers with everything you need and deploy them whereve
 github: unjs/nitro
 url: https://nitro.unjs.io
 themeColor: "red"
-# automd: true
+automd: true
 redirects:
   /deploy/node: /deploy/runtimes/node
 landing:

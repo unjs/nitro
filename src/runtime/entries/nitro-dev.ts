@@ -12,12 +12,18 @@ import {
   toNodeListener,
   readBody,
 } from "h3";
+import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
 import { runNitroTask } from "../task";
 import { tasks } from "#internal/nitro/virtual/tasks";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
+
+if (import.meta._websocket) {
+  const { handleUpgrade } = wsAdapter(nitroApp.h3App.websocket);
+  server.on("upgrade", handleUpgrade);
+}
 
 function getAddress() {
   if (
