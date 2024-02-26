@@ -90,6 +90,7 @@ export default defineNitroConfig({
     asyncContext: true,
     wasm: true,
     envExpansion: true,
+    database: true,
   },
   cloudflare: {
     pages: {
@@ -98,8 +99,5 @@ export default defineNitroConfig({
         exclude: ["/blog/static/*"],
       },
     },
-  },
-  experimental: {
-    database: true,
   },
 });
