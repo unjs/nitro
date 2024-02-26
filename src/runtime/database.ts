@@ -12,6 +12,6 @@ export function useDatabase(name = "default"): Database {
     throw new Error(`Database connection "${name}" not configured.`);
   }
   return (instances[name] = createDatabase(
-    connectionConfigs[name].connector(connectionConfigs[name].options)
+    connectionConfigs[name].connector(connectionConfigs[name].options || {})
   ));
 }

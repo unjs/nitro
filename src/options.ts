@@ -412,6 +412,7 @@ export async function loadOptions(
       options.database = {
         default: {
           connector: "sqlite",
+          options: {},
         },
       };
     }
