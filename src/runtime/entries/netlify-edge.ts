@@ -19,20 +19,12 @@ export default async function (request: Request, _context) {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
-    url: url.pathname + url.search,
+  return nitroApp.localFetch(url.pathname + url.search, {
     host: url.hostname,
     protocol: url.protocol,
-    // @ts-ignore TODO
     headers: request.headers,
     method: request.method,
     redirect: request.redirect,
     body,
-  });
-
-  return new Response(r.body, {
-    headers: r.headers as HeadersInit,
-    status: r.status,
-    statusText: r.statusText,
   });
 }

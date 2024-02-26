@@ -12,23 +12,18 @@ describe("nitro:preset:cloudflare-pages", async () => {
   testNitro(ctx, () => {
     const mf = new Miniflare({
       modules: true,
-      scriptPath: resolve(ctx.outDir, "_worker.js"),
-      bindings: {
-        ASSETS: {
-          fetch: async (request) => {
-            const contents = await fsp.readFile(
-              join(ctx.outDir, new URL(request.url).pathname)
-            );
-            return new _Response(contents);
-          },
-        },
-      },
+      scriptPath: resolve(ctx.outDir, "_worker.js", "index.js"),
+      modulesRules: [{ type: "CompiledWasm", include: ["**/*.wasm"] }],
+      compatibilityFlags: ["streams_enable_constructors"],
+      sitePath: "",
+      bindings: { ...ctx.env },
     });
 
     return async ({ url, headers, method, body }) => {
       const res = await mf.dispatchFetch("http://localhost" + url, {
         headers: headers || {},
         method: method || "GET",
+        redirect: "manual",
         body,
       });
       return res as unknown as Response;
@@ -42,18 +37,20 @@ describe("nitro:preset:cloudflare-pages", async () => {
     expect(config).toMatchInlineSnapshot(`
       {
         "exclude": [
+          "/blog/static/*",
           "/build/*",
           "/favicon.ico",
-          "/icon.png",
+          "/json-string",
           "/api/hello",
           "/prerender/index.html",
           "/prerender/index.html.br",
           "/prerender/index.html.gz",
           "/api/hey/index.html",
-          "/api/param/foo.json/index.html",
-          "/api/param/prerender1/index.html",
-          "/api/param/prerender3/index.html",
-          "/api/param/prerender4/index.html",
+          "/api/param/foo.json",
+          "/api/param/hidden",
+          "/api/param/prerender1",
+          "/api/param/prerender3",
+          "/api/param/prerender4",
         ],
         "include": [
           "/*",

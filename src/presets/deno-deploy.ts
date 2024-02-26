@@ -2,6 +2,7 @@ import { defineNitroPreset } from "../preset";
 
 export const denoDeploy = defineNitroPreset({
   entry: "#internal/nitro/entries/deno-deploy",
+  exportConditions: ["deno"],
   node: false,
   noExternals: true,
   serveStatic: "deno",
@@ -15,10 +16,10 @@ export const denoDeploy = defineNitroPreset({
   },
   rollupConfig: {
     preserveEntrySignatures: false,
-    external: ["https://deno.land/std/http/server.ts"],
+    external: (id) => id.startsWith("https://"),
     output: {
       entryFileNames: "index.ts",
-      manualChunks: () => "index",
+      manualChunks: (id) => "index",
       format: "esm",
     },
   },

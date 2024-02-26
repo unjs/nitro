@@ -1,36 +1,31 @@
 import "#internal/nitro/virtual/polyfill";
 import destr from "destr";
+import wsAdapter from "crossws/adapters/deno";
 import { nitroApp } from "../app";
 import { useRuntimeConfig } from "#internal/nitro";
 
-// @ts-expect-error unknown global Deno
 if (Deno.env.get("DEBUG")) {
-  addEventListener("unhandledrejection", (event) =>
+  addEventListener("unhandledrejection", (event: any) =>
     console.error("[nitro] [dev] [unhandledRejection]", event.reason)
   );
-  addEventListener("error", (event) =>
+  addEventListener("error", (event: any) =>
     console.error("[nitro] [dev] [uncaughtException]", event.error)
   );
 } else {
-  addEventListener("unhandledrejection", (err) =>
+  addEventListener("unhandledrejection", (err: any) =>
     console.error("[nitro] [production] [unhandledRejection] " + err)
   );
-  addEventListener("error", (event) =>
+  addEventListener("error", (event: any) =>
     console.error("[nitro] [production] [uncaughtException] " + event.error)
   );
 }
 
-// @ts-expect-error unknown global Deno
 // https://deno.land/api@v1.34.3?s=Deno.serve&unstable=
 Deno.serve(
   {
-    // @ts-expect-error unknown global Deno
     key: Deno.env.get("NITRO_SSL_KEY"),
-    // @ts-expect-error unknown global Deno
     cert: Deno.env.get("NITRO_SSL_CERT"),
-    // @ts-expect-error unknown global Deno
     port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
-    // @ts-expect-error unknown global Deno
     hostname: Deno.env.get("NITRO_HOST") || Deno.env.get("HOST"),
     onListen: (opts) => {
       const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
@@ -41,7 +36,19 @@ Deno.serve(
   handler
 );
 
-async function handler(request: Request) {
+// Websocket support
+const ws = import.meta._websocket
+  ? wsAdapter(nitroApp.h3App.websocket)
+  : undefined;
+
+async function handler(request: Request, info: any) {
+  if (
+    import.meta._websocket &&
+    request.headers.get("upgrade") === "websocket"
+  ) {
+    return ws.handleUpgrade(request, info);
+  }
+
   const url = new URL(request.url);
 
   // https://deno.land/api?s=Body
@@ -50,33 +57,14 @@ async function handler(request: Request) {
     body = await request.arrayBuffer();
   }
 
-  const r = await nitroApp.localCall({
-    url: url.pathname + url.search,
+  return nitroApp.localFetch(url.pathname + url.search, {
     host: url.hostname,
     protocol: url.protocol,
-    headers: Object.fromEntries(request.headers.entries()),
+    headers: request.headers,
     method: request.method,
     redirect: request.redirect,
     body,
   });
-
-  // TODO: fix in runtime/static
-  const responseBody = r.status === 304 ? null : r.body;
-  return new Response(responseBody, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
-  });
-}
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
 }
 
 export default {};

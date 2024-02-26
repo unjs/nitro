@@ -4,6 +4,7 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 import { withoutBase } from "ufo";
+import wsAdapter from "crossws/adapters/cloudflare";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
 import { useRuntimeConfig } from "#internal/nitro";
@@ -13,7 +14,19 @@ addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
 });
 
+const ws = import.meta._websocket
+  ? wsAdapter(nitroApp.h3App.websocket)
+  : undefined;
+
 async function handleEvent(event: FetchEvent) {
+  // Websocket upgrade
+  if (
+    import.meta._websocket &&
+    event.request.headers.get("upgrade") === "websocket"
+  ) {
+    return ws.handleUpgrade(event.request as any, {}, event as any);
+  }
+
   try {
     return await getAssetFromKV(event, {
       cacheControl: assetsCacheControl,
@@ -29,26 +42,21 @@ async function handleEvent(event: FetchEvent) {
     body = Buffer.from(await event.request.arrayBuffer());
   }
 
-  const r = await nitroApp.localCall({
-    event,
+  return nitroApp.localFetch(url.pathname + url.search, {
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
       cf: (event.request as any).cf,
+      waitUntil: (promise) => event.waitUntil(promise),
+      cloudflare: {
+        event,
+      },
     },
-    url: url.pathname + url.search,
     host: url.hostname,
     protocol: url.protocol,
-    headers: Object.fromEntries(event.request.headers.entries()),
+    headers: event.request.headers,
     method: event.request.method,
     redirect: event.request.redirect,
     body,
-  });
-
-  return new Response(r.body, {
-    // @ts-ignore TODO: Should be HeadersInit instead of string[][]
-    headers: normalizeOutgoingHeaders(r.headers),
-    status: r.status,
-    statusText: r.statusText,
   });
 }
 
@@ -68,12 +76,3 @@ const baseURLModifier = (request: Request) => {
   const url = withoutBase(request.url, useRuntimeConfig().app.baseURL);
   return mapRequestToAsset(new Request(url, request));
 };
-
-function normalizeOutgoingHeaders(
-  headers: Record<string, string | string[] | undefined>
-) {
-  return Object.entries(headers).map(([k, v]) => [
-    k,
-    Array.isArray(v) ? v.join(",") : v,
-  ]);
-}

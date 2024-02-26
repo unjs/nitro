@@ -1,7 +1,13 @@
 // import ansiHTML from 'ansi-html'
-import { setResponseStatus } from "h3";
+import { setResponseHeader, setResponseStatus, send } from "h3";
 import type { NitroErrorHandler } from "../types";
 import { normalizeError, isJsonRequest } from "./utils";
+
+export function defineNitroErrorHandler(
+  handler: NitroErrorHandler
+): NitroErrorHandler {
+  return handler;
+}
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -13,47 +19,47 @@ interface ParsedError {
   stack?: string[];
 }
 
-export default <NitroErrorHandler>function (error, event) {
-  const { stack, statusCode, statusMessage, message } = normalizeError(error);
+export default defineNitroErrorHandler(
+  function defaultNitroErrorHandler(error, event) {
+    const { stack, statusCode, statusMessage, message } = normalizeError(error);
 
-  const showDetails = isDev && statusCode !== 404;
+    const showDetails = isDev && statusCode !== 404;
 
-  const errorObject = {
-    url: event.node.req.url || "",
-    statusCode,
-    statusMessage,
-    message,
-    stack: showDetails ? stack.map((i) => i.text) : undefined,
-  };
+    const errorObject = {
+      url: event.path || "",
+      statusCode,
+      statusMessage,
+      message,
+      stack: showDetails ? stack.map((i) => i.text) : undefined,
+    };
 
-  // Console output
-  if (error.unhandled || error.fatal) {
-    const tags = [
-      "[nitro]",
-      "[request error]",
-      error.unhandled && "[unhandled]",
-      error.fatal && "[fatal]",
-    ]
-      .filter(Boolean)
-      .join(" ");
-    console.error(
-      tags,
-      error.message + "\n" + stack.map((l) => "  " + l.text).join("  \n")
-    );
-  }
+    // Console output
+    if (error.unhandled || error.fatal) {
+      const tags = [
+        "[nitro]",
+        "[request error]",
+        error.unhandled && "[unhandled]",
+        error.fatal && "[fatal]",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      console.error(
+        tags,
+        error.message + "\n" + stack.map((l) => "  " + l.text).join("  \n")
+      );
+    }
 
-  setResponseStatus(event, statusCode, statusMessage);
+    setResponseStatus(event, statusCode, statusMessage);
 
-  if (!event.handled) {
     if (isJsonRequest(event)) {
-      event.node.res.setHeader("Content-Type", "application/json");
-      event.node.res.end(JSON.stringify(errorObject));
+      setResponseHeader(event, "Content-Type", "application/json");
+      return send(event, JSON.stringify(errorObject));
     } else {
-      event.node.res.setHeader("Content-Type", "text/html");
-      event.node.res.end(renderHTMLError(errorObject));
+      setResponseHeader(event, "Content-Type", "text/html");
+      return send(event, renderHTMLError(errorObject));
     }
   }
-};
+);
 
 function renderHTMLError(error: ParsedError): string {
   const statusCode = error.statusCode || 500;

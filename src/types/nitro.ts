@@ -7,11 +7,11 @@ import type { NestedHooks, Hookable } from "hookable";
 import type { ConsolaInstance, LogLevel } from "consola";
 import type { WatchOptions } from "chokidar";
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
-import type { RollupWasmOptions } from "@rollup/plugin-wasm";
 import type { Storage, BuiltinDriverName } from "unstorage";
-import type { ServerOptions as HTTPProxyOptions } from "http-proxy";
-import type { ProxyOptions } from "h3";
+import type { ProxyServerOptions } from "httpxy";
+import type { ProxyOptions, RouterMethod } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { ConnectorName } from "db0";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
@@ -26,6 +26,7 @@ import type {
 } from "./handler";
 import type { PresetOptions } from "./presets";
 import type { KebabCase } from "./utils";
+import { NitroModule, NitroModuleInput } from "./module";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
@@ -41,6 +42,7 @@ export interface NitroRuntimeConfig {
   app: NitroRuntimeConfigApp;
   nitro: {
     envPrefix?: string;
+    envExpansion?: boolean;
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
@@ -60,7 +62,8 @@ export interface Nitro {
   updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
 
   /* @internal */
-  _prerenderedRoutes?: PrerenderGenerateRoute[];
+  _prerenderedRoutes?: PrerenderRoute[];
+  _prerenderMeta?: Record<string, { contentType?: string }>;
 }
 
 export interface PrerenderRoute {
@@ -70,26 +73,37 @@ export interface PrerenderRoute {
   fileName?: string;
   error?: Error & { statusCode: number; statusMessage: string };
   generateTimeMS?: number;
+  skip?: boolean;
+  contentType?: string;
 }
 
-export interface PrerenderGenerateRoute extends PrerenderRoute {
-  skip?: boolean;
-}
+/** @deprecated Internal type will be removed in future versions */
+export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
+
+export type NitroTypes = {
+  routes: Record<string, Partial<Record<RouterMethod | "default", string[]>>>;
+};
+
 export interface NitroHooks {
+  "types:extend": (types: NitroTypes) => HookResult;
   "rollup:before": (nitro: Nitro, config: RollupConfig) => HookResult;
   compiled: (nitro: Nitro) => HookResult;
   "dev:reload": () => HookResult;
   "rollup:reload": () => HookResult;
   restart: () => HookResult;
   close: () => HookResult;
+  // Prerender
   "prerender:routes": (routes: Set<string>) => HookResult;
+  "prerender:config": (config: NitroConfig) => HookResult;
+  "prerender:init": (prerenderer: Nitro) => HookResult;
+  "prerender:generate": (route: PrerenderRoute, nitro: Nitro) => HookResult;
   "prerender:route": (route: PrerenderRoute) => HookResult;
-  "prerender:generate": (
-    route: PrerenderGenerateRoute,
-    nitro: Nitro
-  ) => HookResult;
+  "prerender:done": (result: {
+    prerenderedRoutes: PrerenderRoute[];
+    failedRoutes: PrerenderRoute[];
+  }) => HookResult;
 }
 
 type CustomDriverName = string & { _custom?: any };
@@ -106,9 +120,10 @@ export interface DatabaseConnectionConfig {
   [key: string]: any;
 }
 
-type DeepPartial<T> = T extends Record<string, any>
-  ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
-  : T;
+type DeepPartial<T> =
+  T extends Record<string, any>
+    ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
+    : T;
 
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
@@ -146,7 +161,7 @@ export interface CompressOptions {
 
 type Enumerate<
   N extends number,
-  Acc extends number[] = []
+  Acc extends number[] = [],
 > = Acc["length"] extends N
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;
@@ -180,6 +195,31 @@ export interface NitroRouteRules
   extends Omit<NitroRouteConfig, "redirect" | "cors" | "swr" | "static"> {
   redirect?: { to: string; statusCode: HTTPStatusCode };
   proxy?: { to: string } & ProxyOptions;
+}
+
+export interface NitroFrameworkInfo {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  name?: "nitro" | (string & {});
+  version?: string;
+}
+
+/** Build info written to `.output/nitro.json` or `.nitro/dev/nitro.json` */
+export interface NitroBuildInfo {
+  date: string;
+  preset: string;
+  framework: NitroFrameworkInfo;
+  versions: {
+    nitro: string;
+    [key: string]: string;
+  };
+  commands?: {
+    preview?: string;
+    deploy?: string;
+  };
+  dev?: {
+    pid: number;
+    workerAddress: { host: string; port: number; socketPath?: string };
+  };
 }
 
 export interface NitroOptions extends PresetOptions {
@@ -217,12 +257,60 @@ export interface NitroOptions extends PresetOptions {
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;
-  serveStatic: boolean | "node" | "deno";
+  serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
+  /**
+   * @experimental Requires `experimental.wasm` to work
+   *
+   * @see https://github.com/unjs/unwasm
+   */
+  wasm?: UnwasmPluginOptions;
   experimental?: {
-    wasm?: boolean | RollupWasmOptions;
     legacyExternals?: boolean;
     openAPI?: boolean;
+    /**
+     * See https://github.com/microsoft/TypeScript/pull/51669
+     */
+    typescriptBundlerResolution?: boolean;
+    /**
+     * Enable native async context support for useEvent()
+     */
+    asyncContext?: boolean;
+    /**
+     * Enable Experimental WebAssembly Support
+     *
+     * @see https://github.com/unjs/unwasm
+     */
+    wasm?: boolean;
+    /**
+     * Disable Experimental bundling of Nitro Runtime Dependencies
+     */
+    bundleRuntimeDependencies?: false;
+    /**
+     * Disable Experimental Sourcemap Minification
+     */
+    sourcemapMinify?: false;
+    /**
+     * Backward compatibility support for Node fetch (required for Node < 18)
+     */
+    nodeFetchCompat?: boolean;
+    /**
+     * Allow env expansion in runtime config
+     *
+     * @see https://github.com/unjs/nitro/pull/2043
+     */
+    envExpansion?: boolean;
+    /**
+     * Enable experimental WebSocket support
+     *
+     * @see https://h3.unjs.io/guide/websocket
+     */
+    websocket?: boolean;
+    /**
+     * Enable experimental Database support
+     *
+     * @see https://db0.unjs.io/
+     */
     database?: boolean;
   };
   future: {
@@ -232,15 +320,24 @@ export interface NitroOptions extends PresetOptions {
   publicAssets: PublicAssetDir[];
 
   imports: UnimportPluginOptions | false;
+  modules?: NitroModuleInput[];
   plugins: string[];
+  tasks: { [name: string]: { handler: string; description: string } };
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
+  ignore: string[];
 
   // Dev
   dev: boolean;
   devServer: DevServerOptions;
   watchOptions: WatchOptions;
-  devProxy: Record<string, string | HTTPProxyOptions>;
+  devProxy: Record<string, string | ProxyServerOptions>;
+
+  // Logging
+  logging: {
+    compressedSizes: boolean;
+    buildSuccess: boolean;
+  };
 
   // Routing
   baseURL: string;
@@ -250,12 +347,28 @@ export interface NitroOptions extends PresetOptions {
   errorHandler: string;
   devErrorHandler: NitroErrorHandler;
   prerender: {
+    /**
+     * Prerender HTML routes within subfolders (`/test` would produce `/test/index.html`)
+     */
+    autoSubfolderIndex: boolean;
     concurrency: number;
     interval: number;
     crawlLinks: boolean;
     failOnError: boolean;
-    ignore: string[];
+    ignore: Array<
+      string | RegExp | ((path: string) => undefined | null | boolean)
+    >;
     routes: string[];
+    /**
+     * Amount of retries. Pass Infinity to retry indefinitely.
+     * @default 3
+     */
+    retry: number;
+    /**
+     * Delay between each retry in ms.
+     * @default 500
+     */
+    retryDelay: number;
   };
 
   // Rollup
@@ -276,6 +389,7 @@ export interface NitroOptions extends PresetOptions {
   analyze: false | PluginVisualizerOptions;
   replace: Record<string, string | ((id: string) => string)>;
   commonJS?: RollupCommonJSOptions;
+  exportConditions?: string[];
 
   // Advanced
   typescript: {
@@ -292,8 +406,18 @@ export interface NitroOptions extends PresetOptions {
     preview: string;
     deploy: string;
   };
+
+  // Framework
+  framework: NitroFrameworkInfo;
+
+  // IIS
+  iis?: {
+    mergeConfig?: boolean;
+    overrideConfig?: boolean;
+  };
 }
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
+  const defineNitroModule: (definition: NitroModule) => NitroModule;
 }

@@ -16,6 +16,10 @@ export const nitroImports: Preset[] = [
       "defineRenderHandler",
       "getRouteRules",
       "useAppConfig",
+      "useEvent",
+      "defineNitroTask",
+      "runNitroTask",
+      "defineNitroErrorHandler",
     ],
   },
 ];

@@ -5,6 +5,7 @@ jspm_packages
 # Nitro
 nitro.d.ts
 .nitro
+.data
 
 package-lock.json
 
@@ -65,8 +66,14 @@ Temporary Items
 .env
 .netlify
 .vercel
+.amplify-hosting
 staticwebapp.config.json
 .eslintcache
+playground/firebase.json
+.zeabur
 
 test/fixture/functions
 .data
+
+.pnpm-store
+.wrangler

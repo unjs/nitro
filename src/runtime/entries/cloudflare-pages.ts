@@ -3,6 +3,7 @@ import type {
   Request as CFRequest,
   EventContext,
 } from "@cloudflare/workers-types";
+import wsAdapter from "crossws/adapters/cloudflare";
 import { requestHasBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
@@ -20,14 +21,26 @@ interface CFPagesEnv {
   [key: string]: any;
 }
 
+const ws = import.meta._websocket
+  ? wsAdapter(nitroApp.h3App.websocket)
+  : undefined;
+
 export default {
   async fetch(
     request: CFRequest,
     env: CFPagesEnv,
     context: EventContext<CFPagesEnv, string, any>
   ) {
+    // Websocket upgrade
+    if (
+      import.meta._websocket &&
+      request.headers.get("upgrade") === "websocket"
+    ) {
+      return ws.handleUpgrade(request as any, env, context);
+    }
+
     const url = new URL(request.url);
-    if (isPublicAssetURL(url.pathname)) {
+    if (env.ASSETS /* !miniflare */ && isPublicAssetURL(url.pathname)) {
       return env.ASSETS.fetch(request);
     }
 
@@ -42,6 +55,7 @@ export default {
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: request.cf,
+        waitUntil: (promise) => context.waitUntil(promise),
         cloudflare: {
           request,
           env,
@@ -51,7 +65,7 @@ export default {
       host: url.hostname,
       protocol: url.protocol,
       method: request.method,
-      headers: request.headers,
+      headers: request.headers as unknown as Headers,
       body,
     });
   },

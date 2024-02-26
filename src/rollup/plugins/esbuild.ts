@@ -5,6 +5,7 @@ import type { Plugin, PluginContext } from "rollup";
 import { Loader, TransformResult, transform } from "esbuild";
 import { createFilter } from "@rollup/pluginutils";
 import type { FilterPattern } from "@rollup/pluginutils";
+import type { TransformOptions } from "esbuild";
 
 const defaultLoaders: { [ext: string]: Loader } = {
   ".ts": "ts",
@@ -13,22 +14,10 @@ const defaultLoaders: { [ext: string]: Loader } = {
   ".jsx": "jsx",
 };
 
-export type Options = {
+export interface Options extends TransformOptions {
   include?: FilterPattern;
   exclude?: FilterPattern;
   sourceMap?: boolean | "inline" | "hidden";
-  minify?: boolean;
-  target: string | string[];
-  jsxFactory?: string;
-  jsxFragment?: string;
-  define?: {
-    [k: string]: string;
-  };
-  /**
-   * Use this tsconfig file instead
-   * Disable it by setting to `false`
-   */
-  tsconfig?: string | false;
   /**
    * Map extension to esbuild loader
    * Note that each entry (the extension) needs to start with a dot
@@ -36,16 +25,22 @@ export type Options = {
   loaders?: {
     [ext: string]: Loader | false;
   };
-};
+}
 
 export function esbuild(options: Options): Plugin {
-  const loaders = {
-    ...defaultLoaders,
-  };
+  const {
+    include,
+    exclude,
+    sourceMap,
+    loaders: loadersConfig,
+    minify,
+    ...transformOptions
+  } = options;
 
-  if (options.loaders) {
-    for (const key of Object.keys(options.loaders)) {
-      const value = options.loaders[key];
+  const loaders = { ...defaultLoaders };
+  if (loadersConfig) {
+    for (const key of Object.keys(loadersConfig)) {
+      const value = loadersConfig[key];
       if (typeof value === "string") {
         loaders[key] = value;
       } else if (value === false) {
@@ -61,8 +56,8 @@ export function esbuild(options: Options): Plugin {
   const EXCLUDE_REGEXP = /node_modules/;
 
   const filter = createFilter(
-    options.include || INCLUDE_REGEXP,
-    options.exclude || EXCLUDE_REGEXP
+    include || INCLUDE_REGEXP,
+    exclude || EXCLUDE_REGEXP
   );
 
   return {
@@ -81,13 +76,9 @@ export function esbuild(options: Options): Plugin {
       }
 
       const result = await transform(code, {
+        sourcemap: sourceMap === "hidden" ? "external" : sourceMap,
+        ...transformOptions,
         loader,
-        target: options.target,
-        jsxFactory: options.jsxFactory,
-        jsxFragment: options.jsxFragment,
-        define: options.define,
-        sourcemap:
-          options.sourceMap === "hidden" ? "external" : options.sourceMap,
         sourcefile: id,
       });
 
@@ -102,11 +93,11 @@ export function esbuild(options: Options): Plugin {
     },
 
     async renderChunk(code) {
-      if (options.minify) {
+      if (minify) {
         const result = await transform(code, {
           loader: "js",
           minify: true,
-          target: options.target,
+          target: transformOptions.target,
         });
         if (result.code) {
           return {

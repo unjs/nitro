@@ -5,15 +5,33 @@ import { join } from "node:path";
 import { mkdirSync } from "node:fs";
 import { threadId, parentPort } from "node:worker_threads";
 import { isWindows, provider } from "std-env";
-import { toNodeListener } from "h3";
+import {
+  defineEventHandler,
+  getQuery,
+  getRouterParam,
+  toNodeListener,
+  readBody,
+} from "h3";
+import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
+import { runNitroTask } from "../task";
+import { tasks } from "#internal/nitro/virtual/tasks";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
+if (import.meta._websocket) {
+  const { handleUpgrade } = wsAdapter(nitroApp.h3App.websocket);
+  server.on("upgrade", handleUpgrade);
+}
+
 function getAddress() {
-  if (provider === "stackblitz" || process.env.NITRO_NO_UNIX_SOCKET) {
-    return "0";
+  if (
+    provider === "stackblitz" ||
+    process.env.NITRO_NO_UNIX_SOCKET ||
+    process.versions.bun
+  ) {
+    return 0;
   }
   const socketName = `worker-${process.pid}-${threadId}.sock`;
   if (isWindows) {
@@ -36,6 +54,32 @@ const listener = server.listen(listenAddress, () => {
         : { host: "localhost", port: _address.port },
   });
 });
+
+// Register tasks handlers
+nitroApp.router.get(
+  "/_nitro/tasks",
+  defineEventHandler((event) => {
+    return {
+      tasks: Object.fromEntries(
+        Object.entries(tasks).map(([name, task]) => [
+          name,
+          { description: task.description },
+        ])
+      ),
+    };
+  })
+);
+nitroApp.router.use(
+  "/_nitro/tasks/:name",
+  defineEventHandler(async (event) => {
+    const name = getRouterParam(event, "name");
+    const payload = {
+      ...getQuery(event),
+      ...(await readBody(event).catch(() => ({}))),
+    };
+    return await runNitroTask(name, payload);
+  })
+);
 
 // Trap unhandled errors
 trapUnhandledNodeErrors();

@@ -1,7 +1,9 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
+import { EventHandler, EventHandlerRequest, defineEventHandler } from "h3";
 import { $Fetch } from "../..";
 import { defineNitroConfig } from "../../src/config";
+import { Serialize, Simplify } from "../../src/types";
 
 interface TestResponse {
   message: string;
@@ -206,7 +208,7 @@ describe("API routes", () => {
       Promise<{
         statusCode: number;
         statusMessage?: string;
-        data?: any;
+        data?: NonNullable<unknown>;
         message: string;
       }>
     >();
@@ -254,5 +256,79 @@ describe("defineNitroConfig", () => {
         },
       },
     });
+  });
+});
+
+async function fixture() {
+  await Promise.resolve();
+  return {
+    message: "Hello world",
+  };
+}
+
+describe("defineCachedEventHandler", () => {
+  it("should infer return type", () => {
+    const a = defineCachedEventHandler(fixture);
+    const b = defineEventHandler(fixture);
+    expectTypeOf(a).toEqualTypeOf(b);
+    expectTypeOf(b).toEqualTypeOf<
+      EventHandler<
+        EventHandlerRequest,
+        Promise<{
+          message: string;
+        }>
+      >
+    >();
+  });
+  it("should not allow typed input body", () => {
+    const b = defineCachedEventHandler<
+      { body: string },
+      Promise<{ message: string }>
+    >(fixture);
+    expectTypeOf(b).toEqualTypeOf<
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      EventHandler<{}, Promise<{ message: string }>>
+    >();
+  });
+  it("is backwards compatible with old generic signature", () => {
+    const a = defineCachedEventHandler<
+      Promise<{
+        message: string;
+      }>
+    >(fixture);
+    const b = defineEventHandler(fixture);
+    expectTypeOf(a).toEqualTypeOf(b);
+    expectTypeOf(b).toEqualTypeOf<
+      EventHandler<
+        EventHandlerRequest,
+        Promise<{
+          message: string;
+        }>
+      >
+    >();
+  });
+});
+
+describe("type helpers", () => {
+  it("Serialize", () => {
+    expectTypeOf<Serialize<{ test: Date }>>().toEqualTypeOf<{ test: string }>();
+    expectTypeOf<Serialize<{ test: Map<string, string> }>>().toEqualTypeOf<{
+      test: Record<string, never>;
+    }>();
+    expectTypeOf<
+      Serialize<{ nested: { test: Map<string, string> } }>
+    >().toEqualTypeOf<{ nested: { test: Record<string, never> } }>();
+  });
+
+  it("Simplify", () => {
+    expectTypeOf<Simplify<Serialize<{ test: Date }>>>().toEqualTypeOf<{
+      test: string;
+    }>();
+    expectTypeOf<
+      Simplify<Serialize<{ test: Map<string, string> }>>
+    >().toEqualTypeOf<{ test: Record<string, never> }>();
+    expectTypeOf<
+      Simplify<Serialize<{ nested: { test: Map<string, string> } }>>
+    >().toEqualTypeOf<{ nested: { test: Record<string, never> } }>();
   });
 });

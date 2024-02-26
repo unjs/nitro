@@ -6,10 +6,19 @@ import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
 import semver from "semver";
 import { isDirectory, retry } from "../../utils";
+import { normalizeMatcher } from "./externals";
 
 export interface NodeExternalsOptions {
-  inline?: string[];
-  external?: string[];
+  inline?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
+  external?: Array<
+    | string
+    | RegExp
+    | ((id: string, importer?: string) => Promise<boolean> | boolean)
+  >;
   outDir?: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
@@ -36,8 +45,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   };
 
   // Normalize options
-  opts.inline = (opts.inline || []).map((p) => normalize(p));
-  opts.external = (opts.external || []).map((p) => normalize(p));
+  const inlineMatchers = (opts.inline || []).map((p) => normalizeMatcher(p));
+  const externalMatchers = (opts.external || []).map((p) =>
+    normalizeMatcher(p)
+  );
 
   return {
     name: "node-externals",
@@ -60,32 +71,24 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Normalize path (windows)
       const id = normalize(originalId);
 
-      // Id without .../node_modules/
-      const idWithoutNodeModules = id.split("node_modules/").pop();
-
       // Check for explicit inlines
-      if (
-        opts.inline.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
-      ) {
-        return null;
+      for (const matcher of inlineMatchers) {
+        if (matcher(id, importer)) {
+          return null;
+        }
       }
 
       // Check for explicit externals
-      if (
-        opts.external.some(
-          (i) => id.startsWith(i) || idWithoutNodeModules.startsWith(i)
-        )
-      ) {
-        return { id, external: true };
+      for (const matcher of externalMatchers) {
+        if (matcher(id, importer)) {
+          return { id, external: true };
+        }
       }
 
       // Resolve id using rollup resolver
-      const resolved = (await this.resolve(originalId, importer, {
-        ...options,
-        skipSelf: true,
-      })) || { id };
+      const resolved = (await this.resolve(originalId, importer, options)) || {
+        id,
+      };
 
       // Try resolving with mlly as fallback
       if (
