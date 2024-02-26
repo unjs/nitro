@@ -313,13 +313,13 @@ export interface NitroOptions extends PresetOptions {
     /**
      * Enable experimental WebSocket support
      *
-     * @see https://h3.unjs.io/guide/websocket
+     * @see https://nitro.unjs.io/guide/websocket
      */
     websocket?: boolean;
     /**
      * Enable experimental Database support
      *
-     * @see https://db0.unjs.io/
+     * @see https://nitro.unjs.io/guide/websocket
      */
     database?: boolean;
   };
