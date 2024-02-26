@@ -1,5 +1,7 @@
-export default defineNitroTask({
-  description: "Run database migrations",
+export default defineTask({
+  meta: {
+    description: "Run database migrations",
+  },
   async run() {
     const db = useDatabase();
 
