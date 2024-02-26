@@ -58,14 +58,15 @@ const listener = server.listen(listenAddress, () => {
 // Register tasks handlers
 nitroApp.router.get(
   "/_nitro/tasks",
-  defineEventHandler((event) => {
+  defineEventHandler(async (event) => {
+    const _tasks = await Promise.all(
+      Object.entries(tasks).map(async ([name, task]) => {
+        const _task = await task.get().then((r) => r.default);
+        return [name, { description: _task.description }];
+      })
+    );
     return {
-      tasks: Object.fromEntries(
-        Object.entries(tasks).map(([name, task]) => [
-          name,
-          { description: task.description },
-        ])
-      ),
+      tasks: Object.fromEntries(_tasks),
     };
   })
 );

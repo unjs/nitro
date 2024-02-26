@@ -108,37 +108,22 @@ export async function createNitro(
   }
 
   // Tasks
-  const scannedTasks = await scanTasks(nitro);
-  for (const scannedTask of scannedTasks) {
-    if (scannedTask.name in nitro.options.tasks) {
-      if (!nitro.options.tasks[scannedTask.name].handler) {
-        nitro.options.tasks[scannedTask.name].handler = scannedTask.handler;
+  if (nitro.options.experimental.tasks) {
+    const scannedTasks = await scanTasks(nitro);
+    for (const scannedTask of scannedTasks) {
+      if (scannedTask.name in nitro.options.tasks) {
+        if (!nitro.options.tasks[scannedTask.name].handler) {
+          nitro.options.tasks[scannedTask.name].handler = scannedTask.handler;
+        }
+      } else {
+        nitro.options.tasks[scannedTask.name] = {
+          handler: scannedTask.handler,
+          description: "",
+        };
       }
-    } else {
-      nitro.options.tasks[scannedTask.name] = {
-        handler: scannedTask.handler,
-        description: "",
-      };
     }
   }
-  const taskNames = Object.keys(nitro.options.tasks).sort();
-  if (taskNames.length > 0) {
-    consola.warn(
-      `Nitro tasks are experimental and API may change in the future releases!`
-    );
-    consola.log(
-      `Available Tasks:\n\n${taskNames
-        .map(
-          (t) =>
-            ` - \`${t}\`${
-              nitro.options.tasks[t].description
-                ? ` - ${nitro.options.tasks[t].description}`
-                : ""
-            }`
-        )
-        .join("\n")}`
-    );
-  }
+
   nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => `
 export const tasks = {
   ${Object.entries(nitro.options.tasks)

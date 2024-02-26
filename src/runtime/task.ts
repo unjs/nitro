@@ -1,5 +1,4 @@
 import { createError } from "h3";
-import { useNitroApp, type NitroApp } from "./app";
 import { tasks } from "#internal/nitro/virtual/tasks";
 
 /** @experimental */
@@ -16,12 +15,14 @@ export interface NitroTaskMeta {
   description?: string;
 }
 
+type MaybePromise<T> = T | Promise<T>;
+
 /** @experimental */
 export interface NitroTask<RT = unknown> extends NitroTaskMeta {
   run(
     payload: NitroTaskPayload,
     context: NitroTaskContext
-  ): { result: RT | Promise<RT> };
+  ): MaybePromise<{ result?: RT }>;
 }
 
 /** @experimental */
@@ -55,7 +56,7 @@ export async function runNitroTask<RT = unknown>(
   }
   const context: NitroTaskContext = {};
   const handler = await tasks[name].get().then((mod) => mod.default);
-  const { result } = handler.run(payload, context);
+  const { result } = await handler.run(payload, context);
   return {
     result: result as RT,
   };
