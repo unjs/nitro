@@ -1,9 +1,9 @@
 export default defineNitroTask({
   description: "Run database migrations",
-  async run(payload, context) {
+  async run() {
     const db = useDatabase();
 
-    console.log("Running database migrations...", { payload, context });
+    console.log("Running database migrations...");
 
     // Create users table
     await db.sql`DROP TABLE IF EXISTS users`;

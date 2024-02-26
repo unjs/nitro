@@ -1,7 +1,7 @@
 export default defineNitroTask({
   description: "Run database migrations",
-  run(payload, context) {
-    console.log("Running DB migration task...", { payload });
+  run() {
+    console.log("Running DB migration task...");
     return { result: "Success" };
   },
 });

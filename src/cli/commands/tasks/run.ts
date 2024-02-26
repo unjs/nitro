@@ -2,7 +2,7 @@ import { defineCommand } from "citty";
 import { resolve } from "pathe";
 import destr from "destr";
 import { consola } from "consola";
-import { runNitroTask } from "../../../task";
+import { runTask } from "../../../task";
 
 export default defineCommand({
   meta: {
@@ -29,9 +29,11 @@ export default defineCommand({
     const cwd = resolve((args.dir || args.cwd || ".") as string);
     consola.info(`Running task \`${args.name}\`...`);
     try {
-      const { result } = await runNitroTask(
+      const { result } = await runTask(
         args.name,
-        destr(args.payload || "{}"),
+        {
+          payload: destr(args.payload || "{}"),
+        },
         {
           cwd,
           buildDir: ".nitro",

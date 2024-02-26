@@ -2,42 +2,50 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
 import { ofetch } from "ofetch";
-import type { NitroTaskPayload } from "./runtime";
+import type { TaskPayload } from "./runtime";
 import { NitroBuildInfo } from "nitropack";
 
-interface TaskRunnerOptions {
+/** @experimental */
+export interface TaskRunnerOptions {
   cwd?: string;
   buildDir?: string;
 }
 
-export async function runNitroTask(
+/** @experimental */
+export async function runTask(
   name: string,
-  payload?: NitroTaskPayload,
+  payload?: TaskPayload,
   opts?: TaskRunnerOptions
 ): Promise<{ result: unknown }> {
-  const ctx = await getTasksContext(opts);
-  const result = await ctx.devFetch("/_nitro/tasks/" + name);
+  const ctx = await _getTasksContext(opts);
+  const result = await ctx.devFetch(`/_nitro/tasks/${name}`, {
+    body: {
+      payload,
+    },
+  });
   return result;
 }
 
-export async function listNitroTasks(opts?: TaskRunnerOptions) {
-  const ctx = await getTasksContext(opts);
+/** @experimental */
+export async function listTasks(opts?: TaskRunnerOptions) {
+  const ctx = await _getTasksContext(opts);
   const res = (await ctx.devFetch("/_nitro/tasks")) as {
-    tasks: Record<string, { description: string }>;
+    tasks: Record<string, { meta: { description: string } }>;
   };
   return res.tasks;
 }
 
-const devHint = `(is dev server running?)`;
+// --- internal ---
 
-/** @experimental */
-async function getTasksContext(opts: TaskRunnerOptions) {
+const _devHint = `(is dev server running?)`;
+
+async function _getTasksContext(opts: TaskRunnerOptions) {
   const cwd = resolve(process.cwd(), opts.cwd);
   const outDir = resolve(cwd, opts.buildDir || ".nitro");
 
   const buildInfoPath = resolve(outDir, "nitro.json");
   if (!existsSync(buildInfoPath)) {
-    throw new Error(`Missing info file: \`${buildInfoPath}\` ${devHint}`);
+    throw new Error(`Missing info file: \`${buildInfoPath}\` ${_devHint}`);
   }
 
   const buildInfo = JSON.parse(
@@ -46,11 +54,11 @@ async function getTasksContext(opts: TaskRunnerOptions) {
 
   if (!buildInfo.dev?.pid || !buildInfo.dev?.workerAddress) {
     throw new Error(
-      `Missing dev server info in: \`${buildInfoPath}\` ${devHint}`
+      `Missing dev server info in: \`${buildInfoPath}\` ${_devHint}`
     );
   }
 
-  if (!pidIsRunning(buildInfo.dev.pid)) {
+  if (!_pidIsRunning(buildInfo.dev.pid)) {
     throw new Error(`Dev server is not running (pid: ${buildInfo.dev.pid})`);
   }
 
@@ -68,7 +76,7 @@ async function getTasksContext(opts: TaskRunnerOptions) {
   };
 }
 
-function pidIsRunning(pid) {
+function _pidIsRunning(pid) {
   try {
     process.kill(pid, 0);
     return true;
