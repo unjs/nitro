@@ -322,6 +322,12 @@ export interface NitroOptions extends PresetOptions {
      * @see https://nitro.unjs.io/guide/websocket
      */
     database?: boolean;
+    /**
+     * Enable experimental Tasks support
+     *
+     * @see https://nitro.unjs.io/guide/tasks
+     */
+    tasks?: boolean;
   };
   future: {
     nativeSWR: boolean;

@@ -12,7 +12,11 @@ export default defineEventHandler(async () => {
   // Query for users
   const { rows } = await db.sql`SELECT * FROM users WHERE id = ${userId}`;
 
-  return {
-    rows,
-  };
+  return `
+    <h1>Database Example</h1>
+    <a href="/_nitro/tasks/db:migrate">db:migrate (dev only)</a>
+    <br>
+    <h2>Rows:</h2>
+    <pre>${JSON.stringify(rows, null, 2)}</pre>
+    `;
 });
