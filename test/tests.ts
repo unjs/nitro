@@ -660,7 +660,10 @@ export function testNitro(
   });
 
   describe.skipIf(
-    !ctx.nitro.options.node || ["deno", "bun"].includes(ctx.preset)
+    !ctx.nitro.options.node ||
+      ctx.isLambda ||
+      ctx.isWorker ||
+      ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
   )("Database", () => {
     it("works", async () => {
       const { data } = await callHandler({ url: "/api/db" });

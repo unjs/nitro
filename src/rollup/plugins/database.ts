@@ -7,7 +7,9 @@ export function database(nitro: Nitro) {
     (nitro.options.dev && nitro.options.devDatabase) || nitro.options.database;
 
   const connectorsNames = [
-    ...new Set(Object.values(dbConfigs).map((config) => config?.connector)),
+    ...new Set(
+      Object.values(dbConfigs || {}).map((config) => config?.connector)
+    ),
   ].filter(Boolean);
 
   for (const name of connectorsNames) {
@@ -23,7 +25,7 @@ export function database(nitro: Nitro) {
 ${connectorsNames.map((name) => `import ${name}Connector from "${connectors[name]}";`).join("\n")}
 
 export const connectionConfigs = {
-  ${Object.entries(dbConfigs)
+  ${Object.entries(dbConfigs || {})
     .map(
       ([name, { connector, options }]) =>
         `${name}: {
