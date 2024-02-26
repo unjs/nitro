@@ -90,6 +90,7 @@ export default defineNitroConfig({
     asyncContext: true,
     wasm: true,
     envExpansion: true,
+    database: true,
   },
   cloudflare: {
     pages: {

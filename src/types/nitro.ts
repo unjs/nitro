@@ -13,6 +13,7 @@ import type { ProxyOptions, RouterMethod } from "h3";
 import type { ResolvedConfig, ConfigWatcher } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
+import type { ConnectorName } from "db0";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -113,6 +114,21 @@ export interface StorageMounts {
     [option: string]: any;
   };
 }
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type DatabaseConnectionName = "default" | (string & {});
+
+export type DatabaseConnectionConfig = {
+  connector: ConnectorName;
+  options?: {
+    [key: string]: any;
+  };
+};
+
+export type DatabaseConnectionConfigs = Record<
+  DatabaseConnectionName,
+  DatabaseConnectionConfig
+>;
 
 type DeepPartial<T> =
   T extends Record<string, any>
@@ -246,6 +262,8 @@ export interface NitroOptions extends PresetOptions {
   // Features
   storage: StorageMounts;
   devStorage: StorageMounts;
+  database: DatabaseConnectionConfigs;
+  devDatabase: DatabaseConnectionConfigs;
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;
@@ -295,9 +313,15 @@ export interface NitroOptions extends PresetOptions {
     /**
      * Enable experimental WebSocket support
      *
-     * @see https://h3.unjs.io/guide/websocket
+     * @see https://nitro.unjs.io/guide/websocket
      */
     websocket?: boolean;
+    /**
+     * Enable experimental Database support
+     *
+     * @see https://nitro.unjs.io/guide/websocket
+     */
+    database?: boolean;
   };
   future: {
     nativeSWR: boolean;
