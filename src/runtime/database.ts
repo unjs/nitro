@@ -1,12 +1,17 @@
 import type { Database } from "db0";
 import { createDatabase } from "db0";
-import { createConnection } from "#internal/nitro/virtual/database";
+import { connectionConfigs } from "#internal/nitro/virtual/database";
 
-let db: Database;
+const instances: Record<string, Database> = Object.create(null);
 
-export function useDatabase(): Database {
-  if (!db) {
-    db = createDatabase(createConnection());
+export function useDatabase(name = "default"): Database {
+  if (instances[name]) {
+    return instances[name];
   }
-  return db;
+  if (!connectionConfigs[name]) {
+    throw new Error(`Database connection "${name}" not configured.`);
+  }
+  return (instances[name] = createDatabase(
+    connectionConfigs[name].connector(connectionConfigs[name].options)
+  ));
 }

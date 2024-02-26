@@ -401,11 +401,18 @@ export async function loadOptions(
     });
     if (options.dev && !options.database && !options.devDatabase) {
       options.devDatabase = {
-        connector: "better-sqlite3",
+        default: {
+          connector: "sqlite",
+          options: {
+            cwd: options.rootDir,
+          },
+        },
       };
     } else if (options.node && !options.database) {
       options.database = {
-        connector: "better-sqlite3",
+        default: {
+          connector: "sqlite",
+        },
       };
     }
   }

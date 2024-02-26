@@ -1,3 +1,8 @@
 import type { Connector } from "db0";
 
-export declare const createConnection: () => Connector;
+export declare const connectionConfigs: {
+  [name: string]: {
+    connector: (options: any) => Connector;
+    options: any;
+  };
+};

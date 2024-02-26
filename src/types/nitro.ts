@@ -115,10 +115,20 @@ export interface StorageMounts {
   };
 }
 
-export interface DatabaseConnectionConfig {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type DatabaseConnectionName = "default" | (string & {});
+
+export type DatabaseConnectionConfig = {
   connector: ConnectorName;
-  [key: string]: any;
-}
+  options?: {
+    [key: string]: any;
+  };
+};
+
+export type DatabaseConnectionConfigs = Record<
+  DatabaseConnectionName,
+  DatabaseConnectionConfig
+>;
 
 type DeepPartial<T> =
   T extends Record<string, any>
@@ -252,8 +262,8 @@ export interface NitroOptions extends PresetOptions {
   // Features
   storage: StorageMounts;
   devStorage: StorageMounts;
-  database: DatabaseConnectionConfig;
-  devDatabase: DatabaseConnectionConfig;
+  database: DatabaseConnectionConfigs;
+  devDatabase: DatabaseConnectionConfigs;
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;

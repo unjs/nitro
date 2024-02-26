@@ -73,8 +73,8 @@ importers:
         specifier: ^0.2.3
         version: 0.2.3
       db0:
-        specifier: ^0.1.1
-        version: 0.1.2(better-sqlite3@8.7.0)
+        specifier: ^0.1.2
+        version: 0.1.2(better-sqlite3@9.4.3)
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -248,8 +248,8 @@ importers:
         specifier: ^0.3.6
         version: 0.3.6
       better-sqlite3:
-        specifier: ^8.4.0
-        version: 8.7.0
+        specifier: ^9.4.3
+        version: 9.4.3
       changelogen:
         specifier: ^0.5.5
         version: 0.5.5
@@ -3070,6 +3070,14 @@ packages:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.1
+    dev: true
+
+  /better-sqlite3@9.4.3:
+    resolution: {integrity: sha512-ud0bTmD9O3uWJGuXDltyj3R47Nz0OHX8iqPOT5PMspGqlu/qQFn+5S2eFBUCrySpavTjFXbi4EgrfVvPAHlImw==}
+    requiresBuild: true
+    dependencies:
+      bindings: 1.5.0
+      prebuild-install: 7.1.1
 
   /big-integer@1.6.52:
     resolution: {integrity: sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==}
@@ -3795,7 +3803,7 @@ packages:
       '@babel/runtime': 7.23.9
     dev: true
 
-  /db0@0.1.2(better-sqlite3@8.7.0):
+  /db0@0.1.2(better-sqlite3@9.4.3):
     resolution: {integrity: sha512-X8z/xVEsrdlye6NQAuRCo9HoKDf//TNQY9TYx9qjBucKJnoLWWB0wiEHV1nZBg0OR6m2mA7YlGrSuJETRQlRdQ==}
     peerDependencies:
       '@libsql/client': ^0.5.2
@@ -3809,7 +3817,7 @@ packages:
       drizzle-orm:
         optional: true
     dependencies:
-      better-sqlite3: 8.7.0
+      better-sqlite3: 9.4.3
     dev: false
 
   /debug@2.6.9:
