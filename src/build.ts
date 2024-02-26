@@ -165,11 +165,15 @@ export async function writeTypes(nitro: Nitro) {
           }
         }
       }
+
+      if (existsSync(path) && !(await isDirectory(path))) {
+        path = stripExtension(path);
+      }
+
       if (isAbsolute(path)) {
         path = relative(typesDir, path);
       }
 
-      path = stripExtension(path);
       resolvedImportPathMap.set(i.from, path);
     }
 
