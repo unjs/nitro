@@ -292,6 +292,12 @@ export interface NitroOptions extends PresetOptions {
      * @see https://github.com/unjs/nitro/pull/2043
      */
     envExpansion?: boolean;
+    /**
+     * Enable experimental WebSocket support
+     *
+     * @see https://h3.unjs.io/guide/websocket
+     */
+    websocket?: boolean;
   };
   future: {
     nativeSWR: boolean;

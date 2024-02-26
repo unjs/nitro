@@ -38,6 +38,7 @@ export interface NitroDevServer {
   app: App;
   close: () => Promise<void>;
   watcher?: FSWatcher;
+  upgrade: (req, socket, head) => void;
 }
 
 function initWorker(filename: string): Promise<NitroWorker> | null {
@@ -242,10 +243,26 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     })
   );
 
+  // Upgrade handler
+  const upgrade = (req, socket, head) => {
+    return proxy.proxy.ws(
+      req,
+      socket,
+      {
+        target: getWorkerAddress(),
+        xfwd: true,
+      },
+      head
+    );
+  };
+
   // Listen
   let listeners: Listener[] = [];
   const _listen: NitroDevServer["listen"] = async (port, opts?) => {
     const listener = await listen(toNodeListener(app), { port, ...opts });
+    listener.server.on("upgrade", (req, sock, head) => {
+      upgrade(req, sock, head);
+    });
     listeners.push(listener);
     return listener;
   };
@@ -274,6 +291,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     app,
     close,
     watcher,
+    upgrade,
   };
 }
 

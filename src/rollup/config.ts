@@ -87,7 +87,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     const routeHandler =
       nitro.options.handlers.find((h) => id.startsWith(h.handler as string)) ||
       nitro.scannedHandlers.find((h) => id.startsWith(h.handler as string));
-    if (routeHandler) {
+    if (routeHandler?.route) {
       const path =
         routeHandler.route
           .replace(/:([^/]+)/g, "_$1")
@@ -202,6 +202,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     "versions?.nitro": nitroPkg.version,
     // Internal
     _asyncContext: nitro.options.experimental.asyncContext,
+    _websocket: nitro.options.experimental.websocket,
   };
 
   // Universal import.meta
