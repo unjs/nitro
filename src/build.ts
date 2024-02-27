@@ -162,7 +162,7 @@ export async function writeTypes(nitro: Nitro) {
           }
         }
       }
-      if (existsSync(path) && !isDirectory(path)) {
+      if (existsSync(path) && !(await isDirectory(path))) {
         path = path.replace(/\.[a-z]+$/, "");
       }
       if (isAbsolute(path)) {
