@@ -69,6 +69,9 @@ importers:
       cookie-es:
         specifier: ^1.0.0
         version: 1.0.0
+      croner:
+        specifier: ^8.0.1
+        version: 8.0.1
       crossws:
         specifier: ^0.2.3
         version: 0.2.3
@@ -3653,6 +3656,11 @@ packages:
     dependencies:
       crc-32: 1.2.2
       readable-stream: 3.6.2
+    dev: false
+
+  /croner@8.0.1:
+    resolution: {integrity: sha512-Hq1+lXVgjJjcS/U+uk6+yVmtxami0r0b+xVtlGyABgdz110l/kOnHWvlSI7nVzrTl8GCdZHwZS4pbBFT7hSL/g==}
+    engines: {node: '>=18.0'}
     dev: false
 
   /cross-spawn@7.0.3:

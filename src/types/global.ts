@@ -3,6 +3,7 @@ import type { NitroOptions } from "./nitro";
 export interface NitroStaticBuildFlags {
   _asyncContext?: boolean;
   _websocket?: boolean;
+  _tasks?: boolean;
   dev?: boolean;
   client?: boolean;
   nitro?: boolean;

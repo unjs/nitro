@@ -1,5 +1,5 @@
 import { createError } from "h3";
-import { tasks } from "#internal/nitro/virtual/tasks";
+import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -24,6 +24,7 @@ export interface TaskEvent {
   context: TaskContext;
 }
 
+/** @experimental */
 export interface TaskResult<RT = unknown> {
   result?: RT;
 }
@@ -81,5 +82,27 @@ export async function runTask<RT = unknown>(
     return res;
   } finally {
     delete __runningTasks__[name];
+  }
+}
+
+/** @experimental */
+export async function startScheduleRunner() {
+  if (!scheduledTasks || scheduledTasks.length === 0) {
+    return;
+  }
+  const { Cron } = await import("croner");
+  for (const schedule of scheduledTasks) {
+    const cron = new Cron(schedule.cron, async () => {
+      await Promise.all(
+        schedule.tasks.map((name) =>
+          runTask(name).catch((error) => {
+            console.error(
+              `[nitro] Error while running scheduled task "${name}"`,
+              error
+            );
+          })
+        )
+      );
+    });
   }
 }

@@ -15,8 +15,7 @@ import {
 import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
-import { runTask } from "../task";
-import { tasks } from "#internal/nitro/virtual/tasks";
+import { runTask, startScheduleRunner } from "../task";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
@@ -67,6 +66,7 @@ nitroApp.router.get(
     );
     return {
       tasks: Object.fromEntries(_tasks),
+      scheduledTasks,
     };
   })
 );
@@ -91,10 +91,14 @@ trapUnhandledNodeErrors();
 async function onShutdown(signal?: NodeJS.Signals) {
   await nitroApp.hooks.callHook("close");
 }
-
 parentPort.on("message", async (msg) => {
   if (msg && msg.event === "shutdown") {
     await onShutdown();
     parentPort.postMessage({ event: "exit" });
   }
 });
+
+// Scheduled tasks
+if (import.meta._tasks) {
+  startScheduleRunner();
+}

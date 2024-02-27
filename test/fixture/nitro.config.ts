@@ -93,6 +93,9 @@ export default defineNitroConfig({
     database: true,
     tasks: true,
   },
+  scheduledTasks: {
+    "* * * * *": "test",
+  },
   cloudflare: {
     pages: {
       routes: {
