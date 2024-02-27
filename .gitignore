@@ -73,6 +73,7 @@ playground/firebase.json
 .zeabur
 
 test/fixture/functions
+.data
 
 .pnpm-store
 .wrangler

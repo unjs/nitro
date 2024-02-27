@@ -1,36 +1,46 @@
-<p>
-  <a href="https://nitro.unjs.io" target="_blank" rel="noopener noreferrer">
-    <img src="./docs/public/cover.png" alt="Nitro logo">
-  </a>
-</p>
-<p>
-  <a href="https://npmjs.com/package/nitropack"><img src="https://img.shields.io/npm/v/nitropack?style=flat&colorA=18181B&colorB=d8c449" alt="npm version"></a>
-  <a href="https://npmjs.com/package/nitropack"><img src="https://img.shields.io/npm/dm/nitropack?style=flat&colorA=18181B&colorB=d8c449" alt="npm downloads"></a>
-  <a href="https://github.com/unjs/nitro/blob/main/LICENSE"><img src="https://img.shields.io/github/license/unjs/nitro.svg?style=flat&colorA=18181B&colorB=d8c449" alt="License"></a>
-</p>
-
 # Nitro
 
-Create web servers that run *anywhere*. The open engine powering [Nuxt](https://nuxt.com) and [open to everyone](https://github.com/unjs/nitro/discussions/1015).
+<!-- automd:badges -->
 
-- 🐇 Rapid development with HMR
-- 😌 Provider agnostic deployments with 15+ built-in presets
-- 💼 Portable and compact output
-- 📁 Directory structure conventions
-- 🤏 Minimal design
-- 🚀 Code-splitting
-- 👕 TypeScript support
-- 💾 Universal storage
-- 💰 Route caching
-- 🐱 Hackable
-- ✨ Auto Imports
+[![npm version](https://flat.badgen.net/npm/v/nitropack)](https://npmjs.com/package/nitropack)
+[![npm downloads](https://flat.badgen.net/npm/dm/nitropack)](https://npmjs.com/package/nitropack)
 
-📖 Read [the documentation](https://nitro.unjs.io) to learn more or directly jump to the [getting started](https://nitro.unjs.io/guide/getting-started).
+<!-- /automd -->
+
+Create web servers that run anywhere! 📖 [**documentation**](https://nitro.unjs.io)
 
 ## Contribution
 
-See [contribution guide](https://nitro.unjs.io/guide/community/contributing).
+<details>
+  <summary>Local development</summary>
+
+- Clone this repository
+- Install the latest LTS version of [Node.js](https://nodejs.org/en/)
+- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
+- Install dependencies using `pnpm install`
+- Run tests using `pnpm dev` or `pnpm test`
+
+</details>
+
+<!-- /automd -->
 
 ## License
 
-Made with 💛 Published under the [MIT](./LICENSE) license.
+<!-- automd:contributors license=MIT author="pi0" -->
+
+Published under the [MIT](https://github.com/unjs/nitro/blob/main/LICENSE) license.
+Made by [@pi0](https://github.com/pi0) and [community](https://github.com/unjs/nitro/graphs/contributors) 💛
+<br><br>
+<a href="https://github.com/unjs/nitro/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=unjs/nitro" />
+</a>
+
+<!-- /automd -->
+
+<!-- automd:with-automd -->
+
+---
+
+_🤖 auto updated with [automd](https://automd.unjs.io)_
+
+<!-- /automd -->

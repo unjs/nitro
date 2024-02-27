@@ -107,55 +107,63 @@ export async function createNitro(
     }
   }
 
-  // Tasks
-  const scannedTasks = await scanTasks(nitro);
-  for (const scannedTask of scannedTasks) {
-    if (scannedTask.name in nitro.options.tasks) {
-      if (!nitro.options.tasks[scannedTask.name].handler) {
-        nitro.options.tasks[scannedTask.name].handler = scannedTask.handler;
+  // Scan Tasks
+  if (nitro.options.experimental.tasks) {
+    const scannedTasks = await scanTasks(nitro);
+    for (const scannedTask of scannedTasks) {
+      if (scannedTask.name in nitro.options.tasks) {
+        if (!nitro.options.tasks[scannedTask.name].handler) {
+          nitro.options.tasks[scannedTask.name].handler = scannedTask.handler;
+        }
+      } else {
+        nitro.options.tasks[scannedTask.name] = {
+          handler: scannedTask.handler,
+          description: "",
+        };
       }
-    } else {
-      nitro.options.tasks[scannedTask.name] = {
-        handler: scannedTask.handler,
-        description: "",
-      };
     }
   }
-  const taskNames = Object.keys(nitro.options.tasks).sort();
-  if (taskNames.length > 0) {
-    consola.warn(
-      `Nitro tasks are experimental and API may change in the future releases!`
-    );
-    consola.log(
-      `Available Tasks:\n\n${taskNames
-        .map(
-          (t) =>
-            ` - \`${t}\`${
-              nitro.options.tasks[t].description
-                ? ` - ${nitro.options.tasks[t].description}`
-                : ""
-            }`
-        )
-        .join("\n")}`
-    );
-  }
-  nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => `
+
+  // Virtual module for tasks (TODO: Move to rollup plugin)
+  nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => {
+    const _scheduledTasks = Object.entries(nitro.options.scheduledTasks || {})
+      .map(([cron, _tasks]) => {
+        const tasks = (Array.isArray(_tasks) ? _tasks : [_tasks]).filter(
+          (name) => {
+            if (!nitro.options.tasks[name]) {
+              nitro.logger.warn(`Scheduled task \`${name}\` is not defined!`);
+              return false;
+            }
+            return true;
+          }
+        );
+        return { cron, tasks };
+      })
+      .filter((e) => e.tasks.length > 0);
+    const scheduledTasks: false | { cron: string; tasks: string[] }[] =
+      _scheduledTasks.length > 0 ? _scheduledTasks : false;
+
+    return /* js */ `
+export const scheduledTasks = ${JSON.stringify(scheduledTasks)};
+
 export const tasks = {
   ${Object.entries(nitro.options.tasks)
     .map(
       ([name, task]) =>
         `"${name}": {
-          description: ${JSON.stringify(task.description)},
-          get: ${
+          meta: {
+            description: ${JSON.stringify(task.description)},
+          },
+          resolve: ${
             task.handler
-              ? `() => import("${normalize(task.handler)}")`
+              ? `() => import("${normalize(task.handler)}").then(r => r.default || r)`
               : "undefined"
           },
         }`
     )
     .join(",\n")}
-};
-  `;
+};`;
+  };
 
   // Auto imports
   if (nitro.options.imports) {
