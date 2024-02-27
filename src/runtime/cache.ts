@@ -352,10 +352,12 @@ export function defineCachedEventHandler<
       // Call handler
       const event = createEvent(reqProxy, resProxy);
       // Assign bound fetch to context
-      event.fetch = (req, init) =>
-        fetchWithEvent(event, req, init, { fetch: useNitroApp().localFetch });
-      event.$fetch = ((req, init) =>
-        fetchWithEvent(event, req, init as RequestInit, {
+      event.fetch = (url, fetchOptions) =>
+        fetchWithEvent(event, url, fetchOptions, {
+          fetch: useNitroApp().localFetch,
+        });
+      event.$fetch = ((url, fetchOptions) =>
+        fetchWithEvent(event, url, fetchOptions as RequestInit, {
           fetch: globalThis.$fetch,
         })) as $Fetch<unknown, NitroFetchRequest>;
       event.context = incomingEvent.context;
