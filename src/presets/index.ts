@@ -19,6 +19,7 @@ export { nitroPrerender } from "./nitro-prerender";
 export { cli } from "./node-cli";
 export { nodeServer, nodeCluster } from "./node-server";
 export { node } from "./node";
+export { platformSh } from "./platform-sh";
 export { renderCom } from "./render-com";
 export { serviceWorker } from "./service-worker";
 export { stormkit } from "./stormkit";
