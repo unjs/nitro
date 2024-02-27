@@ -2,6 +2,7 @@ import "#internal/nitro/virtual/polyfill";
 import type {} from "bun";
 import wsAdapter from "crossws/adapters/bun";
 import { nitroApp } from "../app";
+import { startScheduleRunner } from "../task";
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
@@ -34,3 +35,8 @@ const server = Bun.serve({
 });
 
 console.log(`Listening on http://localhost:${server.port}...`);
+
+// Scheduled tasks
+if (import.meta._tasks) {
+  startScheduleRunner();
+}

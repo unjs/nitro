@@ -204,6 +204,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     // Internal
     _asyncContext: nitro.options.experimental.asyncContext,
     _websocket: nitro.options.experimental.websocket,
+    _tasks: nitro.options.experimental.tasks,
   };
 
   // Universal import.meta

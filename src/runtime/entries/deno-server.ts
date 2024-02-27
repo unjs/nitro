@@ -2,7 +2,7 @@ import "#internal/nitro/virtual/polyfill";
 import destr from "destr";
 import wsAdapter from "crossws/adapters/deno";
 import { nitroApp } from "../app";
-import { useRuntimeConfig } from "#internal/nitro";
+import { startScheduleRunner, useRuntimeConfig } from "#internal/nitro";
 
 if (Deno.env.get("DEBUG")) {
   addEventListener("unhandledrejection", (event: any) =>
@@ -65,6 +65,11 @@ async function handler(request: Request, info: any) {
     redirect: request.redirect,
     body,
   });
+}
+
+// Scheduled tasks
+if (import.meta._tasks) {
+  startScheduleRunner();
 }
 
 export default {};
