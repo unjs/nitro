@@ -24,8 +24,8 @@ export interface CacheOptions<T = any> {
   getKey?: (...args: any[]) => string | Promise<string>;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   validate?: (entry: CacheEntry<T>) => boolean;
-  shouldInvalidateCache?: (...args: any[]) => boolean;
-  shouldBypassCache?: (...args: any[]) => boolean;
+  shouldInvalidateCache?: (...args: any[]) => boolean | Promise<boolean>;
+  shouldBypassCache?: (...args: any[]) => boolean | Promise<boolean>;
   group?: string;
   integrity?: any;
   /**
@@ -150,12 +150,12 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
   }
 
   return async (...args) => {
-    const shouldBypassCache = opts.shouldBypassCache?.(...args);
+    const shouldBypassCache = await opts.shouldBypassCache?.(...args);
     if (shouldBypassCache) {
       return fn(...args);
     }
     const key = await (opts.getKey || getKey)(...args);
-    const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
+    const shouldInvalidateCache = await opts.shouldInvalidateCache?.(...args);
     const entry = await get(
       key,
       () => fn(...args),
@@ -184,8 +184,8 @@ export interface ResponseCacheEntry<T = any> {
 
 export interface CachedEventHandlerOptions<T = any>
   extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
-  shouldInvalidateCache?: (event: H3Event) => boolean;
-  shouldBypassCache?: (event: H3Event) => boolean;
+  shouldInvalidateCache?: (event: H3Event) => boolean | Promise<boolean>;
+  shouldBypassCache?: (event: H3Event) => boolean | Promise<boolean>;
   getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
   varies?: string[];
