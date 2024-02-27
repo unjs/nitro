@@ -5,7 +5,7 @@ import { defineNitroPreset } from "../preset";
 export const githubPages = defineNitroPreset({
   extends: "static",
   commands: {
-    deploy: "npx gh-pages -d ./public",
+    deploy: "npx gh-pages --dotfiles -d ./public",
   },
   prerender: {
     routes: [

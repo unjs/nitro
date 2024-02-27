@@ -171,5 +171,6 @@ export function toBuffer(data: ReadableStream | Readable | Uint8Array) {
         .on("error", reject);
     });
   }
+  // @ts-ignore
   return Buffer.from(data as unknown as Uint16Array);
 }
