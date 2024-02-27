@@ -70,18 +70,16 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       .join(":")
       .replace(/:\/$/, ":index");
 
-    const storedEntry =
+    let entry: CacheEntry<T> =
       ((await useStorage().getItem(cacheKey)) as unknown) || {};
 
-    const isStoredEntryCorrect = typeof storedEntry === "object";
-
-    if (!isStoredEntryCorrect) {
+    // https://github.com/unjs/nitro/issues/2160
+    if (typeof entry !== "object") {
+      entry = {};
       const error = new Error("The existing entry is not an object.");
       console.error(`[nitro] [cache] Malformed data read from cache.`, error);
       useNitroApp().captureError(error, { event, tags: ["cache"] });
     }
-
-    const entry: CacheEntry<T> = isStoredEntryCorrect ? storedEntry : {};
 
     const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000;
     if (ttl) {
