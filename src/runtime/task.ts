@@ -1,4 +1,5 @@
 import { createError } from "h3";
+import { Cron } from "croner";
 import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
 
 type MaybePromise<T> = T | Promise<T>;
@@ -86,11 +87,10 @@ export async function runTask<RT = unknown>(
 }
 
 /** @experimental */
-export async function startScheduleRunner() {
+export function startScheduleRunner() {
   if (!scheduledTasks || scheduledTasks.length === 0) {
     return;
   }
-  const { Cron } = await import("croner");
   for (const schedule of scheduledTasks) {
     const cron = new Cron(schedule.cron, async () => {
       await Promise.all(

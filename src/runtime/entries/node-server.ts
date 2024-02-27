@@ -8,7 +8,7 @@ import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { setupGracefulShutdown } from "../shutdown";
 import { trapUnhandledNodeErrors } from "../utils";
-import { useRuntimeConfig } from "#internal/nitro";
+import { startScheduleRunner, useRuntimeConfig } from "#internal/nitro";
 
 const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;
@@ -56,6 +56,11 @@ setupGracefulShutdown(listener, nitroApp);
 if (import.meta._websocket) {
   const { handleUpgrade } = wsAdapter(nitroApp.h3App.websocket);
   server.on("upgrade", handleUpgrade);
+}
+
+// Scheduled tasks
+if (import.meta._tasks) {
+  startScheduleRunner();
 }
 
 export default {};
