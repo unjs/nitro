@@ -25,7 +25,7 @@ hooks:
   build: |
     corepack enable
     npx nypm install
-    npm run build
+    NITR_PRESET=platform_sh npm run build
 mounts:
     '.data':
         source: local
