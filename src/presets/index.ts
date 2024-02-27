@@ -27,6 +27,7 @@ export { cleavr } from "./cleavr";
 export { layer0 } from "./layer0";
 export { flightControl } from "./flightcontrol";
 export { lagon } from "./lagon";
+export { koyeb } from "./koyeb";
 export { iis, iisHandler, iisNode } from "./iis";
 export { _static as static } from "./static";
 export { githubPages } from "./github-pages";
