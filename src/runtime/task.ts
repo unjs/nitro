@@ -47,7 +47,10 @@ export function defineTask<RT = unknown>(def: Task<RT>): Task<RT> {
 /** @experimental */
 export async function runTask<RT = unknown>(
   name: string,
-  { payload, context }: { payload?: TaskPayload; context?: TaskContext } = {}
+  {
+    payload = {},
+    context = {},
+  }: { payload?: TaskPayload; context?: TaskContext } = {}
 ): Promise<TaskResult<RT>> {
   if (!(name in tasks)) {
     throw createError({

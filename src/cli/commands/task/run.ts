@@ -28,11 +28,19 @@ export default defineCommand({
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
     consola.info(`Running task \`${args.name}\`...`);
+    let payload: any = destr(args.payload || "{}");
+    if (typeof payload !== "object") {
+      consola.error(
+        `Invalid payload: \`${args.payload}\` (it should be a valid JSON object)`
+      );
+      payload = undefined;
+    }
     try {
       const { result } = await runTask(
-        args.name,
         {
-          payload: destr(args.payload || "{}"),
+          name: args.name,
+          context: {},
+          payload,
         },
         {
           cwd,

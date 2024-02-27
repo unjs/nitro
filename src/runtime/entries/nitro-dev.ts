@@ -76,9 +76,11 @@ nitroApp.router.use(
     const name = getRouterParam(event, "name");
     const payload = {
       ...getQuery(event),
-      ...(await readBody(event).catch(() => ({}))),
+      ...(await readBody(event)
+        .then((r) => r?.payload)
+        .catch(() => ({}))),
     };
-    return await runTask(name, payload);
+    return await runTask(name, { payload });
   })
 );
 

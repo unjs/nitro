@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
 import { ofetch } from "ofetch";
-import type { TaskPayload } from "./runtime";
+import type { TaskEvent } from "./runtime";
 import { NitroBuildInfo } from "nitropack";
 
 /** @experimental */
@@ -13,15 +13,13 @@ export interface TaskRunnerOptions {
 
 /** @experimental */
 export async function runTask(
-  name: string,
-  payload?: TaskPayload,
+  taskEvent: TaskEvent,
   opts?: TaskRunnerOptions
 ): Promise<{ result: unknown }> {
   const ctx = await _getTasksContext(opts);
-  const result = await ctx.devFetch(`/_nitro/tasks/${name}`, {
-    body: {
-      payload,
-    },
+  const result = await ctx.devFetch(`/_nitro/tasks/${taskEvent.name}`, {
+    method: "POST",
+    body: taskEvent,
   });
   return result;
 }

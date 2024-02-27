@@ -2,7 +2,7 @@ import { defineCommand } from "citty";
 
 export default defineCommand({
   meta: {
-    name: "tasks",
+    name: "task",
     description: "Operate in nitro tasks (experimental)",
   },
   subCommands: {
