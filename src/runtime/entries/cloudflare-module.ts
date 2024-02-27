@@ -11,7 +11,7 @@ import manifest from "__STATIC_CONTENT_MANIFEST";
 import wsAdapter from "crossws/adapters/cloudflare";
 import { requestHasBody } from "../utils";
 import { nitroApp } from "#internal/nitro/app";
-import { useRuntimeConfig } from "#internal/nitro";
+import { runCronTasks, runTask, useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
 
 const ws = import.meta._websocket
@@ -77,6 +77,22 @@ export default {
       headers: request.headers,
       body,
     });
+  },
+  scheduled(event: any, env: CFModuleEnv, context: ExecutionContext) {
+    if (import.meta._tasks) {
+      globalThis.__env__ = env;
+      context.waitUntil(
+        runCronTasks(event.cron, {
+          context: {
+            cloudflare: {
+              env,
+              context,
+            },
+          },
+          payload: {},
+        })
+      );
+    }
   },
 };
 

@@ -91,11 +91,19 @@ export function startScheduleRunner() {
   if (!scheduledTasks || scheduledTasks.length === 0) {
     return;
   }
+
+  const payload: TaskPayload = {
+    scheduledTime: Date.now(),
+  };
+
   for (const schedule of scheduledTasks) {
     const cron = new Cron(schedule.cron, async () => {
       await Promise.all(
         schedule.tasks.map((name) =>
-          runTask(name).catch((error) => {
+          runTask(name, {
+            payload,
+            context: {},
+          }).catch((error) => {
             console.error(
               `[nitro] Error while running scheduled task "${name}"`,
               error
@@ -105,4 +113,17 @@ export function startScheduleRunner() {
       );
     });
   }
+}
+
+/** @experimental */
+export function getCronTasks(cron: string): string[] {
+  return (scheduledTasks || []).find((task) => task.cron === cron)?.tasks || [];
+}
+
+/** @experimental */
+export function runCronTasks(
+  cron: string,
+  ctx: { payload?: TaskPayload; context?: TaskContext }
+): Promise<TaskResult[]> {
+  return Promise.all(getCronTasks(cron).map((name) => runTask(name, ctx)));
 }
