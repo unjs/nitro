@@ -57,7 +57,7 @@ After having built your application you can preview it locally with wrangler by 
 npx wrangler pages dev dist
 ```
 
-### Deploy your app locally
+### Deploy from your local machine using wrangler
 
 After having built your application you can manually deploy it with wrangler, in order to do so first make sure to be
 logged into your Cloudflare account:
@@ -248,20 +248,74 @@ NITRO_HELLO_THERE="captain"
 SECRET="top-secret"
 ```
 
-## Cloudflare Bindings
+## Direct access to cloudflare bindings
 
 Bindings are what allows you to interact with resources from the Cloudflare platform, examples of such resources are key-value data storages ([KVs](https://developers.cloudflare.com/kv/)) and serverless SQL databases ([D1s](https://developers.cloudflare.com/d1/)).
 
+::read-more
 For more details on Bindings and how to use them please refer to the Cloudflare [Pages](https://developers.cloudflare.com/pages/functions/bindings/) and [Workers](https://developers.cloudflare.com/workers/configuration/bindings/#bindings) documentation.
+::
 
-In your Nitro app you can access Cloudflare bindings from the request event, by accessing its `context.cloudflare.env` field, this is for example how you can access a D1 bindings:
+> [!TIP]
+> Nitro provides high level API to interact with primitives such as [KV Storage](/guide/storage) and [Database](/guide/database) and you are highly recommended to prefer using them instead of directly depending on low-level APIs for usage stability.
+
+:read-more{title="Database Layer" to="/guide/database"}
+
+:read-more{title="KV Storage" to="/guide/storage"}
+
+In runtime, you can access bindings from the request event, by accessing its `context.cloudflare.env` field, this is for example how you can access a D1 bindings:
 
 ```ts
-const { cloudflare } = event.context
-const stmt = await cloudflare.env.MY_D1.prepare('SELECT id FROM table')
-const { results } = await stmt.all()
+defineEventHandler((event) => {
+  const { cloudflare } = event.context
+  const stmt = await cloudflare.env.MY_D1.prepare('SELECT id FROM table')
+  const { results } = await stmt.all()
+})
 ```
 
-::warning
-Note that bindings cannot be accessed during dev mode, they will be available only when you preview your Nitro app through `wrangler` or in the production deployment, and in both cases they need to be properly configured (as presented in the Cloudflare [Pages](https://developers.cloudflare.com/pages/functions/bindings/) and [Workers](https://developers.cloudflare.com/workers/configuration/bindings/#bindings) documentation).
+### Access to the bindings in local env
+
+In order to access bindings during local dev mode, regardless of the chosen preset, it is recommended to use a `wrangler.toml` file (as well as a `.dev.vars` one) in combination with the [`nitro-cloudflare-dev` module](https://github.com/pi0/nitro-cloudflare-dev) as illustrated below.
+
+> [!NOTE]
+> The `nitro-cloudflare-dev` module is experimental. The Nitro team is looking into a more native integration  which could in the near future make the module unneeded.
+
+In order to access bindings in dev mode we start by defining the bindings in a `wrangler.toml` file, this is for example how you would define a variable and a KV namespace:
+```ini [wrangler.toml]
+[vars]
+MY_VARIABLE="my-value"
+
+[[kv_namespaces]]
+binding = "MY_KV"
+id = "xxx"
+```
+
+> [!NOTE]
+>  Only bindings in the default environment are recognized.
+
+Next we install the `nitro-cloudflare-dev` module as well as the required `wrangler` package (if not already installed):
+
+:pm-install{name="-D nitro-cloudflare-dev wrangler"}
+
+Then define module:
+
+::code-group
+```js [nitro.config.js]
+import nitroCloudflareBindings from "nitro-cloudflare-dev";
+
+export default defineNitroConfig({
+  modules: [nitroCloudflareBindings],
+});
+```
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  modules: ['nitro-cloudflare-dev']
+})
+```
 ::
+
+From this moment, when running
+
+::pm-run{script="dev"}
+
+you will be able to access the `MY_VARIABLE` and `MY_KV` from the request event just as illustrated above.
