@@ -21,7 +21,14 @@ After your project has been imported and deployed, all subsequent pushes to bran
 
 Learn more about Vercel’s [Git Integration](https://vercel.com/docs/concepts/git).
 
-## Vercel ege eunctions
+## Monorepo
+
+Monorepo is supported by Vercel. However a custom "[Root Directory](https://vercel.com/docs/deployments/configure-a-build#root-directory)" must be specified in "Project Settings > General" tab. Also make sure that "Include source files outside of the Root Directory" is checked.
+
+Examples of values for "Root Directory": `apps/web` or `packages/app`.
+
+
+## Vercel edge functions
 
 **Preset:** `vercel_edge`
 
