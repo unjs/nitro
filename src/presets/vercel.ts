@@ -178,12 +178,14 @@ function generateBuildConfig(nitro: Nitro) {
         .filter(([_, routeRules]) => routeRules.redirect || routeRules.headers)
         .map(([path, routeRules]) => {
           let route = {
-            src: path.replace("/**", "/.*"),
+            src: path.replace("/**", "/(.*)"),
           };
           if (routeRules.redirect) {
             route = defu(route, {
               status: routeRules.redirect.statusCode,
-              headers: { Location: routeRules.redirect.to },
+              headers: {
+                Location: routeRules.redirect.to.replace("/**", "/$1"),
+              },
             });
           }
           if (routeRules.headers) {

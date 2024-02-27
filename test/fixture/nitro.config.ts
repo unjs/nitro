@@ -70,6 +70,7 @@ export default defineNitroConfig({
     "/rules/redirect/obj": {
       redirect: { to: "https://nitro.unjs.io/", statusCode: 308 },
     },
+    "/rules/redirect/wildcard/**": { redirect: "https://nitro.unjs.io/**" },
     "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
     "/rules/nested/override": { redirect: { to: "/other" } },
     "/rules/_/noncached/cached": { swr: true },
