@@ -76,8 +76,8 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
     // https://github.com/unjs/nitro/issues/2160
     if (typeof entry !== "object") {
       entry = {};
-      const error = new Error("The existing entry is not an object.");
-      console.error(`[nitro] [cache] Malformed data read from cache.`, error);
+      const error = new Error("Malformed data read from cache.");
+      console.error("[nitro] [cache]", error);
       useNitroApp().captureError(error, { event, tags: ["cache"] });
     }
 
