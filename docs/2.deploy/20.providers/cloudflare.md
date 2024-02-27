@@ -248,27 +248,37 @@ NITRO_HELLO_THERE="captain"
 SECRET="top-secret"
 ```
 
-## Cloudflare bindings
+## Direct access to cloudflare bindings
 
 Bindings are what allows you to interact with resources from the Cloudflare platform, examples of such resources are key-value data storages ([KVs](https://developers.cloudflare.com/kv/)) and serverless SQL databases ([D1s](https://developers.cloudflare.com/d1/)).
 
+::read-more
 For more details on Bindings and how to use them please refer to the Cloudflare [Pages](https://developers.cloudflare.com/pages/functions/bindings/) and [Workers](https://developers.cloudflare.com/workers/configuration/bindings/#bindings) documentation.
+::
 
-In your Nitro app you can access Cloudflare bindings from the request event, by accessing its `context.cloudflare.env` field, this is for example how you can access a D1 bindings:
+> [!TIP]
+> Nitro provides high level API to interact with primitives such as [KV Storage](/guide/storage) and [Database](/guide/database) and you are highly recommended to prefer using them instead of directly depending on low-level APIs for usage stability.
+
+:read-more{title="Database Layer" to="/guide/database"}
+
+:read-more{title="KV Storage" to="/guide/storage"}
+
+In runtime, you can access bindings from the request event, by accessing its `context.cloudflare.env` field, this is for example how you can access a D1 bindings:
 
 ```ts
-const { cloudflare } = event.context
-const stmt = await cloudflare.env.MY_D1.prepare('SELECT id FROM table')
-const { results } = await stmt.all()
+defineEventHandler((event) => {
+  const { cloudflare } = event.context
+  const stmt = await cloudflare.env.MY_D1.prepare('SELECT id FROM table')
+  const { results } = await stmt.all()
+})
 ```
 
-### Local usage
+### Access to the bindings in local env
 
 In order to access bindings during local dev mode, regardless of the chosen preset, it is recommended to use a `wrangler.toml` file (as well as a `.dev.vars` one) in combination with the [`nitro-cloudflare-dev` module](https://github.com/pi0/nitro-cloudflare-dev) as illustrated below.
 
-::alert{type="warning"}
-**Note:** The `nitro-cloudflare-dev` module is experimental and likely a temporary solution for allowing local bindings usage. The Nitro team is actively looking into a more advanced integration with Cloudflare which could in the near future make the module unneeded.
-::
+> [!NOTE]
+> The `nitro-cloudflare-dev` module is experimental. The Nitro team is looking into a more native integration  which could in the near future make the module unneeded.
 
 In order to access bindings in dev mode we start by defining the bindings in a `wrangler.toml` file, this is for example how you would define a variable and a KV namespace:
 ```ini [wrangler.toml]
@@ -280,18 +290,16 @@ binding = "MY_KV"
 id = "xxx"
 ```
 
-::alert{type="warning"}
-**Note:** Only bindings in the default environment are recognized.
-::
+> [!NOTE]
+>  Only bindings in the default environment are recognized.
 
 Next we install the `nitro-cloudflare-dev` module as well as the required `wrangler` package (if not already installed):
 
-```bash
-npm i -D nitro-cloudflare-dev wrangler
-```
+:pm-install{name="-D nitro-cloudflare-dev wrangler"}
 
-and use the module in the `nitro.config.js` file:
+Then define module:
 
+::code-group
 ```js [nitro.config.js]
 import nitroCloudflareBindings from "nitro-cloudflare-dev";
 
@@ -299,11 +307,15 @@ export default defineNitroConfig({
   modules: [nitroCloudflareBindings],
 });
 ```
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  modules: ['nitro-cloudflare-dev']
+})
+```
+::
 
 From this moment, when running
 
-```bash
-npm run dev
-```
+::pm-run{script="dev"}
 
 you will be able to access the `MY_VARIABLE` and `MY_KV` from the request event just as illustrated above.
