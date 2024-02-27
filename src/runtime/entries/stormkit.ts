@@ -34,7 +34,7 @@ export const handler: Handler<StormkitEvent, StormkitResponse> =
       body: event.body,
     });
 
-    const normalizedBody = await normalizeLambdaOutgoingBody(
+    const awsBody = await normalizeLambdaOutgoingBody(
       response.body,
       response.headers
     );
@@ -42,7 +42,7 @@ export const handler: Handler<StormkitEvent, StormkitResponse> =
     return <StormkitResponse>{
       statusCode: response.status,
       headers: normalizeOutgoingHeaders(response.headers),
-      [normalizedBody.type === "text" ? "body" : "buffer"]: normalizedBody.body,
+      [awsBody.type === "text" ? "body" : "buffer"]: awsBody.body,
     };
   };
 

@@ -10,7 +10,7 @@ export const __firebaseServerFunctionName__ = onRequest(
   {
     // Must be set to public to allow all public requests by default
     invoker: "public",
-    ...firebaseConfig.httpOptions,
+    ...firebaseConfig.httpsOptions,
   },
   toNodeListener(nitroApp.h3App)
 );

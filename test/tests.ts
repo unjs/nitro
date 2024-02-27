@@ -25,8 +25,13 @@ export interface Context {
   fetch: (url: string, opts?: FetchOptions) => Promise<any>;
   server?: Listener;
   isDev: boolean;
+  isWorker: boolean;
+  isLambda: boolean;
+  isIsolated: boolean;
+  supportsEnv: boolean;
   env: Record<string, string>;
-  [key: string]: unknown;
+  lambdaV1?: boolean;
+  // [key: string]: unknown;
 }
 
 // https://github.com/unjs/nitro/pull/1240
@@ -41,11 +46,18 @@ export const fixtureDir = fileURLToPath(
   new URL("fixture", import.meta.url).href
 );
 
-export const getPresetTmpDir = (preset: string) =>
-  resolve(
+export const getPresetTmpDir = (preset: string) => {
+  if (preset.startsWith("cloudflare")) {
+    return fileURLToPath(
+      new URL(`.tmp/${preset}`, import.meta.url) as any /* remove me */
+    );
+  }
+
+  return resolve(
     process.env.NITRO_TEST_TMP_DIR || join(tmpdir(), "nitro-tests"),
     preset
   );
+};
 
 export async function setupTest(
   preset: string,
@@ -59,12 +71,23 @@ export async function setupTest(
   const ctx: Context = {
     preset,
     isDev: preset === "nitro-dev",
+    isWorker: [
+      "cloudflare",
+      "cloudflare-module",
+      "cloudflare-pages",
+      "vercel-edge",
+      "winterjs",
+    ].includes(preset),
+    isLambda: ["netlify", "aws-lambda"].includes(preset),
+    isIsolated: ["winterjs"].includes(preset),
+    supportsEnv: !["winterjs"].includes(preset),
     rootDir: fixtureDir,
     outDir: resolve(fixtureDir, presetTmpDir, ".output"),
     env: {
       NITRO_HELLO: "world",
       CUSTOM_HELLO_THERE: "general",
       SECRET: "secret",
+      APP_DOMAIN: "test.com",
     },
     fetch: (url, opts) =>
       fetch(joinURL(ctx.server!.url, url.slice(1)), {
@@ -91,19 +114,11 @@ export async function setupTest(
         helloThere: "",
       },
       buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
-      serveStatic:
-        preset !== "cloudflare" &&
-        preset !== "cloudflare-module" &&
-        preset !== "cloudflare-pages" &&
-        preset !== "vercel-edge" &&
-        !ctx.isDev,
+      serveStatic: !ctx.isDev && !ctx.isWorker,
       output: {
         dir: ctx.outDir,
       },
-      timing:
-        preset !== "cloudflare" &&
-        preset !== "cloudflare-pages" &&
-        preset !== "vercel-edge",
+      timing: !ctx.isWorker,
     })
   ));
 
@@ -156,9 +171,12 @@ export function testNitro(
 ) {
   let _handler: TestHandler;
 
-  async function callHandler(options): Promise<TestHandlerResult> {
+  async function callHandler(
+    options,
+    callOpts: { binary?: boolean } = {}
+  ): Promise<TestHandlerResult> {
     const result = await _handler(options);
-    if (result.constructor.name !== "Response") {
+    if (!["Response", "_Response"].includes(result.constructor.name)) {
       return result as TestHandlerResult;
     }
 
@@ -179,7 +197,9 @@ export function testNitro(
     }
 
     return {
-      data: destr(await (result as Response).text()),
+      data: callOpts.binary
+        ? Buffer.from(await (result as Response).arrayBuffer())
+        : destr(await (result as Response).text()),
       status: result.status,
       headers,
     };
@@ -230,26 +250,27 @@ export function testNitro(
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
   });
 
-  // aws lambda requires buffer responses to be base 64
-  const LambdaPresets = new Set(["netlify", "aws-lambda"]);
-  it.runIf(LambdaPresets.has(ctx.preset))(
-    "buffer image responses",
-    async () => {
-      const { data } = await callHandler({ url: "/icon.png" });
+  it("binary response", async () => {
+    const { data } = await callHandler({ url: "/icon.png" }, { binary: true });
+    let buffer: Buffer;
+    if (ctx.isLambda) {
+      // TODO: Handle base64 decoding in lambda tests themselves
       expect(typeof data).toBe("string");
-      const buffer = Buffer.from(data, "base64");
-      // check if buffer is a png
-      function isBufferPng(buffer: Buffer) {
-        return (
-          buffer[0] === 0x89 &&
-          buffer[1] === 0x50 &&
-          buffer[2] === 0x4e &&
-          buffer[3] === 0x47
-        );
-      }
-      expect(isBufferPng(buffer)).toBe(true);
+      buffer = Buffer.from(data, "base64");
+    } else {
+      buffer = data;
     }
-  );
+    // Check if buffer is a png
+    function isBufferPng(buffer: Buffer) {
+      return (
+        buffer[0] === 0x89 &&
+        buffer[1] === 0x50 &&
+        buffer[2] === 0x4e &&
+        buffer[3] === 0x47
+      );
+    }
+    expect(isBufferPng(buffer)).toBe(true);
+  });
 
   it("render JSX", async () => {
     const { data } = await callHandler({ url: "/jsx" });
@@ -328,7 +349,7 @@ export function testNitro(
       const { status, headers } = await callHandler({ url: "/build/test.txt" });
       expect(status).toBe(200);
       expect(headers.etag).toMatchInlineSnapshot(
-        '"\\"7-vxGfAKTuGVGhpDZqQLqV60dnKPw\\""'
+        `""7-vxGfAKTuGVGhpDZqQLqV60dnKPw""`
       );
       expect(headers["content-type"]).toMatchInlineSnapshot(
         '"text/plain; charset=utf-8"'
@@ -372,7 +393,7 @@ export function testNitro(
     }
   );
 
-  it("useStorage (with base)", async () => {
+  it.skipIf(ctx.isIsolated)("useStorage (with base)", async () => {
     const putRes = await callHandler({
       url: "/api/storage/item?key=test:hello",
       method: "PUT",
@@ -424,12 +445,10 @@ export function testNitro(
     const { data } = await callHandler({
       url: "/stream",
     });
-    expect(data).toBe(
-      LambdaPresets.has(ctx.preset) ? btoa("nitroisawesome") : "nitroisawesome"
-    );
+    expect(data).toBe(ctx.isLambda ? btoa("nitroisawesome") : "nitroisawesome");
   });
 
-  it("config", async () => {
+  it.skipIf(!ctx.supportsEnv)("config", async () => {
     const { data } = await callHandler({
       url: "/config",
     });
@@ -441,8 +460,8 @@ export function testNitro(
         "server-config": true,
       },
       runtimeConfig: {
-        // Cloudflare environment variables are only available within the fetch event
-        dynamic: ctx.preset.startsWith("cloudflare-") ? "initial" : "from-env",
+        dynamic: "from-env",
+        url: "https://test.com",
         app: {
           baseURL: "/",
         },
@@ -461,6 +480,7 @@ export function testNitro(
           ctx.preset === "nitro-dev"
             ? "initial"
             : "from-env",
+        // url: "https://test.com",
         app: {
           baseURL: "/",
         },
@@ -506,18 +526,13 @@ export function testNitro(
       expect((await callHandler({ url: "/_ignored" })).status).toBe(404);
     });
 
-    it.skipIf(
-      [
-        "nitro-dev",
-        "cloudflare",
-        "cloudflare-pages",
-        "cloudflare-module",
-        "vercel-edge",
-      ].includes(ctx.preset)
-    )("public files should be ignored", async () => {
-      expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
-      expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
-    });
+    it.skipIf(ctx.isWorker || ctx.isDev)(
+      "public files should be ignored",
+      async () => {
+        expect((await callHandler({ url: "/_ignored.txt" })).status).toBe(404);
+        expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
+      }
+    );
   });
 
   describe("headers", () => {
@@ -542,6 +557,7 @@ export function testNitro(
         "nitro-dev",
         "vercel",
         nodeVersion < 18 && "deno-server",
+        nodeVersion < 18 && "bun",
       ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
@@ -550,22 +566,10 @@ export function testNitro(
             : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
       }
 
-      // TODO: verce-ledge joins all cookies for some reason!
+      // TODO: vercel-edge joins all cookies for some reason!
       if (ctx.preset === "vercel-edge") {
         expectedCookies =
           "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
-      }
-
-      // Aws lambda v1
-      if (ctx.preset === "aws-lambda" && ctx.lambdaV1) {
-        expectedCookies =
-          "foo=bar, bar=baz,test=value; Path=/,test2=value; Path=/";
-      }
-
-      // TODO: Bun does not handles set-cookie at all
-      // https://github.com/unjs/nitro/issues/1461
-      if (["bun"].includes(ctx.preset)) {
-        return;
       }
 
       expect(headers["set-cookie"]).toMatchObject(expectedCookies);
@@ -573,7 +577,7 @@ export function testNitro(
   });
 
   describe("errors", () => {
-    it("captures errors", async () => {
+    it.skipIf(ctx.isIsolated)("captures errors", async () => {
       const { data } = await callHandler({ url: "/api/errors" });
       const allErrorMessages = (data.allErrors || []).map(
         (entry) => entry.message
@@ -585,7 +589,8 @@ export function testNitro(
       !ctx.nitro.options.node ||
         // TODO: Investigate
         ctx.preset === "bun" ||
-        ctx.preset === "deno-server"
+        ctx.preset === "deno-server" ||
+        ctx.preset === "nitro-dev"
     )("sourcemap works", async () => {
       const { data } = await callHandler({ url: "/error-stack" });
       expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
@@ -603,12 +608,75 @@ export function testNitro(
     });
   });
 
-  describe("environment variables", () => {
+  describe.skipIf(!ctx.supportsEnv)("environment variables", () => {
     it("can load environment variables from runtimeConfig", async () => {
       const { data } = await callHandler({ url: "/config" });
       expect(data.runtimeConfig.hello).toBe("world");
       expect(data.runtimeConfig.helloThere).toBe("general");
       expect(data.runtimeConfig.secret).toBeUndefined();
+    });
+  });
+
+  describe("cache", () => {
+    it.skipIf(ctx.isIsolated)(
+      "should setItem before returning response the first time",
+      async () => {
+        const { data: timestamp } = await callHandler({ url: "/api/cached" });
+
+        const calls = await Promise.all([
+          callHandler({ url: "/api/cached" }),
+          callHandler({ url: "/api/cached" }),
+          callHandler({ url: "/api/cached" }),
+        ]);
+
+        for (const call of calls) {
+          expect(call.data).toBe(timestamp);
+        }
+      }
+    );
+  });
+
+  describe("scanned files", () => {
+    it("Allow having extra method in file name", async () => {
+      expect((await callHandler({ url: "/api/methods/get" })).data).toBe("get");
+      expect((await callHandler({ url: "/api/methods/foo.get" })).data).toBe(
+        "foo.get"
+      );
+    });
+  });
+
+  describe.skipIf(ctx.preset === "cloudflare")("wasm", () => {
+    it("dynamic import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
+
+    it("static import wasm", async () => {
+      expect((await callHandler({ url: "/wasm/static-import" })).data).toBe(
+        "2+3=5"
+      );
+    });
+  });
+
+  describe.skipIf(
+    !ctx.nitro.options.node ||
+      ctx.isLambda ||
+      ctx.isWorker ||
+      ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
+  )("Database", () => {
+    it("works", async () => {
+      const { data } = await callHandler({ url: "/api/db" });
+      expect(data).toMatchObject({
+        rows: [
+          {
+            id: "1001",
+            firstName: "John",
+            lastName: "Doe",
+            email: "",
+          },
+        ],
+      });
     });
   });
 }

@@ -8,7 +8,7 @@ import type { Nitro } from "../types";
 import type {
   VercelBuildConfigV3,
   VercelServerlessFunctionConfig,
-} from "../types/presets";
+} from "../types/presets/vercel";
 
 // https://vercel.com/docs/build-output-api/v3
 
@@ -72,6 +72,7 @@ export const vercel = defineNitroPreset({
           JSON.stringify({
             expiration: value.isr === true ? false : value.isr,
             allowQuery: key.includes("/**") ? ["url"] : undefined,
+            bypassToken: nitro.options.vercel?.config?.bypassToken,
           })
         );
       }
@@ -101,6 +102,10 @@ export const vercelEdge = defineNitroPreset({
     inject: {
       process: undefined,
     },
+  },
+  wasm: {
+    lazy: true,
+    esmImport: false,
   },
   hooks: {
     "rollup:before": (nitro: Nitro) => {

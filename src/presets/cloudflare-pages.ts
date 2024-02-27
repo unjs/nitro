@@ -1,9 +1,15 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { resolve, join } from "pathe";
-import { joinURL, withLeadingSlash, withoutLeadingSlash } from "ufo";
+import {
+  joinURL,
+  withLeadingSlash,
+  withTrailingSlash,
+  withoutLeadingSlash,
+} from "ufo";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
+import { CloudflarePagesRoutes } from "../types/presets/cloudflare";
 
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
@@ -16,30 +22,25 @@ export const cloudflarePages = defineNitroPreset({
   output: {
     dir: "{{ rootDir }}/dist",
     publicDir: "{{ output.dir }}",
-    serverDir: "{{ output.dir }}",
+    serverDir: "{{ output.dir }}/_worker.js",
   },
   alias: {
     // Hotfix: Cloudflare appends /index.html if mime is not found and things like ico are not in standard lite.js!
     // https://github.com/unjs/nitro/pull/933
     _mime: "mime/index.js",
   },
+  wasm: {
+    lazy: false,
+    esmImport: true,
+  },
   rollupConfig: {
     output: {
-      entryFileNames: "_worker.js",
+      entryFileNames: "index.js",
       format: "esm",
+      inlineDynamicImports: false,
     },
   },
   hooks: {
-    "rollup:before"(nitro, rollupConfig) {
-      if (process.env.NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS) {
-        rollupConfig.output = {
-          ...rollupConfig.output,
-          entryFileNames: "index.js",
-          dir: resolve(nitro.options.output.serverDir, "_worker.js"),
-          inlineDynamicImports: false,
-        };
-      }
-    },
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
     },
@@ -63,20 +64,6 @@ export const cloudflarePagesStatic = defineNitroPreset({
   },
 });
 
-/**
- * https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
- */
-export interface CloudflarePagesRoutes {
-  /** Defines the version of the schema. Currently there is only one version of the schema (version 1), however, we may add more in the future and aim to be backwards compatible. */
-  version?: 1;
-
-  /** Defines routes that will be invoked by Functions. Accepts wildcard behavior. */
-  include?: string[];
-
-  /** Defines routes that will not be invoked by Functions. Accepts wildcard behavior. `exclude` always take priority over `include`. */
-  exclude?: string[];
-}
-
 async function writeCFRoutes(nitro: Nitro) {
   const _cfPagesConfig = nitro.options.cloudflare?.pages || {};
   const routes: CloudflarePagesRoutes = {
@@ -98,7 +85,21 @@ async function writeCFRoutes(nitro: Nitro) {
 
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
-    (i) => !i.fallthrough
+    (dir, index, array) => {
+      if (dir.fallthrough) {
+        return false;
+      }
+
+      const normalizedBase = withoutLeadingSlash(dir.baseURL);
+
+      return !array.some(
+        (otherDir, otherIndex) =>
+          otherIndex !== index &&
+          normalizedBase.startsWith(
+            withoutLeadingSlash(withTrailingSlash(otherDir.baseURL))
+          )
+      );
+    }
   );
 
   // Explicit prefixes
@@ -138,7 +139,7 @@ function comparePaths(a: string, b: string) {
 
 async function writeCFPagesHeaders(nitro: Nitro) {
   const headersPath = join(nitro.options.output.publicDir, "_headers");
-  let contents = "";
+  const contents = [];
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => b[0].split(/\/(?!\*)/).length - a[0].split(/\/(?!\*)/).length
@@ -154,7 +155,7 @@ async function writeCFPagesHeaders(nitro: Nitro) {
       ),
     ].join("\n");
 
-    contents += headers + "\n";
+    contents.push(headers);
   }
 
   if (existsSync(headersPath)) {
@@ -168,10 +169,10 @@ async function writeCFPagesHeaders(nitro: Nitro) {
     nitro.logger.info(
       "Adding Nitro fallback to `_headers` to handle all unmatched routes."
     );
-    contents = currentHeaders + "\n" + contents;
+    contents.unshift(currentHeaders);
   }
 
-  await fsp.writeFile(headersPath, contents);
+  await fsp.writeFile(headersPath, contents.join("\n"));
 }
 
 async function writeCFPagesRedirects(nitro: Nitro) {
@@ -181,8 +182,7 @@ async function writeCFPagesRedirects(nitro: Nitro) {
   )
     ? "/* /404.html 404"
     : "";
-  let contents = staticFallback;
-
+  const contents = [staticFallback];
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
   );
@@ -191,9 +191,9 @@ async function writeCFPagesRedirects(nitro: Nitro) {
     ([_, routeRules]) => routeRules.redirect
   )) {
     const code = routeRules.redirect.statusCode;
-    contents =
-      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}\n` +
-      contents;
+    contents.unshift(
+      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}`
+    );
   }
 
   if (existsSync(redirectsPath)) {
@@ -207,8 +207,8 @@ async function writeCFPagesRedirects(nitro: Nitro) {
     nitro.logger.info(
       "Adding Nitro fallback to `_redirects` to handle all unmatched routes."
     );
-    contents = currentRedirects + "\n" + contents;
+    contents.unshift(currentRedirects);
   }
 
-  await fsp.writeFile(redirectsPath, contents);
+  await fsp.writeFile(redirectsPath, contents.join("\n"));
 }

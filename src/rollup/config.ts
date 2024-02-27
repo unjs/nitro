@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import { createRequire, builtinModules } from "node:module";
-import { dirname, join, normalize, relative, resolve } from "pathe";
+import { join, normalize, resolve } from "pathe";
 import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
@@ -13,17 +13,17 @@ import { isWindows } from "std-env";
 import { visualizer } from "rollup-plugin-visualizer";
 import * as unenv from "unenv";
 import type { Preset } from "unenv";
-import { sanitizeFilePath, resolvePath, parseNodeModulePath } from "mlly";
+import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
+import { rollup as unwasm } from "unwasm/plugin";
 import type { Nitro, NitroStaticBuildFlags } from "../types";
 import { resolveAliases } from "../utils";
 import { runtimeDir } from "../dirs";
-import { version } from "../../package.json";
+import nitroPkg from "../../package.json";
 import { nitroRuntimeDependencies } from "../deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
-import { wasm } from "./plugins/wasm";
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { NodeExternalsOptions, externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
@@ -34,6 +34,7 @@ import { handlers } from "./plugins/handlers";
 import { esbuild } from "./plugins/esbuild";
 import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
+import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
@@ -48,10 +49,13 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const builtinPreset: Preset = {
     alias: {
       // General
-      "consola/core": "consola/core",
-      consola: "unenv/runtime/npm/consola",
-      // only mock debug in production
-      ...(nitro.options.dev ? {} : { debug: "unenv/runtime/npm/debug" }),
+      ...(nitro.options.dev
+        ? {}
+        : {
+            debug: "unenv/runtime/npm/debug",
+            "consola/core": "consola/core",
+            consola: "unenv/runtime/npm/consola",
+          }),
       ...nitro.options.alias,
     },
   };
@@ -59,7 +63,50 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const env = unenv.env(nodePreset, builtinPreset, nitro.options.unenv);
 
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
-  const runtimeAppDir = join(runtimeDir, "app");
+
+  const chunkNamePrefixes = [
+    [nitro.options.buildDir, "build"],
+    [buildServerDir, "app"],
+    ["\0raw:", "raw"],
+    ["\0nitro-wasm:", "wasm"],
+    ["\0", "virtual"],
+  ] as const;
+  function getChunkName(id: string) {
+    // Runtime
+    if (id.startsWith(runtimeDir)) {
+      return `chunks/runtime.mjs`;
+    }
+
+    // Known path prefixes
+    for (const [dir, name] of chunkNamePrefixes) {
+      if (id.startsWith(dir)) {
+        return `chunks/${name}/[name].mjs`;
+      }
+    }
+
+    // Route handlers
+    const routeHandler =
+      nitro.options.handlers.find((h) => id.startsWith(h.handler as string)) ||
+      nitro.scannedHandlers.find((h) => id.startsWith(h.handler as string));
+    if (routeHandler?.route) {
+      const path =
+        routeHandler.route
+          .replace(/:([^/]+)/g, "_$1")
+          .replace(/\/[^/]+$/g, "") || "/";
+      return `chunks/routes${path}/[name].mjs`;
+    }
+
+    // Task handlers
+    const taskHandler = Object.entries(nitro.options.tasks).find(
+      ([_, task]) => task.handler === id
+    );
+    if (taskHandler) {
+      return `chunks/tasks/[name].mjs`;
+    }
+
+    // Unknown path
+    return `chunks/_/[name].mjs`;
+  }
 
   type _RollupConfig = Omit<RollupConfig, "plugins"> & { plugins: Plugin[] };
 
@@ -70,32 +117,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     output: {
       dir: nitro.options.output.serverDir,
       entryFileNames: "index.mjs",
-      chunkFileNames(chunkInfo) {
-        let prefix = "";
-        const lastModule = normalize(chunkInfo.moduleIds.at(-1));
-        if (lastModule.startsWith(buildServerDir)) {
-          prefix = join("app", relative(buildServerDir, dirname(lastModule)));
-        } else if (lastModule.startsWith(runtimeAppDir)) {
-          prefix = "app";
-        } else if (lastModule.startsWith(nitro.options.buildDir)) {
-          prefix = "build";
-        } else if (lastModule.startsWith(runtimeDir)) {
-          prefix = "nitro";
-        } else if (
-          nitro.options.handlers.some((m) =>
-            lastModule.startsWith(m.handler as string)
-          )
-        ) {
-          prefix = "handlers";
-        } else if (
-          lastModule.includes("assets") ||
-          lastModule.startsWith("\0raw:")
-        ) {
-          prefix = "raw";
-        } else if (lastModule.startsWith("\0")) {
-          prefix = "rollup";
-        }
-        return join("chunks", prefix, "[name].mjs");
+      chunkFileNames(chunk) {
+        const lastModule = normalize(chunk.moduleIds.at(-1));
+        return getChunkName(lastModule);
       },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: "esm",
@@ -113,8 +137,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       },
     },
     external: env.external,
-    // https://github.com/rollup/rollup/pull/4021#issuecomment-809985618
-    makeAbsoluteExternalsRelative: false,
     plugins: [],
     onwarn(warning, rollupWarn) {
       if (
@@ -151,7 +173,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   // WASM support
   if (nitro.options.experimental.wasm) {
-    rollupConfig.plugins.push(wasm(nitro.options.wasm || {}));
+    rollupConfig.plugins.push(unwasm(nitro.options.wasm || {}));
   }
 
   // Build-time environment variables
@@ -177,10 +199,12 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     nitro: true,
     // @ts-expect-error
-    "versions.nitro": version,
-    "versions?.nitro": version,
+    "versions.nitro": nitroPkg.version,
+    "versions?.nitro": nitroPkg.version,
     // Internal
     _asyncContext: nitro.options.experimental.asyncContext,
+    _websocket: nitro.options.experimental.websocket,
+    _tasks: nitro.options.experimental.tasks,
   };
 
   // Universal import.meta
@@ -271,6 +295,11 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   // Storage
   rollupConfig.plugins.push(storage(nitro));
 
+  // Database
+  if (nitro.options.experimental.database) {
+    rollupConfig.plugins.push(database(nitro));
+  }
+
   // App.config
   rollupConfig.plugins.push(appConfig(nitro));
 
@@ -345,10 +374,7 @@ export const plugins = [
         ) {
           return { id, external: true };
         }
-        const resolved = await this.resolve(id, from, {
-          ...options,
-          skipSelf: true,
-        });
+        const resolved = await this.resolve(id, from, options);
         if (!resolved) {
           const _resolved = await resolvePath(id, {
             url: nitro.options.nodeModulesDirs,
@@ -364,10 +390,7 @@ export const plugins = [
             return { id: _resolved, external: false };
           }
         }
-        if (
-          !resolved ||
-          (resolved.external && resolved.resolvedBy !== "nitro:wasm-import")
-        ) {
+        if (!resolved || (resolved.external && !id.endsWith(".wasm"))) {
           throw new Error(
             `Cannot resolve ${JSON.stringify(id)} from ${JSON.stringify(
               from
@@ -396,6 +419,9 @@ export const plugins = [
             "~~",
             "@@/",
             "virtual:",
+            ...(nitro.options.experimental.wasm
+              ? [(id) => id.endsWith(".wasm")]
+              : []),
             runtimeDir,
             nitro.options.srcDir,
             ...nitro.options.handlers

@@ -17,4 +17,6 @@ export const nitroRuntimeDependencies = [
   "unctx",
   "unenv",
   "unstorage",
+  "crossws",
+  "croner",
 ];

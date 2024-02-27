@@ -10,7 +10,7 @@ import {
 import { useNitroApp } from "./app";
 
 export interface RenderResponse {
-  body: string;
+  body: any;
   statusCode: number;
   statusMessage: string;
   headers: Record<string, string>;
@@ -25,11 +25,10 @@ export function defineRenderHandler(handler: RenderHandler) {
     // TODO: Use serve-placeholder
     if (event.path.endsWith("/favicon.ico")) {
       setResponseHeader(event, "Content-Type", "image/x-icon");
-      send(
+      return send(
         event,
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
       );
-      return;
     }
 
     const response = await handler(event);
@@ -59,8 +58,6 @@ export function defineRenderHandler(handler: RenderHandler) {
     }
 
     // Send response body
-    return typeof response.body === "string"
-      ? response.body
-      : JSON.stringify(response.body);
+    return response.body;
   });
 }

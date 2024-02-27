@@ -94,10 +94,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Resolve id using rollup resolver
-      const resolved = (await this.resolve(originalId, importer, {
-        ...options,
-        skipSelf: true,
-      })) || { id };
+      const resolved = (await this.resolve(originalId, importer, options)) || {
+        id,
+      };
 
       // Try resolving with mlly as fallback
       if (
@@ -460,7 +459,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
               Object.keys(pkg.versions)[0],
             ]),
             ...Object.entries(usedAliases),
-          ].sort(([a], [b]) => a[0].localeCompare(b[0]))
+          ].sort(([a], [b]) => a.localeCompare(b))
         ),
       });
     },

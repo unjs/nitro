@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import { name, version } from "../../package.json";
+import nitroPkg from "../../package.json";
 
 // Netlify functions
 export const netlify = defineNitroPreset({
@@ -80,7 +80,7 @@ export const netlifyEdge = defineNitroPreset({
             path: "/*",
             name: "nitro server handler",
             function: "server",
-            generator: `${name}@${version}`,
+            generator: `${nitroPkg.name}@${nitroPkg.version}`,
           },
         ],
       };

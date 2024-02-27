@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
@@ -9,7 +8,7 @@ export const cloudflareModule = defineNitroPreset({
   entry: "#internal/nitro/entries/cloudflare-module",
   exportConditions: ["workerd"],
   commands: {
-    preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
+    preview: "npx wrangler dev ./server/index.mjs --site ./public",
     deploy: "npx wrangler deploy",
   },
   rollupConfig: {
@@ -17,17 +16,14 @@ export const cloudflareModule = defineNitroPreset({
     output: {
       format: "esm",
       exports: "named",
+      inlineDynamicImports: false,
     },
   },
+  wasm: {
+    lazy: false,
+    esmImport: true,
+  },
   hooks: {
-    "rollup:before"(_nitro, rollupConfig) {
-      if (process.env.NITRO_EXP_CLOUDFLARE_DYNAMIC_IMPORTS) {
-        rollupConfig.output = {
-          ...rollupConfig.output,
-          inlineDynamicImports: false,
-        };
-      }
-    },
     async compiled(nitro: Nitro) {
       await writeFile(
         resolve(nitro.options.output.dir, "package.json"),

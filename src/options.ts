@@ -3,15 +3,13 @@ import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
 import { camelCase } from "scule";
 import { defu } from "defu";
-import {
-  resolveModuleExportNames,
-  resolvePath as resolveModule,
-  parseNodeModulePath,
-} from "mlly";
+import { resolveModuleExportNames } from "mlly";
 import escapeRE from "escape-string-regexp";
 import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
-import { isTest, isDebug } from "std-env";
+import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
+import consola from "consola";
+import { version } from "../package.json";
 import {
   resolvePath,
   resolveFile,
@@ -56,6 +54,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
+  tasks: {},
   imports: {
     exclude: [],
     dirs: [],
@@ -72,6 +71,12 @@ const NitroDefaults: NitroConfig = {
   watchOptions: { ignoreInitial: true },
   devProxy: {},
 
+  // Logging
+  logging: {
+    compressedSizes: true,
+    buildSuccess: true,
+  },
+
   // Routing
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
   handlers: [],
@@ -79,8 +84,11 @@ const NitroDefaults: NitroConfig = {
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {
+    autoSubfolderIndex: true,
     concurrency: 1,
     interval: 0,
+    retry: 3,
+    retryDelay: 500,
     failOnError: false,
     crawlLinks: false,
     ignore: [],
@@ -120,6 +128,12 @@ const NitroDefaults: NitroConfig = {
   nodeModulesDirs: [],
   hooks: {},
   commands: {},
+
+  // Framework
+  framework: {
+    name: "nitro",
+    version,
+  },
 };
 
 export interface LoadConfigOptions {
@@ -133,7 +147,9 @@ export async function loadOptions(
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
-    (configOverrides.preset as string) || process.env.NITRO_PRESET;
+    (configOverrides.preset as string) ||
+    process.env.NITRO_PRESET ||
+    process.env.SERVER_PRESET;
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
   }
@@ -216,15 +232,18 @@ export async function loadOptions(
   }
   options.output.dir = resolvePath(
     options.output.dir || NitroDefaults.output.dir,
-    options
+    options,
+    options.rootDir
   );
   options.output.publicDir = resolvePath(
     options.output.publicDir || NitroDefaults.output.publicDir,
-    options
+    options,
+    options.rootDir
   );
   options.output.serverDir = resolvePath(
     options.output.serverDir || NitroDefaults.output.serverDir,
-    options
+    options,
+    options.rootDir
   );
 
   options.nodeModulesDirs.push(resolve(options.workspaceDir, "node_modules"));
@@ -374,6 +393,48 @@ export async function loadOptions(
     });
   }
 
+  // Experimental DB support
+  if (options.experimental.database && options.imports) {
+    options.imports.presets.push({
+      from: "#internal/nitro/database",
+      imports: ["useDatabase"],
+    });
+    if (options.dev && !options.database && !options.devDatabase) {
+      options.devDatabase = {
+        default: {
+          connector: "sqlite",
+          options: {
+            cwd: options.rootDir,
+          },
+        },
+      };
+    } else if (options.node && !options.database) {
+      options.database = {
+        default: {
+          connector: "sqlite",
+          options: {},
+        },
+      };
+    }
+  }
+
+  // Native fetch
+  if (options.experimental.nodeFetchCompat === undefined) {
+    options.experimental.nodeFetchCompat = nodeMajorVersion < 18;
+    if (options.experimental.nodeFetchCompat && provider !== "stackblitz") {
+      consola.warn(
+        "Node fetch compatibility is enabled. Please consider upgrading to Node.js >= 18."
+      );
+    }
+  }
+  if (!options.experimental.nodeFetchCompat) {
+    options.alias = {
+      "node-fetch-native/polyfill": "unenv/runtime/mock/empty",
+      "node-fetch-native": "node-fetch-native/native",
+      ...options.alias,
+    };
+  }
+
   return options;
 }
 
@@ -390,7 +451,9 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     app: {
       baseURL: config.baseURL,
     },
-    nitro: {},
+    nitro: {
+      envExpansion: config.experimental.envExpansion,
+    },
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
   return runtimeConfig as NitroRuntimeConfig;

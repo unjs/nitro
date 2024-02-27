@@ -32,13 +32,14 @@ export default defineNitroConfig({
       dir: "files",
     },
   ],
-  ignore: ["api/**/_*", "middleware/_ignored.ts", "routes/_*.ts", "_*.txt"],
+  ignore: ["api/**/_*", "middleware/_ignored.ts", "routes/_*.ts", "**/_*.txt"],
   appConfig: {
     "nitro-config": true,
     dynamic: "initial",
   },
   runtimeConfig: {
     dynamic: "initial",
+    url: "https://{{APP_DOMAIN}}",
   },
   appConfigFiles: ["~/server.config.ts"],
   publicAssets: [
@@ -48,6 +49,10 @@ export default defineNitroConfig({
       maxAge: 3600,
     },
   ],
+  tasks: {
+    "db:migrate": { description: "Migrate database" },
+    "db:seed": { description: "Seed database" },
+  },
   routeRules: {
     "/api/param/prerender4": { prerender: true },
     "/api/param/prerender2": { prerender: false },
@@ -78,16 +83,23 @@ export default defineNitroConfig({
     ignore: [
       // '/api/param/'
     ],
-    routes: ["/prerender", "/icon.png", "/404"],
+    routes: ["/prerender", "/404"],
   },
   experimental: {
     openAPI: true,
     asyncContext: true,
+    wasm: true,
+    envExpansion: true,
+    database: true,
+    tasks: true,
+  },
+  scheduledTasks: {
+    "* * * * *": "test",
   },
   cloudflare: {
     pages: {
       routes: {
-        include: ["/*", "/api/*", "/blog/*"],
+        include: ["/*"],
         exclude: ["/blog/static/*"],
       },
     },

@@ -24,12 +24,7 @@ describe("nitro:preset:aws-lambda", async () => {
         body: body || "",
       };
       const res = await handler(event);
-      return {
-        data: destr(res.body),
-        status: res.statusCode,
-        headers: res.headers,
-        cookies: res.cookies,
-      };
+      return makeResponse(res);
     };
   });
   // Lambda v2 paylod
@@ -62,21 +57,21 @@ describe("nitro:preset:aws-lambda", async () => {
         body: body || "",
       };
       const res = await handler(event);
-      const resHeaders = { ...res.headers };
-      if (res.cookies) {
-        if (!resHeaders["set-cookie"]) {
-          resHeaders["set-cookie"] = [];
-        }
-        if (!Array.isArray(resHeaders["set-cookie"])) {
-          resHeaders["set-cookie"] = [resHeaders["set-cookie"]];
-        }
-        resHeaders["set-cookie"].push(...res.cookies);
-      }
-      return {
-        data: destr(res.body),
-        status: res.statusCode,
-        headers: resHeaders,
-      };
+      return makeResponse(res);
     };
   });
 });
+
+const makeResponse = (response: any) => {
+  const headers = response.headers;
+
+  // APIgw v2 uses cookies, v1 uses multiValueHeaders
+  headers["set-cookie"] =
+    response?.cookies ?? response?.multiValueHeaders?.["set-cookie"];
+
+  return {
+    data: destr(response.body),
+    status: response.statusCode,
+    headers,
+  };
+};
