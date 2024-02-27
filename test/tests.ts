@@ -664,4 +664,25 @@ export function testNitro(
       );
     });
   });
+
+  describe.skipIf(
+    !ctx.nitro.options.node ||
+      ctx.isLambda ||
+      ctx.isWorker ||
+      ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
+  )("Database", () => {
+    it("works", async () => {
+      const { data } = await callHandler({ url: "/api/db" });
+      expect(data).toMatchObject({
+        rows: [
+          {
+            id: "1001",
+            firstName: "John",
+            lastName: "Doe",
+            email: "",
+          },
+        ],
+      });
+    });
+  });
 }

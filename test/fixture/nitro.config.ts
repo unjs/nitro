@@ -91,6 +91,11 @@ export default defineNitroConfig({
     asyncContext: true,
     wasm: true,
     envExpansion: true,
+    database: true,
+    tasks: true,
+  },
+  scheduledTasks: {
+    "* * * * *": "test",
   },
   cloudflare: {
     pages: {

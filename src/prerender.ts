@@ -63,6 +63,7 @@ export async function prerender(nitro: Nitro) {
   };
   await nitro.hooks.callHook("prerender:config", prerendererConfig);
   const nitroRenderer = await createNitro(prerendererConfig);
+  const prerenderStartTime = Date.now();
   await nitro.hooks.callHook("prerender:init", nitroRenderer);
 
   // Set path to preview prerendered routes relative to the "host" nitro preset
@@ -314,6 +315,11 @@ export async function prerender(nitro: Nitro) {
     nitro.logger.log("");
     throw new Error("Exiting due to prerender errors.");
   }
+
+  const prerenderTimeInMs = Date.now() - prerenderStartTime;
+  nitro.logger.info(
+    `Prerendered ${nitro._prerenderedRoutes.length} routes in ${prerenderTimeInMs / 1000} seconds`
+  );
 
   if (nitro.options.compressPublicAssets) {
     await compressPublicAssets(nitro);
