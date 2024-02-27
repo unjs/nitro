@@ -61,8 +61,8 @@ nitroApp.router.get(
   defineEventHandler(async (event) => {
     const _tasks = await Promise.all(
       Object.entries(tasks).map(async ([name, task]) => {
-        const _task = await task.get().then((r) => r.default);
-        return [name, { description: _task.description }];
+        const _task = await task.resolve?.();
+        return [name, { description: _task?.meta?.description }];
       })
     );
     return {
