@@ -1,63 +1,70 @@
 import { createError } from "h3";
 import { tasks } from "#internal/nitro/virtual/tasks";
 
-/** @experimental */
-export interface NitroTaskContext {}
+type MaybePromise<T> = T | Promise<T>;
 
 /** @experimental */
-export interface NitroTaskPayload {
+export interface TaskContext {}
+
+/** @experimental */
+export interface TaskPayload {
   [key: string]: unknown;
 }
 
 /** @experimental */
-export interface NitroTaskMeta {
+export interface TaskMeta {
   name?: string;
   description?: string;
 }
 
-type MaybePromise<T> = T | Promise<T>;
-
 /** @experimental */
-export interface NitroTask<RT = unknown> extends NitroTaskMeta {
-  run(
-    payload: NitroTaskPayload,
-    context: NitroTaskContext
-  ): MaybePromise<{ result?: RT }>;
+export interface TaskEvent {
+  name: string;
+  payload: TaskPayload;
+  context: TaskContext;
+}
+
+export interface TaskResult<RT = unknown> {
+  result?: RT;
 }
 
 /** @experimental */
-export function defineNitroTask<RT = unknown>(
-  def: NitroTask<RT>
-): NitroTask<RT> {
+export interface Task<RT = unknown> {
+  meta?: TaskMeta;
+  run(event: TaskEvent): MaybePromise<{ result?: RT }>;
+}
+
+/** @experimental */
+export function defineTask<RT = unknown>(def: Task<RT>): Task<RT> {
   if (typeof def.run !== "function") {
     def.run = () => {
-      throw new TypeError("Nitro task must implement a `run` method!");
+      throw new TypeError("Task must implement a `run` method!");
     };
   }
   return def;
 }
 
 /** @experimental */
-export async function runNitroTask<RT = unknown>(
+export async function runTask<RT = unknown>(
   name: string,
-  payload: NitroTaskPayload = {}
-): Promise<{ result: RT }> {
+  {
+    payload = {},
+    context = {},
+  }: { payload?: TaskPayload; context?: TaskContext } = {}
+): Promise<TaskResult<RT>> {
   if (!(name in tasks)) {
     throw createError({
-      message: `Nitro task \`${name}\` is not available!`,
+      message: `Task \`${name}\` is not available!`,
       statusCode: 404,
     });
   }
-  if (!tasks[name].get) {
+  if (!tasks[name].resolve) {
     throw createError({
-      message: `Nitro task \`${name}\` is not implemented!`,
+      message: `Task \`${name}\` is not implemented!`,
       statusCode: 501,
     });
   }
-  const context: NitroTaskContext = {};
-  const handler = await tasks[name].get().then((mod) => mod.default);
-  const { result } = await handler.run(payload, context);
-  return {
-    result: result as RT,
-  };
+  const handler = (await tasks[name].resolve()) as Task<RT>;
+  const taskEvent: TaskEvent = { name, payload, context };
+  return handler.run(taskEvent);
 }

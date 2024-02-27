@@ -15,7 +15,7 @@ import {
 import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
-import { runNitroTask } from "../task";
+import { runTask } from "../task";
 import { tasks } from "#internal/nitro/virtual/tasks";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
@@ -61,8 +61,8 @@ nitroApp.router.get(
   defineEventHandler(async (event) => {
     const _tasks = await Promise.all(
       Object.entries(tasks).map(async ([name, task]) => {
-        const _task = await task.get().then((r) => r.default);
-        return [name, { description: _task.description }];
+        const _task = await task.resolve?.();
+        return [name, { description: _task?.meta?.description }];
       })
     );
     return {
@@ -76,9 +76,11 @@ nitroApp.router.use(
     const name = getRouterParam(event, "name");
     const payload = {
       ...getQuery(event),
-      ...(await readBody(event).catch(() => ({}))),
+      ...(await readBody(event)
+        .then((r) => r?.payload)
+        .catch(() => ({}))),
     };
-    return await runNitroTask(name, payload);
+    return await runTask(name, { payload });
   })
 );
 

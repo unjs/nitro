@@ -2,7 +2,7 @@ import { defineCommand } from "citty";
 import { resolve } from "pathe";
 import destr from "destr";
 import { consola } from "consola";
-import { runNitroTask } from "../../../task";
+import { runTask } from "../../../task";
 
 export default defineCommand({
   meta: {
@@ -28,10 +28,20 @@ export default defineCommand({
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
     consola.info(`Running task \`${args.name}\`...`);
+    let payload: any = destr(args.payload || "{}");
+    if (typeof payload !== "object") {
+      consola.error(
+        `Invalid payload: \`${args.payload}\` (it should be a valid JSON object)`
+      );
+      payload = undefined;
+    }
     try {
-      const { result } = await runNitroTask(
-        args.name,
-        destr(args.payload || "{}"),
+      const { result } = await runTask(
+        {
+          name: args.name,
+          context: {},
+          payload,
+        },
         {
           cwd,
           buildDir: ".nitro",

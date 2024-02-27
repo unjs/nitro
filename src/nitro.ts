@@ -130,10 +130,12 @@ export const tasks = {
     .map(
       ([name, task]) =>
         `"${name}": {
-          description: ${JSON.stringify(task.description)},
-          get: ${
+          meta: {
+            description: ${JSON.stringify(task.description)},
+          },
+          resolve: ${
             task.handler
-              ? `() => import("${normalize(task.handler)}")`
+              ? `() => import("${normalize(task.handler)}").then(r => r.default || r)`
               : "undefined"
           },
         }`

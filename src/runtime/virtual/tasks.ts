@@ -1,6 +1,6 @@
-import type { NitroTask } from "../task";
+import type { Task, TaskMeta } from "../task";
 
 export const tasks: Record<
   string,
-  { get: () => Promise<{ default: NitroTask }>; description?: string }
+  { resolve?: () => Promise<Task>; meta: TaskMeta }
 > = {};
