@@ -16,6 +16,7 @@ import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
 import { runTask, startScheduleRunner } from "../task";
+import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
