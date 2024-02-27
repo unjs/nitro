@@ -6,11 +6,13 @@ import {
   EventHandler,
   isEvent,
   splitCookiesString,
+  fetchWithEvent,
 } from "h3";
 import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "./storage";
 import { useNitroApp } from "./app";
+import type { $Fetch, NitroFetchRequest } from "nitropack";
 
 export interface CacheEntry<T = any> {
   value?: T;
@@ -358,6 +360,15 @@ export function defineCachedEventHandler<
 
       // Call handler
       const event = createEvent(reqProxy, resProxy);
+      // Assign bound fetch to context
+      event.fetch = (url, fetchOptions) =>
+        fetchWithEvent(event, url, fetchOptions, {
+          fetch: useNitroApp().localFetch,
+        });
+      event.$fetch = ((url, fetchOptions) =>
+        fetchWithEvent(event, url, fetchOptions as RequestInit, {
+          fetch: globalThis.$fetch,
+        })) as $Fetch<unknown, NitroFetchRequest>;
       event.context = incomingEvent.context;
       const body = (await handler(event)) || _resSendBody;
 
