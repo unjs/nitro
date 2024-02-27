@@ -9,6 +9,7 @@ import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
 import consola from "consola";
+import { version } from "../package.json";
 import {
   resolvePath,
   resolveFile,
@@ -53,6 +54,7 @@ const NitroDefaults: NitroConfig = {
   publicAssets: [],
   serverAssets: [],
   plugins: [],
+  tasks: {},
   imports: {
     exclude: [],
     dirs: [],
@@ -72,6 +74,7 @@ const NitroDefaults: NitroConfig = {
   // Logging
   logging: {
     compressedSizes: true,
+    buildSuccess: true,
   },
 
   // Routing
@@ -125,6 +128,12 @@ const NitroDefaults: NitroConfig = {
   nodeModulesDirs: [],
   hooks: {},
   commands: {},
+
+  // Framework
+  framework: {
+    name: "nitro",
+    version,
+  },
 };
 
 export interface LoadConfigOptions {
@@ -138,7 +147,9 @@ export async function loadOptions(
 ): Promise<NitroOptions> {
   // Preset
   let presetOverride =
-    (configOverrides.preset as string) || process.env.NITRO_PRESET;
+    (configOverrides.preset as string) ||
+    process.env.NITRO_PRESET ||
+    process.env.SERVER_PRESET;
   if (configOverrides.dev) {
     presetOverride = "nitro-dev";
   }
@@ -382,6 +393,31 @@ export async function loadOptions(
     });
   }
 
+  // Experimental DB support
+  if (options.experimental.database && options.imports) {
+    options.imports.presets.push({
+      from: "#internal/nitro/database",
+      imports: ["useDatabase"],
+    });
+    if (options.dev && !options.database && !options.devDatabase) {
+      options.devDatabase = {
+        default: {
+          connector: "sqlite",
+          options: {
+            cwd: options.rootDir,
+          },
+        },
+      };
+    } else if (options.node && !options.database) {
+      options.database = {
+        default: {
+          connector: "sqlite",
+          options: {},
+        },
+      };
+    }
+  }
+
   // Native fetch
   if (options.experimental.nodeFetchCompat === undefined) {
     options.experimental.nodeFetchCompat = nodeMajorVersion < 18;
@@ -415,7 +451,9 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     app: {
       baseURL: config.baseURL,
     },
-    nitro: {},
+    nitro: {
+      envExpansion: config.experimental.envExpansion,
+    },
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
   return runtimeConfig as NitroRuntimeConfig;

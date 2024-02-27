@@ -26,17 +26,19 @@ async function writeRoutes(nitro: Nitro) {
     version: "2.0",
   };
 
-  let nodeVersion = "16";
+  // https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#supported-versions
+  const supportedNodeVersions = new Set(["16", "18", "20"]);
+  let nodeVersion = "18";
   try {
     const currentNodeVersion = JSON.parse(
       await readFile(join(nitro.options.rootDir, "package.json"), "utf8")
     ).engines.node;
-    if (["16", "14"].includes(currentNodeVersion)) {
+    if (supportedNodeVersions.has(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
     }
   } catch {
     const currentNodeVersion = process.versions.node.slice(0, 2);
-    if (["16", "14"].includes(currentNodeVersion)) {
+    if (supportedNodeVersions.has(currentNodeVersion)) {
       nodeVersion = currentNodeVersion;
     }
   }

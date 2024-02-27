@@ -42,18 +42,18 @@ type CalcMatchScore<
         TupleIfDiff<Key, Route, ["", ""]>
       >
     : `${Route}/` extends `${infer RouteSeg}/${infer RouteRest}`
-    ? `${RouteSeg}?` extends `${infer RouteSegWithoutQuery}?${string}`
-      ? RouteSegWithoutQuery extends KeySeg
-        ? CalcMatchScore<KeyRest, RouteRest, [...Score, "", ""]> // exact match
-        : KeySeg extends `:${string}`
-        ? RouteSegWithoutQuery extends ""
-          ? never
-          : CalcMatchScore<KeyRest, RouteRest, [...Score, ""]> // param match
-        : KeySeg extends RouteSegWithoutQuery
-        ? CalcMatchScore<KeyRest, RouteRest, [...Score, ""]> // match by ${string}
+      ? `${RouteSeg}?` extends `${infer RouteSegWithoutQuery}?${string}`
+        ? RouteSegWithoutQuery extends KeySeg
+          ? CalcMatchScore<KeyRest, RouteRest, [...Score, "", ""]> // exact match
+          : KeySeg extends `:${string}`
+            ? RouteSegWithoutQuery extends ""
+              ? never
+              : CalcMatchScore<KeyRest, RouteRest, [...Score, ""]> // param match
+            : KeySeg extends RouteSegWithoutQuery
+              ? CalcMatchScore<KeyRest, RouteRest, [...Score, ""]> // match by ${string}
+              : never
         : never
       : never
-    : never
   : never;
 
 type _MatchedRoutes<
@@ -66,16 +66,20 @@ type _MatchedRoutes<
     ? Route extends MatchedKeys
       ? MatchResult<MatchedKeys, true> // exact match
       : MatchedKeys extends `${infer Root}/**${string}`
-      ? MatchedKeys extends `${string}/**`
-        ? Route extends `${Root}/${string}`
-          ? MatchResult<MatchedKeys, false, [], true>
-          : never // catchAll match
-        : MatchResult<MatchedKeys, false, CalcMatchScore<Root, Route, [], true>> // glob match
-      : MatchResult<
-          MatchedKeys,
-          false,
-          CalcMatchScore<MatchedKeys, Route, [], true>
-        > // partial match
+        ? MatchedKeys extends `${string}/**`
+          ? Route extends `${Root}/${string}`
+            ? MatchResult<MatchedKeys, false, [], true>
+            : never // catchAll match
+          : MatchResult<
+              MatchedKeys,
+              false,
+              CalcMatchScore<Root, Route, [], true>
+            > // glob match
+        : MatchResult<
+            MatchedKeys,
+            false,
+            CalcMatchScore<MatchedKeys, Route, [], true>
+          > // partial match
     : never
   : never;
 
@@ -91,13 +95,13 @@ export type MatchedRoutes<
 > = Route extends "/"
   ? keyof InternalApi // root middleware
   : Extract<Matches, { exact: true }> extends never
-  ?
-      | Extract<
-          Exclude<Matches, { score: never }>,
-          { score: MaxTuple<Matches["score"]> }
-        >["key"]
-      | Extract<Matches, { catchAll: true }>["key"] // partial, glob and catchAll matches
-  : Extract<Matches, { exact: true }>["key"]; // exact matches
+    ?
+        | Extract<
+            Exclude<Matches, { score: never }>,
+            { score: MaxTuple<Matches["score"]> }
+          >["key"]
+        | Extract<Matches, { catchAll: true }>["key"] // partial, glob and catchAll matches
+    : Extract<Matches, { exact: true }>["key"]; // exact matches
 
 export type KebabCase<
   T extends string,

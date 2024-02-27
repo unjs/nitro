@@ -6,10 +6,13 @@ export default defineEventHandler((event) => {
     "https://about.google/products/",
     "/api/hello",
     "/api/hello?bar=baz",
+    "/api/hello?bar=baz&bing=bap",
+    "/api/hello?bar=baz&amp;foo=qux",
     "/prerender#foo",
     "../api/hey",
     "/api/param/foo.json",
     "/api/param/foo.css",
+    "/json-string",
     event.path.includes("?") ? "/api/param/hidden" : "/prerender?withQuery",
   ];
 
@@ -37,6 +40,8 @@ ${links.map((link) => `    <li><a href="${link}">${link}</a></li>`).join("\n")}
   <link rel="icon" href="data:image/png;base64,aaa//bbbbbb/ccc">
   <a x-href="/500?x-href">x-href attr</a>
   &lt;a href=&quot;/500&lt;/a&gt;
+  <a href='#a'>#a</a>
+  <a href='%23b'>#b</a>
 </body>
 </html>`;
 });

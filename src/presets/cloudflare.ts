@@ -8,11 +8,11 @@ export const cloudflare = defineNitroPreset({
   entry: "#internal/nitro/entries/cloudflare",
   exportConditions: ["workerd"],
   commands: {
-    preview: "npx wrangler dev ./server/index.mjs --site ./public --local",
+    preview: "npx wrangler dev ./server/index.mjs --site ./public",
     deploy: "npx wrangler deploy",
   },
   wasm: {
-    esmImport: true,
+    lazy: true,
   },
   hooks: {
     async compiled(nitro: Nitro) {

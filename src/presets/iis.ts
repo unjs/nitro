@@ -30,7 +30,7 @@ export const iisNode = defineNitroPreset({
       await writeFile(
         resolve(nitro.options.output.dir, "index.js"),
         `
-        if (process.env.PORT.startsWith('\\')) {
+        if (process.env.PORT.startsWith('\\\\')) {
           process.env.NITRO_UNIX_SOCKET = process.env.PORT
           delete process.env.PORT
         }
