@@ -44,6 +44,8 @@ export function defineTask<RT = unknown>(def: Task<RT>): Task<RT> {
   return def;
 }
 
+const __runningTasks__: { [name: string]: MaybePromise<TaskResult<any>> } = {};
+
 /** @experimental */
 export async function runTask<RT = unknown>(
   name: string,
@@ -52,19 +54,32 @@ export async function runTask<RT = unknown>(
     context = {},
   }: { payload?: TaskPayload; context?: TaskContext } = {}
 ): Promise<TaskResult<RT>> {
+  if (__runningTasks__[name]) {
+    return __runningTasks__[name];
+  }
+
   if (!(name in tasks)) {
     throw createError({
       message: `Task \`${name}\` is not available!`,
       statusCode: 404,
     });
   }
+
   if (!tasks[name].resolve) {
     throw createError({
       message: `Task \`${name}\` is not implemented!`,
       statusCode: 501,
     });
   }
+
   const handler = (await tasks[name].resolve()) as Task<RT>;
   const taskEvent: TaskEvent = { name, payload, context };
-  return handler.run(taskEvent);
+  __runningTasks__[name] = handler.run(taskEvent);
+
+  try {
+    const res = await __runningTasks__[name];
+    return res;
+  } finally {
+    delete __runningTasks__[name];
+  }
 }
