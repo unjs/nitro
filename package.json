@@ -79,7 +79,7 @@
     "consola": "^3.2.3",
     "cookie-es": "^1.0.0",
     "croner": "^8.0.1",
-    "crossws": "^0.2.3",
+    "crossws": "^0.2.4",
     "db0": "^0.1.2",
     "defu": "^6.1.4",
     "destr": "^2.0.3",
@@ -146,7 +146,7 @@
     "eslint": "^8.57.0",
     "eslint-config-unjs": "^0.2.1",
     "execa": "^8.0.1",
-    "expect-type": "^0.17.3",
+    "expect-type": "^0.18.0",
     "firebase-admin": "^12.0.0",
     "firebase-functions": "^4.7.0",
     "get-port-please": "^3.1.2",
@@ -166,7 +166,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@8.15.1",
+  "packageManager": "pnpm@8.15.4",
   "engines": {
     "node": "^16.11.0 || >=17.0.0"
   },

@@ -73,8 +73,8 @@ importers:
         specifier: ^8.0.1
         version: 8.0.1
       crossws:
-        specifier: ^0.2.3
-        version: 0.2.3
+        specifier: ^0.2.4
+        version: 0.2.4
       db0:
         specifier: ^0.1.2
         version: 0.1.2(better-sqlite3@9.4.3)
@@ -269,8 +269,8 @@ importers:
         specifier: ^8.0.1
         version: 8.0.1
       expect-type:
-        specifier: ^0.17.3
-        version: 0.17.3
+        specifier: ^0.18.0
+        version: 0.18.0
       firebase-admin:
         specifier: ^12.0.0
         version: 12.0.0
@@ -3671,8 +3671,8 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  /crossws@0.2.3:
-    resolution: {integrity: sha512-bAdbYPj/ej8+WCVRVnjEr54WYI/LncI25G/pJPZteO2CXUQFrhj5IOCscw9qsYKGKTWs9NkimUtTjdp9SoLD9A==}
+  /crossws@0.2.4:
+    resolution: {integrity: sha512-DAxroI2uSOgUKLz00NX6A8U/8EE3SZHmIND+10jkVSaypvyt57J5JEOxAQOL6lQxyzi/wZbTIwssU1uy69h5Vg==}
     peerDependencies:
       uWebSockets.js: '*'
     peerDependenciesMeta:
@@ -4817,8 +4817,8 @@ packages:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
     engines: {node: '>=6'}
 
-  /expect-type@0.17.3:
-    resolution: {integrity: sha512-K0ZdZJ97jiAtaOwhEHHz/f0N6Xbj5reRz5g6+5BO7+OvqQ7PMQz0/c8bFSJs1zPotNJL5HJaC6t6lGPEAtGyOw==}
+  /expect-type@0.18.0:
+    resolution: {integrity: sha512-xjKoyyDLoia2h1WF+vwV8AmEpQ0drGW0InRgyywAHyOC+XSPYMxGoMXSwPjXs46D8FgLmp32sHMd1KrVingDuQ==}
     engines: {node: '>=12.0.0'}
     dev: true
 
@@ -5459,7 +5459,7 @@ packages:
     resolution: {integrity: sha512-AbaH6IDnZN6nmbnJOH72y3c5Wwh9P97soSVdGSBbcDACRdkC0FEWf25pzx4f/NuOCK6quHmW18yF2Wx+G4Zi1A==}
     dependencies:
       cookie-es: 1.0.0
-      crossws: 0.2.3
+      crossws: 0.2.4
       defu: 6.1.4
       destr: 2.0.3
       iron-webcrypto: 1.0.0
@@ -6273,7 +6273,7 @@ packages:
       citty: 0.1.6
       clipboardy: 4.0.0
       consola: 3.2.3
-      crossws: 0.2.3
+      crossws: 0.2.4
       defu: 6.1.4
       get-port-please: 3.1.2
       h3: 1.11.1
