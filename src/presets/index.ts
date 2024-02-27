@@ -1,3 +1,4 @@
+export { alwaysdata } from "./alwaysdata";
 export { awsAmplify } from "./aws-amplify";
 export { awsLambda } from "./aws-lambda";
 export { azureFunctions } from "./azure-functions";
