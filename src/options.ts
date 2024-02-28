@@ -378,7 +378,7 @@ export async function loadOptions(
   // Export conditions
   options.exportConditions = _resolveExportConditions(
     options.exportConditions,
-    { dev: options.dev, node: options.node }
+    { dev: options.dev, node: options.node, wasm: options.experimental.wasm }
   );
 
   // Add open-api endpoint
@@ -524,7 +524,7 @@ export function normalizeRouteRules(
 
 function _resolveExportConditions(
   conditions: string[] = [],
-  opts: { dev: boolean; node: boolean }
+  opts: { dev: boolean; node: boolean; wasm: boolean }
 ) {
   const resolvedConditions: string[] = [];
 
@@ -553,7 +553,12 @@ function _resolveExportConditions(
     );
   }
 
-  // 4. Add default conditions
+  // 4. Add unwasm conditions
+  if (opts.wasm) {
+    resolvedConditions.push("wasm", "unwasm");
+  }
+
+  // 5. Add default conditions
   resolvedConditions.push("import", "default");
 
   // Dedup with preserving order
