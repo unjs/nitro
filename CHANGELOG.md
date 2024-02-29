@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.9.1
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.9.0...v2.9.1)
+
+### 🩹 Fixes
+
+- Disable scheduled tasks in testing environment ([#2200](https://github.com/unjs/nitro/pull/2200))
+
+### 📖 Documentation
+
+- Add websocket chat demo to websocket api page ([#2189](https://github.com/unjs/nitro/pull/2189))
+- Fix typo ([#2190](https://github.com/unjs/nitro/pull/2190))
+- Fix typo ([#2194](https://github.com/unjs/nitro/pull/2194))
+
+### 🤖 CI
+
+- Skip `cloudflare-pages` test for windows ([#2199](https://github.com/unjs/nitro/pull/2199))
+
+### ❤️ Contributors
+
+- Pooya Parsa <pyapar@gmail.com>
+- Roman Nuritdinov ([@Ky6uk](http://github.com/Ky6uk))
+- Stefan <stefan.heim@hotmail.com>
+- Shoshana Connack
+
 ## v2.9.0
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.8.1...v2.9.0)
