@@ -1,12 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "prepare": "nitropack prepare",
-    "dev": "nitropack dev",
-    "build": "nitropack build",
+    "build": "nitro build",
+    "dev": "nitro dev",
+    "prepare": "nitro prepare",
     "preview": "node .output/server/index.mjs"
   },
-  "dependencies": {
+  "devDependencies": {
     "nitropack": "latest"
   }
 }
