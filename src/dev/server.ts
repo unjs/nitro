@@ -198,6 +198,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     // TODO: Use httpxy to set these headers
     if (!proxyReq.hasHeader("x-forwarded-for")) {
       const address = req.socket.remoteAddress;
+      // #2197
       if (address) {
         proxyReq.appendHeader("x-forwarded-for", address);
       }
