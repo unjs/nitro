@@ -1,5 +1,6 @@
 import { createError } from "h3";
 import { Cron } from "croner";
+import { isTest } from "std-env";
 import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
 
 type MaybePromise<T> = T | Promise<T>;
@@ -88,7 +89,7 @@ export async function runTask<RT = unknown>(
 
 /** @experimental */
 export function startScheduleRunner() {
-  if (!scheduledTasks || scheduledTasks.length === 0) {
+  if (!scheduledTasks || scheduledTasks.length === 0 || isTest) {
     return;
   }
 
