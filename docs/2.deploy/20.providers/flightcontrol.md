@@ -10,7 +10,7 @@
 Flightcontrol has zero config support for [Nuxt](https://nuxt.com/) projects.
 ::
 
-### Set Up your flightcontrol account
+## Set Up your flightcontrol account
 
 On a high level, the steps you will need to follow to deploy a project for the first time are:
 
@@ -34,34 +34,34 @@ On a high level, the steps you will need to follow to deploy a project for the f
 2. Select the `flightcontrol.json` config type.
 3. Add a new file at the root of your repository called `flightcontrol.json`. Here is an example configuration that creates an AWS fargate service for your app:
 
-```json
-{
-  "$schema": "https://app.flightcontrol.dev/schema.json",
-  "environments": [
-    {
-      "id": "production",
-      "name": "Production",
-      "region": "us-west-2",
-      "source": {
-        "branch": "main"
-      },
-      "services": [
-        {
-          "id": "nitro",
-          "buildType": "nixpacks",
-          "name": "My Nitro site",
-          "type": "fargate",
-          "domain": "www.yourdomain.com",
-          "outputDirectory": ".output",
-          "startCommand": "node .output/server/index.mjs",
-          "cpu": 0.25,
-          "memory": 0.5
-        }
-      ]
-    }
-  ]
-}
-```
+  ```json [flightcontrol.json]
+  {
+    "$schema": "https://app.flightcontrol.dev/schema.json",
+    "environments": [
+      {
+        "id": "production",
+        "name": "Production",
+        "region": "us-west-2",
+        "source": {
+          "branch": "main"
+        },
+        "services": [
+          {
+            "id": "nitro",
+            "buildType": "nixpacks",
+            "name": "My Nitro site",
+            "type": "fargate",
+            "domain": "www.yourdomain.com",
+            "outputDirectory": ".output",
+            "startCommand": "node .output/server/index.mjs",
+            "cpu": 0.25,
+            "memory": 0.5
+          }
+        ]
+      }
+    ]
+  }
+  ```
 
 4. Submit the new project form.
 

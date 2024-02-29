@@ -21,7 +21,7 @@ Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azur
 You can invoke a development environment to preview before deploying.
 
 ```bash
-NITRO_PRESET=azure yarn build
+NITRO_PRESET=azure npx nypm@latest build
 npx @azure/static-web-apps-cli start .output/public --api-location .output/server
 ```
 
@@ -58,9 +58,7 @@ When you are asked to select your framework, select custom and provide the follo
 
 If you miss this step, you can always find the build configuration section in your workflow and update the build configuration:
 
-```yaml
-# .github/workflows/azure-static-web-apps-<RANDOM_NAME>.yml
-
+```yaml [.github/workflows/azure-static-web-apps-<RANDOM_NAME>.yml]
 ###### Repository/Build Configurations ######
 app_location: '/'
 api_location: '.output/server'
@@ -88,7 +86,7 @@ Install [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azur
 You can invoke a development environment from the serverless directory.
 
 ```bash
-NITRO_PRESET=azure_functions yarn build
+NITRO_PRESET=azure_functions npx nypm@latest build
 cd .output
 func start
 ```
@@ -112,8 +110,7 @@ First, obtain your Azure Functions Publish Profile and add it as a secret to you
 
 Then create the following file as a workflow:
 
-```yaml
-# .github/workflows/azure.yml
+```yaml [.github/workflows/azure.yml]
 name: azure
 on:
   push:

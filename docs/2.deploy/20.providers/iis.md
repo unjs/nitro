@@ -7,10 +7,10 @@
 **Preset:** `iis_node`
 
 1. Install the latest LTS version of [Node.js](https://nodejs.org/en/) on your Windows Server.
-1. Install [IISnode](https://github.com/azure/iisnode/releases)
-2. Install [IIS `URLRewrite` Module](https://www.iis.net/downloads/microsoft/url-rewrite).
-3. In IIS, add `.mjs` as a new mime type and set its content type to `application/javascript`.
-4. Deploy the contents of your `.output` folder to your website in IIS.
+2. Install [IISnode](https://github.com/azure/iisnode/releases)
+3. Install [IIS `URLRewrite` Module](https://www.iis.net/downloads/microsoft/url-rewrite).
+4. In IIS, add `.mjs` as a new mime type and set its content type to `application/javascript`.
+5. Deploy the contents of your `.output` folder to your website in IIS.
 
 ## Using IIS handler
 
@@ -30,7 +30,7 @@ You can use IIS http handler directly.
 export default defineNitroConfig({
   // IIS options default
   iis: {
-    // merges in a pre-exisiting web.config file to the nitro default file
+    // merges in a pre-existing web.config file to the nitro default file
     mergeConfig: true,
     // overrides the default nitro web.config file all together
     overrideConfig: false,
@@ -43,7 +43,7 @@ export default defineNuxtConfig({
   nitro: {
     // IIS options default
     iis: {
-      // merges in a pre-exisiting web.config file to the nitro default file
+      // merges in a pre-existing web.config file to the nitro default file
       mergeConfig: true,
       // overrides the default nitro web.config file all together
       overrideConfig: false,

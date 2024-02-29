@@ -79,29 +79,13 @@ This file is usually generated when you initialize your project with the Firebas
 
 Then, add Firebase dependencies to your project:
 
-::code-group
-```bash [npm]
-npm install -D firebase-admin firebase-functions firebase-functions-test
-```
-```bash [yarn]
-yarn add --dev firebase-admin firebase-functions firebase-functions-test
-```
-```bash [pnpm]
-pnpm install -D firebase-admin firebase-functions firebase-functions-test
-```
-```bash [bun]
-bun add -D firebase-admin firebase-functions firebase-functions-test
-```
-::
+:pm-install{name="firebase-admin firebase-functions firebase-functions-test" dev}
 
 #### 3. Log into the firebase CLI
 
 Make sure you are authenticated with the firebase cli. Run this command and follow the prompts:
 
-```bash
-npx firebase-tools login
-```
-
+:pm-x{command="firebase-tools login"}
 
 ## Local preview
 
@@ -112,7 +96,7 @@ NITRO_PRESET=firebase npm run build
 firebase emulators:start
 ```
 
-## Build and dploy
+## Build and deploy
 
 Deploy to Firebase Hosting by running a Nitro build and then running the `firebase deploy` command.
 
@@ -120,9 +104,7 @@ Deploy to Firebase Hosting by running a Nitro build and then running the `fireba
 NITRO_PRESET=firebase npm run build
 ```
 
-```bash
-npx firebase-tools deploy
-```
+:pm-x{command="firebase-tools deploy"}
 
 If you installed the Firebase CLI globally, you can also run:
 
@@ -137,6 +119,7 @@ firebase deploy
 To switch to the more recent and, recommended generation of firebase functions, set the `firebase.gen` option to `2`:
 
 ::code-group
+
 ```ts{3} [nitro.config.ts]
 export default defineNitroConfig({
   firebase: {
@@ -145,6 +128,7 @@ export default defineNitroConfig({
   }
 })
 ```
+
 ```ts{4} [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
@@ -155,6 +139,7 @@ export default defineNuxtConfig({
   }
 })
 ```
+
 ::
 
 ::note
@@ -168,6 +153,7 @@ If you already have a deployed version of your website and want to upgrade to 2n
 You can set options for the firebase functions in your `nitro.config.ts` file:
 
 ::code-group
+
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   firebase: {
@@ -193,6 +179,7 @@ export default defineNuxtConfig({
   },
 });
 ```
+
 ::
 
 You can also set options for 1st generation Cloud Functions if the `gen` option is set to `1`. Note these are different from the options for 2nd generation Cloud Functions.
@@ -202,6 +189,7 @@ You can also set options for 1st generation Cloud Functions if the `gen` option 
 You can set custom Node.js version in configuration:
 
 ::code-group
+
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   firebase: {
@@ -219,6 +207,7 @@ export default defineNuxtConfig({
   },
 });
 ```
+
 ::
 
 Firebase tools use the `engines.node` version in  `package.json` to determine which node version to use for your functions. Nitro automatically writes to the `.output/server/package.json` with configured Node.js version.
@@ -254,15 +243,15 @@ your functions.
 You can specify a new name for the deployed Firebase function in your configuration:
 
 ::code-group
-```ts [nitro.config.ts]
-import { defineNitroConfig } from 'nitropack/config'
 
+```ts [nitro.config.ts]
 export default defineNitroConfig({
   firebase: {
     serverFunctionName: "<new_function_name>"
   }
 })
 ```
+
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
@@ -272,4 +261,5 @@ export default defineNuxtConfig({
   }
 })
 ```
+
 ::

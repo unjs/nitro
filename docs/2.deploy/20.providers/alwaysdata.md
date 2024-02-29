@@ -29,9 +29,11 @@
    - *Command*: `node ./output/server/index.mjs`
    - *Working directory*: `www/my-app` (adapt it to your deployment path)
    - *Environment*:
+
      ```ini
      NITRO_PRESET=alwaysdata
      ```
+
    - *Node.js version*: `Default version` is fine; pick no less than `20.0.0` (you can also [set your Node.js version globally](https://help.alwaysdata.com/en/languages/nodejs/configuration/#supported-versions))
    - *Hot restart*: `SIGHUP`
 

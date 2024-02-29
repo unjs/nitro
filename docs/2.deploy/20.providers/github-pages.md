@@ -14,7 +14,7 @@ Follow the steps to [create a GitHub Pages site](https://docs.github.com/en/page
 
 Here is an example GitHub Actions workflow to deploy your site to GitHub Pages using the `github_pages` preset:
 
-```yaml
+```yaml [.github/workflows/deploy.yml]
 # https://github.com/actions/deploy-pages#usage
 name: Deploy to GitHub Pages
 
