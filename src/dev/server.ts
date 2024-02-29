@@ -197,7 +197,10 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   proxy.proxy.on("proxyReq", (proxyReq, req) => {
     // TODO: Use httpxy to set these headers
     if (!proxyReq.hasHeader("x-forwarded-for")) {
-      proxyReq.appendHeader("x-forwarded-for", req.socket.remoteAddress);
+      const address = req.socket.remoteAddress
+      if(address) {
+        proxyReq.appendHeader("x-forwarded-for", address);
+      } 
     }
     if (!proxyReq.hasHeader("x-forwarded-port")) {
       const localPort = req?.socket?.localPort;
