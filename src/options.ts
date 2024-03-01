@@ -546,7 +546,6 @@ function _resolveExportConditions(
       "browser",
       "workerd",
       "edge-light",
-      "lagon",
       "netlify",
       "edge-routine",
       "deno"
