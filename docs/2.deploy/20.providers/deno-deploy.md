@@ -25,7 +25,7 @@ deployctl deploy --project=my-project server/index.ts
 
 You just need to include the deployctl GitHub Action as a step in your workflow.
 
-You do not need to set up any secrets for this to work. You do need to link your GitHub repository to your Deno Deploy project and choose the "GitHub Actions" deployment mode. You can do this in your project settings on https://dash.deno.com
+You do not need to set up any secrets for this to work. You do need to link your GitHub repository to your Deno Deploy project and choose the "GitHub Actions" deployment mode. You can do this in your project settings on [Deno Deploy](https://dash.deno.com).
 
 Create the following workflow file in your `.github/workflows` directory:
 
