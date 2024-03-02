@@ -131,13 +131,6 @@ export async function writeTypes(nitro: Nitro) {
 
   if (nitro.unimport) {
     await nitro.unimport.init();
-    // TODO: fully resolve utils exported from `#imports`
-    autoImportExports = await nitro.unimport
-      .toExports(typesDir)
-      .then((r) =>
-        r.replace(/#internal\/nitro/g, relative(typesDir, runtimeDir))
-      );
-
     const resolvedImportPathMap = new Map<string, string>();
     const imports = await nitro.unimport
       .getImports()
@@ -171,6 +164,12 @@ export async function writeTypes(nitro: Nitro) {
       resolvedImportPathMap.set(i.from, path);
     }
 
+    // TODO: fully resolve utils exported from `#imports`
+    autoImportExports = await nitro.unimport
+      .toExports(typesDir)
+      .then((r) =>
+        r.replace(/'(.*)'/g, (_, i) => `'${resolvedImportPathMap.get(i) ?? i}'`)
+    );
     autoImportedTypes = [
       (
         await nitro.unimport.generateTypeDeclarations({
