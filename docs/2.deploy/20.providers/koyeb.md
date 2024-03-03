@@ -50,6 +50,7 @@
 
 1. Create a `.dockerignore` file in the root of your project and add the following lines:
 
+   ```
    Dockerfile
    .dockerignore
    node_modules
