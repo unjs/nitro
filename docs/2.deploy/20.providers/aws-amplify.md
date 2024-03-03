@@ -19,12 +19,12 @@ Integration with this provider is possible with [zero configuration](/deploy/#ze
 5. Optionally, select Enable SSR logging to enable server-side logging to your Amazon CloudWatch account
 6. Confirm configuration and click on "Save and Deploy"
 
-
 ## Advanced Configuration
 
 You can configure advanced options of this preset using `awsAmplify` option.
 
 ::code-group
+
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   awsAmplify: {
@@ -46,6 +46,7 @@ export default defineNuxtConfig({
   }
 })
 ```
+
 ::
 
 ### `amplify.yml`
@@ -53,6 +54,7 @@ export default defineNuxtConfig({
 You might need a custom `amplify.yml` file for advanced configuration. Here are two template examples:
 
 ::code-group
+
 ```yml [amplify.yml]
 version: 1
 frontend:
@@ -89,4 +91,5 @@ applications:
       buildPath: /
     appRoot: apps/website1
 ```
+
 ::

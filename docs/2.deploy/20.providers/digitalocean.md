@@ -30,7 +30,6 @@
 
    [See more information](https://docs.digitalocean.com/products/app-platform/languages-frameworks/nodejs/#node-version).
 
-
 1. You'll also need to add a run command so Digital Ocean knows what command to run after a build. You can do so by adding a start script to your `package.json`:
 
    ```json

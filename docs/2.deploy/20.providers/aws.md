@@ -23,11 +23,13 @@ const { statusCode, headers, body } = handler({ rawPath: '/' })
 Nitro output, by default uses dynamic chunks for lazy loading code only when needed. However this sometimes can not be ideal for performance. (See discussions in [unjs/nitro#650](https://github.com/unjs/nitro/pull/650)). You can enabling chunk inlining behavior using [`inlineDynamicImports`](/config#inlinedynamicimports) config.
 
 ::code-group
+
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   inlineDynamicImports: true
 });
 ```
+
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
@@ -35,4 +37,5 @@ export default defineNuxtConfig({
   }
 })
 ```
+
 ::

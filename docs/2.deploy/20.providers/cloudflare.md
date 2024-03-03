@@ -16,7 +16,6 @@ This is the recommended preset for Cloudflare deployments, please consider using
 Integration with this provider is possible with [zero configuration](/deploy#zero-config-providers).
 ::
 
-
 Nitro automatically generates a `_routes.json` file that controls which routes get served from files and which are served from the Worker script. The auto-generated routes file can be overridden with the config option `cloudflare.pages.routes` ([read more](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)).
 
 ### Building your Application using the preset
@@ -28,49 +27,43 @@ If you use the [Cloudflare Pages GitHub/GitLab integration](https://developers.c
 If instead you want preview your application locally and/or manually deploy it, when building the application you will need to let Nitro know that the target environment is the Cloudflare Pages one, you can do that in two ways:
 
 1. By defining either the `NITRO_PRESET` or the `SERVER_PRESET` environment variable set to `cloudflare-pages` when running the build process, like so:
-```bash
-NITRO_PRESET=cloudflare-pages npm run build
-```
+
+  ```bash
+  NITRO_PRESET=cloudflare-pages npm run build
+  ```
 
 1. Or by updating your Nitro [preset configuration](/config#preset):
-```json5
-"preset": "cloudflare-pages",
-```
+
+  ```json5
+  "preset": "cloudflare-pages",
+  ```
+
 and then running the standard build command:
-```bash
-npm run build
-```
+
+:pm-run{script="build"}
 
 ### Wrangler
 
 To preview your application locally or manually deploy it you will need to use the [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler) CLI tool, simply install it as a node dependency:
 
-```bash
-npm i wrangler
-```
+:pm-install{name="wrangler"}
 
 ### Preview your app locally
 
 After having built your application you can preview it locally with wrangler by running:
 
-```bash
-npx wrangler pages dev dist
-```
+:pm-x{command="wrangler pages dev dist"}
 
 ### Deploy from your local machine using wrangler
 
 After having built your application you can manually deploy it with wrangler, in order to do so first make sure to be
 logged into your Cloudflare account:
 
-```bash
-npx wrangler login
-```
+:pm-x{command="wrangler login"}
 
 Then you can deploy the application with:
 
-```bash
-npx wrangler pages deploy dist
-```
+:pm-x{command="wrangler pages deploy dist"}
 
 ## Cloudflare Module Workers
 
@@ -145,9 +138,7 @@ npx wrangler dev .output/server/index.mjs --site .output/public
 
 and publish it:
 
-```bash
-npx wrangler deploy
-```
+:pm-x{command="wrangler deploy"}
 
 ## Cloudflare Service Workers
 
@@ -206,7 +197,6 @@ SECRET="top-secret"
 **Note:** Make sure you add `.env` to the `.gitignore` file so that you don't commit it as it can contain sensitive information.
 ::
 
-
 ### Specify Variables for local previews
 
 After build, when you try out your project locally with `wrangler dev` or `wrangler pages dev`, in order to have access to environment variables you will need to specify the in a `.dev.vars` file in the root of your project (as presented in the [Pages](https://developers.cloudflare.com/pages/functions/bindings/#interact-with-your-environment-variables-locally) and [Workers](https://developers.cloudflare.com/workers/configuration/environment-variables/#interact-with-environment-variables-locally) documentation).
@@ -216,7 +206,6 @@ If you are using a `.env` file while developing, your `.dev.vars` should be iden
 ::note
 **Note:** Make sure you add `.dev.vars` to the `.gitignore` file so that you don't commit it as it can contain sensitive information.
 ::
-
 
 ### Specify Variables for Production
 
@@ -281,6 +270,7 @@ In order to access bindings during local dev mode, regardless of the chosen pres
 > The `nitro-cloudflare-dev` module is experimental. The Nitro team is looking into a more native integration  which could in the near future make the module unneeded.
 
 In order to access bindings in dev mode we start by defining the bindings in a `wrangler.toml` file, this is for example how you would define a variable and a KV namespace:
+
 ```ini [wrangler.toml]
 [vars]
 MY_VARIABLE="my-value"
@@ -291,7 +281,7 @@ id = "xxx"
 ```
 
 > [!NOTE]
->  Only bindings in the default environment are recognized.
+> Only bindings in the default environment are recognized.
 
 Next we install the `nitro-cloudflare-dev` module as well as the required `wrangler` package (if not already installed):
 
@@ -300,6 +290,7 @@ Next we install the `nitro-cloudflare-dev` module as well as the required `wrang
 Then define module:
 
 ::code-group
+
 ```js [nitro.config.js]
 import nitroCloudflareBindings from "nitro-cloudflare-dev";
 
@@ -307,11 +298,13 @@ export default defineNitroConfig({
   modules: [nitroCloudflareBindings],
 });
 ```
+
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   modules: ['nitro-cloudflare-dev']
 })
 ```
+
 ::
 
 From this moment, when running

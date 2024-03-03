@@ -10,7 +10,6 @@
 Integration with this provider is possible with [zero configuration](/deploy/#zero-config-providers).
 ::
 
-
 ## Set up your web app
 
 In your project, set Nitro preset to `cleavr`.
@@ -22,6 +21,7 @@ export default {
   }
 }
 ```
+
 Push changes to your code repository.
 
 **In your Cleavr panel:**

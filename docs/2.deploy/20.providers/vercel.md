@@ -27,7 +27,6 @@ Monorepo is supported by Vercel. However a custom "[Root Directory](https://verc
 
 Examples of values for "Root Directory": `apps/web` or `packages/app`.
 
-
 ## Vercel edge functions
 
 **Preset:** `vercel_edge`
@@ -35,7 +34,6 @@ Examples of values for "Root Directory": `apps/web` or `packages/app`.
 :read-more{title="Vercel Edge Functions" to="https://vercel.com/docs/concepts/functions/edge-functions"}
 
 It is possible to deploy your nitro applications directly on [Vercel Edge Functions](https://vercel.com/docs/concepts/functions/edge-functions).
-
 
 In order to enable this target, please set `NITRO_PRESET` environment variable to `vercel_edge`.
 
@@ -60,6 +58,7 @@ This feature is currently in beta. Please check [driver docs](https://unstorage.
 Update your configuration:
 
 ::code-group
+
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   storage: {
@@ -67,6 +66,7 @@ export default defineNitroConfig({
   }
 })
 ```
+
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
@@ -76,6 +76,7 @@ export default defineNuxtConfig({
   }
 })
 ```
+
 ::
 
 ::note
@@ -113,11 +114,12 @@ On-demand revalidation allows you to purge the cache for an ISR route whenever y
 To revalidate a page on demand:
 
 1. Create an Environment Variable which will store a revalidation secret
-    * You can use the command `openssl rand -base64 32` or https://generate-secret.vercel.app/32 to generate a random value.
+    - You can use the command `openssl rand -base64 32` or [Generate a Secret](https://generate-secret.vercel.app/32) to generate a random value.
 
 2. Update your configuration:
 
     ::code-group
+
     ```ts [nitro.config.ts]
     export default defineNitroConfig({
       vercel: {
@@ -127,6 +129,7 @@ To revalidate a page on demand:
       }
     })
     ```
+
     ```ts [nuxt.config.ts]
     export default defineNuxtConfig({
       nitro: {
@@ -138,6 +141,7 @@ To revalidate a page on demand:
       }
     })
     ```
+
     ::
 
-3. To trigger "On-Demand Incremental Static Regeneration (ISR)" and revalidate a path to a Prerender Function, make a GET or HEAD request to that path with a header of x-prerender-revalidate: <bypassToken>. When that Prerender Function endpoint is accessed with this header set, the cache will be revalidated. The next request to that function should return a fresh response.
+3. To trigger "On-Demand Incremental Static Regeneration (ISR)" and revalidate a path to a Prerender Function, make a GET or HEAD request to that path with a header of x-prerender-revalidate: `bypassToken`. When that Prerender Function endpoint is accessed with this header set, the cache will be revalidated. The next request to that function should return a fresh response.
