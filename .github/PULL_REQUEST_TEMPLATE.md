@@ -1,5 +1,20 @@
 <!---
-☝️ PR title should follow conventional commits (https://conventionalcommits.org) 
+
+*** IMPORTANT: PLEASE READ BEFORE CONTINUING TO MAKE A PULL REQUEST ***
+
+- The title should follow conventional commits (https://conventionalcommits.org).
+
+- If it is a bug fix, please ensure there is a linked issue with minimal (nitro) reproduction and/or enough context to explain exactly what it is fixing and why this fix is the best option in Nitro.
+
+- If it is a security fix, please always report it first as per https://github.com/unjs/nitro/blob/main/SECURITY.md
+
+- If it is a new feature, please ensure it has already been discussed. Keep the scope of changes minimal to what is essential, and try to break down your changes into smaller PRs when possible.
+
+- If you are submitting a new preset, please, in addition to the docs, ALWAYS add a new preset in src/presets.
+
+- After submitting, please remain patient until your PR is reviewed.
+
+Thanks for your contribution ❤️
 -->
 
 ### 🔗 Linked issue
