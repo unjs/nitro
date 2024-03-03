@@ -13,7 +13,7 @@ This is the recommended preset for Cloudflare deployments, please consider using
 ::
 
 ::note
-Integration with this provider is possible with zero configuration.
+Integration with this provider is possible with [zero configuration](/deploy#zero-config-providers).
 ::
 
 
