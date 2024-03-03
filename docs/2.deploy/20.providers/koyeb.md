@@ -64,7 +64,7 @@
 
 2. Add a `Dockerfile` to the root of your project:
 
-   ```docker
+   ```
    FROM node:18-alpine AS base
 
    FROM base AS deps
