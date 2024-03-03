@@ -7,7 +7,7 @@
 :read-more{title="Stormkit" to="https://www.stormkit.io"}
 
 ::note
-Integration with [Stormkit](https://www.stormkit.io/) is possible with zero configuration.
+Integration with [Stormkit](https://www.stormkit.io/) is possible with [zero configuration](/deploy#zero-config-providers).
 ::
 
 ## Setup
