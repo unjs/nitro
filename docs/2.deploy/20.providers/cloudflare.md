@@ -138,7 +138,7 @@ npx wrangler dev .output/server/index.mjs --site .output/public
 
 and publish it:
 
-:pm-x{command="npx wrangler deploy"}
+:pm-x{command="wrangler deploy"}
 
 ## Cloudflare Service Workers
 
