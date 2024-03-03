@@ -319,7 +319,7 @@ export interface NitroOptions extends PresetOptions {
     /**
      * Enable experimental Database support
      *
-     * @see https://nitro.unjs.io/guide/websocket
+     * @see https://nitro.unjs.io/guide/database
      */
     database?: boolean;
     /**
