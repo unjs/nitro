@@ -10,6 +10,7 @@ import type {
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig } from "#internal/nitro";
 
+// Currently, openapi is only available in dev, so there is no runtime difference to be determined here
 const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
   3000) as number;
 
