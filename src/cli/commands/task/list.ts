@@ -20,7 +20,7 @@ export default defineCommand({
   },
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
-    const tasks = await listTasks({ cwd, buildDir: args.buildDir || '.nitro' });
+    const tasks = await listTasks({ cwd, buildDir: args.buildDir || ".nitro" });
     for (const [name, task] of Object.entries(tasks)) {
       consola.log(
         ` - \`${name}\`${task.meta?.description ? ` - ${task.meta.description}` : ""}`
