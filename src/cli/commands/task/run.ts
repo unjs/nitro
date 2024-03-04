@@ -24,6 +24,10 @@ export default defineCommand({
       type: "string",
       description: "payload json to pass to the task",
     },
+    buildDir: {
+      type: "string",
+      description: "Build directory",
+    },
   },
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
@@ -44,7 +48,7 @@ export default defineCommand({
         },
         {
           cwd,
-          buildDir: ".nitro",
+          buildDir: args.buildDir || ".nitro",
         }
       );
       consola.success("Result:", result);
