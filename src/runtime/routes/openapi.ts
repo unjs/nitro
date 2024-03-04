@@ -1,3 +1,4 @@
+import destr from "destr";
 import { eventHandler } from "h3";
 import type {
   OpenAPI3,
@@ -8,6 +9,9 @@ import type {
 } from "openapi-typescript";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig } from "#internal/nitro";
+
+const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
+  3000) as number;
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
@@ -21,7 +25,7 @@ export default eventHandler((event) => {
     },
     servers: [
       {
-        url: `http://localhost:3000${base}`,
+        url: `http://localhost:${port}${base}`,
         description: "Local Development Server",
         variables: {},
       },
