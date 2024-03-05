@@ -1,5 +1,4 @@
-import destr from "destr";
-import { eventHandler } from "h3";
+import { eventHandler, getRequestURL } from "h3";
 import type {
   OpenAPI3,
   PathItemObject,
@@ -10,18 +9,11 @@ import type {
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig } from "#internal/nitro";
 
-const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
-  3000) as number;
-
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
   const base = useRuntimeConfig()?.app?.baseURL;
 
-  const referer = event.headers.get("referer");
-
-  const url = referer
-    ? new URL(referer).origin + base
-    : `http://localhost:${port}${base}`;
+  const url = getRequestURL(event).origin + base;
 
   return <OpenAPI3>{
     openapi: "3.0.0",
