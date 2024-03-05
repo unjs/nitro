@@ -10,13 +10,18 @@ import type {
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig } from "#internal/nitro";
 
-// Currently, openapi is only available in dev, so there is no runtime difference to be determined here
 const port = (destr(process.env.NITRO_PORT || process.env.PORT) ||
   3000) as number;
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
   const base = useRuntimeConfig()?.app?.baseURL;
+
+  const referer = event.headers.get("referer");
+
+  const url = referer
+    ? new URL(referer).origin + base
+    : `http://localhost:${port}${base}`;
 
   return <OpenAPI3>{
     openapi: "3.0.0",
@@ -26,7 +31,7 @@ export default eventHandler((event) => {
     },
     servers: [
       {
-        url: `http://localhost:${port}${base}`,
+        url,
         description: "Local Development Server",
         variables: {},
       },
