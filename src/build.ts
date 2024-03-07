@@ -172,12 +172,14 @@ export async function writeTypes(nitro: Nitro) {
     }
 
     autoImportedTypes = [
-      (
-        await nitro.unimport.generateTypeDeclarations({
-          exportHelper: false,
-          resolvePath: (i) => resolvedImportPathMap.get(i.from) ?? i.from,
-        })
-      ).trim(),
+      nitro.options.imports && nitro.options.imports.autoImport !== false
+        ? (
+            await nitro.unimport.generateTypeDeclarations({
+              exportHelper: false,
+              resolvePath: (i) => resolvedImportPathMap.get(i.from) ?? i.from,
+            })
+          ).trim()
+        : "",
     ];
   }
 
