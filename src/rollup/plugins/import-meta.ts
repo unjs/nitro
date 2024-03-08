@@ -18,13 +18,16 @@ export function importMeta(nitro: Nitro): Plugin {
         nitro.options.node && isEntry
           ? "_import_meta_url_"
           : '"file:///_entry.js"';
+      const envImport = nitro.options.node
+        ? "import process from 'node:process';"
+        : "";
       const env = nitro.options.node ? "process.env" : "{}";
       const ref = "globalThis._importMeta_";
       const stub = `{url:${url},env:${env}}`;
       const stubInit = isEntry ? `${ref}=${stub};` : `${ref}=${ref}||${stub};`;
 
       return {
-        code: stubInit + code,
+        code: envImport + stubInit + code,
         map: null,
       };
     },
