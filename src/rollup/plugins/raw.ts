@@ -13,10 +13,14 @@ export function raw(opts: RawOptions = {}): Plugin {
     ".md",
     ".mdx",
     ".yml",
+    ".yaml",
     ".txt",
     ".css",
     ".htm",
     ".html",
+    ".json",
+    ".json5",
+    ".csv",
     ...(opts.extensions || []),
   ]);
 

@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.9.2
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.9.1...v2.9.2)
+
+### 🩹 Fixes
+
+- **database:** CamelCase the connector name ([#2228](https://github.com/unjs/nitro/pull/2228))
+- Respect `imports.autoImport: false` ([#2226](https://github.com/unjs/nitro/pull/2226))
+- **server-assets:** Mark `yaml`, `json`, `json5` and `csv` as text ([#2229](https://github.com/unjs/nitro/pull/2229))
+- **import-meta:** Import `process` from `node:process` for node compatible builds (deno) ([#2225](https://github.com/unjs/nitro/pull/2225))
+
+### 📖 Documentation
+
+- **deploy:** Add link to zero config providers ([#2206](https://github.com/unjs/nitro/pull/2206))
+- **fetch:** Fix typo ([#2209](https://github.com/unjs/nitro/pull/2209))
+- Fix typo ([#2211](https://github.com/unjs/nitro/pull/2211))
+- Fix typo ([#2205](https://github.com/unjs/nitro/pull/2205))
+- Remove lagon ([#2204](https://github.com/unjs/nitro/pull/2204))
+- Update url for experimental database feature ([#2210](https://github.com/unjs/nitro/pull/2210))
+- **providers:** Improve formatting & use new `undocs` components ([#2202](https://github.com/unjs/nitro/pull/2202))
+- Improve cache page ([674089b3](https://github.com/unjs/nitro/commit/674089b3))
+
+### 🏡 Chore
+
+- **release:** V2.9.1 ([d8491cdc](https://github.com/unjs/nitro/commit/d8491cdc))
+- **examples:** Update hello-world ([169ec572](https://github.com/unjs/nitro/commit/169ec572))
+- Update deps and lockfile ([3875e50d](https://github.com/unjs/nitro/commit/3875e50d))
+- Update lockfile ([e3f555ac](https://github.com/unjs/nitro/commit/e3f555ac))
+- Remove lagon ([#2203](https://github.com/unjs/nitro/pull/2203))
+- Update `hello-world` example ([920b399e](https://github.com/unjs/nitro/commit/920b399e))
+- Update lockfile ([08da539f](https://github.com/unjs/nitro/commit/08da539f))
+- Improve notes in pr template ([#2212](https://github.com/unjs/nitro/pull/2212))
+- Update dependencies ([be2c70be](https://github.com/unjs/nitro/commit/be2c70be))
+- Use type import in tests ([1cb410db](https://github.com/unjs/nitro/commit/1cb410db))
+- Increase test timeout ([7a65d1ef](https://github.com/unjs/nitro/commit/7a65d1ef))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Divy Srivastava ([@littledivy](http://github.com/littledivy))
+- Alexander Lichter <github@lichter.io>
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Christian Preston ([@cpreston321](http://github.com/cpreston321))
+- Phan Khắc Đạo <daopk.dev@gmail.com>
+- Maxime Pauvert ([@maximepvrt](http://github.com/maximepvrt))
+- Jeff Galbraith ([@hawkeye64](http://github.com/hawkeye64))
+- Rajeev R Sharma <i.rarsh@gmail.com>
+- Julien Vanelian ([@JulienVanelian](http://github.com/JulienVanelian))
+- Gangan ([@shinGangan](http://github.com/shinGangan))
+
 ## v2.9.1
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.9.0...v2.9.1)

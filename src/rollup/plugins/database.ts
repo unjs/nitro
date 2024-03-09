@@ -1,4 +1,5 @@
 import { connectors } from "db0";
+import { camelCase } from "scule";
 import type { Nitro } from "../../types";
 import { virtual } from "./virtual";
 
@@ -22,14 +23,14 @@ export function database(nitro: Nitro) {
     {
       "#internal/nitro/virtual/database": () => {
         return `
-${connectorsNames.map((name) => `import ${name}Connector from "${connectors[name]}";`).join("\n")}
+${connectorsNames.map((name) => `import ${camelCase(name)}Connector from "${connectors[name]}";`).join("\n")}
 
 export const connectionConfigs = {
   ${Object.entries(dbConfigs || {})
     .map(
       ([name, { connector, options }]) =>
         `${name}: {
-          connector: ${connector}Connector,
+          connector: ${camelCase(connector)}Connector,
           options: ${JSON.stringify(options)}
         }`
     )
