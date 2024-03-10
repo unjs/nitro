@@ -199,7 +199,7 @@ export interface CachedEventHandlerOptions<T = any>
   shouldBypassCache?: (event: H3Event) => boolean | Promise<boolean>;
   getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
-  varies?: string[];
+  varies?: string[] | readonly string[];
 }
 
 function escapeKey(key: string | string[]) {
