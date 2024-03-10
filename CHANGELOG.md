@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.9.3
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.9.2...v2.9.3)
+
+### 🩹 Fixes
+
+- **raw:** Use mime to chck binary types and exclude `.json` ([#2239](https://github.com/unjs/nitro/pull/2239))
+
+### 📖 Documentation
+
+- Fix typo ([a445fae6](https://github.com/unjs/nitro/commit/a445fae6))
+
+### ❤️ Contributors
+
+- Pooya Parsa <pyapar@gmail.com>
+- Keigo Nakao ([@kspace-trk](http://github.com/kspace-trk))
+
 ## v2.9.2
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.9.1...v2.9.2)
