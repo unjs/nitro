@@ -539,6 +539,13 @@ export function testNitro(
         expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
       }
     );
+
+    it.skipIf(ctx.isWorker || ctx.isDev)(
+      "public files can be un-ignored with patterns",
+      async () => {
+        expect((await callHandler({ url: "/_unignored.txt" })).status).toBe(200);
+      }
+    );
   });
 
   describe("headers", () => {
