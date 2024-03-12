@@ -61,19 +61,18 @@ export async function copyPublicAssets(nitro: Nitro) {
     if (await isDirectory(srcDir)) {
       const includePatterns = [
         "**",
-        ...nitro.options.ignore
-          .map((p) => {
-            const [_, negation, pattern] = p.match(NEGATION_RE);
-            return (
-              // Convert ignore to include patterns
-              (negation ? "" : "!") +
-              // Make non-glob patterns relative to publicAssetDir
-              (pattern.startsWith("*")
-                ? pattern
-                : relative(srcDir, resolve(nitro.options.srcDir, pattern)))
-            );
-          })
-      ].filter((p) => !PARENT_DIR_GLOB_RE.test(p))
+        ...nitro.options.ignore.map((p) => {
+          const [_, negation, pattern] = p.match(NEGATION_RE);
+          return (
+            // Convert ignore to include patterns
+            (negation ? "" : "!") +
+            // Make non-glob patterns relative to publicAssetDir
+            (pattern.startsWith("*")
+              ? pattern
+              : relative(srcDir, resolve(nitro.options.srcDir, pattern)))
+          );
+        }),
+      ].filter((p) => !PARENT_DIR_GLOB_RE.test(p));
 
       const publicAssets = await globby(includePatterns, {
         cwd: srcDir,

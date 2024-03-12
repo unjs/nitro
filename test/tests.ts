@@ -543,7 +543,9 @@ export function testNitro(
     it.skipIf(ctx.isWorker || ctx.isDev)(
       "public files can be un-ignored with patterns",
       async () => {
-        expect((await callHandler({ url: "/_unignored.txt" })).status).toBe(200);
+        expect((await callHandler({ url: "/_unignored.txt" })).status).toBe(
+          200
+        );
       }
     );
   });
