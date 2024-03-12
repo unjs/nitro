@@ -48,6 +48,9 @@ async function prepareDir(dir: string) {
   await fse.emptyDir(dir);
 }
 
+const NEGATION_RE = /^(!?)(.*)$/;
+const PARENT_DIR_GLOB_RE = /!?\.\.\//;
+
 export async function copyPublicAssets(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
     return;
@@ -62,7 +65,7 @@ export async function copyPublicAssets(nitro: Nitro) {
         dot: true,
         ignore: nitro.options.ignore
           .map((p) => {
-            const [_, negation, pattern] = p.match(/^(!?)(.*)$/);
+            const [_, negation, pattern] = p.match(NEGATION_RE);
             return (
               negation +
               (pattern.startsWith("*")
@@ -70,7 +73,7 @@ export async function copyPublicAssets(nitro: Nitro) {
                 : relative(srcDir, resolve(nitro.options.srcDir, pattern)))
             );
           })
-          .filter((p) => !p.startsWith("../")),
+          .filter((p) => !PARENT_DIR_GLOB_RE.test(p)),
       });
       await Promise.all(
         publicAssets.map(async (file) => {
