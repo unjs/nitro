@@ -61,11 +61,15 @@ export async function copyPublicAssets(nitro: Nitro) {
         absolute: false,
         dot: true,
         ignore: nitro.options.ignore
-          .map((p) =>
-            p.startsWith("*") || p.startsWith("!*")
-              ? p
-              : relative(srcDir, resolve(nitro.options.srcDir, p))
-          )
+          .map((p) => {
+            const [_, negation, pattern] = p.match(/^(!?)(.*)$/);
+            return (
+              negation +
+              (pattern.startsWith("*")
+                ? pattern
+                : relative(srcDir, resolve(nitro.options.srcDir, pattern)))
+            );
+          })
           .filter((p) => !p.startsWith("../")),
       });
       await Promise.all(
