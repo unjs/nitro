@@ -1,5 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { extname } from "pathe";
+import mime from "mime";
 import type { Plugin } from "rollup";
 
 export interface RawOptions {
@@ -18,14 +19,8 @@ export function raw(opts: RawOptions = {}): Plugin {
     ".css",
     ".htm",
     ".html",
-    ".json",
-    ".json5",
-    ".csv",
     ...(opts.extensions || []),
   ]);
-
-  // TODO: use ext=>mime
-  const isBinary = (id) => !extensions.has(extname(id));
 
   return {
     name: "raw",
@@ -77,6 +72,17 @@ export function raw(opts: RawOptions = {}): Plugin {
       }
     },
   };
+}
+
+function isBinary(id: string) {
+  const idMime = mime.getType(id) || "";
+  if (idMime.startsWith("text/")) {
+    return false;
+  }
+  if (/application\/(json|xml|yaml)/.test(idMime)) {
+    return false;
+  }
+  return true;
 }
 
 function getHelpers() {
