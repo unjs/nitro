@@ -13,6 +13,10 @@ import { useRuntimeConfig } from "#internal/nitro";
 export default eventHandler((event) => {
   const base = useRuntimeConfig()?.app?.baseURL;
 
+  const port = process.env.NITRO_PORT || process.env.PORT || 3000;
+  // Routes start with a / anywhere, so we can safely remove the trailing slash here.
+  const url = `http://localhost:${port}${base}`.replace(/\/$/, "");
+
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
@@ -21,7 +25,7 @@ export default eventHandler((event) => {
     },
     servers: [
       {
-        url: `http://localhost:3000${base}`,
+        url,
         description: "Local Development Server",
         variables: {},
       },
