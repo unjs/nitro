@@ -388,6 +388,10 @@ export async function loadOptions(
       handler: "#internal/nitro/routes/openapi",
     });
     options.handlers.push({
+      route: "/_nitro/scalar",
+      handler: "#internal/nitro/routes/scalar",
+    });
+    options.handlers.push({
       route: "/_nitro/swagger",
       handler: "#internal/nitro/routes/swagger",
     });
