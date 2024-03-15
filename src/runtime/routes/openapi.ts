@@ -6,6 +6,7 @@ import type {
   ParameterObject,
   PathsObject,
 } from "openapi-typescript";
+import { joinURL } from "ufo";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig } from "#internal/nitro";
 
@@ -13,7 +14,7 @@ import { useRuntimeConfig } from "#internal/nitro";
 export default eventHandler((event) => {
   const base = useRuntimeConfig()?.app?.baseURL;
 
-  const url = getRequestURL(event).origin + base;
+  const url = joinURL(getRequestURL(event).origin, base);
 
   return <OpenAPI3>{
     openapi: "3.0.0",
