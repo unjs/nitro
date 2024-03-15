@@ -119,7 +119,7 @@
     "serve-placeholder": "^2.0.1",
     "serve-static": "^1.15.0",
     "std-env": "^3.7.0",
-    "ufo": "^1.4.0",
+    "ufo": "^1.5.0",
     "uncrypto": "^0.1.3",
     "unctx": "^2.3.1",
     "unenv": "^1.9.0",
