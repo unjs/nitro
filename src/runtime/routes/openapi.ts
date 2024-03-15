@@ -1,4 +1,4 @@
-import { eventHandler } from "h3";
+import { eventHandler, getRequestURL } from "h3";
 import type {
   OpenAPI3,
   PathItemObject,
@@ -13,6 +13,8 @@ import { useRuntimeConfig } from "#internal/nitro";
 export default eventHandler((event) => {
   const base = useRuntimeConfig()?.app?.baseURL;
 
+  const url = getRequestURL(event).origin + base;
+
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
@@ -21,7 +23,7 @@ export default eventHandler((event) => {
     },
     servers: [
       {
-        url: `http://localhost:3000${base}`,
+        url,
         description: "Local Development Server",
         variables: {},
       },
