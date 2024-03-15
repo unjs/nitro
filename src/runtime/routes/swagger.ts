@@ -6,7 +6,7 @@ import { eventHandler } from "h3";
 export default eventHandler((event) => {
   const title = "Nitro Swagger UI";
   const CDN_BASE = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@^4";
-  return html`<!doctype html>
+  return /* html */ `<!doctype html>
     <html lang="en">
       <head>
         <meta charset="utf-8" />
@@ -38,7 +38,3 @@ export default eventHandler((event) => {
       </body>
     </html> `;
 });
-
-function html(str, ...args) {
-  return String.raw(str, ...args);
-}

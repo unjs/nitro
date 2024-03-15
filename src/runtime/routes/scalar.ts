@@ -6,7 +6,7 @@ import { eventHandler } from "h3";
 export default eventHandler((event) => {
   const title = "Nitro Scalar API Reference";
 
-  return html`<!doctype html>
+  return /* html */ `<!doctype html>
     <html lang="en">
       <head>
         <meta charset="utf-8" />
@@ -28,11 +28,7 @@ export default eventHandler((event) => {
     </html>`;
 });
 
-function html(str, ...args) {
-  return String.raw(str, ...args);
-}
-
-const customTheme = `/* basic theme */
+const customTheme = /* css */ `/* basic theme */
   .light-mode,
   .light-mode .dark-mode {
     --theme-background-1: #fff;
