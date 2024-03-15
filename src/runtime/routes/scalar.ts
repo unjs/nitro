@@ -21,7 +21,8 @@ export default eventHandler((event) => {
         <script
           id="api-reference"
           data-url="/_nitro/openapi.json"
-          data-proxy-url="https://api.scalar.com/request-proxy"></script>
+          data-proxy-url="https://api.scalar.com/request-proxy"
+        ></script>
         <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
       </body>
     </html>`;
@@ -31,8 +32,7 @@ function html(str, ...args) {
   return String.raw(str, ...args);
 }
 
-const customTheme =
-  `/* basic theme */
+const customTheme = `/* basic theme */
   .light-mode,
   .light-mode .dark-mode {
     --theme-background-1: #fff;
@@ -184,4 +184,4 @@ const customTheme =
   }
   .section-container:nth-of-type(2) {
     overflow: hidden;
-  }`
+  }`;
