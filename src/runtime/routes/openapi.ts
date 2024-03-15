@@ -75,7 +75,7 @@ function normalizeRoute(_route: string) {
   for (const match of paramMatches) {
     const name = match[1];
     if (!parameters.some((p) => p.name === name)) {
-      parameters.push({ name, in: "path", required: true });
+      parameters.push({ name, in: "path", required: true, schema: { type: 'string' } });
     }
   }
 
