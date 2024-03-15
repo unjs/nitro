@@ -48,6 +48,9 @@ async function prepareDir(dir: string) {
   await fse.emptyDir(dir);
 }
 
+const NEGATION_RE = /^(!?)(.*)$/;
+const PARENT_DIR_GLOB_RE = /!?\.\.\//;
+
 export async function copyPublicAssets(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
     return;
@@ -56,17 +59,25 @@ export async function copyPublicAssets(nitro: Nitro) {
     const srcDir = asset.dir;
     const dstDir = join(nitro.options.output.publicDir, asset.baseURL!);
     if (await isDirectory(srcDir)) {
-      const publicAssets = await globby("**", {
+      const includePatterns = [
+        "**",
+        ...nitro.options.ignore.map((p) => {
+          const [_, negation, pattern] = p.match(NEGATION_RE);
+          return (
+            // Convert ignore to include patterns
+            (negation ? "" : "!") +
+            // Make non-glob patterns relative to publicAssetDir
+            (pattern.startsWith("*")
+              ? pattern
+              : relative(srcDir, resolve(nitro.options.srcDir, pattern)))
+          );
+        }),
+      ].filter((p) => !PARENT_DIR_GLOB_RE.test(p));
+
+      const publicAssets = await globby(includePatterns, {
         cwd: srcDir,
         absolute: false,
         dot: true,
-        ignore: nitro.options.ignore
-          .map((p) =>
-            p.startsWith("*") || p.startsWith("!*")
-              ? p
-              : relative(srcDir, resolve(nitro.options.srcDir, p))
-          )
-          .filter((p) => !p.startsWith("../")),
       });
       await Promise.all(
         publicAssets.map(async (file) => {

@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.9.4
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.9.3...v2.9.4)
+
+### 🩹 Fixes
+
+- Handle path negations when scanning public assets ([#2250](https://github.com/unjs/nitro/pull/2250))
+- **pkg:** Add `ioredis` as unstorage peer dependency ([#2266](https://github.com/unjs/nitro/pull/2266))
+
+### 📖 Documentation
+
+- Fix server assets example path ([#2248](https://github.com/unjs/nitro/pull/2248))
+- Remove duplicate `integrity` key ([#2246](https://github.com/unjs/nitro/pull/2246))
+- Fix wording ([#2261](https://github.com/unjs/nitro/pull/2261))
+- Remove nightly notice ([39bc3f2e](https://github.com/unjs/nitro/commit/39bc3f2e))
+- **tasks:** Update dev server usage ([#2240](https://github.com/unjs/nitro/pull/2240))
+- **cache:** Add example usage for `cache.varies` ([#2241](https://github.com/unjs/nitro/pull/2241))
+
+### 🏡 Chore
+
+- Fix typo ([#2260](https://github.com/unjs/nitro/pull/2260))
+- Update lockfile ([d8fafe4d](https://github.com/unjs/nitro/commit/d8fafe4d))
+- Update ufo ([b6cc11c7](https://github.com/unjs/nitro/commit/b6cc11c7))
+
+### ✅ Tests
+
+- Increase timeout ([0f089d3e](https://github.com/unjs/nitro/commit/0f089d3e))
+
+### ❤️ Contributors
+
+- Adam DeHaven ([@adamdehaven](http://github.com/adamdehaven))
+- Neil Richter ([@noook](http://github.com/noook))
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Alexander Lichter ([@manniL](http://github.com/manniL))
+- KobZ ([@devseckobz](http://github.com/devseckobz))
+- Klein Petr <petr@kleinpetr.com>
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+
 ## v2.9.3
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.9.2...v2.9.3)
