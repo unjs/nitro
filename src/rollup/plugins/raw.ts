@@ -13,8 +13,6 @@ export function raw(opts: RawOptions = {}): Plugin {
   const extensions = new Set([
     ".md",
     ".mdx",
-    ".yml",
-    ".yaml",
     ".txt",
     ".css",
     ".htm",
