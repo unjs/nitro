@@ -1,4 +1,4 @@
-import { eventHandler } from "h3";
+import { eventHandler, getRequestURL } from "h3";
 import type {
   OpenAPI3,
   PathItemObject,
@@ -6,12 +6,15 @@ import type {
   ParameterObject,
   PathsObject,
 } from "openapi-typescript";
+import { joinURL } from "ufo";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
 import { useRuntimeConfig } from "#internal/nitro";
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
   const base = useRuntimeConfig()?.app?.baseURL;
+
+  const url = joinURL(getRequestURL(event).origin, base);
 
   return <OpenAPI3>{
     openapi: "3.0.0",
@@ -21,7 +24,7 @@ export default eventHandler((event) => {
     },
     servers: [
       {
-        url: `http://localhost:3000${base}`,
+        url,
         description: "Local Development Server",
         variables: {},
       },
@@ -73,7 +76,12 @@ function normalizeRoute(_route: string) {
   for (const match of paramMatches) {
     const name = match[1];
     if (!parameters.some((p) => p.name === name)) {
-      parameters.push({ name, in: "path", required: true });
+      parameters.push({
+        name,
+        in: "path",
+        required: true,
+        schema: { type: "string" },
+      });
     }
   }
 
