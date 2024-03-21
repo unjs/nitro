@@ -289,9 +289,6 @@ importers:
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
-      shiki:
-        specifier: ^1.2.0
-        version: 1.2.0
       typescript:
         specifier: ^5.4.2
         version: 5.4.2
@@ -2181,10 +2178,6 @@ packages:
     os: [win32]
     requiresBuild: true
     optional: true
-
-  /@shikijs/core@1.2.0:
-    resolution: {integrity: sha512-OlFvx+nyr5C8zpcMBnSGir0YPD6K11uYhouqhNmm1qLiis4GA7SsGtu07r9gKS9omks8RtQqHrJL4S+lqWK01A==}
-    dev: true
 
   /@sideway/address@4.1.5:
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
@@ -8231,12 +8224,6 @@ packages:
 
   /shell-quote@1.8.1:
     resolution: {integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==}
-    dev: true
-
-  /shiki@1.2.0:
-    resolution: {integrity: sha512-xLhiTMOIUXCv5DqJ4I70GgQCtdlzsTqFLZWcMHHG3TAieBUbvEGthdrlPDlX4mL/Wszx9C6rEcxU6kMlg4YlxA==}
-    dependencies:
-      '@shikijs/core': 1.2.0
     dev: true
 
   /side-channel@1.0.6:
