@@ -15,7 +15,7 @@ export function importMeta(nitro: Nitro): Plugin {
         return;
       }
       const url =
-        nitro.options.node && isEntry
+        nitro.options.node && isEntry && !code.includes("ROLLUP_NO_REPLACE")
           ? "_import_meta_url_"
           : '"file:///_entry.js"';
       const envImport = nitro.options.node
