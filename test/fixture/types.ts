@@ -315,9 +315,9 @@ describe("type helpers", () => {
     expectTypeOf<Serialize<{ test?: string }>>().toEqualTypeOf<{
       test?: string;
     }>();
-    expectTypeOf<Serialize<{ test: Date }>>().toEqualTypeOf<{ test: string }>()
+    expectTypeOf<Serialize<{ test: Date }>>().toEqualTypeOf<{ test: string }>();
     expectTypeOf<Serialize<{ test?: Date }>>().toEqualTypeOf<{
-      test?: string
+      test?: string;
     }>();
     expectTypeOf<Serialize<{ test: Map<string, string> }>>().toEqualTypeOf<{
       test: Record<string, never>;
