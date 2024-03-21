@@ -128,7 +128,7 @@ export async function createNitro(
   nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => {
     const _scheduledTasks = Object.entries(nitro.options.scheduledTasks || {})
       .map(([cron, _tasks]) => {
-        if (Array.isArray(_tasks)) {
+        if (!Array.isArray(_tasks)) {
           nitro.logger.warn(`[DEPRECATION] \`scheduledTasks\` must be an array. This will be removed in a future release`);
         }
         // @todo: Remove isArray condition check when deprecation is effective
