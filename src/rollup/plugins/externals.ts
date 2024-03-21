@@ -61,6 +61,19 @@ export function externals(opts: NodeExternalsOptions): Plugin {
     .map((p) => normalizeMatcher(p))
     .sort((a, b) => b.score - a.score);
 
+  // Utility to check explicit inlines
+  const isExplicitInline = (id: string, importer: string) => {
+    const inlineMatch = inlineMatchers.find((m) => m(id, importer));
+    const externalMatch = externalMatchers.find((m) => m(id, importer));
+    if (
+      inlineMatch &&
+      (!externalMatch ||
+        (externalMatch && inlineMatch.score > externalMatch.score))
+    ) {
+      return true;
+    }
+  };
+
   return {
     name: "node-externals",
     async resolveId(originalId, importer, options) {
@@ -83,13 +96,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const id = normalize(originalId);
 
       // Check for explicit inlines and externals
-      const inlineMatch = inlineMatchers.find((m) => m(id, importer));
-      const externalMatch = externalMatchers.find((m) => m(id, importer));
-      if (
-        inlineMatch &&
-        (!externalMatch ||
-          (externalMatch && inlineMatch.score > externalMatch.score))
-      ) {
+      if (isExplicitInline(id, importer)) {
         return null;
       }
 
@@ -97,6 +104,11 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       const resolved = (await this.resolve(originalId, importer, options)) || {
         id,
       };
+
+      // Check for explicit inlines and externals
+      if (isExplicitInline(resolved.id, importer)) {
+        return null;
+      }
 
       // Try resolving with mlly as fallback
       if (
