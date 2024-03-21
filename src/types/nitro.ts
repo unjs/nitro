@@ -10,7 +10,7 @@ import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions, RouterMethod } from "h3";
-import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { ConnectorName } from "db0";
@@ -138,7 +138,8 @@ type DeepPartial<T> =
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
 export interface NitroConfig
-  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">> {
+  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">>,
+    C12InputConfig<NitroConfig> {
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
   rollupConfig?: Partial<RollupConfig>;
