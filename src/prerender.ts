@@ -81,9 +81,9 @@ export async function prerender(nitro: Nitro) {
     nitroRenderer.options.output.serverDir,
     "index.mjs"
   );
-  const { localFetch } = (await import(
+  const { closePrerenderer, localFetch } = (await import(
     pathToFileURL(serverEntrypoint).href
-  )) as { localFetch: $Fetch };
+  )) as { closePrerenderer: () => Promise<void>; localFetch: $Fetch };
 
   // Create route rule matcher
   const _routeRulesMatcher = toRouteMatcher(
@@ -295,6 +295,8 @@ export async function prerender(nitro: Nitro) {
     concurrency: nitro.options.prerender.concurrency,
     interval: nitro.options.prerender.interval,
   });
+
+  await closePrerenderer();
 
   await nitro.hooks.callHook("prerender:done", {
     prerenderedRoutes: nitro._prerenderedRoutes,
