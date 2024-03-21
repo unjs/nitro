@@ -126,7 +126,7 @@ export async function createNitro(
 
   // Virtual module for tasks (TODO: Move to rollup plugin)
   nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => {
-    const _scheduledTasks = Object.entries(nitro.options.scheduledTasks)
+    const _scheduledTasks = Object.entries(nitro.options.scheduledTasks || {})
       .map(([cron, _tasks]) => {
         const tasks = (Array.isArray(_tasks) ? _tasks : [_tasks]).filter(
           (name) => {
