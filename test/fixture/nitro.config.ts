@@ -101,7 +101,7 @@ export default defineNitroConfig({
     tasks: true,
   },
   scheduledTasks: {
-    "* * * * *": "test",
+    "* * * * *": ["test"],
   },
   cloudflare: {
     pages: {
