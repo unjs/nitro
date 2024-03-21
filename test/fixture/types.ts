@@ -311,7 +311,14 @@ describe("defineCachedEventHandler", () => {
 
 describe("type helpers", () => {
   it("Serialize", () => {
+    expectTypeOf<Serialize<undefined>>().toEqualTypeOf<undefined>();
+    expectTypeOf<Serialize<{ test?: string }>>().toEqualTypeOf<{
+      test?: string;
+    }>();
     expectTypeOf<Serialize<{ test: Date }>>().toEqualTypeOf<{ test: string }>();
+    expectTypeOf<Serialize<{ test?: Date }>>().toEqualTypeOf<{
+      test?: string;
+    }>();
     expectTypeOf<Serialize<{ test: Map<string, string> }>>().toEqualTypeOf<{
       test: Record<string, never>;
     }>();
