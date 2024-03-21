@@ -54,6 +54,3 @@ export type SerializeObject<T extends object> = {
 export type Simplify<TType> = TType extends any[] | Date
   ? TType
   : { [K in keyof TType]: Simplify<TType[K]> };
-
-type testA = Serialize<undefined>;
-
