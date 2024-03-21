@@ -150,7 +150,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         if (!isAbsolute(originalId)) {
           const fullPath = await _resolve(originalId);
           trackedExternals.add(fullPath);
-          console.log("[externals]", id);
           return {
             id: originalId,
             external: true,
@@ -170,7 +169,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             (await _resolve(join(pkgName, guessedSubpath)).catch(() => null));
           if (resolvedGuess === originalId) {
             trackedExternals.add(resolvedGuess);
-            console.log("[externals]", join(pkgName, guessedSubpath));
             return {
               id: join(pkgName, guessedSubpath),
               external: true,
@@ -181,7 +179,6 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         }
       }
 
-      console.log("[externals]", pkgName);
       trackedExternals.add(resolved.id);
       return {
         id: pkgName,
