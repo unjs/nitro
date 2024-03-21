@@ -153,6 +153,7 @@
     "get-port-please": "^3.1.2",
     "miniflare": "^3.20240304.2",
     "prettier": "^3.2.5",
+    "shiki": "^1.2.0",
     "typescript": "^5.4.2",
     "unbuild": "^2.0.0",
     "undici": "^6.9.0",
