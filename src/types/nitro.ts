@@ -339,7 +339,7 @@ export interface NitroOptions extends PresetOptions {
   modules?: NitroModuleInput[];
   plugins: string[];
   tasks: { [name: string]: { handler: string; description: string } };
-  scheduledTasks: { [cron: string]: string | string[] };
+  scheduledTasks: { [cron: string]: string[] };
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
