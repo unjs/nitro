@@ -43,6 +43,8 @@ export const cloudflarePages = defineNitroPreset({
   hooks: {
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
+      await writeCFPagesHeaders(nitro);
+      await writeCFPagesRedirects(nitro);
     },
   },
 });
