@@ -42,11 +42,11 @@ export function raw(opts: RawOptions = {}): Plugin {
         return;
       }
 
-      const resolvedId =
-        (await this.resolve(id, importer, { skipSelf: true }))?.id || id;
+      const resolvedId = (await this.resolve(id, importer, { skipSelf: true }))
+        ?.id;
 
-      if (resolvedId.startsWith("\0")) {
-        return;
+      if (!resolvedId || resolvedId.startsWith("\0")) {
+        return resolvedId;
       }
 
       return { id: "\0raw:" + resolvedId };
