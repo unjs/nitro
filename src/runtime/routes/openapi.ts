@@ -17,7 +17,7 @@ export default eventHandler((event) => {
   const url = joinURL(getRequestURL(event).origin, base);
 
   return <OpenAPI3>{
-    openapi: "3.0.0",
+    openapi: "3.1.0",
     info: {
       title: "Nitro Server Routes",
       version: null,
