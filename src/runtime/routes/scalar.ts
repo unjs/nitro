@@ -1,9 +1,28 @@
 import { eventHandler } from "h3";
-
-// https://github.com/scalar/scalar
+import type { ReferenceConfiguration } from '@scalar/api-reference'
+import { useRuntimeConfig } from "../config";
 
 // Served as /_nitro/scalar
 export default eventHandler((event) => {
+  const runtimeConfig = useRuntimeConfig();
+
+  // Default configuration for Scalar
+  // Read more: https://github.com/scalar/scalar
+  const defaultConfiguration: ReferenceConfiguration = {
+    spec: {
+      url: '/_nitro/openapi.json'
+    }
+  };
+
+  // Add the custom configuration from the runtime config
+  const configuration = typeof runtimeConfig.openAPI === 'object'
+    ? {
+      ...defaultConfiguration,
+      ...runtimeConfig.openAPI?.scalar
+    }
+    : defaultConfiguration;
+
+  // The default page title
   const title = "Nitro Scalar API Reference";
 
   return /* html */ `<!doctype html>
@@ -14,14 +33,15 @@ export default eventHandler((event) => {
         <meta name="description" content="${title}" />
         <title>${title}</title>
         <style>
-          ${customTheme}
+          ${configuration.theme ? null : customTheme}
         </style>
       </head>
       <body>
         <script
           id="api-reference"
-          data-url="/_nitro/openapi.json"
-          data-proxy-url="https://api.scalar.com/request-proxy"
+          data-configuration="${JSON.stringify(configuration)
+            .split('"')
+            .join('&quot;')}"
         ></script>
         <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
       </body>

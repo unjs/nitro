@@ -14,6 +14,7 @@ import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { ConnectorName } from "db0";
+import type { ReferenceConfiguration } from '@scalar/api-reference'
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -284,6 +285,7 @@ export interface NitroOptions extends PresetOptions {
       title?: string;
       description?: string;
       version?: string;
+      scalar?: ReferenceConfiguration;
     },
     /**
      * See https://github.com/microsoft/TypeScript/pull/51669
