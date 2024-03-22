@@ -16,7 +16,6 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
-import { upperFirst } from "scule";
 import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
