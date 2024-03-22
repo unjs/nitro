@@ -382,7 +382,7 @@ export async function loadOptions(
     { dev: options.dev, node: options.node, wasm: options.experimental.wasm }
   );
 
-  // Add open-api endpoint
+  // Add OpenAPI endpoints
   if (options.dev && options.experimental.openAPI) {
     options.handlers.push({
       route: "/_nitro/openapi.json",
