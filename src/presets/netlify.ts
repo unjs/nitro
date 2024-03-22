@@ -72,6 +72,9 @@ export const netlifyEdge = defineNitroPreset({
       deprecateSWR(nitro);
     },
     async compiled(nitro: Nitro) {
+      await writeHeaders(nitro);
+      await writeRedirects(nitro);
+
       // https://docs.netlify.com/edge-functions/create-integration/
       const manifest = {
         version: 1,
