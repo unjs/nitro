@@ -14,7 +14,7 @@ import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { ConnectorName } from "db0";
-import type { ReferenceConfiguration } from '@scalar/api-reference'
+import type { ReferenceConfiguration } from "@scalar/api-reference";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -48,7 +48,7 @@ export interface NitroRuntimeConfig {
       [path: string]: NitroRouteConfig;
     };
   };
-  openAPI?: NitroOptions["experimental"]["openAPI"]
+  openAPI?: NitroOptions["experimental"]["openAPI"];
   [key: string]: any;
 }
 
@@ -281,12 +281,14 @@ export interface NitroOptions extends PresetOptions {
   wasm?: UnwasmPluginOptions;
   experimental?: {
     legacyExternals?: boolean;
-    openAPI?: boolean | {
-      title?: string;
-      description?: string;
-      version?: string;
-      scalar?: ReferenceConfiguration;
-    },
+    openAPI?:
+      | boolean
+      | {
+          title?: string;
+          description?: string;
+          version?: string;
+          scalar?: ReferenceConfiguration;
+        };
     /**
      * See https://github.com/microsoft/TypeScript/pull/51669
      */
