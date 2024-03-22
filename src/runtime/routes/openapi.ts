@@ -12,15 +12,30 @@ import { useRuntimeConfig } from "#internal/nitro";
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
-  const base = useRuntimeConfig()?.app?.baseURL;
+  const runtimeConfig = useRuntimeConfig();
 
+  const base = runtimeConfig?.app?.baseURL;
   const url = joinURL(getRequestURL(event).origin, base);
+
+  const defaultOpenAPI = {
+    title: 'Nitro Server Routes',
+    version: null,
+    description: null,
+  };
+
+  const openAPI = typeof runtimeConfig.openAPI === 'object'
+    ? {
+      ...defaultOpenAPI,
+      ...runtimeConfig.openAPI
+    }
+    : defaultOpenAPI;
 
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
-      title: "Nitro Server Routes",
-      version: null,
+      title: openAPI?.title,
+      version: openAPI?.version,
+      description: openAPI?.description,
     },
     servers: [
       {

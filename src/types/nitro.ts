@@ -47,6 +47,7 @@ export interface NitroRuntimeConfig {
       [path: string]: NitroRouteConfig;
     };
   };
+  openAPI?: NitroOptions["experimental"]["openAPI"]
   [key: string]: any;
 }
 
@@ -270,6 +271,7 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
+
   /**
    * @experimental Requires `experimental.wasm` to work
    *
@@ -278,7 +280,11 @@ export interface NitroOptions extends PresetOptions {
   wasm?: UnwasmPluginOptions;
   experimental?: {
     legacyExternals?: boolean;
-    openAPI?: boolean;
+    openAPI?: boolean | {
+      title?: string;
+      description?: string;
+      version?: string;
+    },
     /**
      * See https://github.com/microsoft/TypeScript/pull/51669
      */

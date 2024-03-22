@@ -459,6 +459,7 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     nitro: {
       envExpansion: config.experimental.envExpansion,
     },
+    openAPI: config.experimental?.openAPI,
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
   return runtimeConfig as NitroRuntimeConfig;
