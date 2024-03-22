@@ -29,7 +29,6 @@ export default eventHandler((event) => {
         variables: {},
       },
     ],
-    schemes: ["http"],
     paths: getPaths(),
   };
 });
