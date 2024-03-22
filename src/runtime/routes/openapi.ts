@@ -25,7 +25,7 @@ export default eventHandler((event) => {
     servers: [
       {
         url,
-        description: "Local Development Server",
+        description: null,
         variables: {},
       },
     ],
