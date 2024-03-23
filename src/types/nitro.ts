@@ -159,6 +159,7 @@ export interface PublicAssetDir {
 export interface ServerAssetDir {
   baseName: string;
   dir: string;
+  ignore?: string[]
 }
 
 export interface DevServerOptions {
