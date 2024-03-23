@@ -131,6 +131,7 @@
     "@azure/functions": "^3.5.1",
     "@azure/static-web-apps-cli": "^1.1.7",
     "@cloudflare/workers-types": "^4.20240320.1",
+    "@scalar/api-reference": "^1.20.7",
     "@types/aws-lambda": "^8.10.136",
     "@types/bun": "^1.0.10",
     "@types/estree": "^1.0.5",
