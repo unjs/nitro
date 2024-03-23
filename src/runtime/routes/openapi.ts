@@ -17,26 +17,26 @@ export default eventHandler((event) => {
   const base = runtimeConfig?.app?.baseURL;
   const url = joinURL(getRequestURL(event).origin, base);
 
-  const defaultOpenAPI = {
+  const defaultMeta = {
     title: "Nitro Server Routes",
     version: null,
     description: null,
   };
 
-  const openAPI =
+  const meta =
     typeof runtimeConfig.openAPI === "object"
       ? {
-          ...defaultOpenAPI,
-          ...runtimeConfig.openAPI,
+          ...defaultMeta,
+          ...runtimeConfig.openAPI.meta,
         }
-      : defaultOpenAPI;
+      : defaultMeta;
 
   return <OpenAPI3>{
     openapi: "3.0.0",
     info: {
-      title: openAPI?.title,
-      version: openAPI?.version,
-      description: openAPI?.description,
+      title: meta?.title,
+      version: meta?.version,
+      description: meta?.description,
     },
     servers: [
       {

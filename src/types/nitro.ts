@@ -48,7 +48,7 @@ export interface NitroRuntimeConfig {
       [path: string]: NitroRouteConfig;
     };
   };
-  openAPI?: NitroOptions["experimental"]["openAPI"];
+  openAPI?: NitroOptions["openAPI"];
   [key: string]: any;
 }
 
@@ -279,16 +279,19 @@ export interface NitroOptions extends PresetOptions {
    * @see https://github.com/unjs/unwasm
    */
   wasm?: UnwasmPluginOptions;
+  openAPI?: {
+    meta?: {
+      title?: string;
+      description?: string;
+      version?: string;
+    };
+    ui?: {
+      scalar?: ReferenceConfiguration;
+    };
+  };
   experimental?: {
     legacyExternals?: boolean;
-    openAPI?:
-      | boolean
-      | {
-          title?: string;
-          description?: string;
-          version?: string;
-          scalar?: ReferenceConfiguration;
-        };
+    openAPI?: boolean;
     /**
      * See https://github.com/microsoft/TypeScript/pull/51669
      */

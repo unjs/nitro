@@ -19,7 +19,7 @@ export default eventHandler((event) => {
     typeof runtimeConfig.openAPI === "object"
       ? {
           ...defaultConfiguration,
-          ...runtimeConfig.openAPI?.scalar,
+          ...runtimeConfig.openAPI?.ui?.scalar,
         }
       : defaultConfiguration;
 
