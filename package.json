@@ -125,6 +125,7 @@
     "unenv": "^1.9.0",
     "unimport": "^3.7.1",
     "unstorage": "^1.10.2",
+    "untyped": "^1.4.2",
     "unwasm": "^0.3.8"
   },
   "devDependencies": {
