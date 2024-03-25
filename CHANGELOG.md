@@ -2,6 +2,73 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.9.5
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.9.4...v2.9.5)
+
+### 🚀 Enhancements
+
+- **openapi:** Add experimental `/_nitro/scalar` endpoint ([#2252](https://github.com/unjs/nitro/pull/2252))
+
+### 🩹 Fixes
+
+- **openapi:** Use dynamic host + port ([#2216](https://github.com/unjs/nitro/pull/2216))
+- **openapi:** Add `schema` to generated parameters ([#2235](https://github.com/unjs/nitro/pull/2235))
+- **openapi:** Avoid double slash for base ([fdf7e70a](https://github.com/unjs/nitro/commit/fdf7e70a))
+- **options:** Set `scheduledTasks` to an empty object by default ([#2285](https://github.com/unjs/nitro/pull/2285))
+- **prerender:** Call `nitroApp` close hook when done prerendering ([#2287](https://github.com/unjs/nitro/pull/2287))
+- **types:** Return `T` from `Serialize` when it extends `undefined` ([#2286](https://github.com/unjs/nitro/pull/2286))
+- **raw:** Exclude yaml from raw plugin ([#2275](https://github.com/unjs/nitro/pull/2275))
+- **externals:** Check explicit inline rules on resolved id ([#2288](https://github.com/unjs/nitro/pull/2288))
+- **raw:** Allow importing relative paths ([#2289](https://github.com/unjs/nitro/pull/2289))
+- **types:** Make c12 env types available for `NitroConfig` ([#2292](https://github.com/unjs/nitro/pull/2292))
+- **netlify-edge:** Write `_headers` and `_redirects` ([#2291](https://github.com/unjs/nitro/pull/2291))
+- **cloudflare-pages:** Write `_headers` and `_redirects` for non static builds ([#2290](https://github.com/unjs/nitro/pull/2290))
+- **netlify:** Allow writing `config.json` ([#2264](https://github.com/unjs/nitro/pull/2264))
+- Allow importing utils from `nitropack/runtime` ([#2314](https://github.com/unjs/nitro/pull/2314))
+
+### 💅 Refactors
+
+- **openapi:** Upgrade to openapi 3.1 ([#2297](https://github.com/unjs/nitro/pull/2297))
+
+### 📖 Documentation
+
+- **routing:** Add note about middleware execution order ([#2282](https://github.com/unjs/nitro/pull/2282))
+- **routing:** Fx link to h3 object syntax handler ([#2281](https://github.com/unjs/nitro/pull/2281))
+- Update tasks return value ([8a62e7db](https://github.com/unjs/nitro/commit/8a62e7db))
+- **cache:** Add a note for serverless environment ([dc83a2e2](https://github.com/unjs/nitro/commit/dc83a2e2))
+- Fix typo ([#2298](https://github.com/unjs/nitro/pull/2298))
+
+### 📦 Build
+
+- Use `.d.ts` for runtime generated types ([#2313](https://github.com/unjs/nitro/pull/2313))
+
+### 🏡 Chore
+
+- Lint ([f7330329](https://github.com/unjs/nitro/commit/f7330329))
+- Update docs ([00c308c1](https://github.com/unjs/nitro/commit/00c308c1))
+- Update deps and lockfile ([55fd222b](https://github.com/unjs/nitro/commit/55fd222b))
+- Remove unused imports ([#2293](https://github.com/unjs/nitro/pull/2293))
+- Update deps and lockfile ([40883766](https://github.com/unjs/nitro/commit/40883766))
+- Update radix3 and lockfile ([7429465f](https://github.com/unjs/nitro/commit/7429465f))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Matt Kane <matt.kane@netlify.com>
+- Hans Pagel 
+- Jamaluddin Rumi <16121031@student.mercubuana-yogya.ac.id>
+- Julien Huang <julien.huang@outlook.fr>
+- Bobbie Goede <bobbiegoede@gmail.com>
+- Damian Głowala ([@DamianGlowala](http://github.com/DamianGlowala))
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Neil Richter ([@noook](http://github.com/noook))
+- Samuel Burkhard <sxburk@gmail.com>
+- Shoshana Connack ([@moshetanzer](http://github.com/moshetanzer))
+- Yuurin ([@byyuurin](http://github.com/byyuurin))
+- Markthree ([@markthree](http://github.com/markthree))
+
 ## v2.9.4
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.9.3...v2.9.4)
