@@ -237,22 +237,24 @@ type UserAppConfig = Defu<{}, [${nitro.options.appConfigFiles
 
 declare module 'nitropack' {
   interface AppConfig extends UserAppConfig {}`,
-    generateTypes(
-      await resolveSchema(
-        Object.fromEntries(
-          Object.entries(nitro.options.runtimeConfig).filter(
-            ([key]) => !["app", "nitro"].includes(key)
-          )
-        ) as Record<string, JSValue>
-      ),
-      {
-        interfaceName: "NitroRuntimeConfig",
-        addExport: false,
-        addDefaults: false,
-        allowExtraKeys: false,
-        indentation: 2,
-      }
-    ),
+    nitro.options.typescript.generateRuntimeConfigTypes
+      ? generateTypes(
+          await resolveSchema(
+            Object.fromEntries(
+              Object.entries(nitro.options.runtimeConfig).filter(
+                ([key]) => !["app", "nitro"].includes(key)
+              )
+            ) as Record<string, JSValue>
+          ),
+          {
+            interfaceName: "NitroRuntimeConfig",
+            addExport: false,
+            addDefaults: false,
+            allowExtraKeys: false,
+            indentation: 2,
+          }
+        )
+      : "",
     `}`,
     // Makes this a module for augmentation purposes
     "export {}",
