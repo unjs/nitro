@@ -6,7 +6,7 @@ settings:
 
 overrides:
   nitropack: link:.
-  undici: ^6.9.0
+  undici: ^6.10.1
 
 importers:
 
@@ -284,7 +284,7 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2
       miniflare:
-        specifier: ^3.20240314.0
+        specifier: ^3.20240320.0
         version: 3.20240320.0
       prettier:
         specifier: ^3.2.5
@@ -296,7 +296,7 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(typescript@5.4.3)
       undici:
-        specifier: ^6.9.0
+        specifier: ^6.10.1
         version: 6.10.1
       vitest:
         specifier: ^1.4.0
@@ -4811,6 +4811,7 @@ packages:
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
+    requiresBuild: true
 
   /eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
