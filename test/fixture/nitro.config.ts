@@ -107,7 +107,7 @@ export default defineNitroConfig({
     pages: {
       routes: {
         include: ["/*"],
-        exclude: ["/blog/static/*"],
+        exclude: ["/blog/static/*", "/cf-pages-exclude/*"],
       },
     },
   },
