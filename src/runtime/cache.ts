@@ -191,6 +191,7 @@ export interface ResponseCacheEntry<T = any> {
   body: T;
   code: number;
   headers: Record<string, string | number | string[]>;
+  _base64Encoded?: true;
 }
 
 export interface CachedEventHandlerOptions<T = any>
@@ -244,6 +245,16 @@ export function defineCachedEventHandler<
 
   const _opts: CacheOptions<ResponseCacheEntry<Response>> = {
     ...opts,
+    transform(entry) {
+      // TODO use unstorage raw API https://github.com/unjs/unstorage/issues/142
+      if (entry.value._base64Encoded) {
+        entry.value.body = Buffer.from(
+          entry.value.body as any as string,
+          "base64"
+        ) as Response;
+        delete entry.value._base64Encoded;
+      }
+    },
     getKey: async (event: H3Event) => {
       // Custom user-defined key
       const customKey = await opts.getKey?.(event);
@@ -405,7 +416,13 @@ export function defineCachedEventHandler<
         headers,
         body,
       };
-
+      // TODO use unstorage raw API https://github.com/unjs/unstorage/issues/142
+      if (cacheEntry.body instanceof Buffer) {
+        cacheEntry.body = Buffer.from(body as ArrayBuffer).toString(
+          "base64"
+        ) as Response;
+        cacheEntry._base64Encoded = true;
+      }
       return cacheEntry;
     },
     _opts
