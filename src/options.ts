@@ -122,6 +122,7 @@ const NitroDefaults: NitroConfig = {
   typescript: {
     strict: false,
     generateTsConfig: true,
+    generateRuntimeConfigTypes: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
     tsConfig: {},
