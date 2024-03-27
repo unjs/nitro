@@ -3,13 +3,13 @@ import {
   createApp,
   createRouter,
   eventHandler,
+  fetchWithEvent,
+  H3Error,
+  H3Event,
+  isEvent,
   lazyEventHandler,
   Router,
   toNodeListener,
-  fetchWithEvent,
-  H3Error,
-  isEvent,
-  H3Event,
 } from "h3";
 import { createFetch, Headers } from "ofetch";
 import destr from "destr";
@@ -18,7 +18,7 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks, Hookable } from "hookable";
-import type { NitroRuntimeHooks, CaptureError } from "./types";
+import type { CaptureError, NitroRuntimeHooks } from "./types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";
@@ -182,7 +182,7 @@ function createNitroApp(): NitroApp {
     };
   }
 
-  const app: NitroApp = {
+  return {
     hooks,
     h3App,
     router,
@@ -190,19 +190,20 @@ function createNitroApp(): NitroApp {
     localFetch,
     captureError,
   };
+}
 
+function runPlugins(app: NitroApp) {
   for (const plugin of plugins) {
     try {
       plugin(app);
     } catch (err) {
-      captureError(err, { tags: ["plugin"] });
+      app.captureError(err, { tags: ["plugin"] });
       throw err;
     }
   }
-
-  return app;
 }
 
 export const nitroApp: NitroApp = createNitroApp();
-
 export const useNitroApp = () => nitroApp;
+
+runPlugins(nitroApp);
