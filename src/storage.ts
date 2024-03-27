@@ -1,9 +1,11 @@
 import { createStorage as _createStorage, builtinDrivers } from "unstorage";
 import type { Nitro } from "./types";
 
+export type Mounts = Record<any, number>;
+
 export async function createStorage(nitro: Nitro) {
   const storage = _createStorage();
-
+  const mountPoints: Mounts = {};
   const mounts = {
     ...nitro.options.storage,
     ...nitro.options.devStorage,
@@ -15,6 +17,7 @@ export async function createStorage(nitro: Nitro) {
         builtinDrivers[opts.driver] || opts.driver
       ).then((r) => r.default || r);
       storage.mount(path, driver(opts));
+      mountPoints[path] = 1;
     } else {
       nitro.logger.warn(`No \`driver\` set for storage mount point "${path}".`);
     }
