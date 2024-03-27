@@ -301,16 +301,28 @@ declare module 'nitropack' {
             relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports")),
           ],
           "~/*": [
-            relativeWithDot(tsconfigDir, join(nitro.options.alias["~"] || nitro.options.srcDir, '*')),
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["~"] || nitro.options.srcDir, "*")
+            ),
           ],
           "@/*": [
-            relativeWithDot(tsconfigDir, join(nitro.options.alias["@"] || nitro.options.srcDir, '*')),
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["@"] || nitro.options.srcDir, "*")
+            ),
           ],
           "~~/*": [
-            relativeWithDot(tsconfigDir, join(nitro.options.alias["~~"] || nitro.options.rootDir, '*')),
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["~~"] || nitro.options.rootDir, "*")
+            ),
           ],
           "@@/*": [
-            relativeWithDot(tsconfigDir, join(nitro.options.alias["@@"] || nitro.options.rootDir, '*')),
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["@@"] || nitro.options.rootDir, "*")
+            ),
           ],
           ...(nitro.options.typescript.internalPaths
             ? {
