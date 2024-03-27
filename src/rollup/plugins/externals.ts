@@ -66,6 +66,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
   // Utility to check explicit inlines
   const isExplicitInline = (id: string, importer: string) => {
+    if (id.startsWith("\0")) {
+      return true;
+    }
     const inlineMatch = inlineMatchers.find((m) => m(id, importer));
     const externalMatch = externalMatchers.find((m) => m(id, importer));
     if (
