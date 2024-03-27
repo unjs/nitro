@@ -8,14 +8,19 @@ type FileInfo = { path: string; fullPath: string };
 
 const httpMethodRegex =
   /\.(connect|delete|get|head|options|patch|post|put|trace)$/;
+const devSuffixRegex = /\.dev$/;
 
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
 
-  const handlers = await Promise.all([
+  let handlers = await Promise.all([
     scanServerRoutes(nitro, "api", "/api"),
     scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
+
+  if (!nitro.options.dev) {
+    handlers = handlers.filter((h) => !h.devOnly);
+  }
 
   nitro.scannedHandlers = [
     ...middleware,
@@ -55,6 +60,12 @@ export async function scanServerRoutes(
       .replace(/\[(\w+)]/g, ":$1");
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)));
 
+    let devOnly = false;
+    if (devSuffixRegex.test(route)) {
+      devOnly = true;
+      route = route.slice(0, Math.max(0, route.length - 4));
+    }
+
     let method;
     const methodMatch = route.match(httpMethodRegex);
     if (methodMatch) {
@@ -70,6 +81,7 @@ export async function scanServerRoutes(
       middleware: false,
       route,
       method,
+      devOnly,
     };
   });
 }

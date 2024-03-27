@@ -21,6 +21,11 @@ describe.skipIf(isCI)("nitro:preset:nitro-dev", async () => {
         const { status } = await callHandler({ url: "/proxy/example" });
         expect(status).toBe(200);
       });
+
+      it("load dev only route", async () => {
+        const { status } = await callHandler({ url: "/dev-route-only" });
+        expect(status).toBe(200);
+      });
     }
   );
 });
