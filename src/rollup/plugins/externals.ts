@@ -41,6 +41,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
   const _resolveCache = new Map();
   const _resolve = async (id: string): Promise<string> => {
+    if (id.startsWith("\0")) {
+      return id;
+    }
     let resolved = _resolveCache.get(id);
     if (resolved) {
       return resolved;
@@ -63,6 +66,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
   // Utility to check explicit inlines
   const isExplicitInline = (id: string, importer: string) => {
+    if (id.startsWith("\0")) {
+      return true;
+    }
     const inlineMatch = inlineMatchers.find((m) => m(id, importer));
     const externalMatch = externalMatchers.find((m) => m(id, importer));
     if (
