@@ -14,6 +14,7 @@ import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { ConnectorName } from "db0";
+import type { ReferenceConfiguration } from "@scalar/api-reference";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -46,6 +47,7 @@ export interface NitroRuntimeConfig {
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
+    openAPI?: NitroOptions["openAPI"];
   };
   [key: string]: any;
 }
@@ -271,12 +273,23 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
+
   /**
    * @experimental Requires `experimental.wasm` to work
    *
    * @see https://github.com/unjs/unwasm
    */
   wasm?: UnwasmPluginOptions;
+  openAPI?: {
+    meta?: {
+      title?: string;
+      description?: string;
+      version?: string;
+    };
+    ui?: {
+      scalar?: ReferenceConfiguration;
+    };
+  };
   experimental?: {
     legacyExternals?: boolean;
     openAPI?: boolean;

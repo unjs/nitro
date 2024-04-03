@@ -111,4 +111,16 @@ export default defineNitroConfig({
       },
     },
   },
+  openAPI: {
+    meta: {
+      title: "Nitro Test Fixture",
+      description: "Nitro Test Fixture API",
+      version: "2.0",
+    },
+    ui: {
+      scalar: {
+        theme: "purple",
+      },
+    },
+  },
 });
