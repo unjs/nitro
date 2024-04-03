@@ -419,6 +419,7 @@ export const plugins = [
             "~~",
             "@@/",
             "virtual:",
+            "nitropack/runtime",
             ...(nitro.options.experimental.wasm
               ? [(id) => id.endsWith(".wasm")]
               : []),

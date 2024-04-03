@@ -11,6 +11,11 @@ describe("nitro:preset:netlify", async () => {
       output: {
         publicDir: resolve(getPresetTmpDir("netlify"), "dist"),
       },
+      netlify: {
+        images: {
+          remote_images: ["https://example.com/.*"],
+        },
+      },
     },
   });
   testNitro(
@@ -89,6 +94,20 @@ describe("nitro:preset:netlify", async () => {
         "
       `);
         /* eslint-enable no-tabs */
+      });
+      it("should write config.json", async () => {
+        const config = await fsp
+          .readFile(resolve(ctx.outDir, "../deploy/v1/config.json"), "utf8")
+          .then((r) => JSON.parse(r));
+        expect(config).toMatchInlineSnapshot(`
+          {
+            "images": {
+              "remote_images": [
+                "https://example.com/.*",
+              ],
+            },
+          }
+        `);
       });
     }
   );

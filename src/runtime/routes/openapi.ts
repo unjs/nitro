@@ -23,7 +23,7 @@ export default eventHandler((event) => {
   };
 
   return <OpenAPI3>{
-    openapi: "3.0.0",
+    openapi: "3.1.0",
     info: {
       title: meta?.title,
       version: meta?.version,
@@ -36,7 +36,6 @@ export default eventHandler((event) => {
         variables: {},
       },
     ],
-    schemes: ["http"],
     paths: getPaths(),
   };
 });

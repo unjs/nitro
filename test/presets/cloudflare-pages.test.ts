@@ -39,6 +39,7 @@ describe.skipIf(isWindows)("nitro:preset:cloudflare-pages", async () => {
       {
         "exclude": [
           "/blog/static/*",
+          "/cf-pages-exclude/*",
           "/build/*",
           "/_unignored.txt",
           "/favicon.ico",
