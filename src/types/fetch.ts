@@ -16,7 +16,7 @@ export type MiddlewareOf<
   Route extends string,
   Method extends RouterMethod | "default",
 > = Method extends keyof InternalApi[MatchedRoutes<Route>]
-  ? Exclude<InternalApi[MatchedRoutes<Route>][Method], Error | void>
+  ? InternalApi[MatchedRoutes<Route>][Method]
   : never;
 
 export type TypedInternalResponse<

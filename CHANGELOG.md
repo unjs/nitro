@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.9.6
+
+[compare changes](https://github.com/unjs/nitro/compare/v2.9.5...v2.9.6)
+
+### 🩹 Fixes
+
+- Generate root/src directory aliases ([#2318](https://github.com/unjs/nitro/pull/2318))
+- **externals:** Skip resolving virtual ids start with `\0` ([#2321](https://github.com/unjs/nitro/pull/2321))
+- **types:** Account for `undefined` value for `$fetch` return type ([#2327](https://github.com/unjs/nitro/pull/2327))
+- **cloudflare-pages:** Use predefined wildcards in `routes.exclude` ([#2319](https://github.com/unjs/nitro/pull/2319))
+
+### 📖 Documentation
+
+- Remove outdated nightly warning ([#2317](https://github.com/unjs/nitro/pull/2317))
+
+### 🏡 Chore
+
+- Update docs lockfile ([825d94fa](https://github.com/unjs/nitro/commit/825d94fa))
+- **docs:** Update lock ([c343a2d0](https://github.com/unjs/nitro/commit/c343a2d0))
+- Update lockfile ([fcc0f9a3](https://github.com/unjs/nitro/commit/fcc0f9a3))
+
+### ❤️ Contributors
+
+- Peter Graugaard <git@graugaard.me>
+- Damian Głowala ([@DamianGlowala](http://github.com/DamianGlowala))
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+- Stefan
+
 ## v2.9.5
 
 [compare changes](https://github.com/unjs/nitro/compare/v2.9.4...v2.9.5)
