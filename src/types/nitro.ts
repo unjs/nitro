@@ -47,8 +47,8 @@ export interface NitroRuntimeConfig {
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
+    openAPI?: NitroOptions["openAPI"];
   };
-  openAPI?: NitroOptions["openAPI"];
   [key: string]: any;
 }
 

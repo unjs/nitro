@@ -12,9 +12,9 @@ import { useRuntimeConfig } from "#internal/nitro";
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {
-  const runtimeConfig = useRuntimeConfig();
+  const runtimeConfig = useRuntimeConfig(event);
 
-  const base = runtimeConfig?.app?.baseURL;
+  const base = runtimeConfig.app?.baseURL;
   const url = joinURL(getRequestURL(event).origin, base);
 
   const defaultMeta = {
@@ -27,7 +27,7 @@ export default eventHandler((event) => {
     typeof runtimeConfig.openAPI === "object"
       ? {
           ...defaultMeta,
-          ...runtimeConfig.openAPI.meta,
+          ...runtimeConfig.nitro?.openAPI.meta,
         }
       : defaultMeta;
 

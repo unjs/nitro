@@ -4,24 +4,16 @@ import { useRuntimeConfig } from "../config";
 
 // Served as /_nitro/scalar
 export default eventHandler((event) => {
-  const runtimeConfig = useRuntimeConfig();
+  const runtimeConfig = useRuntimeConfig(event);
 
-  // Default configuration for Scalar
-  // Read more: https://github.com/scalar/scalar
-  const defaultConfiguration: ReferenceConfiguration = {
+  // https://github.com/scalar/scalar
+  const configuration: ReferenceConfiguration = {
+    ...runtimeConfig.nitro.openAPI?.ui?.scalar,
     spec: {
       url: "/_nitro/openapi.json",
+      ...runtimeConfig.nitro.openAPI?.ui?.scalar?.spec,
     },
   };
-
-  // Add the custom configuration from the runtime config
-  const configuration =
-    typeof runtimeConfig.openAPI === "object"
-      ? {
-          ...defaultConfiguration,
-          ...runtimeConfig.openAPI?.ui?.scalar,
-        }
-      : defaultConfiguration;
 
   // The default page title
   const title = "Nitro Scalar API Reference";
