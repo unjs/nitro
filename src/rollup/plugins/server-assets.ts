@@ -46,6 +46,7 @@ export function serverAssets(nitro: Nitro): Plugin {
           const files = await globby("**/*.*", {
             cwd: asset.dir,
             absolute: false,
+            ignore: asset.ignore,
           });
           for (const _id of files) {
             const fsPath = resolve(asset.dir, _id);
@@ -78,7 +79,7 @@ const serverAssets = ${JSON.stringify(nitro.options.serverAssets)}
 export const assets = createStorage()
 
 for (const asset of serverAssets) {
-  assets.mount(asset.baseName, fsDriver({ base: asset.dir }))
+  assets.mount(asset.baseName, fsDriver({ base: asset.dir, ignore: (asset?.ignore || []) }))
 }`;
 }
 
