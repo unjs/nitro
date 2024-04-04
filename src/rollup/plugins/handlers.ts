@@ -3,11 +3,25 @@ import type { Nitro, NitroRouteRules, NitroEventHandler } from "../../types";
 import { virtual } from "./virtual";
 
 export function handlers(nitro: Nitro) {
-  const getHandlers = () =>
-    [
+  const getHandlers = () => {
+    const handlers: NitroEventHandler[] = [
       ...nitro.scannedHandlers,
       ...nitro.options.handlers,
-    ] as NitroEventHandler[];
+    ];
+
+    const envConditions = new Set(
+      [
+        nitro.options.dev ? "dev" : "prod",
+        nitro.options.preset,
+        nitro.options.preset === "nitro-prerender" ? "prerender" : undefined,
+      ].filter(Boolean) as string[]
+    );
+
+    return handlers.filter((h) => {
+      const envs = (Array.isArray(h.env) ? h.env : [h.env]).filter(Boolean);
+      return envs.length === 0 || envs.some((env) => envConditions.has(env));
+    });
+  };
 
   return virtual(
     {

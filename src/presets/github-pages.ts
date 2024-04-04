@@ -5,10 +5,11 @@ import { defineNitroPreset } from "../preset";
 export const githubPages = defineNitroPreset({
   extends: "static",
   commands: {
-    deploy: "npx gh-pages -d ./public",
+    deploy: "npx gh-pages --dotfiles -d ./public",
   },
   prerender: {
     routes: [
+      "/",
       // https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-custom-404-page-for-your-github-pages-site
       "/404.html",
     ],

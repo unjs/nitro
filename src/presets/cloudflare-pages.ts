@@ -43,6 +43,8 @@ export const cloudflarePages = defineNitroPreset({
   hooks: {
     async compiled(nitro: Nitro) {
       await writeCFRoutes(nitro);
+      await writeCFPagesHeaders(nitro);
+      await writeCFPagesRedirects(nitro);
     },
   },
 });
@@ -118,8 +120,8 @@ async function writeCFRoutes(nitro: Nitro) {
       "_worker.js",
       "_worker.js.map",
       "nitro.json",
-      ...explicitPublicAssets.map((dir) =>
-        withoutLeadingSlash(joinURL(dir.baseURL, "**"))
+      ...routes.exclude.map((path) =>
+        withoutLeadingSlash(path.replace(/\/\*$/, "/**"))
       ),
     ],
   });

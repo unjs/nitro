@@ -1,5 +1,8 @@
 import type { EventHandler, H3Error, H3Event } from "h3";
 import type { ServerRouteMeta } from "#internal/nitro/virtual/server-handlers";
+import { NitroOptions } from "./nitro";
+
+type MaybeArray<T> = T | T[];
 
 export interface NitroEventHandler {
   /**
@@ -35,6 +38,14 @@ export interface NitroEventHandler {
    * Route meta
    */
   meta?: ServerRouteMeta;
+
+  /*
+   * Environments to include this handler
+   */
+  env?: MaybeArray<
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    "dev" | "prod" | "prerender" | NitroOptions["preset"] | (string & {})
+  >;
 }
 
 export interface NitroDevEventHandler {

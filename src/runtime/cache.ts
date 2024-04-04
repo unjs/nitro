@@ -6,11 +6,13 @@ import {
   EventHandler,
   isEvent,
   splitCookiesString,
+  fetchWithEvent,
 } from "h3";
 import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "./storage";
 import { useNitroApp } from "./app";
+import type { $Fetch, NitroFetchRequest } from "nitropack";
 
 export interface CacheEntry<T = any> {
   value?: T;
@@ -24,8 +26,8 @@ export interface CacheOptions<T = any> {
   getKey?: (...args: any[]) => string | Promise<string>;
   transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
   validate?: (entry: CacheEntry<T>) => boolean;
-  shouldInvalidateCache?: (...args: any[]) => boolean;
-  shouldBypassCache?: (...args: any[]) => boolean;
+  shouldInvalidateCache?: (...args: any[]) => boolean | Promise<boolean>;
+  shouldBypassCache?: (...args: any[]) => boolean | Promise<boolean>;
   group?: string;
   integrity?: any;
   /**
@@ -69,8 +71,17 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
       .filter(Boolean)
       .join(":")
       .replace(/:\/$/, ":index");
-    const entry: CacheEntry<T> =
-      ((await useStorage().getItem(cacheKey)) as any) || {};
+
+    let entry: CacheEntry<T> =
+      ((await useStorage().getItem(cacheKey)) as unknown) || {};
+
+    // https://github.com/unjs/nitro/issues/2160
+    if (typeof entry !== "object") {
+      entry = {};
+      const error = new Error("Malformed data read from cache.");
+      console.error("[nitro] [cache]", error);
+      useNitroApp().captureError(error, { event, tags: ["cache"] });
+    }
 
     const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000;
     if (ttl) {
@@ -150,12 +161,12 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
   }
 
   return async (...args) => {
-    const shouldBypassCache = opts.shouldBypassCache?.(...args);
+    const shouldBypassCache = await opts.shouldBypassCache?.(...args);
     if (shouldBypassCache) {
       return fn(...args);
     }
     const key = await (opts.getKey || getKey)(...args);
-    const shouldInvalidateCache = opts.shouldInvalidateCache?.(...args);
+    const shouldInvalidateCache = await opts.shouldInvalidateCache?.(...args);
     const entry = await get(
       key,
       () => fn(...args),
@@ -184,11 +195,11 @@ export interface ResponseCacheEntry<T = any> {
 
 export interface CachedEventHandlerOptions<T = any>
   extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
-  shouldInvalidateCache?: (event: H3Event) => boolean;
-  shouldBypassCache?: (event: H3Event) => boolean;
+  shouldInvalidateCache?: (event: H3Event) => boolean | Promise<boolean>;
+  shouldBypassCache?: (event: H3Event) => boolean | Promise<boolean>;
   getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
-  varies?: string[];
+  varies?: string[] | readonly string[];
 }
 
 function escapeKey(key: string | string[]) {
@@ -349,6 +360,15 @@ export function defineCachedEventHandler<
 
       // Call handler
       const event = createEvent(reqProxy, resProxy);
+      // Assign bound fetch to context
+      event.fetch = (url, fetchOptions) =>
+        fetchWithEvent(event, url, fetchOptions, {
+          fetch: useNitroApp().localFetch,
+        });
+      event.$fetch = ((url, fetchOptions) =>
+        fetchWithEvent(event, url, fetchOptions as RequestInit, {
+          fetch: globalThis.$fetch,
+        })) as $Fetch<unknown, NitroFetchRequest>;
       event.context = incomingEvent.context;
       const body = (await handler(event)) || _resSendBody;
 

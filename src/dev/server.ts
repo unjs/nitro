@@ -38,6 +38,7 @@ export interface NitroDevServer {
   app: App;
   close: () => Promise<void>;
   watcher?: FSWatcher;
+  upgrade: (req, socket, head) => void;
 }
 
 function initWorker(filename: string): Promise<NitroWorker> | null {
@@ -196,7 +197,11 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   proxy.proxy.on("proxyReq", (proxyReq, req) => {
     // TODO: Use httpxy to set these headers
     if (!proxyReq.hasHeader("x-forwarded-for")) {
-      proxyReq.appendHeader("x-forwarded-for", req.socket.remoteAddress);
+      const address = req.socket.remoteAddress;
+      // #2197
+      if (address) {
+        proxyReq.appendHeader("x-forwarded-for", address);
+      }
     }
     if (!proxyReq.hasHeader("x-forwarded-port")) {
       const localPort = req?.socket?.localPort;
@@ -242,10 +247,26 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     })
   );
 
+  // Upgrade handler
+  const upgrade = (req, socket, head) => {
+    return proxy.proxy.ws(
+      req,
+      socket,
+      {
+        target: getWorkerAddress(),
+        xfwd: true,
+      },
+      head
+    );
+  };
+
   // Listen
   let listeners: Listener[] = [];
   const _listen: NitroDevServer["listen"] = async (port, opts?) => {
     const listener = await listen(toNodeListener(app), { port, ...opts });
+    listener.server.on("upgrade", (req, sock, head) => {
+      upgrade(req, sock, head);
+    });
     listeners.push(listener);
     return listener;
   };
@@ -274,6 +295,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     app,
     close,
     watcher,
+    upgrade,
   };
 }
 

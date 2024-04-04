@@ -2,7 +2,6 @@ import { builtinModules } from "node:module";
 import { isAbsolute, resolve } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
-import inject from "@rollup/plugin-inject";
 import { defineNitroPreset } from "../preset";
 import { writeFile } from "../utils";
 import { ImportMetaRe } from "../rollup/plugins/import-meta";
@@ -113,7 +112,7 @@ export const denoServer = defineNitroPreset({
       const denoJSON = {
         tasks: {
           start:
-            "deno run --unstable --allow-net --allow-read --allow-env ./server/index.mjs",
+            "deno run --unstable --allow-net --allow-read --allow-write --allow-env ./server/index.mjs",
         },
       };
       await writeFile(

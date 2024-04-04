@@ -13,8 +13,12 @@ import type { ServerRouteMeta } from "#internal/nitro/virtual/server-handlers";
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
 type FileInfo = { path: string; fullPath: string };
 
-const httpMethodRegex =
-  /\.(connect|delete|get|head|options|patch|post|put|trace)$/;
+const suffixRegex =
+  /\.(connect|delete|get|head|options|patch|post|put|trace)(\.(dev|prod|prerender))?$/;
+
+// prettier-ignore
+type MatchedMethdSuffix = "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
+type MatchedEnvSuffix = "dev" | "prod" | "prerender";
 
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
@@ -29,7 +33,8 @@ export async function scanHandlers(nitro: Nitro) {
     ...handlers.filter((h, index, array) => {
       return (
         array.findIndex(
-          (h2) => h.route === h2.route && h.method === h2.method
+          (h2) =>
+            h.route === h2.route && h.method === h2.method && h.env === h2.env
         ) === index
       );
     }),
@@ -65,11 +70,13 @@ export async function scanServerRoutes(
 
       const meta = await scanRouteMeta(file.fullPath);
 
-      let method;
-      const methodMatch = route.match(httpMethodRegex);
-      if (methodMatch) {
-        route = route.slice(0, Math.max(0, methodMatch.index));
-        method = methodMatch[1];
+      const suffixMatch = route.match(suffixRegex);
+      let method: MatchedMethdSuffix | undefined;
+      let env: MatchedEnvSuffix | undefined;
+      if (suffixMatch) {
+        route = route.slice(0, Math.max(0, suffixMatch.index));
+        method = suffixMatch[1] as MatchedMethdSuffix;
+        env = suffixMatch[3] as MatchedEnvSuffix;
       }
 
       route = route.replace(/\/index$/, "") || "/";
@@ -80,6 +87,7 @@ export async function scanServerRoutes(
         middleware: false,
         route,
         method,
+        env,
         meta,
       };
     })

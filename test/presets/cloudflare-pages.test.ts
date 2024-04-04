@@ -4,9 +4,10 @@ import { Miniflare } from "miniflare";
 import { describe, it, expect } from "vitest";
 import { Response as _Response } from "undici";
 
+import { isWindows } from "std-env";
 import { setupTest, testNitro } from "../tests";
 
-describe("nitro:preset:cloudflare-pages", async () => {
+describe.skipIf(isWindows)("nitro:preset:cloudflare-pages", async () => {
   const ctx = await setupTest("cloudflare-pages");
 
   testNitro(ctx, () => {
@@ -38,7 +39,9 @@ describe("nitro:preset:cloudflare-pages", async () => {
       {
         "exclude": [
           "/blog/static/*",
+          "/cf-pages-exclude/*",
           "/build/*",
+          "/_unignored.txt",
           "/favicon.ico",
           "/json-string",
           "/api/hello",

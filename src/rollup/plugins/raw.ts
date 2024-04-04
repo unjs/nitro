@@ -1,5 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { extname } from "pathe";
+import mime from "mime";
 import type { Plugin } from "rollup";
 
 export interface RawOptions {
@@ -12,7 +13,6 @@ export function raw(opts: RawOptions = {}): Plugin {
   const extensions = new Set([
     ".md",
     ".mdx",
-    ".yml",
     ".txt",
     ".css",
     ".htm",
@@ -20,12 +20,9 @@ export function raw(opts: RawOptions = {}): Plugin {
     ...(opts.extensions || []),
   ]);
 
-  // TODO: use ext=>mime
-  const isBinary = (id) => !extensions.has(extname(id));
-
   return {
     name: "raw",
-    resolveId(id) {
+    async resolveId(id, importer) {
       if (id === HELPER_ID) {
         return id;
       }
@@ -41,10 +38,18 @@ export function raw(opts: RawOptions = {}): Plugin {
         isRawId = true;
       }
 
-      // TODO: Support reasolving. Blocker is CommonJS custom resolver!
-      if (isRawId) {
-        return { id: "\0raw:" + id };
+      if (!isRawId) {
+        return;
       }
+
+      const resolvedId = (await this.resolve(id, importer, { skipSelf: true }))
+        ?.id;
+
+      if (!resolvedId || resolvedId.startsWith("\0")) {
+        return resolvedId;
+      }
+
+      return { id: "\0raw:" + resolvedId };
     },
     load(id) {
       if (id === HELPER_ID) {
@@ -73,6 +78,17 @@ export function raw(opts: RawOptions = {}): Plugin {
       }
     },
   };
+}
+
+function isBinary(id: string) {
+  const idMime = mime.getType(id) || "";
+  if (idMime.startsWith("text/")) {
+    return false;
+  }
+  if (/application\/(json|xml|yaml)/.test(idMime)) {
+    return false;
+  }
+  return true;
 }
 
 function getHelpers() {

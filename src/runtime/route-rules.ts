@@ -29,11 +29,19 @@ export function createRouteRulesHandler(ctx: {
     }
     // Apply redirect options
     if (routeRules.redirect) {
-      return sendRedirect(
-        event,
-        routeRules.redirect.to,
-        routeRules.redirect.statusCode
-      );
+      let target = routeRules.redirect.to;
+      if (target.endsWith("/**")) {
+        let targetPath = event.path;
+        const strpBase = (routeRules.redirect as any)._redirectStripBase;
+        if (strpBase) {
+          targetPath = withoutBase(targetPath, strpBase);
+        }
+        target = joinURL(target.slice(0, -3), targetPath);
+      } else if (event.path.includes("?")) {
+        const query = getQuery(event.path);
+        target = withQuery(target, query);
+      }
+      return sendRedirect(event, target, routeRules.redirect.statusCode);
     }
     // Apply proxy options
     if (routeRules.proxy) {
@@ -67,7 +75,16 @@ export function getRouteRules(event: H3Event): NitroRouteRules {
   return event.context._nitro.routeRules;
 }
 
-export function getRouteRulesForPath(path: string): NitroRouteRules {
+type DeepReadonly<T> =
+  T extends Record<string, any>
+    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+    : T extends Array<infer U>
+      ? ReadonlyArray<DeepReadonly<U>>
+      : T;
+
+export function getRouteRulesForPath(
+  path: string
+): DeepReadonly<NitroRouteRules> {
   return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
 }
 

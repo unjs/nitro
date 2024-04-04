@@ -18,8 +18,11 @@ export function resolveNitroModule(
       // @ts-ignore
       globalThis.defineNitroModule || defineNitroModule;
 
-    const _jiti = jiti(nitroOptions.rootDir, { interopDefault: true });
-    const _modPath = _jiti.resolve(resolvePath(mod, nitroOptions));
+    const _jiti = jiti(nitroOptions.rootDir, {
+      interopDefault: true,
+      alias: nitroOptions.alias,
+    });
+    const _modPath = _jiti.resolve(mod);
     _url = _modPath;
     mod = _jiti(_modPath) as NitroModule;
   }

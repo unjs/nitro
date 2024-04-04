@@ -248,6 +248,12 @@ export function testNitro(
     const obj = await callHandler({ url: "/rules/redirect/obj" });
     expect(obj.status).toBe(308);
     expect(obj.headers.location).toBe("https://nitro.unjs.io/");
+
+    const wildcard = await callHandler({
+      url: "/rules/redirect/wildcard/nuxt",
+    });
+    expect(wildcard.status).toBe(307);
+    expect(wildcard.headers.location).toBe("https://nitro.unjs.io/nuxt");
   });
 
   it("binary response", async () => {
@@ -326,13 +332,20 @@ export function testNitro(
     const { data: html, status: htmlStatus } = await callHandler({
       url: "/file?filename=index.html",
     });
+    expect(htmlStatus).toBe(200);
+    expect(html).toContain("<h1>nitro is amazing!</h1>");
+
     const { data: txtFile, status: txtStatus } = await callHandler({
       url: "/file?filename=test.txt",
     });
-    expect(htmlStatus).toBe(200);
-    expect(html).toContain("<h1>nitro is amazing!</h1>");
     expect(txtStatus).toBe(200);
     expect(txtFile).toContain("this is an asset from a text file from nitro");
+
+    const { data: mdFile, status: mdStatus } = await callHandler({
+      url: "/assets/md",
+    });
+    expect(mdStatus).toBe(200);
+    expect(mdFile).toContain("# Hello world");
   });
 
   if (ctx.nitro!.options.serveStatic) {
@@ -533,6 +546,15 @@ export function testNitro(
         expect((await callHandler({ url: "/favicon.ico" })).status).toBe(200);
       }
     );
+
+    it.skipIf(ctx.isWorker || ctx.isDev)(
+      "public files can be un-ignored with patterns",
+      async () => {
+        expect((await callHandler({ url: "/_unignored.txt" })).status).toBe(
+          200
+        );
+      }
+    );
   });
 
   describe("headers", () => {
@@ -656,6 +678,34 @@ export function testNitro(
       expect((await callHandler({ url: "/wasm/static-import" })).data).toBe(
         "2+3=5"
       );
+    });
+  });
+
+  describe.skipIf(
+    !ctx.nitro.options.node ||
+      ctx.isLambda ||
+      ctx.isWorker ||
+      ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
+  )("Database", () => {
+    it("works", async () => {
+      const { data } = await callHandler({ url: "/api/db" });
+      expect(data).toMatchObject({
+        rows: [
+          {
+            id: "1001",
+            firstName: "John",
+            lastName: "Doe",
+            email: "",
+          },
+        ],
+      });
+    });
+  });
+
+  describe("Envionment specific routes", () => {
+    it("filters based on dev|prod", async () => {
+      const { data } = await callHandler({ url: "/env" });
+      expect(data).toBe(ctx.isDev ? "dev env" : "prod env");
     });
   });
 }

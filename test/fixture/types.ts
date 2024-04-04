@@ -1,9 +1,9 @@
 import { expectTypeOf } from "expect-type";
 import { describe, it } from "vitest";
 import { EventHandler, EventHandlerRequest, defineEventHandler } from "h3";
-import { $Fetch } from "../..";
+import type { $Fetch } from "../..";
 import { defineNitroConfig } from "../../src/config";
-import { Serialize, Simplify } from "../../src/types";
+import type { Serialize, Simplify } from "../../src/types";
 
 interface TestResponse {
   message: string;
@@ -311,7 +311,14 @@ describe("defineCachedEventHandler", () => {
 
 describe("type helpers", () => {
   it("Serialize", () => {
+    expectTypeOf<Serialize<undefined>>().toEqualTypeOf<undefined>();
+    expectTypeOf<Serialize<{ test?: string }>>().toEqualTypeOf<{
+      test?: string;
+    }>();
     expectTypeOf<Serialize<{ test: Date }>>().toEqualTypeOf<{ test: string }>();
+    expectTypeOf<Serialize<{ test?: Date }>>().toEqualTypeOf<{
+      test?: string;
+    }>();
     expectTypeOf<Serialize<{ test: Map<string, string> }>>().toEqualTypeOf<{
       test: Record<string, never>;
     }>();

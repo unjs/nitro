@@ -10,9 +10,11 @@ import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions, RouterMethod } from "h3";
-import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
+import type { ConnectorName } from "db0";
+import type { ReferenceConfiguration } from "@scalar/api-reference";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -45,6 +47,7 @@ export interface NitroRuntimeConfig {
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
+    openAPI?: NitroOptions["openAPI"];
   };
   [key: string]: any;
 }
@@ -114,6 +117,21 @@ export interface StorageMounts {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type DatabaseConnectionName = "default" | (string & {});
+
+export type DatabaseConnectionConfig = {
+  connector: ConnectorName;
+  options?: {
+    [key: string]: any;
+  };
+};
+
+export type DatabaseConnectionConfigs = Record<
+  DatabaseConnectionName,
+  DatabaseConnectionConfig
+>;
+
 type DeepPartial<T> =
   T extends Record<string, any>
     ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
@@ -122,7 +140,8 @@ type DeepPartial<T> =
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
 export interface NitroConfig
-  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">> {
+  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">>,
+    C12InputConfig<NitroConfig> {
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
   rollupConfig?: Partial<RollupConfig>;
@@ -142,6 +161,7 @@ export interface PublicAssetDir {
 export interface ServerAssetDir {
   baseName: string;
   dir: string;
+  ignore?: string[];
 }
 
 export interface DevServerOptions {
@@ -246,17 +266,30 @@ export interface NitroOptions extends PresetOptions {
   // Features
   storage: StorageMounts;
   devStorage: StorageMounts;
+  database: DatabaseConnectionConfigs;
+  devDatabase: DatabaseConnectionConfigs;
   bundledStorage: string[];
   timing: boolean;
   renderer?: string;
   serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
+
   /**
    * @experimental Requires `experimental.wasm` to work
    *
    * @see https://github.com/unjs/unwasm
    */
   wasm?: UnwasmPluginOptions;
+  openAPI?: {
+    meta?: {
+      title?: string;
+      description?: string;
+      version?: string;
+    };
+    ui?: {
+      scalar?: ReferenceConfiguration;
+    };
+  };
   experimental?: {
     legacyExternals?: boolean;
     openAPI?: boolean;
@@ -292,6 +325,24 @@ export interface NitroOptions extends PresetOptions {
      * @see https://github.com/unjs/nitro/pull/2043
      */
     envExpansion?: boolean;
+    /**
+     * Enable experimental WebSocket support
+     *
+     * @see https://nitro.unjs.io/guide/websocket
+     */
+    websocket?: boolean;
+    /**
+     * Enable experimental Database support
+     *
+     * @see https://nitro.unjs.io/guide/database
+     */
+    database?: boolean;
+    /**
+     * Enable experimental Tasks support
+     *
+     * @see https://nitro.unjs.io/guide/tasks
+     */
+    tasks?: boolean;
   };
   future: {
     nativeSWR: boolean;
@@ -303,6 +354,7 @@ export interface NitroOptions extends PresetOptions {
   modules?: NitroModuleInput[];
   plugins: string[];
   tasks: { [name: string]: { handler: string; description: string } };
+  scheduledTasks: { [cron: string]: string | string[] };
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
@@ -375,6 +427,7 @@ export interface NitroOptions extends PresetOptions {
   typescript: {
     strict?: boolean;
     internalPaths?: boolean;
+    generateRuntimeConfigTypes?: boolean;
     generateTsConfig?: boolean;
     /** the path of the generated `tsconfig.json`, relative to buildDir */
     tsconfigPath: string;

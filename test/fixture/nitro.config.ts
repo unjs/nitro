@@ -32,7 +32,13 @@ export default defineNitroConfig({
       dir: "files",
     },
   ],
-  ignore: ["api/**/_*", "middleware/_ignored.ts", "routes/_*.ts", "**/_*.txt"],
+  ignore: [
+    "api/**/_*",
+    "middleware/_ignored.ts",
+    "routes/_*.ts",
+    "**/_*.txt",
+    "!**/_unignored.txt",
+  ],
   appConfig: {
     "nitro-config": true,
     dynamic: "initial",
@@ -70,6 +76,7 @@ export default defineNitroConfig({
     "/rules/redirect/obj": {
       redirect: { to: "https://nitro.unjs.io/", statusCode: 308 },
     },
+    "/rules/redirect/wildcard/**": { redirect: "https://nitro.unjs.io/**" },
     "/rules/nested/**": { redirect: "/base", headers: { "x-test": "test" } },
     "/rules/nested/override": { redirect: { to: "/other" } },
     "/rules/_/noncached/cached": { swr: true },
@@ -90,12 +97,29 @@ export default defineNitroConfig({
     asyncContext: true,
     wasm: true,
     envExpansion: true,
+    database: true,
+    tasks: true,
+  },
+  scheduledTasks: {
+    "* * * * *": "test",
   },
   cloudflare: {
     pages: {
       routes: {
         include: ["/*"],
-        exclude: ["/blog/static/*"],
+        exclude: ["/blog/static/*", "/cf-pages-exclude/*"],
+      },
+    },
+  },
+  openAPI: {
+    meta: {
+      title: "Nitro Test Fixture",
+      description: "Nitro Test Fixture API",
+      version: "2.0",
+    },
+    ui: {
+      scalar: {
+        theme: "purple",
       },
     },
   },

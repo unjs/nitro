@@ -55,6 +55,7 @@ const NitroDefaults: NitroConfig = {
   serverAssets: [],
   plugins: [],
   tasks: {},
+  scheduledTasks: {},
   imports: {
     exclude: [],
     dirs: [],
@@ -121,6 +122,7 @@ const NitroDefaults: NitroConfig = {
   typescript: {
     strict: false,
     generateTsConfig: true,
+    generateRuntimeConfigTypes: true,
     tsconfigPath: "types/tsconfig.json",
     internalPaths: false,
     tsConfig: {},
@@ -378,19 +380,48 @@ export async function loadOptions(
   // Export conditions
   options.exportConditions = _resolveExportConditions(
     options.exportConditions,
-    { dev: options.dev, node: options.node }
+    { dev: options.dev, node: options.node, wasm: options.experimental.wasm }
   );
 
-  // Add open-api endpoint
+  // Add OpenAPI endpoints
   if (options.dev && options.experimental.openAPI) {
     options.handlers.push({
       route: "/_nitro/openapi.json",
       handler: "#internal/nitro/routes/openapi",
     });
     options.handlers.push({
+      route: "/_nitro/scalar",
+      handler: "#internal/nitro/routes/scalar",
+    });
+    options.handlers.push({
       route: "/_nitro/swagger",
       handler: "#internal/nitro/routes/swagger",
     });
+  }
+
+  // Experimental DB support
+  if (options.experimental.database && options.imports) {
+    options.imports.presets.push({
+      from: "#internal/nitro/database",
+      imports: ["useDatabase"],
+    });
+    if (options.dev && !options.database && !options.devDatabase) {
+      options.devDatabase = {
+        default: {
+          connector: "sqlite",
+          options: {
+            cwd: options.rootDir,
+          },
+        },
+      };
+    } else if (options.node && !options.database) {
+      options.database = {
+        default: {
+          connector: "sqlite",
+          options: {},
+        },
+      };
+    }
   }
 
   // Native fetch
@@ -428,6 +459,7 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     },
     nitro: {
       envExpansion: config.experimental.envExpansion,
+      openAPI: config.openAPI,
     },
   });
   runtimeConfig.nitro.routeRules = config.routeRules;
@@ -454,6 +486,10 @@ export function normalizeRouteRules(
           ? { to: routeConfig.redirect }
           : routeConfig.redirect),
       };
+      if (path.endsWith("/**")) {
+        // Internal flag
+        (routeRules.redirect as any)._redirectStripBase = path.slice(0, -3);
+      }
     }
     // Proxy
     if (routeConfig.proxy) {
@@ -495,7 +531,7 @@ export function normalizeRouteRules(
 
 function _resolveExportConditions(
   conditions: string[] = [],
-  opts: { dev: boolean; node: boolean }
+  opts: { dev: boolean; node: boolean; wasm: boolean }
 ) {
   const resolvedConditions: string[] = [];
 
@@ -517,14 +553,18 @@ function _resolveExportConditions(
       "browser",
       "workerd",
       "edge-light",
-      "lagon",
       "netlify",
       "edge-routine",
       "deno"
     );
   }
 
-  // 4. Add default conditions
+  // 4. Add unwasm conditions
+  if (opts.wasm) {
+    resolvedConditions.push("wasm", "unwasm");
+  }
+
+  // 5. Add default conditions
   resolvedConditions.push("import", "default");
 
   // Dedup with preserving order

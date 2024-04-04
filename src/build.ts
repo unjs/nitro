@@ -16,7 +16,7 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
-import { upperFirst } from "scule";
+import { JSValue, generateTypes, resolveSchema } from "untyped";
 import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
@@ -48,6 +48,9 @@ async function prepareDir(dir: string) {
   await fse.emptyDir(dir);
 }
 
+const NEGATION_RE = /^(!?)(.*)$/;
+const PARENT_DIR_GLOB_RE = /!?\.\.\//;
+
 export async function copyPublicAssets(nitro: Nitro) {
   if (nitro.options.noPublicDir) {
     return;
@@ -56,17 +59,25 @@ export async function copyPublicAssets(nitro: Nitro) {
     const srcDir = asset.dir;
     const dstDir = join(nitro.options.output.publicDir, asset.baseURL!);
     if (await isDirectory(srcDir)) {
-      const publicAssets = await globby("**", {
+      const includePatterns = [
+        "**",
+        ...nitro.options.ignore.map((p) => {
+          const [_, negation, pattern] = p.match(NEGATION_RE);
+          return (
+            // Convert ignore to include patterns
+            (negation ? "" : "!") +
+            // Make non-glob patterns relative to publicAssetDir
+            (pattern.startsWith("*")
+              ? pattern
+              : relative(srcDir, resolve(nitro.options.srcDir, pattern)))
+          );
+        }),
+      ].filter((p) => !PARENT_DIR_GLOB_RE.test(p));
+
+      const publicAssets = await globby(includePatterns, {
         cwd: srcDir,
         absolute: false,
         dot: true,
-        ignore: nitro.options.ignore
-          .map((p) =>
-            p.startsWith("*") || p.startsWith("!*")
-              ? p
-              : relative(srcDir, resolve(nitro.options.srcDir, p))
-          )
-          .filter((p) => !p.startsWith("../")),
       });
       await Promise.all(
         publicAssets.map(async (file) => {
@@ -162,7 +173,7 @@ export async function writeTypes(nitro: Nitro) {
           }
         }
       }
-      if (existsSync(path) && !isDirectory(path)) {
+      if (existsSync(path) && !(await isDirectory(path))) {
         path = path.replace(/\.[a-z]+$/, "");
       }
       if (isAbsolute(path)) {
@@ -172,12 +183,14 @@ export async function writeTypes(nitro: Nitro) {
     }
 
     autoImportedTypes = [
-      (
-        await nitro.unimport.generateTypeDeclarations({
-          exportHelper: false,
-          resolvePath: (i) => resolvedImportPathMap.get(i.from) ?? i.from,
-        })
-      ).trim(),
+      nitro.options.imports && nitro.options.imports.autoImport !== false
+        ? (
+            await nitro.unimport.generateTypeDeclarations({
+              exportHelper: false,
+              resolvePath: (i) => resolvedImportPathMap.get(i.from) ?? i.from,
+            })
+          ).trim()
+        : "",
     ];
   }
 
@@ -223,9 +236,26 @@ type UserAppConfig = Defu<{}, [${nitro.options.appConfigFiles
       .join(", ")}]>
 
 declare module 'nitropack' {
-  interface AppConfig extends UserAppConfig {}
-}
-    `,
+  interface AppConfig extends UserAppConfig {}`,
+    nitro.options.typescript.generateRuntimeConfigTypes
+      ? generateTypes(
+          await resolveSchema(
+            Object.fromEntries(
+              Object.entries(nitro.options.runtimeConfig).filter(
+                ([key]) => !["app", "nitro"].includes(key)
+              )
+            ) as Record<string, JSValue>
+          ),
+          {
+            interfaceName: "NitroRuntimeConfig",
+            addExport: false,
+            addDefaults: false,
+            allowExtraKeys: false,
+            indentation: 2,
+          }
+        )
+      : "",
+    `}`,
     // Makes this a module for augmentation purposes
     "export {}",
   ];
@@ -287,6 +317,30 @@ declare module 'nitropack' {
         paths: {
           "#imports": [
             relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports")),
+          ],
+          "~/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["~"] || nitro.options.srcDir, "*")
+            ),
+          ],
+          "@/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["@"] || nitro.options.srcDir, "*")
+            ),
+          ],
+          "~~/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["~~"] || nitro.options.rootDir, "*")
+            ),
+          ],
+          "@@/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["@@"] || nitro.options.rootDir, "*")
+            ),
           ],
           ...(nitro.options.typescript.internalPaths
             ? {

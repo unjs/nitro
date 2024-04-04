@@ -12,12 +12,18 @@ import {
   toNodeListener,
   readBody,
 } from "h3";
+import wsAdapter from "crossws/adapters/node";
 import { nitroApp } from "../app";
 import { trapUnhandledNodeErrors } from "../utils";
-import { runNitroTask } from "../task";
-import { tasks } from "#internal/nitro/virtual/tasks";
+import { runTask, startScheduleRunner } from "../task";
+import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
 
 const server = new Server(toNodeListener(nitroApp.h3App));
+
+if (import.meta._websocket) {
+  const { handleUpgrade } = wsAdapter(nitroApp.h3App.websocket);
+  server.on("upgrade", handleUpgrade);
+}
 
 function getAddress() {
   if (
@@ -52,14 +58,16 @@ const listener = server.listen(listenAddress, () => {
 // Register tasks handlers
 nitroApp.router.get(
   "/_nitro/tasks",
-  defineEventHandler((event) => {
+  defineEventHandler(async (event) => {
+    const _tasks = await Promise.all(
+      Object.entries(tasks).map(async ([name, task]) => {
+        const _task = await task.resolve?.();
+        return [name, { description: _task?.meta?.description }];
+      })
+    );
     return {
-      tasks: Object.fromEntries(
-        Object.entries(tasks).map(([name, task]) => [
-          name,
-          { description: task.description },
-        ])
-      ),
+      tasks: Object.fromEntries(_tasks),
+      scheduledTasks,
     };
   })
 );
@@ -69,9 +77,11 @@ nitroApp.router.use(
     const name = getRouterParam(event, "name");
     const payload = {
       ...getQuery(event),
-      ...(await readBody(event).catch(() => ({}))),
+      ...(await readBody(event)
+        .then((r) => r?.payload)
+        .catch(() => ({}))),
     };
-    return await runNitroTask(name, payload);
+    return await runTask(name, { payload });
   })
 );
 
@@ -82,10 +92,14 @@ trapUnhandledNodeErrors();
 async function onShutdown(signal?: NodeJS.Signals) {
   await nitroApp.hooks.callHook("close");
 }
-
 parentPort.on("message", async (msg) => {
   if (msg && msg.event === "shutdown") {
     await onShutdown();
     parentPort.postMessage({ event: "exit" });
   }
 });
+
+// Scheduled tasks
+if (import.meta._tasks) {
+  startScheduleRunner();
+}

@@ -1,9 +1,9 @@
 {
-  "name": "example-hello-world",
-  "private": true,
+  "type": "module",
   "scripts": {
+    "build": "nitro build",
     "dev": "nitro dev",
-    "build": "nitro build"
+    "preview": "node .output/server/index.mjs"
   },
   "devDependencies": {
     "nitropack": "latest"
