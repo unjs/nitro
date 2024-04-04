@@ -1,4 +1,7 @@
 import type { EventHandler, H3Event, H3Error } from "h3";
+import { NitroOptions } from "./nitro";
+
+type MaybeArray<T> = T | T[];
 
 export interface NitroEventHandler {
   /**
@@ -29,6 +32,14 @@ export interface NitroEventHandler {
    * Router method matcher
    */
   method?: string;
+
+  /**
+   * Environments to include this handler
+   */
+  env?: MaybeArray<
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    "dev" | "prod" | "prerender" | NitroOptions["preset"] | (string & {})
+  >;
 }
 
 export interface NitroDevEventHandler {
