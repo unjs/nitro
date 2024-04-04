@@ -1,6 +1,6 @@
 import type { EventHandler, H3Error, H3Event } from "h3";
-import type { ServerRouteMeta } from "#internal/nitro/virtual/server-handlers";
 import { NitroOptions } from "./nitro";
+import type { ServerRouteMeta } from "#internal/nitro/virtual/server-handlers";
 
 type MaybeArray<T> = T | T[];
 
