@@ -6,9 +6,21 @@ import type { Nitro } from "./types";
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
 type FileInfo = { path: string; fullPath: string };
 
-const httpMethodRegex =
-  /\.(connect|delete|get|head|options|patch|post|put|trace)$/;
-const devSuffixRegex = /\.dev$/;
+const suffixRegex =
+  /\.(connect|delete|get|head|options|patch|post|put|trace)(\.(dev|prod))?$/;
+
+type MatchedMethdSuffix =
+  | "connect"
+  | "delete"
+  | "get"
+  | "head"
+  | "options"
+  | "patch"
+  | "post"
+  | "put"
+  | "trace";
+
+type MatchedEnvSuffix = "dev" | "prod";
 
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
@@ -18,9 +30,15 @@ export async function scanHandlers(nitro: Nitro) {
     scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
 
-  if (!nitro.options.dev) {
-    handlers = handlers.filter((h) => !h.devOnly);
-  }
+  handlers = handlers.filter((h) => {
+    if (
+      (h.env === "dev" && !nitro.options.dev) ||
+      (h.env === "prod" && nitro.options.dev)
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   nitro.scannedHandlers = [
     ...middleware,
@@ -60,17 +78,13 @@ export async function scanServerRoutes(
       .replace(/\[(\w+)]/g, ":$1");
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)));
 
-    let devOnly = false;
-    if (devSuffixRegex.test(route)) {
-      devOnly = true;
-      route = route.slice(0, Math.max(0, route.length - 4));
-    }
-
-    let method;
-    const methodMatch = route.match(httpMethodRegex);
-    if (methodMatch) {
-      route = route.slice(0, Math.max(0, methodMatch.index));
-      method = methodMatch[1];
+    const suffixMatch = route.match(suffixRegex);
+    let method: MatchedMethdSuffix | undefined;
+    let env: MatchedEnvSuffix | undefined;
+    if (suffixMatch) {
+      route = route.slice(0, Math.max(0, suffixMatch.index));
+      method = suffixMatch[1] as MatchedMethdSuffix;
+      env = suffixMatch[3] as MatchedEnvSuffix;
     }
 
     route = route.replace(/\/index$/, "") || "/";
@@ -81,7 +95,7 @@ export async function scanServerRoutes(
       middleware: false,
       route,
       method,
-      devOnly,
+      env,
     };
   });
 }

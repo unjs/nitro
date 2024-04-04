@@ -701,4 +701,11 @@ export function testNitro(
       });
     });
   });
+
+  describe("Envionment specific routes", () => {
+    it("filters based on dev|prod", async () => {
+      const { data } = await callHandler({ url: "/env" });
+      expect(data).toBe(ctx.isDev ? "dev env" : "prod env");
+    });
+  });
 }
