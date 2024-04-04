@@ -1,21 +1,8 @@
-export default defineEventHandler(() => "Test get handler");
-
-// defineRouteMeta({
-//     openAPI: {
-//         tags: ["Test"],
-//         summary: "some test",
-//         description: "some test description",
-//         deprecated: false,
-//     },
-//     name: 'Something'
-// })
-
 defineRouteMeta({
-    openAPI: {
-        tags: ["Test"],
-        summary: "some test",
-        description: "some test description",
-        deprecated: false,
-    },
-    name: 'Something'
-})
+  openAPI: {
+    tags: ["Test"],
+    description: "some test description (GET)",
+  },
+});
+
+export default defineEventHandler(() => "Test get handler");

@@ -55,17 +55,7 @@ export function handlers(nitro: Nitro) {
           handlers.filter((h) => h.lazy).map((h) => h.handler)
         );
 
-        const handlersMeta = getHandlers()
-          .filter((h) => h.route)
-          .map((h) => {
-            return {
-              route: h.route,
-              method: h.method,
-              meta: h.meta,
-            };
-          });
-
-        const code = `
+        const code = /* js */ `
 ${imports
   .map((handler) => `import ${getImportId(handler)} from '${handler}';`)
   .join("\n")}
@@ -90,10 +80,26 @@ ${handlers
   )
   .join(",\n")}
 ];
-
-export const handlersMeta = ${JSON.stringify(handlersMeta, null, 2)}
   `.trim();
         return code;
+      },
+      "#internal/nitro/virtual/server-handlers-meta": () => {
+        const handlers = getHandlers();
+        return /* js */ `
+  ${handlers
+    .map(
+      (h) => `import ${getImportId(h.handler)}Meta from "${h.handler}?meta";`
+    )
+    .join("\n")}
+export const handlersMeta = [
+  ${handlers
+    .map(
+      (h) =>
+        /* js */ `{ route: ${JSON.stringify(h.route)}, method: ${JSON.stringify(h.method)}, meta: ${getImportId(h.handler)}Meta }`
+    )
+    .join(",\n")}
+  ];
+        `;
       },
     },
     nitro.vfs
