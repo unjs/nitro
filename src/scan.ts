@@ -7,45 +7,27 @@ export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
 type FileInfo = { path: string; fullPath: string };
 
 const suffixRegex =
-  /\.(connect|delete|get|head|options|patch|post|put|trace)(\.(dev|prod))?$/;
+  /\.(connect|delete|get|head|options|patch|post|put|trace)(\.(dev|prod|prerender))?$/;
 
-type MatchedMethdSuffix =
-  | "connect"
-  | "delete"
-  | "get"
-  | "head"
-  | "options"
-  | "patch"
-  | "post"
-  | "put"
-  | "trace";
-
-type MatchedEnvSuffix = "dev" | "prod";
+// prettier-ignore
+type MatchedMethdSuffix = "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
+type MatchedEnvSuffix = "dev" | "prod" | "prerender";
 
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
 
-  let handlers = await Promise.all([
+  const handlers = await Promise.all([
     scanServerRoutes(nitro, "api", "/api"),
     scanServerRoutes(nitro, "routes", "/"),
   ]).then((r) => r.flat());
-
-  handlers = handlers.filter((h) => {
-    if (
-      (h.env === "dev" && !nitro.options.dev) ||
-      (h.env === "prod" && nitro.options.dev)
-    ) {
-      return false;
-    }
-    return true;
-  });
 
   nitro.scannedHandlers = [
     ...middleware,
     ...handlers.filter((h, index, array) => {
       return (
         array.findIndex(
-          (h2) => h.route === h2.route && h.method === h2.method
+          (h2) =>
+            h.route === h2.route && h.method === h2.method && h.env === h2.env
         ) === index
       );
     }),
