@@ -16,7 +16,7 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
-import { upperFirst } from "scule";
+import { JSValue, generateTypes, resolveSchema } from "untyped";
 import { version as nitroVersion } from "../package.json";
 import { generateFSTree } from "./utils/tree";
 import { getRollupConfig, RollupConfig } from "./rollup/config";
@@ -236,9 +236,26 @@ type UserAppConfig = Defu<{}, [${nitro.options.appConfigFiles
       .join(", ")}]>
 
 declare module 'nitropack' {
-  interface AppConfig extends UserAppConfig {}
-}
-    `,
+  interface AppConfig extends UserAppConfig {}`,
+    nitro.options.typescript.generateRuntimeConfigTypes
+      ? generateTypes(
+          await resolveSchema(
+            Object.fromEntries(
+              Object.entries(nitro.options.runtimeConfig).filter(
+                ([key]) => !["app", "nitro"].includes(key)
+              )
+            ) as Record<string, JSValue>
+          ),
+          {
+            interfaceName: "NitroRuntimeConfig",
+            addExport: false,
+            addDefaults: false,
+            allowExtraKeys: false,
+            indentation: 2,
+          }
+        )
+      : "",
+    `}`,
     // Makes this a module for augmentation purposes
     "export {}",
   ];
@@ -300,6 +317,30 @@ declare module 'nitropack' {
         paths: {
           "#imports": [
             relativeWithDot(tsconfigDir, join(typesDir, "nitro-imports")),
+          ],
+          "~/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["~"] || nitro.options.srcDir, "*")
+            ),
+          ],
+          "@/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["@"] || nitro.options.srcDir, "*")
+            ),
+          ],
+          "~~/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["~~"] || nitro.options.rootDir, "*")
+            ),
+          ],
+          "@@/*": [
+            relativeWithDot(
+              tsconfigDir,
+              join(nitro.options.alias["@@"] || nitro.options.rootDir, "*")
+            ),
           ],
           ...(nitro.options.typescript.internalPaths
             ? {

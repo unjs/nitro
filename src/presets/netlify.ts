@@ -25,6 +25,19 @@ export const netlify = defineNitroPreset({
       await writeHeaders(nitro);
       await writeRedirects(nitro);
 
+      if (nitro.options.netlify) {
+        const configPath = join(
+          nitro.options.output.dir,
+          "../deploy/v1/config.json"
+        );
+        await fsp.mkdir(dirname(configPath), { recursive: true });
+        await fsp.writeFile(
+          configPath,
+          JSON.stringify(nitro.options.netlify),
+          "utf8"
+        );
+      }
+
       const functionConfig = {
         config: { nodeModuleFormat: "esm" },
         version: 1,
@@ -72,6 +85,9 @@ export const netlifyEdge = defineNitroPreset({
       deprecateSWR(nitro);
     },
     async compiled(nitro: Nitro) {
+      await writeHeaders(nitro);
+      await writeRedirects(nitro);
+
       // https://docs.netlify.com/edge-functions/create-integration/
       const manifest = {
         version: 1,

@@ -332,13 +332,20 @@ export function testNitro(
     const { data: html, status: htmlStatus } = await callHandler({
       url: "/file?filename=index.html",
     });
+    expect(htmlStatus).toBe(200);
+    expect(html).toContain("<h1>nitro is amazing!</h1>");
+
     const { data: txtFile, status: txtStatus } = await callHandler({
       url: "/file?filename=test.txt",
     });
-    expect(htmlStatus).toBe(200);
-    expect(html).toContain("<h1>nitro is amazing!</h1>");
     expect(txtStatus).toBe(200);
     expect(txtFile).toContain("this is an asset from a text file from nitro");
+
+    const { data: mdFile, status: mdStatus } = await callHandler({
+      url: "/assets/md",
+    });
+    expect(mdStatus).toBe(200);
+    expect(mdFile).toContain("# Hello world");
   });
 
   if (ctx.nitro!.options.serveStatic) {

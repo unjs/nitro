@@ -107,7 +107,19 @@ export default defineNitroConfig({
     pages: {
       routes: {
         include: ["/*"],
-        exclude: ["/blog/static/*"],
+        exclude: ["/blog/static/*", "/cf-pages-exclude/*"],
+      },
+    },
+  },
+  openAPI: {
+    meta: {
+      title: "Nitro Test Fixture",
+      description: "Nitro Test Fixture API",
+      version: "2.0",
+    },
+    ui: {
+      scalar: {
+        theme: "purple",
       },
     },
   },

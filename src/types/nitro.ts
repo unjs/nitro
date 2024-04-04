@@ -10,10 +10,11 @@ import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
 import type { Storage, BuiltinDriverName } from "unstorage";
 import type { ProxyServerOptions } from "httpxy";
 import type { ProxyOptions, RouterMethod } from "h3";
-import type { ResolvedConfig, ConfigWatcher } from "c12";
+import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { ConnectorName } from "db0";
+import type { ReferenceConfiguration } from "@scalar/api-reference";
 import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
@@ -46,6 +47,7 @@ export interface NitroRuntimeConfig {
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
+    openAPI?: NitroOptions["openAPI"];
   };
   [key: string]: any;
 }
@@ -138,7 +140,8 @@ type DeepPartial<T> =
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
 export interface NitroConfig
-  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">> {
+  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">>,
+    C12InputConfig<NitroConfig> {
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
   rollupConfig?: Partial<RollupConfig>;
@@ -158,6 +161,7 @@ export interface PublicAssetDir {
 export interface ServerAssetDir {
   baseName: string;
   dir: string;
+  ignore?: string[];
 }
 
 export interface DevServerOptions {
@@ -269,12 +273,23 @@ export interface NitroOptions extends PresetOptions {
   renderer?: string;
   serveStatic: boolean | "node" | "deno" | "inline";
   noPublicDir: boolean;
+
   /**
    * @experimental Requires `experimental.wasm` to work
    *
    * @see https://github.com/unjs/unwasm
    */
   wasm?: UnwasmPluginOptions;
+  openAPI?: {
+    meta?: {
+      title?: string;
+      description?: string;
+      version?: string;
+    };
+    ui?: {
+      scalar?: ReferenceConfiguration;
+    };
+  };
   experimental?: {
     legacyExternals?: boolean;
     openAPI?: boolean;
@@ -412,6 +427,7 @@ export interface NitroOptions extends PresetOptions {
   typescript: {
     strict?: boolean;
     internalPaths?: boolean;
+    generateRuntimeConfigTypes?: boolean;
     generateTsConfig?: boolean;
     /** the path of the generated `tsconfig.json`, relative to buildDir */
     tsconfigPath: string;
