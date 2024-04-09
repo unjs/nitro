@@ -64,7 +64,7 @@ function getPaths(): PathsObject {
       Object.assign(paths[route], item);
     }
 
-    if (h.meta && h.meta.openAPI) {
+    if (h.meta?.openAPI) {
       paths[route][method] = {
         ...paths[route][method],
         ...h.meta.openAPI,

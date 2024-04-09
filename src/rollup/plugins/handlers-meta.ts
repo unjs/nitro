@@ -5,7 +5,7 @@ import { transform } from "esbuild";
 import { CallExpression, Node } from "estree";
 import { walk } from "estree-walker";
 import type { Plugin } from "rollup";
-import { Nitro, NitroEventHandlerMeta } from "../../types";
+import { Nitro, NitroEventHandler } from "../../types";
 
 const virtualPrefix = "\0nitro-handler-meta:";
 
@@ -31,7 +31,7 @@ export function handlersMeta(nitro: Nitro) {
       if (!id.startsWith(virtualPrefix)) {
         return;
       }
-      let meta: NitroEventHandlerMeta | null = null;
+      let meta: NitroEventHandler["meta"] | null = null;
 
       const js = await transform(code, { loader: "ts" });
       const fileAST = acorn.parse(js.code, {

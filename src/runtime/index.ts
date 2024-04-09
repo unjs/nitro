@@ -4,11 +4,8 @@ export { useNitroApp } from "./app";
 export * from "./plugin";
 export * from "./task";
 export * from "./renderer";
-export {
-  getRouteRules,
-  getRouteRulesForPath,
-  defineRouteMeta,
-} from "./route-rules";
+export { getRouteRules, getRouteRulesForPath } from "./route-rules";
+export { defineRouteMeta } from "./handler";
 export { useStorage } from "./storage";
 export { useEvent } from "./context";
 export { defineNitroErrorHandler } from "./error";

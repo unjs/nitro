@@ -9,8 +9,7 @@ import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { joinURL, withQuery, getQuery, withoutBase } from "ufo";
 import { useRuntimeConfig } from "./config";
-import type { ServerRouteMeta } from "./virtual/server-handlers";
-import type { NitroRouteRules } from "nitropack";
+import { NitroRouteRules } from "nitropack";
 
 const config = useRuntimeConfig();
 const _routeRulesMatcher = toRouteMatcher(
@@ -86,8 +85,4 @@ export function getRouteRulesForPath(
   path: string
 ): DeepReadonly<NitroRouteRules> {
   return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
-}
-
-export function defineRouteMeta(meta: ServerRouteMeta) {
-  return meta;
 }
