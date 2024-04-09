@@ -1,5 +1,1 @@
-export default defineNitroConfig({
-    experimental: {
-        openAPI: true,
-    },
-});
+export default defineNitroConfig({});
