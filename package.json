@@ -150,7 +150,7 @@
     "better-sqlite3": "^9.4.3",
     "changelogen": "^0.5.5",
     "edge-runtime": "^2.5.9",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-config-unjs": "^0.2.1",
     "execa": "^8.0.1",
     "expect-type": "^0.19.0",
