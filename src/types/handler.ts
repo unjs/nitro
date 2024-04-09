@@ -1,6 +1,6 @@
-import type { EventHandler, H3Error, H3Event } from "h3";
+import type { EventHandler, H3Error, H3Event, RouterMethod } from "h3";
+import type { OperationObject } from "openapi-typescript";
 import { NitroOptions } from "./nitro";
-import type { ServerRouteMeta } from "#internal/nitro/virtual/server-handlers";
 
 type MaybeArray<T> = T | T[];
 
@@ -37,7 +37,7 @@ export interface NitroEventHandler {
   /**
    * Route meta
    */
-  meta?: ServerRouteMeta;
+  meta?: NitroEventHandlerMeta;
 
   /*
    * Environments to include this handler
@@ -46,6 +46,14 @@ export interface NitroEventHandler {
     // eslint-disable-next-line @typescript-eslint/ban-types
     "dev" | "prod" | "prerender" | NitroOptions["preset"] | (string & {})
   >;
+}
+
+export interface NitroEventHandlerMeta {
+  route: string;
+  method?: RouterMethod;
+  meta?: {
+    openAPI?: OperationObject;
+  };
 }
 
 export interface NitroDevEventHandler {

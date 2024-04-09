@@ -5,8 +5,7 @@ import { transform } from "esbuild";
 import { CallExpression, Node } from "estree";
 import { walk } from "estree-walker";
 import type { Plugin } from "rollup";
-import { Nitro } from "../../types";
-import type { HandlerMeta } from "#internal/nitro/virtual/server-handlers-meta";
+import { Nitro, NitroEventHandlerMeta } from "../../types";
 
 const virtualPrefix = "\0nitro-handler-meta:";
 
@@ -32,7 +31,7 @@ export function handlersMeta(nitro: Nitro) {
       if (!id.startsWith(virtualPrefix)) {
         return;
       }
-      let routeMeta: HandlerMeta["meta"] | null = null;
+      let meta: NitroEventHandlerMeta | null = null;
 
       const js = await transform(code, { loader: "ts" });
       const fileAST = acorn.parse(js.code, {
@@ -54,7 +53,7 @@ export function handlersMeta(nitro: Nitro) {
           if (name === "defineRouteMeta") {
             const metaString = js.code.slice(node.start, node.end);
             try {
-              routeMeta = JSON.parse(
+              meta = JSON.parse(
                 runInNewContext(
                   metaString.replace("defineRouteMeta", "JSON.stringify"),
                   {}
@@ -70,7 +69,7 @@ export function handlersMeta(nitro: Nitro) {
       });
 
       return {
-        code: `export default ${JSON.stringify(routeMeta)};`,
+        code: `export default ${JSON.stringify(meta)};`,
         map: null,
       };
     },
