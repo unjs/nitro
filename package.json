@@ -80,6 +80,7 @@
     "chalk": "^5.3.0",
     "chokidar": "^3.6.0",
     "citty": "^0.1.6",
+    "confbox": "^0.1.6",
     "consola": "^3.2.3",
     "cookie-es": "^1.1.0",
     "croner": "^8.0.2",
