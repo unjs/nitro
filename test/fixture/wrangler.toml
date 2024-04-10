@@ -1,4 +1,4 @@
-name = "nitro-test2"
+name = "nitro-test"
 
 [site]
 bucket = ".output/public"
