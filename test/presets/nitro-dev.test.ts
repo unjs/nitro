@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { isCI } from "std-env";
 import type { OpenAPI3 } from "openapi-typescript";
-import { s } from "vitest/dist/reporters-P7C2ytIv";
 import { setupTest, testNitro } from "../tests";
 
 describe.skipIf(isCI)("nitro:preset:nitro-dev", async () => {
