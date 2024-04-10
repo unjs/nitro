@@ -1,3 +1,5 @@
+import type { Config as WranglerConfig } from "./cloudflare.wrangler";
+
 /**
  * https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes
  */
@@ -13,6 +15,8 @@ export interface CloudflarePagesRoutes {
 }
 
 export interface CloudflareOptions {
+  wrangler?: WranglerConfig;
+
   pages: {
     /**
      * Nitro will automatically generate a `_routes.json` that controls which files get served statically and

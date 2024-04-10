@@ -6,10 +6,12 @@ import {
   withTrailingSlash,
   withoutLeadingSlash,
 } from "ufo";
+import { parseTOML, stringifyTOML } from "confbox";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 import { CloudflarePagesRoutes } from "../types/presets/cloudflare";
+import defu from "defu";
 
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
@@ -45,6 +47,7 @@ export const cloudflarePages = defineNitroPreset({
       await writeCFRoutes(nitro);
       await writeCFPagesHeaders(nitro);
       await writeCFPagesRedirects(nitro);
+      await writeCFWrangler(nitro);
     },
   },
 });
@@ -213,4 +216,27 @@ async function writeCFPagesRedirects(nitro: Nitro) {
   }
 
   await fsp.writeFile(redirectsPath, contents.join("\n"));
+}
+
+async function writeCFWrangler(nitro: Nitro) {
+  type WranglerConfig = typeof nitro.options.cloudflare.wrangler;
+
+  const inlineConfig: WranglerConfig =
+    nitro.options.cloudflare?.wrangler || ({} as WranglerConfig);
+
+  let configFromFile: WranglerConfig = {} as WranglerConfig;
+  const configPath = resolve(
+    nitro.options.rootDir,
+    inlineConfig.configPath || "wrangler.toml"
+  );
+  if (existsSync(configPath)) {
+    configFromFile = parseTOML<WranglerConfig>(
+      await fsp.readFile(configPath, "utf8")
+    );
+  }
+
+  const wranglerConfig: WranglerConfig = defu(configFromFile, inlineConfig);
+
+  const wranglerPath = join(nitro.options.output.publicDir, "wrangler.toml");
+  await fsp.writeFile(wranglerPath, stringifyTOML(wranglerConfig));
 }

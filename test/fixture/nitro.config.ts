@@ -110,6 +110,9 @@ export default defineNitroConfig({
         exclude: ["/blog/static/*", "/cf-pages-exclude/*"],
       },
     },
+    wrangler: {
+      compatibility_date: "2024-01-01",
+    },
   },
   openAPI: {
     meta: {
