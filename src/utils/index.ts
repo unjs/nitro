@@ -41,7 +41,9 @@ export function jitiImport(dir: string, path: string) {
 export function tryImport(dir: string, path: string) {
   try {
     return jitiImport(dir, path);
-  } catch {}
+  } catch {
+    // Ignore
+  }
 }
 
 export async function writeFile(
@@ -213,16 +215,16 @@ export function resolveAliases(_aliases: Record<string, string>) {
 
 export async function retry(fn: () => Promise<void>, retries: number) {
   let retry = 0;
-  let error: any;
+  let lastError: any;
   while (retry++ < retries) {
     try {
       return await fn();
-    } catch (err) {
-      error = err;
+    } catch (error) {
+      lastError = error;
       await new Promise((resolve) => setTimeout(resolve, 2));
     }
   }
-  throw error;
+  throw lastError;
 }
 
 export function provideFallbackValues(obj: Record<string, any>) {

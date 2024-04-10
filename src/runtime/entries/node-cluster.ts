@@ -38,7 +38,6 @@ function runMaster() {
 
         cluster.on("exit", () => {
           if (Object.values(cluster.workers).every((w) => w.isDead())) {
-            // eslint-disable-next-line unicorn/no-process-exit
             clearTimeout(timeout);
             resolve();
           } else {
@@ -59,7 +58,6 @@ function runMaster() {
 }
 
 function runWorker() {
-  // eslint-disable-next-line unicorn/prefer-top-level-await
   import("./node-server").catch((error) => {
     console.error(error);
     // eslint-disable-next-line unicorn/no-process-exit

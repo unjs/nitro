@@ -53,7 +53,7 @@ describe("nitro:preset:netlify", async () => {
           resolve(ctx.outDir, "../dist/_redirects"),
           "utf8"
         );
-        /* eslint-disable no-tabs */
+
         expect(redirects).toMatchInlineSnapshot(`
         "/rules/nested/override	/other	302
         /rules/redirect/wildcard/*	https://nitro.unjs.io/:splat	302
@@ -71,14 +71,13 @@ describe("nitro:preset:netlify", async () => {
         /rules/dynamic	/.netlify/functions/server 200
         /* /.netlify/functions/server 200"
       `);
-        /* eslint-enable no-tabs */
       });
       it("should add route rules - headers", async () => {
         const headers = await fsp.readFile(
           resolve(ctx.outDir, "../dist/_headers"),
           "utf8"
         );
-        /* eslint-disable no-tabs */
+
         expect(headers).toMatchInlineSnapshot(`
         "/rules/headers
           cache-control: s-maxage=60
@@ -93,7 +92,6 @@ describe("nitro:preset:netlify", async () => {
           cache-control: public, max-age=3600, immutable
         "
       `);
-        /* eslint-enable no-tabs */
       });
       it("should write config.json", async () => {
         const config = await fsp

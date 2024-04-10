@@ -12,7 +12,6 @@ interface TestResponse {
 const $fetch = {} as $Fetch;
 
 describe("API routes", () => {
-  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   const dynamicString: string = "";
 
   it("generates types for middleware, unknown and manual typed routes", () => {

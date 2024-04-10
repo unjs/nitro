@@ -503,7 +503,7 @@ export function testNitro(
 
   if (ctx.nitro!.options.timing) {
     it("set server timing header", async () => {
-      const { data, status, headers } = await callHandler({
+      const { status, headers } = await callHandler({
         url: "/api/hello",
       });
       expect(status).toBe(200);

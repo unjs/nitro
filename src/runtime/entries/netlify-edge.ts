@@ -3,7 +3,7 @@ import { nitroApp } from "../app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 // https://docs.netlify.com/edge-functions/api/
-export default async function (request: Request, _context) {
+export default async function netlifyEdge(request: Request, _context) {
   const url = new URL(request.url);
 
   if (isPublicAssetURL(url.pathname)) {

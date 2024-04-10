@@ -1,4 +1,4 @@
-import { existsSync, promises as fsp } from "node:fs";
+import { existsSync } from "node:fs";
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
 import { isWindows } from "std-env";
