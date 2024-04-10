@@ -12,6 +12,7 @@ import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 import { CloudflarePagesRoutes } from "../types/presets/cloudflare";
 import defu from "defu";
+import { isCI } from "std-env";
 
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
@@ -237,6 +238,10 @@ async function writeCFWrangler(nitro: Nitro) {
 
   const wranglerConfig: WranglerConfig = defu(configFromFile, inlineConfig);
 
-  const wranglerPath = join(nitro.options.output.publicDir, "wrangler.toml");
+  const wranglerPath = join(
+    isCI ? nitro.options.rootDir : nitro.options.buildDir,
+    "wrangler.toml"
+  );
+
   await fsp.writeFile(wranglerPath, stringifyTOML(wranglerConfig));
 }
