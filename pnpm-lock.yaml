@@ -48,9 +48,6 @@ importers:
       '@vercel/nft':
         specifier: ^0.26.4
         version: 0.26.4
-      acorn:
-        specifier: ^8.11.3
-        version: 8.11.3
       archiver:
         specifier: ^7.0.1
         version: 7.0.1
@@ -96,9 +93,6 @@ importers:
       escape-string-regexp:
         specifier: ^5.0.0
         version: 5.0.0
-      estree-walker:
-        specifier: ^3.0.3
-        version: 3.0.3
       etag:
         specifier: ^1.8.1
         version: 1.8.1

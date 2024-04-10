@@ -44,8 +44,8 @@ function getPaths(): PathsObject {
   const paths: PathsObject = {};
 
   for (const h of handlersMeta) {
-    const { route, parameters } = normalizeRoute(h.route);
-    const tags = defaultTags(h.route);
+    const { route, parameters } = normalizeRoute(h.route || "");
+    const tags = defaultTags(h.route || "");
     const method = (h.method || "get").toLowerCase();
 
     const item: PathItemObject = {

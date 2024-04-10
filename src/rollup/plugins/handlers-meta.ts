@@ -1,13 +1,19 @@
-import { runInNewContext } from "node:vm";
 import { readFile } from "node:fs/promises";
-import acorn from "acorn";
 import { transform } from "esbuild";
-import { CallExpression, Node } from "estree";
-import { walk } from "estree-walker";
 import type { Plugin } from "rollup";
+import type { Literal, Expression } from "estree";
+import { extname } from "pathe";
 import { Nitro, NitroEventHandler } from "../../types";
 
 const virtualPrefix = "\0nitro-handler-meta:";
+
+// From esbuild.ts
+const esbuildLoaders = {
+  ".ts": "ts",
+  ".js": "js",
+  ".tsx": "tsx",
+  ".jsx": "jsx",
+};
 
 export function handlersMeta(nitro: Nitro) {
   return {
@@ -31,42 +37,32 @@ export function handlersMeta(nitro: Nitro) {
       if (!id.startsWith(virtualPrefix)) {
         return;
       }
+
       let meta: NitroEventHandler["meta"] | null = null;
 
-      const js = await transform(code, { loader: "ts" });
-      const fileAST = acorn.parse(js.code, {
-        ecmaVersion: "latest",
-        sourceType: "module",
-      }) as Node;
-
-      walk(fileAST, {
-        enter(_node) {
+      try {
+        const ext = extname(id);
+        const jsCode = await transform(code, {
+          loader: esbuildLoaders[ext],
+        }).then((r) => r.code);
+        const ast = this.parse(jsCode);
+        for (const node of ast.body) {
           if (
-            _node.type !== "CallExpression" ||
-            (_node as CallExpression).callee.type !== "Identifier"
+            node.type === "ExpressionStatement" &&
+            node.expression.type === "CallExpression" &&
+            node.expression.callee.type === "Identifier" &&
+            node.expression.callee.name === "defineRouteMeta" &&
+            node.expression.arguments.length === 1
           ) {
-            return;
+            meta = astToObject(node.expression.arguments[0] as any);
+            break;
           }
-          const node = _node as CallExpression & { start: number; end: number };
-          const name = "name" in node.callee && node.callee.name;
-
-          if (name === "defineRouteMeta") {
-            const metaString = js.code.slice(node.start, node.end);
-            try {
-              meta = JSON.parse(
-                runInNewContext(
-                  metaString.replace("defineRouteMeta", "JSON.stringify"),
-                  {}
-                )
-              );
-            } catch {
-              throw new Error(
-                "[nitro] Error parsing route meta. They should be JSON-serializable"
-              );
-            }
-          }
-        },
-      });
+        }
+      } catch (err) {
+        console.warn(
+          `[nitro] [handlers-meta] Cannot extra route meta for: ${id}: ${err}`
+        );
+      }
 
       return {
         code: `export default ${JSON.stringify(meta)};`,
@@ -74,4 +70,26 @@ export function handlersMeta(nitro: Nitro) {
       };
     },
   } satisfies Plugin;
+}
+
+function astToObject(node: Expression | Literal) {
+  switch (node.type) {
+    case "ObjectExpression": {
+      const obj: Record<string, any> = {};
+      for (const prop of node.properties) {
+        if (prop.type === "Property") {
+          const key = prop.key.name;
+          obj[key] = astToObject(prop.value as any);
+        }
+      }
+      return obj;
+    }
+    case "ArrayExpression": {
+      return node.elements.map((el) => astToObject(el)).filter(Boolean);
+    }
+    case "Literal": {
+      return node.value;
+    }
+    // No default
+  }
 }
