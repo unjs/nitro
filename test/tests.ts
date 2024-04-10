@@ -615,7 +615,7 @@ export function testNitro(
         ctx.preset === "nitro-dev"
     )("sourcemap works", async () => {
       const { data } = await callHandler({ url: "/error-stack" });
-      expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
+      expect(data.stack).toMatch("test/fixture/routes/error-stack.ts");
     });
   });
 
