@@ -302,8 +302,6 @@ interface EnvironmentMap {
   };
 }
 
-import type { Json } from "miniflare";
-
 /**
  * The `Environment` interface declares all the configuration fields that
  * can be specified for an environment.
@@ -658,7 +656,7 @@ export interface EnvironmentNonInheritable {
    * @default `{}`
    * @nonInheritable
    */
-  vars: Record<string, string | Json>;
+  vars: Record<string, string | unknown /* Json */>;
 
   /**
    * A list of durable objects that your worker should be bound to.
