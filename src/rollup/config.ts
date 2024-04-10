@@ -308,7 +308,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   rollupConfig.plugins.push(handlers(nitro));
 
   // Handlers meta
-  rollupConfig.plugins.push(handlersMeta(nitro));
+  if (nitro.options.experimental.openAPI) {
+    rollupConfig.plugins.push(handlersMeta(nitro));
+  }
 
   // Polyfill
   rollupConfig.plugins.push(
