@@ -1,5 +1,5 @@
 import type { EventHandler, H3Error, H3Event, RouterMethod } from "h3";
-import { NitroRouteMeta } from "../runtime/handler";
+import { NitroRouteMeta } from "../runtime/meta";
 import { NitroOptions } from "./nitro";
 
 type MaybeArray<T> = T | T[];

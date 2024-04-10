@@ -76,7 +76,7 @@ ${handlers
         h.lazy
       )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, method: ${JSON.stringify(
         h.method
-      )}, meta: ${JSON.stringify(h.meta, null, 2)} }`
+      )}`
   )
   .join(",\n")}
 ];
