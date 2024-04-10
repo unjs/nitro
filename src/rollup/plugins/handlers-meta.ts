@@ -78,14 +78,14 @@ function astToObject(node: Expression | Literal) {
       const obj: Record<string, any> = {};
       for (const prop of node.properties) {
         if (prop.type === "Property") {
-          const key = prop.key.name;
+          const key = (prop.key as any).name;
           obj[key] = astToObject(prop.value as any);
         }
       }
       return obj;
     }
     case "ArrayExpression": {
-      return node.elements.map((el) => astToObject(el)).filter(Boolean);
+      return node.elements.map((el) => astToObject(el as any)).filter(Boolean);
     }
     case "Literal": {
       return node.value;
