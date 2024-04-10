@@ -37,12 +37,7 @@ export async function prerender(nitro: Nitro) {
     routes.add(route);
   }
 
-  // Crawl / at least if no routes are defined
-  if (nitro.options.prerender.crawlLinks && routes.size === 0) {
-    routes.add("/");
-  }
-
-  // Allow extending prereneder routes
+  // Allow extending prerender routes
   await nitro.hooks.callHook("prerender:routes", routes);
 
   // Skip if no prerender routes specified
