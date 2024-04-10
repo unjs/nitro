@@ -15,6 +15,9 @@ export interface CloudflarePagesRoutes {
 }
 
 export interface CloudflareOptions {
+  /**
+   * Configuration for the Cloudflare Deployments
+   */
   wrangler?: WranglerConfig;
 
   pages: {
