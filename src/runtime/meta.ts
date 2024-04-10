@@ -1,8 +1,4 @@
-import type { OperationObject } from "openapi-typescript";
-
-export interface NitroRouteMeta {
-  openAPI?: OperationObject;
-}
+import type { NitroRouteMeta } from "nitropack";
 
 export function defineRouteMeta(meta: NitroRouteMeta) {
   return meta;

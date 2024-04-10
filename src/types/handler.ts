@@ -1,8 +1,13 @@
-import type { EventHandler, H3Error, H3Event, RouterMethod } from "h3";
-import { NitroRouteMeta } from "../runtime/meta";
+import type { EventHandler, H3Error, H3Event } from "h3";
+import type { OperationObject } from "openapi-typescript";
 import { NitroOptions } from "./nitro";
 
 type MaybeArray<T> = T | T[];
+
+/** @exprerimental */
+export interface NitroRouteMeta {
+  openAPI?: OperationObject;
+}
 
 export interface NitroEventHandler {
   /**
