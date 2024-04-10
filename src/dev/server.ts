@@ -223,9 +223,9 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     if (address.socketPath) {
       try {
         accessSync(address.socketPath);
-      } catch (err) {
+      } catch (error) {
         if (!lastError) {
-          lastError = err;
+          lastError = error;
         }
         return;
       }
@@ -240,9 +240,9 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       if (!address) {
         return errorHandler(lastError, event);
       }
-      await proxy.handle(event, { target: address as any }).catch((err) => {
-        lastError = err;
-        throw err;
+      await proxy.handle(event, { target: address as any }).catch((error) => {
+        lastError = error;
+        throw error;
       });
     })
   );

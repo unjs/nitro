@@ -52,7 +52,6 @@ function GracefulShutdown(server, opts) {
   let failed = false;
   let finalRun = false;
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   function onceFactory() {
     let called = false;
     return (emitter, events, callback) => {
@@ -85,8 +84,8 @@ function GracefulShutdown(server, opts) {
           process.exit(failed ? 1 : 0);
         }
       })
-      .catch((err) => {
-        debug("server shut down error occurred", err);
+      .catch((error) => {
+        debug("server shut down error occurred", error);
         // eslint-disable-next-line unicorn/no-process-exit
         process.exit(1);
       });
@@ -299,8 +298,9 @@ function GracefulShutdown(server, opts) {
         return options.onShutdown(sig);
       })
       .then(finalHandler)
-      .catch((err) => {
-        const errString = typeof err === "string" ? err : JSON.stringify(err);
+      .catch((error) => {
+        const errString =
+          typeof error === "string" ? error : JSON.stringify(error);
         debug(errString);
         failed = true;
         throw errString;

@@ -36,7 +36,8 @@ async function writeAmplifyFiles(nitro: Nitro) {
   let hasWildcardPublicAsset = false;
 
   if (nitro.options.awsAmplify?.imageOptimization && !nitro.options.static) {
-    const { path, cacheControl } = nitro.options.awsAmplify?.imageOptimization;
+    const { path, cacheControl } =
+      nitro.options.awsAmplify?.imageOptimization || {};
     routes.push({
       path,
       target: {

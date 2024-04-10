@@ -34,8 +34,8 @@ export function setupGracefulShutdown(
         }, shutdownConfig.timeout);
         nitroApp.hooks
           .callHook("close")
-          .catch((err) => {
-            console.error(err);
+          .catch((error) => {
+            console.error(error);
           })
           .finally(() => {
             clearTimeout(timeout);

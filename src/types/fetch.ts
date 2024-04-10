@@ -3,7 +3,7 @@ import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
 import type { MatchedRoutes } from "./utils";
 
 // An interface to extend in a local project
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 export interface InternalApi {}
 
 export type NitroFetchRequest =

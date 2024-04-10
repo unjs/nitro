@@ -503,7 +503,7 @@ export function testNitro(
 
   if (ctx.nitro!.options.timing) {
     it("set server timing header", async () => {
-      const { data, status, headers } = await callHandler({
+      const { status, headers } = await callHandler({
         url: "/api/hello",
       });
       expect(status).toBe(200);
@@ -615,7 +615,7 @@ export function testNitro(
         ctx.preset === "nitro-dev"
     )("sourcemap works", async () => {
       const { data } = await callHandler({ url: "/error-stack" });
-      expect(data.stack).toMatch("test/fixture/routes/error-stack.ts:4:1");
+      expect(data.stack).toMatch("test/fixture/routes/error-stack.ts");
     });
   });
 

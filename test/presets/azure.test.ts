@@ -1,10 +1,9 @@
 import { promises as fsp, existsSync } from "node:fs";
-import { Worker } from "node:worker_threads";
 import { resolve } from "pathe";
 import { describe, it, expect } from "vitest";
-import { execa, execaCommandSync } from "execa";
+import { execa } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
-import { fixtureDir, setupTest, testNitro } from "../tests";
+import { setupTest, testNitro } from "../tests";
 
 describe(
   "nitro:preset:azure",

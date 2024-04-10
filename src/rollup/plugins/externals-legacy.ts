@@ -332,10 +332,10 @@ async function isFile(file: string) {
   try {
     const stat = await fsp.stat(file);
     return stat.isFile();
-  } catch (err) {
-    if (err.code === "ENOENT") {
+  } catch (error) {
+    if (error.code === "ENOENT") {
       return false;
     }
-    throw err;
+    throw error;
   }
 }

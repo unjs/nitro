@@ -58,9 +58,9 @@ export function handlersMeta(nitro: Nitro) {
             break;
           }
         }
-      } catch (err) {
+      } catch (error) {
         console.warn(
-          `[nitro] [handlers-meta] Cannot extra route meta for: ${id}: ${err}`
+          `[nitro] [handlers-meta] Cannot extra route meta for: ${id}: ${error}`
         );
       }
 

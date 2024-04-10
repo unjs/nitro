@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import type { Preset as UnenvPreset } from "unenv";
 import type { Unimport } from "unimport";
 import type { UnimportPluginOptions } from "unimport/unplugin";

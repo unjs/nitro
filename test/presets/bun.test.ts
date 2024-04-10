@@ -1,5 +1,5 @@
 import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
+import { describe } from "vitest";
 import { execa, execaCommandSync } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
 import { setupTest, testNitro } from "../tests";

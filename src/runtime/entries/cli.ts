@@ -16,11 +16,10 @@ async function cli() {
   console.log("\n", r.body.toString());
 }
 
-// eslint-disable-next-line unicorn/prefer-module
 if (require.main === module) {
   // eslint-disable-next-line unicorn/prefer-top-level-await
-  cli().catch((err) => {
-    console.error(err);
+  cli().catch((error) => {
+    console.error(error);
     // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   });

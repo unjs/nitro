@@ -47,8 +47,8 @@ async function _handleEvent(event: FetchEvent) {
       statusText: res.statusText,
       headers: res.headers,
     });
-  } catch (err) {
-    const errString = err.message + "\n" + err.stack;
+  } catch (error) {
+    const errString = error.message + "\n" + error.stack;
     console.error(errString);
     return new Response(errString, { status: 500 });
   }

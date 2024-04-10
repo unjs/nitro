@@ -367,8 +367,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             dst,
             isWindows ? "junction" : "dir"
           )
-          .catch((err) => {
-            console.error("Cannot link", from, "to", to, err);
+          .catch((error) => {
+            console.error("Cannot link", from, "to", to, error);
           });
       };
 
@@ -512,11 +512,11 @@ async function isFile(file: string) {
   try {
     const stat = await fsp.stat(file);
     return stat.isFile();
-  } catch (err) {
-    if (err.code === "ENOENT") {
+  } catch (error) {
+    if (error.code === "ENOENT") {
       return false;
     }
-    throw err;
+    throw error;
   }
 }
 

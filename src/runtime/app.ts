@@ -46,8 +46,8 @@ function createNitroApp(): NitroApp {
   const captureError: CaptureError = (error, context = {}) => {
     const promise = hooks
       .callHookParallel("error", error, context)
-      .catch((_err) => {
-        console.error("Error while capturing another error", _err);
+      .catch((error_) => {
+        console.error("Error while capturing another error", error_);
       });
     if (context.event && isEvent(context.event)) {
       const errors = context.event.context.nitro?.errors;
@@ -194,9 +194,9 @@ function createNitroApp(): NitroApp {
   for (const plugin of plugins) {
     try {
       plugin(app);
-    } catch (err) {
-      captureError(err, { tags: ["plugin"] });
-      throw err;
+    } catch (error) {
+      captureError(error, { tags: ["plugin"] });
+      throw error;
     }
   }
 
