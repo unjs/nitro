@@ -12,10 +12,3 @@ export type HandlerDefinition = {
 };
 
 export const handlers: HandlerDefinition[];
-
-export type HandlerMeta = {
-  route: string;
-  method?: RouterMethod;
-};
-
-export const handlersMeta: HandlerMeta[];

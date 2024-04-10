@@ -7,7 +7,7 @@ import type {
   PathsObject,
 } from "openapi-typescript";
 import { joinURL } from "ufo";
-import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
+import { handlersMeta } from "#internal/nitro/virtual/server-handlers-meta";
 import { useRuntimeConfig } from "#internal/nitro";
 
 // Served as /_nitro/openapi.json
@@ -44,8 +44,8 @@ function getPaths(): PathsObject {
   const paths: PathsObject = {};
 
   for (const h of handlersMeta) {
-    const { route, parameters } = normalizeRoute(h.route);
-    const tags = defaultTags(h.route);
+    const { route, parameters } = normalizeRoute(h.route || "");
+    const tags = defaultTags(h.route || "");
     const method = (h.method || "get").toLowerCase();
 
     const item: PathItemObject = {
@@ -62,6 +62,13 @@ function getPaths(): PathsObject {
       paths[route] = item;
     } else {
       Object.assign(paths[route], item);
+    }
+
+    if (h.meta?.openAPI) {
+      paths[route][method] = {
+        ...paths[route][method],
+        ...h.meta.openAPI,
+      };
     }
   }
 

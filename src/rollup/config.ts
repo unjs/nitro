@@ -31,6 +31,7 @@ import { timing } from "./plugins/timing";
 import { publicAssets } from "./plugins/public-assets";
 import { serverAssets } from "./plugins/server-assets";
 import { handlers } from "./plugins/handlers";
+import { handlersMeta } from "./plugins/handlers-meta";
 import { esbuild } from "./plugins/esbuild";
 import { raw } from "./plugins/raw";
 import { storage } from "./plugins/storage";
@@ -305,6 +306,11 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   // Handlers
   rollupConfig.plugins.push(handlers(nitro));
+
+  // Handlers meta
+  if (nitro.options.experimental.openAPI) {
+    rollupConfig.plugins.push(handlersMeta(nitro));
+  }
 
   // Polyfill
   rollupConfig.plugins.push(
