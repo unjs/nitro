@@ -239,7 +239,7 @@ async function writeCFWrangler(nitro: Nitro) {
   const wranglerConfig: WranglerConfig = defu(configFromFile, inlineConfig);
 
   // Write wrangler.toml only if config is not empty
-  if (Object.keys(wranglerConfig).length) {
+  if (Object.keys(wranglerConfig).length > 0) {
     const wranglerPath = join(
       isCI ? nitro.options.rootDir : nitro.options.buildDir,
       "wrangler.toml"
