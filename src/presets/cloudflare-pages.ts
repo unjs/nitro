@@ -225,6 +225,11 @@ async function writeCFWrangler(nitro: Nitro) {
   const inlineConfig: WranglerConfig =
     nitro.options.cloudflare?.wrangler || ({} as WranglerConfig);
 
+  // Write wrangler.toml only if config is not empty
+  if (Object.keys(inlineConfig).length === 0) {
+    return;
+  }
+
   let configFromFile: WranglerConfig = {} as WranglerConfig;
   const configPath = resolve(
     nitro.options.rootDir,
