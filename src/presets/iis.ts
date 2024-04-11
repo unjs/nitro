@@ -117,7 +117,7 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
       await parseXmlDoc(fileString);
 
     if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
-      return buildNewXmlDoc(defu(originalWebConfig, fileWebConfig));
+      return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
     } else if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
@@ -150,7 +150,7 @@ async function iisXmlTemplate(nitro: Nitro) {
       await parseXmlDoc(fileString);
 
     if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
-      return buildNewXmlDoc(defu(originalWebConfig, fileWebConfig));
+      return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
     } else if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
