@@ -225,6 +225,10 @@ async function writeCFWrangler(nitro: Nitro) {
   const inlineConfig: WranglerConfig =
     nitro.options.cloudflare?.wrangler || ({} as WranglerConfig);
 
+  if (Object.keys(inlineConfig).length === 0) {
+    return;
+  }
+
   let configFromFile: WranglerConfig = {} as WranglerConfig;
   const configPath = resolve(
     nitro.options.rootDir,
@@ -239,12 +243,10 @@ async function writeCFWrangler(nitro: Nitro) {
   const wranglerConfig: WranglerConfig = defu(configFromFile, inlineConfig);
 
   // Write wrangler.toml only if config is not empty
-  if (Object.keys(wranglerConfig).length > 0) {
-    const wranglerPath = join(
-      isCI ? nitro.options.rootDir : nitro.options.buildDir,
-      "wrangler.toml"
-    );
+  const wranglerPath = join(
+    isCI ? nitro.options.rootDir : nitro.options.buildDir,
+    "wrangler.toml"
+  );
 
-    await fsp.writeFile(wranglerPath, stringifyTOML(wranglerConfig));
-  }
+  await fsp.writeFile(wranglerPath, stringifyTOML(wranglerConfig));
 }
