@@ -1,5 +1,5 @@
 import { Worker } from "node:worker_threads";
-import { existsSync, accessSync, promises as fsp } from "node:fs";
+import { existsSync, accessSync, statSync, promises as fsp } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { TLSSocket } from "node:tls";
 import { debounce } from "perfect-debounce";
@@ -39,6 +39,26 @@ export interface NitroDevServer {
   close: () => Promise<void>;
   watcher?: FSWatcher;
   upgrade: (req, socket, head) => void;
+}
+
+function checkSocketPathExists(socketPath: string, throwError = false) {
+  try {
+    accessSync(socketPath);
+  } catch {
+    try {
+      /*
+       * In some special file systems (such as the sandbox provided by security software),
+       * accessSync cannot determine whether the socketPath exists, but statsSync can
+       */
+      statSync(socketPath);
+    } catch (error) {
+      if (throwError) {
+        throw error;
+      }
+      return false;
+    }
+  }
+  return true;
 }
 
 function initWorker(filename: string): Promise<NitroWorker> | null {
@@ -99,7 +119,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
     await worker.worker.terminate();
     worker.worker = null;
   }
-  if (worker.address.socketPath && existsSync(worker.address.socketPath)) {
+  if (worker.address.socketPath && checkSocketPathExists(worker.address.socketPath)) {
     await fsp.rm(worker.address.socketPath).catch(() => {});
   }
 }
@@ -222,7 +242,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     }
     if (address.socketPath) {
       try {
-        accessSync(address.socketPath);
+        checkSocketPathExists(address.socketPath, true);
       } catch (error) {
         if (!lastError) {
           lastError = error;
