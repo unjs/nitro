@@ -60,7 +60,7 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^6.11.1"
+    "undici": "^6.13.0"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.1",
