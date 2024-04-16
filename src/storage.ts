@@ -12,7 +12,8 @@ export async function createStorage(nitro: Nitro) {
   for (const [path, opts] of Object.entries(mounts)) {
     if (opts.driver) {
       const driver = await import(
-        builtinDrivers[opts.driver] || opts.driver
+        builtinDrivers[opts.driver as keyof typeof builtinDrivers] ||
+          opts.driver
       ).then((r) => r.default || r);
       storage.mount(path, driver(opts));
     } else {

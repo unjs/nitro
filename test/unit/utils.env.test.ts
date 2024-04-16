@@ -27,7 +27,7 @@ describe("env utils", () => {
         .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
         .join(" ")} }`, () => {
         for (const key in test.env) {
-          process.env[key] = test.env[key];
+          process.env[key] = test.env[key as keyof typeof test.env] as string;
         }
         expect(applyEnv(test.config, { prefix: "NITRO_" })).toEqual(
           test.expected
@@ -77,7 +77,7 @@ describe("env utils", () => {
         .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
         .join(" ")} }`, () => {
         for (const key in test.env) {
-          process.env[key] = test.env[key];
+          process.env[key] = test.env[key as keyof typeof test.env];
         }
         expect(applyEnv(test.config, test.envOptions)).toEqual(test.expected);
         for (const key in test.env) {

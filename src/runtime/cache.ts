@@ -46,10 +46,10 @@ const defaultCacheOptions = {
   maxAge: 1,
 };
 
-export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
+export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
   fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
-): (...args: ArgsT) => Promise<T> {
+): (...args: ArgsT) => Promise<T | undefined> {
   opts = { ...defaultCacheOptions, ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
@@ -183,14 +183,14 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = unknown[]>(
 
 export const cachedFunction = defineCachedFunction;
 
-function getKey(...args: string[]) {
+function getKey(...args: unknown[]) {
   return args.length > 0 ? hash(args, {}) : "";
 }
 
 export interface ResponseCacheEntry<T = any> {
-  body: T;
+  body: T | undefined;
   code: number;
-  headers: Record<string, string | number | string[]>;
+  headers: Record<string, string | number | string[] | undefined>;
 }
 
 export interface CachedEventHandlerOptions<T = any>
@@ -258,7 +258,7 @@ export function defineCachedEventHandler<
       const _hashedPath = `${_pathname}.${hash(_path)}`;
       const _headers = variableHeaderNames
         .map((header) => [header, event.node.req.headers[header]])
-        .map(([name, value]) => `${escapeKey(name)}.${hash(value)}`);
+        .map(([name, value]) => `${escapeKey(name as string)}.${hash(value)}`);
       return [_hashedPath, ..._headers].join(":");
     },
     validate: (entry) => {
@@ -289,7 +289,10 @@ export function defineCachedEventHandler<
       // Only pass headers which are defined in opts.varies
       const variableHeaders: Record<string, string | string[]> = {};
       for (const header of variableHeaderNames) {
-        variableHeaders[header] = incomingEvent.node.req.headers[header];
+        const value = incomingEvent.node.req.headers[header];
+        if (value !== undefined) {
+          variableHeaders[header] = value;
+        }
       }
 
       // Create proxies to avoid sharing state with user request
@@ -309,7 +312,7 @@ export function defineCachedEventHandler<
         },
         setHeader(name, value) {
           resHeaders[name] = value as any;
-          return this;
+          return this as typeof incomingEvent.node.res;
         },
         getHeaderNames() {
           return Object.keys(resHeaders);
@@ -333,28 +336,37 @@ export function defineCachedEventHandler<
           if (typeof arg3 === "function") {
             arg3();
           }
-          return this;
+          return this as typeof incomingEvent.node.res;
         },
         write(chunk, arg2?, arg3?) {
           if (typeof chunk === "string") {
             _resSendBody = chunk;
           }
           if (typeof arg2 === "function") {
-            arg2();
+            arg2(undefined);
           }
           if (typeof arg3 === "function") {
             arg3();
           }
-          return this;
+          return true;
         },
         writeHead(statusCode, headers) {
           this.statusCode = statusCode;
           if (headers) {
+            if (Array.isArray(headers) || typeof headers === "string") {
+              throw new TypeError("Raw headers  is not supported.");
+            }
             for (const header in headers) {
-              this.setHeader(header, headers[header]);
+              const value = headers[header];
+              if (value !== undefined) {
+                (this as typeof incomingEvent.node.res).setHeader(
+                  header,
+                  value
+                );
+              }
             }
           }
-          return this;
+          return this as typeof incomingEvent.node.res;
         },
       });
 
@@ -363,11 +375,11 @@ export function defineCachedEventHandler<
       // Assign bound fetch to context
       event.fetch = (url, fetchOptions) =>
         fetchWithEvent(event, url, fetchOptions, {
-          fetch: useNitroApp().localFetch,
+          fetch: useNitroApp().localFetch as any,
         });
       event.$fetch = ((url, fetchOptions) =>
         fetchWithEvent(event, url, fetchOptions as RequestInit, {
-          fetch: globalThis.$fetch,
+          fetch: globalThis.$fetch as any,
         })) as $Fetch<unknown, NitroFetchRequest>;
       event.context = incomingEvent.context;
       const body = (await handler(event)) || _resSendBody;
@@ -422,7 +434,9 @@ export function defineCachedEventHandler<
     }
 
     // Call with cache
-    const response = await _cachedHandler(event);
+    const response = (await _cachedHandler(
+      event
+    )) as ResponseCacheEntry<Response>;
 
     // Don't continue if response is already handled by user
     if (event.node.res.headersSent || event.node.res.writableEnded) {
@@ -451,7 +465,9 @@ export function defineCachedEventHandler<
           splitCookiesString(value as string[])
         );
       } else {
-        event.node.res.setHeader(name, value);
+        if (value !== undefined) {
+          event.node.res.setHeader(name, value);
+        }
       }
     }
 
@@ -467,13 +483,13 @@ function cloneWithProxy<T extends object = any>(
   return new Proxy(obj, {
     get(target, property, receiver) {
       if (property in overrides) {
-        return overrides[property];
+        return overrides[property as keyof T];
       }
       return Reflect.get(target, property, receiver);
     },
     set(target, property, value, receiver) {
       if (property in overrides) {
-        overrides[property] = value;
+        overrides[property as keyof T] = value;
         return true;
       }
       return Reflect.set(target, property, value, receiver);

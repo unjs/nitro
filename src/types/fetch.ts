@@ -64,8 +64,8 @@ export type ExtractedRouteMethod<
   O extends NitroFetchOptions<R>,
 > = O extends undefined
   ? "get"
-  : Lowercase<O["method"]> extends RouterMethod
-    ? Lowercase<O["method"]>
+  : Lowercase<Exclude<O["method"], undefined>> extends RouterMethod
+    ? Lowercase<Exclude<O["method"], undefined>>
     : "get";
 
 export interface $Fetch<

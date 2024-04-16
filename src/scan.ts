@@ -63,7 +63,7 @@ export async function scanServerRoutes(
     const suffixMatch = route.match(suffixRegex);
     let method: MatchedMethdSuffix | undefined;
     let env: MatchedEnvSuffix | undefined;
-    if (suffixMatch) {
+    if (suffixMatch?.index) {
       route = route.slice(0, Math.max(0, suffixMatch.index));
       method = suffixMatch[1] as MatchedMethdSuffix;
       env = suffixMatch[3] as MatchedEnvSuffix;

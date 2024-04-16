@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
 import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";

@@ -6,6 +6,7 @@ import { debounce } from "perfect-debounce";
 import {
   App,
   createApp,
+  createError,
   eventHandler,
   fromNodeMiddleware,
   H3Error,
@@ -23,9 +24,11 @@ import type { Nitro, NitroBuildInfo } from "../types";
 import { version as nitroVersion } from "../../package.json";
 import { createVFSHandler } from "./vfs";
 import defaultErrorHandler from "./error";
+import type { IncomingMessage, OutgoingMessage } from "node:http";
+import type { Duplex } from "node:stream";
 
 export interface NitroWorker {
-  worker: Worker;
+  worker: Worker | null;
   address: { host: string; port: number; socketPath?: string };
 }
 
@@ -38,12 +41,16 @@ export interface NitroDevServer {
   app: App;
   close: () => Promise<void>;
   watcher?: FSWatcher;
-  upgrade: (req, socket, head) => void;
+  upgrade: (
+    req: IncomingMessage,
+    socket: OutgoingMessage<IncomingMessage> | Duplex,
+    head: Buffer
+  ) => void;
 }
 
-function initWorker(filename: string): Promise<NitroWorker> | null {
+function initWorker(filename: string): Promise<NitroWorker> | undefined {
   if (!existsSync(filename)) {
-    return null;
+    return;
   }
   return new Promise((resolve, reject) => {
     const worker = new Worker(filename);
@@ -59,8 +66,8 @@ function initWorker(filename: string): Promise<NitroWorker> | null {
       newErr.stack = err.stack;
       reject(newErr);
     });
-    const addressListener = (event) => {
-      if (!event || !event.address) {
+    const addressListener = (event: any) => {
+      if (!event || !event?.address) {
         return;
       }
       worker.off("message", addressListener);
@@ -73,14 +80,14 @@ function initWorker(filename: string): Promise<NitroWorker> | null {
   });
 }
 
-async function killWorker(worker: NitroWorker, nitro: Nitro) {
+async function killWorker(worker: NitroWorker | undefined, nitro: Nitro) {
   if (!worker) {
     return;
   }
   if (worker.worker) {
     worker.worker.postMessage({ event: "shutdown" });
     const gracefulShutdownTimeout =
-      Number.parseInt(process.env.NITRO_SHUTDOWN_TIMEOUT, 10) || 3;
+      Number.parseInt(process.env.NITRO_SHUTDOWN_TIMEOUT || "", 10) || 3;
     await new Promise<void>((resolve) => {
       const timeout = setTimeout(() => {
         nitro.logger.warn(
@@ -88,7 +95,7 @@ async function killWorker(worker: NitroWorker, nitro: Nitro) {
         );
         resolve();
       }, gracefulShutdownTimeout * 1000);
-      worker.worker.once("message", (message) => {
+      worker.worker?.once("message", (message) => {
         if (message.event === "exit") {
           clearTimeout(timeout);
           resolve();
@@ -115,17 +122,20 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   // Error handler
   const errorHandler = nitro.options.devErrorHandler || defaultErrorHandler;
 
-  let lastError: H3Error = null;
-  let reloadPromise: Promise<void> = null;
+  let lastError: H3Error | undefined;
+  let reloadPromise: Promise<void> | undefined;
 
-  let currentWorker: NitroWorker = null;
+  let currentWorker: NitroWorker | undefined;
   async function _reload() {
     // Kill old worker
     const oldWorker = currentWorker;
-    currentWorker = null;
+    currentWorker = undefined;
     await killWorker(oldWorker, nitro);
     // Create a new worker
     currentWorker = await initWorker(workerEntry);
+    if (!currentWorker) {
+      return;
+    }
     // Write nitro.json
     const buildInfoPath = resolve(nitro.options.buildDir, "nitro.json");
     const buildInfo: NitroBuildInfo = {
@@ -145,14 +155,14 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   const reload = debounce(() => {
     reloadPromise = _reload()
       .then(() => {
-        lastError = null;
+        lastError = undefined;
       })
       .catch((error) => {
         console.error("[worker reload]", error);
         lastError = error;
       })
       .finally(() => {
-        reloadPromise = null;
+        reloadPromise = undefined;
       });
     return reloadPromise;
   });
@@ -170,7 +180,10 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
 
   // Serve asset dirs
   for (const asset of nitro.options.publicAssets) {
-    const url = joinURL(nitro.options.runtimeConfig.app.baseURL, asset.baseURL);
+    const url = joinURL(
+      nitro.options.runtimeConfig.app.baseURL,
+      asset.baseURL || "/"
+    );
     app.use(url, fromNodeMiddleware(serveStatic(asset.dir)));
     if (!asset.fallthrough) {
       app.use(url, fromNodeMiddleware(servePlaceholder()));
@@ -225,7 +238,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
         accessSync(address.socketPath);
       } catch (error) {
         if (!lastError) {
-          lastError = error;
+          lastError = error as typeof lastError;
         }
         return;
       }
@@ -238,7 +251,8 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       await reloadPromise;
       const address = getWorkerAddress();
       if (!address) {
-        return errorHandler(lastError, event);
+        const error = lastError || createError("Worker not ready");
+        return errorHandler(error, event);
       }
       await proxy.handle(event, { target: address as any }).catch((error) => {
         lastError = error;
@@ -248,9 +262,14 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   );
 
   // Upgrade handler
-  const upgrade = (req, socket, head) => {
+  const upgrade = (
+    req: IncomingMessage,
+    socket: OutgoingMessage<IncomingMessage> | Duplex,
+    head: any
+  ) => {
     return proxy.proxy.ws(
       req,
+      // @ts-expect-error
       socket,
       {
         target: getWorkerAddress(),
@@ -264,6 +283,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   let listeners: Listener[] = [];
   const _listen: NitroDevServer["listen"] = async (port, opts?) => {
     const listener = await listen(toNodeListener(app), { port, ...opts });
+    listener.server;
     listener.server.on("upgrade", (req, sock, head) => {
       upgrade(req, sock, head);
     });
@@ -272,7 +292,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   };
 
   // Optional watcher
-  let watcher: FSWatcher = null;
+  let watcher: FSWatcher | undefined;
   if (nitro.options.devServer.watch.length > 0) {
     watcher = watch(nitro.options.devServer.watch, nitro.options.watchOptions);
     watcher.on("add", reload).on("change", reload);
@@ -304,8 +324,8 @@ function createProxy(defaults: ProxyServerOptions = {}) {
   const handle = async (event: H3Event, opts: ProxyServerOptions = {}) => {
     try {
       await proxy.web(event.node.req, event.node.res, opts);
-    } catch (error) {
-      if (error.code !== "ECONNRESET") {
+    } catch (error: any) {
+      if (error?.code !== "ECONNRESET") {
         throw error;
       }
     }

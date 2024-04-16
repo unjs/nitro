@@ -27,7 +27,7 @@ Deno.serve(
     cert: Deno.env.get("NITRO_SSL_CERT"),
     port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
     hostname: Deno.env.get("NITRO_HOST") || Deno.env.get("HOST"),
-    onListen: (opts) => {
+    onListen: (opts: any) => {
       const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
       const url = `${opts.hostname}:${opts.port}${baseURL}`;
       console.log(`Listening ${url}`);
@@ -46,7 +46,7 @@ async function handler(request: Request, info: any) {
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"
   ) {
-    return ws.handleUpgrade(request, info);
+    return ws!.handleUpgrade(request, info);
   }
 
   const url = new URL(request.url);

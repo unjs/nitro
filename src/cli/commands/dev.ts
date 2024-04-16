@@ -52,7 +52,7 @@ export default defineCommand({
               );
 
               await (diff.every((e) => hmrKeyRe.test(e.key))
-                ? nitro.updateConfig(newConfig.config) // Hot reload
+                ? nitro.updateConfig(newConfig.config || {}) // Hot reload
                 : reload()); // Full reload
             },
           },
@@ -61,7 +61,7 @@ export default defineCommand({
       nitro.hooks.hookOnce("restart", reload);
       const server = createDevServer(nitro);
       const listhenOptions = parseArgs(args);
-      await server.listen(listhenOptions.port, listhenOptions);
+      await server.listen(listhenOptions.port || 3000, listhenOptions);
       await prepare(nitro);
       await build(nitro);
     };

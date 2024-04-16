@@ -15,12 +15,12 @@ const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
-Deno.serve((request, info) => {
+Deno.serve((request: Request, info: any /* ServeHandlerInfo */) => {
   if (
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"
   ) {
-    return ws.handleUpgrade(request, info);
+    return ws!.handleUpgrade(request, info);
   }
   return handleRequest(request, info);
 });

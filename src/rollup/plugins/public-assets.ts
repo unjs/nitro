@@ -116,7 +116,9 @@ export function readAsset (id) {
         );
 
         const readAssetImport = `#internal/nitro/virtual/public-assets-${
-          readAssetHandler[nitro.options.serveStatic as string] || "null"
+          (typeof nitro.options.serveStatic === "string"
+            ? readAssetHandler[nitro.options.serveStatic]
+            : undefined) || "null"
         }`;
 
         return `

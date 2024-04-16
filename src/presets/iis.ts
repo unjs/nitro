@@ -115,9 +115,9 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
     const fileWebConfig: Record<string, unknown> =
       await parseXmlDoc(fileString);
 
-    if (nitro.options.iis.mergeConfig && !nitro.options.iis.overrideConfig) {
+    if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
       return buildNewXmlDoc({ ...originalWebConfig, ...fileWebConfig });
-    } else if (nitro.options.iis.overrideConfig) {
+    } else if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }
@@ -148,9 +148,9 @@ async function iisXmlTemplate(nitro: Nitro) {
     const fileWebConfig: Record<string, unknown> =
       await parseXmlDoc(fileString);
 
-    if (nitro.options.iis.mergeConfig && !nitro.options.iis.overrideConfig) {
+    if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
       return buildNewXmlDoc({ ...originalWebConfig, ...fileWebConfig });
-    } else if (nitro.options.iis.overrideConfig) {
+    } else if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }
@@ -167,8 +167,8 @@ export async function parseXmlDoc(
     return {};
   }
   const parser = new Parser();
-  let parsedRecord: Record<string, unknown>;
-  parser.parseString(xml, function (_, r) {
+  let parsedRecord: Record<string, unknown> = {};
+  parser.parseString(xml, (_, r) => {
     parsedRecord = r;
   });
   return parsedRecord;

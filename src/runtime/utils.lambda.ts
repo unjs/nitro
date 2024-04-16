@@ -4,7 +4,7 @@ import { toBuffer } from "./utils";
 
 export function normalizeLambdaIncomingHeaders(
   headers?: APIGatewayProxyEventHeaders
-) {
+): Record<string, string | string[] | undefined> {
   return Object.fromEntries(
     Object.entries(headers || {}).map(([key, value]) => [
       key.toLowerCase(),
@@ -30,7 +30,14 @@ export function normalizeLambdaOutgoingHeaders(
 // binaryMediaTypes should be */*
 // see https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings.html
 export async function normalizeLambdaOutgoingBody(
-  body: BodyInit | ReadableStream | Buffer | Readable | Uint8Array,
+  body:
+    | BodyInit
+    | ReadableStream
+    | Buffer
+    | Readable
+    | Uint8Array
+    | null
+    | undefined,
   headers: Record<string, number | string | string[] | undefined>
 ): Promise<{ type: "text" | "binary"; body: string }> {
   if (typeof body === "string") {

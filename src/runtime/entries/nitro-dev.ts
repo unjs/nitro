@@ -46,12 +46,12 @@ function getAddress() {
 const listenAddress = getAddress();
 const listener = server.listen(listenAddress, () => {
   const _address = server.address();
-  parentPort.postMessage({
+  parentPort?.postMessage({
     event: "listen",
     address:
       typeof _address === "string"
         ? { socketPath: _address }
-        : { host: "localhost", port: _address.port },
+        : { host: "localhost", port: _address?.port },
   });
 });
 
@@ -74,7 +74,7 @@ nitroApp.router.get(
 nitroApp.router.use(
   "/_nitro/tasks/:name",
   defineEventHandler(async (event) => {
-    const name = getRouterParam(event, "name");
+    const name = getRouterParam(event, "name") as string;
     const payload = {
       ...getQuery(event),
       ...(await readBody(event)
@@ -92,10 +92,10 @@ trapUnhandledNodeErrors();
 async function onShutdown(signal?: NodeJS.Signals) {
   await nitroApp.hooks.callHook("close");
 }
-parentPort.on("message", async (msg) => {
+parentPort?.on("message", async (msg) => {
   if (msg && msg.event === "shutdown") {
     await onShutdown();
-    parentPort.postMessage({ event: "exit" });
+    parentPort?.postMessage({ event: "exit" });
   }
 });
 

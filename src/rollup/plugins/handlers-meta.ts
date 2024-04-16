@@ -13,7 +13,7 @@ const esbuildLoaders = {
   ".js": "js",
   ".tsx": "tsx",
   ".jsx": "jsx",
-};
+} as const;
 
 export function handlersMeta(nitro: Nitro) {
   return {
@@ -24,6 +24,9 @@ export function handlersMeta(nitro: Nitro) {
       }
       if (id.endsWith(`?meta`)) {
         const resolved = await this.resolve(id.replace(`?meta`, ``));
+        if (!resolved) {
+          return;
+        }
         return virtualPrefix + resolved.id;
       }
     },
@@ -41,7 +44,7 @@ export function handlersMeta(nitro: Nitro) {
       let meta: NitroEventHandler["meta"] | null = null;
 
       try {
-        const ext = extname(id);
+        const ext = extname(id) as keyof typeof esbuildLoaders;
         const jsCode = await transform(code, {
           loader: esbuildLoaders[ext],
         }).then((r) => r.code);
@@ -72,7 +75,7 @@ export function handlersMeta(nitro: Nitro) {
   } satisfies Plugin;
 }
 
-function astToObject(node: Expression | Literal) {
+function astToObject(node: Expression | Literal): any {
   switch (node.type) {
     case "ObjectExpression": {
       const obj: Record<string, any> = {};

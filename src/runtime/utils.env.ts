@@ -1,6 +1,5 @@
 import destr from "destr";
 import { snakeCase } from "scule";
-import { klona } from "klona";
 
 export type EnvOptions = {
   prefix?: string;
@@ -19,14 +18,18 @@ function _isObject(input: unknown) {
   return typeof input === "object" && !Array.isArray(input);
 }
 
-export function applyEnv(obj: object, opts: EnvOptions, parentKey = "") {
+export function applyEnv(
+  obj: Record<string, any>,
+  opts: EnvOptions,
+  parentKey = ""
+) {
   for (const key in obj) {
     const subKey = parentKey ? `${parentKey}_${key}` : key;
     const envValue = getEnv(subKey, opts);
     if (_isObject(obj[key])) {
       // Same as before
       if (_isObject(envValue)) {
-        obj[key] = { ...obj[key], ...(envValue as object) };
+        obj[key] = { ...(obj[key] as any), ...(envValue as any) };
         applyEnv(obj[key], opts, subKey);
       }
       // If envValue is undefined
