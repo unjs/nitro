@@ -6,7 +6,7 @@ settings:
 
 overrides:
   nitropack: link:.
-  undici: ^6.11.1
+  undici: ^6.13.0
 
 importers:
 
@@ -305,7 +305,7 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(typescript@5.4.5)
       undici:
-        specifier: ^6.11.1
+        specifier: ^6.13.0
         version: 6.13.0
       vitest:
         specifier: ^1.5.0
