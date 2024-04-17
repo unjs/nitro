@@ -18,7 +18,9 @@ export function handlers(nitro: Nitro) {
     );
 
     return handlers.filter((h) => {
-      const envs = (Array.isArray(h.env) ? h.env : [h.env]).filter(Boolean);
+      const envs = (Array.isArray(h.env) ? h.env : [h.env]).filter(
+        Boolean
+      ) as string[];
       return envs.length === 0 || envs.some((env) => envConditions.has(env));
     });
   };

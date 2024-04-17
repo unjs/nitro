@@ -92,7 +92,7 @@ async function writeCFRoutes(nitro: Nitro) {
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
     (dir, index, array) => {
-      if (dir.fallthrough) {
+      if (dir.fallthrough || !dir.baseURL) {
         return false;
       }
 
@@ -109,9 +109,9 @@ async function writeCFRoutes(nitro: Nitro) {
   );
 
   // Explicit prefixes
-  routes.exclude.push(
+  routes.exclude!.push(
     ...explicitPublicAssets
-      .map((dir) => joinURL(dir.baseURL, "*"))
+      .map((dir) => joinURL(dir.baseURL!, "*"))
       .sort(comparePaths)
   );
 
@@ -124,17 +124,17 @@ async function writeCFRoutes(nitro: Nitro) {
       "_worker.js",
       "_worker.js.map",
       "nitro.json",
-      ...routes.exclude.map((path) =>
+      ...routes.exclude!.map((path) =>
         withoutLeadingSlash(path.replace(/\/\*$/, "/**"))
       ),
     ],
   });
-  routes.exclude.push(
+  routes.exclude!.push(
     ...publicAssetFiles.map((i) => withLeadingSlash(i)).sort(comparePaths)
   );
 
   // Only allow 100 rules in total (include + exclude)
-  routes.exclude.splice(100 - routes.include.length);
+  routes.exclude!.splice(100 - routes.include!.length);
 
   await writeRoutes();
 }
@@ -196,9 +196,9 @@ async function writeCFPagesRedirects(nitro: Nitro) {
   for (const [key, routeRules] of rules.filter(
     ([_, routeRules]) => routeRules.redirect
   )) {
-    const code = routeRules.redirect.statusCode;
+    const code = routeRules.redirect!.statusCode;
     contents.unshift(
-      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}`
+      `${key.replace("/**", "/*")}\t${routeRules.redirect!.to}\t${code}`
     );
   }
 
@@ -226,7 +226,7 @@ async function writeCFWrangler(nitro: Nitro) {
     nitro.options.cloudflare?.wrangler || ({} as WranglerConfig);
 
   // Write wrangler.toml only if config is not empty
-  if (Object.keys(inlineConfig).length === 0) {
+  if (!inlineConfig || Object.keys(inlineConfig).length === 0) {
     return;
   }
 

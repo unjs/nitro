@@ -34,7 +34,7 @@ describe.skipIf(isCI)("nitro:preset:nitro-dev", async () => {
         });
 
         it("defineRouteMeta works", () => {
-          expect(spec.paths["/api/meta/test"]).toMatchInlineSnapshot(`
+          expect(spec.paths?.["/api/meta/test"]).toMatchInlineSnapshot(`
             {
               "get": {
                 "description": "Test route description",

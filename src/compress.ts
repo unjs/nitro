@@ -59,7 +59,7 @@ export async function compressPublicAssets(nitro: Nitro) {
           };
           const compressedBuff: Buffer = await new Promise(
             (resolve, reject) => {
-              const cb = (error, result: Buffer) =>
+              const cb = (error: Error | null, result: Buffer) =>
                 error ? reject(error) : resolve(result);
               if (encoding === "gzip") {
                 zlib.gzip(fileContents, gzipOptions, cb);

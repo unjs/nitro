@@ -38,13 +38,15 @@ async function writeAmplifyFiles(nitro: Nitro) {
   if (nitro.options.awsAmplify?.imageOptimization && !nitro.options.static) {
     const { path, cacheControl } =
       nitro.options.awsAmplify?.imageOptimization || {};
-    routes.push({
-      path,
-      target: {
-        kind: "ImageOptimization",
-        cacheControl,
-      },
-    });
+    if (path) {
+      routes.push({
+        path,
+        target: {
+          kind: "ImageOptimization",
+          cacheControl,
+        },
+      });
+    }
   }
 
   const computeTarget: AmplifyRouteTarget = nitro.options.static

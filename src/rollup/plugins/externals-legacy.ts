@@ -182,7 +182,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         opts.traceOptions
       )
         .then((r) =>
-          [...r.fileList].map((f) => resolve(opts.traceOptions.base, f))
+          [...r.fileList].map((f) => resolve(opts.traceOptions!.base!, f))
         )
         .then((r) => r.filter((file) => file.includes("node_modules")));
 
@@ -206,7 +206,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Keep track of npm packages
       const tracedPackages = new Map(); // name => pkgDir
-      const ignoreDirs = [];
+      const ignoreDirs = [] as string[];
       const ignoreWarns = new Set();
       for (const file of tracedFiles) {
         const { baseDir, pkgName } = parseNodeModulePath(file);
@@ -275,9 +275,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         if (!(await isFile(file))) {
           return;
         }
-        const src = resolve(opts.traceOptions.base, file);
+        const src = resolve(opts.traceOptions!.base!, file);
         const { pkgName, subpath } = parseNodeModulePath(file);
-        const dst = resolve(opts.outDir, `node_modules/${pkgName + subpath}`);
+        const dst = resolve(opts.outDir!, `node_modules/${pkgName! + subpath}`);
         await fsp.mkdir(dirname(dst), { recursive: true });
         try {
           await fsp.copyFile(src, dst);
@@ -293,7 +293,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Write an informative package.json
       await fsp.writeFile(
-        resolve(opts.outDir, "package.json"),
+        resolve(opts.outDir!, "package.json"),
         JSON.stringify(
           {
             name: "nitro-output",
@@ -332,7 +332,7 @@ async function isFile(file: string) {
   try {
     const stat = await fsp.stat(file);
     return stat.isFile();
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === "ENOENT") {
       return false;
     }

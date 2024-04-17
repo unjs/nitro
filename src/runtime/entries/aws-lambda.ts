@@ -49,11 +49,14 @@ export async function handler(
     event,
     url,
     context,
-    headers: normalizeLambdaIncomingHeaders(event.headers),
+    headers: normalizeLambdaIncomingHeaders(event.headers) as Record<
+      string,
+      string | string[]
+    >,
     method,
     query,
     body: event.isBase64Encoded
-      ? Buffer.from(event.body, "base64").toString("utf8")
+      ? Buffer.from(event.body || "", "base64").toString("utf8")
       : event.body,
   });
 

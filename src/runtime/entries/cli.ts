@@ -3,7 +3,8 @@ import { nitroApp } from "../app";
 
 async function cli() {
   const url = process.argv[2] || "/";
-  const debug = (label, ...args) => console.debug(`> ${label}:`, ...args);
+  const debug = (label: string, ...args: any[]) =>
+    console.debug(`> ${label}:`, ...args);
   const r = await nitroApp.localCall({ url });
 
   debug("URL", url);
@@ -13,7 +14,7 @@ async function cli() {
   for (const header of r.headers.entries()) {
     debug(header[0], header[1]);
   }
-  console.log("\n", r.body.toString());
+  console.log("\n", r.body?.toString());
 }
 
 if (require.main === module) {

@@ -289,7 +289,7 @@ export interface NitroOptions extends PresetOptions {
       scalar?: ReferenceConfiguration;
     };
   };
-  experimental?: {
+  experimental: {
     legacyExternals?: boolean;
     openAPI?: boolean;
     /**

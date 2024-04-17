@@ -11,7 +11,7 @@ addEventListener("fetch", (event: FetchEvent) => {
   event.respondWith(handleEvent(url, event));
 });
 
-async function handleEvent(url, event) {
+async function handleEvent(url: URL, event: FetchEvent) {
   let body;
   if (event.request.body) {
     body = await event.request.arrayBuffer();

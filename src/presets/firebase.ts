@@ -13,7 +13,8 @@ export const firebase = defineNitroPreset({
   },
   firebase: {
     // we need this defined here so it's picked up by the template in firebase's entry
-    gen: (Number.parseInt(process.env.NITRO_FIREBASE_GEN) || "default") as any,
+    gen: (Number.parseInt(process.env.NITRO_FIREBASE_GEN || "") ||
+      "default") as any,
   },
   hooks: {
     async compiled(nitro) {

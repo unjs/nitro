@@ -1,4 +1,5 @@
 import { tmpdir } from "node:os";
+import type { RequestListener } from "node:http";
 import { promises as fsp } from "node:fs";
 import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
@@ -10,9 +11,7 @@ import { joinURL } from "ufo";
 import { defu } from "defu";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
-
-// Refactor: https://github.com/unjs/std-env/issues/60
-const nodeVersion = Number.parseInt(process.versions.node.match(/^v?(\d+)/)[0]);
+import { nodeMajorVersion } from "std-env";
 
 const { createNitro, build, prepare, copyPublicAssets, prerender } =
   (_nitro as any as { default: typeof _nitro }).default || _nitro;
@@ -35,7 +34,11 @@ export interface Context {
 }
 
 // https://github.com/unjs/nitro/pull/1240
-export const describeIf = (condition, title, factory) =>
+export const describeIf = (
+  condition: boolean,
+  title: string,
+  factory: () => any
+) =>
   condition
     ? describe(title, factory)
     : describe(title, () => {
@@ -128,7 +131,7 @@ export async function setupTest(
     ctx.server = await devServer.listen({});
     await prepare(ctx.nitro);
     const ready = new Promise<void>((resolve) => {
-      ctx.nitro.hooks.hook("dev:reload", () => resolve());
+      ctx.nitro!.hooks.hook("dev:reload", () => resolve());
     });
     await build(ctx.nitro);
     await ready;
@@ -152,7 +155,7 @@ export async function setupTest(
   return ctx;
 }
 
-export async function startServer(ctx: Context, handle) {
+export async function startServer(ctx: Context, handle: RequestListener) {
   ctx.server = await listen(handle);
   console.log(">", ctx.server!.url);
 }
@@ -172,7 +175,7 @@ export function testNitro(
   let _handler: TestHandler;
 
   async function callHandler(
-    options,
+    options: any,
     callOpts: { binary?: boolean } = {}
   ): Promise<TestHandlerResult> {
     const result = await _handler(options);
@@ -578,12 +581,12 @@ export function testNitro(
         "node",
         "nitro-dev",
         "vercel",
-        nodeVersion < 18 && "deno-server",
-        nodeVersion < 18 && "bun",
+        (nodeMajorVersion || 0) < 18 && "deno-server",
+        (nodeMajorVersion || 0) < 18 && "bun",
       ].filter(Boolean);
       if (notSplitingPresets.includes(ctx.preset)) {
         expectedCookies =
-          nodeVersion < 18
+          (nodeMajorVersion || 0) < 18
             ? "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/"
             : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
       }
@@ -602,13 +605,13 @@ export function testNitro(
     it.skipIf(ctx.isIsolated)("captures errors", async () => {
       const { data } = await callHandler({ url: "/api/errors" });
       const allErrorMessages = (data.allErrors || []).map(
-        (entry) => entry.message
+        (entry: any) => entry.message
       );
       expect(allErrorMessages).to.includes("Service Unavailable");
     });
 
     it.skipIf(
-      !ctx.nitro.options.node ||
+      !ctx.nitro!.options.node ||
         // TODO: Investigate
         ctx.preset === "bun" ||
         ctx.preset === "deno-server" ||
@@ -620,7 +623,7 @@ export function testNitro(
   });
 
   describe("async context", () => {
-    it.skipIf(!ctx.nitro.options.node)("works", async () => {
+    it.skipIf(!ctx.nitro!.options.node)("works", async () => {
       const { data } = await callHandler({ url: "/context?foo" });
       expect(data).toMatchObject({
         context: {
@@ -682,7 +685,7 @@ export function testNitro(
   });
 
   describe.skipIf(
-    !ctx.nitro.options.node ||
+    !ctx.nitro!.options.node ||
       ctx.isLambda ||
       ctx.isWorker ||
       ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
