@@ -209,6 +209,7 @@ export interface NitroRouteRules
   redirect?: { to: string; statusCode: HTTPStatusCode };
   proxy?: { to: string } & ProxyOptions;
   allowQuery?: string[];
+  passQuery?: boolean;
 }
 
 export interface NitroFrameworkInfo {
