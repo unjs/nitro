@@ -184,7 +184,7 @@ export async function loadOptions(
     },
     resolve(id: string) {
       const presets = _PRESETS as any as Record<string, NitroPreset>;
-      let matchedPreset = presets[camelCase(id)] || presets[id] || undefined;
+      let matchedPreset = presets[camelCase(id)] || presets[id];
       if (!matchedPreset) {
         return null;
       }
