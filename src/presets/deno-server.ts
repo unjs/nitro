@@ -16,13 +16,14 @@ export const denoServer = defineNitroPreset({
   unenv: {
     inject: {
       global: ["unenv/runtime/polyfill/global-this", "default"],
-      Buffer: ["buffer", "Buffer"],
-      setTimeout: ["timers", "setTimeout"],
-      clearTimeout: ["timers", "clearTimeout"],
-      setInterval: ["timers", "setInterval"],
-      clearInterval: ["timers", "clearInterval"],
-      setImmediate: ["timers", "setImmediate"],
-      clearImmediate: ["timers", "clearImmediate"],
+      Buffer: ["node:buffer", "Buffer"],
+      setTimeout: ["node:timers", "setTimeout"],
+      clearTimeout: ["node:timers", "clearTimeout"],
+      setInterval: ["node:timers", "setInterval"],
+      clearInterval: ["node:timers", "clearInterval"],
+      setImmediate: ["node:timers", "setImmediate"],
+      clearImmediate: ["node:timers", "clearImmediate"],
+      process: ["node:process", "default"],
     },
   },
   rollupConfig: {
