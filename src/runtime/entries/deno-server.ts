@@ -20,21 +20,25 @@ if (Deno.env.get("DEBUG")) {
   );
 }
 
-// https://deno.land/api@v1.34.3?s=Deno.serve&unstable=
-Deno.serve(
-  {
-    key: Deno.env.get("NITRO_SSL_KEY"),
-    cert: Deno.env.get("NITRO_SSL_CERT"),
-    port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
-    hostname: Deno.env.get("NITRO_HOST") || Deno.env.get("HOST"),
-    onListen: (opts) => {
-      const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-      const url = `${opts.hostname}:${opts.port}${baseURL}`;
-      console.log(`Listening ${url}`);
-    },
+// https://deno.land/api@v1.42.4?s=Deno.serve
+const serveOptions = {
+  key: Deno.env.get("NITRO_SSL_KEY"),
+  cert: Deno.env.get("NITRO_SSL_CERT"),
+  port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
+  hostname: Deno.env.get("NITRO_HOST") || Deno.env.get("HOST"),
+  onListen: (opts) => {
+    const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
+    const url = `${opts.hostname}:${opts.port}${baseURL}`;
+    console.log(`Listening ${url}`);
   },
-  handler
-);
+};
+
+if (!serveOptions.key || !serveOptions.cert) {
+  delete serveOptions.key;
+  delete serveOptions.cert;
+}
+
+Deno.serve(serveOptions, handler);
 
 // Websocket support
 const ws = import.meta._websocket

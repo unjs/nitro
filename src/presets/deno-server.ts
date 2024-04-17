@@ -23,7 +23,7 @@ export const denoServer = defineNitroPreset({
       clearInterval: ["node:timers", "clearInterval"],
       setImmediate: ["node:timers", "setImmediate"],
       clearImmediate: ["node:timers", "clearImmediate"],
-      process: ["node:process", "default"],
+      // process: ["node:process", "default"],
     },
   },
   rollupConfig: {
