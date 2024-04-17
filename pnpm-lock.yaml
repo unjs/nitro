@@ -229,6 +229,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20240405.0
         version: 4.20240405.0
+      '@deno/types':
+        specifier: ^0.0.1
+        version: 0.0.1
       '@scalar/api-reference':
         specifier: ^1.21.2
         version: 1.21.2(postcss@8.4.38)(terser@5.30.3)(typescript@5.4.5)(unified@11.0.4)(vue@3.4.23(typescript@5.4.5))(yjs@13.6.14)
@@ -660,6 +663,9 @@ packages:
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
+
+  '@deno/types@0.0.1':
+    resolution: {integrity: sha512-KTB6Blr05Iw7k7aMzPWlJX0kv08xXZ5Mu7fxSp0M1HnaOHDRnFC956I4PxYdOtN27+b2723Id2G2oofxLvA35A==}
 
   '@edge-runtime/format@2.2.1':
     resolution: {integrity: sha512-JQTRVuiusQLNNLe2W9tnzBlV/GvSVcozLl4XZHk5swnRZ/v6jp8TqR8P7sqmJsQqblDZ3EztcWmLDbhRje/+8g==}
@@ -6215,6 +6221,8 @@ snapshots:
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+
+  '@deno/types@0.0.1': {}
 
   '@edge-runtime/format@2.2.1': {}
 
