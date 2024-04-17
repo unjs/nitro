@@ -115,11 +115,11 @@ export function readAsset (id) {
             .map((dir) => [dir.baseURL, { maxAge: dir.maxAge }])
         );
 
-        const readAssetImport = `#internal/nitro/virtual/public-assets-${
-          (typeof nitro.options.serveStatic === "string"
-            ? readAssetHandler[nitro.options.serveStatic]
-            : undefined) || "null"
-        }`;
+        // prettier-ignore
+        type _serveStaticAsKey = Exclude<typeof nitro.options.serveStatic, boolean> | "true" | "false";
+        // prettier-ignore
+        const handlerName = readAssetHandler[nitro.options.serveStatic as _serveStaticAsKey] || "null";
+        const readAssetImport = `#internal/nitro/virtual/public-assets-${handlerName}`;
 
         return `
 import assets from '#internal/nitro/virtual/public-assets-data'
