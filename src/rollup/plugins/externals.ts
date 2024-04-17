@@ -165,15 +165,15 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Absolute path, we are not sure about subpath to generate import statement
         // Guess as main subpath export
         const packageEntry = await _resolve(pkgName).catch(() => null);
-        if (packageEntry !== originalId) {
+        if (packageEntry !== id) {
           // Reverse engineer subpath export
           const guessedSubpath: string | null = await lookupNodeModuleSubpath(
-            originalId
+            id
           ).catch(() => null);
           const resolvedGuess =
             guessedSubpath &&
             (await _resolve(join(pkgName, guessedSubpath)).catch(() => null));
-          if (resolvedGuess === originalId) {
+          if (resolvedGuess === id) {
             trackedExternals.add(resolvedGuess);
             return {
               id: join(pkgName, guessedSubpath),

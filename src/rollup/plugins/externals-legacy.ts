@@ -139,13 +139,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Absolute path, we are not sure about subpath to generate import statement
         // Guess as main subpath export
         const packageEntry = await _resolve(pkgName).catch(() => null);
-        if (packageEntry !== originalId) {
+        if (packageEntry !== id) {
           // Guess subpathexport
           const guessedSubpath = pkgName + subpath.replace(/\.[a-z]+$/, "");
           const resolvedGuess = await _resolve(guessedSubpath).catch(
             () => null
           );
-          if (resolvedGuess === originalId) {
+          if (resolvedGuess === id) {
             trackedExternals.add(resolvedGuess);
             return {
               id: guessedSubpath,
