@@ -68,10 +68,15 @@ export const vercel = defineNitroPreset({
           "junction"
         );
 
-        const allowQuery =
-          _hasProp(value, "allowQuery")
-            ? value.allowQuery
-            : (key.includes("/**") ? ["url"] : undefined);
+        let allowQuery = (key.includes("/**") ? ["url"] : undefined)
+        if (_hasProp(value, "allowQuery")) {
+          if (Array.isArray(value.allowQuery) && key.includes("/**")) {
+            // Catch-all routes always have to allow "url"
+            allowQuery = ["url"].concat(value.allowQuery);
+          } else {
+            allowQuery = value.allowQuery;
+          }
+        }
 
         await writeFile(
           funcPrefix + ".prerender-config.json",
