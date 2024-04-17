@@ -33,6 +33,7 @@ const serveOptions = {
   },
 };
 
+// https://github.com/unjs/nitro/pull/2373
 if (!serveOptions.key || !serveOptions.cert) {
   delete serveOptions.key;
   delete serveOptions.cert;
