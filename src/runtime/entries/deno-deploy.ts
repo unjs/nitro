@@ -1,21 +1,13 @@
 import "#internal/nitro/virtual/polyfill";
 import wsAdapter from "crossws/adapters/deno";
 import { nitroApp } from "../app";
-
-// https://deno.land/api?s=Deno.ServeHandlerInfo
-type ServeHandlerInfo = {
-  remoteAddr: {
-    transport: "tcp" | "udp";
-    hostname: string;
-    port: number;
-  };
-};
+import type { Deno as _Deno } from "@deno/types";
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
-Deno.serve((request: Request, info: any /* ServeHandlerInfo */) => {
+Deno.serve((request: Request, info: _Deno.ServeHandlerInfo) => {
   if (
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"
@@ -25,7 +17,7 @@ Deno.serve((request: Request, info: any /* ServeHandlerInfo */) => {
   return handleRequest(request, info);
 });
 
-async function handleRequest(request: Request, info: ServeHandlerInfo) {
+async function handleRequest(request: Request, info: _Deno.ServeHandlerInfo) {
   const url = new URL(request.url);
 
   const headers = new Headers(request.headers);
