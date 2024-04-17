@@ -67,11 +67,17 @@ export const vercel = defineNitroPreset({
           funcPrefix + ".func",
           "junction"
         );
+
+        const allowQuery =
+          _hasProp(value, "allowQuery")
+            ? value.allowQuery
+            : (key.includes("/**") ? ["url"] : undefined);
+
         await writeFile(
           funcPrefix + ".prerender-config.json",
           JSON.stringify({
             expiration: value.isr === true ? false : value.isr,
-            allowQuery: key.includes("/**") ? ["url"] : undefined,
+            allowQuery,
             bypassToken: nitro.options.vercel?.config?.bypassToken,
           })
         );

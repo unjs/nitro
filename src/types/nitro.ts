@@ -208,6 +208,7 @@ export interface NitroRouteRules
   extends Omit<NitroRouteConfig, "redirect" | "cors" | "swr" | "static"> {
   redirect?: { to: string; statusCode: HTTPStatusCode };
   proxy?: { to: string } & ProxyOptions;
+  allowQuery?: string[];
 }
 
 export interface NitroFrameworkInfo {
