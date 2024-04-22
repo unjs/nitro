@@ -384,7 +384,7 @@ export function defineCachedEventHandler<
       event.context = incomingEvent.context;
       const body = (await handler(event)) || _resSendBody;
 
-      // Collect cachable headers
+      // Collect cacheable headers
       const headers = event.node.res.getHeaders();
       headers.etag = String(
         headers.Etag || headers.etag || `W/"${hash(body)}"`
