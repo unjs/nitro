@@ -18,7 +18,7 @@ npm i -g @edgio/cli
 
 ## Testing production build locally with Edgio
 
-You can use Nitropack to test your app's developement experience locally:
+You can use Nitropack to test your app's development experience locally:
 
 ```bash
 NITRO_PRESET=edgio npx nitropack build

@@ -37,7 +37,7 @@ export type AmplifyRoute = {
   /**
    * The path defines a glob pattern that matches incoming request paths (excluding querystring).
    * The first match in a given list of rules determines which routing rule is applied to the incoming request.
-   * Only the following wilcard characters are supported as far as pattern matching is concerned: `*` (matches 0 or more characters)
+   * Only the following wildcard characters are supported as far as pattern matching is concerned: `*` (matches 0 or more characters)
    *
    * _Note_: The "/*" pattern is called a catch-all pattern and will match all incoming requests.
    * It is special because fallback routing is only supported for catch-all routes.
