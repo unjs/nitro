@@ -330,17 +330,19 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   // User virtuals
   rollupConfig.plugins.push(virtual(nitro.options.virtual, nitro.vfs));
 
+  const nitroPlugins = [...new Set(nitro.options.plugins)];
+
   // Plugins
   rollupConfig.plugins.push(
     virtual(
       {
         "#internal/nitro/virtual/plugins": `
-${nitro.options.plugins
+${nitroPlugins
   .map((plugin) => `import _${hash(plugin)} from '${plugin}';`)
   .join("\n")}
 
 export const plugins = [
-  ${nitro.options.plugins.map((plugin) => `_${hash(plugin)}`).join(",\n")}
+  ${nitroPlugins.map((plugin) => `_${hash(plugin)}`).join(",\n")}
 ]
     `,
       },
