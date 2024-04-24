@@ -14,7 +14,7 @@ export type { RenderResponse, RenderHandler } from "./renderer";
 export interface CapturedErrorContext {
   event?: H3Event;
   [key: string]: unknown;
-};
+}
 
 export type CaptureError = (
   error: Error,
