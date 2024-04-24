@@ -1,28 +1,64 @@
 import "#internal/nitro/virtual/polyfill";
-import type { Handler } from "@netlify/functions/dist/main";
-import { withQuery } from "ufo";
+import { nitroApp } from "../app";
 import { getRouteRulesForPath } from "../route-rules";
-import { lambda } from "./netlify-lambda";
+import { joinHeaders, normalizeCookieHeader } from "../utils";
 
-export const handler: Handler = async function handler(event, context) {
-  const query = {
-    ...event.queryStringParameters,
-    ...event.multiValueQueryStringParameters,
-  };
-  const url = withQuery(event.path, query);
-  const routeRules = getRouteRulesForPath(url);
+const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
 
-  if (routeRules.isr) {
-    const builder = await import("@netlify/functions").then(
-      (r) => r.builder || r.default.builder
-    );
-    const ttl = typeof routeRules.isr === "number" ? routeRules.isr : false;
-    const builderHandler = ttl
-      ? (((event, context) =>
-          lambda(event, context).then((r) => ({ ...r, ttl }))) as Handler)
-      : lambda;
-    return builder(builderHandler)(event, context) as any;
+type NitroResponseHeaders = Awaited<
+  ReturnType<(typeof nitroApp)["localCall"]>
+>["headers"];
+
+const normalizeResponseHeaders = (headers: NitroResponseHeaders): Headers => {
+  const outgoingHeaders = new Headers();
+  for (const [name, header] of Object.entries(headers)) {
+    if (name === "set-cookie") {
+      for (const cookie of normalizeCookieHeader(header)) {
+        outgoingHeaders.append("set-cookie", cookie);
+      }
+    } else if (header !== undefined) {
+      outgoingHeaders.set(name, joinHeaders(header));
+    }
+  }
+  return outgoingHeaders;
+};
+
+const getCacheHeaders = (url: string): Record<string, string> => {
+  const { isr } = getRouteRulesForPath(url);
+  if (isr) {
+    const maxAge = typeof isr === "number" ? isr : ONE_YEAR_IN_SECONDS;
+    const revalidateDirective =
+      typeof isr === "number"
+        ? `stale-while-revalidate=${ONE_YEAR_IN_SECONDS}`
+        : "must-revalidate";
+    return {
+      "Cache-Control": "public, max-age=0, must-revalidate",
+      "Netlify-CDN-Cache-Control": `public, max-age=${maxAge}, ${revalidateDirective}`,
+    };
   }
 
-  return lambda(event, context);
+  return {};
 };
+
+const handler = async (req: Request): Promise<Response> => {
+  const url = new URL(req.url);
+  const relativeUrl = `${url.pathname}${url.search}`;
+  const r = await nitroApp.localCall({
+    url: relativeUrl,
+    headers: req.headers,
+    method: req.method,
+    body: req.body,
+  });
+
+  const headers = normalizeResponseHeaders({
+    ...r.headers,
+    ...getCacheHeaders(relativeUrl),
+  });
+
+  return new Response(r.body, {
+    status: r.status,
+    headers,
+  });
+};
+
+export default handler;
