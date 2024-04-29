@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
+import { defu } from "defu";
 import { resolveFile, writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -115,9 +116,9 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
     const fileWebConfig: Record<string, unknown> =
       await parseXmlDoc(fileString);
 
-    if (nitro.options.iis.mergeConfig && !nitro.options.iis.overrideConfig) {
-      return buildNewXmlDoc({ ...originalWebConfig, ...fileWebConfig });
-    } else if (nitro.options.iis.overrideConfig) {
+    if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
+      return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
+    } else if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }
@@ -148,9 +149,9 @@ async function iisXmlTemplate(nitro: Nitro) {
     const fileWebConfig: Record<string, unknown> =
       await parseXmlDoc(fileString);
 
-    if (nitro.options.iis.mergeConfig && !nitro.options.iis.overrideConfig) {
-      return buildNewXmlDoc({ ...originalWebConfig, ...fileWebConfig });
-    } else if (nitro.options.iis.overrideConfig) {
+    if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
+      return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
+    } else if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }
