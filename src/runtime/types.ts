@@ -11,10 +11,10 @@ export type {
 export type { NitroAppPlugin } from "./plugin";
 export type { RenderResponse, RenderHandler } from "./renderer";
 
-export type CapturedErrorContext = {
+export interface CapturedErrorContext {
   event?: H3Event;
   [key: string]: unknown;
-};
+}
 
 export type CaptureError = (
   error: Error,
