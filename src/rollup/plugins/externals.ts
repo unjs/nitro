@@ -27,7 +27,7 @@ export interface NodeExternalsOptions {
     | ((id: string, importer?: string) => Promise<boolean> | boolean)
   >;
   rootDir?: string;
-  outDir?: string;
+  outDir: string;
   trace?: boolean;
   traceOptions?: NodeFileTraceOptions;
   moduleDirectories?: string[];
@@ -59,13 +59,13 @@ export function externals(opts: NodeExternalsOptions): Plugin {
   // Normalize options
   const inlineMatchers = (opts.inline || [])
     .map((p) => normalizeMatcher(p))
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => (b.score || 0) - (a.score || 0));
   const externalMatchers = (opts.external || [])
     .map((p) => normalizeMatcher(p))
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => (b.score || 0) - (a.score || 0));
 
   // Utility to check explicit inlines
-  const isExplicitInline = (id: string, importer: string) => {
+  const isExplicitInline = (id: string, importer?: string) => {
     if (id.startsWith("\0")) {
       return true;
     }
@@ -74,7 +74,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
     if (
       inlineMatch &&
       (!externalMatch ||
-        (externalMatch && inlineMatch.score > externalMatch.score))
+        (externalMatch &&
+          (inlineMatch.score || 0) > (externalMatch.score || 0)))
     ) {
       return true;
     }
@@ -165,18 +166,17 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Absolute path, we are not sure about subpath to generate import statement
         // Guess as main subpath export
         const packageEntry = await _resolve(pkgName).catch(() => null);
-        if (packageEntry !== originalId) {
+        if (packageEntry !== id) {
           // Reverse engineer subpath export
-          const guessedSubpath: string | null = await lookupNodeModuleSubpath(
-            originalId
-          ).catch(() => null);
+          const guessedSubpath: string | null | undefined =
+            await lookupNodeModuleSubpath(id).catch(() => null);
           const resolvedGuess =
             guessedSubpath &&
             (await _resolve(join(pkgName, guessedSubpath)).catch(() => null));
-          if (resolvedGuess === originalId) {
+          if (resolvedGuess === id) {
             trackedExternals.add(resolvedGuess);
             return {
-              id: join(pkgName, guessedSubpath),
+              id: join(pkgName, guessedSubpath!),
               external: true,
             };
           }
@@ -207,7 +207,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // Trace used files using nft
       const _fileTrace = await nodeFileTrace([...trackedExternals], {
         // https://github.com/unjs/nitro/pull/1562
-        conditions: opts.exportConditions.filter(
+        conditions: (opts.exportConditions || []).filter(
           (c) => !["require", "import", "default"].includes(c)
         ),
         ...opts.traceOptions,
@@ -223,10 +223,10 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         pkgName: string;
         pkgVersion: string;
       };
-      const _resolveTracedPath = (p) =>
-        fsp.realpath(resolve(opts.traceOptions.base, p));
+      const _resolveTracedPath = (p: string) =>
+        fsp.realpath(resolve(opts.traceOptions?.base || ".", p));
       const tracedFiles: Record<string, TracedFile> = Object.fromEntries(
-        await Promise.all(
+        (await Promise.all(
           [..._fileTrace.reasons.entries()].map(async ([_path, reasons]) => {
             if (reasons.ignored) {
               return;
@@ -243,6 +243,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
               name: pkgName,
               subpath,
             } = parseNodeModulePath(path);
+            if (!baseDir || !pkgName) {
+              return;
+            }
             const pkgPath = join(baseDir, pkgName);
             const parents = await Promise.all(
               [...reasons.parents].map((p) => _resolveTracedPath(p))
@@ -257,7 +260,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             };
             return [path, tracedFile];
           })
-        ).then((r) => r.filter(Boolean))
+        ).then((r) => r.filter(Boolean))) as [string, TracedFile][]
       );
 
       // Resolve traced packages
@@ -294,18 +297,22 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           };
           tracedPackages[pkgName] = tracedPackage;
         }
-        let tracedPackageVersion = tracedPackage.versions[pkgJSON.version];
+        let tracedPackageVersion =
+          tracedPackage.versions[pkgJSON.version || "0.0.0"];
         if (!tracedPackageVersion) {
           tracedPackageVersion = {
             path: tracedFile.pkgPath,
             files: [],
             pkgJSON,
           };
-          tracedPackage.versions[pkgJSON.version] = tracedPackageVersion;
+          tracedPackage.versions[pkgJSON.version || "0.0.0"] =
+            tracedPackageVersion;
         }
         tracedPackageVersion.files.push(tracedFile.path);
         tracedFile.pkgName = pkgName;
-        tracedFile.pkgVersion = pkgJSON.version;
+        if (pkgJSON.version) {
+          tracedFile.pkgVersion = pkgJSON.version;
+        }
       }
 
       const usedAliases: Record<string, string> = {};
@@ -322,6 +329,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Copy files
         for (const src of pkg.versions[version].files) {
           const { subpath } = parseNodeModulePath(src);
+          if (!subpath) {
+            continue;
+          }
           const dst = join(opts.outDir, "node_modules", pkgPath, subpath);
           await fsp.mkdir(dirname(dst), { recursive: true });
           await fsp.copyFile(src, dst);
@@ -367,8 +377,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             dst,
             isWindows ? "junction" : "dir"
           )
-          .catch((err) => {
-            console.error("Cannot link", from, "to", to, err);
+          .catch((error) => {
+            console.error("Cannot link", from, "to", to, error);
           });
       };
 
@@ -390,7 +400,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
                   return `${parentFile.pkgName}@${parentFile.pkgVersion}`;
                 })
                 .filter(Boolean)
-            )
+            ) as string[]
           ),
         ];
         return parentPkgs;
@@ -426,9 +436,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Write packages with multiple versions
       for (const [pkgName, pkgVersions] of Object.entries(multiVersionPkgs)) {
-        const versionEntires = Object.entries(pkgVersions).sort(
+        const versionEntries = Object.entries(pkgVersions).sort(
           ([v1, p1], [v2, p2]) => {
-            // 1. Packege with no parent packages to be hoisted
+            // 1. Package with no parent packages to be hoisted
             if (p1.length === 0) {
               return -1;
             }
@@ -439,7 +449,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             return compareVersions(v1, v2);
           }
         );
-        for (const [version, parentPkgs] of versionEntires) {
+        for (const [version, parentPkgs] of versionEntries) {
           // Write each version into node_modules/.nitro/{name}@{version}
           await writePackage(pkgName, version, `.nitro/${pkgName}@${version}`);
           // Link one version to the top level (for indirect bundle deps)
@@ -512,11 +522,11 @@ async function isFile(file: string) {
   try {
     const stat = await fsp.stat(file);
     return stat.isFile();
-  } catch (err) {
-    if (err.code === "ENOENT") {
+  } catch (error) {
+    if ((error as any)?.code === "ENOENT") {
       return false;
     }
-    throw err;
+    throw error;
   }
 }
 
@@ -542,7 +552,9 @@ export function normalizeMatcher(input: string | RegExp | Matcher): Matcher {
     const pattern = normalize(input);
     const matcher = ((id: string) => {
       const idWithoutNodeModules = id.split("node_modules/").pop();
-      return id.startsWith(pattern) || idWithoutNodeModules.startsWith(pattern);
+      return (
+        id.startsWith(pattern) || idWithoutNodeModules?.startsWith(pattern)
+      );
     }) as Matcher;
     matcher.score = input.length;
 

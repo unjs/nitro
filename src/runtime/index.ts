@@ -5,6 +5,7 @@ export * from "./plugin";
 export * from "./task";
 export * from "./renderer";
 export { getRouteRules, getRouteRulesForPath } from "./route-rules";
+export { defineRouteMeta } from "./meta";
 export { useStorage } from "./storage";
 export { useEvent } from "./context";
 export { defineNitroErrorHandler } from "./error";

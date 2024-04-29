@@ -20,7 +20,7 @@ export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
   const { body, status, headers } = await nitroApp.localCall({
     url,
     headers: req.headers,
-    method: req.method,
+    method: req.method || undefined,
     // https://github.com/Azure/azure-functions-host/issues/293
     body: req.rawBody,
   });

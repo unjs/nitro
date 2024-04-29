@@ -13,7 +13,8 @@ export const firebase = defineNitroPreset({
   },
   firebase: {
     // we need this defined here so it's picked up by the template in firebase's entry
-    gen: (Number.parseInt(process.env.NITRO_FIREBASE_GEN) || "default") as any,
+    gen: (Number.parseInt(process.env.NITRO_FIREBASE_GEN || "") ||
+      "default") as any,
   },
   hooks: {
     async compiled(nitro) {
@@ -85,7 +86,7 @@ async function updatePackageJSON(nitro: Nitro) {
     main: "index.mjs",
     dependencies: Object.fromEntries(
       Object.entries({
-        // Default to "latest" normally they should be overriden with user versions
+        // Default to "latest" normally they should be overridden with user versions
         "firebase-admin": "latest",
         "firebase-functions": "latest",
         ...packageJSON.dependencies,

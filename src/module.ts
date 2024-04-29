@@ -1,6 +1,5 @@
 import jiti from "jiti";
 import type { Nitro, NitroModule, NitroModuleInput } from "./types";
-import { resolvePath } from "./utils";
 
 export function defineNitroModule(def: NitroModule) {
   return def;
@@ -9,7 +8,7 @@ export function defineNitroModule(def: NitroModule) {
 export function resolveNitroModule(
   mod: NitroModuleInput,
   nitroOptions: Nitro["options"]
-): Promise<NitroModule & { _url: string }> {
+): Promise<NitroModule & { _url?: string }> {
   let _url: string | undefined;
 
   if (typeof mod === "string") {

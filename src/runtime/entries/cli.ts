@@ -3,7 +3,8 @@ import { nitroApp } from "../app";
 
 async function cli() {
   const url = process.argv[2] || "/";
-  const debug = (label, ...args) => console.debug(`> ${label}:`, ...args);
+  const debug = (label: string, ...args: any[]) =>
+    console.debug(`> ${label}:`, ...args);
   const r = await nitroApp.localCall({ url });
 
   debug("URL", url);
@@ -13,14 +14,13 @@ async function cli() {
   for (const header of r.headers.entries()) {
     debug(header[0], header[1]);
   }
-  console.log("\n", r.body.toString());
+  console.log("\n", r.body?.toString());
 }
 
-// eslint-disable-next-line unicorn/prefer-module
 if (require.main === module) {
   // eslint-disable-next-line unicorn/prefer-top-level-await
-  cli().catch((err) => {
-    console.error(err);
+  cli().catch((error) => {
+    console.error(error);
     // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   });

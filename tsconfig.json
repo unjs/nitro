@@ -7,7 +7,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
-    "strict": false,
+    "strict": true,
     "allowJs": true,
     "resolveJsonModule": true,
     "jsx": "preserve",

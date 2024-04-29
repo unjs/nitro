@@ -24,7 +24,7 @@ async function handleEvent(event: FetchEvent) {
     import.meta._websocket &&
     event.request.headers.get("upgrade") === "websocket"
   ) {
-    return ws.handleUpgrade(event.request as any, {}, event as any);
+    return ws!.handleUpgrade(event.request as any, {}, event as any);
   }
 
   try {
@@ -46,7 +46,7 @@ async function handleEvent(event: FetchEvent) {
     context: {
       // https://developers.cloudflare.com/workers//runtime-apis/request#incomingrequestcfproperties
       cf: (event.request as any).cf,
-      waitUntil: (promise) => event.waitUntil(promise),
+      waitUntil: (promise: Promise<any>) => event.waitUntil(promise),
       cloudflare: {
         event,
       },
@@ -60,7 +60,7 @@ async function handleEvent(event: FetchEvent) {
   });
 }
 
-function assetsCacheControl(_request) {
+function assetsCacheControl(_request: Request) {
   const url = new URL(_request.url);
   const meta = getPublicAssetMeta(url.pathname);
   if (meta.maxAge) {

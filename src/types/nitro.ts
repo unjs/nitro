@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import type { Preset as UnenvPreset } from "unenv";
 import type { Unimport } from "unimport";
 import type { UnimportPluginOptions } from "unimport/unplugin";
@@ -132,10 +131,10 @@ export type DatabaseConnectionConfigs = Record<
   DatabaseConnectionConfig
 >;
 
-type DeepPartial<T> =
-  T extends Record<string, any>
-    ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
-    : T;
+// prettier-ignore
+type DeepPartial<T> = T extends Record<string, any>
+  ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
+  : T;
 
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
@@ -256,6 +255,8 @@ export interface NitroOptions extends PresetOptions {
   rootDir: string;
   srcDir: string;
   scanDirs: string[];
+  apiDir: string;
+  routesDir: string;
   buildDir: string;
   output: {
     dir: string;
@@ -290,7 +291,7 @@ export interface NitroOptions extends PresetOptions {
       scalar?: ReferenceConfiguration;
     };
   };
-  experimental?: {
+  experimental: {
     legacyExternals?: boolean;
     openAPI?: boolean;
     /**
@@ -373,6 +374,7 @@ export interface NitroOptions extends PresetOptions {
 
   // Routing
   baseURL: string;
+  apiBaseURL: string;
   handlers: NitroEventHandler[];
   routeRules: { [path: string]: NitroRouteRules };
   devHandlers: NitroDevEventHandler[];

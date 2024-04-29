@@ -74,12 +74,12 @@ export function getRouteRules(event: H3Event): NitroRouteRules {
   return event.context._nitro.routeRules;
 }
 
-type DeepReadonly<T> =
-  T extends Record<string, any>
-    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
-    : T extends Array<infer U>
-      ? ReadonlyArray<DeepReadonly<U>>
-      : T;
+// prettier-ignore
+type DeepReadonly<T> = T extends Record<string, any>
+  ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+  : T extends Array<infer U>
+    ? ReadonlyArray<DeepReadonly<U>>
+    : T;
 
 export function getRouteRulesForPath(
   path: string

@@ -12,7 +12,6 @@ interface TestResponse {
 const $fetch = {} as $Fetch;
 
 describe("API routes", () => {
-  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   const dynamicString: string = "";
 
   it("generates types for middleware, unknown and manual typed routes", () => {
@@ -291,11 +290,13 @@ describe("defineCachedEventHandler", () => {
     >();
   });
   it("is backwards compatible with old generic signature", () => {
-    const a = defineCachedEventHandler<
-      Promise<{
-        message: string;
-      }>
-    >(fixture);
+    // prettier-ignore
+    const a =
+      defineCachedEventHandler<
+        Promise<{
+          message: string;
+        }>
+      >(fixture);
     const b = defineEventHandler(fixture);
     expectTypeOf(a).toEqualTypeOf(b);
     expectTypeOf(b).toEqualTypeOf<

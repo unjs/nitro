@@ -6,10 +6,13 @@ import {
   withTrailingSlash,
   withoutLeadingSlash,
 } from "ufo";
+import { parseTOML, stringifyTOML } from "confbox";
 import { globby } from "globby";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 import { CloudflarePagesRoutes } from "../types/presets/cloudflare";
+import defu from "defu";
+import { isCI } from "std-env";
 
 export const cloudflarePages = defineNitroPreset({
   extends: "cloudflare",
@@ -45,6 +48,7 @@ export const cloudflarePages = defineNitroPreset({
       await writeCFRoutes(nitro);
       await writeCFPagesHeaders(nitro);
       await writeCFPagesRedirects(nitro);
+      await writeCFWrangler(nitro);
     },
   },
 });
@@ -88,7 +92,7 @@ async function writeCFRoutes(nitro: Nitro) {
   // Exclude public assets from hitting the worker
   const explicitPublicAssets = nitro.options.publicAssets.filter(
     (dir, index, array) => {
-      if (dir.fallthrough) {
+      if (dir.fallthrough || !dir.baseURL) {
         return false;
       }
 
@@ -105,9 +109,9 @@ async function writeCFRoutes(nitro: Nitro) {
   );
 
   // Explicit prefixes
-  routes.exclude.push(
+  routes.exclude!.push(
     ...explicitPublicAssets
-      .map((dir) => joinURL(dir.baseURL, "*"))
+      .map((dir) => joinURL(dir.baseURL!, "*"))
       .sort(comparePaths)
   );
 
@@ -120,17 +124,17 @@ async function writeCFRoutes(nitro: Nitro) {
       "_worker.js",
       "_worker.js.map",
       "nitro.json",
-      ...routes.exclude.map((path) =>
+      ...routes.exclude!.map((path) =>
         withoutLeadingSlash(path.replace(/\/\*$/, "/**"))
       ),
     ],
   });
-  routes.exclude.push(
+  routes.exclude!.push(
     ...publicAssetFiles.map((i) => withLeadingSlash(i)).sort(comparePaths)
   );
 
   // Only allow 100 rules in total (include + exclude)
-  routes.exclude.splice(100 - routes.include.length);
+  routes.exclude!.splice(100 - routes.include!.length);
 
   await writeRoutes();
 }
@@ -192,9 +196,9 @@ async function writeCFPagesRedirects(nitro: Nitro) {
   for (const [key, routeRules] of rules.filter(
     ([_, routeRules]) => routeRules.redirect
   )) {
-    const code = routeRules.redirect.statusCode;
+    const code = routeRules.redirect!.statusCode;
     contents.unshift(
-      `${key.replace("/**", "/*")}\t${routeRules.redirect.to}\t${code}`
+      `${key.replace("/**", "/*")}\t${routeRules.redirect!.to}\t${code}`
     );
   }
 
@@ -213,4 +217,36 @@ async function writeCFPagesRedirects(nitro: Nitro) {
   }
 
   await fsp.writeFile(redirectsPath, contents.join("\n"));
+}
+
+async function writeCFWrangler(nitro: Nitro) {
+  type WranglerConfig = typeof nitro.options.cloudflare.wrangler;
+
+  const inlineConfig: WranglerConfig =
+    nitro.options.cloudflare?.wrangler || ({} as WranglerConfig);
+
+  // Write wrangler.toml only if config is not empty
+  if (!inlineConfig || Object.keys(inlineConfig).length === 0) {
+    return;
+  }
+
+  let configFromFile: WranglerConfig = {} as WranglerConfig;
+  const configPath = resolve(
+    nitro.options.rootDir,
+    inlineConfig.configPath || "wrangler.toml"
+  );
+  if (existsSync(configPath)) {
+    configFromFile = parseTOML<WranglerConfig>(
+      await fsp.readFile(configPath, "utf8")
+    );
+  }
+
+  const wranglerConfig: WranglerConfig = defu(configFromFile, inlineConfig);
+
+  const wranglerPath = join(
+    isCI ? nitro.options.rootDir : nitro.options.buildDir,
+    "wrangler.toml"
+  );
+
+  await fsp.writeFile(wranglerPath, stringifyTOML(wranglerConfig));
 }

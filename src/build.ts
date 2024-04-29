@@ -62,7 +62,7 @@ export async function copyPublicAssets(nitro: Nitro) {
       const includePatterns = [
         "**",
         ...nitro.options.ignore.map((p) => {
-          const [_, negation, pattern] = p.match(NEGATION_RE);
+          const [_, negation, pattern] = p.match(NEGATION_RE) || [];
           return (
             // Convert ignore to include patterns
             (negation ? "" : "!") +
@@ -124,21 +124,17 @@ export async function writeTypes(nitro: Nitro) {
       resolveNitroPath(mw.handler, nitro.options)
     ).replace(/\.(js|mjs|cjs|ts|mts|cts|tsx|jsx)$/, "");
 
-    if (!types.routes[mw.route]) {
-      types.routes[mw.route] = {};
-    }
-
     const method = mw.method || "default";
-    if (!types.routes[mw.route][method]) {
-      types.routes[mw.route][method] = [];
-    }
-    types.routes[mw.route][method].push(
+
+    types.routes[mw.route] ??= {};
+    types.routes[mw.route][method] ??= [];
+    types.routes[mw.route][method]!.push(
       `Simplify<Serialize<Awaited<ReturnType<typeof import('${relativePath}').default>>>>`
     );
   }
 
   let autoImportedTypes: string[] = [];
-  let autoImportExports: string;
+  let autoImportExports: string = "";
 
   if (nitro.unimport) {
     await nitro.unimport.init();
@@ -302,6 +298,7 @@ declare module 'nitropack' {
       compilerOptions: {
         forceConsistentCasingInFileNames: true,
         strict: nitro.options.typescript.strict,
+        noEmit: true,
         target: "ESNext",
         module: "ESNext",
         moduleResolution:
@@ -388,7 +385,7 @@ declare module 'nitropack' {
 
     tsConfig.include = [
       ...new Set(
-        tsConfig.include.map((p) =>
+        tsConfig.include!.map((p) =>
           isAbsolute(p) ? relativeWithDot(tsconfigDir, p) : p
         )
       ),
@@ -485,9 +482,9 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     }
     if (nitro.options.logLevel > 1) {
       process.stdout.write(
-        await generateFSTree(nitro.options.output.serverDir, {
+        (await generateFSTree(nitro.options.output.serverDir, {
           compressedSizes: nitro.options.logging.compressedSizes,
-        })
+        })) || ""
       );
     }
   }
@@ -499,17 +496,17 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
   const rewriteRelativePaths = (input: string) => {
     return input.replace(/([\s:])\.\/(\S*)/g, `$1${rOutput}/$2`);
   };
-  if (buildInfo.commands.preview) {
+  if (buildInfo.commands!.preview) {
     nitro.logger.success(
       `You can preview this build using \`${rewriteRelativePaths(
-        buildInfo.commands.preview
+        buildInfo.commands!.preview
       )}\``
     );
   }
-  if (buildInfo.commands.deploy) {
+  if (buildInfo.commands!.deploy) {
     nitro.logger.success(
       `You can deploy this build using \`${rewriteRelativePaths(
-        buildInfo.commands.deploy
+        buildInfo.commands!.deploy
       )}\``
     );
   }
@@ -606,9 +603,8 @@ async function _watch(nitro: Nitro, rollupConfig: RollupConfig) {
 function formatRollupError(_error: RollupError | OnResolveResult) {
   try {
     const logs: string[] = [_error.toString()];
-    for (const error of "errors" in _error
-      ? _error.errors
-      : [_error as RollupError]) {
+    const errors = (_error as any)?.errors || [_error as RollupError];
+    for (const error of errors) {
       const id = (error as any).path || error.id || (_error as RollupError).id;
       let path = isAbsolute(id) ? relative(process.cwd(), id) : id;
       const location =

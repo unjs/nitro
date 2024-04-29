@@ -48,8 +48,8 @@ export default defineCommand({
         }
       );
       consola.success("Result:", result);
-    } catch (err) {
-      consola.error(`Failed to run task \`${args.name}\`: ${err.message}`);
+    } catch (error) {
+      consola.error(`Failed to run task \`${args.name}\`: ${error}`);
       process.exit(1); // eslint-disable-line unicorn/no-process-exit
     }
   },

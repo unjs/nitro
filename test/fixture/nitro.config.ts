@@ -16,6 +16,8 @@ export default defineNitroConfig({
     {
       route: "/api/test/*/foo",
       handler: "~/api/hello.ts",
+      // @ts-expect-error #2382
+      method: "GET",
     },
   ],
   devProxy: {
@@ -109,6 +111,9 @@ export default defineNitroConfig({
         include: ["/*"],
         exclude: ["/blog/static/*", "/cf-pages-exclude/*"],
       },
+    },
+    wrangler: {
+      compatibility_date: "2024-01-01",
     },
   },
   openAPI: {

@@ -75,7 +75,7 @@ export async function runTask<RT = unknown>(
     });
   }
 
-  const handler = (await tasks[name].resolve()) as Task<RT>;
+  const handler = (await tasks[name].resolve!()) as Task<RT>;
   const taskEvent: TaskEvent = { name, payload, context };
   __runningTasks__[name] = handler.run(taskEvent);
 

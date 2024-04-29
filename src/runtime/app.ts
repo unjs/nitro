@@ -46,8 +46,8 @@ function createNitroApp(): NitroApp {
   const captureError: CaptureError = (error, context = {}) => {
     const promise = hooks
       .callHookParallel("error", error, context)
-      .catch((_err) => {
-        console.error("Error while capturing another error", _err);
+      .catch((error_) => {
+        console.error("Error while capturing another error", error_);
       });
     if (context.event && isEvent(context.event)) {
       const errors = context.event.context.nitro?.errors;
@@ -95,7 +95,7 @@ function createNitroApp(): NitroApp {
   const localCall = createCall(toNodeListener(h3App) as any);
   const _localFetch = createLocalFetch(localCall, globalThis.fetch);
   const localFetch: typeof fetch = (input, init) =>
-    _localFetch(input, init).then((response) =>
+    _localFetch(input as RequestInfo, init as any).then((response) =>
       normalizeFetchResponse(response)
     );
   const $fetch = createFetch({
@@ -118,7 +118,7 @@ function createNitroApp(): NitroApp {
 
       // Support platform context provided by local fetch
       const envContext: { waitUntil?: H3Event["waitUntil"] } | undefined = (
-        event.node.req as unknown as { __unenv__: unknown }
+        event.node.req as unknown as { __unenv__: any }
       )?.__unenv__;
       if (envContext) {
         Object.assign(event.context, envContext);
@@ -129,7 +129,7 @@ function createNitroApp(): NitroApp {
         fetchWithEvent(event, req, init, { fetch: localFetch });
       event.$fetch = ((req, init) =>
         fetchWithEvent(event, req, init as RequestInit, {
-          fetch: $fetch,
+          fetch: $fetch as any,
         })) as $Fetch<unknown, NitroFetchRequest>;
 
       // https://github.com/unjs/nitro/issues/1420
@@ -194,9 +194,9 @@ function createNitroApp(): NitroApp {
   for (const plugin of plugins) {
     try {
       plugin(app);
-    } catch (err) {
-      captureError(err, { tags: ["plugin"] });
-      throw err;
+    } catch (error: any) {
+      captureError(error, { tags: ["plugin"] });
+      throw error;
     }
   }
 

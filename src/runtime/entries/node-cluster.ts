@@ -5,7 +5,7 @@ import { trapUnhandledNodeErrors } from "../utils";
 
 function runMaster() {
   const numberOfWorkers =
-    Number.parseInt(process.env.NITRO_CLUSTER_WORKERS) ||
+    Number.parseInt(process.env.NITRO_CLUSTER_WORKERS || "") ||
     (os.cpus().length > 0 ? os.cpus().length : 1);
 
   for (let i = 0; i < numberOfWorkers; i++) {
@@ -37,8 +37,9 @@ function runMaster() {
         }, shutdownConfig.timeout);
 
         cluster.on("exit", () => {
-          if (Object.values(cluster.workers).every((w) => w.isDead())) {
-            // eslint-disable-next-line unicorn/no-process-exit
+          if (
+            Object.values(cluster.workers || {}).every((w) => !w || w.isDead())
+          ) {
             clearTimeout(timeout);
             resolve();
           } else {
@@ -59,7 +60,6 @@ function runMaster() {
 }
 
 function runWorker() {
-  // eslint-disable-next-line unicorn/prefer-top-level-await
   import("./node-server").catch((error) => {
     console.error(error);
     // eslint-disable-next-line unicorn/no-process-exit

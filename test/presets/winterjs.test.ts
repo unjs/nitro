@@ -3,11 +3,11 @@ import { execa, execaCommandSync } from "execa";
 import { waitForPort, getRandomPort } from "get-port-please";
 import { setupTest, testNitro } from "../tests";
 
-const hasWasmer =
-  execaCommandSync("wasmer --version", { stdio: "ignore", reject: false })
-    .exitCode === 0;
+const hasWasmer = false;
+// execaCommandSync("wasmer --version", { stdio: "ignore", reject: false })
+//   .exitCode === 0;
 
-describe.runIf(false && hasWasmer)("nitro:preset:winterjs", async () => {
+describe.runIf(hasWasmer)("nitro:preset:winterjs", async () => {
   const ctx = await setupTest("winterjs");
   testNitro(ctx, async () => {
     const port = await getRandomPort();

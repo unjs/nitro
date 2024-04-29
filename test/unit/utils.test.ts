@@ -4,7 +4,7 @@ import { retry } from "../../src/utils";
 describe("retry", () => {
   it("retries function", async () => {
     let counter = 0;
-    // eslint-disable-next-line require-await
+
     const fn = async () => {
       if (!counter++) {
         throw new Error("deliberate");
@@ -15,7 +15,6 @@ describe("retry", () => {
     expect(counter).toEqual(2);
   });
   it("throws function", async () => {
-    // eslint-disable-next-line require-await, unicorn/consistent-function-scoping
     const fn = async () => {
       throw new Error("deliberate");
     };

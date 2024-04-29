@@ -72,7 +72,9 @@ export function raw(opts: RawOptions = {}): Plugin {
         };
       } else {
         return {
-          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
+          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(
+            code
+          )}`,
           map: null,
         };
       }

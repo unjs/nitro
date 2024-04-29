@@ -41,7 +41,9 @@ export function jitiImport(dir: string, path: string) {
 export function tryImport(dir: string, path: string) {
   try {
     return jitiImport(dir, path);
-  } catch {}
+  } catch {
+    // Ignore
+  }
 }
 
 export async function writeFile(
@@ -166,8 +168,8 @@ export function readPackageJson(
 ) {
   try {
     return _require(`${packageName}/package.json`);
-  } catch (error) {
-    if (error.code === "ERR_PACKAGE_PATH_NOT_EXPORTED") {
+  } catch (error: any) {
+    if (error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED") {
       const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(
         _require.resolve(packageName)
       );
@@ -213,16 +215,16 @@ export function resolveAliases(_aliases: Record<string, string>) {
 
 export async function retry(fn: () => Promise<void>, retries: number) {
   let retry = 0;
-  let error: any;
+  let lastError: any;
   while (retry++ < retries) {
     try {
       return await fn();
-    } catch (err) {
-      error = err;
+    } catch (error) {
+      lastError = error;
       await new Promise((resolve) => setTimeout(resolve, 2));
     }
   }
-  throw error;
+  throw lastError;
 }
 
 export function provideFallbackValues(obj: Record<string, any>) {
@@ -238,5 +240,5 @@ export function provideFallbackValues(obj: Record<string, any>) {
 export function nitroServerName(nitro: Nitro) {
   return nitro.options.framework.name === "nitro"
     ? "Nitro Server"
-    : `${upperFirst(nitro.options.framework.name)} Nitro server`;
+    : `${upperFirst(nitro.options.framework.name as string)} Nitro server`;
 }

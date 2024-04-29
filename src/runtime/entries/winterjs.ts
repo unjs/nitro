@@ -1,3 +1,5 @@
+// @ts-nocheck TODO: Remove after removing polyfills
+
 import "#internal/nitro/virtual/polyfill";
 import { toPlainHandler } from "h3";
 import { hasProtocol, joinURL } from "ufo";
@@ -34,7 +36,7 @@ async function _handleEvent(event: FetchEvent) {
       body: event.request.body,
       headers: event.request.headers,
       context: {
-        waitUntil: (promise) => event.waitUntil(promise),
+        waitUntil: (promise: Promise<any>) => event.waitUntil(promise),
         winterjs: {
           event,
         },
@@ -47,14 +49,15 @@ async function _handleEvent(event: FetchEvent) {
       statusText: res.statusText,
       headers: res.headers,
     });
-  } catch (err) {
-    const errString = err.message + "\n" + err.stack;
+  } catch (error: unknown) {
+    const errString =
+      (error as Error)?.message + "\n" + (error as Error)?.stack;
     console.error(errString);
     return new Response(errString, { status: 500 });
   }
 }
 
-addEventListener("fetch", async (event: FetchEvent) => {
+addEventListener("fetch" as any, async (event: FetchEvent) => {
   event.respondWith(await _handleEvent(event));
 });
 
@@ -82,7 +85,7 @@ if (!URL.prototype.pathname) {
 // URL constructor (relative support)
 const _URL = globalThis.URL;
 globalThis.URL = class URL extends _URL {
-  constructor(url, base) {
+  constructor(url: string | URL, base: string | URL) {
     if (!base || hasProtocol(url)) {
       super(url);
       return;

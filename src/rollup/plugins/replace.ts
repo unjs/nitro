@@ -11,12 +11,10 @@ export function replace(options: RollupReplaceOptions): Plugin {
     // https://github.com/rollup/plugins/blob/master/packages/replace/src/index.js#L94
     renderChunk(code, chunk, options) {
       if (!NO_REPLACE_RE.test(code)) {
-        return (_plugin.renderChunk as () => any).call(
-          this,
-          code,
-          chunk,
-          options
-        );
+        // prettier-ignore
+        // biome-ignore format: keep ts-ignore working
+        // @ts-ignore
+        return (_plugin.renderChunk as () => any).call(this, code, chunk, options );
       }
     },
   };

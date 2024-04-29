@@ -16,7 +16,9 @@ export function storage(nitro: Nitro) {
     const mount = storageMounts[path];
     mounts.push({
       path,
-      driver: builtinDrivers[mount.driver] || mount.driver,
+      driver:
+        builtinDrivers[mount.driver as keyof typeof builtinDrivers] ||
+        mount.driver,
       opts: mount,
     });
   }

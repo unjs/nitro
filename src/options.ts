@@ -19,6 +19,7 @@ import {
 import type {
   NitroConfig,
   NitroOptions,
+  NitroPreset,
   NitroRouteConfig,
   NitroRouteRules,
   NitroRuntimeConfig,
@@ -182,7 +183,7 @@ export async function loadOptions(
       },
     },
     resolve(id: string) {
-      const presets = _PRESETS as any as Map<string, NitroConfig>;
+      const presets = _PRESETS as any as Record<string, NitroPreset>;
       let matchedPreset = presets[camelCase(id)] || presets[id];
       if (!matchedPreset) {
         return null;
@@ -202,7 +203,8 @@ export async function loadOptions(
 
   options.preset =
     presetOverride ||
-    (c12Config.layers.find((l) => l.config.preset)?.config.preset as string) ||
+    ((c12Config.layers || []).find((l) => l.config?.preset)?.config
+      ?.preset as string) ||
     detectTarget({ static: options.static });
 
   options.rootDir = resolve(options.rootDir || ".");
@@ -210,7 +212,7 @@ export async function loadOptions(
     () => options.rootDir
   );
   options.srcDir = resolve(options.srcDir || options.rootDir);
-  for (const key of ["srcDir", "publicDir", "buildDir"]) {
+  for (const key of ["srcDir", "buildDir"] as const) {
     options[key] = resolve(options.rootDir, options[key]);
   }
 
@@ -233,17 +235,17 @@ export async function loadOptions(
     options.entry = resolvePath(options.entry, options);
   }
   options.output.dir = resolvePath(
-    options.output.dir || NitroDefaults.output.dir,
+    options.output.dir || NitroDefaults.output!.dir!,
     options,
     options.rootDir
   );
   options.output.publicDir = resolvePath(
-    options.output.publicDir || NitroDefaults.output.publicDir,
+    options.output.publicDir || NitroDefaults.output!.publicDir!,
     options,
     options.rootDir
   );
   options.output.serverDir = resolvePath(
-    options.output.serverDir || NitroDefaults.output.serverDir,
+    options.output.serverDir || NitroDefaults.output!.serverDir!,
     options,
     options.rootDir
   );
@@ -277,7 +279,7 @@ export async function loadOptions(
     // Exclude all node modules that are not a scanDir
     const scanDirsInNodeModules = options.scanDirs
       .map((dir) => dir.match(/(?<=\/)node_modules\/(.+)$/)?.[1])
-      .filter(Boolean);
+      .filter(Boolean) as string[];
     options.imports.exclude.push(
       scanDirsInNodeModules.length > 0
         ? new RegExp(
@@ -302,15 +304,17 @@ export async function loadOptions(
 
   // Auto imports from utils dirs
   if (options.imports) {
+    options.imports.dirs ??= [];
     options.imports.dirs.push(
       ...options.scanDirs.map((dir) => join(dir, "utils/*"))
     );
   }
 
   // Normalize app.config file paths
+  options.appConfigFiles ??= [];
   options.appConfigFiles = options.appConfigFiles
     .map((file) => resolveFile(resolvePath(file, options)))
-    .filter(Boolean);
+    .filter(Boolean) as string[];
 
   // Detect app.config from scanDirs
   for (const dir of options.scanDirs) {
@@ -348,12 +352,12 @@ export async function loadOptions(
     src: resolve(options.srcDir),
     build: resolve(options.buildDir),
     cache: resolve(options.buildDir, "cache"),
-  };
+  } as const;
   for (const p in fsMounts) {
     options.devStorage[p] = options.devStorage[p] || {
       driver: "fs",
       readOnly: p === "root" || p === "src",
-      base: fsMounts[p],
+      base: fsMounts[p as keyof typeof fsMounts],
     };
   }
 
@@ -426,7 +430,7 @@ export async function loadOptions(
 
   // Native fetch
   if (options.experimental.nodeFetchCompat === undefined) {
-    options.experimental.nodeFetchCompat = nodeMajorVersion < 18;
+    options.experimental.nodeFetchCompat = (nodeMajorVersion || 0) < 18;
     if (options.experimental.nodeFetchCompat && provider !== "stackblitz") {
       consola.warn(
         "Node fetch compatibility is enabled. Please consider upgrading to Node.js >= 18."
@@ -452,16 +456,19 @@ export function defineNitroConfig(config: NitroConfig): NitroConfig {
 }
 
 export function normalizeRuntimeConfig(config: NitroConfig) {
-  provideFallbackValues(config.runtimeConfig);
-  const runtimeConfig = defu(config.runtimeConfig, {
-    app: {
-      baseURL: config.baseURL,
-    },
-    nitro: {
-      envExpansion: config.experimental.envExpansion,
-      openAPI: config.openAPI,
-    },
-  });
+  provideFallbackValues(config.runtimeConfig || {});
+  const runtimeConfig: NitroRuntimeConfig = defu(
+    config.runtimeConfig as NitroRuntimeConfig,
+    <NitroRuntimeConfig>{
+      app: {
+        baseURL: config.baseURL,
+      },
+      nitro: {
+        envExpansion: config.experimental?.envExpansion,
+        openAPI: config.openAPI,
+      },
+    }
+  );
   runtimeConfig.nitro.routeRules = config.routeRules;
   return runtimeConfig as NitroRuntimeConfig;
 }
@@ -480,6 +487,7 @@ export function normalizeRouteRules(
     // Redirect
     if (routeConfig.redirect) {
       routeRules.redirect = {
+        // @ts-ignore
         to: "/",
         statusCode: 307,
         ...(typeof routeConfig.redirect === "string"
@@ -531,7 +539,7 @@ export function normalizeRouteRules(
 
 function _resolveExportConditions(
   conditions: string[] = [],
-  opts: { dev: boolean; node: boolean; wasm: boolean }
+  opts: { dev: boolean; node: boolean; wasm?: boolean }
 ) {
   const resolvedConditions: string[] = [];
 

@@ -1,4 +1,4 @@
-import { eventHandler, getRequestURL } from "h3";
+import { HTTPMethod, eventHandler, getRequestURL } from "h3";
 import type {
   OpenAPI3,
   PathItemObject,
@@ -7,7 +7,7 @@ import type {
   PathsObject,
 } from "openapi-typescript";
 import { joinURL } from "ufo";
-import { handlersMeta } from "#internal/nitro/virtual/server-handlers";
+import { handlersMeta } from "#internal/nitro/virtual/server-handlers-meta";
 import { useRuntimeConfig } from "#internal/nitro";
 
 // Served as /_nitro/openapi.json
@@ -44,9 +44,9 @@ function getPaths(): PathsObject {
   const paths: PathsObject = {};
 
   for (const h of handlersMeta) {
-    const { route, parameters } = normalizeRoute(h.route);
-    const tags = defaultTags(h.route);
-    const method = (h.method || "get").toLowerCase();
+    const { route, parameters } = normalizeRoute(h.route || "");
+    const tags = defaultTags(h.route || "");
+    const method = (h.method || "get").toLowerCase() as Lowercase<HTTPMethod>;
 
     const item: PathItemObject = {
       [method]: <OperationObject>{
@@ -55,6 +55,7 @@ function getPaths(): PathsObject {
         responses: {
           200: { description: "OK" },
         },
+        ...h.meta?.openAPI,
       },
     };
 
