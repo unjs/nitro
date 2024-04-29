@@ -21,7 +21,7 @@ export async function scanHandlers(nitro: Nitro) {
     scanServerRoutes(
       nitro,
       nitro.options.apiDir || "api",
-      nitro.options.apiPrefix || "/api"
+      nitro.options.apiBaseURL || "/api"
     ),
     scanServerRoutes(nitro, nitro.options.routesDir || "routes"),
   ]).then((r) => r.flat());

@@ -257,8 +257,6 @@ export interface NitroOptions extends PresetOptions {
   scanDirs: string[];
   apiDir: string;
   routesDir: string;
-  apiPrefix: string;
-  routesPrefix: string;
   buildDir: string;
   output: {
     dir: string;
@@ -376,6 +374,7 @@ export interface NitroOptions extends PresetOptions {
 
   // Routing
   baseURL: string;
+  apiBaseURL: string;
   handlers: NitroEventHandler[];
   routeRules: { [path: string]: NitroRouteRules };
   devHandlers: NitroDevEventHandler[];
