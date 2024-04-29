@@ -5,7 +5,7 @@ import { nitroApp } from "../app";
 
 const handler = toNodeListener(nitroApp.h3App);
 
-export default <NodeListener>function (req, res) {
+const listener: NodeListener = function (req, res) {
   const query = req.headers["x-now-route-matches"] as string;
   if (query) {
     const { url } = parseQuery(query);
@@ -15,3 +15,5 @@ export default <NodeListener>function (req, res) {
   }
   return handler(req, res);
 };
+
+export default listener;

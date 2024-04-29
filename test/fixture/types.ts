@@ -290,11 +290,13 @@ describe("defineCachedEventHandler", () => {
     >();
   });
   it("is backwards compatible with old generic signature", () => {
-    const a = defineCachedEventHandler<
-      Promise<{
-        message: string;
-      }>
-    >(fixture);
+    // prettier-ignore
+    const a =
+      defineCachedEventHandler<
+        Promise<{
+          message: string;
+        }>
+      >(fixture);
     const b = defineEventHandler(fixture);
     expectTypeOf(a).toEqualTypeOf(b);
     expectTypeOf(b).toEqualTypeOf<

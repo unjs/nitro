@@ -26,17 +26,25 @@ type FilterKeys<TObj extends object, TFilter> = {
 }[keyof TObj];
 
 // prettier-ignore
-export type Serialize<T> =
- IsAny<T> extends true ? any :
- T extends JsonPrimitive | undefined ? T :
- T extends Map<any,any> | Set<any> ? Record<string, never> :
- T extends NonJsonPrimitive ? never :
- T extends { toJSON(): infer U } ? U :
- T extends [] ? [] :
- T extends [unknown, ...unknown[]] ? SerializeTuple<T> :
- T extends ReadonlyArray<infer U> ? (U extends NonJsonPrimitive ? null : Serialize<U>)[] :
- T extends object ? SerializeObject<T> :
- never;
+export type Serialize<T> = IsAny<T> extends true
+  ? any
+  : T extends JsonPrimitive | undefined
+    ? T
+    : T extends Map<any, any> | Set<any>
+      ? Record<string, never>
+      : T extends NonJsonPrimitive
+        ? never
+        : T extends { toJSON(): infer U }
+          ? U
+          : T extends []
+            ? []
+            : T extends [unknown, ...unknown[]]
+              ? SerializeTuple<T>
+              : T extends ReadonlyArray<infer U>
+                ? (U extends NonJsonPrimitive ? null : Serialize<U>)[]
+                : T extends object
+                  ? SerializeObject<T>
+                  : never;
 
 /** JSON serialize [tuples](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types) */
 export type SerializeTuple<T extends [unknown, ...unknown[]]> = {

@@ -23,7 +23,11 @@ export function database(nitro: Nitro) {
     {
       "#internal/nitro/virtual/database": () => {
         return `
-${connectorsNames.map((name) => `import ${camelCase(name)}Connector from "${connectors[name]}";`).join("\n")}
+${connectorsNames
+  .map(
+    (name) => `import ${camelCase(name)}Connector from "${connectors[name]}";`
+  )
+  .join("\n")}
 
 export const connectionConfigs = {
   ${Object.entries(dbConfigs || {})

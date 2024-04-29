@@ -320,7 +320,9 @@ export async function prerender(nitro: Nitro) {
 
   const prerenderTimeInMs = Date.now() - prerenderStartTime;
   nitro.logger.info(
-    `Prerendered ${nitro._prerenderedRoutes.length} routes in ${prerenderTimeInMs / 1000} seconds`
+    `Prerendered ${nitro._prerenderedRoutes.length} routes in ${
+      prerenderTimeInMs / 1000
+    } seconds`
   );
 
   if (nitro.options.compressPublicAssets) {
@@ -458,7 +460,10 @@ function formatPrerenderRoute(route: PrerenderRoute) {
 }
 
 // prettier-ignore
-type IgnorePattern = string | RegExp | ((path: string) => undefined | null | boolean);
+type IgnorePattern =
+  | string
+  | RegExp
+  | ((path: string) => undefined | null | boolean);
 
 function matchesIgnorePattern(path: string, pattern: IgnorePattern) {
   if (typeof pattern === "string") {
