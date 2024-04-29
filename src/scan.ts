@@ -18,8 +18,12 @@ export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
 
   const handlers = await Promise.all([
-    scanServerRoutes(nitro, "api", "/api"),
-    scanServerRoutes(nitro, "routes", "/"),
+    scanServerRoutes(
+      nitro,
+      nitro.options.apiDir || "api",
+      nitro.options.apiBaseURL || "/api"
+    ),
+    scanServerRoutes(nitro, nitro.options.routesDir || "routes"),
   ]).then((r) => r.flat());
 
   nitro.scannedHandlers = [
@@ -49,7 +53,7 @@ export async function scanMiddleware(nitro: Nitro) {
 
 export async function scanServerRoutes(
   nitro: Nitro,
-  dir: "routes" | "api",
+  dir: string,
   prefix = "/"
 ) {
   const files = await scanFiles(nitro, dir);

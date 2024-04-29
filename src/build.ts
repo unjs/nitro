@@ -298,6 +298,7 @@ declare module 'nitropack' {
       compilerOptions: {
         forceConsistentCasingInFileNames: true,
         strict: nitro.options.typescript.strict,
+        noEmit: true,
         target: "ESNext",
         module: "ESNext",
         moduleResolution:

@@ -77,7 +77,7 @@ ${handlers
         h.handler,
         h.lazy
       )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, method: ${JSON.stringify(
-        h.method
+        h.method?.toLowerCase()
       )} }`
   )
   .join(",\n")}
@@ -98,7 +98,7 @@ export const handlersMeta = [
     .map(
       (h) =>
         /* js */ `{ route: ${JSON.stringify(h.route)}, method: ${JSON.stringify(
-          h.method
+          h.method?.toLowerCase()
         )}, meta: ${getImportId(h.handler)}Meta }`
     )
     .join(",\n")}
