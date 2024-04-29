@@ -10,6 +10,7 @@ const suffixRegex =
   /\.(connect|delete|get|head|options|patch|post|put|trace)(\.(dev|prod|prerender))?$/;
 
 // prettier-ignore
+// biome-ignore format: keep inline for better readability
 type MatchedMethodSuffix = "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
 type MatchedEnvSuffix = "dev" | "prod" | "prerender";
 

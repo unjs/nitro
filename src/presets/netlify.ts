@@ -169,8 +169,10 @@ async function writeRedirects(nitro: Nitro) {
       code = 301;
     }
     contents =
-      `${key.replace("/**", "/*")}\t${routeRules.redirect!.to.replace("/**", "/:splat")}\t${code}\n` +
-      contents;
+      `${key.replace("/**", "/*")}\t${routeRules.redirect!.to.replace(
+        "/**",
+        "/:splat"
+      )}\t${code}\n` + contents;
   }
 
   if (existsSync(redirectsPath)) {

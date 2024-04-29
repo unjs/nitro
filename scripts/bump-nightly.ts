@@ -131,7 +131,6 @@ async function main() {
 
 // eslint-disable-next-line unicorn/prefer-top-level-await
 main().catch((error) => {
-   
   console.error(error);
   // eslint-disable-next-line unicorn/no-process-exit
   process.exit(1);
