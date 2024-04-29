@@ -1,7 +1,7 @@
 import { defineNitroPreset } from "../preset";
 
 export const baseWorker = defineNitroPreset({
-  entry: null, // Abstract
+  entry: null as any, // Abstract
   node: false,
   minify: true,
   noExternals: true,

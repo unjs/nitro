@@ -81,7 +81,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
             meta: await getWebpackChunkMeta(resolve(dir, id)),
           }))
         )
-      ).filter((chunk) => chunk.meta);
+      ).filter((chunk) => chunk.meta) as Chunk[];
 
       return inline ? TMPL_INLINE({ chunks }) : TMPL_LAZY({ chunks });
     },

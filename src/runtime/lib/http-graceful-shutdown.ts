@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // =============================================================================
 // gracefully shuts downs http server
 // can be used with http, express, koa, ...

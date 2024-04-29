@@ -1,4 +1,4 @@
-import { eventHandler, getRequestURL } from "h3";
+import { HTTPMethod, eventHandler, getRequestURL } from "h3";
 import type {
   OpenAPI3,
   PathItemObject,
@@ -46,7 +46,7 @@ function getPaths(): PathsObject {
   for (const h of handlersMeta) {
     const { route, parameters } = normalizeRoute(h.route || "");
     const tags = defaultTags(h.route || "");
-    const method = (h.method || "get").toLowerCase();
+    const method = (h.method || "get").toLowerCase() as Lowercase<HTTPMethod>;
 
     const item: PathItemObject = {
       [method]: <OperationObject>{
@@ -55,6 +55,7 @@ function getPaths(): PathsObject {
         responses: {
           200: { description: "OK" },
         },
+        ...h.meta?.openAPI,
       },
     };
 
@@ -62,13 +63,6 @@ function getPaths(): PathsObject {
       paths[route] = item;
     } else {
       Object.assign(paths[route], item);
-    }
-
-    if (h.meta?.openAPI) {
-      paths[route][method] = {
-        ...paths[route][method],
-        ...h.meta.openAPI,
-      };
     }
   }
 

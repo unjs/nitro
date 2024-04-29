@@ -6,6 +6,7 @@ import {
   setResponseHeader,
   setResponseStatus,
   removeResponseHeader,
+  type HTTPMethod,
 } from "h3";
 import {
   decodePath,
@@ -21,9 +22,9 @@ import {
 } from "#internal/nitro/virtual/public-assets";
 import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
 
-const METHODS = new Set(["HEAD", "GET"]);
+const METHODS = new Set(["HEAD", "GET"] as HTTPMethod[]);
 
-const EncodingMap = { gzip: ".gz", br: ".br" };
+const EncodingMap = { gzip: ".gz", br: ".br" } as const;
 
 export default eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
@@ -33,7 +34,8 @@ export default eventHandler((event) => {
   let id = decodePath(
     withLeadingSlash(withoutTrailingSlash(parseURL(event.path).pathname))
   );
-  let asset: PublicAsset;
+
+  let asset: PublicAsset | undefined;
 
   const encodingHeader = String(
     getRequestHeader(event, "accept-encoding") || ""
@@ -41,7 +43,7 @@ export default eventHandler((event) => {
   const encodings = [
     ...encodingHeader
       .split(",")
-      .map((e) => EncodingMap[e.trim()])
+      .map((e) => EncodingMap[e.trim() as keyof typeof EncodingMap])
       .filter(Boolean)
       .sort(),
     "",

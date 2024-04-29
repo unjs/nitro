@@ -59,6 +59,10 @@ export function virtual(
         m = await m();
       }
 
+      if (!m) {
+        return null;
+      }
+
       cache[id.replace(PREFIX, "")] = m;
 
       return {

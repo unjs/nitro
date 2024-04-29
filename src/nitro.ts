@@ -30,7 +30,7 @@ export async function createNitro(
     logger: consola.withTag("nitro"),
     scannedHandlers: [],
     close: () => nitro.hooks.callHook("close"),
-    storage: undefined,
+    storage: undefined as any,
     async updateConfig(config: NitroDynamicConfig) {
       nitro.options.routeRules = normalizeRouteRules(
         config.routeRules ? config : nitro.options
@@ -170,7 +170,7 @@ export const tasks = {
     nitro.unimport = createUnimport(nitro.options.imports);
     await nitro.unimport.init();
     // Support for importing from '#imports'
-    nitro.options.virtual["#imports"] = () => nitro.unimport.toExports();
+    nitro.options.virtual["#imports"] = () => nitro.unimport?.toExports() || "";
     // Backward compatibility
     nitro.options.virtual["#nitro"] = 'export * from "#imports"';
   }

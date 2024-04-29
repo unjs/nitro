@@ -37,9 +37,9 @@ export async function listTasks(opts?: TaskRunnerOptions) {
 
 const _devHint = `(is dev server running?)`;
 
-async function _getTasksContext(opts: TaskRunnerOptions) {
-  const cwd = resolve(process.cwd(), opts.cwd);
-  const outDir = resolve(cwd, opts.buildDir || ".nitro");
+async function _getTasksContext(opts?: TaskRunnerOptions) {
+  const cwd = resolve(process.cwd(), opts?.cwd || ".");
+  const outDir = resolve(cwd, opts?.buildDir || ".nitro");
 
   const buildInfoPath = resolve(outDir, "nitro.json");
   if (!existsSync(buildInfoPath)) {
@@ -74,7 +74,7 @@ async function _getTasksContext(opts: TaskRunnerOptions) {
   };
 }
 
-function _pidIsRunning(pid) {
+function _pidIsRunning(pid: number) {
   try {
     process.kill(pid, 0);
     return true;

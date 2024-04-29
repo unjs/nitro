@@ -212,8 +212,8 @@ export async function prerender(nitro: Nitro) {
     const redirectCodes = [301, 302, 303, 304, 307, 308];
     if (![200, ...redirectCodes].includes(res.status)) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
-      _route.error.statusCode = res.status;
-      _route.error.statusMessage = res.statusText;
+      _route.error!.statusCode = res.status;
+      _route.error!.statusMessage = res.statusText;
       failedRoutes.add(_route);
     }
 
@@ -242,8 +242,8 @@ export async function prerender(nitro: Nitro) {
     // Allow hooking before generate
     await nitro.hooks.callHook("prerender:generate", _route, nitro);
     if (_route.contentType !== inferredContentType) {
-      nitro._prerenderMeta[_route.fileName] ||= {};
-      nitro._prerenderMeta[_route.fileName].contentType = _route.contentType;
+      nitro._prerenderMeta![_route.fileName] ||= {};
+      nitro._prerenderMeta![_route.fileName].contentType = _route.contentType;
     }
 
     // Check if route is skipped or has errors
@@ -258,7 +258,7 @@ export async function prerender(nitro: Nitro) {
     if (canWriteToDisk(_route)) {
       const filePath = join(nitro.options.output.publicDir, _route.fileName);
       await writeFile(filePath, dataBuff);
-      nitro._prerenderedRoutes.push(_route);
+      nitro._prerenderedRoutes!.push(_route);
     } else {
       _route.skip = true;
     }
@@ -335,7 +335,7 @@ async function runParallel<T>(
 ) {
   const tasks = new Set<Promise<unknown>>();
 
-  function queueNext() {
+  function queueNext(): undefined | Promise<unknown> {
     const route = inputs.values().next().value;
     if (!route) {
       return;
@@ -357,7 +357,7 @@ async function runParallel<T>(
     });
   }
 
-  function refillQueue() {
+  function refillQueue(): Promise<unknown> {
     const workers = Math.min(opts.concurrency - tasks.size, inputs.size);
     return Promise.all(Array.from({ length: workers }, () => queueNext()));
   }

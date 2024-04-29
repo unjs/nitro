@@ -28,7 +28,7 @@ export async function compressPublicAssets(nitro: Nitro) {
       if (
         fileContents.length < 1024 ||
         fileName.endsWith(".map") ||
-        !isCompressableMime(mimeType)
+        !isCompressibleMime(mimeType)
       ) {
         return;
       }
@@ -59,7 +59,7 @@ export async function compressPublicAssets(nitro: Nitro) {
           };
           const compressedBuff: Buffer = await new Promise(
             (resolve, reject) => {
-              const cb = (error, result: Buffer) =>
+              const cb = (error: Error | null, result: Buffer) =>
                 error ? reject(error) : resolve(result);
               if (encoding === "gzip") {
                 zlib.gzip(fileContents, gzipOptions, cb);
@@ -130,6 +130,6 @@ const COMPRESSIBLE_MIMES_RE = new Set([
   "vnd.apple.mpegurl",
 ]);
 
-function isCompressableMime(mimeType: string) {
+function isCompressibleMime(mimeType: string) {
   return COMPRESSIBLE_MIMES_RE.has(mimeType);
 }

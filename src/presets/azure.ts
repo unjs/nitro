@@ -46,7 +46,8 @@ async function writeRoutes(nitro: Nitro) {
   // Merge custom config into the generated config
   const config = {
     ...nitro.options.azure?.config,
-    routes: [], // Overwrite routes for now, we will add existing routes after generating routes
+    // Overwrite routes for now, we will add existing routes after generating routes
+    routes: [] as Array<{ route: string; redirect?: string; rewrite?: string }>,
     platform: {
       apiRuntime: `node:${nodeVersion}`,
       ...nitro.options.azure?.config?.platform,
@@ -77,7 +78,7 @@ async function writeRoutes(nitro: Nitro) {
 
   const suffix = "/index.html".length;
   for (const { fileName } of routeFiles) {
-    if (!fileName.endsWith("/index.html")) {
+    if (!fileName || !fileName.endsWith("/index.html")) {
       continue;
     }
 
@@ -88,7 +89,11 @@ async function writeRoutes(nitro: Nitro) {
   }
 
   for (const { fileName } of routeFiles) {
-    if (!fileName.endsWith(".html") || fileName.endsWith("index.html")) {
+    if (
+      !fileName ||
+      !fileName.endsWith(".html") ||
+      fileName.endsWith("index.html")
+    ) {
       continue;
     }
 

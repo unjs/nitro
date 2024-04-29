@@ -38,7 +38,7 @@ export default {
       import.meta._websocket &&
       request.headers.get("upgrade") === "websocket"
     ) {
-      return ws.handleUpgrade(request as any, env, context);
+      return ws!.handleUpgrade(request as any, env, context);
     }
 
     const url = new URL(request.url);
@@ -52,12 +52,12 @@ export default {
     }
 
     // Expose latest env to the global context
-    globalThis.__env__ = env;
+    (globalThis as any).__env__ = env;
 
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: request.cf,
-        waitUntil: (promise) => context.waitUntil(promise),
+        waitUntil: (promise: Promise<any>) => context.waitUntil(promise),
         cloudflare: {
           request,
           env,
@@ -73,7 +73,7 @@ export default {
   },
   scheduled(event: any, env: CFPagesEnv, context: ExecutionContext) {
     if (import.meta._tasks) {
-      globalThis.__env__ = env;
+      (globalThis as any).__env__ = env;
       context.waitUntil(
         runCronTasks(event.cron, {
           context: {

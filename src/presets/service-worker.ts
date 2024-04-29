@@ -54,7 +54,7 @@ export const serviceWorker = defineNitroPreset(() => {
     hooks: {
       "prerender:generate"(route, nitro) {
         const script = scriptTemplate(nitro.options.baseURL);
-        route.contents = route.contents.replace(
+        route.contents = (route.contents || "").replace(
           "</head>",
           `${script}\n</head>`
         );

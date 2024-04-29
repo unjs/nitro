@@ -3,6 +3,12 @@ import destr from "destr";
 import wsAdapter from "crossws/adapters/deno";
 import { nitroApp } from "../app";
 import { startScheduleRunner, useRuntimeConfig } from "#internal/nitro";
+import type { Deno as _Deno } from "@deno/types";
+
+// TODO: Declare conflict with crossws
+// declare global {
+// const Deno: typeof import("@deno/types").Deno;
+// }
 
 if (Deno.env.get("DEBUG")) {
   addEventListener("unhandledrejection", (event: any) =>
@@ -21,7 +27,7 @@ if (Deno.env.get("DEBUG")) {
 }
 
 // https://deno.land/api@v1.42.4?s=Deno.serve
-const serveOptions = {
+const serveOptions: _Deno.ServeOptions & Partial<_Deno.ServeTlsOptions> = {
   key: Deno.env.get("NITRO_SSL_KEY"),
   cert: Deno.env.get("NITRO_SSL_CERT"),
   port: destr(Deno.env.get("NITRO_PORT") || Deno.env.get("PORT")) || 3000,
@@ -51,7 +57,7 @@ async function handler(request: Request, info: any) {
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"
   ) {
-    return ws.handleUpgrade(request, info);
+    return ws!.handleUpgrade(request, info);
   }
 
   const url = new URL(request.url);

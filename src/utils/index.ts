@@ -168,8 +168,8 @@ export function readPackageJson(
 ) {
   try {
     return _require(`${packageName}/package.json`);
-  } catch (error) {
-    if (error.code === "ERR_PACKAGE_PATH_NOT_EXPORTED") {
+  } catch (error: any) {
+    if (error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED") {
       const pkgModulePaths = /^(.*\/node_modules\/).*$/.exec(
         _require.resolve(packageName)
       );
@@ -240,5 +240,5 @@ export function provideFallbackValues(obj: Record<string, any>) {
 export function nitroServerName(nitro: Nitro) {
   return nitro.options.framework.name === "nitro"
     ? "Nitro Server"
-    : `${upperFirst(nitro.options.framework.name)} Nitro server`;
+    : `${upperFirst(nitro.options.framework.name as string)} Nitro server`;
 }

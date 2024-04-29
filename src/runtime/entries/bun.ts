@@ -10,9 +10,9 @@ const ws = import.meta._websocket
 
 const server = Bun.serve({
   port: process.env.NITRO_PORT || process.env.PORT || 3000,
-  websocket: import.meta._websocket ? ws.websocket : undefined,
+  websocket: import.meta._websocket ? ws!.websocket : (undefined as any),
   async fetch(req, server) {
-    if (import.meta._websocket && (await ws.handleUpgrade(req, server))) {
+    if (import.meta._websocket && (await ws!.handleUpgrade(req, server))) {
       return;
     }
 

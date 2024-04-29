@@ -2,7 +2,7 @@ import { eventHandler } from "h3";
 
 import { defineNitroPlugin } from "./plugin";
 
-const globalTiming = globalThis.__timing__ || {
+const globalTiming = (globalThis as any).__timing__ || {
   start: () => 0,
   end: () => 0,
   metrics: [],
@@ -13,6 +13,7 @@ const timingMiddleware = eventHandler((event) => {
   const start = globalTiming.start();
 
   const _end = event.node.res.end;
+  // @ts-expect-error
   event.node.res.end = function (
     chunk: any,
     encoding: BufferEncoding,
@@ -29,6 +30,7 @@ const timingMiddleware = eventHandler((event) => {
       event.node.res.setHeader("Server-Timing", serverTiming);
     }
     _end.call(event.node.res, chunk, encoding, cb);
+    // @ts-expect-error
     return this;
   }.bind(event.node.res);
 });

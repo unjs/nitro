@@ -213,7 +213,7 @@ function generateBuildConfig(nitro: Nitro) {
     return config;
   }
 
-  config.routes.push(
+  config.routes!.push(
     // ISR rules
     ...rules
       .filter(

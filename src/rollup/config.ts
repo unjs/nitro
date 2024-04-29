@@ -119,7 +119,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       dir: nitro.options.output.serverDir,
       entryFileNames: "index.mjs",
       chunkFileNames(chunk) {
-        const lastModule = normalize(chunk.moduleIds.at(-1));
+        const lastModule = normalize(chunk.moduleIds.at(-1) || "");
         return getChunkName(lastModule);
       },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
@@ -141,7 +141,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     plugins: [],
     onwarn(warning, rollupWarn) {
       if (
-        !["CIRCULAR_DEPENDENCY", "EVAL"].includes(warning.code) &&
+        !["CIRCULAR_DEPENDENCY", "EVAL"].includes(warning.code || "") &&
         !warning.message.includes("Unsupported source map comment")
       ) {
         rollupWarn(warning);
@@ -151,6 +151,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       moduleSideEffects(id) {
         const normalizedId = normalize(id);
         const idWithoutNodeModules = normalizedId.split("node_modules/").pop();
+        if (!idWithoutNodeModules) {
+          return false;
+        }
         return nitro.options.moduleSideEffects.some(
           (m) =>
             normalizedId.startsWith(m) || idWithoutNodeModules.startsWith(m)
@@ -327,17 +330,19 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   // User virtuals
   rollupConfig.plugins.push(virtual(nitro.options.virtual, nitro.vfs));
 
+  const nitroPlugins = [...new Set(nitro.options.plugins)];
+
   // Plugins
   rollupConfig.plugins.push(
     virtual(
       {
         "#internal/nitro/virtual/plugins": `
-${nitro.options.plugins
+${nitroPlugins
   .map((plugin) => `import _${hash(plugin)} from '${plugin}';`)
   .join("\n")}
 
 export const plugins = [
-  ${nitro.options.plugins.map((plugin) => `_${hash(plugin)}`).join(",\n")}
+  ${nitroPlugins.map((plugin) => `_${hash(plugin)}`).join(",\n")}
 ]
     `,
       },
@@ -427,7 +432,7 @@ export const plugins = [
             "virtual:",
             "nitropack/runtime",
             ...(nitro.options.experimental.wasm
-              ? [(id) => id.endsWith(".wasm")]
+              ? [(id: string) => id?.endsWith(".wasm")]
               : []),
             runtimeDir,
             nitro.options.srcDir,
@@ -518,7 +523,10 @@ export const plugins = [
     rollupConfig.plugins.push(
       visualizer({
         ...nitro.options.analyze,
-        filename: nitro.options.analyze.filename.replace("{name}", "nitro"),
+        filename: (nitro.options.analyze.filename || "stats.html").replace(
+          "{name}",
+          "nitro"
+        ),
         title: "Nitro Server bundle stats",
       })
     );

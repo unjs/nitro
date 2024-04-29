@@ -1,4 +1,4 @@
-import type { EventHandler, H3Error, H3Event } from "h3";
+import type { EventHandler, H3Error, H3Event, RouterMethod } from "h3";
 import type { OperationObject } from "openapi-typescript";
 import { NitroOptions } from "./nitro";
 
@@ -37,7 +37,7 @@ export interface NitroEventHandler {
   /**
    * Router method matcher
    */
-  method?: string;
+  method?: RouterMethod;
 
   /**
    * Meta

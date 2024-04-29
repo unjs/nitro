@@ -29,7 +29,7 @@ export default {
       import.meta._websocket &&
       request.headers.get("upgrade") === "websocket"
     ) {
-      return ws.handleUpgrade(request as any, env, context);
+      return ws!.handleUpgrade(request as any, env, context);
     }
 
     try {
@@ -59,12 +59,12 @@ export default {
     }
 
     // Expose latest env to the global context
-    globalThis.__env__ = env;
+    (globalThis as any).__env__ = env;
 
     return nitroApp.localFetch(url.pathname + url.search, {
       context: {
         cf: (request as any).cf,
-        waitUntil: (promise) => context.waitUntil(promise),
+        waitUntil: (promise: Promise<any>) => context.waitUntil(promise),
         cloudflare: {
           request,
           env,
@@ -80,7 +80,7 @@ export default {
   },
   scheduled(event: any, env: CFModuleEnv, context: ExecutionContext) {
     if (import.meta._tasks) {
-      globalThis.__env__ = env;
+      (globalThis as any).__env__ = env;
       context.waitUntil(
         runCronTasks(event.cron, {
           context: {
@@ -96,7 +96,7 @@ export default {
   },
 };
 
-function assetsCacheControl(_request) {
+function assetsCacheControl(_request: Request) {
   const url = new URL(_request.url);
   const meta = getPublicAssetMeta(url.pathname);
   if (meta.maxAge) {
