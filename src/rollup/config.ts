@@ -43,7 +43,7 @@ import { sourcemapMininify } from "./plugins/sourcemap-min";
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
 export const getRollupConfig = (nitro: Nitro): RollupConfig => {
-  const extensions: string[] = [".ts", ".mjs", ".js", ".json", ".node"];
+  const extensions: string[] = [".ts", ".mjs", ".js", ".json", ".node", ".tsx", ".jsx"];
 
   const nodePreset = nitro.options.node === false ? unenv.nodeless : unenv.node;
 
