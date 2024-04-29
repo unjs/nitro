@@ -7,15 +7,13 @@ export default unjs(
       "**/.nitro",
       "**/.netlify",
       "**/.nuxt"
-    ]
-  },
-  {
+    ],
     rules: {
       "unicorn/no-null": 0,
       "no-undef": 0,
       "@typescript-eslint/no-unused-vars": 0,
       "unicorn/filename-case": 0,
-      "unicorn/consistent-function-scoping": 0
-    }
+      "unicorn/consistent-function-scoping": 0,
+    },
   }
 );
