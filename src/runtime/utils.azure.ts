@@ -30,7 +30,7 @@ export function getAzureParsedCookiesFromHeaders(
       path: setCookieOptions.path,
       expires: parseNumberOrDate(setCookieOptions.expires),
       sameSite: setCookieOptions.samesite as "Lax" | "Strict" | "None",
-      maxAge: parseNumber(setCookieOptions.maxage),
+      maxAge: parseNumber(setCookieOptions["max-age"]),
       secure: setCookieStr.includes("Secure") ? true : undefined,
       httpOnly: setCookieStr.includes("HttpOnly") ? true : undefined,
     };
