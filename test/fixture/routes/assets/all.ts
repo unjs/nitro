@@ -9,6 +9,7 @@ export default eventHandler(async (event) => {
         meta: await serverAssets.getMeta(key),
         data: await serverAssets.getItem(key).then((r) =>
           // prettier-ignore
+          // biome-ignore format: eslint compatibility
           typeof r === "string" ? r.slice(0, 32) : (isPureObject(r) ? r : `<data>`)
         ),
       };

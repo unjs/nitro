@@ -166,14 +166,14 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         // Absolute path, we are not sure about subpath to generate import statement
         // Guess as main subpath export
         const packageEntry = await _resolve(pkgName).catch(() => null);
-        if (packageEntry !== originalId) {
+        if (packageEntry !== id) {
           // Reverse engineer subpath export
           const guessedSubpath: string | null | undefined =
-            await lookupNodeModuleSubpath(originalId).catch(() => null);
+            await lookupNodeModuleSubpath(id).catch(() => null);
           const resolvedGuess =
             guessedSubpath &&
             (await _resolve(join(pkgName, guessedSubpath)).catch(() => null));
-          if (resolvedGuess === originalId) {
+          if (resolvedGuess === id) {
             trackedExternals.add(resolvedGuess);
             return {
               id: join(pkgName, guessedSubpath!),
@@ -436,9 +436,9 @@ export function externals(opts: NodeExternalsOptions): Plugin {
 
       // Write packages with multiple versions
       for (const [pkgName, pkgVersions] of Object.entries(multiVersionPkgs)) {
-        const versionEntires = Object.entries(pkgVersions).sort(
+        const versionEntries = Object.entries(pkgVersions).sort(
           ([v1, p1], [v2, p2]) => {
-            // 1. Packege with no parent packages to be hoisted
+            // 1. Package with no parent packages to be hoisted
             if (p1.length === 0) {
               return -1;
             }
@@ -449,7 +449,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
             return compareVersions(v1, v2);
           }
         );
-        for (const [version, parentPkgs] of versionEntires) {
+        for (const [version, parentPkgs] of versionEntries) {
           // Write each version into node_modules/.nitro/{name}@{version}
           await writePackage(pkgName, version, `.nitro/${pkgName}@${version}`);
           // Link one version to the top level (for indirect bundle deps)

@@ -116,8 +116,10 @@ export function readAsset (id) {
         );
 
         // prettier-ignore
+        // biome-ignore format: -
         type _serveStaticAsKey = Exclude<typeof nitro.options.serveStatic, boolean> | "true" | "false";
         // prettier-ignore
+        // biome-ignore format: -
         const handlerName = readAssetHandler[nitro.options.serveStatic as _serveStaticAsKey] || "null";
         const readAssetImport = `#internal/nitro/virtual/public-assets-${handlerName}`;
 

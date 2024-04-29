@@ -10,7 +10,8 @@ const suffixRegex =
   /\.(connect|delete|get|head|options|patch|post|put|trace)(\.(dev|prod|prerender))?$/;
 
 // prettier-ignore
-type MatchedMethdSuffix = "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
+// biome-ignore format: keep inline for better readability
+type MatchedMethodSuffix = "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
 type MatchedEnvSuffix = "dev" | "prod" | "prerender";
 
 export async function scanHandlers(nitro: Nitro) {
@@ -61,11 +62,11 @@ export async function scanServerRoutes(
     route = withLeadingSlash(withoutTrailingSlash(withBase(route, prefix)));
 
     const suffixMatch = route.match(suffixRegex);
-    let method: MatchedMethdSuffix | undefined;
+    let method: MatchedMethodSuffix | undefined;
     let env: MatchedEnvSuffix | undefined;
     if (suffixMatch?.index) {
       route = route.slice(0, Math.max(0, suffixMatch.index));
-      method = suffixMatch[1] as MatchedMethdSuffix;
+      method = suffixMatch[1] as MatchedMethodSuffix;
       env = suffixMatch[3] as MatchedEnvSuffix;
     }
 

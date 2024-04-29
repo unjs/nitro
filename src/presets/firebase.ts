@@ -86,7 +86,7 @@ async function updatePackageJSON(nitro: Nitro) {
     main: "index.mjs",
     dependencies: Object.fromEntries(
       Object.entries({
-        // Default to "latest" normally they should be overriden with user versions
+        // Default to "latest" normally they should be overridden with user versions
         "firebase-admin": "latest",
         "firebase-functions": "latest",
         ...packageJSON.dependencies,

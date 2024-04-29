@@ -7,7 +7,7 @@ set -xe
 # Restore all git changes
 git restore -s@ -SW  -- .
 
-# Bump acording to changelog
+# Bump according to changelog
 pnpm changelogen --bump
 
 # Bump versions to nightly

@@ -4,7 +4,7 @@
 
 **Preset:** `github_pages`
 
-:read-more{title="Github Pages" to="https://pages.github.com/"}
+:read-more{title="GitHub Pages" to="https://pages.github.com/"}
 
 ## Setup
 

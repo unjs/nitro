@@ -15,7 +15,7 @@ export default defineCommand({
     minify: {
       type: "boolean",
       description:
-        "Minify the output (overides preset defaults you can also use `--no-minify` to disable).",
+        "Minify the output (overrides preset defaults you can also use `--no-minify` to disable).",
     },
     preset: {
       type: "string",

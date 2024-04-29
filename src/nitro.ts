@@ -156,7 +156,9 @@ export const tasks = {
           },
           resolve: ${
             task.handler
-              ? `() => import("${normalize(task.handler)}").then(r => r.default || r)`
+              ? `() => import("${normalize(
+                  task.handler
+                )}").then(r => r.default || r)`
               : "undefined"
           },
         }`
