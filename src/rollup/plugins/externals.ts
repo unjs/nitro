@@ -168,9 +168,8 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const packageEntry = await _resolve(pkgName).catch(() => null);
         if (packageEntry !== id) {
           // Reverse engineer subpath export
-          const guessedSubpath: string | null = await lookupNodeModuleSubpath(
-            id
-          ).catch(() => null);
+          const guessedSubpath: string | null | undefined =
+            await lookupNodeModuleSubpath(id).catch(() => null);
           const resolvedGuess =
             guessedSubpath &&
             (await _resolve(join(pkgName, guessedSubpath)).catch(() => null));
