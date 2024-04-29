@@ -46,7 +46,7 @@ export function handlers(nitro: Nitro) {
           .map((h) => {
             return {
               route: h.route,
-              method: h.method,
+              method: h.method?.toLowerCase(),
             };
           });
 
@@ -70,7 +70,7 @@ ${handlers
         h.handler,
         h.lazy
       )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, method: ${JSON.stringify(
-        h.method
+        h.method?.toLowerCase()
       )} }`
   )
   .join(",\n")}
