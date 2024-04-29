@@ -131,10 +131,10 @@ export type DatabaseConnectionConfigs = Record<
   DatabaseConnectionConfig
 >;
 
-type DeepPartial<T> =
-  T extends Record<string, any>
-    ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
-    : T;
+// prettier-ignore
+type DeepPartial<T> = T extends Record<string, any>
+  ? { [P in keyof T]?: DeepPartial<T[P]> | T[P] }
+  : T;
 
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 

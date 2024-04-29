@@ -97,7 +97,9 @@ export const handlersMeta = [
   ${handlers
     .map(
       (h) =>
-        /* js */ `{ route: ${JSON.stringify(h.route)}, method: ${JSON.stringify(h.method)}, meta: ${getImportId(h.handler)}Meta }`
+        /* js */ `{ route: ${JSON.stringify(h.route)}, method: ${JSON.stringify(
+          h.method
+        )}, meta: ${getImportId(h.handler)}Meta }`
     )
     .join(",\n")}
   ];
