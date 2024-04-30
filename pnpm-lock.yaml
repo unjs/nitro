@@ -219,6 +219,9 @@ importers:
       unwasm:
         specifier: ^0.3.9
         version: 0.3.9
+      zod:
+        specifier: ^3.23.5
+        version: 3.23.5
     devDependencies:
       '@azure/functions':
         specifier: ^3.5.1
@@ -6398,8 +6401,8 @@ packages:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
 
-  zod@3.22.4:
-    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+  zod@3.23.5:
+    resolution: {integrity: sha512-fkwiq0VIQTksNNA131rDOsVJcns0pfVUjHzLrNBiF/O/Xxb5lQyEXkhZWcJ7npWsYlvs+h0jFWXXy4X46Em1JA==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -11477,7 +11480,7 @@ snapshots:
       workerd: 1.20240419.0
       ws: 8.16.0
       youch: 3.3.3
-      zod: 3.22.4
+      zod: 3.23.5
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -13514,6 +13517,6 @@ snapshots:
       compress-commons: 6.0.2
       readable-stream: 4.5.2
 
-  zod@3.22.4: {}
+  zod@3.23.5: {}
 
   zwitch@2.0.4: {}

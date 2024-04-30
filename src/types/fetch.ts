@@ -1,10 +1,11 @@
-import type { RouterMethod } from "h3";
+import type { EventHandler, RouterMethod } from "h3";
 import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
 import type { MatchedRoutes } from "./utils";
 
 // An interface to extend in a local project
 
 export interface InternalApi {}
+export interface InternalApiHandlers {}
 
 export type NitroFetchRequest =
   | Exclude<keyof InternalApi, `/_${string}` | `/api/_${string}`>
@@ -49,13 +50,30 @@ export type AvailableRouterMethod<R extends NitroFetchRequest> =
         : RouterMethod
     : RouterMethod;
 
-// Argumented fetch options to include the correct request methods.
+// Extracts the body or query parameter types expected for a route
+// based on the types inferred from bodyValidator/queryValidator.
+export type HandlerInputType<
+  R extends NitroFetchRequest, 
+  M extends AvailableRouterMethod<R>, 
+  P extends "body" | "query"
+> = 
+  // TODO
+  R extends string
+    ? InternalApiHandlers[MatchedRoutes<R>][M] extends EventHandler<infer Request> 
+      ? Request[P] 
+      : any
+    : any;
+
+// Argumented fetch options to include the correct request methods,
+// body types, and query parameter types.
 // This overrides the default, which is only narrowed to a string.
 export interface NitroFetchOptions<
   R extends NitroFetchRequest,
   M extends AvailableRouterMethod<R> = AvailableRouterMethod<R>,
 > extends FetchOptions {
   method?: Uppercase<M> | M;
+  body?: HandlerInputType<R, M, 'body'>;
+  query?: HandlerInputType<R, M, 'query'>;
 }
 
 // Extract the route method from options which might be undefined or without a method parameter.

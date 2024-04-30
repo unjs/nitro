@@ -83,9 +83,10 @@ export type PrerenderGenerateRoute = PrerenderRoute;
 
 type HookResult = void | Promise<void>;
 
-export type NitroTypes = {
-  routes: Record<string, Partial<Record<RouterMethod | "default", string[]>>>;
-};
+export type NitroTypes = Record<
+  'routes' | 'handlers', 
+  Record<string, Partial<Record<RouterMethod | "default", string[]>>>
+>;
 
 export interface NitroHooks {
   "types:extend": (types: NitroTypes) => HookResult;

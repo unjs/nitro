@@ -109,6 +109,7 @@ export async function build(nitro: Nitro) {
 export async function writeTypes(nitro: Nitro) {
   const types: NitroTypes = {
     routes: {},
+    handlers: {}
   };
 
   const typesDir = resolve(nitro.options.buildDir, "types");
@@ -130,6 +131,12 @@ export async function writeTypes(nitro: Nitro) {
     types.routes[mw.route][method] ??= [];
     types.routes[mw.route][method]!.push(
       `Simplify<Serialize<Awaited<ReturnType<typeof import('${relativePath}').default>>>>`
+    );
+
+    types.handlers[mw.route] ??= {};
+    types.handlers[mw.route][method] ??= [];
+    types.handlers[mw.route][method]!.push(
+      `typeof import('${relativePath}').default`
     );
   }
 
@@ -199,6 +206,17 @@ export async function writeTypes(nitro: Nitro) {
     "  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T",
     "  interface InternalApi {",
     ...Object.entries(types.routes).map(([path, methods]) =>
+      [
+        `    '${path}': {`,
+        ...Object.entries(methods).map(
+          ([method, types]) => `      '${method}': ${types.join(" | ")}`
+        ),
+        "    }",
+      ].join("\n")
+    ),
+    "  }",
+    "  interface InternalApiHandlers {",
+    ...Object.entries(types.handlers).map(([path, methods]) =>
       [
         `    '${path}': {`,
         ...Object.entries(methods).map(

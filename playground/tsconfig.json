@@ -1,6 +1,7 @@
 {
   "extends": "./.nitro/types/tsconfig.json",
   "compilerOptions": {
+    "strict": true,
     "paths": {
       "nitropack": ["../src/index"],
       "nitropack/config": ["../src/config"],
