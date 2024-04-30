@@ -2,15 +2,17 @@ import destr from "destr";
 import { snakeCase } from "scule";
 
 export type EnvOptions = {
+  env?: Record<string, unknown>;
   prefix?: string;
   altPrefix?: string;
   envExpansion?: boolean;
 };
 
 export function getEnv(key: string, opts: EnvOptions) {
+  const env = opts.env ?? process.env
   const envKey = snakeCase(key).toUpperCase();
   return destr(
-    process.env[opts.prefix + envKey] ?? process.env[opts.altPrefix + envKey]
+    env[opts.prefix + envKey] ?? env[opts.altPrefix + envKey]
   );
 }
 
@@ -47,7 +49,7 @@ export function applyEnv(
     }
     // Experimental env expansion
     if (opts.envExpansion && typeof obj[key] === "string") {
-      obj[key] = _expandFromEnv(obj[key]);
+      obj[key] = _expandFromEnv(obj[key], opts.env);
     }
   }
   return obj;
@@ -55,8 +57,8 @@ export function applyEnv(
 
 const envExpandRx = /{{(.*?)}}/g;
 
-function _expandFromEnv(value: string) {
+function _expandFromEnv(value: string, env: Record<string, any> = process.env) {
   return value.replace(envExpandRx, (match, key) => {
-    return process.env[key] || match;
+    return env[key] || match;
   });
 }
