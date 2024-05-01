@@ -3,12 +3,6 @@ import { nitroApp } from "../app";
 import { getRouteRulesForPath } from "../route-rules";
 import { joinHeaders, normalizeCookieHeader } from "../utils";
 
-const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
-
-type NitroResponseHeaders = Awaited<
-  ReturnType<(typeof nitroApp)["localCall"]>
->["headers"];
-
 const handler = async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const relativeUrl = `${url.pathname}${url.search}`;
@@ -33,6 +27,12 @@ const handler = async (req: Request): Promise<Response> => {
 export default handler;
 
 // --- internal utils ---
+
+const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
+
+type NitroResponseHeaders = Awaited<
+  ReturnType<(typeof nitroApp)["localCall"]>
+>["headers"];
 
 function normalizeResponseHeaders(headers: NitroResponseHeaders): Headers {
   const outgoingHeaders = new Headers();
