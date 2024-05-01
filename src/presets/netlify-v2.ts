@@ -71,9 +71,9 @@ export const netlifyEdge = defineNitroPreset({
         functions: [
           {
             path: "/*",
-            name: "nitro server handler",
+            name: "edge server handler",
             function: "server",
-            generator: `${nitroPkg.name}@${nitroPkg.version}`,
+            generator: getGeneratorString(nitro),
           },
         ],
       };
@@ -202,9 +202,13 @@ function generateNetlifyFunction(nitro: Nitro) {
 export { default } from "./main.mjs";
 export const config = {
   name: "server handler",
-  generator: "${nitro.options.framework.name}@${nitro.options.framework.version} (nitro: v${version})",
+  generator: getGeneratorString(nitro),
   path: "/*",
   preferStatic: true,
 };
     `.trim();
+}
+
+function getGeneratorString(nitro: Nitro) {
+  return `${nitro.options.framework.name}@${nitro.options.framework.version} (nitro: v${version})`;
 }
