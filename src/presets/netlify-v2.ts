@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
-import nitroPkg from "../../package.json";
+import { version } from "../../package.json";
 
 // Netlify functions
 export const netlify = defineNitroPreset({
@@ -23,7 +23,7 @@ export const netlify = defineNitroPreset({
 
       await fsp.writeFile(
         join(nitro.options.output.dir, "server", "server.mjs"),
-        generateNetlifyFunction("./main.mjs")
+        generateNetlifyFunction(nitro)
       );
 
       if (nitro.options.netlify) {
@@ -197,12 +197,12 @@ async function writeHeaders(nitro: Nitro) {
 // along with its config. We do this instead of compiling the entrypoint directly because
 // the Netlify platform actually statically analyzes the function file to read the config;
 // if we compiled the entrypoint directly, it would be chunked and wouldn't be analyzable.
-function generateNetlifyFunction(handlerRelativePath: string) {
+function generateNetlifyFunction(nitro: Nitro) {
   return /* js */ `
-export { default } from "${handlerRelativePath}";
+export { default } from "./main.mjs";
 export const config = {
-  name: "Nitro server handler",
-  generator: "${nitroPkg.name}@${nitroPkg.version}",
+  name: "server handler",
+  generator: "${nitro.options.framework.name}@${nitro.options.framework.version} (nitro: v${version})",
   path: "/*",
   preferStatic: true,
 };
