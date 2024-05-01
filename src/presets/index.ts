@@ -14,7 +14,13 @@ export { digitalOcean } from "./digital-ocean";
 export { firebase } from "./firebase";
 export { heroku } from "./heroku";
 export { edgio } from "./edgio";
-export { netlify, netlifyBuilder, netlifyEdge, netlifyStatic } from "./netlify";
+export {
+  netlify as netlifyV1,
+  netlifyBuilder,
+  netlifyEdge,
+  netlifyStatic,
+} from "./netlify-v1";
+export { netlify, netlify as netlifyV2 } from "./netlify-v2";
 export { nitroDev } from "./nitro-dev";
 export { nitroPrerender } from "./nitro-prerender";
 export { cli } from "./node-cli";

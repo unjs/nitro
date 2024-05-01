@@ -4,32 +4,17 @@ import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
 import nitroPkg from "../../package.json";
 
-// This is written to the functions directory. It just re-exports the compiled handler,
-// along with its config. We do this instead of compiling the entrypoint directly because
-// the Netlify platform actually statically analyzes the function file to read the config;
-// if we compiled the entrypoint directly, it would be chunked and wouldn't be analyzable.
-const generateNetlifyFunction = (handlerRelativePath: string) => {
-  return /* js */ `
-    export { default } from "${handlerRelativePath}";
-    export const config = {
-      name: "Nitro server handler",
-      generator: "${nitroPkg.name}@${nitroPkg.version}",
-      path: "/*",
-      preferStatic: true,
-    };
-    `;
-};
-
 // Netlify functions
 export const netlify = defineNitroPreset({
-  entry: "#internal/nitro/entries/netlify",
+  extends: "aws-lambda",
+  entry: "#internal/nitro/entries/netlify-v1",
   output: {
     dir: "{{ rootDir }}/.netlify/functions-internal",
     publicDir: "{{ rootDir }}/dist",
   },
   rollupConfig: {
     output: {
-      entryFileNames: "main.mjs",
+      entryFileNames: "server.mjs",
     },
   },
   hooks: {
@@ -39,11 +24,6 @@ export const netlify = defineNitroPreset({
     async compiled(nitro: Nitro) {
       await writeHeaders(nitro);
       await writeRedirects(nitro);
-
-      await fsp.writeFile(
-        join(nitro.options.output.dir, "server", "server.mjs"),
-        generateNetlifyFunction("./main.mjs")
-      );
 
       if (nitro.options.netlify) {
         const configPath = join(
@@ -58,10 +38,23 @@ export const netlify = defineNitroPreset({
         );
       }
 
+      const functionConfig = {
+        config: { nodeModuleFormat: "esm" },
+        version: 1,
+      };
+      const functionConfigPath = join(
+        nitro.options.output.serverDir,
+        "server.json"
+      );
+      await fsp.writeFile(functionConfigPath, JSON.stringify(functionConfig));
+    },
+  },
+});
+
 // Netlify builder
 export const netlifyBuilder = defineNitroPreset({
   extends: "netlify",
-  entry: "#internal/nitro/entries/netlify-builder",
+  entry: "#internal/nitro/entries/netlify-v1-builder",
   hooks: {
     "rollup:before": (nitro: Nitro) => {
       deprecateSWR(nitro);
@@ -138,20 +131,31 @@ export const netlifyStatic = defineNitroPreset({
 
 async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
-
-  let contents = "";
-  if (nitro.options.static) {
-    const staticFallback = existsSync(
-      join(nitro.options.output.publicDir, "404.html")
-    )
-      ? "/* /404.html 404"
-      : "";
-    contents += staticFallback;
-  }
+  const staticFallback = existsSync(
+    join(nitro.options.output.publicDir, "404.html")
+  )
+    ? "/* /404.html 404"
+    : "";
+  let contents = nitro.options.static
+    ? staticFallback
+    : "/* /.netlify/functions/server 200";
 
   const rules = Object.entries(nitro.options.routeRules).sort(
     (a, b) => a[0].split(/\/(?!\*)/).length - b[0].split(/\/(?!\*)/).length
   );
+
+  if (!nitro.options.static) {
+    // Rewrite static ISR paths to builder functions
+    for (const [key, value] of rules.filter(
+      ([_, value]) => value.isr !== undefined
+    )) {
+      contents = value.isr
+        ? `${key.replace("/**", "/*")}\t/.netlify/builders/server 200\n` +
+          contents
+        : `${key.replace("/**", "/*")}\t/.netlify/functions/server 200\n` +
+          contents;
+    }
+  }
 
   for (const [key, routeRules] of rules.filter(
     ([_, routeRules]) => routeRules.redirect
@@ -231,7 +235,7 @@ function deprecateSWR(nitro: Nitro) {
     return;
   }
   let hasLegacyOptions = false;
-  for (const [_key, value] of Object.entries(nitro.options.routeRules)) {
+  for (const [key, value] of Object.entries(nitro.options.routeRules)) {
     if (_hasProp(value, "isr")) {
       continue;
     }
@@ -249,7 +253,7 @@ function deprecateSWR(nitro: Nitro) {
   }
   if (hasLegacyOptions) {
     console.warn(
-      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
+      "[nitro] Nitro now uses `isr` option to configure ISR behavior on Netlify. Backwards-compatible support for `static` and `swr` support with Builder Functions will be removed in the future versions. Set `future.nativeSWR: true` nitro config disable this warning."
     );
   }
 }
