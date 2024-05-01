@@ -20,8 +20,8 @@ const handler = async (req: Request): Promise<Response> => {
   });
 
   const headers = normalizeResponseHeaders({
-    ...r.headers,
     ...getCacheHeaders(relativeUrl),
+    ...r.headers,
   });
 
   return new Response(r.body, {
