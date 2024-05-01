@@ -302,8 +302,8 @@ importers:
         specifier: ^12.1.0
         version: 12.1.0
       firebase-functions:
-        specifier: ^4.9.0
-        version: 4.9.0(firebase-admin@12.1.0)
+        specifier: ^5.0.0
+        version: 5.0.0(firebase-admin@12.1.0)
       get-port-please:
         specifier: ^3.1.2
         version: 3.1.2
@@ -3240,12 +3240,12 @@ packages:
     resolution: {integrity: sha512-bU7uPKMmIXAihWxntpY/Ma9zucn5y3ec+HQPqFQ/zcEfP9Avk9E/6D8u+yT/VwKHNZyg7yDVWOoJi73TIdR4Ww==}
     engines: {node: '>=14'}
 
-  firebase-functions@4.9.0:
-    resolution: {integrity: sha512-IqxOEsVAWGcRv9KRGzWQR5mOFuNsil3vsfkRPPiaV1U/ATC27/jbahh4z8I4rW8Xqa6cQE5xqnw0ueyMH7i7Ag==}
+  firebase-functions@5.0.0:
+    resolution: {integrity: sha512-iGG41MavOS+RtEsbcq2j/ltQ8L2Oji71dRpwVur+meIQWkvXCYb2QJtnyp0ryQVnV3NyjV+3Vdx7OnmD+Hanuw==}
     engines: {node: '>=14.10.0'}
     hasBin: true
     peerDependencies:
-      firebase-admin: ^10.0.0 || ^11.0.0 || ^12.0.0
+      firebase-admin: ^11.10.0 || ^12.0.0
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -9881,7 +9881,7 @@ snapshots:
       - encoding
       - supports-color
 
-  firebase-functions@4.9.0(firebase-admin@12.1.0):
+  firebase-functions@5.0.0(firebase-admin@12.1.0):
     dependencies:
       '@types/cors': 2.8.17
       '@types/express': 4.17.3
