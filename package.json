@@ -131,8 +131,7 @@
     "unimport": "^3.7.1",
     "unstorage": "^1.10.2",
     "untyped": "^1.4.2",
-    "unwasm": "^0.3.9",
-    "zod": "^3.23.5"
+    "unwasm": "^0.3.9"
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1",
