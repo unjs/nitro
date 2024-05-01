@@ -16,11 +16,12 @@ export { heroku } from "./heroku";
 export { edgio } from "./edgio";
 export {
   netlify as netlifyV1,
+  netlify,
   netlifyBuilder,
   netlifyEdge,
   netlifyStatic,
 } from "./netlify-v1";
-export { netlify, netlify as netlifyV2 } from "./netlify-v2";
+export { netlify as netlifyV2 } from "./netlify-v2";
 export { nitroDev } from "./nitro-dev";
 export { nitroPrerender } from "./nitro-prerender";
 export { cli } from "./node-cli";

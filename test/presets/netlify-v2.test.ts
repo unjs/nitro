@@ -4,11 +4,11 @@ import { describe, it, expect } from "vitest";
 import type { Context } from "@netlify/functions";
 import { getPresetTmpDir, setupTest, testNitro } from "../tests";
 
-describe("nitro:preset:netlify", async () => {
-  const ctx = await setupTest("netlify", {
+describe("nitro:preset:netlify-v2", async () => {
+  const ctx = await setupTest("netlify-v2", {
     config: {
       output: {
-        publicDir: resolve(getPresetTmpDir("netlify"), "dist"),
+        publicDir: resolve(getPresetTmpDir("netlify-v2"), "dist"),
       },
       netlify: {
         images: {
