@@ -9,37 +9,6 @@ type NitroResponseHeaders = Awaited<
   ReturnType<(typeof nitroApp)["localCall"]>
 >["headers"];
 
-const normalizeResponseHeaders = (headers: NitroResponseHeaders): Headers => {
-  const outgoingHeaders = new Headers();
-  for (const [name, header] of Object.entries(headers)) {
-    if (name === "set-cookie") {
-      for (const cookie of normalizeCookieHeader(header)) {
-        outgoingHeaders.append("set-cookie", cookie);
-      }
-    } else if (header !== undefined) {
-      outgoingHeaders.set(name, joinHeaders(header));
-    }
-  }
-  return outgoingHeaders;
-};
-
-const getCacheHeaders = (url: string): Record<string, string> => {
-  const { isr } = getRouteRulesForPath(url);
-  if (isr) {
-    const maxAge = typeof isr === "number" ? isr : ONE_YEAR_IN_SECONDS;
-    const revalidateDirective =
-      typeof isr === "number"
-        ? `stale-while-revalidate=${ONE_YEAR_IN_SECONDS}`
-        : "must-revalidate";
-    return {
-      "Cache-Control": "public, max-age=0, must-revalidate",
-      "Netlify-CDN-Cache-Control": `public, max-age=${maxAge}, ${revalidateDirective}`,
-    };
-  }
-
-  return {};
-};
-
 const handler = async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const relativeUrl = `${url.pathname}${url.search}`;
@@ -62,3 +31,35 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 export default handler;
+
+// --- internal utils ---
+
+function normalizeResponseHeaders(headers: NitroResponseHeaders): Headers {
+  const outgoingHeaders = new Headers();
+  for (const [name, header] of Object.entries(headers)) {
+    if (name === "set-cookie") {
+      for (const cookie of normalizeCookieHeader(header)) {
+        outgoingHeaders.append("set-cookie", cookie);
+      }
+    } else if (header !== undefined) {
+      outgoingHeaders.set(name, joinHeaders(header));
+    }
+  }
+  return outgoingHeaders;
+}
+
+function getCacheHeaders(url: string): Record<string, string> {
+  const { isr } = getRouteRulesForPath(url);
+  if (isr) {
+    const maxAge = typeof isr === "number" ? isr : ONE_YEAR_IN_SECONDS;
+    const revalidateDirective =
+      typeof isr === "number"
+        ? `stale-while-revalidate=${ONE_YEAR_IN_SECONDS}`
+        : "must-revalidate";
+    return {
+      "Cache-Control": "public, max-age=0, must-revalidate",
+      "Netlify-CDN-Cache-Control": `public, max-age=${maxAge}, ${revalidateDirective}`,
+    };
+  }
+  return {};
+}
