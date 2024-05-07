@@ -10,9 +10,9 @@ import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingHeaders,
 } from "../utils.lambda";
-import { pipeline, Readable } from "node:stream";
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace awslambda2 {
     function streamifyResponse(
       handler: (
@@ -20,7 +20,9 @@ declare global {
         responseStream: NodeJS.WritableStream,
         context: Context
       ) => Promise<void>
-    );
+    ): any;
+
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace HttpResponseStream {
       function from(
         stream: NodeJS.WritableStream,
@@ -32,6 +34,7 @@ declare global {
     }
   }
 }
+
 export const handler = awslambda2.streamifyResponse(
   async (event, responseStream, context) => {
     const query = {
@@ -49,11 +52,14 @@ export const handler = awslambda2.streamifyResponse(
       event,
       url,
       context,
-      headers: normalizeLambdaIncomingHeaders(event.headers),
+      headers: normalizeLambdaIncomingHeaders(event.headers) as Record<
+        string,
+        string | string[]
+      >,
       method,
       query,
       body: event.isBase64Encoded
-        ? Buffer.from(event.body, "base64").toString("utf8")
+        ? Buffer.from(event.body || "", "base64").toString("utf8")
         : event.body,
     });
     const httpResponseMetadata = {
