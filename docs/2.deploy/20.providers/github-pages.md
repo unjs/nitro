@@ -34,8 +34,8 @@ jobs:
         with:
           node-version: "18"
 
-      # Pick your own package manager and build script
-      - run: npm install
+      - run: npx nypm install
+      # Pick your own build script
       - run: npm run build
         env:
           NITRO_PRESET: github_pages
