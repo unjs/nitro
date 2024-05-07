@@ -14,6 +14,7 @@ import {
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace awslambda2 {
+    // https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
     function streamifyResponse(
       handler: (
         event: APIGatewayProxyEventV2,
