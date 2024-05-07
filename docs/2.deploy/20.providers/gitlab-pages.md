@@ -19,7 +19,7 @@ Follow the steps to [create a GitLab Pages site](https://docs.gitlab.com/ee/user
 image: node:lts
 # Functions that should be executed before the build script is run
 before_script:
-  - npm install
+  - npx nypm install
 pages:
   cache:
     paths:
