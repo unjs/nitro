@@ -32,5 +32,6 @@ export { koyeb } from "./koyeb";
 export { iis, iisHandler, iisNode } from "./iis";
 export { _static as static } from "./static";
 export { githubPages } from "./github-pages";
+export { gitlabPages } from "./gitlab-pages";
 export { winterjs } from "./winterjs";
 export { zeabur, zeaburStatic } from "./zeabur";
