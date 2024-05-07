@@ -1,7 +1,6 @@
 export { alwaysdata } from "./alwaysdata";
 export { awsAmplify } from "./aws-amplify";
-export { awsLambda } from "./aws-lambda";
-export { awsLambdaStreaming } from "./aws-lambda-streaming";
+export { awsLambda, awsLambdaStreaming } from "./aws-lambda";
 export { azureFunctions } from "./azure-functions";
 export { azure } from "./azure";
 export { baseWorker } from "./base-worker";
