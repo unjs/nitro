@@ -14,7 +14,6 @@ export { digitalOcean } from "./digital-ocean";
 export { firebase } from "./firebase";
 export { heroku } from "./heroku";
 export { edgio } from "./edgio";
-export { netlify, netlifyBuilder, netlifyEdge, netlifyStatic } from "./netlify";
 export { nitroDev } from "./nitro-dev";
 export { nitroPrerender } from "./nitro-prerender";
 export { cli } from "./node-cli";
@@ -35,3 +34,22 @@ export { githubPages } from "./github-pages";
 export { gitlabPages } from "./gitlab-pages";
 export { winterjs } from "./winterjs";
 export { zeabur, zeaburStatic } from "./zeabur";
+
+// Netlify
+// https://github.com/unjs/nitro/pull/2406
+export {
+  netlify as netlifyV1,
+  netlify,
+  netlifyBuilder,
+  netlifyBuilder as netlifyV1Builder,
+  netlifyEdge,
+  netlifyEdge as netlifyV1Edge,
+  netlifyStatic,
+  netlifyStatic as netlifyV1Static,
+} from "./netlify-v1";
+
+export {
+  netlify as netlifyV2,
+  netlifyEdge as netlifyV2Edge,
+  netlifyStatic as netlifyV2Static,
+} from "./netlify-v2";

@@ -7,7 +7,7 @@ import nitroPkg from "../../package.json";
 // Netlify functions
 export const netlify = defineNitroPreset({
   extends: "aws-lambda",
-  entry: "#internal/nitro/entries/netlify",
+  entry: "#internal/nitro/entries/netlify-v1",
   output: {
     dir: "{{ rootDir }}/.netlify/functions-internal",
     publicDir: "{{ rootDir }}/dist",
@@ -54,7 +54,7 @@ export const netlify = defineNitroPreset({
 // Netlify builder
 export const netlifyBuilder = defineNitroPreset({
   extends: "netlify",
-  entry: "#internal/nitro/entries/netlify-builder",
+  entry: "#internal/nitro/entries/netlify-v1-builder",
   hooks: {
     "rollup:before": (nitro: Nitro) => {
       deprecateSWR(nitro);
