@@ -25,9 +25,11 @@ pages:
     paths:
       # Directories that are cached between builds
       - node_modules/
+  variables:
+    NITRO_PRESET: gitlab_pages
   script:
     # Specify the steps involved to build your app here
-    - npm run generate
+    - npm run build
   artifacts:
     paths:
       # The directory that contains the built files to be published
