@@ -13,7 +13,7 @@ import {
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace awslambda2 {
+  namespace awslambda {
     // https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
     function streamifyResponse(
       handler: (
@@ -36,14 +36,13 @@ declare global {
   }
 }
 
-export const handler = awslambda2.streamifyResponse(
-  async (event, responseStream, context) => {
+export const handler = awslambda.streamifyResponse(
+  async (event: APIGatewayProxyEventV2, responseStream, context) => {
     const query = {
       ...event.queryStringParameters,
     };
     const url = withQuery(event.rawPath, query);
-    const method =
-      (event as APIGatewayProxyEventV2).requestContext?.http?.method || "get";
+    const method = event.requestContext?.http?.method || "get";
 
     if ("cookies" in event && event.cookies) {
       event.headers.cookie = event.cookies.join(";");
