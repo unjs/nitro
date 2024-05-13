@@ -81,6 +81,9 @@ type DeepReadonly<T> = T extends Record<string, any>
     ? ReadonlyArray<DeepReadonly<U>>
     : T;
 
+/**
+ * @param path - The path to match against route rules. This should not contain a query string.
+ */
 export function getRouteRulesForPath(
   path: string
 ): DeepReadonly<NitroRouteRules> {

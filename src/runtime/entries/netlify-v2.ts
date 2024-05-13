@@ -14,7 +14,7 @@ const handler = async (req: Request): Promise<Response> => {
   });
 
   const headers = normalizeResponseHeaders({
-    ...getCacheHeaders(relativeUrl),
+    ...getCacheHeaders(url.pathname),
     ...r.headers,
   });
 

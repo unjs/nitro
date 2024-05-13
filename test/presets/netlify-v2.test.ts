@@ -123,6 +123,15 @@ describe("nitro:preset:netlify-v2", async () => {
           (headers as Record<string, string>)["netlify-cdn-cache-control"]
         ).not.toBeDefined();
       });
+      // Regression test for https://github.com/unjs/nitro/issues/2431
+      it("matches paths with a query string", async () => {
+        const { headers } = await callHandler({
+          url: "/rules/isr-ttl?foo=bar",
+        });
+        expect(
+          (headers as Record<string, string>)["netlify-cdn-cache-control"]
+        ).toBe("public, max-age=60, stale-while-revalidate=31536000");
+      });
     }
   );
 });
