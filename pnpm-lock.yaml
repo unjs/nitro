@@ -80,7 +80,7 @@ importers:
         version: 0.2.4
       db0:
         specifier: ^0.1.4
-        version: 0.1.4(better-sqlite3@9.6.0)
+        version: 0.1.4(better-sqlite3@10.0.0)
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -275,8 +275,8 @@ importers:
         specifier: ^0.3.7
         version: 0.3.7
       better-sqlite3:
-        specifier: ^9.6.0
-        version: 9.6.0
+        specifier: ^10.0.0
+        version: 10.0.0
       biome:
         specifier: ^0.3.3
         version: 0.3.3
@@ -2495,11 +2495,11 @@ packages:
   bcrypt-pbkdf@1.0.2:
     resolution: {integrity: sha512-qeFIXtP4MSoi6NLqO12WfqARWWuCKi2Rn/9hJLEmtB5yTNr9DqFWkJRCf2qShWzPeAMRnOgCrq0sg/KLv5ES9w==}
 
+  better-sqlite3@10.0.0:
+    resolution: {integrity: sha512-rOz0JY8bt9oMgrFssP7GnvA5R3yln73y/NizzWqy3WlFth8Ux8+g4r/N9fjX97nn4X1YX6MTER2doNpTu5pqiA==}
+
   better-sqlite3@8.7.0:
     resolution: {integrity: sha512-99jZU4le+f3G6aIl6PmmV0cxUIWqKieHxsiF7G34CVFiE+/UabpYqkU0NJIkY/96mQKikHeBjtR27vFfs5JpEw==}
-
-  better-sqlite3@9.6.0:
-    resolution: {integrity: sha512-yR5HATnqeYNVnkaUTf4bOP2dJSnyhP4puJN/QPRyx4YkBEEUxib422n2XzPqDEHjQQqazoYoADdAm5vE15+dAQ==}
 
   big-integer@1.6.52:
     resolution: {integrity: sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==}
@@ -9079,12 +9079,12 @@ snapshots:
     dependencies:
       tweetnacl: 0.14.5
 
-  better-sqlite3@8.7.0:
+  better-sqlite3@10.0.0:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.2
 
-  better-sqlite3@9.6.0:
+  better-sqlite3@8.7.0:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.2
@@ -9641,9 +9641,9 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.24.4
 
-  db0@0.1.4(better-sqlite3@9.6.0):
+  db0@0.1.4(better-sqlite3@10.0.0):
     optionalDependencies:
-      better-sqlite3: 9.6.0
+      better-sqlite3: 10.0.0
 
   debug@2.6.9:
     dependencies:
