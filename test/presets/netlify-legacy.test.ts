@@ -5,11 +5,11 @@ import { describe, it, expect } from "vitest";
 import { Handler, APIGatewayEvent } from "aws-lambda";
 import { getPresetTmpDir, setupTest, testNitro } from "../tests";
 
-describe("nitro:preset:netlify:v1", async () => {
-  const ctx = await setupTest("netlify-v1", {
+describe("nitro:preset:netlify-legacy", async () => {
+  const ctx = await setupTest("netlify-legacy", {
     config: {
       output: {
-        publicDir: resolve(getPresetTmpDir("netlify-v1"), "dist"),
+        publicDir: resolve(getPresetTmpDir("netlify-legacy"), "dist"),
       },
       netlify: {
         images: {

@@ -2,7 +2,7 @@ import "#internal/nitro/virtual/polyfill";
 import type { Handler } from "@netlify/functions/dist/main";
 import { withQuery } from "ufo";
 import { getRouteRulesForPath } from "../route-rules";
-import { lambda } from "./netlify-v1-lambda";
+import { lambda } from "./netlify-legacy-lambda";
 
 export const handler: Handler = async function handler(event, context) {
   const query = {

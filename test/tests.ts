@@ -81,7 +81,7 @@ export async function setupTest(
       "vercel-edge",
       "winterjs",
     ].includes(preset),
-    isLambda: ["aws-lambda", "netlify-v1"].includes(preset),
+    isLambda: ["aws-lambda", "netlify-legacy"].includes(preset),
     isIsolated: ["winterjs"].includes(preset),
     supportsEnv: !["winterjs"].includes(preset),
     rootDir: fixtureDir,

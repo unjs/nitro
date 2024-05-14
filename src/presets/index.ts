@@ -38,18 +38,18 @@ export { zeabur, zeaburStatic } from "./zeabur";
 // Netlify
 // https://github.com/unjs/nitro/pull/2406
 export {
-  netlify as netlifyV1,
+  netlify as netlifyLegacy,
   netlify,
   netlifyBuilder,
-  netlifyBuilder as netlifyV1Builder,
+  netlifyBuilder as netlifyLegacyBuilder,
   netlifyEdge,
-  netlifyEdge as netlifyV1Edge,
+  netlifyEdge as netlifyLegacyEdge,
   netlifyStatic,
-  netlifyStatic as netlifyV1Static,
-} from "./netlify-v1";
+  netlifyStatic as netlifyLegacyStatic,
+} from "./netlify-legacy";
 
 export {
-  netlify as netlifyV2,
-  netlifyEdge as netlifyV2Edge,
-  netlifyStatic as netlifyV2Static,
-} from "./netlify-v2";
+  netlify as netlifyLatest,
+  netlifyEdge as netlifyLatestEdge,
+  netlifyStatic as netlifyLatestStatic,
+} from "./netlify-latest";
