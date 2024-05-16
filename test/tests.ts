@@ -64,7 +64,7 @@ export const getPresetTmpDir = (preset: string) => {
 
 export async function setupTest(
   preset: string,
-  opts: { config?: _nitro.NitroConfig } = {}
+  opts: { config?: _nitro.NitroConfig, compatibilityDate?: string } = {}
 ) {
   const presetTmpDir = getPresetTmpDir(preset);
 
@@ -75,13 +75,13 @@ export async function setupTest(
     preset,
     isDev: preset === "nitro-dev",
     isWorker: [
-      "cloudflare",
+      "cloudflare-worker",
       "cloudflare-module",
       "cloudflare-pages",
       "vercel-edge",
       "winterjs",
     ].includes(preset),
-    isLambda: ["aws-lambda", "netlify-v1"].includes(preset),
+    isLambda: ["aws-lambda", "netlify-legacy"].includes(preset),
     isIsolated: ["winterjs"].includes(preset),
     supportsEnv: !["winterjs"].includes(preset),
     rootDir: fixtureDir,
@@ -104,25 +104,26 @@ export async function setupTest(
     process.env[name] = value;
   }
 
+  const config = defu(opts.config, {
+    preset: ctx.preset,
+    dev: ctx.isDev,
+    rootDir: ctx.rootDir,
+    runtimeConfig: {
+      nitro: {
+        envPrefix: "CUSTOM_",
+      },
+      hello: "",
+      helloThere: "",
+    },
+    buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
+    serveStatic: !ctx.isDev && !ctx.isWorker,
+    output: {
+      dir: ctx.outDir,
+    },
+    timing: !ctx.isWorker,
+  })
   const nitro = (ctx.nitro = await createNitro(
-    defu(opts.config, {
-      preset: ctx.preset,
-      dev: ctx.isDev,
-      rootDir: ctx.rootDir,
-      runtimeConfig: {
-        nitro: {
-          envPrefix: "CUSTOM_",
-        },
-        hello: "",
-        helloThere: "",
-      },
-      buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
-      serveStatic: !ctx.isDev && !ctx.isWorker,
-      output: {
-        dir: ctx.outDir,
-      },
-      timing: !ctx.isWorker,
-    })
+    config, { compatibilityDate: opts.compatibilityDate || "2024-05-17" }
   ));
 
   if (ctx.isDev) {
@@ -578,7 +579,7 @@ export function testNitro(
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
       const notSplittingPresets = [
-        "node",
+        "node-listener",
         "nitro-dev",
         "vercel",
         (nodeMajorVersion || 0) < 18 && "deno-server",
@@ -670,7 +671,7 @@ export function testNitro(
     });
   });
 
-  describe.skipIf(ctx.preset === "cloudflare")("wasm", () => {
+  describe.skipIf(ctx.preset === "cloudflare-worker")("wasm", () => {
     it("dynamic import wasm", async () => {
       expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
         "2+3=5"

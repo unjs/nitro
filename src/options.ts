@@ -1,7 +1,6 @@
 import { resolve, join } from "pathe";
 import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
-import { camelCase } from "scule";
 import { defu } from "defu";
 import { resolveModuleExportNames } from "mlly";
 import escapeRE from "escape-string-regexp";
@@ -13,20 +12,19 @@ import { version } from "../package.json";
 import {
   resolvePath,
   resolveFile,
-  detectTarget,
   provideFallbackValues,
 } from "./utils";
 import type {
   NitroConfig,
   NitroOptions,
-  NitroPreset,
   NitroRouteConfig,
   NitroRouteRules,
   NitroRuntimeConfig,
 } from "./types";
 import { runtimeDir, pkgDir } from "./dirs";
-import * as _PRESETS from "./presets";
 import { nitroImports } from "./imports";
+import { PresetName } from "./presets";
+import { resolvePreset } from "./preset";
 
 const NitroDefaults: NitroConfig = {
   // General
@@ -142,6 +140,7 @@ const NitroDefaults: NitroConfig = {
 export interface LoadConfigOptions {
   watch?: boolean;
   c12?: WatchConfigOptions;
+  compatibilityDate?: string;
 }
 
 export async function loadOptions(
@@ -159,8 +158,22 @@ export async function loadOptions(
 
   // Load configuration and preset
   configOverrides = klona(configOverrides);
+
   // @ts-ignore
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
+
+  // Compatibility date
+  const compatibilityDate = process.env.NITRO_COMPATIBILITY_DATE || opts.compatibilityDate;
+
+  // Auto detect preset
+  const autoDetectedPreset = await resolvePreset("", {
+    static: configOverrides.static,
+    compatibilityDate
+  })
+
+  // Keep track of resolved presets for logging
+  const _resolvedPresets: any[] = []
+
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
   >{
@@ -173,7 +186,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: detectTarget({ static: configOverrides.static }),
+      preset: autoDetectedPreset,
     },
     defaults: NitroDefaults,
     jitiOptions: {
@@ -182,18 +195,17 @@ export async function loadOptions(
         "nitropack/config": "nitropack/config",
       },
     },
-    resolve(id: string) {
-      const presets = _PRESETS as any as Record<string, NitroPreset>;
-      let matchedPreset = presets[camelCase(id)] || presets[id];
-      if (!matchedPreset) {
-        return null;
+    async resolve (id: string) {
+      const preset = await resolvePreset(id, {
+        static: configOverrides.static,
+        compatibilityDate: compatibilityDate
+      });
+      if (preset) {
+        _resolvedPresets.push(preset)
+        return {
+          config: preset,
+        };
       }
-      if (typeof matchedPreset === "function") {
-        matchedPreset = matchedPreset();
-      }
-      return {
-        config: matchedPreset,
-      };
     },
     ...opts.c12,
   });
@@ -201,11 +213,8 @@ export async function loadOptions(
   options._config = configOverrides;
   options._c12 = c12Config;
 
-  options.preset =
-    presetOverride ||
-    ((c12Config.layers || []).find((l) => l.config?.preset)?.config
-      ?.preset as string) ||
-    detectTarget({ static: options.static });
+  const _presetName = (c12Config.layers || []).find((l) => l.config?._meta?.name)?.config?._meta?.name;
+  options.preset = _presetName as PresetName;
 
   options.rootDir = resolve(options.rootDir || ".");
   options.workspaceDir = await findWorkspaceDir(options.rootDir).catch(

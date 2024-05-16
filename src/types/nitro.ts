@@ -18,15 +18,14 @@ import type { NodeExternalsOptions } from "../rollup/plugins/externals";
 import type { RollupConfig } from "../rollup/config";
 import type { Options as EsbuildOptions } from "../rollup/plugins/esbuild";
 import { CachedEventHandlerOptions } from "../runtime/types";
-import type * as _PRESETS from "../presets";
 import type {
   NitroErrorHandler,
   NitroDevEventHandler,
   NitroEventHandler,
 } from "./handler";
-import type { PresetOptions } from "./presets";
-import type { KebabCase } from "./utils";
+import type { PresetName, PresetNameInput, PresetOptions } from "../presets/_types.gen";
 import { NitroModule, NitroModuleInput } from "./module";
+import { ProviderName } from "std-env";
 
 export type NitroDynamicConfig = Pick<
   NitroConfig,
@@ -138,9 +137,21 @@ type DeepPartial<T> = T extends Record<string, any>
 
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
+export interface NitroPresetMeta {
+  url: string;
+  name: string;
+  stdName?: ProviderName;
+  aliases?: string[];
+  static?: boolean;
+  compatibility?: {
+    date?: string;
+  };
+}
+
 export interface NitroConfig
-  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig">>,
+  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig" | "preset">>,
     C12InputConfig<NitroConfig> {
+  preset?: PresetNameInput;
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
   rollupConfig?: Partial<RollupConfig>;
@@ -219,7 +230,7 @@ export interface NitroFrameworkInfo {
 /** Build info written to `.output/nitro.json` or `.nitro/dev/nitro.json` */
 export interface NitroBuildInfo {
   date: string;
-  preset: string;
+  preset: PresetName;
   framework: NitroFrameworkInfo;
   versions: {
     nitro: string;
@@ -242,8 +253,7 @@ export interface NitroOptions extends PresetOptions {
 
   // General
   debug: boolean;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  preset: KebabCase<keyof typeof _PRESETS> | (string & {});
+  preset: PresetName;
   static: boolean;
   logLevel: LogLevel;
   runtimeConfig: NitroRuntimeConfig;

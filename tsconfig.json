@@ -16,10 +16,12 @@
     "paths": {
       "nitropack": ["./src/index"],
       "nitropack/config": ["./src/config"],
+      "nitropack/presets": ["./src/presets"],
+      "nitropack/presets/*": ["./src/presets/*"],
       "#internal/nitro": ["./src/runtime/index"],
       "#internal/nitro/*": ["./src/runtime/*"]
     }
   },
-  "include": ["src", "test"],
+  "include": ["src", "test", "src/presets"],
   "exclude": ["test/fixture"]
 }
