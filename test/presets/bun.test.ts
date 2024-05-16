@@ -18,7 +18,9 @@ describe.runIf(hasBun)("nitro:preset:bun", async () => {
     });
     ctx.server = {
       url: `http://127.0.0.1:${port}`,
-      // close: () => p.kill(),
+      close: () => {
+        // p.kill()
+      },
     } as any;
     await waitForPort(port);
     return async ({ url, ...opts }) => {
