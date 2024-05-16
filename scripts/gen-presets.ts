@@ -23,6 +23,9 @@ const presetDirs: string[] = readdirSync(presetsDir, { withFileTypes: true })
 const jitiRequire = createJITI(presetsDir, {
   esmResolve: true,
   interopDefault: true,
+  alias: {
+    "nitropack": fileURLToPath(new URL("../src/index.ts", import.meta.url))
+  }
 });
 const allPresets: (NitroPreset & { _meta?: NitroPresetMeta })[] = [];
 for (const preset of presetDirs) {
