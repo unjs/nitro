@@ -8,7 +8,7 @@ import { writeFile } from "../_utils";
 // nitro/src/rollup/plugin/import-meta.ts
 const ImportMetaRe = /import\.meta|globalThis._importMeta_/;
 
-export const denoDeploy = defineNitroPreset(
+const denoDeploy = defineNitroPreset(
   {
     entry: "./runtime/deno-deploy",
     exportConditions: ["deno"],

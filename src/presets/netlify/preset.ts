@@ -61,7 +61,7 @@ const netlify = defineNitroPreset(
 );
 
 // Netlify edge
-export const netlifyEdge = defineNitroPreset(
+const netlifyEdge = defineNitroPreset(
   {
     extends: "base-worker",
     entry: "./runtime/netlify-edge",
@@ -114,7 +114,7 @@ export const netlifyEdge = defineNitroPreset(
   }
 );
 
-export const netlifyStatic = defineNitroPreset(
+const netlifyStatic = defineNitroPreset(
   {
     extends: "static",
     output: {

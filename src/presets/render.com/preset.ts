@@ -1,6 +1,6 @@
 import { defineNitroPreset } from "nitropack";
 
-export const renderCom = defineNitroPreset(
+const renderCom = defineNitroPreset(
   {
     extends: "node-server",
   },

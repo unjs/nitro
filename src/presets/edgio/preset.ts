@@ -104,14 +104,12 @@ module.exports = async function entry (port) {
   },
   {
     name: "edgio" as const,
+    aliases: ["layer0"] as const,
     url: import.meta.url,
   }
 );
 
-export default [edgio] as const;
-
-// Backwards compatibility
-export const layer0 = edgio;
+export default [edgio] as const
 
 async function writeFile(path: string, contents: string) {
   await fsp.mkdir(dirname(path), { recursive: true });

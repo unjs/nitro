@@ -1,6 +1,6 @@
 import { defineNitroPreset } from "nitropack";
 
-export const flightControl = defineNitroPreset(
+const flightControl = defineNitroPreset(
   {
     extends: "node-server",
   },

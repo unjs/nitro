@@ -23,7 +23,7 @@ const _static = defineNitroPreset(
   }
 );
 
-export const githubPages = defineNitroPreset(
+const githubPages = defineNitroPreset(
   {
     extends: "static",
     commands: {
@@ -52,7 +52,7 @@ export const githubPages = defineNitroPreset(
   }
 );
 
-export const gitlabPages = defineNitroPreset(
+const gitlabPages = defineNitroPreset(
   {
     extends: "static",
     prerender: {
