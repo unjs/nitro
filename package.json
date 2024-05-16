@@ -88,7 +88,7 @@
     "db0": "^0.1.4",
     "defu": "^6.1.4",
     "destr": "^2.0.3",
-    "dot-prop": "^8.0.2",
+    "dot-prop": "^9.0.0",
     "esbuild": "^0.21.3",
     "escape-string-regexp": "^5.0.0",
     "etag": "^1.8.1",
