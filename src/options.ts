@@ -183,7 +183,7 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: autoDetectedPreset,
+      ...autoDetectedPreset
     },
     defaults: NitroDefaults,
     jitiOptions: {
@@ -209,7 +209,7 @@ export async function loadOptions(
   options._config = configOverrides;
   options._c12 = c12Config;
 
-  const _presetName = (c12Config.layers || []).find((l) => l.config?._meta?.name)?.config?._meta?.name;
+  const _presetName = (c12Config.layers || []).find((l) => l.config?._meta?.name)?.config?._meta?.name || presetOverride
   options.preset = _presetName as PresetName;
 
   options.rootDir = resolve(options.rootDir || ".");

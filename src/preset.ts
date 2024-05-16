@@ -51,6 +51,10 @@ export async function resolvePreset(name: string, opts: { static?: boolean, comp
     return preset();
   }
 
+  if (!name && !preset) {
+    return opts?.static ? resolvePreset('static', opts) : resolvePreset('node-server', opts)
+  }
+
   return preset;
 }
 
