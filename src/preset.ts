@@ -43,7 +43,7 @@ export async function resolvePreset(name: string, opts: { static?: boolean, comp
     return bDate > aDate ? 1 : -1
   });
 
-  const preset = opts?.static ? matches.find(p => p._meta.static) : matches[0];
+  const preset = matches.find(p => (p._meta.static || false) === (opts?.static || false)) || matches[0];
 
   if (typeof preset === 'function') {
     return preset();
