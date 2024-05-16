@@ -51,7 +51,7 @@
     "*.d.ts"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "pnpm gen-presets && unbuild",
     "dev": "pnpm nitro dev playground",
     "dev:build": "pnpm nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
@@ -59,7 +59,7 @@
     "lint:fix": "eslint --cache --fix . && biome format . --write",
     "nitro": "JITI_ESM_RESOLVE=1 NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
-    "presets": "JITI_ESM_RESOLVE=1 pnpm jiti scripts/presets.ts",
+    "gen-presets": "JITI_ESM_RESOLVE=1 pnpm jiti scripts/gen-presets.ts",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "pnpm lint && pnpm vitest-es run --silent",

@@ -1,4 +1,4 @@
-// Auto-generated using scripts/presets.ts
+// Auto-generated using gen-presets script
 
 import _nitro from "./_nitro/preset";
 import _static from "./_static/preset";

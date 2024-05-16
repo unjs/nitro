@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import type { NitroPreset, NitroPresetMeta } from "nitropack";
 import { findTypeExports } from "mlly";
 
-const autoGenHeader = /* ts */ `// Auto-generated using scripts/presets.ts\n`;
+const autoGenHeader = /* ts */ `// Auto-generated using gen-presets script\n`;
 
 // --- Scan presets/ directory ---
 const presetsDir = fileURLToPath(new URL("../src/presets", import.meta.url));
