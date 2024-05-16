@@ -1,5 +1,8 @@
 import { defineBuildConfig } from "unbuild";
-import { normalize } from "pathe";
+import { resolve, normalize } from "pathe";
+import { fileURLToPath } from "node:url";
+
+const srcDir = fileURLToPath(new URL("src", import.meta.url));
 
 export default defineBuildConfig({
   declaration: true,
@@ -8,8 +11,15 @@ export default defineBuildConfig({
     "src/index",
     "src/config",
     "src/cli/index",
+    { input: "src/presets/", outDir: "dist/presets", format: "esm" },
     { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
   ],
+  alias: {
+    nitropack: resolve(srcDir, "index.ts"),
+    "nitropack/": srcDir,
+    "nitropack/presets": resolve(srcDir, "presets/index.ts"),
+    "nitropack/presets/": resolve(srcDir, "presets"),
+  },
   rollup: {
     output: {
       chunkFileNames(chunk) {
