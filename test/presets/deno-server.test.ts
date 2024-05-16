@@ -25,7 +25,9 @@ describe.runIf(hasDeno)("nitro:preset:deno-server", async () => {
     );
     ctx.server = {
       url: `http://127.0.0.1:${port}`,
-      close: () => p.kill(),
+      close: () => {
+        // p.kill()
+      },
     } as any;
     await waitForPort(port, { delay: 1000, retries: 20, host: "127.0.0.1" });
     return async ({ url, ...opts }) => {
