@@ -86,6 +86,6 @@ ${presetsWithType.map((preset) => `  ${camelCase(preset)}: ${pascalCase(preset)}
 
 export type PresetName = ${names.map((name) => `"${name}"`).join(" | ")};
 
-export type PresetNameInput = ${names.map((name) => `"${camelCase(name)}" | "${kebabCase(name)}" | "${snakeCase(name)}"`).join(" | ")} | (string & {});
+export type PresetNameInput = ${names.flatMap((name) => [...new Set([kebabCase(name), camelCase(name), snakeCase(name)])].map(n => `"${n}"`)).join(" | ")} | (string & {});
 `
 );
