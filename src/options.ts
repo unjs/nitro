@@ -165,12 +165,6 @@ export async function loadOptions(
   // Compatibility date
   const compatibilityDate = process.env.NITRO_COMPATIBILITY_DATE || opts.compatibilityDate;
 
-  // Auto detect preset
-  const autoDetectedPreset = await resolvePreset("", {
-    static: configOverrides.static,
-    compatibilityDate
-  })
-
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
   >{
@@ -183,7 +177,10 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      ...autoDetectedPreset
+      preset: (await resolvePreset("", {
+        static: configOverrides.static,
+        compatibilityDate
+      }))?._meta?.name
     },
     defaults: NitroDefaults,
     jitiOptions: {
