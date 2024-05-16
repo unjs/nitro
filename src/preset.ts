@@ -33,9 +33,6 @@ export async function resolvePreset(name: string, opts: { static?: boolean, comp
     if (!names.includes(_name)) {
       return false;
     }
-    if ((opts?.static || false) !== (preset._meta.static || false)) {
-      return false
-    }
     if (preset._meta.compatibility?.date && new Date(preset._meta.compatibility?.date || 0) > _date) {
       return false
     }
@@ -46,7 +43,8 @@ export async function resolvePreset(name: string, opts: { static?: boolean, comp
     return bDate > aDate ? 1 : -1
   });
 
-  const preset = matches[0];
+  const preset = opts?.static ? matches.find(p => p._meta.static) : matches[0];
+
   if (typeof preset === 'function') {
     return preset();
   }
