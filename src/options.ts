@@ -171,9 +171,6 @@ export async function loadOptions(
     compatibilityDate
   })
 
-  // Keep track of resolved presets for logging
-  const _resolvedPresets: any[] = []
-
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
   >{
@@ -201,7 +198,6 @@ export async function loadOptions(
         compatibilityDate: compatibilityDate
       });
       if (preset) {
-        _resolvedPresets.push(preset)
         return {
           config: preset,
         };
