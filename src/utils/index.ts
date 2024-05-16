@@ -6,11 +6,8 @@ import jiti from "jiti";
 import { consola } from "consola";
 import chalk from "chalk";
 import { getProperty } from "dot-prop";
-import { provider } from "std-env";
-import type { ProviderName } from "std-env";
 import { upperFirst } from "scule";
-import { KebabCase, Nitro } from "../types";
-import type * as _PRESETS from "../presets";
+import { Nitro } from "../types";
 
 export function hl(str: string) {
   return chalk.cyan(str);
@@ -103,33 +100,6 @@ export function replaceAll(input: string, from: string, to: string) {
   return input.replace(new RegExp(from, "g"), to);
 }
 
-const autodetectableProviders: Partial<
-  Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
-> = {
-  aws_amplify: "aws-amplify",
-  azure_static: "azure",
-  cloudflare_pages: "cloudflare-pages",
-  netlify: "netlify",
-  stormkit: "stormkit",
-  vercel: "vercel",
-  cleavr: "cleavr",
-  zeabur: "zeabur",
-};
-
-const autodetectableStaticProviders: Partial<
-  Record<ProviderName, KebabCase<keyof typeof _PRESETS>>
-> = {
-  netlify: "netlify-static",
-  vercel: "vercel-static",
-  cloudflare_pages: "cloudflare-pages-static",
-  zeabur: "zeabur-static",
-};
-
-export function detectTarget(options: { static?: boolean } = {}) {
-  return options?.static
-    ? autodetectableStaticProviders[provider] || "static"
-    : autodetectableProviders[provider] || "node-server";
-}
 
 export async function isDirectory(path: string) {
   try {

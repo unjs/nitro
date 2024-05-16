@@ -26,6 +26,14 @@
       "types": "./dist/runtime/*.d.ts",
       "import": "./dist/runtime/*.mjs"
     },
+    "./presets/*": {
+      "types": "./dist/presets/*.d.ts",
+      "import": "./dist/presets/*.mjs"
+    },
+    "./presets": {
+      "types": "./dist/presets/index.d.ts",
+      "import": "./dist/presets/index.mjs"
+    },
     "./dist/runtime/*": {
       "types": "./dist/runtime/*.d.ts",
       "import": "./dist/runtime/*.mjs"
@@ -43,7 +51,7 @@
     "*.d.ts"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "pnpm gen-presets && unbuild",
     "dev": "pnpm nitro dev playground",
     "dev:build": "pnpm nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
@@ -51,6 +59,7 @@
     "lint:fix": "eslint --cache --fix . && biome format . --write",
     "nitro": "JITI_ESM_RESOLVE=1 NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
+    "gen-presets": "JITI_ESM_RESOLVE=1 pnpm jiti scripts/gen-presets.ts",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "pnpm lint && pnpm vitest-es run --silent",
@@ -158,7 +167,7 @@
     "edge-runtime": "^2.5.10",
     "eslint": "^9.2.0",
     "eslint-config-unjs": "0.3.1",
-    "execa": "^8.0.1",
+    "execa": "^9.1.0",
     "expect-type": "^0.19.0",
     "firebase-admin": "^12.1.0",
     "firebase-functions": "^4.9.0",

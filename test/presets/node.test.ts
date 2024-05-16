@@ -4,8 +4,8 @@ import { describe, it, expect } from "vitest";
 import { isWindows } from "std-env";
 import { startServer, setupTest, testNitro } from "../tests";
 
-describe("nitro:preset:node", async () => {
-  const ctx = await setupTest("node");
+describe("nitro:preset:node-listener", async () => {
+  const ctx = await setupTest("node-listener");
 
   testNitro(ctx, async () => {
     const entryPath = resolve(ctx.outDir, "server/index.mjs");

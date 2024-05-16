@@ -20,6 +20,7 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm stub
+      - run: pnpm gen-presets
       - name: Fix lint issues
         run: npm run lint:fix
       - uses: autofix-ci/action@ea32e3a12414e6d3183163c3424a7d7a8631ad84
