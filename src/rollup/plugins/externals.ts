@@ -44,16 +44,21 @@ export function externals(opts: NodeExternalsOptions): Plugin {
     if (id.startsWith("\0")) {
       return id;
     }
-    let resolved = _resolveCache.get(id);
-    if (resolved) {
-      return resolved;
+    if (!_resolveCache.has(id)) {
+      _resolveCache.set(
+        id,
+        resolvePath(id, {
+          conditions: opts.exportConditions,
+          url: opts.moduleDirectories,
+        })
+          .then((r) => {
+            _resolveCache.set(id, r);
+            return r;
+          })
+          .catch(() => _resolveCache.delete(id))
+      );
     }
-    resolved = await resolvePath(id, {
-      conditions: opts.exportConditions,
-      url: opts.moduleDirectories,
-    });
-    _resolveCache.set(id, resolved);
-    return resolved;
+    return await _resolveCache.get(id);
   };
 
   // Normalize options
