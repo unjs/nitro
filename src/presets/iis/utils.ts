@@ -165,6 +165,6 @@ async function buildNewXmlDoc(
   xmlObj: Record<string, unknown>
 ): Promise<string> {
   const { Builder } = await import("xml2js");
-  const builder = new Builder({ explicitArray: false });
+  const builder = new Builder();
   return builder.buildObject({ ...xmlObj });
 }
