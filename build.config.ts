@@ -34,5 +34,10 @@ export default defineBuildConfig({
       },
     },
   },
-  externals: ["@nuxt/schema", "firebase-functions", "@scalar/api-reference", "nitropack"],
+  externals: [
+    "nitropack",
+    "nitropack/presets",
+    "firebase-functions",
+    "@scalar/api-reference",
+  ],
 });

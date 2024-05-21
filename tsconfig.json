@@ -13,6 +13,7 @@
     "jsx": "preserve",
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
+    "noEmit": true,
     "paths": {
       "nitropack": ["./src/index"],
       "nitropack/config": ["./src/config"],

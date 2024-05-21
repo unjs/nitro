@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import { createRequire, builtinModules } from "node:module";
-import { join, normalize, resolve } from "pathe";
+import { dirname, join, normalize, resolve } from "pathe";
 import type { InputOptions, OutputOptions, Plugin } from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
@@ -431,6 +431,7 @@ export const plugins = [
             "@@/",
             "virtual:",
             "nitropack/runtime",
+            dirname(nitro.options.entry),
             ...(nitro.options.experimental.wasm
               ? [(id: string) => id?.endsWith(".wasm")]
               : []),
