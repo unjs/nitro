@@ -24,7 +24,6 @@ import type {
 import { runtimeDir, pkgDir } from "./dirs";
 import { nitroImports } from "./imports";
 import { PresetName } from "./presets";
-import { resolvePreset } from "./preset";
 
 const NitroDefaults: NitroConfig = {
   // General
@@ -164,6 +163,9 @@ export async function loadOptions(
 
   // Compatibility date
   const compatibilityDate = process.env.NITRO_COMPATIBILITY_DATE || opts.compatibilityDate;
+
+  // Preset resolver
+  const { resolvePreset } = await import("nitropack/presets");
 
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
