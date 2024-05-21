@@ -153,7 +153,7 @@ async function parseXmlDoc(xml: string): Promise<Record<string, unknown>> {
   if (xml === undefined || !xml) {
     return {};
   }
-  const parser = new Parser();
+  const parser = new Parser({ explicitArray: false });
   let parsedRecord: Record<string, unknown> = {};
   parser.parseString(xml, (_, r) => {
     parsedRecord = r;
