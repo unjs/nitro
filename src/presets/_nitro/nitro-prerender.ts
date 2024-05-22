@@ -9,11 +9,6 @@ const nitroPrerender = defineNitroPreset(
       serverDir: "{{ buildDir }}/prerender",
     },
     externals: { trace: false },
-    rollupConfig: {
-      output: {
-        entryFileNames: "index.mjs",
-      },
-    },
   },
   {
     name: "nitro-prerender" as const,
