@@ -60,6 +60,13 @@ export async function prerender(nitro: Nitro) {
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: "nitro-prerender",
+    rollupConfig: {
+      ...nitro.options._config.rollupConfig,
+      output: {
+        ...nitro.options._config.rollupConfig?.output,
+        entryFileNames: "index.mjs",
+      },
+    },
   };
   await nitro.hooks.callHook("prerender:config", prerendererConfig);
   const nitroRenderer = await createNitro(prerendererConfig);
@@ -77,13 +84,9 @@ export async function prerender(nitro: Nitro) {
   await build(nitroRenderer);
 
   // Import renderer entry
-  const serverFilename =
-    typeof nitro.options.rollupConfig?.output?.entryFileNames === "string"
-      ? nitro.options.rollupConfig.output.entryFileNames
-      : "index.mjs";
   const serverEntrypoint = resolve(
     nitroRenderer.options.output.serverDir,
-    serverFilename
+    "index.mjs"
   );
   const { closePrerenderer, localFetch } = (await import(
     pathToFileURL(serverEntrypoint).href
