@@ -60,13 +60,6 @@ export async function prerender(nitro: Nitro) {
     rootDir: nitro.options.rootDir,
     logLevel: 0,
     preset: "nitro-prerender",
-    rollupConfig: {
-      ...nitro.options._config.rollupConfig,
-      output: {
-        ...nitro.options._config.rollupConfig?.output,
-        entryFileNames: "index.mjs",
-      },
-    },
   };
   await nitro.hooks.callHook("prerender:config", prerendererConfig);
   const nitroRenderer = await createNitro(prerendererConfig);
