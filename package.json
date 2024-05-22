@@ -69,11 +69,11 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^6.16.1"
+    "undici": "^6.18.0"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.2",
-    "@netlify/functions": "^2.6.3",
+    "@netlify/functions": "^2.7.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-inject": "^5.0.5",
@@ -83,7 +83,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/pluginutils": "^5.1.0",
     "@types/http-proxy": "^1.17.14",
-    "@vercel/nft": "^0.27.0",
+    "@vercel/nft": "^0.27.1",
     "archiver": "^7.0.1",
     "c12": "^1.10.0",
     "chalk": "^5.3.0",
@@ -120,7 +120,7 @@
     "node-fetch-native": "^1.6.4",
     "ofetch": "^1.3.4",
     "ohash": "^1.1.3",
-    "openapi-typescript": "^6.7.5",
+    "openapi-typescript": "^6.7.6",
     "pathe": "^1.1.2",
     "perfect-debounce": "^1.0.0",
     "pkg-types": "^1.1.1",
@@ -144,13 +144,13 @@
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1",
-    "@azure/static-web-apps-cli": "^1.1.7",
+    "@azure/static-web-apps-cli": "^1.1.8",
     "@biomejs/biome": "1.7.3",
     "@cloudflare/workers-types": "^4.20240512.0",
     "@deno/types": "^0.0.1",
-    "@scalar/api-reference": "^1.22.38",
+    "@scalar/api-reference": "^1.22.45",
     "@types/archiver": "^6.0.2",
-    "@types/aws-lambda": "^8.10.137",
+    "@types/aws-lambda": "^8.10.138",
     "@types/bun": "^1.1.2",
     "@types/estree": "^1.0.5",
     "@types/etag": "^1.8.3",
@@ -165,18 +165,18 @@
     "biome": "^0.3.3",
     "changelogen": "^0.5.5",
     "edge-runtime": "^2.5.10",
-    "eslint": "^9.2.0",
+    "eslint": "^9.3.0",
     "eslint-config-unjs": "0.3.1",
     "execa": "^9.1.0",
     "expect-type": "^0.19.0",
-    "firebase-admin": "^12.1.0",
+    "firebase-admin": "^12.1.1",
     "firebase-functions": "^4.9.0",
     "get-port-please": "^3.1.2",
     "miniflare": "^3.20240512.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
     "unbuild": "^2.0.0",
-    "undici": "^6.16.1",
+    "undici": "^6.18.0",
     "vitest": "^1.6.0",
     "xml2js": "^0.6.2"
   },
@@ -188,7 +188,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@9.1.1",
+  "packageManager": "pnpm@9.1.2",
   "engines": {
     "node": "^16.11.0 || >=17.0.0"
   },
