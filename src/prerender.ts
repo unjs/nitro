@@ -77,9 +77,13 @@ export async function prerender(nitro: Nitro) {
   await build(nitroRenderer);
 
   // Import renderer entry
+  const serverFilename =
+    typeof nitro.options.rollupConfig?.output?.entryFileNames === "string"
+      ? nitro.options.rollupConfig?.output?.entryFileNames
+      : "index.mjs";
   const serverEntrypoint = resolve(
     nitroRenderer.options.output.serverDir,
-    "index.mjs"
+    serverFilename
   );
   const { closePrerenderer, localFetch } = (await import(
     pathToFileURL(serverEntrypoint).href
