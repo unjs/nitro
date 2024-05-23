@@ -1,7 +1,7 @@
 import fsp from "node:fs/promises";
 import { dirname, relative, resolve } from "pathe";
 import { defu } from "defu";
-import { withoutLeadingSlash } from "ufo";
+import { withoutLeadingSlash, joinURL } from "ufo";
 import { writeFile } from "../utils";
 import { defineNitroPreset } from "../preset";
 import type { Nitro } from "../types";
@@ -18,7 +18,7 @@ export const vercel = defineNitroPreset({
   output: {
     dir: "{{ rootDir }}/.vercel/output",
     serverDir: "{{ output.dir }}/functions/__nitro.func",
-    publicDir: "{{ output.dir }}/static",
+    publicDir: "{{ output.dir }}/static/{{ baseURL }}",
   },
   commands: {
     deploy: "",
@@ -87,7 +87,7 @@ export const vercelEdge = defineNitroPreset({
   output: {
     dir: "{{ rootDir }}/.vercel/output",
     serverDir: "{{ output.dir }}/functions/__nitro.func",
-    publicDir: "{{ output.dir }}/static",
+    publicDir: "{{ output.dir }}/static/{{ baseURL }}",
   },
   commands: {
     deploy: "",
@@ -196,7 +196,7 @@ function generateBuildConfig(nitro: Nitro) {
       // Public asset rules
       ...nitro.options.publicAssets
         .filter((asset) => !asset.fallthrough)
-        .map((asset) => asset.baseURL)
+        .map((asset) => joinURL(nitro.options.baseURL, asset.baseURL || "/"))
         .map((baseURL) => ({
           src: baseURL + "(.*)",
           headers: {
