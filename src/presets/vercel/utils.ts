@@ -3,7 +3,7 @@ import fsp from "node:fs/promises";
 import { dirname, relative, resolve } from "pathe";
 import { writeFile } from "../_utils";
 import { defu } from "defu";
-import { withoutLeadingSlash } from "ufo";
+import { joinURL, withoutLeadingSlash } from "ufo";
 import type {
   VercelBuildConfigV3,
   VercelServerlessFunctionConfig,
@@ -121,7 +121,7 @@ function generateBuildConfig(nitro: Nitro) {
       // Public asset rules
       ...nitro.options.publicAssets
         .filter((asset) => !asset.fallthrough)
-        .map((asset) => asset.baseURL)
+        .map((asset) => joinURL(nitro.options.baseURL, asset.baseURL || "/"))
         .map((baseURL) => ({
           src: baseURL + "(.*)",
           headers: {
