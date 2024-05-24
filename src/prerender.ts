@@ -260,7 +260,11 @@ export async function prerender(nitro: Nitro) {
     }
 
     // Write to the disk
-    if (canWriteToDisk(_route)) {
+    if (nitro.options.prerender.stdout) {
+      nitro.logger.log("write stdout instead of file");
+      console.log(dataBuff.toString("utf8"));
+    }
+    else if (canWriteToDisk(_route)) {
       const filePath = join(nitro.options.output.publicDir, _route.fileName);
       await writeFile(filePath, dataBuff);
       nitro._prerenderedRoutes!.push(_route);
@@ -296,26 +300,10 @@ export async function prerender(nitro: Nitro) {
       : `Prerendering ${routes.size} routes`
   );
 
-  if (routes.size === 1 && nitro.options.prerender.stdout) {
-    nitro.logger.log("\nPrerendering single route in stdout mode");
-    const route = routes.values().next().value;
-    const encodedRoute = encodeURI(route);
-
-    const res = await localFetch<Response>(
-      withBase(encodedRoute, nitro.options.baseURL),
-      {
-        headers: { "x-nitro-prerender": encodedRoute },
-        retry: nitro.options.prerender.retry,
-        retryDelay: nitro.options.prerender.retryDelay,
-      }
-    );
-    console.log((Buffer.from(await res.arrayBuffer())).toString("utf8"));
-  } else {
-    await runParallel(routes, generateRoute, {
-      concurrency: nitro.options.prerender.concurrency,
-      interval: nitro.options.prerender.interval,
-    });
-  }
+  await runParallel(routes, generateRoute, {
+    concurrency: nitro.options.prerender.concurrency,
+    interval: nitro.options.prerender.interval,
+  });
 
   await closePrerenderer();
 
