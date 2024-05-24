@@ -11,6 +11,7 @@ const main = defineCommand({
   subCommands: {
     dev: () => import("./commands/dev").then((r) => r.default),
     build: () => import("./commands/build").then((r) => r.default),
+    render: () => import("./commands/render").then((r) => r.default),
     prepare: () => import("./commands/prepare").then((r) => r.default),
     task: () => import("./commands/task").then((r) => r.default),
   },

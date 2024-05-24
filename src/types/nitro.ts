@@ -413,6 +413,7 @@ export interface NitroOptions extends PresetOptions {
      * @default 500
      */
     retryDelay: number;
+    stdout: boolean;
   };
 
   // Rollup

@@ -296,10 +296,26 @@ export async function prerender(nitro: Nitro) {
       : `Prerendering ${routes.size} routes`
   );
 
-  await runParallel(routes, generateRoute, {
-    concurrency: nitro.options.prerender.concurrency,
-    interval: nitro.options.prerender.interval,
-  });
+  if (routes.size === 1 && nitro.options.prerender.stdout) {
+    nitro.logger.log("\nPrerendering single route in stdout mode");
+    const route = routes.values().next().value;
+    const encodedRoute = encodeURI(route);
+
+    const res = await localFetch<Response>(
+      withBase(encodedRoute, nitro.options.baseURL),
+      {
+        headers: { "x-nitro-prerender": encodedRoute },
+        retry: nitro.options.prerender.retry,
+        retryDelay: nitro.options.prerender.retryDelay,
+      }
+    );
+    console.log((Buffer.from(await res.arrayBuffer())).toString("utf8"));
+  } else {
+    await runParallel(routes, generateRoute, {
+      concurrency: nitro.options.prerender.concurrency,
+      interval: nitro.options.prerender.interval,
+    });
+  }
 
   await closePrerenderer();
 
