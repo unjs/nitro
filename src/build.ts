@@ -221,7 +221,7 @@ import type { Defu } from 'defu'
 
 ${nitro.options.appConfigFiles
   .map((file, index) =>
-    genTypeImport(file.replace(/\.\w+$/, ""), [
+    genTypeImport(relative(typesDir, file).replace(/\.\w+$/, ""), [
       { name: "default", as: `appConfig${index}` },
     ])
   )
