@@ -1,5 +1,5 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { resolve, join } from "pathe";
+import { resolve, join, parse } from "pathe";
 import {
   joinURL,
   withLeadingSlash,
@@ -27,11 +27,11 @@ export async function writeCFPagesStaticFiles(nitro: Nitro) {
 
 async function writeCFRoutes(nitro: Nitro) {
   const _cfPagesConfig = nitro.options.cloudflare?.pages || {};
-  const routes: CloudflarePagesRoutes = {
+  const routes = {
     version: _cfPagesConfig.routes?.version || 1,
     include: _cfPagesConfig.routes?.include || ["/*"],
     exclude: _cfPagesConfig.routes?.exclude || [],
-  };
+  } satisfies CloudflarePagesRoutes;
 
   const writeRoutes = () =>
     fsp.writeFile(
@@ -64,32 +64,35 @@ async function writeCFRoutes(nitro: Nitro) {
   );
 
   // Explicit prefixes
-  routes.exclude!.push(
+  routes.exclude.push(
     ...explicitPublicAssets
       .map((dir) => joinURL(dir.baseURL!, "*"))
       .sort(comparePaths)
   );
+
+  const ignore = [
+    "_worker.js",
+    "_worker.js.map",
+    "nitro.json",
+    ...routes.exclude.map((path) =>
+      withoutLeadingSlash(path.replace(/\/\*$/, "/**"))
+    ),
+  ];
 
   // Unprefixed assets
   const publicAssetFiles = await globby("**", {
     cwd: nitro.options.output.publicDir,
     absolute: false,
     dot: true,
-    ignore: [
-      "_worker.js",
-      "_worker.js.map",
-      "nitro.json",
-      ...routes.exclude!.map((path) =>
-        withoutLeadingSlash(path.replace(/\/\*$/, "/**"))
-      ),
-    ],
+    ignore,
   });
-  routes.exclude!.push(
-    ...publicAssetFiles.map((i) => withLeadingSlash(i)).sort(comparePaths)
+
+  routes.exclude.push(
+    ...generateExcludes(publicAssetFiles, ignore).sort(comparePaths)
   );
 
   // Only allow 100 rules in total (include + exclude)
-  routes.exclude!.splice(100 - routes.include!.length);
+  routes.exclude.splice(100 - routes.include.length);
 
   await writeRoutes();
 }
@@ -112,7 +115,7 @@ async function writeCFPagesHeaders(nitro: Nitro) {
     const headers = [
       path.replace("/**", "/*"),
       ...Object.entries({ ...routeRules.headers }).map(
-        ([header, value]) => `  ${header}: ${value}`
+        ([header, value]) => `  ! ${header}\n  ${header}: ${value}`
       ),
     ].join("\n");
 
@@ -204,4 +207,58 @@ async function writeCFWrangler(nitro: Nitro) {
   );
 
   await fsp.writeFile(wranglerPath, stringifyTOML(wranglerConfig));
+}
+
+/**
+ * Generates the `exclude` array for _routes.json, preferring to use wildcard excludes where possible
+ * to get around the 100 entry limit.
+ *
+ * @param assets - Assets to be excluded.
+ * @param ignore - Paths ignored by the search for assets.
+ * Used to determine whether a directory can be wildcard excluded or only partially excluded.
+ */
+function generateExcludes(assets: string[], ignore: string[]) {
+  // some directories have files that musn't be excluded
+  const partiallyIgnoredDirs = new Set(
+    ignore.flatMap((path) => {
+      // we don't care about fully excluded dirs
+      if (path.endsWith("/**")) {
+        return [];
+      }
+
+      return [withLeadingSlash(parse(path).dir)];
+    })
+  );
+
+  const excludes = new Set<string>();
+
+  // add directories and assets (if directory is partially ignored)
+  for (const asset of assets) {
+    const dir = withLeadingSlash(parse(asset).dir);
+
+    // we can't exclude the root directory as a whole
+    if (dir === ".") {
+      excludes.add(asset);
+    }
+    // asset must be specified individually as other things in its directory can't be excluded
+    else if (partiallyIgnoredDirs.has(dir)) {
+      excludes.add(withLeadingSlash(asset));
+    } else {
+      excludes.add(`${dir}/*`);
+    }
+  }
+
+  // filter out nested directories
+  for (const exclude of excludes) {
+    if (!exclude.endsWith("/*")) {
+      continue;
+    }
+
+    // this is safe and won't be overreaching since partially excluded dirs are already accounted for
+    if (excludes.has(resolve(exclude, "../..", "*"))) {
+      excludes.delete(exclude);
+    }
+  }
+
+  return [...excludes];
 }
