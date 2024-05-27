@@ -15,10 +15,19 @@
     "jsxFragmentFactory": "Fragment",
     "noEmit": true,
     "paths": {
-      "nitropack": ["./src/index"],
+      // Core
+      "nitropack/core": ["./src/core"],
       "nitropack/config": ["./src/config"],
+      // Schema
+      "nitropack/schema": ["./src/schema"],
+      // Rollup
+      "nitropack/rollup": ["./src/rollup"],
+      // Kit
+      "nitropack/kit": ["./src/kit"],
+      // Presets
       "nitropack/presets": ["./src/presets"],
       "nitropack/presets/*": ["./src/presets/*"],
+      // TODO: remove #internal
       "#internal/nitro": ["./src/runtime/index"],
       "#internal/nitro/*": ["./src/runtime/*"]
     }

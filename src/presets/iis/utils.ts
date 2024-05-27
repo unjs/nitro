@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { defu } from "defu";
 import { resolveFile } from "../_utils";
-import type { Nitro } from "nitropack";
+import type { Nitro } from "nitropack/schema";
 import { writeFile } from "../_utils";
 import { resolve } from "pathe";
 

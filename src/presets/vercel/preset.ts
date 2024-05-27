@@ -1,5 +1,5 @@
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
+import type { Nitro } from "nitropack/schema";
 import {
   deprecateSWR,
   generateEdgeFunctionFiles,
@@ -7,7 +7,7 @@ import {
   generateStaticFiles,
 } from "./utils";
 
-export type { VercelOptions as PresetOptions } from "./types";
+export type { VercelOptions as PresetOptions } from "nitropack/schema";
 
 // https://vercel.com/docs/build-output-api/v3
 

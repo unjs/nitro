@@ -1,12 +1,12 @@
 import { resolve } from "node:path";
 import { writeFile } from "node:fs/promises";
 import { joinURL } from "ufo";
-import type { Nitro } from "nitropack";
+import type { Nitro } from "nitropack/schema";
 import type {
   AmplifyDeployManifest,
   AmplifyRoute,
   AmplifyRouteTarget,
-} from "./types";
+} from "nitropack/schema";
 
 export async function writeAmplifyFiles(nitro: Nitro) {
   const outDir = nitro.options.output.dir;

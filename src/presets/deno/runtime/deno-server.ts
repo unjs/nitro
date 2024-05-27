@@ -4,7 +4,7 @@ import { startScheduleRunner, useRuntimeConfig } from "#internal/nitro";
 
 import destr from "destr";
 import wsAdapter from "crossws/adapters/deno";
-import type { Deno as _Deno } from "@deno/types";
+import type { Deno as _Deno } from "nitropack/schema";
 
 // TODO: Declare conflict with crossws
 // declare global {

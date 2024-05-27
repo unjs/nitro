@@ -1,9 +1,9 @@
 import { basename } from "pathe";
 import type { Plugin } from "rollup";
-import { defineNitroPreset } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
 import { updatePackageJSON, writeFirebaseConfig } from "./utils";
 
-export type { FirebaseOptions as PresetOptions } from "./types";
+export type { FirebaseOptions as PresetOptions } from "nitropack/schema";
 
 const firebase = defineNitroPreset(
   {

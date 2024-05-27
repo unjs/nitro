@@ -4,7 +4,7 @@ import createEtag from "etag";
 import mime from "mime";
 import { globby } from "globby";
 import type { Plugin } from "rollup";
-import type { Nitro } from "../../types";
+import type { Nitro } from "nitropack/schema";
 import { virtual } from "./virtual";
 import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
 

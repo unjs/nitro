@@ -1,8 +1,8 @@
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
+import type { Nitro } from "nitropack/schema";
 import { writeFunctionsRoutes, writeSWARoutes } from "./utils";
 
-export type { AzureOptions as PresetOptions } from "./types";
+export type { AzureOptions as PresetOptions } from "nitropack/schema";
 
 const azure = defineNitroPreset(
   {

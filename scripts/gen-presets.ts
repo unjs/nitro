@@ -24,7 +24,12 @@ const jitiRequire = createJITI(presetsDir, {
   esmResolve: true,
   interopDefault: true,
   alias: {
-    "nitropack": fileURLToPath(new URL("../src/index.ts", import.meta.url))
+    "nitropack": fileURLToPath(new URL("../src/core/index.ts", import.meta.url)),
+    ...Object.fromEntries(
+      ["cli", "core", "kit", "presets", "rollup", "schema"].map(pkg => [
+        `nitropack/${pkg}`, fileURLToPath(new URL(`../src/${pkg}/index.ts`, import.meta.url))
+      ])
+    )
   }
 });
 const allPresets: (NitroPreset & { _meta?: NitroPresetMeta })[] = [];

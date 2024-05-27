@@ -1,5 +1,5 @@
 import { hash } from "ohash";
-import type { Nitro, NitroRouteRules, NitroEventHandler } from "../../types";
+import type { Nitro, NitroRouteRules, NitroEventHandler } from "nitropack/schema";
 import { virtual } from "./virtual";
 
 export function handlers(nitro: Nitro) {

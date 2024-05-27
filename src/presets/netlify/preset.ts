@@ -1,7 +1,7 @@
 import { promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
+import type { Nitro } from "nitropack/schema";
 import {
   generateNetlifyFunction,
   getGeneratorString,

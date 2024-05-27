@@ -2,7 +2,7 @@ import { builtinModules } from "node:module";
 import { isAbsolute, resolve } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
-import { defineNitroPreset } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
 import { writeFile } from "../_utils";
 
 // nitro/src/rollup/plugin/import-meta.ts

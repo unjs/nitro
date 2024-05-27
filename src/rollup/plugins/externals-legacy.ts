@@ -5,7 +5,7 @@ import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
 import semver from "semver";
-import { isDirectory, retry } from "../../utils";
+import { isDirectory, retry } from "nitropack/kit";
 import { normalizeMatcher } from "./externals";
 
 export interface NodeExternalsOptions {

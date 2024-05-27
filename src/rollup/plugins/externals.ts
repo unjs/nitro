@@ -13,7 +13,7 @@ import {
   parseNodeModulePath,
 } from "mlly";
 import semver from "semver";
-import { isDirectory } from "../../utils";
+import { isDirectory } from "nitropack/kit";
 
 export interface NodeExternalsOptions {
   inline?: Array<

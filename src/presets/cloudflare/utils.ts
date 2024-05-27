@@ -8,10 +8,10 @@ import {
 } from "ufo";
 import { parseTOML, stringifyTOML } from "confbox";
 import { globby } from "globby";
-import type { Nitro } from "nitropack";
+import type { Nitro } from "nitropack/schema";
 import defu from "defu";
 import { isCI } from "std-env";
-import type { CloudflarePagesRoutes } from "./types";
+import type { CloudflarePagesRoutes } from "nitropack/schema";
 
 export async function writeCFPagesFiles(nitro: Nitro) {
   await writeCFRoutes(nitro);

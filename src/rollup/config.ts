@@ -17,11 +17,9 @@ import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
 import { rollup as unwasm } from "unwasm/plugin";
-import type { Nitro, NitroStaticBuildFlags } from "../types";
-import { resolveAliases } from "../utils";
-import { runtimeDir } from "../dirs";
-import nitroPkg from "../../package.json";
-import { nitroRuntimeDependencies } from "../deps";
+import type { Nitro, NitroStaticBuildFlags } from "nitropack/schema";
+import { resolveAliases } from "./utils";
+import { nitroRuntimeDependencies } from "./deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
@@ -74,7 +72,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   ] as const;
   function getChunkName(id: string) {
     // Runtime
-    if (id.startsWith(runtimeDir)) {
+    if (id.startsWith(nitro.options._runtimeDir)) {
       return `chunks/runtime.mjs`;
     }
 
@@ -203,8 +201,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     nitro: true,
     // @ts-expect-error
-    "versions.nitro": nitroPkg.version,
-    "versions?.nitro": nitroPkg.version,
+    "versions.nitro": "",
+    "versions?.nitro": "",
     // Internal
     _asyncContext: nitro.options.experimental.asyncContext,
     _websocket: nitro.options.experimental.websocket,
@@ -365,6 +363,7 @@ export const plugins = [
       entries: resolveAliases({
         "#build": buildDir,
         "#internal/nitro/virtual/error-handler": nitro.options.errorHandler,
+        "#internal/nitro": nitro.options._runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,
         "~~": nitro.options.rootDir,
@@ -435,7 +434,7 @@ export const plugins = [
             ...(nitro.options.experimental.wasm
               ? [(id: string) => id?.endsWith(".wasm")]
               : []),
-            runtimeDir,
+            nitro.options._runtimeDir,
             nitro.options.srcDir,
             ...nitro.options.handlers
               .map((m) => m.handler)

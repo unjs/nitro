@@ -1,4 +1,4 @@
-import type { Nitro } from "nitropack";
+import type { Nitro } from "nitropack/schema";
 import fsp from "node:fs/promises";
 import { dirname, relative, resolve } from "pathe";
 import { writeFile } from "../_utils";
@@ -7,7 +7,7 @@ import { joinURL, withoutLeadingSlash } from "ufo";
 import type {
   VercelBuildConfigV3,
   VercelServerlessFunctionConfig,
-} from "./types";
+} from "nitropack/schema";
 
 export async function generateFunctionFiles(nitro: Nitro) {
   const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
