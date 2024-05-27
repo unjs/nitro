@@ -23,7 +23,11 @@ import type {
   NitroDevEventHandler,
   NitroEventHandler,
 } from "./handler";
-import type { PresetName, PresetNameInput, PresetOptions } from "nitropack/schema";
+import type {
+  PresetName,
+  PresetNameInput,
+  PresetOptions,
+} from "nitropack/schema";
 import { NitroModule, NitroModuleInput } from "./module";
 import { ProviderName } from "std-env";
 

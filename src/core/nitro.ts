@@ -24,7 +24,7 @@ export async function createNitro(
   const options = await loadOptions(config, opts);
 
   // Assign internals
-  options._runtimeDir = runtimeDir
+  options._runtimeDir = runtimeDir;
 
   // Create context
   const nitro: Nitro = {

@@ -170,8 +170,6 @@ export async function retry(fn: () => Promise<void>, retries: number) {
   throw lastError;
 }
 
-
-
 export function nitroServerName(nitro: Nitro) {
   return nitro.options.framework.name === "nitro"
     ? "Nitro Server"

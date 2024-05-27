@@ -7,4 +7,4 @@ export * from "../rollup/deps";
 
 // export { loadOptions } from "./options";
 // export type { LoadConfigOptions } from "./options";
-export { listTasks, runTask } from "./task"
+export { listTasks, runTask } from "./task";

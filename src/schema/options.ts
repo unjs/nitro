@@ -8,14 +8,9 @@ import { withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from "ufo";
 import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
 import consola from "consola";
-import {
-  resolvePath,
-  resolveFile,
-} from "nitropack/kit";
+import { resolvePath, resolveFile } from "nitropack/kit";
 
-import {
-  provideFallbackValues,
-} from "./utils";
+import { provideFallbackValues } from "./utils";
 import type {
   NitroConfig,
   NitroOptions,

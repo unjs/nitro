@@ -1,2 +1,2 @@
-export * from './utils'
-export * from "./preset"
+export * from "./utils";
+export * from "./preset";

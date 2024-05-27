@@ -140,7 +140,10 @@ export async function writeTypes(nitro: Nitro) {
     autoImportExports = await nitro.unimport
       .toExports(typesDir)
       .then((r) =>
-        r.replace(/#internal\/nitro/g, relative(typesDir, nitro.options._runtimeDir))
+        r.replace(
+          /#internal\/nitro/g,
+          relative(typesDir, nitro.options._runtimeDir)
+        )
       );
 
     const resolvedImportPathMap = new Map<string, string>();
@@ -340,10 +343,16 @@ declare module 'nitropack' {
           ...(nitro.options.typescript.internalPaths
             ? {
                 "#internal/nitro": [
-                  relativeWithDot(tsconfigDir, join(nitro.options._runtimeDir, "index")),
+                  relativeWithDot(
+                    tsconfigDir,
+                    join(nitro.options._runtimeDir, "index")
+                  ),
                 ],
                 "#internal/nitro/*": [
-                  relativeWithDot(tsconfigDir, join(nitro.options._runtimeDir, "*")),
+                  relativeWithDot(
+                    tsconfigDir,
+                    join(nitro.options._runtimeDir, "*")
+                  ),
                 ],
               }
             : {}),

@@ -12,7 +12,14 @@ import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
 import { parseURL } from "ufo";
 import { useStorage } from "./storage";
 import { useNitroApp } from "./app";
-import type { $Fetch, CacheOptions, CacheEntry, CachedEventHandlerOptions, ResponseCacheEntry, NitroFetchRequest } from "nitropack/schema";
+import type {
+  $Fetch,
+  CacheOptions,
+  CacheEntry,
+  CachedEventHandlerOptions,
+  ResponseCacheEntry,
+  NitroFetchRequest,
+} from "nitropack/schema";
 
 const defaultCacheOptions = {
   name: "_",

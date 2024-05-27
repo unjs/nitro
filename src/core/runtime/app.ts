@@ -16,7 +16,11 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks } from "hookable";
-import type { NitroRuntimeHooks, CaptureError, NitroApp } from "nitropack/schema";
+import type {
+  NitroRuntimeHooks,
+  CaptureError,
+  NitroApp,
+} from "nitropack/schema";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";

@@ -10,7 +10,6 @@ import {
 import { useNitroApp } from "./app";
 import type { RenderHandler } from "../../schema/types";
 
-
 export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder

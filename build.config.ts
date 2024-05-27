@@ -23,10 +23,13 @@ export default defineBuildConfig({
     { input: "src/schema/index.ts" },
   ],
   alias: {
-    "nitropack": "./src/core/index.ts",
+    nitropack: "./src/core/index.ts",
     ...Object.fromEntries(
-      ["core", "rollup", "kit", "schema", "presets"].map(pkg => [`nitropack/${pkg}`, resolve(srcDir, `${pkg}/index.ts`)])
-    )
+      ["core", "rollup", "kit", "schema", "presets"].map((pkg) => [
+        `nitropack/${pkg}`,
+        resolve(srcDir, `${pkg}/index.ts`),
+      ])
+    ),
   },
   rollup: {
     output: {
