@@ -64,7 +64,7 @@ export const getPresetTmpDir = (preset: string) => {
 
 export async function setupTest(
   preset: string,
-  opts: { config?: _nitro.NitroConfig, compatibilityDate?: string } = {}
+  opts: { config?: _nitro.NitroConfig; compatibilityDate?: string } = {}
 ) {
   const presetTmpDir = getPresetTmpDir(preset);
 
@@ -121,10 +121,10 @@ export async function setupTest(
       dir: ctx.outDir,
     },
     timing: !ctx.isWorker,
-  })
-  const nitro = (ctx.nitro = await createNitro(
-    config, { compatibilityDate: opts.compatibilityDate || "2024-05-17" }
-  ));
+  });
+  const nitro = (ctx.nitro = await createNitro(config, {
+    compatibilityDate: opts.compatibilityDate || "2024-05-17",
+  }));
 
   if (ctx.isDev) {
     // Setup development server

@@ -73,7 +73,6 @@ const zeaburStatic = defineNitroPreset(
     name: "zeabur-static" as const,
     url: import.meta.url,
     static: true,
-
   }
 );
 

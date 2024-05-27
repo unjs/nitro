@@ -46,10 +46,7 @@
     "nitro": "./dist/cli/index.mjs",
     "nitropack": "./dist/cli/index.mjs"
   },
-  "files": [
-    "dist",
-    "*.d.ts"
-  ],
+  "files": ["dist", "*.d.ts"],
   "scripts": {
     "build": "pnpm gen-presets && unbuild",
     "dev": "pnpm nitro dev playground",

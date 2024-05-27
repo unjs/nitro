@@ -100,7 +100,6 @@ export function replaceAll(input: string, from: string, to: string) {
   return input.replace(new RegExp(from, "g"), to);
 }
 
-
 export async function isDirectory(path: string) {
   try {
     return (await fsp.stat(path)).isDirectory();

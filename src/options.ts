@@ -9,11 +9,7 @@ import { isTest, isDebug, nodeMajorVersion, provider } from "std-env";
 import { findWorkspaceDir } from "pkg-types";
 import consola from "consola";
 import { version } from "../package.json";
-import {
-  resolvePath,
-  resolveFile,
-  provideFallbackValues,
-} from "./utils";
+import { resolvePath, resolveFile, provideFallbackValues } from "./utils";
 import type {
   NitroConfig,
   NitroOptions,
@@ -162,7 +158,8 @@ export async function loadOptions(
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
 
   // Compatibility date
-  const compatibilityDate = process.env.NITRO_COMPATIBILITY_DATE || opts.compatibilityDate;
+  const compatibilityDate =
+    process.env.NITRO_COMPATIBILITY_DATE || opts.compatibilityDate;
 
   // Preset resolver
   const { resolvePreset } = await import("nitropack/presets");
@@ -179,10 +176,12 @@ export async function loadOptions(
       preset: presetOverride,
     },
     defaultConfig: {
-      preset: (await resolvePreset("", {
-        static: configOverrides.static,
-        compatibilityDate
-      }))?._meta?.name
+      preset: (
+        await resolvePreset("", {
+          static: configOverrides.static,
+          compatibilityDate,
+        })
+      )?._meta?.name,
     },
     defaults: NitroDefaults,
     jitiOptions: {
@@ -191,10 +190,10 @@ export async function loadOptions(
         "nitropack/config": "nitropack/config",
       },
     },
-    async resolve (id: string) {
+    async resolve(id: string) {
       const preset = await resolvePreset(id, {
         static: configOverrides.static,
-        compatibilityDate: compatibilityDate
+        compatibilityDate: compatibilityDate,
       });
       if (preset) {
         return {
@@ -208,7 +207,9 @@ export async function loadOptions(
   options._config = configOverrides;
   options._c12 = c12Config;
 
-  const _presetName = (c12Config.layers || []).find((l) => l.config?._meta?.name)?.config?._meta?.name || presetOverride
+  const _presetName =
+    (c12Config.layers || []).find((l) => l.config?._meta?.name)?.config?._meta
+      ?.name || presetOverride;
   options.preset = _presetName as PresetName;
 
   options.rootDir = resolve(options.rootDir || ".");

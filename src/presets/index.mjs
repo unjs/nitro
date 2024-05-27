@@ -1,1 +1,1 @@
-export { resolvePreset } from './_resolve'
+export { resolvePreset } from "./_resolve";

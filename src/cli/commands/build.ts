@@ -30,14 +30,17 @@ export default defineCommand({
   },
   async run({ args }) {
     const rootDir = resolve((args.dir || args._dir || ".") as string);
-    const nitro = await createNitro({
-      rootDir,
-      dev: false,
-      minify: args.minify,
-      preset: args.preset,
-    }, {
-      compatibilityDate: args.compatibilityDate || "2024-05-17",
-    });
+    const nitro = await createNitro(
+      {
+        rootDir,
+        dev: false,
+        minify: args.minify,
+        preset: args.preset,
+      },
+      {
+        compatibilityDate: args.compatibilityDate || "2024-05-17",
+      }
+    );
     await prepare(nitro);
     await copyPublicAssets(nitro);
     await prerender(nitro);

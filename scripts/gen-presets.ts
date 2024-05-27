@@ -24,8 +24,8 @@ const jitiRequire = createJITI(presetsDir, {
   esmResolve: true,
   interopDefault: true,
   alias: {
-    "nitropack": fileURLToPath(new URL("../src/index.ts", import.meta.url))
-  }
+    nitropack: fileURLToPath(new URL("../src/index.ts", import.meta.url)),
+  },
 });
 const allPresets: (NitroPreset & { _meta?: NitroPresetMeta })[] = [];
 for (const preset of presetDirs) {
@@ -76,19 +76,34 @@ const presetsWithType = presetDirs.filter((presetDir) => {
   const presetPath = resolve(presetsDir, presetDir, "preset.ts");
   const content = readFileSync(presetPath, "utf8");
   const typeExports = findTypeExports(content);
-  return typeExports.some(type => type.name === "PresetOptions")
+  return typeExports.some((type) => type.name === "PresetOptions");
 });
 writeFileSync(
   resolve(presetsDir, "_types.gen.ts"),
   /* ts */ `${autoGenHeader}
-${presetsWithType.map((preset) => `import { PresetOptions as ${pascalCase(preset)}Options } from "./${preset}/preset";`).join("\n")}
+${presetsWithType
+  .map(
+    (preset) =>
+      `import { PresetOptions as ${pascalCase(
+        preset
+      )}Options } from "./${preset}/preset";`
+  )
+  .join("\n")}
 
 export interface PresetOptions {
-${presetsWithType.map((preset) => `  ${camelCase(preset)}: ${pascalCase(preset)}Options;`).join("\n")}
+${presetsWithType
+  .map((preset) => `  ${camelCase(preset)}: ${pascalCase(preset)}Options;`)
+  .join("\n")}
 }
 
 export type PresetName = ${names.map((name) => `"${name}"`).join(" | ")};
 
-export type PresetNameInput = ${names.flatMap((name) => [...new Set([kebabCase(name), camelCase(name), snakeCase(name)])].map(n => `"${n}"`)).join(" | ")} | (string & {});
+export type PresetNameInput = ${names
+    .flatMap((name) =>
+      [...new Set([kebabCase(name), camelCase(name), snakeCase(name)])].map(
+        (n) => `"${n}"`
+      )
+    )
+    .join(" | ")} | (string & {});
 `
 );
