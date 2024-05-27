@@ -152,9 +152,12 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         if (!idWithoutNodeModules) {
           return false;
         }
+        if (normalizedId.startsWith(nitro.options._runtimeDir) || idWithoutNodeModules.startsWith(nitro.options._runtimeDir)) {
+          return true
+        }
         return nitro.options.moduleSideEffects.some(
           (m) =>
-            normalizedId.startsWith(m) || idWithoutNodeModules.startsWith(m)
+           normalizedId.startsWith(m) || idWithoutNodeModules.startsWith(m)
         );
       },
     },

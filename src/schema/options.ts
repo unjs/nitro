@@ -95,9 +95,6 @@ const NitroDefaults: NitroConfig = {
   },
 
   // Rollup
-  alias: {
-    // "#internal/nitro": runtimeDir, // TODO
-  },
   unenv: {},
   analyze: false,
   moduleSideEffects: [
