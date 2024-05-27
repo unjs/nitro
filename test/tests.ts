@@ -9,16 +9,18 @@ import { expect, it, afterAll, beforeAll, describe } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import { defu } from "defu";
-import {
+import * as _nitro from "nitropack/core";
+import type { Nitro, NitroConfig } from "nitropack/schema";
+import { nodeMajorVersion } from "std-env";
+
+const {
   createNitro,
   build,
   prepare,
   copyPublicAssets,
   prerender,
   createDevServer,
-} from "nitropack/core";
-import type { Nitro, NitroConfig } from "nitropack/schema";
-import { nodeMajorVersion } from "std-env";
+} = (_nitro as unknown as { default: typeof _nitro}).default || _nitro
 
 export interface Context {
   preset: string;
