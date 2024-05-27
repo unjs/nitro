@@ -70,7 +70,6 @@ const cloudflarePagesStatic = defineNitroPreset(
     stdName: "cloudflare_pages",
     url: import.meta.url,
     static: true,
-
   }
 );
 

@@ -152,7 +152,6 @@ const netlifyStatic = defineNitroPreset(
     name: "netlify-static" as const,
     url: import.meta.url,
     static: true,
-
   }
 );
 

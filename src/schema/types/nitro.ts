@@ -23,7 +23,7 @@ import type {
   NitroDevEventHandler,
   NitroEventHandler,
 } from "./handler";
-import type { PresetName, PresetNameInput, PresetOptions } from "nitropack/presets";
+import type { PresetName, PresetNameInput, PresetOptions } from "nitropack/schema";
 import { NitroModule, NitroModuleInput } from "./module";
 import { ProviderName } from "std-env";
 
@@ -149,7 +149,9 @@ export interface NitroPresetMeta {
 }
 
 export interface NitroConfig
-  extends DeepPartial<Omit<NitroOptions, "routeRules" | "rollupConfig" | "preset">>,
+  extends DeepPartial<
+      Omit<NitroOptions, "routeRules" | "rollupConfig" | "preset">
+    >,
     C12InputConfig<NitroConfig> {
   preset?: PresetNameInput;
   extends?: string | string[] | NitroPreset;

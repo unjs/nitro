@@ -109,7 +109,7 @@ module.exports = async function entry (port) {
   }
 );
 
-export default [edgio] as const
+export default [edgio] as const;
 
 async function writeFile(path: string, contents: string) {
   await fsp.mkdir(dirname(path), { recursive: true });

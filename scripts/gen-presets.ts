@@ -4,7 +4,7 @@ import { kebabCase, camelCase, pascalCase, snakeCase } from "scule";
 import { readdirSync, existsSync, writeFileSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { NitroPreset, NitroPresetMeta } from "nitropack";
+import type { NitroPreset, NitroPresetMeta } from "nitropack/schema";
 import { findTypeExports } from "mlly";
 
 const autoGenHeader = /* ts */ `// Auto-generated using gen-presets script\n`;
@@ -81,19 +81,34 @@ const presetsWithType = presetDirs.filter((presetDir) => {
   const presetPath = resolve(presetsDir, presetDir, "preset.ts");
   const content = readFileSync(presetPath, "utf8");
   const typeExports = findTypeExports(content);
-  return typeExports.some(type => type.name === "PresetOptions")
+  return typeExports.some((type) => type.name === "PresetOptions");
 });
 writeFileSync(
   resolve(presetsDir, "_types.gen.ts"),
   /* ts */ `${autoGenHeader}
-${presetsWithType.map((preset) => `import { PresetOptions as ${pascalCase(preset)}Options } from "./${preset}/preset";`).join("\n")}
+${presetsWithType
+  .map(
+    (preset) =>
+      `import { PresetOptions as ${pascalCase(
+        preset
+      )}Options } from "./${preset}/preset";`
+  )
+  .join("\n")}
 
 export interface PresetOptions {
-${presetsWithType.map((preset) => `  ${camelCase(preset)}: ${pascalCase(preset)}Options;`).join("\n")}
+${presetsWithType
+  .map((preset) => `  ${camelCase(preset)}: ${pascalCase(preset)}Options;`)
+  .join("\n")}
 }
 
 export type PresetName = ${names.map((name) => `"${name}"`).join(" | ")};
 
-export type PresetNameInput = ${names.flatMap((name) => [...new Set([kebabCase(name), camelCase(name), snakeCase(name)])].map(n => `"${n}"`)).join(" | ")} | (string & {});
+export type PresetNameInput = ${names
+    .flatMap((name) =>
+      [...new Set([kebabCase(name), camelCase(name), snakeCase(name)])].map(
+        (n) => `"${n}"`
+      )
+    )
+    .join(" | ")} | (string & {});
 `
 );
