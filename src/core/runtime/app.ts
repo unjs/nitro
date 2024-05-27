@@ -26,12 +26,9 @@ import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
 import { NitroAsyncContext, nitroAsyncContext } from "./context";
-import type { $Fetch, NitroFetchRequest } from "nitropack/core";
-// @ts-ignore
+import type { $Fetch, NitroFetchRequest } from "nitropack/schema";
 import { plugins } from "#internal/nitro/virtual/plugins";
-// @ts-ignore
 import errorHandler from "#internal/nitro/virtual/error-handler";
-// @ts-ignore
 import { handlers } from "#internal/nitro/virtual/server-handlers";
 
 function createNitroApp(): NitroApp {

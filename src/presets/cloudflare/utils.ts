@@ -11,7 +11,7 @@ import { globby } from "globby";
 import type { Nitro } from "nitropack/schema";
 import defu from "defu";
 import { isCI } from "std-env";
-import type { CloudflarePagesRoutes } from "nitropack/schema";
+import type { CloudflarePagesRoutes } from "./types";
 
 export async function writeCFPagesFiles(nitro: Nitro) {
   await writeCFRoutes(nitro);

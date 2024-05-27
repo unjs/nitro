@@ -7,7 +7,7 @@ import {
   generateStaticFiles,
 } from "./utils";
 
-export type { VercelOptions as PresetOptions } from "nitropack/schema";
+export type { VercelOptions as PresetOptions } from "./types";
 
 // https://vercel.com/docs/build-output-api/v3
 

@@ -21,11 +21,12 @@ export default defineBuildConfig({
     { input: "src/kit/index.ts" },
     // Schema
     { input: "src/schema/index.ts" },
+    { input: "src/schema/config.ts" },
   ],
   alias: {
     nitropack: "./src/core/index.ts",
     ...Object.fromEntries(
-      ["core", "rollup", "kit", "schema", "presets"].map((pkg) => [
+      ["core", "rollup", "kit", "schema", "config", "presets"].map((pkg) => [
         `nitropack/${pkg}`,
         resolve(srcDir, `${pkg}/index.ts`),
       ])
@@ -50,6 +51,7 @@ export default defineBuildConfig({
     "nitropack/presets",
     "nitropack/core",
     "nitropack/schema",
+    "nitropack/config",
     "nitropack/kit",
     "firebase-functions",
     "@scalar/api-reference",

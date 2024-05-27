@@ -52,7 +52,7 @@ const NitroDefaults: NitroConfig = {
   imports: {
     exclude: [],
     dirs: [],
-    // presets: nitroImports, // TODO
+    presets: [],
     virtualImports: ["#imports"],
   },
   virtual: {},

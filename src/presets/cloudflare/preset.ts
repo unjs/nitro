@@ -4,7 +4,7 @@ import { writeCFPagesFiles, writeCFPagesStaticFiles } from "./utils";
 import { writeFile } from "../_utils";
 import { resolve } from "pathe";
 
-export type { CloudflareOptions as PresetOptions } from "nitropack/schema";
+export type { CloudflareOptions as PresetOptions } from "./types";
 
 const cloudflarePages = defineNitroPreset(
   {

@@ -27,7 +27,7 @@ import type {
   PresetName,
   PresetNameInput,
   PresetOptions,
-} from "nitropack/schema";
+} from "nitropack/presets";
 import { NitroModule, NitroModuleInput } from "./module";
 import { ProviderName } from "std-env";
 

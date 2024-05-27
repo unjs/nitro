@@ -15,6 +15,7 @@ import { scanModules, scanPlugins, scanTasks } from "./scan";
 import { createStorage } from "./storage";
 import { resolveNitroModule } from "./module";
 import { runtimeDir } from "./dirs";
+import { nitroImports } from "./imports";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -25,6 +26,10 @@ export async function createNitro(
 
   // Assign internals
   options._runtimeDir = runtimeDir;
+  if (options.imports) {
+    options.imports.presets ??= [];
+    options.imports.presets.unshift(...nitroImports);
+  }
 
   // Create context
   const nitro: Nitro = {

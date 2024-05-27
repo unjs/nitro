@@ -3,7 +3,7 @@ import type { Plugin } from "rollup";
 import { defineNitroPreset } from "nitropack/kit";
 import { updatePackageJSON, writeFirebaseConfig } from "./utils";
 
-export type { FirebaseOptions as PresetOptions } from "nitropack/schema";
+export type { FirebaseOptions as PresetOptions } from "./types";
 
 const firebase = defineNitroPreset(
   {

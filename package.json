@@ -15,11 +15,15 @@
       "import": "./dist/core/index.mjs"
     },
     "./config": {
-      "types": "./dist/config.d.mts",
-      "import": "./dist/config.mjs"
+      "types": "./dist/schema/config.d.ts",
+      "import": "./dist/schema/config.mjs"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "import": "./dist/schema/index.mjs"
     },
     "./cli": {
-      "types": "./dist/cli/index.d.mts",
+      "types": "./dist/cli/index.d.ts",
       "import": "./dist/cli/index.mjs"
     },
     "./runtime": {

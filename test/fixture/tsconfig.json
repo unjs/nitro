@@ -7,9 +7,24 @@
     "baseUrl": ".",
     "strict": false,
     "paths": {
-      "nitropack": ["../../src/index"],
-      "#internal/nitro": ["../../src/runtime/index"],
-      "#internal/nitro/*": ["../../src/runtime/*"]
+      // CLI
+      "nitropack/cli": ["../../src/cli"],
+      // Core
+      "nitropack": ["../../src/core"],
+      "nitropack/core": ["../../src/core"],
+      // Schema
+      "nitropack/schema": ["../../src/schema"],
+      "nitropack/config": ["../../src/schema/config"],
+      // Rollup
+      "nitropack/rollup": ["../../src/rollup"],
+      // Kit
+      "nitropack/kit": ["../../src/kit"],
+      // Presets
+      "nitropack/presets": ["../../src/presets"],
+      "nitropack/presets/*": ["../../src/presets/*"],
+      // TODO: remove #internal
+      "#internal/nitro": ["../../src/core/runtime/index"],
+      "#internal/nitro/*": ["../../src/core/runtime/*"]
     }
   }
 }

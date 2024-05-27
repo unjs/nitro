@@ -7,7 +7,7 @@ import { joinURL, withoutLeadingSlash } from "ufo";
 import type {
   VercelBuildConfigV3,
   VercelServerlessFunctionConfig,
-} from "nitropack/schema";
+} from "./types";
 
 export async function generateFunctionFiles(nitro: Nitro) {
   const buildConfigPath = resolve(nitro.options.output.dir, "config.json");
