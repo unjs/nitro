@@ -11,7 +11,7 @@ import { joinURL } from "ufo";
 import { defu } from "defu";
 import * as _nitro from "../src";
 import type { Nitro } from "../src";
-import { nodeMajorVersion } from "std-env";
+import { nodeMajorVersion, isWindows } from "std-env";
 
 const { createNitro, build, prepare, copyPublicAssets, prerender } =
   (_nitro as any as { default: typeof _nitro }).default || _nitro;
@@ -686,7 +686,8 @@ export function testNitro(
   });
 
   describe.skipIf(
-    !ctx.nitro!.options.node ||
+    isWindows ||
+      !ctx.nitro!.options.node ||
       ctx.isLambda ||
       ctx.isWorker ||
       ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
