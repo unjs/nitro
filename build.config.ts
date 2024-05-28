@@ -47,6 +47,7 @@ export default defineBuildConfig({
   externals: [
     "nitropack",
     "nitropack/runtime/meta",
+    "nitropack/package.json",
     ...subpaths.map((subpath) => `nitropack/${subpath}`),
     "firebase-functions",
     "@scalar/api-reference",
