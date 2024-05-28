@@ -19,6 +19,7 @@ import type {
   NitroRuntimeConfig,
 } from "nitropack/schema";
 import type { PresetName } from "nitropack/presets";
+import { pkgDir, runtimeDir } from "nitropack/_meta";
 
 const NitroDefaults: NitroConfig = {
   // General
@@ -96,7 +97,7 @@ const NitroDefaults: NitroConfig = {
     "unenv/runtime/polyfill/",
     "node-fetch-native/polyfill",
     "node-fetch-native/dist/polyfill",
-    // resolve(runtimeDir, "polyfill/"), // TODO
+    resolve(runtimeDir, "polyfill/"),
   ],
   replace: {},
   node: true,
@@ -253,9 +254,8 @@ export async function loadOptions(
 
   options.nodeModulesDirs.push(resolve(options.workspaceDir, "node_modules"));
   options.nodeModulesDirs.push(resolve(options.rootDir, "node_modules"));
-  // TODO
-  // options.nodeModulesDirs.push(resolve(pkgDir, "node_modules"));
-  // options.nodeModulesDirs.push(resolve(pkgDir, "..")); // pnpm
+  options.nodeModulesDirs.push(resolve(pkgDir, "node_modules"));
+  options.nodeModulesDirs.push(resolve(pkgDir, "..")); // pnpm
   options.nodeModulesDirs = [
     ...new Set(
       options.nodeModulesDirs.map((dir) => resolve(options.rootDir, dir))

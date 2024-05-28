@@ -15,6 +15,8 @@
     "jsxFragmentFactory": "Fragment",
     "noEmit": true,
     "paths": {
+      // _meta
+      "nitropack/_meta": ["./_meta"],
       // CLI
       "nitropack/cli": ["./src/cli"],
       // Core

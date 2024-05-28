@@ -36,7 +36,7 @@ import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
-import { runtimeDependencies } from "../../meta";
+import { runtimeDependencies } from "nitropack/_meta";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 

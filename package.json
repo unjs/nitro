@@ -6,9 +6,9 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "./meta": {
-      "types": "./meta.d.ts",
-      "import": "./meta.mjs"
+    "./_meta": {
+      "types": "./_meta.d.ts",
+      "import": "./_meta.mjs"
     },
     "./cli": {
       "types": "./dist/cli/index.d.ts",

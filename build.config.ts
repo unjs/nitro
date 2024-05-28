@@ -1,7 +1,7 @@
 import { defineBuildConfig } from "unbuild";
 import { resolve } from "pathe";
 import { fileURLToPath } from "node:url";
-import { subpaths } from "./meta";
+import { subpaths } from "./_meta";
 
 const srcDir = fileURLToPath(new URL("src", import.meta.url));
 
@@ -36,6 +36,7 @@ export default defineBuildConfig({
   },
   externals: [
     "nitropack",
+    "nitropack/_meta",
     ...subpaths.map((subpath) => `nitropack/${subpath}`),
     "firebase-functions",
     "@scalar/api-reference",

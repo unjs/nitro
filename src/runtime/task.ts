@@ -1,7 +1,6 @@
 import { createError } from "h3";
 import { Cron } from "croner";
 import { isTest } from "std-env";
-// @ts-ignore
 import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
 
 type MaybePromise<T> = T | Promise<T>;
