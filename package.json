@@ -6,10 +6,6 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "./_meta": {
-      "types": "./_meta.d.ts",
-      "import": "./_meta.mjs"
-    },
     "./cli": {
       "types": "./dist/cli/index.d.ts",
       "import": "./dist/cli/index.mjs"
@@ -41,6 +37,10 @@
     "./runtime": {
       "types": "./dist/runtime/index.d.ts",
       "import": "./dist/runtime/index.mjs"
+    },
+    "./runtime/meta": {
+      "types": "./runtime-meta.d.ts",
+      "import": "./runtime-meta.mjs"
     },
     "./runtime/*": {
       "types": "./dist/runtime/*.d.ts",

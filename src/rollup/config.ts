@@ -36,7 +36,7 @@ import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
-import { runtimeDependencies } from "nitropack/_meta";
+import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -80,7 +80,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   ] as const;
   function getChunkName(id: string) {
     // Runtime
-    if (id.startsWith(nitro.options._runtimeDir)) {
+    if (id.startsWith(runtimeDir)) {
       return `chunks/runtime.mjs`;
     }
 
@@ -161,8 +161,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
           return false;
         }
         if (
-          normalizedId.startsWith(nitro.options._runtimeDir) ||
-          idWithoutNodeModules.startsWith(nitro.options._runtimeDir)
+          normalizedId.startsWith(runtimeDir) ||
+          idWithoutNodeModules.startsWith(runtimeDir)
         ) {
           return true;
         }
@@ -377,7 +377,7 @@ export const plugins = [
       entries: resolveAliases({
         "#build": buildDir,
         "#internal/nitro/virtual/error-handler": nitro.options.errorHandler,
-        "#internal/nitro": nitro.options._runtimeDir,
+        "#internal/nitro": runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,
         "~~": nitro.options.rootDir,
@@ -448,7 +448,7 @@ export const plugins = [
             ...(nitro.options.experimental.wasm
               ? [(id: string) => id?.endsWith(".wasm")]
               : []),
-            nitro.options._runtimeDir,
+            runtimeDir,
             nitro.options.srcDir,
             ...nitro.options.handlers
               .map((m) => m.handler)

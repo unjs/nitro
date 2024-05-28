@@ -256,7 +256,6 @@ export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
   _c12: ResolvedConfig<NitroConfig> | ConfigWatcher<NitroConfig>;
-  _runtimeDir: string;
 
   // General
   debug: boolean;

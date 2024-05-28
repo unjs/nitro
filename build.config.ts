@@ -1,9 +1,18 @@
 import { defineBuildConfig } from "unbuild";
 import { resolve } from "pathe";
 import { fileURLToPath } from "node:url";
-import { subpaths } from "./_meta";
 
 const srcDir = fileURLToPath(new URL("src", import.meta.url));
+
+export const subpaths = [
+  "cli",
+  "core",
+  "kit",
+  "presets",
+  "rollup",
+  "schema",
+  "config",
+];
 
 export default defineBuildConfig({
   declaration: true,
@@ -27,7 +36,7 @@ export default defineBuildConfig({
   ],
   alias: {
     nitropack: "./src/core/index.ts",
-    "nitropack/_meta": resolve(srcDir, "../_meta.mjs"),
+    "nitropack/runtime/meta": resolve(srcDir, "../runtime-meta.mjs"),
     ...Object.fromEntries(
       subpaths.map((subpath) => [
         `nitropack/${subpath}`,
@@ -37,7 +46,7 @@ export default defineBuildConfig({
   },
   externals: [
     "nitropack",
-    "nitropack/_meta",
+    "nitropack/runtime/meta",
     ...subpaths.map((subpath) => `nitropack/${subpath}`),
     "firebase-functions",
     "@scalar/api-reference",

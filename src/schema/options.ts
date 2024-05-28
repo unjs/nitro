@@ -19,7 +19,7 @@ import type {
   NitroRuntimeConfig,
 } from "nitropack/schema";
 import type { PresetName } from "nitropack/presets";
-import { pkgDir, runtimeDir } from "nitropack/_meta";
+import { pkgDir, runtimeDir } from "nitropack/runtime/meta";
 
 const NitroDefaults: NitroConfig = {
   // General

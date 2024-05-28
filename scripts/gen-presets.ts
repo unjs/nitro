@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { NitroPreset, NitroPresetMeta } from "nitropack/schema";
 import { findTypeExports } from "mlly";
+import { subpaths } from "../build.config";
 
 const autoGenHeader = /* ts */ `// Auto-generated using gen-presets script\n`;
 
@@ -26,7 +27,7 @@ const jitiRequire = createJITI(presetsDir, {
   alias: {
     nitropack: fileURLToPath(new URL("../src/core/index.ts", import.meta.url)),
     ...Object.fromEntries(
-      ["cli", "core", "kit", "presets", "rollup", "schema"].map((pkg) => [
+      subpaths.map((pkg) => [
         `nitropack/${pkg}`,
         fileURLToPath(new URL(`../src/${pkg}/index.ts`, import.meta.url)),
       ])

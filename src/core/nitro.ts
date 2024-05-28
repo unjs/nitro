@@ -14,7 +14,6 @@ import {
 import { scanModules, scanPlugins, scanTasks } from "./scan";
 import { createStorage } from "./storage";
 import { resolveNitroModule } from "./module";
-import { runtimeDir } from "nitropack/_meta";
 import { nitroImports } from "./imports";
 
 export async function createNitro(
@@ -23,13 +22,6 @@ export async function createNitro(
 ): Promise<Nitro> {
   // Resolve options
   const options = await loadOptions(config, opts);
-
-  // Assign internals
-  options._runtimeDir = runtimeDir;
-  if (options.imports) {
-    options.imports.presets ??= [];
-    options.imports.presets.unshift(...nitroImports);
-  }
 
   // Create context
   const nitro: Nitro = {
@@ -178,6 +170,10 @@ export const tasks = {
 
   // Auto imports
   if (nitro.options.imports) {
+    // Add built-in preset
+    nitro.options.imports.presets ??= [];
+    nitro.options.imports.presets.unshift(...nitroImports);
+    // Create unimport instance
     nitro.unimport = createUnimport(nitro.options.imports);
     await nitro.unimport.init();
     // Support for importing from '#imports'

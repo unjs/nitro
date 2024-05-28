@@ -15,8 +15,6 @@
     "jsxFragmentFactory": "Fragment",
     "noEmit": true,
     "paths": {
-      // _meta
-      "nitropack/_meta": ["./_meta"],
       // CLI
       "nitropack/cli": ["./src/cli"],
       // Core
@@ -24,6 +22,7 @@
       "nitropack/core": ["./src/core"],
       // Runtime
       "nitropack/runtime": ["./src/runtime"],
+      "nitropack/runtime/meta": ["./runtime-meta"],
       "nitropack/runtime/*": ["./src/runtime/*"],
       // Kit
       "nitropack/kit": ["./src/kit"],
@@ -37,7 +36,8 @@
       "nitropack/config": ["./src/schema/config"],
       // #internal
       "#internal/nitro": ["./src/runtime"],
-      "#internal/nitro/*": ["./src/runtime/*"]
+      "#internal/nitro/*": ["./src/runtime/*"],
+      "nitropack/package.json": ["./package.json"]
     }
   },
   "include": ["src", "test"],

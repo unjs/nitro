@@ -30,6 +30,7 @@ import { GLOB_SCAN_PATTERN, scanHandlers } from "./scan";
 import type { Nitro, NitroTypes, NitroBuildInfo } from "nitropack/schema";
 import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
+import { runtimeDir } from "nitropack/runtime/meta";
 
 export async function prepare(nitro: Nitro) {
   await prepareDir(nitro.options.output.dir);
@@ -140,10 +141,7 @@ export async function writeTypes(nitro: Nitro) {
     autoImportExports = await nitro.unimport
       .toExports(typesDir)
       .then((r) =>
-        r.replace(
-          /#internal\/nitro/g,
-          relative(typesDir, nitro.options._runtimeDir)
-        )
+        r.replace(/#internal\/nitro/g, relative(typesDir, runtimeDir))
       );
 
     const resolvedImportPathMap = new Map<string, string>();
@@ -343,16 +341,10 @@ declare module "nitropack/schema" {
           ...(nitro.options.typescript.internalPaths
             ? {
                 "#internal/nitro": [
-                  relativeWithDot(
-                    tsconfigDir,
-                    join(nitro.options._runtimeDir, "index")
-                  ),
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
                 ],
                 "#internal/nitro/*": [
-                  relativeWithDot(
-                    tsconfigDir,
-                    join(nitro.options._runtimeDir, "*")
-                  ),
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
                 ],
               }
             : {}),
