@@ -3,7 +3,6 @@ export * from "./nitro";
 export * from "./scan";
 export * from "./dev/server";
 export * from "./prerender";
-export * from "../rollup/deps";
 
 export * from "nitropack/schema";
 // export { defineNitroConfig } from 'nitropack/schema'

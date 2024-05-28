@@ -1,6 +1,7 @@
 import { defineBuildConfig } from "unbuild";
-import { resolve, normalize } from "pathe";
+import { resolve } from "pathe";
 import { fileURLToPath } from "node:url";
+import { subpaths } from "./meta";
 
 const srcDir = fileURLToPath(new URL("src", import.meta.url));
 
@@ -10,49 +11,32 @@ export default defineBuildConfig({
   entries: [
     // CLI
     { input: "src/cli/index.ts" },
-    // Presets
-    { input: "src/presets/", outDir: "dist/presets", format: "esm" },
     // Core
     { input: "src/core/index.ts" },
-    { input: "src/core/runtime/", outDir: "dist/core/runtime", format: "esm" },
-    // Rollup
-    { input: "src/rollup/index.ts" },
+    // Runtime
+    { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
     // Kit
     { input: "src/kit/index.ts" },
-    // Schema
+    // Presets
+    { input: "src/presets/", outDir: "dist/presets", format: "esm" },
+    // Rollup
+    { input: "src/rollup/index.ts" },
+    // Schema and Config
     { input: "src/schema/index.ts" },
     { input: "src/schema/config.ts" },
   ],
   alias: {
     nitropack: "./src/core/index.ts",
     ...Object.fromEntries(
-      ["core", "rollup", "kit", "schema", "config", "presets"].map((pkg) => [
-        `nitropack/${pkg}`,
-        resolve(srcDir, `${pkg}/index.ts`),
+      subpaths.map((subpath) => [
+        `nitropack/${subpath}`,
+        resolve(srcDir, `${subpath}/index.ts`),
       ])
     ),
   },
-  rollup: {
-    output: {
-      // chunkFileNames(chunk) {
-      //   const id = normalize(chunk.moduleIds.at(-1));
-      //   if (id.includes("/src/cli/")) {
-      //     return "cli/[name].mjs";
-      //   }
-      //   if (id.endsWith("/nitro.ts")) {
-      //     return "nitro.mjs";
-      //   }
-      //   return "chunks/[name].mjs";
-      // },
-    },
-  },
   externals: [
     "nitropack",
-    "nitropack/presets",
-    "nitropack/core",
-    "nitropack/schema",
-    "nitropack/config",
-    "nitropack/kit",
+    ...subpaths.map((subpath) => `nitropack/${subpath}`),
     "firebase-functions",
     "@scalar/api-reference",
   ],

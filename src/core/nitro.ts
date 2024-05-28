@@ -14,7 +14,7 @@ import {
 import { scanModules, scanPlugins, scanTasks } from "./scan";
 import { createStorage } from "./storage";
 import { resolveNitroModule } from "./module";
-import { runtimeDir } from "./dirs";
+import { runtimeDir } from "../../meta";
 import { nitroImports } from "./imports";
 
 export async function createNitro(

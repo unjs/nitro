@@ -20,21 +20,24 @@
       // Core
       "nitropack": ["./src/core"],
       "nitropack/core": ["./src/core"],
-      // Schema
-      "nitropack/schema": ["./src/schema"],
-      "nitropack/config": ["./src/schema/config"],
-      // Rollup
-      "nitropack/rollup": ["./src/rollup"],
+      // Runtime
+      "nitropack/runtime": ["./src/runtime"],
+      "nitropack/runtime/*": ["./src/runtime/*"],
       // Kit
       "nitropack/kit": ["./src/kit"],
       // Presets
       "nitropack/presets": ["./src/presets"],
       "nitropack/presets/*": ["./src/presets/*"],
-      // TODO: remove #internal
-      "#internal/nitro": ["./src/core/runtime/index"],
-      "#internal/nitro/*": ["./src/core/runtime/*"]
+      // Rollup
+      "nitropack/rollup": ["./src/rollup"],
+      // Schema and Config
+      "nitropack/schema": ["./src/schema"],
+      "nitropack/config": ["./src/schema/config"],
+      // #internal
+      "#internal/nitro": ["./src/runtime"],
+      "#internal/nitro/*": ["./src/runtime/*"]
     }
   },
-  "include": ["src", "test", "src/presets"],
-  "exclude": ["test/fixture"]
+  "include": ["src", "test"],
+  "exclude": ["dist", "examples", "playground", "test/fixture"]
 }

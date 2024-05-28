@@ -19,7 +19,6 @@ import { hash } from "ohash";
 import { rollup as unwasm } from "unwasm/plugin";
 import type { Nitro, NitroStaticBuildFlags } from "nitropack/schema";
 import { resolveAliases } from "./utils";
-import { nitroRuntimeDependencies } from "./deps";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
@@ -37,6 +36,7 @@ import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
+import { runtimeDependencies } from "../../meta";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
 
@@ -457,7 +457,7 @@ export const plugins = [
             nitro.options.preset === "nitro-prerender" ||
             nitro.options.experimental.bundleRuntimeDependencies === false
               ? []
-              : nitroRuntimeDependencies),
+              : runtimeDependencies),
           ],
           traceOptions: {
             base: "/",

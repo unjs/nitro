@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
 import { ofetch } from "ofetch";
-import type { TaskEvent } from "./runtime";
+import type { TaskEvent } from "../runtime";
 import type { NitroBuildInfo } from "nitropack/schema";
 
 /** @experimental */
