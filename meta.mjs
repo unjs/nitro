@@ -8,7 +8,15 @@ export const runtimeDir = fileURLToPath(
   new URL("dist/runtime", import.meta.url)
 );
 
-export const subpaths = ["cli", "core", "kit", "presets", "rollup", "schema", "config"]
+export const subpaths = [
+  "cli",
+  "core",
+  "kit",
+  "presets",
+  "rollup",
+  "schema",
+  "config",
+];
 
 export const runtimeDependencies = [
   "h3",
