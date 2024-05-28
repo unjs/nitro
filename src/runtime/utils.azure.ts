@@ -1,4 +1,4 @@
-import type { Cookie } from "@azure/functions";
+import type { Cookie, HttpRequest } from "@azure/functions";
 import { parse } from "cookie-es";
 import { splitCookiesString } from "h3";
 
@@ -37,6 +37,17 @@ export function getAzureParsedCookiesFromHeaders(
     azureCookies.push(cookieObject);
   }
   return azureCookies;
+}
+
+export function normalizeAzureFunctionIncomingHeaders(
+  request: HttpRequest
+): Record<string, string | string[] | undefined> {
+  return Object.fromEntries(
+    Object.entries(request.headers || {}).map(([key, value]) => [
+      key.toLowerCase(),
+      value,
+    ])
+  );
 }
 
 function parseNumberOrDate(expires: string) {

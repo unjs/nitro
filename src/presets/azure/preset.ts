@@ -1,6 +1,10 @@
 import { defineNitroPreset } from "nitropack";
 import type { Nitro } from "nitropack";
-import { writeFunctionsRoutes, writeSWARoutes } from "./utils";
+import {
+  writeFunctionsRoutes,
+  writeFunctionsRoutesStreaming,
+  writeSWARoutes,
+} from "./utils";
 
 export type { AzureOptions as PresetOptions } from "./types";
 
@@ -49,4 +53,24 @@ const azureFunctions = defineNitroPreset(
   }
 );
 
-export default [azure, azureFunctions] as const;
+const azureFunctionsStreaming = defineNitroPreset(
+  {
+    serveStatic: true,
+    entry: "./runtime/azure-functions-streaming",
+    commands: {
+      deploy:
+        "az functionapp deployment source config-zip -g <resource-group> -n <app-name> --src {{ output.dir }}/deploy.zip",
+    },
+    hooks: {
+      async compiled(ctx: Nitro) {
+        await writeFunctionsRoutesStreaming(ctx);
+      },
+    },
+  },
+  {
+    name: "azure-functions-streaming" as const,
+    url: import.meta.url,
+  }
+);
+
+export default [azure, azureFunctions, azureFunctionsStreaming] as const;
