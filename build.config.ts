@@ -27,6 +27,7 @@ export default defineBuildConfig({
   ],
   alias: {
     nitropack: "./src/core/index.ts",
+    "nitropack/_meta": resolve(srcDir, "../_meta.mjs"),
     ...Object.fromEntries(
       subpaths.map((subpath) => [
         `nitropack/${subpath}`,
