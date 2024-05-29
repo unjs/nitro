@@ -17,7 +17,7 @@ export async function writeFunctionsRoutes(nitro: Nitro) {
     main: "server/*.mjs",
   };
 
-  // Allows the output folder to be runned locally with azure function runtime
+  // Allows the output folder to be runned locally with azure functions runtime
   const localSettings = {
     IsEncrypted: false,
     Values: {
@@ -37,14 +37,14 @@ export async function writeFunctionsRoutes(nitro: Nitro) {
     JSON.stringify(packageJson)
   );
 
-  await writeFile(
-    resolve(nitro.options.output.dir, "local.settings.json"),
-    JSON.stringify(localSettings)
-  );
-
   await _zipDirectory(
     nitro.options.output.dir,
     join(nitro.options.output.dir, "deploy.zip")
+  );
+
+  await writeFile(
+    resolve(nitro.options.output.dir, "local.settings.json"),
+    JSON.stringify(localSettings)
   );
 }
 
