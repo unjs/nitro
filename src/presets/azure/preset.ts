@@ -2,6 +2,8 @@ import { defineNitroPreset } from "nitropack";
 import type { Nitro } from "nitropack";
 import { writeFunctionsRoutes, writeSWARoutes } from "./utils";
 
+import azureLegacyPresets from "./legacy/preset";
+
 export type { AzureOptions as PresetOptions } from "./types";
 
 const azure = defineNitroPreset(
@@ -45,8 +47,11 @@ const azureFunctions = defineNitroPreset(
   },
   {
     name: "azure-functions" as const,
+    compatibility: {
+      date: "2024-05-29",
+    },
     url: import.meta.url,
   }
 );
 
-export default [azure, azureFunctions] as const;
+export default [...azureLegacyPresets, azure, azureFunctions] as const;

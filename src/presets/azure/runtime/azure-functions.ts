@@ -1,26 +1,42 @@
 import "#internal/nitro/virtual/polyfill";
 import { nitroApp } from "#internal/nitro/app";
-import { getAzureParsedCookiesFromHeaders } from "#internal/nitro/utils.azure";
+
 import { normalizeLambdaOutgoingHeaders } from "#internal/nitro/utils.lambda";
+import { normalizeAzureFunctionIncomingHeaders } from "#internal/nitro/utils.azure";
 
-import type { HttpRequest, HttpResponse } from "@azure/functions";
+import { app } from "@azure/functions";
 
-export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
-  const url = "/" + (req.params.url || "");
+import type { HttpRequest } from "@azure/functions";
 
-  const { body, status, statusText, headers } = await nitroApp.localCall({
-    url,
-    headers: req.headers,
-    method: req.method || undefined,
-    // https://github.com/Azure/azure-functions-host/issues/293
-    body: req.rawBody,
-  });
-
-  context.res = {
-    status,
-    // cookies https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#http-response
-    cookies: getAzureParsedCookiesFromHeaders(headers),
-    headers: normalizeLambdaOutgoingHeaders(headers, true),
-    body: body ? body.toString() : statusText,
-  };
+function getPathFromUrl(urlString: string): string {
+  try {
+    const url = new URL(urlString);
+    return url.pathname;
+  } catch {
+    return "/";
+  }
 }
+
+app.http("nitro-server", {
+  route: "{*path}",
+  methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "OPTIONS", "DELETE"],
+  handler: async (request: HttpRequest) => {
+    const url = getPathFromUrl(request.url);
+
+    const { body, status, headers } = await nitroApp.localCall({
+      url,
+      headers: normalizeAzureFunctionIncomingHeaders(request) as Record<
+        string,
+        string | string[]
+      >,
+      method: request.method || undefined,
+      body: request.body,
+    });
+
+    return {
+      body: body as any,
+      headers: normalizeLambdaOutgoingHeaders(headers),
+      status,
+    };
+  },
+});
