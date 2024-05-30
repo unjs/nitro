@@ -20,7 +20,7 @@ import {
   readAsset,
   isPublicAssetURL,
 } from "#internal/nitro/virtual/public-assets";
-import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
+import type { PublicAsset } from "nitropack/types";
 
 const METHODS = new Set(["HEAD", "GET"] as HTTPMethod[]);
 

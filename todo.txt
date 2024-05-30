@@ -1,5 +1,0 @@
-TODO:
-
-- remove #internal/nitro imports
-- bundled package.json (schema for framework meta + CLI + build-info output (build and dev) + rollup replace)
-- nitropack/config import

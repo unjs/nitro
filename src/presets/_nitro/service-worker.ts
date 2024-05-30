@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { resolve } from "pathe";
 import { joinURL } from "ufo";
 import { defineNitroPreset } from "nitropack/kit";
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 
 const serviceWorker = defineNitroPreset(
   () => {

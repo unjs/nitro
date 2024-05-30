@@ -1,4 +1,4 @@
-import type { NitroErrorHandler } from "nitropack/schema";
+import type { NitroErrorHandler } from "nitropack/types";
 
 const errorHandler: NitroErrorHandler;
 

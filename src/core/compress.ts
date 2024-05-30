@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { globby } from "globby";
 import { resolve } from "pathe";
 import mime from "mime";
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 
 export async function compressPublicAssets(nitro: Nitro) {
   const publicFiles = await globby("**", {

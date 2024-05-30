@@ -3,7 +3,7 @@ import { platform } from "node:os";
 import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
 import type { PackageJson } from "pkg-types";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
-import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
+import { nodeFileTrace } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import {
   resolvePath,
@@ -14,27 +14,7 @@ import {
 } from "mlly";
 import semver from "semver";
 import { isDirectory } from "nitropack/kit";
-
-export interface NodeExternalsOptions {
-  inline?: Array<
-    | string
-    | RegExp
-    | ((id: string, importer?: string) => Promise<boolean> | boolean)
-  >;
-  external?: Array<
-    | string
-    | RegExp
-    | ((id: string, importer?: string) => Promise<boolean> | boolean)
-  >;
-  rootDir?: string;
-  outDir: string;
-  trace?: boolean;
-  traceOptions?: NodeFileTraceOptions;
-  moduleDirectories?: string[];
-  exportConditions?: string[];
-  traceInclude?: string[];
-  traceAlias?: Record<string, string>;
-}
+import { NodeExternalsOptions } from "nitropack/types";
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();

@@ -6,7 +6,7 @@ import {
   getResponseStatusText,
   send,
 } from "h3";
-import { NitroErrorHandler } from "nitropack/schema";
+import { NitroErrorHandler } from "nitropack/types";
 
 function errorHandler(error: any, event: H3Event) {
   setResponseHeader(event, "Content-Type", "text/html; charset=UTF-8");

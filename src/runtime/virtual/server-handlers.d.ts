@@ -1,6 +1,6 @@
 import type { H3EventHandler, LazyEventHandler, RouterMethod } from "h3";
 
-export type HandlerDefinition = {
+type HandlerDefinition = {
   route: string;
   lazy?: boolean;
   middleware?: boolean;

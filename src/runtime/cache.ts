@@ -19,7 +19,7 @@ import type {
   CachedEventHandlerOptions,
   ResponseCacheEntry,
   NitroFetchRequest,
-} from "nitropack/schema";
+} from "nitropack/types";
 
 const defaultCacheOptions = {
   name: "_",

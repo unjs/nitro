@@ -8,7 +8,7 @@ import semver from "semver";
 import { isDirectory, retry } from "nitropack/kit";
 import { normalizeMatcher } from "./externals";
 
-export interface NodeExternalsOptions {
+interface NodeExternalsOptions {
   inline?: Array<
     | string
     | RegExp

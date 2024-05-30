@@ -10,6 +10,8 @@
     "paths": {
       // CLI
       "nitropack/cli": ["../../src/cli"],
+      // Config
+      "nitropack/config": ["../../src/config"],
       // Core
       "nitropack": ["../../src/core"],
       "nitropack/core": ["../../src/core"],
@@ -24,9 +26,8 @@
       "nitropack/presets/*": ["../../src/presets/*"],
       // Rollup
       "nitropack/rollup": ["../../src/rollup"],
-      // Schema and Con fig
-      "nitropack/schema": ["../../src/schema"],
-      "nitropack/config": ["../../src/schema/config"],
+      // Types
+      "nitropack/types": ["../../src/types"],
       // #internal
       "#internal/nitro": ["../../src/runtime"],
       "#internal/nitro/*": ["../../src/runtime/*"],

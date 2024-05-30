@@ -4,9 +4,9 @@ import createEtag from "etag";
 import mime from "mime";
 import { globby } from "globby";
 import type { Plugin } from "rollup";
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 import { virtual } from "./virtual";
-import type { PublicAsset } from "#internal/nitro/virtual/public-assets";
+import type { PublicAsset } from "nitropack/types";
 
 const readAssetHandler: Record<
   Exclude<Nitro["options"]["serveStatic"] | "true" | "false", boolean>,

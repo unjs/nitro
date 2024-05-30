@@ -1,5 +1,5 @@
 import { createStorage as _createStorage, builtinDrivers } from "unstorage";
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 
 export async function createStorage(nitro: Nitro) {
   const storage = _createStorage();

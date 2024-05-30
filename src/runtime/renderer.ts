@@ -8,7 +8,7 @@ import {
   setResponseStatus,
 } from "h3";
 import { useNitroApp } from "./app";
-import type { RenderHandler } from "nitropack/schema";
+import type { RenderHandler } from "nitropack/types";
 
 export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async (event) => {

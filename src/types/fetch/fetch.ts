@@ -1,9 +1,8 @@
 import type { RouterMethod } from "h3";
 import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
-import type { MatchedRoutes } from "./utils";
+import type { MatchedRoutes } from "./_match";
 
 // An interface to extend in a local project
-
 export interface InternalApi {}
 
 export type NitroFetchRequest =

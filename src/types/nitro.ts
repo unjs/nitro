@@ -1,0 +1,60 @@
+import type { Unimport } from "unimport";
+import type { Hookable } from "hookable";
+import type { ConsolaInstance } from "consola";
+import type { Storage } from "unstorage";
+import type { RouterMethod } from "h3";
+import type { NitroEventHandler } from "./handler";
+import type { PresetName } from "nitropack/presets";
+import type { NitroConfig, NitroOptions } from "./config";
+import type { NitroHooks } from "./hooks";
+import type { PrerenderRoute } from "./prerender";
+
+export interface Nitro {
+  options: NitroOptions;
+  scannedHandlers: NitroEventHandler[];
+  vfs: Record<string, string>;
+  hooks: Hookable<NitroHooks>;
+  unimport?: Unimport;
+  logger: ConsolaInstance;
+  storage: Storage;
+  close: () => Promise<void>;
+  updateConfig: (config: NitroDynamicConfig) => void | Promise<void>;
+
+  /* @internal */
+  _prerenderedRoutes?: PrerenderRoute[];
+  _prerenderMeta?: Record<string, { contentType?: string }>;
+}
+
+export type NitroDynamicConfig = Pick<
+  NitroConfig,
+  "runtimeConfig" | "routeRules"
+>;
+
+export type NitroTypes = {
+  routes: Record<string, Partial<Record<RouterMethod | "default", string[]>>>;
+};
+
+export interface NitroFrameworkInfo {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  name?: "nitro" | (string & {});
+  version?: string;
+}
+
+/** Build info written to `.output/nitro.json` or `.nitro/dev/nitro.json` */
+export interface NitroBuildInfo {
+  date: string;
+  preset: PresetName;
+  framework: NitroFrameworkInfo;
+  versions: {
+    nitro: string;
+    [key: string]: string;
+  };
+  commands?: {
+    preview?: string;
+    deploy?: string;
+  };
+  dev?: {
+    pid: number;
+    workerAddress: { host: string; port: number; socketPath?: string };
+  };
+}

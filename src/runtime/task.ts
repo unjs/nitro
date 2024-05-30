@@ -2,40 +2,13 @@ import { createError } from "h3";
 import { Cron } from "croner";
 import { isTest } from "std-env";
 import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
-
-type MaybePromise<T> = T | Promise<T>;
-
-/** @experimental */
-export interface TaskContext {}
-
-/** @experimental */
-export interface TaskPayload {
-  [key: string]: unknown;
-}
-
-/** @experimental */
-export interface TaskMeta {
-  name?: string;
-  description?: string;
-}
-
-/** @experimental */
-export interface TaskEvent {
-  name: string;
-  payload: TaskPayload;
-  context: TaskContext;
-}
-
-/** @experimental */
-export interface TaskResult<RT = unknown> {
-  result?: RT;
-}
-
-/** @experimental */
-export interface Task<RT = unknown> {
-  meta?: TaskMeta;
-  run(event: TaskEvent): MaybePromise<{ result?: RT }>;
-}
+import type {
+  Task,
+  TaskResult,
+  TaskPayload,
+  TaskContext,
+  TaskEvent,
+} from "nitropack/types";
 
 /** @experimental */
 export function defineTask<RT = unknown>(def: Task<RT>): Task<RT> {
@@ -47,7 +20,7 @@ export function defineTask<RT = unknown>(def: Task<RT>): Task<RT> {
   return def;
 }
 
-const __runningTasks__: { [name: string]: MaybePromise<TaskResult<any>> } = {};
+const __runningTasks__: { [name: string]: ReturnType<Task<any>["run"]> } = {};
 
 /** @experimental */
 export async function runTask<RT = unknown>(

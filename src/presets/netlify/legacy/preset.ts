@@ -1,7 +1,7 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
 import { defineNitroPreset } from "nitropack/kit";
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 import { deprecateSWR, writeHeaders, writeRedirects } from "./utils";
 
 // Netlify functions

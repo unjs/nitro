@@ -1,12 +1,18 @@
+import type { NitroConfig } from "nitropack/types";
+
+// export * from "nitropack/types";
+
+export * from "./options";
 export * from "./build";
 export * from "./nitro";
 export * from "./scan";
 export * from "./dev/server";
 export * from "./prerender";
+export * from "./task";
 
-export * from "nitropack/schema";
-// export { defineNitroConfig } from 'nitropack/schema'
-
-// export { loadOptions } from "./options";
-// export type { LoadConfigOptions } from "./options";
-export { listTasks, runTask } from "./task";
+/**
+ * @deprecated Please import `defineNitroConfig` from nitropack/config instead
+ */
+export function defineNitroConfig(config: NitroConfig): NitroConfig {
+  return config;
+}

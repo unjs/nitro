@@ -4,7 +4,7 @@ import { kebabCase, camelCase, pascalCase, snakeCase } from "scule";
 import { readdirSync, existsSync, writeFileSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { NitroPreset, NitroPresetMeta } from "nitropack/schema";
+import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
 import { findTypeExports } from "mlly";
 import { subpaths } from "../build.config";
 

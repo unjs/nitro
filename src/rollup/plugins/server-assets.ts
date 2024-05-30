@@ -5,18 +5,8 @@ import mime from "mime";
 import { resolve } from "pathe";
 import { normalizeKey } from "unstorage";
 import { globby } from "globby";
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 import { virtual } from "./virtual";
-
-export interface ServerAssetOptions {
-  inline: boolean;
-  dirs: {
-    [assetdir: string]: {
-      dir: string;
-      meta?: boolean;
-    };
-  };
-}
 
 interface ResolvedAsset {
   fsPath: string;

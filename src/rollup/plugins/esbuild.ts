@@ -4,8 +4,7 @@ import { extname, relative } from "pathe";
 import type { Plugin, PluginContext } from "rollup";
 import { Loader, TransformResult, transform } from "esbuild";
 import { createFilter } from "@rollup/pluginutils";
-import type { FilterPattern } from "@rollup/pluginutils";
-import type { TransformOptions } from "esbuild";
+import { EsbuildOptions } from "nitropack/types";
 
 const defaultLoaders: { [ext: string]: Loader } = {
   ".ts": "ts",
@@ -14,20 +13,7 @@ const defaultLoaders: { [ext: string]: Loader } = {
   ".jsx": "jsx",
 };
 
-export interface Options extends TransformOptions {
-  include?: FilterPattern;
-  exclude?: FilterPattern;
-  sourceMap?: boolean | "inline" | "hidden";
-  /**
-   * Map extension to esbuild loader
-   * Note that each entry (the extension) needs to start with a dot
-   */
-  loaders?: {
-    [ext: string]: Loader | false;
-  };
-}
-
-export function esbuild(options: Options): Plugin {
+export function esbuild(options: EsbuildOptions): Plugin {
   const {
     include,
     exclude,

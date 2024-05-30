@@ -1,7 +1,7 @@
 import { pathToFileURL } from "node:url";
 import { createRequire, builtinModules } from "node:module";
 import { dirname, join, normalize, resolve } from "pathe";
-import type { InputOptions, OutputOptions, Plugin } from "rollup";
+import type { Plugin } from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import commonjs from "@rollup/plugin-commonjs";
@@ -17,12 +17,17 @@ import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
 import { rollup as unwasm } from "unwasm/plugin";
-import type { Nitro, NitroStaticBuildFlags } from "nitropack/schema";
+import type {
+  Nitro,
+  NitroStaticBuildFlags,
+  NodeExternalsOptions,
+  RollupConfig,
+} from "nitropack/types";
 import { resolveAliases } from "./utils";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
-import { NodeExternalsOptions, externals } from "./plugins/externals";
+import { externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
 import { timing } from "./plugins/timing";
 import { publicAssets } from "./plugins/public-assets";
@@ -37,8 +42,6 @@ import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
 import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
-
-export type RollupConfig = InputOptions & { output: OutputOptions };
 
 export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [

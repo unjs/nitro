@@ -1,4 +1,4 @@
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 import fsp from "node:fs/promises";
 import { dirname, relative, resolve } from "pathe";
 import { writeFile } from "../_utils";

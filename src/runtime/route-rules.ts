@@ -9,7 +9,7 @@ import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { joinURL, withQuery, getQuery, withoutBase } from "ufo";
 import { useRuntimeConfig } from "./config";
-import type { NitroRouteRules } from "nitropack/schema";
+import type { NitroRouteRules } from "nitropack/types";
 
 const config = useRuntimeConfig();
 const _routeRulesMatcher = toRouteMatcher(

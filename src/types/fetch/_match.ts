@@ -102,10 +102,3 @@ export type MatchedRoutes<
           >["key"]
         | Extract<Matches, { catchAll: true }>["key"] // partial, glob and catchAll matches
     : Extract<Matches, { exact: true }>["key"]; // exact matches
-
-export type KebabCase<
-  T extends string,
-  A extends string = "",
-> = T extends `${infer F}${infer R}`
-  ? KebabCase<R, `${A}${F extends Lowercase<F> ? "" : "-"}${Lowercase<F>}`>
-  : A;

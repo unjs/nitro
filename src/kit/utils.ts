@@ -7,7 +7,7 @@ import { consola } from "consola";
 import chalk from "chalk";
 import { getProperty } from "dot-prop";
 import { upperFirst } from "scule";
-import { Nitro } from "nitropack/schema";
+import { Nitro } from "nitropack/types";
 
 export function hl(str: string) {
   return chalk.cyan(str);

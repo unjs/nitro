@@ -1,5 +1,5 @@
 import jiti from "jiti";
-import type { Nitro, NitroModule, NitroModuleInput } from "nitropack/schema";
+import type { Nitro, NitroModule, NitroModuleInput } from "nitropack/types";
 
 export function defineNitroModule(def: NitroModule) {
   return def;

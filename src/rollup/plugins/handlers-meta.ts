@@ -3,7 +3,7 @@ import { transform } from "esbuild";
 import type { Plugin } from "rollup";
 import type { Literal, Expression } from "estree";
 import { extname } from "pathe";
-import { Nitro, NitroEventHandler } from "nitropack/schema";
+import { Nitro, NitroEventHandler } from "nitropack/types";
 
 const virtualPrefix = "\0nitro-handler-meta:";
 

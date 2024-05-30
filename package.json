@@ -10,6 +10,10 @@
       "types": "./dist/cli/index.d.ts",
       "import": "./dist/cli/index.mjs"
     },
+    "./config": {
+      "types": "./dist/config/index.d.ts",
+      "import": "./dist/config/index.mjs"
+    },
     ".": {
       "types": "./types.d.ts",
       "import": "./dist/core/index.mjs"
@@ -50,13 +54,9 @@
       "types": "./dist/runtime/*.d.ts",
       "import": "./dist/runtime/*.mjs"
     },
-    "./schema": {
-      "types": "./dist/schema/index.d.ts",
-      "import": "./dist/schema/index.mjs"
-    },
-    "./config": {
-      "types": "./dist/schema/config.d.ts",
-      "import": "./dist/schema/config.mjs"
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.mjs"
     },
     "./package.json": "./package.json"
   },

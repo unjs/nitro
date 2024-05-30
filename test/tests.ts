@@ -10,7 +10,7 @@ import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import { defu } from "defu";
 import * as _nitro from "nitropack/core";
-import type { Nitro, NitroConfig } from "nitropack/schema";
+import type { Nitro, NitroConfig } from "nitropack/types";
 import { nodeMajorVersion, isWindows } from "std-env";
 
 const {

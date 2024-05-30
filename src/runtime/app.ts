@@ -20,13 +20,14 @@ import type {
   NitroRuntimeHooks,
   CaptureError,
   NitroApp,
-} from "nitropack/schema";
+} from "nitropack/types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
-import { NitroAsyncContext, nitroAsyncContext } from "./context";
-import type { $Fetch, NitroFetchRequest } from "nitropack/schema";
+import { nitroAsyncContext } from "./context";
+import type { NitroAsyncContext } from "nitropack/types";
+import type { $Fetch, NitroFetchRequest } from "nitropack/types";
 import { plugins } from "#internal/nitro/virtual/plugins";
 import errorHandler from "#internal/nitro/virtual/error-handler";
 import { handlers } from "#internal/nitro/virtual/server-handlers";

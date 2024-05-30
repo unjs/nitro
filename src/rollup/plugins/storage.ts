@@ -1,6 +1,6 @@
 import { builtinDrivers } from "unstorage";
 import { genImport, genSafeVariableName } from "knitwork";
-import type { Nitro } from "nitropack/schema";
+import type { Nitro } from "nitropack/types";
 import { virtual } from "./virtual";
 
 export function storage(nitro: Nitro) {

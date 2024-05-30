@@ -4,7 +4,6 @@ import { writeFile } from "node:fs/promises";
 import { TLSSocket } from "node:tls";
 import { debounce } from "perfect-debounce";
 import {
-  App,
   createApp,
   createError,
   eventHandler,
@@ -20,32 +19,16 @@ import serveStatic from "serve-static";
 import { resolve } from "pathe";
 import { joinURL } from "ufo";
 import { FSWatcher, watch } from "chokidar";
-import type { Nitro, NitroBuildInfo } from "nitropack/schema";
+import type {
+  Nitro,
+  NitroBuildInfo,
+  NitroDevServer,
+  NitroWorker,
+} from "nitropack/types";
 import { createVFSHandler } from "./vfs";
 import defaultErrorHandler from "./error";
 import type { IncomingMessage, OutgoingMessage } from "node:http";
 import type { Duplex } from "node:stream";
-
-export interface NitroWorker {
-  worker: Worker | null;
-  address: { host: string; port: number; socketPath?: string };
-}
-
-export interface NitroDevServer {
-  reload: () => void;
-  listen: (
-    port: ListenOptions["port"],
-    opts?: Partial<ListenOptions>
-  ) => Promise<Listener>;
-  app: App;
-  close: () => Promise<void>;
-  watcher?: FSWatcher;
-  upgrade: (
-    req: IncomingMessage,
-    socket: OutgoingMessage<IncomingMessage> | Duplex,
-    head: Buffer
-  ) => void;
-}
 
 function initWorker(filename: string): Promise<NitroWorker> | undefined {
   if (!existsSync(filename)) {

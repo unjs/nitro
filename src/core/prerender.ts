@@ -8,7 +8,7 @@ import mime from "mime";
 import type { $Fetch } from "ofetch";
 import { createNitro } from "./nitro";
 import { build } from "./build";
-import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitropack/schema";
+import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitropack/types";
 import { writeFile } from "nitropack/kit";
 import { compressPublicAssets } from "./compress";
 

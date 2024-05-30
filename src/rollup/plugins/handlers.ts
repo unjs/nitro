@@ -3,7 +3,7 @@ import type {
   Nitro,
   NitroRouteRules,
   NitroEventHandler,
-} from "nitropack/schema";
+} from "nitropack/types";
 import { virtual } from "./virtual";
 
 export function handlers(nitro: Nitro) {

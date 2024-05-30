@@ -1,4 +1,4 @@
-import type { Task, TaskMeta } from "../task";
+import type { Task, TaskMeta } from "nitropack/types";
 
 export const tasks: Record<
   string,
