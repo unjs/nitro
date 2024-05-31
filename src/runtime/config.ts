@@ -34,7 +34,7 @@ export function useRuntimeConfig<
   // Prepare runtime config for event context
   const runtimeConfig = klona(_inlineRuntimeConfig) as T;
   applyEnv(runtimeConfig, envOptions);
-  (event.context.nitro ??= {}).runtimeConfig = runtimeConfig;
+  (event.context.nitro ??= { errors: [] }).runtimeConfig = runtimeConfig;
   return runtimeConfig;
 }
 
@@ -51,7 +51,7 @@ export function useAppConfig(event?: H3Event) {
   }
   // Prepare app config for event context
   const appConfig = klona(_inlineAppConfig);
-  (event.context.nitro ??= {}).appConfig = appConfig;
+  (event.context.nitro ??= { errors: [] }).appConfig = appConfig;
   return appConfig;
 }
 
