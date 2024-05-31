@@ -20,7 +20,7 @@ declare module "h3" {
     captureError: CaptureError;
   }
   interface H3Context {
-    nitro: {
+    nitro?: {
       _waitUntilPromises?: Promise<unknown>[];
       /** @experimental */
       errors: { error?: Error; context: CapturedErrorContext }[];

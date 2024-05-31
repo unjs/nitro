@@ -28,13 +28,13 @@ export function useRuntimeConfig<
     return _sharedRuntimeConfig as T;
   }
   // Reuse cached runtime config from event context
-  if (event.context.nitro.runtimeConfig) {
+  if (event.context.nitro?.runtimeConfig) {
     return event.context.nitro.runtimeConfig;
   }
   // Prepare runtime config for event context
   const runtimeConfig = klona(_inlineRuntimeConfig) as T;
   applyEnv(runtimeConfig, envOptions);
-  event.context.nitro.runtimeConfig = runtimeConfig;
+  (event.context.nitro ??= {}).runtimeConfig = runtimeConfig;
   return runtimeConfig;
 }
 
@@ -46,12 +46,12 @@ export function useAppConfig(event?: H3Event) {
     return _sharedAppConfig;
   }
   // Reuse cached app config from event context
-  if (event.context.nitro.appConfig) {
+  if (event.context.nitro?.appConfig) {
     return event.context.nitro.appConfig;
   }
   // Prepare app config for event context
   const appConfig = klona(_inlineAppConfig);
-  event.context.nitro.appConfig = appConfig;
+  (event.context.nitro ??= {}).appConfig = appConfig;
   return appConfig;
 }
 
