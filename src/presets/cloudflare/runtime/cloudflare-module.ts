@@ -1,7 +1,7 @@
 import "#internal/nitro/virtual/polyfill";
 import { requestHasBody } from "#internal/nitro/utils";
 import { nitroApp } from "#internal/nitro/app";
-import { runCronTasks, useRuntimeConfig } from "#internal/nitro";
+import { runCronTasks, runEmailTask, useRuntimeConfig } from "#internal/nitro";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
 
 import { withoutBase } from "ufo";
@@ -96,6 +96,26 @@ export default {
       );
     }
   },
+  email(event: any, env: CFModuleEnv, context: ExecutionContext) {
+    if (import.meta._tasks) {
+      (globalThis as any).__env__ = env;
+
+      const domain = (event.to as string).split('@')[1]
+
+      context.waitUntil(
+        runEmailTask(domain, {
+          context: {
+            ...event,
+            cloudflare: {
+              env,
+              context,
+            },
+          },
+          payload: {},
+        })
+      )
+    }
+  }
 };
 
 function assetsCacheControl(_request: Request) {
