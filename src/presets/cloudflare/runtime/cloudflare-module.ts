@@ -100,7 +100,7 @@ export default {
     if (import.meta._tasks) {
       (globalThis as any).__env__ = env;
 
-      const domain = (event.to as string).split('@')[1]
+      const domain = (event.to as string).split("@")[1];
 
       context.waitUntil(
         runEmailTask(domain, {
@@ -113,9 +113,9 @@ export default {
           },
           payload: {},
         })
-      )
+      );
     }
-  }
+  },
 };
 
 function assetsCacheControl(_request: Request) {

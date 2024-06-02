@@ -8,6 +8,11 @@ export const tasks: Record<
 
 export const scheduledTasks: false | { cron: string; tasks: string[] }[] = [];
 
-export const emailTasks: Record<string, { resolve?: () => Promise<EmailTask>; meta: EmailMeta }> = {};
+export const emailTasks: Record<
+  string,
+  { resolve?: () => Promise<EmailTask>; meta: EmailMeta }
+> = {};
 
-export const scheduledEmailTasks: false | { domain: string; tasks: string[] }[] = [];
+export const scheduledEmailTasks:
+  | false
+  | { domain: string; tasks: string[] }[] = [];
