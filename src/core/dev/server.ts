@@ -29,6 +29,9 @@ import { createVFSHandler } from "./vfs";
 import defaultErrorHandler from "./error";
 import type { IncomingMessage, OutgoingMessage } from "node:http";
 import type { Duplex } from "node:stream";
+import { version as nitroVersion } from "nitropack/package.json" with {
+  type: "json",
+};
 
 function initWorker(filename: string): Promise<NitroWorker> | undefined {
   if (!existsSync(filename)) {
@@ -125,7 +128,7 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
       preset: nitro.options.preset,
       framework: nitro.options.framework,
       versions: {
-        nitro: "",
+        nitro: nitroVersion,
       },
       dev: {
         pid: process.pid,

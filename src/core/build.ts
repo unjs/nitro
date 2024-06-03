@@ -36,7 +36,9 @@ import type {
 import { snapshotStorage } from "./storage";
 import { compressPublicAssets } from "./compress";
 import { runtimeDir } from "nitropack/runtime/meta";
-import { version } from "nitropack/package.json";
+import { version as nitroVersion } from "nitropack/package.json" with {
+  type: "json",
+};
 
 export async function prepare(nitro: Nitro) {
   await prepareDir(nitro.options.output.dir);
@@ -478,7 +480,7 @@ async function _build(nitro: Nitro, rollupConfig: RollupConfig) {
     preset: nitro.options.preset,
     framework: nitro.options.framework,
     versions: {
-      nitro: version,
+      nitro: nitroVersion,
     },
     commands: {
       preview: nitro.options.commands.preview,
