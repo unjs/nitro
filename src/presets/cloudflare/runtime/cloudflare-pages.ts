@@ -1,7 +1,7 @@
 import "#internal/nitro/virtual/polyfill";
-import { runCronTasks } from "#internal/nitro/task";
-import { requestHasBody } from "#internal/nitro/utils";
-import { nitroApp } from "#internal/nitro/app";
+import { runCronTasks } from "nitropack/runtime/task";
+import { requestHasBody } from "nitropack/runtime/utils";
+import { nitroApp } from "nitropack/runtime/app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 import wsAdapter from "crossws/adapters/cloudflare";

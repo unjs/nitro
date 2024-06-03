@@ -1,6 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { useAppConfig } from "#internal/nitro";
+import { nitroApp } from "nitropack/runtime/app";
+import { useAppConfig } from "nitropack/runtime";
 
 import functions from "firebase-functions";
 import { toNodeListener } from "h3";

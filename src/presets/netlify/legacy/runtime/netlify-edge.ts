@@ -1,5 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
+import { nitroApp } from "nitropack/runtime/app";
 import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
 
 // https://docs.netlify.com/edge-functions/api/

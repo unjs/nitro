@@ -9,3 +9,4 @@ export { defineRouteMeta } from "./meta";
 export { useStorage } from "./storage";
 export { useEvent } from "./context";
 export { defineNitroErrorHandler } from "./error";
+export { useDatabase } from "./database";

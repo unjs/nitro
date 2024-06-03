@@ -381,6 +381,7 @@ export const plugins = [
         "#build": buildDir,
         "#internal/nitro/virtual/error-handler": nitro.options.errorHandler,
         "#internal/nitro": runtimeDir,
+        "nitropack/runtime": runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,
         "~~": nitro.options.rootDir,

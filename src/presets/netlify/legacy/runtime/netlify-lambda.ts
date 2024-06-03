@@ -1,11 +1,11 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { normalizeCookieHeader } from "#internal/nitro/utils";
+import { nitroApp } from "nitropack/runtime/app";
+import { normalizeCookieHeader } from "nitropack/runtime/utils";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "#internal/nitro/utils.lambda";
+} from "nitropack/runtime/utils.lambda";
 
 import { withQuery } from "ufo";
 import type {

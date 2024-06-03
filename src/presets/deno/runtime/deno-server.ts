@@ -1,6 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { startScheduleRunner, useRuntimeConfig } from "#internal/nitro";
+import { nitroApp } from "nitropack/runtime/app";
+import { startScheduleRunner, useRuntimeConfig } from "nitropack/runtime";
 
 import destr from "destr";
 import wsAdapter from "crossws/adapters/deno";

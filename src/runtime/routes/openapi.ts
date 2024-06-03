@@ -8,7 +8,7 @@ import type {
 } from "openapi-typescript";
 import { joinURL } from "ufo";
 import { handlersMeta } from "#internal/nitro/virtual/server-handlers-meta";
-import { useRuntimeConfig } from "#internal/nitro";
+import { useRuntimeConfig } from "../config";
 
 // Served as /_nitro/openapi.json
 export default eventHandler((event) => {

@@ -1,5 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
+import { nitroApp } from "nitropack/runtime/app";
 
 import wsAdapter from "crossws/adapters/deno";
 import type { Deno as _Deno } from "@deno/types";

@@ -346,8 +346,14 @@ declare module "nitropack/types" {
           ],
           ...(nitro.options.typescript.internalPaths
             ? {
+                "nitropack/runtime": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
+                ],
                 "#internal/nitro": [
                   relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
+                ],
+                "nitropack/runtime/*": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
                 ],
                 "#internal/nitro/*": [
                   relativeWithDot(tsconfigDir, join(runtimeDir, "*")),

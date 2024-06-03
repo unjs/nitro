@@ -1,7 +1,7 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { trapUnhandledNodeErrors } from "#internal/nitro/utils";
-import { runTask, startScheduleRunner } from "#internal/nitro/task";
+import { nitroApp } from "nitropack/runtime/app";
+import { trapUnhandledNodeErrors } from "nitropack/runtime/utils";
+import { runTask, startScheduleRunner } from "nitropack/runtime/task";
 import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
 
 import { Server } from "node:http";

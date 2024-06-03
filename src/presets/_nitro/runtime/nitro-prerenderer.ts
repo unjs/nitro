@@ -1,6 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { trapUnhandledNodeErrors } from "#internal/nitro/utils";
+import { nitroApp } from "nitropack/runtime/app";
+import { trapUnhandledNodeErrors } from "nitropack/runtime/utils";
 
 export const localFetch = nitroApp.localFetch;
 export const closePrerenderer = () => nitroApp.hooks.callHook("close");

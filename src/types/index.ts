@@ -2,7 +2,6 @@ export * from "./fetch";
 export * from "./runtime";
 export * from "./config";
 export * from "./dev";
-export * from "./fetch/fetch";
 export * from "./global";
 export * from "./h3";
 export * from "./handler";

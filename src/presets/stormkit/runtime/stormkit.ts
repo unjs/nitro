@@ -1,6 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { normalizeLambdaOutgoingBody } from "#internal/nitro/utils.lambda";
+import { nitroApp } from "nitropack/runtime/app";
+import { normalizeLambdaOutgoingBody } from "nitropack/runtime/utils.lambda";
 
 import type { Handler } from "aws-lambda";
 

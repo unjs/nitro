@@ -41,11 +41,11 @@ export async function createNitro(
 
   if (nitro.options.debug) {
     createDebugger(nitro.hooks, { tag: "nitro" });
-    nitro.options.plugins.push("#internal/nitro/debug");
+    nitro.options.plugins.push("nitropack/runtime/debug");
   }
 
   if (nitro.options.timing) {
-    nitro.options.plugins.push("#internal/nitro/timing");
+    nitro.options.plugins.push("nitropack/runtime/timing");
   }
 
   // Logger config
@@ -115,7 +115,7 @@ export async function createNitro(
   }
 
   // Virtual module for tasks (TODO: Move to rollup plugin)
-  nitro.options.virtual["#internal/nitro/virtual/tasks"] = () => {
+  nitro.options.virtual["nitropack/runtime/virtual/tasks"] = () => {
     const _scheduledTasks = Object.entries(nitro.options.scheduledTasks || {})
       .map(([cron, _tasks]) => {
         const tasks = (Array.isArray(_tasks) ? _tasks : [_tasks]).filter(

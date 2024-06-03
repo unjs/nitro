@@ -2,7 +2,7 @@ import type { Preset } from "unimport";
 
 export const nitroImports: Preset[] = [
   {
-    from: "#internal/nitro",
+    from: "nitropack/runtime",
     imports: [
       "defineCachedFunction",
       "defineCachedEventHandler",

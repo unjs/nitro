@@ -1,6 +1,6 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { startScheduleRunner } from "#internal/nitro/task";
+import { nitroApp } from "nitropack/runtime/app";
+import { startScheduleRunner } from "nitropack/runtime/task";
 
 import type {} from "bun";
 import wsAdapter from "crossws/adapters/bun";

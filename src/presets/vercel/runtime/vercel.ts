@@ -1,5 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
+import { nitroApp } from "nitropack/runtime/app";
 
 import { toNodeListener, NodeListener } from "h3";
 import { parseQuery } from "ufo";

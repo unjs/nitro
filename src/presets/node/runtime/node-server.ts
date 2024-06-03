@@ -5,10 +5,10 @@ import { Server as HttpsServer } from "node:https";
 import destr from "destr";
 import { toNodeListener } from "h3";
 import wsAdapter from "crossws/adapters/node";
-import { nitroApp } from "#internal/nitro/app";
-import { setupGracefulShutdown } from "#internal/nitro/shutdown";
-import { trapUnhandledNodeErrors } from "#internal/nitro/utils";
-import { startScheduleRunner, useRuntimeConfig } from "#internal/nitro";
+import { nitroApp } from "nitropack/runtime/app";
+import { setupGracefulShutdown } from "nitropack/runtime/shutdown";
+import { trapUnhandledNodeErrors } from "nitropack/runtime/utils";
+import { startScheduleRunner, useRuntimeConfig } from "nitropack/runtime";
 
 const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;

@@ -7,13 +7,13 @@ import type {
 } from "aws-lambda";
 import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
-import { nitroApp } from "#internal/nitro/app";
+import { nitroApp } from "nitropack/runtime/app";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "#internal/nitro/utils.lambda";
-import { normalizeCookieHeader } from "#internal/nitro/utils";
+} from "nitropack/runtime/utils.lambda";
+import { normalizeCookieHeader } from "nitropack/runtime/utils";
 
 export async function handler(
   event: APIGatewayProxyEvent,

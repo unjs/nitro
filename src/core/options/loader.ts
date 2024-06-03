@@ -22,23 +22,27 @@ export interface LoadConfigOptions {
   compatibilityDate?: string;
 }
 
+const configResolvers = [
+  resolvePathOptions,
+  resolveImportsOptions,
+  resolveRouteRulesOptions,
+  resolveDatabaseOptions,
+  resolveFetchOptions,
+  resolveExportConditionsOptions,
+  resolveRuntimeConfigOptions,
+  resolveOpenAPIOptions,
+  resolveURLOptions,
+  resolveAssetsOptions,
+] as const;
+
 export async function loadOptions(
   configOverrides: NitroConfig = {},
   opts: LoadConfigOptions = {}
 ): Promise<NitroOptions> {
   const options = await _loadUserConfig(configOverrides, opts);
-
-  resolvePathOptions(options);
-  resolveImportsOptions(options);
-  resolveRouteRulesOptions(options);
-  resolveRuntimeConfigOptions(options);
-  resolveExportConditionsOptions(options);
-  resolveDatabaseOptions(options);
-  resolveFetchOptions(options);
-  resolveOpenAPIOptions(options);
-  resolveURLOptions(options);
-  resolveAssetsOptions(options);
-
+  for (const resolver of configResolvers) {
+    await resolver(options);
+  }
   return options;
 }
 

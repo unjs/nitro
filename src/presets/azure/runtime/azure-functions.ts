@@ -1,7 +1,7 @@
 import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { getAzureParsedCookiesFromHeaders } from "#internal/nitro/utils.azure";
-import { normalizeLambdaOutgoingHeaders } from "#internal/nitro/utils.lambda";
+import { nitroApp } from "nitropack/runtime/app";
+import { getAzureParsedCookiesFromHeaders } from "nitropack/runtime/utils.azure";
+import { normalizeLambdaOutgoingHeaders } from "nitropack/runtime/utils.lambda";
 
 import type { HttpRequest, HttpResponse } from "@azure/functions";
 

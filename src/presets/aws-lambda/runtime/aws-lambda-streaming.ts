@@ -5,11 +5,11 @@ import type {
 } from "aws-lambda";
 import "#internal/nitro/virtual/polyfill";
 import { withQuery } from "ufo";
-import { nitroApp } from "#internal/nitro/app";
+import { nitroApp } from "nitropack/runtime/app";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingHeaders,
-} from "#internal/nitro/utils.lambda";
+} from "nitropack/runtime/utils.lambda";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

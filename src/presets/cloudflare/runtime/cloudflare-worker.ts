@@ -1,7 +1,7 @@
 import "#internal/nitro/virtual/polyfill";
-import { requestHasBody } from "#internal/nitro/utils";
-import { nitroApp } from "#internal/nitro/app";
-import { useRuntimeConfig } from "#internal/nitro";
+import { requestHasBody } from "nitropack/runtime/utils";
+import { nitroApp } from "nitropack/runtime/app";
+import { useRuntimeConfig } from "nitropack/runtime";
 import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
 
 import { withoutBase } from "ufo";

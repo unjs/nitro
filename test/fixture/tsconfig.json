@@ -28,10 +28,10 @@
       "nitropack/rollup": ["../../src/rollup"],
       // Types
       "nitropack/types": ["../../src/types"],
-      // #internal
-      "#internal/nitro": ["../../src/runtime"],
-      "#internal/nitro/*": ["../../src/runtime/*"],
-      "nitropack/package.json": ["../../package.json"]
+      // package.json
+      "nitropack/package.json": ["../../package.json"],
+      // #internal/nitro/virtual
+      "#internal/nitro/virtual/*": ["../../src/runtime/virtual/*"]
     }
   }
 }
