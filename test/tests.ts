@@ -696,7 +696,13 @@ export function testNitro(
       !ctx.nitro!.options.node ||
       ctx.isLambda ||
       ctx.isWorker ||
-      ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
+      [
+        "bun",
+        "deno-server",
+        "deno-deploy",
+        "netlify",
+        "netlify-legacy",
+      ].includes(ctx.preset)
   )("Database", () => {
     it("works", async () => {
       const { data } = await callHandler({ url: "/api/db" });
