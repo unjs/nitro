@@ -1,5 +1,7 @@
 import type { H3Event, AppOptions } from "h3";
 import type { RenderResponse } from "./renderer";
+import { EmailContext } from "#internal/nitro/email";
+import { ExecutionContext } from "@cloudflare/workers-types";
 
 export type { NitroApp } from "./app";
 export type {
@@ -32,5 +34,10 @@ export interface NitroRuntimeHooks {
   "render:response": (
     response: Partial<RenderResponse>,
     context: { event: H3Event }
+  ) => void;
+
+  "cloudflare:email": (
+    event: EmailContext,
+    context: { env: any; context: ExecutionContext }
   ) => void;
 }
