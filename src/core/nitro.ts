@@ -5,12 +5,12 @@ import { createUnimport } from "unimport";
 import { defu } from "defu";
 import { consola } from "consola";
 import type { NitroConfig, NitroDynamicConfig, Nitro } from "nitropack/types";
-import { LoadConfigOptions, loadOptions } from "./options";
+import { LoadConfigOptions, loadOptions } from "./config";
 import { scanModules, scanPlugins, scanTasks } from "./scan";
 import { createStorage } from "./storage";
 import { resolveNitroModule } from "./module";
 import { nitroImports } from "./imports";
-import { updateNitroConfig } from "./options/update";
+import { updateNitroConfig } from "./config/update";
 
 export async function createNitro(
   config: NitroConfig = {},

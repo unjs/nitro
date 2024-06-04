@@ -2,7 +2,7 @@ import type { NitroConfig } from "nitropack/types";
 
 // export * from "nitropack/types";
 
-export * from "./options";
+export * from "./config";
 export * from "./build";
 export * from "./nitro";
 export * from "./scan";
