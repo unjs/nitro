@@ -1,6 +1,6 @@
 // @ts-nocheck TODO: Remove after removing polyfills
 import "#nitro-internal-pollyfills";
-import { toBuffer } from "nitropack/runtime/utils";
+import { toBuffer } from "nitropack/runtime/internal/utils";
 import { useNitroApp } from "nitropack/runtime";
 import { toPlainHandler } from "h3";
 import { hasProtocol, joinURL } from "ufo";
@@ -20,6 +20,8 @@ interface FetchEvent extends Event {
   respondWith(response: Promise<Response> | Response): Promise<Response>;
   waitUntil: (promise: Promise<any>) => void;
 }
+
+const nitroApp = useNitroApp();
 
 // Use plain handler as winterjs Web API is incomplete
 // TODO: Migrate to toWebHandler
