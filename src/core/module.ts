@@ -1,11 +1,24 @@
 import jiti from "jiti";
 import type { Nitro, NitroModule, NitroModuleInput } from "nitropack/types";
 
-export function defineNitroModule(def: NitroModule) {
-  return def;
+export async function installModules(nitro: Nitro) {
+  const _modules = [...(nitro.options.modules || [])];
+  const modules = await Promise.all(
+    _modules.map((mod) => _resolveNitroModule(mod, nitro.options))
+  );
+  const _installedURLs = new Set<string>();
+  for (const mod of modules) {
+    if (mod._url) {
+      if (_installedURLs.has(mod._url)) {
+        continue;
+      }
+      _installedURLs.add(mod._url);
+    }
+    await mod.setup(nitro);
+  }
 }
 
-export function resolveNitroModule(
+function _resolveNitroModule(
   mod: NitroModuleInput,
   nitroOptions: Nitro["options"]
 ): Promise<NitroModule & { _url?: string }> {
@@ -15,7 +28,7 @@ export function resolveNitroModule(
     // @ts-ignore
     globalThis.defineNitroModule =
       // @ts-ignore
-      globalThis.defineNitroModule || defineNitroModule;
+      globalThis.defineNitroModule || ((mod) => mod);
 
     const _jiti = jiti(nitroOptions.rootDir, {
       interopDefault: true,

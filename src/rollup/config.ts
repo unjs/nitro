@@ -315,9 +315,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   rollupConfig.plugins.push(storage(nitro));
 
   // Database
-  if (nitro.options.experimental.database) {
-    rollupConfig.plugins.push(database(nitro));
-  }
+  rollupConfig.plugins.push(database(nitro));
 
   // App.config
   rollupConfig.plugins.push(appConfig(nitro));

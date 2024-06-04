@@ -14,6 +14,42 @@ const suffixRegex =
 type MatchedMethodSuffix = "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
 type MatchedEnvSuffix = "dev" | "prod" | "prerender";
 
+export async function scanAndSyncOptions(nitro: Nitro) {
+  // Scan plugins
+  const scannedPlugins = await scanPlugins(nitro);
+  for (const plugin of scannedPlugins) {
+    if (!nitro.options.plugins.includes(plugin)) {
+      nitro.options.plugins.push(plugin);
+    }
+  }
+
+  // Scan tasks
+  if (nitro.options.experimental.tasks) {
+    const scannedTasks = await scanTasks(nitro);
+    for (const scannedTask of scannedTasks) {
+      if (scannedTask.name in nitro.options.tasks) {
+        if (!nitro.options.tasks[scannedTask.name].handler) {
+          nitro.options.tasks[scannedTask.name].handler = scannedTask.handler;
+        }
+      } else {
+        nitro.options.tasks[scannedTask.name] = {
+          handler: scannedTask.handler,
+          description: "",
+        };
+      }
+    }
+  }
+
+  // Scan modules
+  const scannedModules = await scanModules(nitro);
+  nitro.options.modules = nitro.options.modules || [];
+  for (const modPath of scannedModules) {
+    if (!nitro.options.modules.includes(modPath)) {
+      nitro.options.modules.push(modPath);
+    }
+  }
+}
+
 export async function scanHandlers(nitro: Nitro) {
   const middleware = await scanMiddleware(nitro);
 

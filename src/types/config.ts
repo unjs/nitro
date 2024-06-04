@@ -10,6 +10,7 @@ import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
 import type { TSConfig } from "pkg-types";
 import type { ReferenceConfiguration } from "@scalar/api-reference";
+import type { WatchConfigOptions } from "c12";
 import type { NodeExternalsOptions, EsbuildOptions } from "./rollup";
 import type {
   NitroErrorHandler,
@@ -263,6 +264,16 @@ export interface NitroConfig
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
   rollupConfig?: Partial<RollupConfig>;
+}
+
+// ------------------------------------------------------------
+// Config Loader
+// ------------------------------------------------------------
+
+export interface LoadConfigOptions {
+  watch?: boolean;
+  c12?: WatchConfigOptions;
+  compatibilityDate?: string;
 }
 
 // ------------------------------------------------------------

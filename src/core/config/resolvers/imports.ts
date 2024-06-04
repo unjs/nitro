@@ -2,10 +2,36 @@ import type { NitroOptions } from "nitropack/types";
 import escapeRE from "escape-string-regexp";
 import { resolveModuleExportNames } from "mlly";
 import { join } from "pathe";
+import type { Preset } from "unimport";
 
 export async function resolveImportsOptions(options: NitroOptions) {
+  // Skip loader entirely if imports disabled
+  if (options.imports === false) {
+    return;
+  }
+
+  // Add nitro imports preset
+  options.imports.presets ??= [];
+  options.imports.presets.push(...getNitroImportsPreset());
+
+  // Add h3 auto imports preset
+  const h3Exports = await resolveModuleExportNames("h3", {
+    url: import.meta.url,
+  });
+  options.imports.presets ??= [];
+  options.imports.presets.push({
+    from: "h3",
+    imports: h3Exports.filter((n) => !/^[A-Z]/.test(n) && n !== "use"),
+  });
+
+  // Auto imports from utils dirs
+  options.imports.dirs ??= [];
+  options.imports.dirs.push(
+    ...options.scanDirs.map((dir) => join(dir, "utils/*"))
+  );
+
+  // Normalize exclude
   if (
-    options.imports &&
     Array.isArray(options.imports.exclude) &&
     options.imports.exclude.length === 0
   ) {
@@ -27,24 +53,31 @@ export async function resolveImportsOptions(options: NitroOptions) {
         : /[/\\]node_modules[/\\]/
     );
   }
+}
 
-  // Add h3 auto imports preset
-  if (options.imports) {
-    const h3Exports = await resolveModuleExportNames("h3", {
-      url: import.meta.url,
-    });
-    options.imports.presets ??= [];
-    options.imports.presets.push({
-      from: "h3",
-      imports: h3Exports.filter((n) => !/^[A-Z]/.test(n) && n !== "use"),
-    });
-  }
-
-  // Auto imports from utils dirs
-  if (options.imports) {
-    options.imports.dirs ??= [];
-    options.imports.dirs.push(
-      ...options.scanDirs.map((dir) => join(dir, "utils/*"))
-    );
-  }
+function getNitroImportsPreset(): Preset[] {
+  return [
+    {
+      from: "nitropack/runtime",
+      imports: [
+        "defineCachedFunction",
+        "defineCachedEventHandler",
+        "cachedFunction",
+        "cachedEventHandler",
+        "useRuntimeConfig",
+        "useStorage",
+        "useNitroApp",
+        "defineNitroPlugin",
+        "nitroPlugin",
+        "defineRenderHandler",
+        "defineRouteMeta",
+        "getRouteRules",
+        "useAppConfig",
+        "useEvent",
+        "defineTask",
+        "runTask",
+        "defineNitroErrorHandler",
+      ],
+    },
+  ];
 }

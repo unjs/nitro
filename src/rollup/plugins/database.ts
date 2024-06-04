@@ -4,6 +4,17 @@ import type { Nitro } from "nitropack/types";
 import { virtual } from "./virtual";
 
 export function database(nitro: Nitro) {
+  if (!nitro.options.experimental.database) {
+    return virtual(
+      {
+        "#nitro-internal-virtual/database": () => {
+          return /* js */ `export const connectionConfigs = {};`;
+        },
+      },
+      nitro.vfs
+    );
+  }
+
   const dbConfigs =
     (nitro.options.dev && nitro.options.devDatabase) || nitro.options.database;
 

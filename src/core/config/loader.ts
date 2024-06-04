@@ -1,6 +1,10 @@
-import { loadConfig, watchConfig, WatchConfigOptions } from "c12";
+import { loadConfig, watchConfig, type WatchConfigOptions } from "c12";
 import { klona } from "klona/full";
-import type { NitroConfig, NitroOptions } from "nitropack/types";
+import type {
+  LoadConfigOptions,
+  NitroConfig,
+  NitroOptions,
+} from "nitropack/types";
 import type { PresetName } from "nitropack/presets";
 import { NitroDefaults } from "./defaults";
 
@@ -15,12 +19,6 @@ import { resolveRuntimeConfigOptions } from "./resolvers/runtime-config";
 import { resolveOpenAPIOptions } from "./resolvers/open-api";
 import { resolveAssetsOptions } from "./resolvers/assets";
 import { resolveURLOptions } from "./resolvers/url";
-
-export interface LoadConfigOptions {
-  watch?: boolean;
-  c12?: WatchConfigOptions;
-  compatibilityDate?: string;
-}
 
 const configResolvers = [
   resolvePathOptions,
