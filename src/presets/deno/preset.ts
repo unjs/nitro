@@ -3,7 +3,7 @@ import { isAbsolute, resolve } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
 import { defineNitroPreset } from "nitropack/kit";
-import { writeFile } from "../_utils";
+import { writeFile } from "nitropack/kit";
 
 // nitro/src/rollup/plugin/import-meta.ts
 const ImportMetaRe = /import\.meta|globalThis._importMeta_/;

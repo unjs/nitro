@@ -1,9 +1,10 @@
 import { findWorkspaceDir } from "pkg-types";
-import { resolvePath, resolveFile } from "nitropack/kit";
+import { resolveNitroPath } from "nitropack/kit";
 import type { NitroOptions } from "nitropack/types";
 import { resolve, join } from "pathe";
 import { NitroDefaults } from "../defaults";
 import { pkgDir } from "nitropack/runtime/meta";
+import { existsSync } from "node:fs";
 
 export async function resolvePathOptions(options: NitroOptions) {
   options.rootDir = resolve(options.rootDir || ".");
@@ -31,19 +32,19 @@ export async function resolvePathOptions(options: NitroOptions) {
     );
   }
   if (options.entry) {
-    options.entry = resolvePath(options.entry, options);
+    options.entry = resolveNitroPath(options.entry, options);
   }
-  options.output.dir = resolvePath(
+  options.output.dir = resolveNitroPath(
     options.output.dir || NitroDefaults.output!.dir!,
     options,
     options.rootDir
   );
-  options.output.publicDir = resolvePath(
+  options.output.publicDir = resolveNitroPath(
     options.output.publicDir || NitroDefaults.output!.publicDir!,
     options,
     options.rootDir
   );
-  options.output.serverDir = resolvePath(
+  options.output.serverDir = resolveNitroPath(
     options.output.serverDir || NitroDefaults.output!.serverDir!,
     options,
     options.rootDir
@@ -60,7 +61,7 @@ export async function resolvePathOptions(options: NitroOptions) {
   ];
 
   // Resolve plugin paths
-  options.plugins = options.plugins.map((p) => resolvePath(p, options));
+  options.plugins = options.plugins.map((p) => resolveNitroPath(p, options));
 
   // Resolve scanDirs
   options.scanDirs.unshift(options.srcDir);
@@ -72,14 +73,31 @@ export async function resolvePathOptions(options: NitroOptions) {
   // Normalize app.config file paths
   options.appConfigFiles ??= [];
   options.appConfigFiles = options.appConfigFiles
-    .map((file) => resolveFile(resolvePath(file, options)))
+    .map((file) => _tryResolve(resolveNitroPath(file, options)))
     .filter(Boolean) as string[];
 
   // Detect app.config from scanDirs
   for (const dir of options.scanDirs) {
-    const configFile = resolveFile("app.config", dir);
+    const configFile = _tryResolve("app.config", dir);
     if (configFile && !options.appConfigFiles.includes(configFile)) {
       options.appConfigFiles.push(configFile);
+    }
+  }
+}
+
+function _tryResolve(
+  path: string,
+  base = ".",
+  extensions = ["", ".js", ".ts", ".mjs", ".cjs", ".json"]
+): string | undefined {
+  path = resolve(base, path);
+  if (existsSync(path)) {
+    return path;
+  }
+  for (const ext of extensions) {
+    const p = path + ext;
+    if (existsSync(p)) {
+      return p;
     }
   }
 }

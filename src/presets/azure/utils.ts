@@ -1,7 +1,7 @@
 import { createWriteStream } from "node:fs";
 import archiver from "archiver";
 import { join, resolve } from "pathe";
-import { writeFile } from "../_utils";
+import { writeFile } from "nitropack/kit";
 import type { Nitro } from "nitropack/types";
 import fsp from "node:fs/promises";
 

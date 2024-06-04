@@ -1,20 +1,8 @@
-import { pathToFileURL } from "node:url";
-import { resolve, join, relative } from "pathe";
-import { joinURL, parseURL, withBase, withoutBase } from "ufo";
+import { parseURL } from "ufo";
 import chalk from "chalk";
-import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
-import { defu } from "defu";
-import mime from "mime";
-import type { $Fetch } from "ofetch";
-import { createNitro } from "../nitro";
-import { build } from "../build/build";
-import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitropack/types";
-import { writeFile } from "nitropack/kit";
-import { compressPublicAssets } from "../utils/compress";
+import type { PrerenderRoute } from "nitropack/types";
 
 const allowedExtensions = new Set(["", ".json"]);
-
-const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/; // From unjs/destr
 
 const linkParents = new Map<string, Set<string>>();
 

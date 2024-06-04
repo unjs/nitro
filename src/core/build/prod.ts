@@ -2,15 +2,16 @@ import { promises as fsp } from "node:fs";
 import { relative, resolve, join, dirname } from "pathe";
 import * as rollup from "rollup";
 import { generateFSTree } from "../utils/fs-tree";
-import { writeFile, nitroServerName } from "nitropack/kit";
+import { writeFile } from "nitropack/kit";
 import { scanHandlers } from "../scan";
 import type { Nitro, NitroBuildInfo, RollupConfig } from "nitropack/types";
-import { snapshotStorage } from "../utils/storage";
 import { version as nitroVersion } from "nitropack/package.json" with {
   type: "json",
 };
-import { formatRollupError } from "../utils/error";
+import { snapshotStorage } from "../utils/storage";
+import { formatRollupError } from "./error";
 import { writeTypes } from "./types";
+import { nitroServerName } from "../utils/nitro";
 
 export async function buildProduction(
   nitro: Nitro,

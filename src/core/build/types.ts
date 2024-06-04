@@ -1,5 +1,5 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { relative, resolve, join, dirname, isAbsolute } from "pathe";
+import { resolve, join, dirname, isAbsolute } from "pathe";
 import { resolveAlias } from "pathe/utils";
 import { defu } from "defu";
 import { genTypeImport } from "knitwork";
@@ -10,14 +10,10 @@ import {
   resolvePath,
 } from "mlly";
 import { JSValue, generateTypes, resolveSchema } from "untyped";
-import {
-  writeFile,
-  isDirectory,
-  resolvePath as resolveNitroPath,
-} from "nitropack/kit";
+import { writeFile, isDirectory, resolveNitroPath } from "nitropack/kit";
 import type { Nitro, NitroTypes } from "nitropack/types";
 import { runtimeDir } from "nitropack/runtime/meta";
-import { relativeWithDot } from "../utils/path";
+import { relative } from "pathe";
 
 export async function writeTypes(nitro: Nitro) {
   const types: NitroTypes = {
@@ -333,4 +329,11 @@ declare module "nitropack/types" {
       );
     })
   );
+}
+
+const RELATIVE_RE = /^\.{1,2}\//;
+
+export function relativeWithDot(from: string, to: string) {
+  const rel = relative(from, to);
+  return RELATIVE_RE.test(rel) ? rel : "./" + rel;
 }

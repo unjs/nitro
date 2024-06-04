@@ -4,10 +4,10 @@ import { watch } from "chokidar";
 import { debounce } from "perfect-debounce";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "../scan";
 import type { Nitro, RollupConfig } from "nitropack/types";
-import { nitroServerName } from "../../kit/utils";
 import { writeTypes } from "./types";
 import defu from "defu";
-import { formatRollupError } from "../utils/error";
+import { formatRollupError } from "./error";
+import { nitroServerName } from "../utils/nitro";
 
 export async function watchDev(nitro: Nitro, rollupConfig: RollupConfig) {
   let rollupWatcher: rollup.RollupWatcher;

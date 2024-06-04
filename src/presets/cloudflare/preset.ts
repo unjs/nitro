@@ -1,7 +1,7 @@
 import { defineNitroPreset } from "nitropack/kit";
 import type { Nitro } from "nitropack/types";
 import { writeCFPagesFiles, writeCFPagesStaticFiles } from "./utils";
-import { writeFile } from "../_utils";
+import { writeFile } from "nitropack/kit";
 import { resolve } from "pathe";
 
 export type { CloudflareOptions as PresetOptions } from "./types";

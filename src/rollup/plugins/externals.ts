@@ -14,7 +14,7 @@ import {
 } from "mlly";
 import semver from "semver";
 import { isDirectory } from "nitropack/kit";
-import { NodeExternalsOptions } from "nitropack/types";
+import type { NodeExternalsOptions } from "nitropack/types";
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
