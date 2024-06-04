@@ -39,7 +39,7 @@ function getAddress() {
   }
   const socketName = `worker-${process.pid}-${threadId}.sock`;
   if (isWindows) {
-    return join("\\\\.\\pipe\\nitro", socketName);
+    return join(String.raw`\\.\pipe\nitro`, socketName);
   } else {
     const socketDir = join(tmpdir(), "nitro");
     mkdirSync(socketDir, { recursive: true });

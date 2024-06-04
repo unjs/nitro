@@ -182,7 +182,7 @@
     "changelogen": "^0.5.5",
     "edge-runtime": "^2.5.10",
     "eslint": "^9.4.0",
-    "eslint-config-unjs": "0.3.1",
+    "eslint-config-unjs": "0.3.2",
     "execa": "^9.1.0",
     "expect-type": "^0.19.0",
     "firebase-admin": "^12.1.1",
