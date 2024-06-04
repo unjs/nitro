@@ -44,6 +44,34 @@ export async function writeFunctionsRoutes(nitro: Nitro) {
   );
 }
 
+export async function writeFunctionsRoutesStreaming(nitro: Nitro) {
+  const host = {
+    version: "2.0",
+    extensions: { http: { routePrefix: "" } },
+  };
+
+  const packageJson = {
+    name: "nitro-server",
+    type: "module",
+    main: "server/*.mjs",
+  };
+
+  await writeFile(
+    resolve(nitro.options.output.dir, "package.json"),
+    JSON.stringify(packageJson)
+  );
+
+  await writeFile(
+    resolve(nitro.options.output.dir, "host.json"),
+    JSON.stringify(host)
+  );
+
+  await _zipDirectory(
+    nitro.options.output.dir,
+    join(nitro.options.output.dir, "deploy.zip")
+  );
+}
+
 export async function writeSWARoutes(nitro: Nitro) {
   const host = {
     version: "2.0",
