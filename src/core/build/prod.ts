@@ -5,9 +5,7 @@ import { generateFSTree } from "../utils/fs-tree";
 import { writeFile } from "nitropack/kit";
 import { scanHandlers } from "../scan";
 import type { Nitro, NitroBuildInfo, RollupConfig } from "nitropack/types";
-import { version as nitroVersion } from "nitropack/package.json" with {
-  type: "json",
-};
+import nitroPkg from "nitropack/package.json" with { type: "json" };
 import { snapshotStorage } from "../utils/storage";
 import { formatRollupError } from "./error";
 import { writeTypes } from "./types";
@@ -40,7 +38,7 @@ export async function buildProduction(
     preset: nitro.options.preset,
     framework: nitro.options.framework,
     versions: {
-      nitro: nitroVersion,
+      nitro: nitroPkg.version,
     },
     commands: {
       preview: nitro.options.commands.preview,
