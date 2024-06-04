@@ -36,7 +36,7 @@ export function handlers(nitro: Nitro) {
         if (nitro.options.serveStatic) {
           handlers.unshift({
             middleware: true,
-            handler: "nitropack/runtime/handlers/static",
+            handler: "nitropack/runtime/internal/static",
           });
         }
         if (nitro.options.renderer) {

@@ -26,6 +26,9 @@ export { useEvent } from "./internal/context";
 // Tasks
 export { defineTask, runTask } from "./internal/task";
 
+// Database
+export { useDatabase } from "./internal/database";
+
 // Cache
 export {
   defineCachedFunction,

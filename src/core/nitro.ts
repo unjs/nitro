@@ -41,11 +41,11 @@ export async function createNitro(
 
   if (nitro.options.debug) {
     createDebugger(nitro.hooks, { tag: "nitro" });
-    nitro.options.plugins.push("nitropack/runtime/debug");
+    nitro.options.plugins.push("nitropack/runtime/internal/debug");
   }
 
   if (nitro.options.timing) {
-    nitro.options.plugins.push("nitropack/runtime/timing");
+    nitro.options.plugins.push("nitropack/runtime/internal/timing");
   }
 
   // Logger config
