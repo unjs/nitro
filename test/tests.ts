@@ -505,6 +505,128 @@ export function testNitro(
     });
   });
 
+  describe("hooks", () => {
+    it("no modifications", async () => {
+      const { data } = await callHandler({
+        url: "/hooks",
+      });
+      expect(data).toMatchObject({
+        appConfig: {
+          dynamic: "initial",
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+        runtimeConfig: {
+          dynamic: "from-env",
+          url: "https://test.com",
+          app: {
+            baseURL: "/",
+          },
+        },
+        sharedAppConfig: {
+          dynamic: "initial",
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+        sharedRuntimeConfig: {
+          dynamic:
+            // TODO
+            ctx.preset.includes("cloudflare") ||
+            ctx.preset === "vercel-edge" ||
+            ctx.preset === "nitro-dev"
+              ? "initial"
+              : "from-env",
+          // url: "https://test.com",
+          app: {
+            baseURL: "/",
+          },
+        },
+      });
+    });
+
+    it("modify appConfig", async () => {
+      const { data } = await callHandler({
+        url: "/hooks?change=useAppConfig",
+      });
+      expect(data).toMatchObject({
+        appConfig: {
+          dynamic: "from-hook",
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+        runtimeConfig: {
+          dynamic: "from-env",
+          url: "https://test.com",
+          app: {
+            baseURL: "/",
+          },
+        },
+        sharedAppConfig: {
+          dynamic: "initial",
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+        sharedRuntimeConfig: {
+          dynamic:
+            // TODO
+            ctx.preset.includes("cloudflare") ||
+            ctx.preset === "vercel-edge" ||
+            ctx.preset === "nitro-dev"
+              ? "initial"
+              : "from-env",
+          // url: "https://test.com",
+          app: {
+            baseURL: "/",
+          },
+        },
+      });
+    });
+
+    it("modify runtimeConfig", async () => {
+      const { data } = await callHandler({
+        url: "/hooks?change=useRuntimeConfig",
+      });
+      expect(data).toMatchObject({
+        appConfig: {
+          dynamic: "initial",
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+        runtimeConfig: {
+          dynamic: "from-hook",
+          url: "https://test.com",
+          app: {
+            baseURL: "/",
+          },
+        },
+        sharedAppConfig: {
+          dynamic: "initial",
+          "app-config": true,
+          "nitro-config": true,
+          "server-config": true,
+        },
+        sharedRuntimeConfig: {
+          dynamic:
+            // TODO
+            ctx.preset.includes("cloudflare") ||
+            ctx.preset === "vercel-edge" ||
+            ctx.preset === "nitro-dev"
+              ? "initial"
+              : "from-env",
+          // url: "https://test.com",
+          app: {
+            baseURL: "/",
+          },
+        },
+      });
+    });
+  });
+
   if (ctx.nitro!.options.timing) {
     it("set server timing header", async () => {
       const { status, headers } = await callHandler({
