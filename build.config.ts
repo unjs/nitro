@@ -1,6 +1,7 @@
 import { defineBuildConfig } from "unbuild";
 import { resolve } from "pathe";
 import { fileURLToPath } from "node:url";
+import { normalize } from "pathe";
 
 const srcDir = fileURLToPath(new URL("src", import.meta.url));
 
@@ -56,4 +57,15 @@ export default defineBuildConfig({
     "firebase-functions",
     "@scalar/api-reference",
   ],
+  rollup: {
+    output: {
+      chunkFileNames(chunk) {
+        const id = normalize(chunk.moduleIds.at(-1));
+        if (id.includes("/src/cli/")) {
+          return "cli/[name].mjs";
+        }
+        return "_chunks/[name].mjs";
+      },
+    },
+  },
 });
