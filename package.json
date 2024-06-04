@@ -26,6 +26,10 @@
       "types": "./kit.d.ts",
       "import": "./dist/kit/index.mjs"
     },
+    "./meta": {
+      "types": "./dist/meta/index.d.ts",
+      "import": "./dist/meta/index.mjs"
+    },
     "./presets": {
       "types": "./presets.d.ts",
       "import": "./dist/presets/index.mjs"

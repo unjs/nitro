@@ -21,6 +21,8 @@
       "nitropack/runtime/*": ["../../src/runtime/*"],
       // Kit
       "nitropack/kit": ["../../src/kit"],
+      // Meta
+      "nitropack/meta": ["../../src/core/meta"],
       // Presets
       "nitropack/presets": ["../../src/presets"],
       "nitropack/presets/*": ["../../src/presets/*"],
@@ -28,8 +30,6 @@
       "nitropack/rollup": ["../../src/rollup"],
       // Types
       "nitropack/types": ["../../src/types"],
-      // package.json
-      "nitropack/package.json": ["../../package.json"],
       // Virtual files
       "#nitro-internal-virtual/*": ["../../src/types/virtual/*"],
       // Compatibility (#internal/nitro)

@@ -12,6 +12,7 @@ export const subpaths = [
   "presets",
   "rollup",
   "types",
+  "meta",
 ];
 
 export default defineBuildConfig({
@@ -28,6 +29,8 @@ export default defineBuildConfig({
     { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
     // Kit
     { input: "src/kit/index.ts" },
+    // Meta
+    { input: "src/meta/index.ts" },
     // Presets
     { input: "src/presets/", outDir: "dist/presets", format: "esm" },
     // Rollup
@@ -37,7 +40,7 @@ export default defineBuildConfig({
   ],
   alias: {
     nitropack: "nitropack",
-    "nitropack/package.json": resolve(srcDir, "../package.json"),
+    "nitropack/meta": resolve(srcDir, "../meta.ts"),
     "nitropack/runtime/meta": resolve(srcDir, "../runtime-meta.mjs"),
     ...Object.fromEntries(
       subpaths.map((subpath) => [
@@ -49,7 +52,6 @@ export default defineBuildConfig({
   externals: [
     "nitropack",
     "nitropack/runtime/meta",
-    "nitropack/package.json",
     ...subpaths.map((subpath) => `nitropack/${subpath}`),
     "firebase-functions",
     "@scalar/api-reference",

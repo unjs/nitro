@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from "citty";
-import nitroPkg from "nitropack/package.json" with { type: "json" };
+import { version as nitroVersion } from "nitropack/meta";
 
 const main = defineCommand({
   meta: {
     name: "nitro",
     description: "Nitro CLI",
-    version: nitroPkg.version,
+    version: nitroVersion,
   },
   subCommands: {
     dev: () => import("./commands/dev").then((r) => r.default),
