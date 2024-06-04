@@ -7,5 +7,7 @@ export * from "./prerender";
 export * from "./preset";
 export * from "./deps";
 
+export { applyEnv, getEnv } from "./runtime/utils.env";
+
 export { loadOptions } from "./options";
 export type { LoadConfigOptions } from "./options";
