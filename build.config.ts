@@ -36,7 +36,7 @@ export default defineBuildConfig({
     { input: "src/types/index.ts" },
   ],
   alias: {
-    // nitropack: "./src/core/index.ts",
+    nitropack: "nitropack",
     "nitropack/package.json": resolve(srcDir, "../package.json"),
     "nitropack/runtime/meta": resolve(srcDir, "../runtime-meta.mjs"),
     ...Object.fromEntries(
