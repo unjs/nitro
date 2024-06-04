@@ -22,8 +22,8 @@ const readAssetHandler: Record<
 export function publicAssets(nitro: Nitro): Plugin {
   return virtual(
     {
-      // #internal/nitro/virtual/public-assets-data
-      "#internal/nitro/virtual/public-assets-data": async () => {
+      // #nitro-internal-virtual/public-assets-data
+      "#nitro-internal-virtual/public-assets-data": async () => {
         const assets: Record<string, PublicAsset> = {};
         const files = await globby("**", {
           cwd: nitro.options.output.publicDir,
@@ -66,39 +66,39 @@ export function publicAssets(nitro: Nitro): Plugin {
 
         return `export default ${JSON.stringify(assets, null, 2)};`;
       },
-      // #internal/nitro/virtual/public-assets-node
-      "#internal/nitro/virtual/public-assets-node": () => {
+      // #nitro-internal-virtual/public-assets-node
+      "#nitro-internal-virtual/public-assets-node": () => {
         return `
 import { promises as fsp } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve, dirname } from 'pathe'
-import assets from '#internal/nitro/virtual/public-assets-data'
+import assets from '#nitro-internal-virtual/public-assets-data'
 export function readAsset (id) {
   const serverDir = dirname(fileURLToPath(import.meta.url))
   return fsp.readFile(resolve(serverDir, assets[id].path))
 }`;
       },
-      // #internal/nitro/virtual/public-assets-deno
-      "#internal/nitro/virtual/public-assets-deno": () => {
+      // #nitro-internal-virtual/public-assets-deno
+      "#nitro-internal-virtual/public-assets-deno": () => {
         return `
-import assets from '#internal/nitro/virtual/public-assets-data'
+import assets from '#nitro-internal-virtual/public-assets-data'
 export function readAsset (id) {
   // https://deno.com/deploy/docs/serve-static-assets
   const path = '.' + decodeURIComponent(new URL(\`../public\${id}\`, 'file://').pathname)
   return Deno.readFile(path);
 }`;
       },
-      // #internal/nitro/virtual/public-assets-null
-      "#internal/nitro/virtual/public-assets-null": () => {
+      // #nitro-internal-virtual/public-assets-null
+      "#nitro-internal-virtual/public-assets-null": () => {
         return `
     export function readAsset (id) {
         return Promise.resolve(null);
     }`;
       },
-      // #internal/nitro/virtual/public-assets-inline
-      "#internal/nitro/virtual/public-assets-inline": () => {
+      // #nitro-internal-virtual/public-assets-inline
+      "#nitro-internal-virtual/public-assets-inline": () => {
         return `
-  import assets from '#internal/nitro/virtual/public-assets-data'
+  import assets from '#nitro-internal-virtual/public-assets-data'
   export function readAsset (id) {
     if (!assets[id]) { return undefined }
     if (assets[id]._data) { return assets[id]._data }
@@ -107,8 +107,8 @@ export function readAsset (id) {
     return assets[id]._data
 }`;
       },
-      // #internal/nitro/virtual/public-assets
-      "#internal/nitro/virtual/public-assets": () => {
+      // #nitro-internal-virtual/public-assets
+      "#nitro-internal-virtual/public-assets": () => {
         const publicAssetBases = Object.fromEntries(
           nitro.options.publicAssets
             .filter((dir) => !dir.fallthrough && dir.baseURL !== "/")
@@ -121,10 +121,10 @@ export function readAsset (id) {
         // prettier-ignore
         // biome-ignore format: -
         const handlerName = readAssetHandler[nitro.options.serveStatic as _serveStaticAsKey] || "null";
-        const readAssetImport = `#internal/nitro/virtual/public-assets-${handlerName}`;
+        const readAssetImport = `#nitro-internal-virtual/public-assets-${handlerName}`;
 
         return `
-import assets from '#internal/nitro/virtual/public-assets-data'
+import assets from '#nitro-internal-virtual/public-assets-data'
 export { readAsset } from "${readAssetImport}"
 export const publicAssetBases = ${JSON.stringify(publicAssetBases)}
 

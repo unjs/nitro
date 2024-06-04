@@ -28,9 +28,9 @@ import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
 import { nitroAsyncContext } from "./context";
 import type { NitroAsyncContext } from "nitropack/types";
 import type { $Fetch, NitroFetchRequest } from "nitropack/types";
-import { plugins } from "#internal/nitro/virtual/plugins";
-import errorHandler from "#internal/nitro/virtual/error-handler";
-import { handlers } from "#internal/nitro/virtual/server-handlers";
+import { plugins } from "#nitro-internal-virtual/plugins";
+import errorHandler from "#nitro-internal-virtual/error-handler";
+import { handlers } from "#nitro-internal-virtual/server-handlers";
 
 function createNitroApp(): NitroApp {
   const config = useRuntimeConfig();

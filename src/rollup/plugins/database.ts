@@ -21,7 +21,7 @@ export function database(nitro: Nitro) {
 
   return virtual(
     {
-      "#internal/nitro/virtual/database": () => {
+      "#nitro-internal-virtual/database": () => {
         return `
 ${connectorsNames
   .map(

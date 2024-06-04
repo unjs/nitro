@@ -1,5 +1,7 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "nitropack/runtime/app";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+
+const nitroApp = useNitroApp();
 
 async function cli() {
   const url = process.argv[2] || "/";

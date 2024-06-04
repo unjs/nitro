@@ -7,7 +7,7 @@ export type { FirebaseOptions as PresetOptions } from "./types";
 
 const firebase = defineNitroPreset(
   {
-    entry: `#internal/nitro/entries/firebase-gen-{{ firebase.gen }}`,
+    entry: `./runtime/firebase-gen-{{ firebase.gen }}`,
     commands: {
       deploy: "npx firebase-tools deploy",
     },

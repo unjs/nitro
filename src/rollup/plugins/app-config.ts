@@ -5,7 +5,7 @@ import { virtual } from "./virtual";
 export function appConfig(nitro: Nitro) {
   return virtual(
     {
-      "#internal/nitro/virtual/app-config": () => `
+      "#nitro-internal-virtual/app-config": () => `
 import { defuFn } from 'defu';
 
 const inlineAppConfig = ${JSON.stringify(nitro.options.appConfig, null, 2)};

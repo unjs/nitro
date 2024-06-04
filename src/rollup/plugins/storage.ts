@@ -44,9 +44,9 @@ for (const base of bundledStorage) {
 
   return virtual(
     {
-      "#internal/nitro/virtual/storage": `
+      "#nitro-internal-virtual/storage": `
 import { createStorage } from 'unstorage'
-import { assets } from '#internal/nitro/virtual/server-assets'
+import { assets } from '#nitro-internal-virtual/server-assets'
 
 ${driverImports.map((i) => genImport(i, genSafeVariableName(i))).join("\n")}
 

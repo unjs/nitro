@@ -3,13 +3,13 @@ import type {
   Context,
   APIGatewayProxyStructuredResultV2,
 } from "aws-lambda";
-import "#internal/nitro/virtual/polyfill";
+import "#nitro-internal-pollyfills";
 import { withQuery } from "ufo";
-import { nitroApp } from "nitropack/runtime/app";
+import { useNitroApp } from "nitropack/runtime";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/utils.lambda";
+} from "nitropack/runtime/internal/utils.lambda";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -35,6 +35,8 @@ declare global {
     }
   }
 }
+
+const nitroApp = useNitroApp();
 
 export const handler = awslambda.streamifyResponse(
   async (event: APIGatewayProxyEventV2, responseStream, context) => {

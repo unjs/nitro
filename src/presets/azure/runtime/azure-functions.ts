@@ -1,9 +1,11 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "nitropack/runtime/app";
-import { getAzureParsedCookiesFromHeaders } from "nitropack/runtime/utils.azure";
-import { normalizeLambdaOutgoingHeaders } from "nitropack/runtime/utils.lambda";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+import { getAzureParsedCookiesFromHeaders } from "nitropack/runtime/internal/utils.azure";
+import { normalizeLambdaOutgoingHeaders } from "nitropack/runtime/internal/utils.lambda";
 
 import type { HttpRequest, HttpResponse } from "@azure/functions";
+
+const nitroApp = useNitroApp();
 
 export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
   const url = "/" + (req.params.url || "");

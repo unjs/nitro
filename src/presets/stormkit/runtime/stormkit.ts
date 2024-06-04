@@ -1,6 +1,6 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "nitropack/runtime/app";
-import { normalizeLambdaOutgoingBody } from "nitropack/runtime/utils.lambda";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+import { normalizeLambdaOutgoingBody } from "nitropack/runtime/internal/utils.lambda";
 
 import type { Handler } from "aws-lambda";
 
@@ -22,6 +22,8 @@ type StormkitResponse = {
   errorMessage?: string;
   errorStack?: string;
 };
+
+const nitroApp = useNitroApp();
 
 export const handler: Handler<StormkitEvent, StormkitResponse> =
   async function (event, context) {

@@ -31,12 +31,12 @@ export function handlers(nitro: Nitro) {
 
   return virtual(
     {
-      "#internal/nitro/virtual/server-handlers": () => {
+      "#nitro-internal-virtual/server-handlers": () => {
         const handlers = getHandlers();
         if (nitro.options.serveStatic) {
           handlers.unshift({
             middleware: true,
-            handler: "#internal/nitro/static",
+            handler: "nitropack/runtime/handlers/static",
           });
         }
         if (nitro.options.renderer) {
@@ -89,7 +89,7 @@ ${handlers
   `.trim();
         return code;
       },
-      "#internal/nitro/virtual/server-handlers-meta": () => {
+      "#nitro-internal-virtual/server-handlers-meta": () => {
         const handlers = getHandlers();
         return /* js */ `
   ${handlers

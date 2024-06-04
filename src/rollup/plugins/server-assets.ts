@@ -21,7 +21,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Development: Use filesystem
   if (nitro.options.dev || nitro.options.preset === "nitro-prerender") {
     return virtual(
-      { "#internal/nitro/virtual/server-assets": getAssetsDev(nitro) },
+      { "#nitro-internal-virtual/server-assets": getAssetsDev(nitro) },
       nitro.vfs
     );
   }
@@ -29,7 +29,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Production: Bundle assets
   return virtual(
     {
-      "#internal/nitro/virtual/server-assets": async () => {
+      "#nitro-internal-virtual/server-assets": async () => {
         // Scan all assets
         const assets: Record<string, ResolvedAsset> = {};
         for (const asset of nitro.options.serverAssets) {

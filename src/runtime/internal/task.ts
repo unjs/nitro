@@ -1,7 +1,7 @@
 import { createError } from "h3";
 import { Cron } from "croner";
 import { isTest } from "std-env";
-import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
+import { tasks, scheduledTasks } from "#nitro-internal-virtual/tasks";
 import type {
   Task,
   TaskResult,

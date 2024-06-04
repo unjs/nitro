@@ -351,14 +351,14 @@ declare module "nitropack/types" {
                 "nitropack/runtime": [
                   relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
                 ],
-                "#internal/nitro": [
-                  relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
-                ],
                 "nitropack/runtime/*": [
                   relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
                 ],
+                "#internal/nitro": [
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "_compat")),
+                ],
                 "#internal/nitro/*": [
-                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
+                  relativeWithDot(tsconfigDir, join(runtimeDir, "_compat/*")),
                 ],
               }
             : {}),

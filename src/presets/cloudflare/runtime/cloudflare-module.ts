@@ -1,8 +1,9 @@
-import "#internal/nitro/virtual/polyfill";
-import { requestHasBody } from "nitropack/runtime/utils";
-import { nitroApp } from "nitropack/runtime/app";
-import { runCronTasks, useRuntimeConfig } from "nitropack/runtime";
-import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import "#nitro-internal-pollyfills";
+import { requestHasBody } from "nitropack/runtime/internal/utils";
+import { useNitroApp } from "nitropack/runtime";
+import { useRuntimeConfig } from "nitropack/runtime";
+import { runCronTasks } from "nitropack/runtime/internal/task";
+import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
 import { withoutBase } from "ufo";
 import wsAdapter from "crossws/adapters/cloudflare";
@@ -15,6 +16,8 @@ import {
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from "__STATIC_CONTENT_MANIFEST";
+
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)

@@ -58,6 +58,7 @@ export const NitroDefaults: NitroConfig = {
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
   handlers: [],
   devHandlers: [],
+  // errorHandler: "nitropack/runtime/internal/error",
   errorHandler: "#internal/nitro/error",
   routeRules: {},
   prerender: {

@@ -334,7 +334,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   rollupConfig.plugins.push(
     virtual(
       {
-        "#internal/nitro/virtual/polyfill": env.polyfill
+        "#nitro-internal-pollyfills": env.polyfill
           .map((p) => `import '${p}';`)
           .join("\n"),
       },
@@ -351,7 +351,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   rollupConfig.plugins.push(
     virtual(
       {
-        "#internal/nitro/virtual/plugins": `
+        "#nitro-internal-virtual/plugins": `
 ${nitroPlugins
   .map((plugin) => `import _${hash(plugin)} from '${plugin}';`)
   .join("\n")}
@@ -379,8 +379,8 @@ export const plugins = [
     alias({
       entries: resolveAliases({
         "#build": buildDir,
-        "#internal/nitro/virtual/error-handler": nitro.options.errorHandler,
-        "#internal/nitro": runtimeDir,
+        "#nitro-internal-virtual/error-handler": nitro.options.errorHandler,
+        "#internal/nitro": join(runtimeDir, "_compat"),
         "nitropack/runtime": runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,

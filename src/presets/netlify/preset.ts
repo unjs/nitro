@@ -77,7 +77,7 @@ const netlifyEdge = defineNitroPreset(
       },
     },
     unenv: {
-      polyfill: ["#internal/nitro/polyfill/deno-env"],
+      polyfill: ["nitropack/runtime/internal/polyfill/deno-env"],
     },
     hooks: {
       async compiled(nitro: Nitro) {

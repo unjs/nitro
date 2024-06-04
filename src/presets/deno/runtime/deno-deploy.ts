@@ -1,8 +1,10 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "nitropack/runtime/app";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
 
 import wsAdapter from "crossws/adapters/deno";
 import type { Deno as _Deno } from "@deno/types";
+
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)

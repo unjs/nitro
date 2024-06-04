@@ -1,7 +1,7 @@
 import { klona } from "klona";
 import { H3Event } from "h3";
 import { type EnvOptions, applyEnv } from "./utils.env";
-import { appConfig as _inlineAppConfig } from "#internal/nitro/virtual/app-config";
+import { appConfig as _inlineAppConfig } from "#nitro-internal-virtual/app-config";
 import type { NitroRuntimeConfig } from "nitropack/types";
 
 // Static runtime config inlined by nitro build

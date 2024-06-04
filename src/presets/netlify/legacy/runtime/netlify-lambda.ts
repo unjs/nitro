@@ -1,11 +1,11 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "nitropack/runtime/app";
-import { normalizeCookieHeader } from "nitropack/runtime/utils";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+import { normalizeCookieHeader } from "nitropack/runtime/internal/utils";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/utils.lambda";
+} from "nitropack/runtime/internal/utils.lambda";
 
 import { withQuery } from "ufo";
 import type {
@@ -13,6 +13,8 @@ import type {
   HandlerContext,
   HandlerEvent,
 } from "@netlify/functions";
+
+const nitroApp = useNitroApp();
 
 // Netlify functions uses lambda v1 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.v2
 export async function lambda(

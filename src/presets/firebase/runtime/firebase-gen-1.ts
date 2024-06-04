@@ -1,9 +1,11 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "nitropack/runtime/app";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
 import { useAppConfig } from "nitropack/runtime";
 
 import functions from "firebase-functions";
 import { toNodeListener } from "h3";
+
+const nitroApp = useNitroApp();
 
 const firebaseConfig = useAppConfig().nitro.firebase;
 

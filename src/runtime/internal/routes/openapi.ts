@@ -7,7 +7,7 @@ import type {
   PathsObject,
 } from "openapi-typescript";
 import { joinURL } from "ufo";
-import { handlersMeta } from "#internal/nitro/virtual/server-handlers-meta";
+import { handlersMeta } from "#nitro-internal-virtual/server-handlers-meta";
 import { useRuntimeConfig } from "../config";
 
 // Served as /_nitro/openapi.json

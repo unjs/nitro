@@ -1,6 +1,6 @@
 import type { Storage, StorageValue } from "unstorage";
 import { prefixStorage } from "unstorage";
-import { storage } from "#internal/nitro/virtual/storage";
+import { storage } from "#nitro-internal-virtual/storage";
 
 export function useStorage<T extends StorageValue = StorageValue>(
   base = ""
