@@ -104,6 +104,14 @@ az functionapp deployment source config-zip -g <resource-group> -n <app-name> --
 cd dist && func azure functionapp publish --javascript <app-name>
 ```
 
+### Building for Azure Functions version 4.x
+
+To build for the Azure Functions runtime version 4.x, set the Nitro compatibility environment variable to 2024-05-29.
+
+```bash
+NITRO_PRESET=azure_functions NITRO_COMPATIBILITY_DATE=2024-05-29 npx nypm@latest build
+```
+
 ### Deploy from CI/CD via GitHub actions
 
 First, obtain your Azure Functions Publish Profile and add it as a secret to your GitHub repository settings following [these instructions](https://github.com/Azure/functions-action#using-publish-profile-as-deployment-credential-recommended).

@@ -11,36 +11,40 @@ export async function writeFunctionsRoutes(nitro: Nitro) {
     extensions: { http: { routePrefix: "" } },
   };
 
-  const functionDefinition = {
-    entryPoint: "handle",
-    bindings: [
-      {
-        authLevel: "anonymous",
-        type: "httpTrigger",
-        direction: "in",
-        name: "req",
-        route: "{*url}",
-        methods: ["delete", "get", "head", "options", "patch", "post", "put"],
-      },
-      {
-        type: "http",
-        direction: "out",
-        name: "res",
-      },
-    ],
+  const packageJson = {
+    name: "nitro-server",
+    type: "module",
+    main: "server/*.mjs",
   };
 
-  await writeFile(
-    resolve(nitro.options.output.serverDir, "function.json"),
-    JSON.stringify(functionDefinition)
-  );
+  // Allows the output folder to be runned locally with azure functions runtime
+  const localSettings = {
+    IsEncrypted: false,
+    Values: {
+      FUNCTIONS_WORKER_RUNTIME: "node",
+      AzureWebJobsFeatureFlags: "EnableWorkerIndexing",
+      AzureWebJobsStorage: "",
+    },
+  };
+
   await writeFile(
     resolve(nitro.options.output.dir, "host.json"),
     JSON.stringify(host)
   );
+
+  await writeFile(
+    resolve(nitro.options.output.dir, "package.json"),
+    JSON.stringify(packageJson)
+  );
+
   await _zipDirectory(
     nitro.options.output.dir,
     join(nitro.options.output.dir, "deploy.zip")
+  );
+
+  await writeFile(
+    resolve(nitro.options.output.dir, "local.settings.json"),
+    JSON.stringify(localSettings)
   );
 }
 
