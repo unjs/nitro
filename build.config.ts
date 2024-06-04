@@ -1,42 +1,56 @@
 import { defineBuildConfig } from "unbuild";
-import { resolve, normalize } from "pathe";
+import { resolve } from "pathe";
 import { fileURLToPath } from "node:url";
 
 const srcDir = fileURLToPath(new URL("src", import.meta.url));
+
+export const subpaths = [
+  "cli",
+  "config",
+  "core",
+  "kit",
+  "presets",
+  "rollup",
+  "types",
+];
 
 export default defineBuildConfig({
   declaration: true,
   name: "nitro",
   entries: [
-    "src/index",
-    "src/config",
-    "src/cli/index",
-    { input: "src/presets/", outDir: "dist/presets", format: "esm" },
+    // CLI
+    { input: "src/cli/index.ts" },
+    // Config
+    { input: "src/config/index.ts" },
+    // Core
+    { input: "src/core/index.ts" },
+    // Runtime
     { input: "src/runtime/", outDir: "dist/runtime", format: "esm" },
+    // Kit
+    { input: "src/kit/index.ts" },
+    // Presets
+    { input: "src/presets/", outDir: "dist/presets", format: "esm" },
+    // Rollup
+    { input: "src/rollup/index.ts" },
+    // Types
+    { input: "src/types/index.ts" },
   ],
   alias: {
-    nitropack: resolve(srcDir, "index.ts"),
-    "nitropack/": srcDir,
-    "nitropack/presets": resolve(srcDir, "presets/index.ts"),
-    "nitropack/presets/": resolve(srcDir, "presets"),
-  },
-  rollup: {
-    output: {
-      chunkFileNames(chunk) {
-        const id = normalize(chunk.moduleIds.at(-1));
-        if (id.includes("/src/cli/")) {
-          return "cli/[name].mjs";
-        }
-        if (id.endsWith("/nitro.ts")) {
-          return "nitro.mjs";
-        }
-        return "chunks/[name].mjs";
-      },
-    },
+    // nitropack: "./src/core/index.ts",
+    "nitropack/package.json": resolve(srcDir, "../package.json"),
+    "nitropack/runtime/meta": resolve(srcDir, "../runtime-meta.mjs"),
+    ...Object.fromEntries(
+      subpaths.map((subpath) => [
+        `nitropack/${subpath}`,
+        resolve(srcDir, `${subpath}/index.ts`),
+      ])
+    ),
   },
   externals: [
     "nitropack",
-    "nitropack/presets",
+    "nitropack/runtime/meta",
+    "nitropack/package.json",
+    ...subpaths.map((subpath) => `nitropack/${subpath}`),
     "firebase-functions",
     "@scalar/api-reference",
   ],

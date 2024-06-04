@@ -1,6 +1,8 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+import { isPublicAssetURL } from "#nitro-internal-virtual/public-assets";
+
+const nitroApp = useNitroApp();
 
 // https://docs.netlify.com/edge-functions/api/
 export default async function netlifyEdge(request: Request, _context: any) {

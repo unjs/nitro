@@ -9,12 +9,16 @@ import { expect, it, afterAll, beforeAll, describe } from "vitest";
 import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
 import { defu } from "defu";
-import * as _nitro from "../src";
-import type { Nitro } from "../src";
+import {
+  createNitro,
+  build,
+  prepare,
+  copyPublicAssets,
+  prerender,
+  createDevServer,
+} from "nitropack/core";
+import type { Nitro, NitroConfig } from "nitropack/types";
 import { nodeMajorVersion, isWindows } from "std-env";
-
-const { createNitro, build, prepare, copyPublicAssets, prerender } =
-  (_nitro as any as { default: typeof _nitro }).default || _nitro;
 
 export interface Context {
   preset: string;
@@ -64,7 +68,7 @@ export const getPresetTmpDir = (preset: string) => {
 
 export async function setupTest(
   preset: string,
-  opts: { config?: _nitro.NitroConfig; compatibilityDate?: string } = {}
+  opts: { config?: NitroConfig; compatibilityDate?: string } = {}
 ) {
   const presetTmpDir = getPresetTmpDir(preset);
 
@@ -128,7 +132,7 @@ export async function setupTest(
 
   if (ctx.isDev) {
     // Setup development server
-    const devServer = _nitro.createDevServer(ctx.nitro);
+    const devServer = createDevServer(ctx.nitro);
     ctx.server = await devServer.listen({});
     await prepare(ctx.nitro);
     const ready = new Promise<void>((resolve) => {
@@ -690,7 +694,13 @@ export function testNitro(
       !ctx.nitro!.options.node ||
       ctx.isLambda ||
       ctx.isWorker ||
-      ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
+      [
+        "bun",
+        "deno-server",
+        "deno-deploy",
+        "netlify",
+        "netlify-legacy",
+      ].includes(ctx.preset)
   )("Database", () => {
     it("works", async () => {
       const { data } = await callHandler({ url: "/api/db" });

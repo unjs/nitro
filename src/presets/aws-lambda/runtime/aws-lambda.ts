@@ -5,15 +5,17 @@ import type {
   APIGatewayProxyResultV2,
   Context,
 } from "aws-lambda";
-import "#internal/nitro/virtual/polyfill";
+import "#nitro-internal-pollyfills";
 import { withQuery } from "ufo";
-import { nitroApp } from "#internal/nitro/app";
+import { useNitroApp } from "nitropack/runtime";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "#internal/nitro/utils.lambda";
-import { normalizeCookieHeader } from "#internal/nitro/utils";
+} from "nitropack/runtime/internal/utils.lambda";
+import { normalizeCookieHeader } from "nitropack/runtime/internal/utils";
+
+const nitroApp = useNitroApp();
 
 export async function handler(
   event: APIGatewayProxyEvent,

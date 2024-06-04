@@ -1,13 +1,13 @@
 import { basename } from "pathe";
 import type { Plugin } from "rollup";
-import { defineNitroPreset } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
 import { updatePackageJSON, writeFirebaseConfig } from "./utils";
 
 export type { FirebaseOptions as PresetOptions } from "./types";
 
 const firebase = defineNitroPreset(
   {
-    entry: `#internal/nitro/entries/firebase-gen-{{ firebase.gen }}`,
+    entry: `./runtime/firebase-gen-{{ firebase.gen }}`,
     commands: {
       deploy: "npx firebase-tools deploy",
     },

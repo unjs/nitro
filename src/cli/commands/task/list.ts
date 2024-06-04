@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import { resolve } from "pathe";
 import { consola } from "consola";
-import { listTasks } from "../../../task";
+import { listTasks } from "nitropack/core";
 
 export default defineCommand({
   meta: {

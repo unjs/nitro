@@ -1,5 +1,5 @@
-import "#internal/nitro/virtual/polyfill";
-import { getRouteRulesForPath } from "#internal/nitro/route-rules";
+import "#nitro-internal-pollyfills";
+import { getRouteRulesForPath } from "nitropack/runtime/internal/route-rules";
 
 import { withQuery } from "ufo";
 import type { Handler } from "@netlify/functions/dist/main";

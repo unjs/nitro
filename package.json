@@ -6,47 +6,67 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./types.d.ts",
-      "import": "./dist/index.mjs"
-    },
-    "./config": {
-      "types": "./dist/config.d.mts",
-      "import": "./dist/config.mjs"
-    },
     "./cli": {
-      "types": "./dist/cli/index.d.mts",
+      "types": "./cli.d.ts",
       "import": "./dist/cli/index.mjs"
     },
-    "./runtime": {
-      "types": "./dist/runtime/index.d.ts",
-      "import": "./dist/runtime/index.mjs"
+    "./config": {
+      "types": "./config.d.ts",
+      "import": "./dist/config/index.mjs"
     },
-    "./runtime/*": {
-      "types": "./dist/runtime/*.d.ts",
-      "import": "./dist/runtime/*.mjs"
+    ".": {
+      "types": "./types.d.ts",
+      "import": "./dist/core/index.mjs"
+    },
+    "./core": {
+      "types": "./types.d.ts",
+      "import": "./dist/core/index.mjs"
+    },
+    "./kit": {
+      "types": "./kit.d.ts",
+      "import": "./dist/kit/index.mjs"
+    },
+    "./presets": {
+      "types": "./presets.d.ts",
+      "import": "./dist/presets/index.mjs"
     },
     "./presets/*": {
       "types": "./dist/presets/*.d.ts",
       "import": "./dist/presets/*.mjs"
     },
-    "./presets": {
-      "types": "./dist/presets/index.d.ts",
-      "import": "./dist/presets/index.mjs"
+    "./rollup": {
+      "types": "./rollup.d.ts",
+      "import": "./dist/rollup/index.mjs"
+    },
+    "./runtime": {
+      "types": "./runtime.d.ts",
+      "import": "./dist/runtime/index.mjs"
+    },
+    "./runtime/meta": {
+      "types": "./runtime-meta.d.ts",
+      "import": "./runtime-meta.mjs"
+    },
+    "./runtime/*": {
+      "types": "./dist/runtime/*.d.ts",
+      "import": "./dist/runtime/*.mjs"
     },
     "./dist/runtime/*": {
       "types": "./dist/runtime/*.d.ts",
       "import": "./dist/runtime/*.mjs"
     },
+    "./types": {
+      "types": "./types.d.ts",
+      "import": "./dist/types/index.mjs"
+    },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.mjs",
+  "main": "./dist/core/index.mjs",
   "types": "./types.d.ts",
   "bin": {
     "nitro": "./dist/cli/index.mjs",
     "nitropack": "./dist/cli/index.mjs"
   },
-  "files": ["dist", "*.d.ts"],
+  "files": ["dist", "*.d.ts", "runtime-meta.*"],
   "scripts": {
     "build": "pnpm gen-presets && unbuild",
     "dev": "pnpm nitro dev playground",

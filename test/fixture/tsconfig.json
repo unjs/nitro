@@ -6,10 +6,35 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "strict": false,
+    // (currently manually synced with top level tsconfig.json paths)
     "paths": {
-      "nitropack": ["../../src/index"],
-      "#internal/nitro": ["../../src/runtime/index"],
-      "#internal/nitro/*": ["../../src/runtime/*"]
+      // CLI
+      "nitropack/cli": ["../../src/cli"],
+      // Config
+      "nitropack/config": ["../../src/config"],
+      // Core
+      "nitropack": ["../../src/core"],
+      "nitropack/core": ["../../src/core"],
+      // Runtime
+      "nitropack/runtime": ["../../src/runtime"],
+      "nitropack/runtime/meta": ["../../runtime-meta"],
+      "nitropack/runtime/*": ["../../src/runtime/*"],
+      // Kit
+      "nitropack/kit": ["../../src/kit"],
+      // Presets
+      "nitropack/presets": ["../../src/presets"],
+      "nitropack/presets/*": ["../../src/presets/*"],
+      // Rollup
+      "nitropack/rollup": ["../../src/rollup"],
+      // Types
+      "nitropack/types": ["../../src/types"],
+      // package.json
+      "nitropack/package.json": ["../../package.json"],
+      // Virtual files
+      "#nitro-internal-virtual/*": ["../../src/types/virtual/*"],
+      // Compatibility (#internal/nitro)
+      "#internal/nitro": ["../../src/runtime/_compat"],
+      "#internal/nitro/*": ["../../src/runtime/_compat/*"]
     }
   }
 }

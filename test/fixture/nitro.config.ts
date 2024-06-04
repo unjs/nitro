@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { defineNitroConfig } from "../../src/config";
+import { defineNitroConfig } from "nitropack/config";
 
 export default defineNitroConfig({
   compressPublicAssets: true,

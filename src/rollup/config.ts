@@ -1,7 +1,7 @@
 import { pathToFileURL } from "node:url";
 import { createRequire, builtinModules } from "node:module";
 import { dirname, join, normalize, resolve } from "pathe";
-import type { InputOptions, OutputOptions, Plugin } from "rollup";
+import type { Plugin } from "rollup";
 import { defu } from "defu";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import commonjs from "@rollup/plugin-commonjs";
@@ -17,15 +17,17 @@ import { sanitizeFilePath, resolvePath } from "mlly";
 import unimportPlugin from "unimport/unplugin";
 import { hash } from "ohash";
 import { rollup as unwasm } from "unwasm/plugin";
-import type { Nitro, NitroStaticBuildFlags } from "../types";
-import { resolveAliases } from "../utils";
-import { runtimeDir } from "../dirs";
-import nitroPkg from "../../package.json";
-import { nitroRuntimeDependencies } from "../deps";
+import type {
+  Nitro,
+  NitroStaticBuildFlags,
+  NodeExternalsOptions,
+  RollupConfig,
+} from "nitropack/types";
+import { resolveAliases } from "./utils";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
 import { dynamicRequire } from "./plugins/dynamic-require";
-import { NodeExternalsOptions, externals } from "./plugins/externals";
+import { externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
 import { timing } from "./plugins/timing";
 import { publicAssets } from "./plugins/public-assets";
@@ -39,8 +41,7 @@ import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
-
-export type RollupConfig = InputOptions & { output: OutputOptions };
+import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
 
 export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [
@@ -162,6 +163,12 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         if (!idWithoutNodeModules) {
           return false;
         }
+        if (
+          normalizedId.startsWith(runtimeDir) ||
+          idWithoutNodeModules.startsWith(runtimeDir)
+        ) {
+          return true;
+        }
         return nitro.options.moduleSideEffects.some(
           (m) =>
             normalizedId.startsWith(m) || idWithoutNodeModules.startsWith(m)
@@ -211,8 +218,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     client: false,
     nitro: true,
     // @ts-expect-error
-    "versions.nitro": nitroPkg.version,
-    "versions?.nitro": nitroPkg.version,
+    "versions.nitro": "",
+    "versions?.nitro": "",
     // Internal
     _asyncContext: nitro.options.experimental.asyncContext,
     _websocket: nitro.options.experimental.websocket,
@@ -308,9 +315,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   rollupConfig.plugins.push(storage(nitro));
 
   // Database
-  if (nitro.options.experimental.database) {
-    rollupConfig.plugins.push(database(nitro));
-  }
+  rollupConfig.plugins.push(database(nitro));
 
   // App.config
   rollupConfig.plugins.push(appConfig(nitro));
@@ -327,7 +332,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   rollupConfig.plugins.push(
     virtual(
       {
-        "#internal/nitro/virtual/polyfill": env.polyfill
+        "#nitro-internal-pollyfills": env.polyfill
           .map((p) => `import '${p}';`)
           .join("\n"),
       },
@@ -344,7 +349,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   rollupConfig.plugins.push(
     virtual(
       {
-        "#internal/nitro/virtual/plugins": `
+        "#nitro-internal-virtual/plugins": `
 ${nitroPlugins
   .map((plugin) => `import _${hash(plugin)} from '${plugin}';`)
   .join("\n")}
@@ -372,7 +377,9 @@ export const plugins = [
     alias({
       entries: resolveAliases({
         "#build": buildDir,
-        "#internal/nitro/virtual/error-handler": nitro.options.errorHandler,
+        "#nitro-internal-virtual/error-handler": nitro.options.errorHandler,
+        "#internal/nitro": join(runtimeDir, "_compat"),
+        "nitropack/runtime": runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,
         "~~": nitro.options.rootDir,
@@ -452,7 +459,7 @@ export const plugins = [
             nitro.options.preset === "nitro-prerender" ||
             nitro.options.experimental.bundleRuntimeDependencies === false
               ? []
-              : nitroRuntimeDependencies),
+              : runtimeDependencies),
           ],
           traceOptions: {
             base: "/",

@@ -1,8 +1,8 @@
-import "#internal/nitro/virtual/polyfill";
-import { requestHasBody } from "#internal/nitro/utils";
-import { nitroApp } from "#internal/nitro/app";
-import { useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import "#nitro-internal-pollyfills";
+import { requestHasBody } from "nitropack/runtime/internal/utils";
+import { useNitroApp } from "nitropack/runtime";
+import { useRuntimeConfig } from "nitropack/runtime";
+import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
 import { withoutBase } from "ufo";
 import wsAdapter from "crossws/adapters/cloudflare";
@@ -14,6 +14,8 @@ import {
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));
 });
+
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)

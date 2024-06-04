@@ -1,11 +1,11 @@
 import { genImport } from "knitwork";
-import type { Nitro } from "../../types";
+import type { Nitro } from "nitropack/types";
 import { virtual } from "./virtual";
 
 export function appConfig(nitro: Nitro) {
   return virtual(
     {
-      "#internal/nitro/virtual/app-config": () => `
+      "#nitro-internal-virtual/app-config": () => `
 import { defuFn } from 'defu';
 
 const inlineAppConfig = ${JSON.stringify(nitro.options.appConfig, null, 2)};

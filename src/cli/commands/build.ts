@@ -1,8 +1,12 @@
 import { defineCommand } from "citty";
 import { resolve } from "pathe";
-import { createNitro } from "../../nitro";
-import { build, prepare, copyPublicAssets } from "../../build";
-import { prerender } from "../../prerender";
+import {
+  createNitro,
+  prerender,
+  build,
+  prepare,
+  copyPublicAssets,
+} from "nitropack/core";
 import { commonArgs } from "../common";
 
 export default defineCommand({
