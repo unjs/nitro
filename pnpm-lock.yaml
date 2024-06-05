@@ -8,6 +8,11 @@ overrides:
   nitropack: link:.
   undici: ^6.18.2
 
+patchedDependencies:
+  unbuild@3.0.0-rc.2:
+    hash: rrfmssaqzf6ob23oou5wnx366m
+    path: patches/unbuild@3.0.0-rc.2.patch
+
 importers:
 
   .:
@@ -315,7 +320,7 @@ importers:
         version: 5.4.5
       unbuild:
         specifier: ^3.0.0-rc.2
-        version: 3.0.0-rc.2(typescript@5.4.5)
+        version: 3.0.0-rc.2(patch_hash=rrfmssaqzf6ob23oou5wnx366m)(typescript@5.4.5)
       undici:
         specifier: ^6.18.2
         version: 6.18.2
@@ -12538,7 +12543,7 @@ snapshots:
 
   ufo@1.5.3: {}
 
-  unbuild@3.0.0-rc.2(typescript@5.4.5):
+  unbuild@3.0.0-rc.2(patch_hash=rrfmssaqzf6ob23oou5wnx366m)(typescript@5.4.5):
     dependencies:
       '@rollup/plugin-alias': 5.1.0(rollup@4.18.0)
       '@rollup/plugin-commonjs': 25.0.8(rollup@4.18.0)

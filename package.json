@@ -70,7 +70,11 @@
     "nitro": "./dist/cli/index.mjs",
     "nitropack": "./dist/cli/index.mjs"
   },
-  "files": ["dist", "*.d.ts", "runtime-meta.*"],
+  "files": [
+    "dist",
+    "*.d.ts",
+    "runtime-meta.*"
+  ],
   "scripts": {
     "build": "pnpm gen-presets && unbuild",
     "dev": "pnpm nitro dev playground",
@@ -220,6 +224,9 @@
         "react-dom",
         "@algolia/client-search"
       ]
+    },
+    "patchedDependencies": {
+      "unbuild@3.0.0-rc.2": "patches/unbuild@3.0.0-rc.2.patch"
     }
   }
 }
