@@ -125,8 +125,16 @@ async function writeCFRoutes(nitro: Nitro) {
       ),
     ],
   });
-  routes.exclude.push(
-    ...publicAssetFiles.map((i) => withLeadingSlash(i)).sort(comparePaths)
+  // Remove index.html or the .html extension to support pages pre-rendering
+  routes.exclude!.push(
+    ...publicAssetFiles
+      .map(
+        (i) =>
+          withLeadingSlash(i)
+            .replace(/\/index\.html$/, "")
+            .replace(/\.html$/, "") || "/"
+      )
+      .sort(comparePaths)
   );
 
   // Only allow 100 rules in total (include + exclude)
