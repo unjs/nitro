@@ -23,8 +23,8 @@ export async function watchDev(nitro: Nitro, rollupConfig: RollupConfig) {
   const reload = debounce(load);
 
   const watchPatterns = nitro.options.scanDirs.flatMap((dir) => [
-    join(dir, "api"),
-    join(dir, "routes"),
+    join(dir, nitro.options.apiDir || "api"),
+    join(dir, nitro.options.routesDir || "routes"),
     join(dir, "middleware", GLOB_SCAN_PATTERN),
     join(dir, "plugins"),
     join(dir, "modules"),
