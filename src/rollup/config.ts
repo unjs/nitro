@@ -379,6 +379,7 @@ export const plugins = [
         "#build": buildDir,
         "#nitro-internal-virtual/error-handler": nitro.options.errorHandler,
         "#internal/nitro": join(runtimeDir, "_compat"),
+        "nitro/runtime": runtimeDir,
         "nitropack/runtime": runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,
@@ -445,6 +446,7 @@ export const plugins = [
             "~~",
             "@@/",
             "virtual:",
+            "nitro/runtime",
             "nitropack/runtime",
             dirname(nitro.options.entry),
             ...(nitro.options.experimental.wasm
