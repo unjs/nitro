@@ -16,6 +16,7 @@ import {
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from "__STATIC_CONTENT_MANIFEST";
+import { EmailContext, MessageBatch } from "#internal/nitro/cloudflare";
 
 const nitroApp = useNitroApp();
 
@@ -99,12 +100,21 @@ export default {
       );
     }
   },
-  email(event: any, env: CFModuleEnv, context: ExecutionContext) {
+  email(event: EmailContext, env: CFModuleEnv, context: ExecutionContext) {
     if (import.meta._tasks) {
       (globalThis as any).__env__ = env;
 
       context.waitUntil(
         nitroApp.hooks.callHook("cloudflare:email", event, { env, context })
+      );
+    }
+  },
+  queue(event: MessageBatch, env: CFModuleEnv, context: ExecutionContext) {
+    if (import.meta._tasks) {
+      (globalThis as any).__env__ = env;
+
+      context.waitUntil(
+        nitroApp.hooks.callHook("cloudflare:queue", event, { env, context })
       );
     }
   },
