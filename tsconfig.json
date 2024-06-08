@@ -15,14 +15,35 @@
     "jsxFragmentFactory": "Fragment",
     "noEmit": true,
     "paths": {
-      "nitropack": ["./src/index"],
+      // CLI
+      "nitropack/cli": ["./src/cli"],
+      // Config
       "nitropack/config": ["./src/config"],
+      // Core
+      "nitropack": ["./src/core"],
+      "nitropack/core": ["./src/core"],
+      // Runtime
+      "nitropack/runtime": ["./src/runtime"],
+      "nitropack/runtime/meta": ["./runtime-meta"],
+      "nitropack/runtime/*": ["./src/runtime/*"],
+      // Kit
+      "nitropack/kit": ["./src/kit"],
+      // Meta
+      "nitropack/meta": ["./src/meta"],
+      // Presets
       "nitropack/presets": ["./src/presets"],
       "nitropack/presets/*": ["./src/presets/*"],
-      "#internal/nitro": ["./src/runtime/index"],
+      // Rollup
+      "nitropack/rollup": ["./src/rollup"],
+      // Types
+      "nitropack/types": ["./src/types"],
+      // Virtual files
+      "#nitro-internal-virtual/*": ["./src/types/virtual/*"],
+      // Compatibility (#internal/nitro)
+      "#internal/nitro": ["./src/runtime"],
       "#internal/nitro/*": ["./src/runtime/*"]
     }
   },
-  "include": ["src", "test", "src/presets"],
-  "exclude": ["test/fixture"]
+  "include": ["src", "test"],
+  "exclude": ["dist", "examples", "playground", "test/fixture"]
 }

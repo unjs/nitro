@@ -4,8 +4,9 @@ import { kebabCase, camelCase, pascalCase, snakeCase } from "scule";
 import { readdirSync, existsSync, writeFileSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { NitroPreset, NitroPresetMeta } from "nitropack";
+import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
 import { findTypeExports } from "mlly";
+import { subpaths } from "../build.config";
 
 const autoGenHeader = /* ts */ `// Auto-generated using gen-presets script\n`;
 
@@ -24,7 +25,13 @@ const jitiRequire = createJITI(presetsDir, {
   esmResolve: true,
   interopDefault: true,
   alias: {
-    nitropack: fileURLToPath(new URL("../src/index.ts", import.meta.url)),
+    nitropack: fileURLToPath(new URL("../src/core/index.ts", import.meta.url)),
+    ...Object.fromEntries(
+      subpaths.map((pkg) => [
+        `nitropack/${pkg}`,
+        fileURLToPath(new URL(`../src/${pkg}/index.ts`, import.meta.url)),
+      ])
+    ),
   },
 });
 const allPresets: (NitroPreset & { _meta?: NitroPresetMeta })[] = [];

@@ -1,4 +1,4 @@
-import { defineNitroPreset } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
 
 const bun = defineNitroPreset(
   {

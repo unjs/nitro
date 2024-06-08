@@ -1,9 +1,7 @@
 import { extname } from "pathe";
 import type { Plugin, RenderedChunk } from "rollup";
 
-// TODO
-
-export interface Options {}
+interface Options {}
 
 const TIMING = "globalThis.__timing__";
 

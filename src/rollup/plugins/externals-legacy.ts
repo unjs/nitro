@@ -5,10 +5,10 @@ import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
 import type { Plugin } from "rollup";
 import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
 import semver from "semver";
-import { isDirectory, retry } from "../../utils";
+import { isDirectory } from "nitropack/kit";
 import { normalizeMatcher } from "./externals";
 
-export interface NodeExternalsOptions {
+interface NodeExternalsOptions {
   inline?: Array<
     | string
     | RegExp
@@ -338,4 +338,18 @@ async function isFile(file: string) {
     }
     throw error;
   }
+}
+
+async function retry(fn: () => Promise<void>, retries: number) {
+  let retry = 0;
+  let lastError: any;
+  while (retry++ < retries) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      await new Promise((resolve) => setTimeout(resolve, 2));
+    }
+  }
+  throw lastError;
 }

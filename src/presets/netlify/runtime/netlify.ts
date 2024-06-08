@@ -1,7 +1,12 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { getRouteRulesForPath } from "#internal/nitro/route-rules";
-import { joinHeaders, normalizeCookieHeader } from "#internal/nitro/utils";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+import { getRouteRulesForPath } from "nitropack/runtime/internal/route-rules";
+import {
+  joinHeaders,
+  normalizeCookieHeader,
+} from "nitropack/runtime/internal/utils";
+
+const nitroApp = useNitroApp();
 
 const handler = async (req: Request): Promise<Response> => {
   const url = new URL(req.url);

@@ -1,8 +1,8 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
 import { NodeListener, toNodeListener } from "h3";
 
-const handler = toNodeListener(nitroApp.h3App);
+const handler = toNodeListener(useNitroApp().h3App);
 
 const listener: NodeListener = function (req, res) {
   return handler(req, res);

@@ -5,7 +5,7 @@ import { globby } from "globby";
 
 const nightlyPackages = {
   h3: "h3-nightly",
-};
+} as Record<string, string>;
 
 async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, "package.json");

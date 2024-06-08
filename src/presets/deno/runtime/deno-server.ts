@@ -1,6 +1,7 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { startScheduleRunner, useRuntimeConfig } from "#internal/nitro";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+import { useRuntimeConfig } from "nitropack/runtime";
+import { startScheduleRunner } from "nitropack/runtime/internal/task";
 
 import destr from "destr";
 import wsAdapter from "crossws/adapters/deno";
@@ -10,6 +11,8 @@ import type { Deno as _Deno } from "@deno/types";
 // declare global {
 // const Deno: typeof import("@deno/types").Deno;
 // }
+
+const nitroApp = useNitroApp();
 
 if (Deno.env.get("DEBUG")) {
   addEventListener("unhandledrejection", (event: any) =>

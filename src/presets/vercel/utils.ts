@@ -1,7 +1,7 @@
-import type { Nitro } from "nitropack";
+import type { Nitro } from "nitropack/types";
 import fsp from "node:fs/promises";
 import { dirname, relative, resolve } from "pathe";
-import { writeFile } from "../_utils";
+import { writeFile } from "nitropack/kit";
 import { defu } from "defu";
 import { joinURL, withoutLeadingSlash } from "ufo";
 import type {

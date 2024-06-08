@@ -1,8 +1,8 @@
-import "#internal/nitro/virtual/polyfill";
-import { runCronTasks } from "#internal/nitro/task";
-import { requestHasBody } from "#internal/nitro/utils";
-import { nitroApp } from "#internal/nitro/app";
-import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import "#nitro-internal-pollyfills";
+import { runCronTasks } from "nitropack/runtime/internal/task";
+import { requestHasBody } from "nitropack/runtime/internal/utils";
+import { useNitroApp } from "nitropack/runtime";
+import { isPublicAssetURL } from "#nitro-internal-virtual/public-assets";
 
 import wsAdapter from "crossws/adapters/cloudflare";
 import type {
@@ -23,6 +23,8 @@ interface CFPagesEnv {
   CF_PAGES_URL: string;
   [key: string]: any;
 }
+
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)

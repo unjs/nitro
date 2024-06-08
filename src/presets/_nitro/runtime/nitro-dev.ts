@@ -1,8 +1,9 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { trapUnhandledNodeErrors } from "#internal/nitro/utils";
-import { runTask, startScheduleRunner } from "#internal/nitro/task";
-import { tasks, scheduledTasks } from "#internal/nitro/virtual/tasks";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitropack/runtime";
+import { trapUnhandledNodeErrors } from "nitropack/runtime/internal/utils";
+import { runTask } from "nitropack/runtime/internal/task";
+import { startScheduleRunner } from "nitropack/runtime/internal/task";
+import { tasks, scheduledTasks } from "#nitro-internal-virtual/tasks";
 
 import { Server } from "node:http";
 import { tmpdir } from "node:os";
@@ -18,6 +19,8 @@ import {
   readBody,
 } from "h3";
 import wsAdapter from "crossws/adapters/node";
+
+const nitroApp = useNitroApp();
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
@@ -36,7 +39,7 @@ function getAddress() {
   }
   const socketName = `worker-${process.pid}-${threadId}.sock`;
   if (isWindows) {
-    return join("\\\\.\\pipe\\nitro", socketName);
+    return join(String.raw`\\.\pipe\nitro`, socketName);
   } else {
     const socketDir = join(tmpdir(), "nitro");
     mkdirSync(socketDir, { recursive: true });

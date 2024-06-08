@@ -8,7 +8,7 @@ import {
 } from "ufo";
 import { parseTOML, stringifyTOML } from "confbox";
 import { globby } from "globby";
-import type { Nitro } from "nitropack";
+import type { Nitro } from "nitropack/types";
 import defu from "defu";
 import { isCI } from "std-env";
 import type { CloudflarePagesRoutes } from "./types";
@@ -84,8 +84,16 @@ async function writeCFRoutes(nitro: Nitro) {
       ),
     ],
   });
+  // Remove index.html or the .html extension to support pages pre-rendering
   routes.exclude!.push(
-    ...publicAssetFiles.map((i) => withLeadingSlash(i)).sort(comparePaths)
+    ...publicAssetFiles
+      .map(
+        (i) =>
+          withLeadingSlash(i)
+            .replace(/\/index\.html$/, "")
+            .replace(/\.html$/, "") || "/"
+      )
+      .sort(comparePaths)
   );
 
   // Only allow 100 rules in total (include + exclude)

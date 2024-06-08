@@ -1,7 +1,7 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { join, dirname } from "pathe";
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
+import { defineNitroPreset } from "nitropack/kit";
+import type { Nitro } from "nitropack/types";
 import { deprecateSWR, writeHeaders, writeRedirects } from "./utils";
 
 // Netlify functions
@@ -92,7 +92,7 @@ const netlifyEdge = defineNitroPreset(
       },
     },
     unenv: {
-      polyfill: ["#internal/nitro/polyfill/deno-env"],
+      polyfill: ["nitropack/runtime/internal/polyfill/deno-env"],
     },
     hooks: {
       "rollup:before": (nitro: Nitro) => {

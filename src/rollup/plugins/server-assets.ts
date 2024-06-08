@@ -5,18 +5,8 @@ import mime from "mime";
 import { resolve } from "pathe";
 import { normalizeKey } from "unstorage";
 import { globby } from "globby";
-import type { Nitro } from "../../types";
+import type { Nitro } from "nitropack/types";
 import { virtual } from "./virtual";
-
-export interface ServerAssetOptions {
-  inline: boolean;
-  dirs: {
-    [assetdir: string]: {
-      dir: string;
-      meta?: boolean;
-    };
-  };
-}
 
 interface ResolvedAsset {
   fsPath: string;
@@ -31,7 +21,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Development: Use filesystem
   if (nitro.options.dev || nitro.options.preset === "nitro-prerender") {
     return virtual(
-      { "#internal/nitro/virtual/server-assets": getAssetsDev(nitro) },
+      { "#nitro-internal-virtual/server-assets": getAssetsDev(nitro) },
       nitro.vfs
     );
   }
@@ -39,7 +29,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Production: Bundle assets
   return virtual(
     {
-      "#internal/nitro/virtual/server-assets": async () => {
+      "#nitro-internal-virtual/server-assets": async () => {
         // Scan all assets
         const assets: Record<string, ResolvedAsset> = {};
         for (const asset of nitro.options.serverAssets) {

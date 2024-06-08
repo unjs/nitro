@@ -1,8 +1,10 @@
-import "#internal/nitro/virtual/polyfill";
+import "#nitro-internal-pollyfills";
 import { toNodeListener } from "h3";
-import { nitroApp } from "#internal/nitro/app";
-import { trapUnhandledNodeErrors } from "#internal/nitro/utils";
-import { startScheduleRunner } from "#internal/nitro/task";
+import { useNitroApp } from "nitropack/runtime";
+import { trapUnhandledNodeErrors } from "nitropack/runtime/internal/utils";
+import { startScheduleRunner } from "nitropack/runtime/internal/task";
+
+const nitroApp = useNitroApp();
 
 export const listener = toNodeListener(nitroApp.h3App);
 
