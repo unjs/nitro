@@ -2,7 +2,7 @@ import { defineNitroConfig } from "nitropack/config";
 
 export default defineNitroConfig({
   typescript: {
-    // Because the TSConfig extends properties is not a merge but overwrite keys, we loose the paths from the NitroPack TSConfig.
+    // TSConfig `extends` property is not a merge, it overwrites keys and paths from the generated TSConfig are loosed.
     tsConfig: {
       compilerOptions: {
         paths: {
