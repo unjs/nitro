@@ -1,6 +1,11 @@
 import { fileURLToPath } from "mlly";
 import { resolve } from "pathe";
-import { createNitro, scanHandlers, writeTypes } from "nitropack/core";
+import {
+  createNitro,
+  generateTemplates,
+  scanHandlers,
+  writeTypes,
+} from "nitropack/core";
 
 const prepare = async () => {
   const fixtureDir = fileURLToPath(new URL("../fixture", import.meta.url).href);
@@ -13,6 +18,7 @@ const prepare = async () => {
 
   await scanHandlers(nitro);
   await writeTypes(nitro);
+  await generateTemplates(nitro);
 };
 
 prepare();

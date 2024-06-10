@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import { resolve } from "pathe";
-import { createNitro, writeTypes } from "nitropack/core";
+import { createNitro, generateTemplates, writeTypes } from "nitropack/core";
 import { commonArgs } from "../common";
 
 export default defineCommand({
@@ -15,5 +15,6 @@ export default defineCommand({
     const rootDir = resolve((args.dir || args._dir || ".") as string);
     const nitro = await createNitro({ rootDir });
     await writeTypes(nitro);
+    await generateTemplates(nitro);
   },
 });
