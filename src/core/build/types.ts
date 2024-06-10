@@ -248,6 +248,7 @@ declare module "nitropack/types" {
               join(nitro.options.alias["@@"] || nitro.options.rootDir, "*")
             ),
           ],
+          "#build/*": ["../*"],
           ...(nitro.options.typescript.internalPaths
             ? {
                 "nitropack/runtime": [

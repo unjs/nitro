@@ -30,7 +30,7 @@ import type { NitroRouteConfig, NitroRouteRules } from "./route-rules";
 import type { NitroPreset } from "./preset";
 import type { NitroHooks } from "./hooks";
 import type { ConnectorName } from "db0";
-import type { NitroFrameworkInfo } from "./nitro";
+import type { NitroFrameworkInfo, NitroTemplate } from "./nitro";
 import type { DevServerOptions } from "./dev";
 
 /**
@@ -159,6 +159,7 @@ export interface NitroOptions extends PresetOptions {
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
+  templates: NitroTemplate[];
 
   // Dev
   dev: boolean;

@@ -15,5 +15,6 @@ export default defineCommand({
     const rootDir = resolve((args.dir || args._dir || ".") as string);
     const nitro = await createNitro({ rootDir });
     await writeTypes(nitro);
+    await generateTemplates(nitro);
   },
 });

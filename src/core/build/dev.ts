@@ -5,6 +5,7 @@ import { debounce } from "perfect-debounce";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "../scan";
 import type { Nitro, RollupConfig } from "nitropack/types";
 import { writeTypes } from "./types";
+import { generateTemplates } from "./templates";
 import defu from "defu";
 import { formatRollupError } from "./error";
 import { nitroServerName } from "../utils/nitro";
@@ -19,6 +20,7 @@ export async function watchDev(nitro: Nitro, rollupConfig: RollupConfig) {
     await scanHandlers(nitro);
     rollupWatcher = startRollupWatcher(nitro, rollupConfig);
     await writeTypes(nitro);
+    await generateTemplates(nitro);
   }
   const reload = debounce(load);
 

@@ -10,6 +10,7 @@ import { snapshotStorage } from "../utils/storage";
 import { formatRollupError } from "./error";
 import { writeTypes } from "./types";
 import { nitroServerName } from "../utils/nitro";
+import { generateTemplates } from "./templates";
 
 export async function buildProduction(
   nitro: Nitro,
@@ -17,6 +18,7 @@ export async function buildProduction(
 ) {
   await scanHandlers(nitro);
   await writeTypes(nitro);
+  await generateTemplates(nitro);
   await _snapshot(nitro);
 
   if (!nitro.options.static) {

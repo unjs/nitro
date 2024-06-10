@@ -58,3 +58,10 @@ export interface NitroBuildInfo {
     workerAddress: { host: string; port: number; socketPath?: string };
   };
 }
+
+export interface NitroTemplate {
+  /** The target filename once the template is copied into the Nitro buildDir */
+  filename: string;
+  /** The content to write */
+  getContents: (data: { nitro: Nitro }) => string | Promise<string>;
+}
