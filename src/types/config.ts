@@ -159,7 +159,7 @@ export interface NitroOptions extends PresetOptions {
   virtual: Record<string, string | (() => string | Promise<string>)>;
   compressPublicAssets: boolean | CompressOptions;
   ignore: string[];
-  templates: NitroTemplate[];
+  templates?: NitroTemplate[];
 
   // Dev
   dev: boolean;
