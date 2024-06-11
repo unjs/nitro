@@ -13,6 +13,7 @@ import { installModules } from "./module";
 import { updateNitroConfig } from "./config/update";
 import { addNitroTasksVirtualFile } from "./task";
 import { scanAndSyncOptions } from "./scan";
+import { nitroContext } from "../kit/context";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -34,6 +35,12 @@ export async function createNitro(
       updateNitroConfig(nitro, config);
     },
   };
+
+  // Set Nitro context for `useNitro`
+  if (!nitroContext.tryUse()) {
+    nitroContext.set(nitro);
+    nitro.hooks.hook("close", () => nitroContext.unset());
+  }
 
   // Scan dirs and sync options
   // TODO: Make it side-effect free to allow proper watching
