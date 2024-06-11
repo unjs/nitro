@@ -1,14 +1,23 @@
 import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
 import { kebabCase } from "scule";
-import { provider } from "std-env";
+import { provider, type ProviderName } from "std-env";
 import allPresets from "./_all.gen";
+import type { CompatibilityDates, DateString, PlatformName } from "compatx";
+
+// std-env has more specific keys for providers
+const _providerMap: Partial<Record<ProviderName, PlatformName>> = {
+  aws_amplify: "aws",
+  azure_static: "azure",
+  cloudflare_pages: "cloudflare",
+};
 
 export async function resolvePreset(
   name: string,
-  opts: { static?: boolean; compatibilityDate?: string }
+  opts: { static?: boolean; compatibilityDates?: CompatibilityDates }
 ): Promise<(NitroPreset & { _meta?: NitroPresetMeta }) | undefined> {
   const _name = kebabCase(name) || provider;
-  const _date = new Date(opts.compatibilityDate || 0);
+
+  const _dates = (opts?.compatibilityDates || {}) as Record<string, DateString>;
 
   const matches = allPresets
     .filter((preset) => {
@@ -20,12 +29,21 @@ export async function resolvePreset(
       if (!names.includes(_name)) {
         return false;
       }
+
+      const _date =
+        _dates[_providerMap[preset._meta.stdName!]!] ||
+        _dates[preset._meta.stdName!] ||
+        _dates[preset._meta.name!] ||
+        _dates.default;
+
       if (
+        _date &&
         preset._meta.compatibility?.date &&
-        new Date(preset._meta.compatibility?.date || 0) > _date
+        new Date(preset._meta.compatibility?.date) > new Date(_date)
       ) {
         return false;
       }
+
       return true;
     })
     .sort((a, b) => {

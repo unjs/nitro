@@ -54,9 +54,7 @@ const netlify = defineNitroPreset(
     name: "netlify" as const,
     stdName: "netlify",
     url: import.meta.url,
-    compatibility: {
-      date: "2024-05-07",
-    },
+    compatibilityDate: "2024-05-07",
   }
 );
 
@@ -108,9 +106,7 @@ const netlifyEdge = defineNitroPreset(
   {
     name: "netlify-edge" as const,
     url: import.meta.url,
-    compatibility: {
-      date: "2024-05-07",
-    },
+    compatibilityDate: "2024-05-07",
   }
 );
 
@@ -135,9 +131,7 @@ const netlifyStatic = defineNitroPreset(
     stdName: "netlify",
     static: true,
     url: import.meta.url,
-    compatibility: {
-      date: "2024-05-07",
-    },
+    compatibilityDate: "2024-05-07",
   }
 );
 

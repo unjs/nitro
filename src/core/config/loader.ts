@@ -19,6 +19,7 @@ import { resolveRuntimeConfigOptions } from "./resolvers/runtime-config";
 import { resolveOpenAPIOptions } from "./resolvers/open-api";
 import { resolveAssetsOptions } from "./resolvers/assets";
 import { resolveURLOptions } from "./resolvers/url";
+import { resolveCompatibilityDatesFromEnv } from "compatx";
 
 const configResolvers = [
   resolvePathOptions,
@@ -64,11 +65,14 @@ async function _loadUserConfig(
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
 
   // Compatibility date
-  const compatibilityDate =
-    process.env.NITRO_COMPATIBILITY_DATE || opts.compatibilityDate;
+  const compatibilityDates = resolveCompatibilityDatesFromEnv(
+    opts.compatibilityDate
+  );
 
   // Preset resolver
-  const { resolvePreset } = await import("nitropack/" + "presets");
+  const { resolvePreset } = (await import(
+    "nitropack/" + "presets"
+  )) as typeof import("nitropack/presets");
 
   const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
     WatchConfigOptions
@@ -83,9 +87,9 @@ async function _loadUserConfig(
     },
     defaultConfig: {
       preset: (
-        await resolvePreset("", {
+        await resolvePreset("" /* auto detect */, {
           static: configOverrides.static,
-          compatibilityDate,
+          compatibilityDates,
         })
       )?._meta?.name,
     },
@@ -99,7 +103,7 @@ async function _loadUserConfig(
     async resolve(id: string) {
       const preset = await resolvePreset(id, {
         static: configOverrides.static,
-        compatibilityDate: compatibilityDate,
+        compatibilityDates: compatibilityDates,
       });
       if (preset) {
         return {

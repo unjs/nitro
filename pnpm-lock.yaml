@@ -68,6 +68,9 @@ importers:
       citty:
         specifier: ^0.1.6
         version: 0.1.6
+      compatx:
+        specifier: ^0.1.3
+        version: 0.1.3
       confbox:
         specifier: ^0.1.7
         version: 0.1.7
@@ -2583,6 +2586,9 @@ packages:
 
   commondir@1.0.1:
     resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
+
+  compatx@0.1.3:
+    resolution: {integrity: sha512-MWspQwvBk5xeLZMetIfjOozTAtmAIICz1mtol6NbBpCSllXOO+HvWMO87B18rcFtqjfrZ0tIFOH9gNG63ep+mw==}
 
   compress-commons@6.0.2:
     resolution: {integrity: sha512-6FqVXeETqWPoGcfzrXb37E50NP0LXT8kAMu5ooZayhWWdgEY4lBEEcbQNXtkuKQsGduxiIcI4gOTsxTmuq/bSg==}
@@ -8825,6 +8831,8 @@ snapshots:
   commander@9.5.0: {}
 
   commondir@1.0.1: {}
+
+  compatx@0.1.3: {}
 
   compress-commons@6.0.2:
     dependencies:

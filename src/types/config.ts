@@ -32,6 +32,7 @@ import type { NitroHooks } from "./hooks";
 import type { ConnectorName } from "db0";
 import type { NitroFrameworkInfo } from "./nitro";
 import type { DevServerOptions } from "./dev";
+import type { CompatibilityDateSpec } from "compatx";
 
 /**
  * Nitro normalized options (nitro.options)
@@ -40,6 +41,9 @@ export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
   _c12: ResolvedConfig<NitroConfig> | ConfigWatcher<NitroConfig>;
+
+  // Compatibility
+  compatibilityDate: CompatibilityDateSpec;
 
   // General
   debug: boolean;
@@ -273,7 +277,7 @@ export interface NitroConfig
 export interface LoadConfigOptions {
   watch?: boolean;
   c12?: WatchConfigOptions;
-  compatibilityDate?: string;
+  compatibilityDate?: CompatibilityDateSpec;
 }
 
 // ------------------------------------------------------------
