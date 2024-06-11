@@ -87,7 +87,7 @@ export function addPrerenderRoutes(routes: string | string[]) {
   const nitro = useNitro();
 
   routes = toArray(routes).filter(Boolean);
-  if (!routes.length) {
+  if (routes.length === 0) {
     return;
   }
   nitro.hooks.hook("prerender:routes", (ctx) => {
