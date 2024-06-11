@@ -36,7 +36,7 @@ export async function createNitro(
     },
   };
 
-  // Set Nitro context for `useNitro`
+  // Set Nitro context for `useNitro`. We should verify if it exists because prerender will call the `createNitro` which will reset the context and throw an error.
   if (!nitroContext.tryUse()) {
     nitroContext.set(nitro);
     nitro.hooks.hook("close", () => nitroContext.unset());
