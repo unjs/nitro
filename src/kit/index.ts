@@ -2,6 +2,7 @@ export { defineNitroPreset } from "./preset";
 export { nitroContext, useNitro } from "./context";
 export {
   defineNitroModule,
+  createResolver,
   addEventHandler,
   addPlugin,
   addDevEventHandler,
