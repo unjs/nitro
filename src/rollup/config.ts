@@ -378,7 +378,7 @@ export const plugins = [
       entries: resolveAliases({
         "#build": buildDir,
         "#nitro-internal-virtual/error-handler": nitro.options.errorHandler,
-        "#internal/nitro": join(runtimeDir, "_compat"),
+        "#internal/nitro": runtimeDir,
         "nitro/runtime": runtimeDir,
         "nitropack/runtime": runtimeDir,
         "~": nitro.options.srcDir,
