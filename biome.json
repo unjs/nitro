@@ -2,7 +2,7 @@
   "$schema": "https://biomejs.dev/schemas/1.8.0/schema.json",
   "formatter": {
     "indentStyle": "space",
-    "ignore": ["**/*.gen.ts"]
+    "ignore": ["**/*.gen.ts", "./package.json"]
   },
   "linter": {
     "enabled": false
