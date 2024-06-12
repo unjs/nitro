@@ -41,6 +41,9 @@ export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
   _c12: ResolvedConfig<NitroConfig> | ConfigWatcher<NitroConfig>;
+  _cli?: {
+    command?: string;
+  };
 
   // Compatibility
   compatibilityDate: CompatibilityDates;

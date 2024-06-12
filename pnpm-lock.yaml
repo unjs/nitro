@@ -57,8 +57,8 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1
       c12:
-        specifier: ^1.11.0
-        version: 1.11.0(magicast@0.3.4)
+        specifier: ^1.11.1
+        version: 1.11.1(magicast@0.3.4)
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
@@ -2390,8 +2390,8 @@ packages:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
-  c12@1.11.0:
-    resolution: {integrity: sha512-38Q1gY14ArFyQAtrFKNffmkavlO1/QFMFgq7iYlqwgCLVl3ydqqGHAPuTWs6T6O2XERtWKfY5umYUw9J5oQDTw==}
+  c12@1.11.1:
+    resolution: {integrity: sha512-KDU0TvSvVdaYcQKQ6iPHATGz/7p/KiVjPg4vQrB6Jg/wX9R0yl5RZxWm9IoZqaIHD2+6PZd81+KMGwRr/lRIUg==}
     peerDependencies:
       magicast: ^0.3.4
     peerDependenciesMeta:
@@ -8447,7 +8447,7 @@ snapshots:
   automd@0.3.7(magicast@0.3.4):
     dependencies:
       '@parcel/watcher': 2.4.1
-      c12: 1.11.0(magicast@0.3.4)
+      c12: 1.11.1(magicast@0.3.4)
       citty: 0.1.6
       consola: 3.2.3
       defu: 6.1.4
@@ -8616,7 +8616,7 @@ snapshots:
 
   bytes@3.1.2: {}
 
-  c12@1.11.0(magicast@0.3.4):
+  c12@1.11.1(magicast@0.3.4):
     dependencies:
       chokidar: 3.6.0
       confbox: 0.1.7
@@ -8705,7 +8705,7 @@ snapshots:
 
   changelogen@0.5.5(magicast@0.3.4):
     dependencies:
-      c12: 1.11.0(magicast@0.3.4)
+      c12: 1.11.1(magicast@0.3.4)
       colorette: 2.0.20
       consola: 3.2.3
       convert-gitmoji: 0.1.5
