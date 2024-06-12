@@ -8,6 +8,7 @@ import {
   copyPublicAssets,
 } from "nitropack/core";
 import { commonArgs } from "../common";
+import type { DateString } from "compatx";
 
 export default defineCommand({
   meta: {
@@ -42,7 +43,7 @@ export default defineCommand({
         preset: args.preset,
       },
       {
-        compatibilityDate: args.compatibilityDate || "2024-05-17",
+        compatibilityDate: args.compatibilityDate as DateString,
       }
     );
     await prepare(nitro);

@@ -2,10 +2,14 @@ import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
 import { kebabCase } from "scule";
 import { provider, type ProviderName } from "std-env";
 import allPresets from "./_all.gen";
-import type { CompatibilityDates, DateString, PlatformName } from "compatx";
+import {
+  resolveCompatibilityDatesFromEnv,
+  type CompatibilityDateSpec,
+  type PlatformName,
+} from "compatx";
 
-// std-env has more specific keys for providers
-const _providerMap: Partial<Record<ProviderName, PlatformName>> = {
+// std-env has more specific keys for providers than compatx
+const _stdProviderMap: Partial<Record<ProviderName, PlatformName>> = {
   aws_amplify: "aws",
   azure_static: "azure",
   cloudflare_pages: "cloudflare",
@@ -13,11 +17,11 @@ const _providerMap: Partial<Record<ProviderName, PlatformName>> = {
 
 export async function resolvePreset(
   name: string,
-  opts: { static?: boolean; compatibilityDates?: CompatibilityDates }
+  opts: { static?: boolean; compatibilityDate?: CompatibilityDateSpec }
 ): Promise<(NitroPreset & { _meta?: NitroPresetMeta }) | undefined> {
   const _name = kebabCase(name) || provider;
 
-  const _dates = (opts?.compatibilityDates || {}) as Record<string, DateString>;
+  const _compatDates = resolveCompatibilityDatesFromEnv(opts.compatibilityDate);
 
   const matches = allPresets
     .filter((preset) => {
@@ -31,15 +35,15 @@ export async function resolvePreset(
       }
 
       const _date =
-        _dates[_providerMap[preset._meta.stdName!]!] ||
-        _dates[preset._meta.stdName!] ||
-        _dates[preset._meta.name!] ||
-        _dates.default;
+        _compatDates[_stdProviderMap[preset._meta.stdName!] as PlatformName] ||
+        _compatDates[preset._meta.stdName as PlatformName] ||
+        _compatDates[preset._meta.name as PlatformName] ||
+        _compatDates.default;
 
       if (
         _date &&
-        preset._meta.compatibility?.date &&
-        new Date(preset._meta.compatibility?.date) > new Date(_date)
+        preset._meta.compatibilityDate &&
+        new Date(preset._meta.compatibilityDate) > new Date(_date)
       ) {
         return false;
       }
@@ -47,8 +51,8 @@ export async function resolvePreset(
       return true;
     })
     .sort((a, b) => {
-      const aDate = new Date(a._meta.compatibility?.date || 0);
-      const bDate = new Date(b._meta.compatibility?.date || 0);
+      const aDate = new Date(a._meta.compatibilityDate || 0);
+      const bDate = new Date(b._meta.compatibilityDate || 0);
       return bDate > aDate ? 1 : -1;
     });
 

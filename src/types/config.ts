@@ -32,7 +32,7 @@ import type { NitroHooks } from "./hooks";
 import type { ConnectorName } from "db0";
 import type { NitroFrameworkInfo } from "./nitro";
 import type { DevServerOptions } from "./dev";
-import type { CompatibilityDateSpec } from "compatx";
+import type { CompatibilityDateSpec, CompatibilityDates } from "compatx";
 
 /**
  * Nitro normalized options (nitro.options)
@@ -44,6 +44,7 @@ export interface NitroOptions extends PresetOptions {
 
   // Compatibility
   compatibilityDate: CompatibilityDateSpec;
+  compatibilityDates: CompatibilityDates;
 
   // General
   debug: boolean;
@@ -261,7 +262,10 @@ export interface NitroOptions extends PresetOptions {
  */
 export interface NitroConfig
   extends DeepPartial<
-      Omit<NitroOptions, "routeRules" | "rollupConfig" | "preset">
+      Omit<
+        NitroOptions,
+        "routeRules" | "rollupConfig" | "preset" | "compatibilityDates"
+      >
     >,
     C12InputConfig<NitroConfig> {
   preset?: PresetNameInput;

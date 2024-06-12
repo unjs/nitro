@@ -1,14 +1,18 @@
-import { loadConfig, watchConfig, type WatchConfigOptions } from "c12";
+import { loadConfig, watchConfig } from "c12";
 import { klona } from "klona/full";
+import { CompatibilityDateSpec } from "compatx";
 import type {
   LoadConfigOptions,
   NitroConfig,
   NitroOptions,
+  NitroPresetMeta,
 } from "nitropack/types";
 import type { PresetName } from "nitropack/presets";
+
 import { NitroDefaults } from "./defaults";
 
 // Resolvers
+import { resolveCompatibilityOptions } from "./resolvers/compatibility";
 import { resolvePathOptions } from "./resolvers/paths";
 import { resolveImportsOptions } from "./resolvers/imports";
 import { resolveRouteRulesOptions } from "./resolvers/route-rules";
@@ -19,9 +23,9 @@ import { resolveRuntimeConfigOptions } from "./resolvers/runtime-config";
 import { resolveOpenAPIOptions } from "./resolvers/open-api";
 import { resolveAssetsOptions } from "./resolvers/assets";
 import { resolveURLOptions } from "./resolvers/url";
-import { resolveCompatibilityDatesFromEnv } from "compatx";
 
 const configResolvers = [
+  resolveCompatibilityOptions,
   resolvePathOptions,
   resolveImportsOptions,
   resolveRouteRulesOptions,
@@ -65,18 +69,21 @@ async function _loadUserConfig(
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
 
   // Compatibility date
-  const compatibilityDates = resolveCompatibilityDatesFromEnv(
-    opts.compatibilityDate
-  );
+  const _compatibilityDate =
+    configOverrides.compatibilityDate ||
+    opts.compatibilityDate ||
+    ((process.env.NITRO_COMPATIBILITY_DATE ||
+      process.env.SERVER_COMPATIBILITY_DATE ||
+      process.env.COMPATIBILITY_DATE) as CompatibilityDateSpec);
 
   // Preset resolver
   const { resolvePreset } = (await import(
     "nitropack/" + "presets"
   )) as typeof import("nitropack/presets");
 
-  const c12Config = await (opts.watch ? watchConfig : loadConfig)(<
-    WatchConfigOptions
-  >{
+  const loadedConfig = await (opts.watch
+    ? watchConfig<NitroConfig & { _meta?: NitroPresetMeta }>
+    : loadConfig<NitroConfig & { _meta?: NitroPresetMeta }>)({
     name: "nitro",
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
@@ -85,13 +92,16 @@ async function _loadUserConfig(
       ...configOverrides,
       preset: presetOverride,
     },
-    defaultConfig: {
-      preset: (
-        await resolvePreset("" /* auto detect */, {
-          static: configOverrides.static,
-          compatibilityDates,
-        })
-      )?._meta?.name,
+    async defaultConfig({ configs }) {
+      return {
+        preset: (
+          await resolvePreset("" /* auto detect */, {
+            static: configOverrides.static,
+            compatibilityDate:
+              _compatibilityDate || configs?.main?.compatibilityDate,
+          })
+        )?._meta?.name,
+      };
     },
     defaults: NitroDefaults,
     jitiOptions: {
@@ -103,7 +113,7 @@ async function _loadUserConfig(
     async resolve(id: string) {
       const preset = await resolvePreset(id, {
         static: configOverrides.static,
-        compatibilityDates: compatibilityDates,
+        compatibilityDate: _compatibilityDate, // || configs?.main?.compatibilityDate,
       });
       if (preset) {
         return {
@@ -114,15 +124,14 @@ async function _loadUserConfig(
     ...opts.c12,
   });
 
-  const options = klona(c12Config.config) as NitroOptions;
+  const options = klona(loadedConfig.config) as NitroOptions;
 
   options._config = configOverrides;
-  options._c12 = c12Config;
+  options._c12 = loadedConfig;
 
   const _presetName =
-    (c12Config.layers || []).find((l) => l.config?._meta?.name)?.config?._meta
-      ?.name || presetOverride;
-
+    (loadedConfig.layers || []).find((l) => l.config?._meta?.name)?.config
+      ?._meta?.name || presetOverride;
   options.preset = _presetName as PresetName;
 
   return options;
