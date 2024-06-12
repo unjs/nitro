@@ -1,6 +1,6 @@
 import { loadConfig, watchConfig } from "c12";
 import { klona } from "klona/full";
-import { CompatibilityDateSpec } from "compatx";
+import { CompatibilityDateSpec, resolveCompatibilityDates } from "compatx";
 import type {
   LoadConfigOptions,
   NitroConfig,
@@ -12,7 +12,10 @@ import type { PresetName } from "nitropack/presets";
 import { NitroDefaults } from "./defaults";
 
 // Resolvers
-import { resolveCompatibilityOptions } from "./resolvers/compatibility";
+import {
+  fallbackCompatibilityDate,
+  resolveCompatibilityOptions,
+} from "./resolvers/compatibility";
 import { resolvePathOptions } from "./resolvers/paths";
 import { resolveImportsOptions } from "./resolvers/imports";
 import { resolveRouteRulesOptions } from "./resolvers/route-rules";
@@ -69,7 +72,7 @@ async function _loadUserConfig(
   globalThis.defineNitroConfig = globalThis.defineNitroConfig || ((c) => c);
 
   // Compatibility date
-  const _compatibilityDate =
+  let compatibilityDate: CompatibilityDateSpec | undefined =
     configOverrides.compatibilityDate ||
     opts.compatibilityDate ||
     ((process.env.NITRO_COMPATIBILITY_DATE ||
@@ -93,12 +96,17 @@ async function _loadUserConfig(
       preset: presetOverride,
     },
     async defaultConfig({ configs }) {
+      if (!compatibilityDate) {
+        compatibilityDate =
+          configs.main?.compatibilityDate ||
+          configs.rc?.compatibilityDate ||
+          configs.packageJson?.compatibilityDate;
+      }
       return {
         preset: (
           await resolvePreset("" /* auto detect */, {
             static: configOverrides.static,
-            compatibilityDate:
-              _compatibilityDate || configs?.main?.compatibilityDate,
+            compatibilityDate: compatibilityDate || fallbackCompatibilityDate,
           })
         )?._meta?.name,
       };
@@ -113,7 +121,7 @@ async function _loadUserConfig(
     async resolve(id: string) {
       const preset = await resolvePreset(id, {
         static: configOverrides.static,
-        compatibilityDate: _compatibilityDate, // || configs?.main?.compatibilityDate,
+        compatibilityDate: compatibilityDate || fallbackCompatibilityDate,
       });
       if (preset) {
         return {
@@ -133,6 +141,12 @@ async function _loadUserConfig(
     (loadedConfig.layers || []).find((l) => l.config?._meta?.name)?.config
       ?._meta?.name || presetOverride;
   options.preset = _presetName as PresetName;
+
+  options.compatibilityDate = compatibilityDate || options.compatibilityDate;
+  options.compatibilityDates = resolveCompatibilityDates(
+    compatibilityDate,
+    options.compatibilityDate
+  );
 
   return options;
 }

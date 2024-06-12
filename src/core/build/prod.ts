@@ -10,6 +10,7 @@ import { snapshotStorage } from "../utils/storage";
 import { formatRollupError } from "./error";
 import { writeTypes } from "./types";
 import { nitroServerName } from "../utils/nitro";
+import { formatCompatibilityDate } from "compatx";
 
 export async function buildProduction(
   nitro: Nitro,
@@ -21,7 +22,7 @@ export async function buildProduction(
 
   if (!nitro.options.static) {
     nitro.logger.info(
-      `Building ${nitroServerName(nitro)} (preset: \`${nitro.options.preset}\`)`
+      `Building ${nitroServerName(nitro)} (preset: \`${nitro.options.preset}\`, compatibility date: \`${formatCompatibilityDate(nitro.options.compatibilityDates)}\` )`
     );
     const build = await rollup.rollup(rollupConfig).catch((error) => {
       nitro.logger.error(formatRollupError(error));

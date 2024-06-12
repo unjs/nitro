@@ -19,6 +19,7 @@ import {
 } from "nitropack/core";
 import type { Nitro, NitroConfig } from "nitropack/types";
 import { nodeMajorVersion, isWindows } from "std-env";
+import { type DateString, formatDate } from "compatx";
 
 export interface Context {
   preset: string;
@@ -68,7 +69,7 @@ export const getPresetTmpDir = (preset: string) => {
 
 export async function setupTest(
   preset: string,
-  opts: { config?: NitroConfig; compatibilityDate?: string } = {}
+  opts: { config?: NitroConfig; compatibilityDate?: DateString } = {}
 ) {
   const presetTmpDir = getPresetTmpDir(preset);
 
@@ -127,7 +128,7 @@ export async function setupTest(
     timing: !ctx.isWorker,
   });
   const nitro = (ctx.nitro = await createNitro(config, {
-    compatibilityDate: opts.compatibilityDate || "2024-05-17",
+    compatibilityDate: opts.compatibilityDate || formatDate(new Date()),
   }));
 
   if (ctx.isDev) {
