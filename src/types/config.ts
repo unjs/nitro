@@ -32,6 +32,7 @@ import type { NitroHooks } from "./hooks";
 import type { ConnectorName } from "db0";
 import type { NitroFrameworkInfo } from "./nitro";
 import type { DevServerOptions } from "./dev";
+import type { CompatibilityDateSpec, CompatibilityDates } from "compatx";
 
 /**
  * Nitro normalized options (nitro.options)
@@ -40,6 +41,12 @@ export interface NitroOptions extends PresetOptions {
   // Internal
   _config: NitroConfig;
   _c12: ResolvedConfig<NitroConfig> | ConfigWatcher<NitroConfig>;
+  _cli?: {
+    command?: string;
+  };
+
+  // Compatibility
+  compatibilityDate: CompatibilityDates;
 
   // General
   debug: boolean;
@@ -257,13 +264,17 @@ export interface NitroOptions extends PresetOptions {
  */
 export interface NitroConfig
   extends DeepPartial<
-      Omit<NitroOptions, "routeRules" | "rollupConfig" | "preset">
+      Omit<
+        NitroOptions,
+        "routeRules" | "rollupConfig" | "preset" | "compatibilityDate"
+      >
     >,
     C12InputConfig<NitroConfig> {
   preset?: PresetNameInput;
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
   rollupConfig?: Partial<RollupConfig>;
+  compatibilityDate?: CompatibilityDateSpec;
 }
 
 // ------------------------------------------------------------
@@ -273,7 +284,7 @@ export interface NitroConfig
 export interface LoadConfigOptions {
   watch?: boolean;
   c12?: WatchConfigOptions;
-  compatibilityDate?: string;
+  compatibilityDate?: CompatibilityDateSpec;
 }
 
 // ------------------------------------------------------------
