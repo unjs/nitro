@@ -1,5 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { relative, resolve } from "pathe";
+import { withTrailingSlash } from "ufo";
 import createEtag from "etag";
 import mime from "mime";
 import { globby } from "globby";
@@ -112,7 +113,10 @@ export function readAsset (id) {
         const publicAssetBases = Object.fromEntries(
           nitro.options.publicAssets
             .filter((dir) => !dir.fallthrough && dir.baseURL !== "/")
-            .map((dir) => [dir.baseURL, { maxAge: dir.maxAge }])
+            .map((dir) => [
+              withTrailingSlash(dir.baseURL),
+              { maxAge: dir.maxAge },
+            ])
         );
 
         const readAssetImport = `#internal/nitro/virtual/public-assets-${
