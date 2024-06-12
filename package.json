@@ -8,58 +8,72 @@
   "exports": {
     "./cli": {
       "types": "./cli.d.ts",
+      "default": "./dist/cli/index.mjs",
       "import": "./dist/cli/index.mjs"
     },
     "./config": {
       "types": "./config.d.ts",
+      "default": "./dist/config/index.mjs",
       "import": "./dist/config/index.mjs"
     },
     ".": {
       "types": "./types.d.ts",
+      "default": "./dist/core/index.mjs",
       "import": "./dist/core/index.mjs"
     },
     "./core": {
       "types": "./types.d.ts",
+      "default": "./dist/core/index.mjs",
       "import": "./dist/core/index.mjs"
     },
     "./kit": {
       "types": "./kit.d.ts",
+      "default": "./dist/kit/index.mjs",
       "import": "./dist/kit/index.mjs"
     },
     "./meta": {
       "types": "./dist/meta/index.d.ts",
+      "default": "./dist/meta/index.mjs",
       "import": "./dist/meta/index.mjs"
     },
     "./presets": {
       "types": "./presets.d.ts",
+      "default": "./dist/presets/index.mjs",
       "import": "./dist/presets/index.mjs"
     },
     "./presets/*": {
       "types": "./dist/presets/*.d.ts",
+      "default": "./dist/presets/*.mjs",
       "import": "./dist/presets/*.mjs"
     },
     "./rollup": {
       "types": "./rollup.d.ts",
+      "default": "./dist/rollup/index.mjs",
       "import": "./dist/rollup/index.mjs"
     },
     "./runtime": {
       "types": "./runtime.d.ts",
+      "default": "./dist/runtime/index.mjs",
       "import": "./dist/runtime/index.mjs"
     },
     "./runtime/meta": {
       "types": "./runtime-meta.d.ts",
+      "default": "./runtime-meta.mjs",
       "import": "./runtime-meta.mjs"
     },
     "./runtime/*": {
       "types": "./dist/runtime/*.d.ts",
+      "default": "./dist/runtime/*.mjs",
       "import": "./dist/runtime/*.mjs"
     },
     "./dist/runtime/*": {
       "types": "./dist/runtime/*.d.ts",
+      "default": "./dist/runtime/*.mjs",
       "import": "./dist/runtime/*.mjs"
     },
     "./types": {
       "types": "./types.d.ts",
+      "default": "./dist/types/index.mjs",
       "import": "./dist/types/index.mjs"
     },
     "./package.json": "./package.json"
