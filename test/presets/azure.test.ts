@@ -117,6 +117,10 @@ describe(
               "route": "/logout",
             },
             {
+              "rewrite": "/prerender-custom.html",
+              "route": "/prerender-custom",
+            },
+            {
               "rewrite": "/api/hey/index.html",
               "route": "/api/hey",
             },
