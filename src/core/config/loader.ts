@@ -142,8 +142,7 @@ async function _loadUserConfig(
       ?._meta?.name || presetOverride;
   options.preset = _presetName as PresetName;
 
-  options.compatibilityDate = compatibilityDate || options.compatibilityDate;
-  options.compatibilityDates = resolveCompatibilityDates(
+  options.compatibilityDate = resolveCompatibilityDates(
     compatibilityDate,
     options.compatibilityDate
   );

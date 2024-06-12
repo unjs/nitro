@@ -6,13 +6,11 @@ import type { NitroOptions } from "nitropack/types";
 export const fallbackCompatibilityDate = "2024-04-03";
 
 export async function resolveCompatibilityOptions(options: NitroOptions) {
-  options.compatibilityDates = {
-    ...resolveCompatibilityDatesFromEnv(options.compatibilityDate),
-    ...options.compatibilityDates,
-  };
-
+  options.compatibilityDate = resolveCompatibilityDatesFromEnv(
+    options.compatibilityDate
+  );
   if (
-    !options.compatibilityDates.default &&
+    !options.compatibilityDate.default &&
     options.preset !== "nitro-prerender"
   ) {
     const _todayDate = formatDate(new Date());
@@ -22,6 +20,6 @@ export async function resolveCompatibilityOptions(options: NitroOptions) {
         `No valid compatibility date is specified. Using \`${fallbackCompatibilityDate}\` as fallback.`,
         `\n\n💡 You can use current compatibility using \`COMPATIBILITY_DATE=${_todayDate}\` environment variable or \`compatibilityDate: '${_todayDate}'\` config.`
       );
-    options.compatibilityDates.default = fallbackCompatibilityDate;
+    options.compatibilityDate.default = fallbackCompatibilityDate;
   }
 }

@@ -43,8 +43,7 @@ export interface NitroOptions extends PresetOptions {
   _c12: ResolvedConfig<NitroConfig> | ConfigWatcher<NitroConfig>;
 
   // Compatibility
-  compatibilityDate: CompatibilityDateSpec;
-  compatibilityDates: CompatibilityDates;
+  compatibilityDate: CompatibilityDates;
 
   // General
   debug: boolean;
@@ -264,7 +263,7 @@ export interface NitroConfig
   extends DeepPartial<
       Omit<
         NitroOptions,
-        "routeRules" | "rollupConfig" | "preset" | "compatibilityDates"
+        "routeRules" | "rollupConfig" | "preset" | "compatibilityDate"
       >
     >,
     C12InputConfig<NitroConfig> {
@@ -272,6 +271,7 @@ export interface NitroConfig
   extends?: string | string[] | NitroPreset;
   routeRules?: { [path: string]: NitroRouteConfig };
   rollupConfig?: Partial<RollupConfig>;
+  compatibilityDate?: CompatibilityDateSpec;
 }
 
 // ------------------------------------------------------------
