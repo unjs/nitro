@@ -4,8 +4,6 @@ import type {
   createCall,
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
-import { EmailContext, MessageBatch } from "#internal/nitro/cloudflare";
-import { ExecutionContext } from "@cloudflare/workers-types";
 
 export interface NitroApp {
   h3App: H3App;
@@ -56,14 +54,5 @@ export interface NitroRuntimeHooks {
   "render:response": (
     response: Partial<RenderResponse>,
     context: { event: H3Event }
-  ) => void;
-
-  "cloudflare:email": (
-    event: EmailContext,
-    context: { env: any; context: ExecutionContext }
-  ) => void;
-  "cloudflare:queue": (
-    event: MessageBatch,
-    context: { env: any; context: ExecutionContext }
   ) => void;
 }
