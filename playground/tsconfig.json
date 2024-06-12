@@ -1,11 +1,3 @@
 {
-  "extends": "./.nitro/types/tsconfig.json",
-  "compilerOptions": {
-    "paths": {
-      "nitropack": ["../src/index"],
-      "nitropack/config": ["../src/config"],
-      "#internal/nitro": ["../src/runtime/index"],
-      "#internal/nitro/*": ["../src/runtime/*"]
-    }
-  }
+  "extends": "./.nitro/types/tsconfig.json"
 }
