@@ -32,6 +32,7 @@ function _resolveNitroModule(
 
     const _jiti = jiti(nitroOptions.rootDir, {
       interopDefault: true,
+      esmResolve: true,
       alias: nitroOptions.alias,
     });
     const _modPath = _jiti.resolve(mod);
