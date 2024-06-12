@@ -21,6 +21,7 @@ export function resolveNitroModule(
     const _jiti = jiti(nitroOptions.rootDir, {
       interopDefault: true,
       alias: nitroOptions.alias,
+      esmResolve: true,
     });
     const _modPath = _jiti.resolve(mod);
     _url = _modPath;
