@@ -1,1 +1,1 @@
-export * from "./dist/schema/config";
+export * from "./dist/config";
