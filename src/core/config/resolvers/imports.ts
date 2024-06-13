@@ -72,7 +72,6 @@ function getNitroImportsPreset(): Preset[] {
         "defineRenderHandler",
         "defineRouteMeta",
         "getRouteRules",
-        "useAppConfig",
         "useEvent",
         "defineTask",
         "runTask",
