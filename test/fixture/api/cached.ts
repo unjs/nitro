@@ -1,3 +1,6 @@
-export default defineCachedEventHandler(() => {
-  return Date.now();
+export default defineCachedEventHandler((event) => {
+  return {
+    timestamp: Date.now(),
+    cache: event.context.cache,
+  };
 });
