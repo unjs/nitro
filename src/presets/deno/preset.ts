@@ -20,9 +20,6 @@ const denoDeploy = defineNitroPreset(
       deploy:
         "cd ./ && deployctl deploy --project=<project_name> server/index.ts",
     },
-    unenv: {
-      polyfill: ["nitropack/runtime/internal/polyfill/deno-env"],
-    },
     rollupConfig: {
       preserveEntrySignatures: false,
       external: (id) => id.startsWith("https://"),

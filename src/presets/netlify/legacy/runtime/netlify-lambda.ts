@@ -1,11 +1,12 @@
 import "#nitro-internal-pollyfills";
+import "./_deno-env-polyfill";
 import { useNitroApp } from "nitropack/runtime";
-import { normalizeCookieHeader } from "nitropack/runtime/internal/utils";
 import {
+  normalizeCookieHeader,
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/internal/utils.lambda";
+} from "nitropack/runtime/internal";
 
 import { withQuery } from "ufo";
 import type {

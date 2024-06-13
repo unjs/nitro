@@ -5,6 +5,8 @@ import type {
   NitroEventHandler,
 } from "nitropack/types";
 import { virtual } from "./virtual";
+import { join } from "pathe";
+import { runtimeDir } from "nitropack/runtime/meta";
 
 export function handlers(nitro: Nitro) {
   const getHandlers = () => {
@@ -36,7 +38,7 @@ export function handlers(nitro: Nitro) {
         if (nitro.options.serveStatic) {
           handlers.unshift({
             middleware: true,
-            handler: "nitropack/runtime/internal/static",
+            handler: join(runtimeDir, "internal/static"),
           });
         }
         if (nitro.options.renderer) {

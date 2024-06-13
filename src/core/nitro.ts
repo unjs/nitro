@@ -13,6 +13,8 @@ import { installModules } from "./module";
 import { updateNitroConfig } from "./config/update";
 import { addNitroTasksVirtualFile } from "./task";
 import { scanAndSyncOptions } from "./scan";
+import { join } from "pathe";
+import { runtimeDir } from "nitropack/runtime/meta";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -48,10 +50,10 @@ export async function createNitro(
   // Debug and timing
   if (nitro.options.debug) {
     createDebugger(nitro.hooks, { tag: "nitro" });
-    nitro.options.plugins.push("nitropack/runtime/internal/debug");
+    nitro.options.plugins.push(join(runtimeDir, "internal/debug"));
   }
   if (nitro.options.timing) {
-    nitro.options.plugins.push("nitropack/runtime/internal/timing");
+    nitro.options.plugins.push(join(runtimeDir, "internal/timing"));
   }
 
   // Logger

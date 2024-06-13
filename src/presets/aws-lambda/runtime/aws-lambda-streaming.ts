@@ -9,7 +9,7 @@ import { useNitroApp } from "nitropack/runtime";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/internal/utils.lambda";
+} from "nitropack/runtime/internal";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
