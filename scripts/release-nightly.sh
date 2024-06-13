@@ -13,6 +13,9 @@ pnpm changelogen --bump
 # Bump versions to nightly
 pnpm jiti ./scripts/bump-nightly
 
+# Build mirror
+pnpm gen-mirror
+
 # Resolve lockfile
 # pnpm install
 
@@ -26,5 +29,10 @@ if [[ ! -z ${NODE_AUTH_TOKEN} ]] ; then
 fi
 
 # Release packages
-echo "Publishing package..."
+
+echo "Publishing main package..."
+npm publish --access public --tolerate-republish
+
+echo "Publishing mirror package..."
+cd .mirror
 npm publish --access public --tolerate-republish

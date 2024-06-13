@@ -19,26 +19,29 @@ const copyPkgFields = [
 
 const copyFiles = ["README.md", "LICENSE"];
 
-// 2.x: nitropack ~> nitro
-const mainPkgName = "nitropack";
-const mirrrorPkgName = "nitro";
-
 // Dirs
 const mainDir = fileURLToPath(new URL("..", import.meta.url));
 const mirrorDir = fileURLToPath(new URL("../.mirror", import.meta.url));
 
 async function main() {
+  // Read main package
+  const mainPkg = await readPackageJSON(mainDir);
+
+  // Mirror nitro<>nitropack
+  const mirrrorPkgName = mainPkg.name!.includes("pack")
+    ? mainPkg.name!.replace("pack", "")
+    : mainPkg.name!.replace("nitro", "nitropack");
+
   // Init mirror dir
   await rm(mirrorDir, { recursive: true }).catch(() => {});
   await mkdir(mirrorDir, { recursive: true });
 
   // Copy package.json fields
-  const mainPkg = await readPackageJSON(mainDir);
   const mirrorPkg: PackageJson = {
     name: mirrrorPkgName,
-    version: `0.0.0-${mainPkg.name}-${mainPkg.version}`,
+    version: `0.0.0-mirror-${mainPkg.name}-${mainPkg.version}`,
     peerDependencies: {
-      [mainPkgName]: mainPkg.version!,
+      [mainPkg.name!]: mainPkg.version!,
     },
   };
   for (const field of copyPkgFields) {
@@ -56,15 +59,15 @@ async function main() {
     await mkdir(join(mirrorDir, "dist", subpath), { recursive: true });
     await writeFile(
       join(mirrorDir, "dist", subpath, "index.mjs"),
-      `export * from "${mainPkgName}/${subpath}";`
+      `export * from "${mainPkg.name}/${subpath}";`
     );
     await writeFile(
       join(mirrorDir, "dist", subpath, "index.d.ts"),
-      `export * from "${mainPkgName}/${subpath}";`
+      `export * from "${mainPkg.name}/${subpath}";`
     );
     await writeFile(
       join(mirrorDir, "dist", subpath, "index.d.mts"),
-      `export * from "${mainPkgName}/${subpath}";`
+      `export * from "${mainPkg.name}/${subpath}";`
     );
     await writeFile(
       join(mirrorDir, `${subpath}.d.ts`),
@@ -75,11 +78,11 @@ async function main() {
   // Runtime Meta
   await writeFile(
     join(mirrorDir, "runtime-meta.mjs"),
-    `export * from "${mainPkgName}/runtime/meta";`
+    `export * from "${mainPkg.name}/runtime/meta";`
   );
   await writeFile(
     join(mirrorDir, "runtime-meta.d.ts"),
-    `export * from "${mainPkgName}/runtime/meta";`
+    `export * from "${mainPkg.name}/runtime/meta";`
   );
 
   // Other files
