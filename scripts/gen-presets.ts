@@ -91,7 +91,7 @@ writeFileSync(
 ${presetsWithType
   .map(
     (preset) =>
-      `import { PresetOptions as ${pascalCase(
+      `import type { PresetOptions as ${pascalCase(
         preset
       )}Options } from "./${preset}/preset";`
   )
