@@ -256,12 +256,6 @@ declare module "nitro/types" {
                 "#internal/nitro": [
                   relativeWithDot(tsconfigDir, join(runtimeDir, "index")),
                 ],
-                "nitro/runtime/*": [
-                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
-                ],
-                "#internal/nitro/*": [
-                  relativeWithDot(tsconfigDir, join(runtimeDir, "*")),
-                ],
               }
             : {}),
         },

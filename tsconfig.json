@@ -34,8 +34,6 @@
       "nitro": ["./src/core"],
       // Runtime
       "nitro/runtime": ["./src/runtime"],
-      // Runtime subpaths
-      "nitro/runtime/*": ["./src/runtime/*"],
       // Runtime meta
       "nitro/runtime/meta": ["./runtime-meta"],
       // Kit
