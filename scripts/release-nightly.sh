@@ -8,7 +8,7 @@ set -xe
 git restore -s@ -SW  -- .
 
 # Bump according to changelog
-pnpm changelogen --bump
+pnpm changelogen --bump -r 3.0.0-beta
 
 # Bump versions to nightly
 pnpm jiti ./scripts/bump-nightly
