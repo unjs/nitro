@@ -1,11 +1,11 @@
-import createJITI from "jiti";
-import { consola } from "consola";
-import { kebabCase, camelCase, pascalCase, snakeCase } from "scule";
-import { readdirSync, existsSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { NitroPreset, NitroPresetMeta } from "nitro/types";
+import { consola } from "consola";
+import createJITI from "jiti";
 import { findTypeExports } from "mlly";
+import type { NitroPreset, NitroPresetMeta } from "nitro/types";
+import { camelCase, kebabCase, pascalCase, snakeCase } from "scule";
 import { subpaths } from "../build.config";
 
 const autoGenHeader = /* ts */ `// Auto-generated using gen-presets script\n`;

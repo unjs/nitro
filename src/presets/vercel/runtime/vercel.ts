@@ -1,7 +1,7 @@
 import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitro/runtime";
 
-import { toNodeListener, NodeListener } from "h3";
+import { type NodeListener, toNodeListener } from "h3";
 import { parseQuery } from "ufo";
 
 const nitroApp = useNitroApp();

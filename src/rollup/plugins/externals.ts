@@ -1,20 +1,20 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
-import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
-import type { PackageJson } from "pkg-types";
-import { readPackageJSON, writePackageJSON } from "pkg-types";
 import { nodeFileTrace } from "@vercel/nft";
-import type { Plugin } from "rollup";
 import {
-  resolvePath,
   isValidNodeImport,
   lookupNodeModuleSubpath,
   normalizeid,
   parseNodeModulePath,
+  resolvePath,
 } from "mlly";
-import semver from "semver";
 import { isDirectory } from "nitro/kit";
 import type { NodeExternalsOptions } from "nitro/types";
+import { dirname, isAbsolute, join, normalize, relative, resolve } from "pathe";
+import type { PackageJson } from "pkg-types";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
+import type { Plugin } from "rollup";
+import semver from "semver";
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
@@ -345,7 +345,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const src = join(opts.outDir, "node_modules", from);
         const dst = join(opts.outDir, "node_modules", to);
         const dstStat = await fsp.lstat(dst).catch(() => null);
-        const exists = dstStat && dstStat.isSymbolicLink();
+        const exists = dstStat?.isSymbolicLink();
         // console.log("Linking", from, "to", to, exists ? "!!!!" : "");
         if (exists) {
           return;

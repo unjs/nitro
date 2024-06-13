@@ -1,18 +1,18 @@
-import { createHooks, createDebugger } from "hookable";
-import { createUnimport } from "unimport";
 import { consola } from "consola";
+import { createDebugger, createHooks } from "hookable";
 import type {
+  LoadConfigOptions,
+  Nitro,
   NitroConfig,
   NitroDynamicConfig,
-  Nitro,
-  LoadConfigOptions,
 } from "nitro/types";
+import { createUnimport } from "unimport";
 import { loadOptions } from "./config/loader";
-import { createStorage } from "./utils/storage";
-import { installModules } from "./module";
 import { updateNitroConfig } from "./config/update";
-import { addNitroTasksVirtualFile } from "./task";
+import { installModules } from "./module";
 import { scanAndSyncOptions } from "./scan";
+import { addNitroTasksVirtualFile } from "./task";
+import { createStorage } from "./utils/storage";
 
 export async function createNitro(
   config: NitroConfig = {},

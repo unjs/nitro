@@ -1,8 +1,8 @@
 import "#nitro-internal-pollyfills";
 import { getRouteRulesForPath } from "nitro/runtime/internal/route-rules";
 
-import { withQuery } from "ufo";
 import type { Handler } from "@netlify/functions/dist/main";
+import { withQuery } from "ufo";
 import { lambda } from "./netlify-lambda";
 
 export const handler: Handler = async function handler(event, context) {

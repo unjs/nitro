@@ -1,11 +1,11 @@
-import type { Unimport } from "unimport";
-import type { Hookable } from "hookable";
 import type { ConsolaInstance } from "consola";
-import type { Storage } from "unstorage";
 import type { RouterMethod } from "h3";
-import type { NitroEventHandler } from "./handler";
+import type { Hookable } from "hookable";
 import type { PresetName } from "nitro/presets";
+import type { Unimport } from "unimport";
+import type { Storage } from "unstorage";
 import type { NitroConfig, NitroOptions } from "./config";
+import type { NitroEventHandler } from "./handler";
 import type { NitroHooks } from "./hooks";
 import type { PrerenderRoute } from "./prerender";
 

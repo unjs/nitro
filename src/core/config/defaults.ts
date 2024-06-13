@@ -1,7 +1,7 @@
-import { isTest, isDebug } from "std-env";
+import { runtimeDir } from "nitro/runtime/meta";
 import type { NitroConfig } from "nitro/types";
 import { resolve } from "pathe";
-import { runtimeDir } from "nitro/runtime/meta";
+import { isDebug, isTest } from "std-env";
 
 export const NitroDefaults: NitroConfig = {
   // General

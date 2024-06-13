@@ -1,34 +1,34 @@
+import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
+import type { ReferenceConfiguration } from "@scalar/api-reference";
+import type { C12InputConfig, ConfigWatcher, ResolvedConfig } from "c12";
+import type { WatchConfigOptions } from "c12";
+import type { WatchOptions } from "chokidar";
+import type { CompatibilityDateSpec, CompatibilityDates } from "compatx";
+import type { LogLevel } from "consola";
+import type { ConnectorName } from "db0";
+import type { NestedHooks } from "hookable";
+import type { ProxyServerOptions } from "httpxy";
+import type { PresetName, PresetNameInput, PresetOptions } from "nitro/presets";
+import type { TSConfig } from "pkg-types";
+import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
 import type { Preset as UnenvPreset } from "unenv";
 import type { UnimportPluginOptions } from "unimport/unplugin";
-import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
-import type { NestedHooks } from "hookable";
-import type { LogLevel } from "consola";
-import type { WatchOptions } from "chokidar";
-import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
-import type { ProxyServerOptions } from "httpxy";
-import type { ResolvedConfig, ConfigWatcher, C12InputConfig } from "c12";
+import type { BuiltinDriverName } from "unstorage";
 import type { UnwasmPluginOptions } from "unwasm/plugin";
-import type { TSConfig } from "pkg-types";
-import type { ReferenceConfiguration } from "@scalar/api-reference";
-import type { WatchConfigOptions } from "c12";
-import type { NodeExternalsOptions, EsbuildOptions } from "./rollup";
+import type { DeepPartial } from "./_utils";
+import type { DevServerOptions } from "./dev";
 import type {
-  NitroErrorHandler,
   NitroDevEventHandler,
+  NitroErrorHandler,
   NitroEventHandler,
 } from "./handler";
-import type { PresetName, PresetNameInput, PresetOptions } from "nitro/presets";
-import type { NitroModuleInput } from "./module";
-import type { DeepPartial } from "./_utils";
-import type { RollupConfig } from "./rollup";
-import type { BuiltinDriverName } from "unstorage";
-import type { NitroRouteConfig, NitroRouteRules } from "./route-rules";
-import type { NitroPreset } from "./preset";
 import type { NitroHooks } from "./hooks";
-import type { ConnectorName } from "db0";
+import type { NitroModuleInput } from "./module";
 import type { NitroFrameworkInfo } from "./nitro";
-import type { DevServerOptions } from "./dev";
-import type { CompatibilityDateSpec, CompatibilityDates } from "compatx";
+import type { NitroPreset } from "./preset";
+import type { EsbuildOptions, NodeExternalsOptions } from "./rollup";
+import type { RollupConfig } from "./rollup";
+import type { NitroRouteConfig, NitroRouteRules } from "./route-rules";
 
 /**
  * Nitro normalized options (nitro.options)

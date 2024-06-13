@@ -1,7 +1,7 @@
 import defu from "defu";
 import type {
-  NitroOptions,
   NitroConfig,
+  NitroOptions,
   NitroRuntimeConfig,
 } from "nitro/types";
 

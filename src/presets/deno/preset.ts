@@ -1,9 +1,9 @@
 import { builtinModules } from "node:module";
-import { isAbsolute, resolve } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
 import { defineNitroPreset } from "nitro/kit";
 import { writeFile } from "nitro/kit";
+import { isAbsolute, resolve } from "pathe";
 
 // nitro/src/rollup/plugin/import-meta.ts
 const ImportMetaRe = /import\.meta|globalThis._importMeta_/;

@@ -1,6 +1,6 @@
 import { fileURLToPath } from "mlly";
-import { resolve } from "pathe";
 import { createNitro, writeTypes } from "nitro/core";
+import { resolve } from "pathe";
 import { scanHandlers } from "../../src/core/scan";
 
 const prepare = async () => {

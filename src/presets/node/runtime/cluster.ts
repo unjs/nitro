@@ -1,5 +1,5 @@
-import os from "node:os";
 import cluster from "node:cluster";
+import os from "node:os";
 import { getGracefulShutdownConfig } from "nitro/runtime/internal/shutdown";
 import { trapUnhandledNodeErrors } from "nitro/runtime/internal/utils";
 

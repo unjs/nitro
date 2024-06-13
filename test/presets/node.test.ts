@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
 import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
 import { isWindows } from "std-env";
-import { startServer, setupTest, testNitro } from "../tests";
+import { describe, expect, it } from "vitest";
+import { setupTest, startServer, testNitro } from "../tests";
 
 describe("nitro:preset:node-listener", async () => {
   const ctx = await setupTest("node-listener");

@@ -1,6 +1,6 @@
 import "#nitro-internal-pollyfills";
+import { type NodeListener, toNodeListener } from "h3";
 import { useNitroApp } from "nitro/runtime";
-import { NodeListener, toNodeListener } from "h3";
 
 const handler = toNodeListener(useNitroApp().h3App);
 
