@@ -27,10 +27,16 @@ async function main() {
   // Read main package
   const mainPkg = await readPackageJSON(mainDir);
 
+  // Check for nightly
+  const isNightly = mainPkg.name!.includes("nightly");
+
+  // Canonical name for main pkg (without -nightly suffix)
+  const mainPkgName = mainPkg.name!.replace("-nightly", "");
+
   // Mirror nitro<>nitropack
-  const mirrrorPkgName = mainPkg.name!.includes("pack")
-    ? mainPkg.name!.replace("pack", "")
-    : mainPkg.name!.replace("nitro", "nitropack");
+  const mirrrorPkgName = mainPkgName.includes("pack")
+    ? mainPkgName.replace("pack", "")
+    : mainPkgName.replace("nitro", "nitropack");
 
   // Init mirror dir
   await rm(mirrorDir, { recursive: true }).catch(() => {});
@@ -40,10 +46,17 @@ async function main() {
   const mirrorPkg: PackageJson = {
     name: mirrrorPkgName,
     version: `0.0.0-mirror-${mainPkg.name}-${mainPkg.version}`,
-    peerDependencies: {
-      [mainPkg.name!]: mainPkg.version!,
-    },
+    peerDependencies: {},
   };
+
+  // Add peer dependency
+  if (isNightly) {
+    mirrorPkg.peerDependencies![mainPkgName] =
+      `npm:${mainPkg.name}@${mainPkg.version}`;
+  } else {
+    mirrorPkg.peerDependencies![mainPkgName] = `${mainPkg.version}"`;
+  }
+
   for (const field of copyPkgFields) {
     if (mainPkg[field]) {
       mirrorPkg[field] = mainPkg[field];
