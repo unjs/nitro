@@ -349,6 +349,7 @@ export function defineCachedEventHandler<
           fetch: globalThis.$fetch as any,
         })) as $Fetch<unknown, NitroFetchRequest>;
       event.context = incomingEvent.context;
+      event.context.cached = true;
       const body = (await handler(event)) || _resSendBody;
 
       // Collect cacheable headers
