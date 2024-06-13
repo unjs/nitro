@@ -146,6 +146,9 @@ importers:
       magic-string:
         specifier: ^0.30.10
         version: 0.30.10
+      magicast:
+        specifier: ^0.3.4
+        version: 0.3.4
       mime:
         specifier: ^4.0.3
         version: 4.0.3
