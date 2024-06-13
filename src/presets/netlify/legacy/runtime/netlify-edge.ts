@@ -1,4 +1,6 @@
 import "#nitro-internal-pollyfills";
+import "./_deno-env-polyfill";
+
 import { useNitroApp } from "nitropack/runtime";
 import { isPublicAssetURL } from "#nitro-internal-virtual/public-assets";
 

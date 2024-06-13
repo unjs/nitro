@@ -1,7 +1,9 @@
 import os from "node:os";
 import cluster from "node:cluster";
-import { getGracefulShutdownConfig } from "nitropack/runtime/internal/shutdown";
-import { trapUnhandledNodeErrors } from "nitropack/runtime/internal/utils";
+import {
+  trapUnhandledNodeErrors,
+  getGracefulShutdownConfig,
+} from "nitropack/runtime/internal";
 
 function runMaster() {
   const numberOfWorkers =

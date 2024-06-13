@@ -12,8 +12,8 @@ import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/internal/utils.lambda";
-import { normalizeCookieHeader } from "nitropack/runtime/internal/utils";
+  normalizeCookieHeader,
+} from "nitropack/runtime/internal";
 
 const nitroApp = useNitroApp();
 
