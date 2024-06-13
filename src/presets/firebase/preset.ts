@@ -30,8 +30,9 @@ const firebase = defineNitroPreset(
           // Using the gen 1 makes this preset backwards compatible for people already using it
           nitro.options.firebase = { gen: 1 };
         }
-        nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
-        nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
+
+        // Expose firebase config via runtimeConfig
+        nitro.options.runtimeConfig._firebase = nitro.options.firebase;
 
         // Replace __firebaseServerFunctionName__ to actual name in entries
         (rollupConfig.plugins as Plugin[]).unshift({
