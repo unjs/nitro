@@ -1,6 +1,6 @@
 import fsp from "node:fs/promises";
-import { dirname } from "pathe";
 import { consola } from "consola";
+import { dirname } from "pathe";
 import { prettyPath } from "./path";
 
 export async function writeFile(

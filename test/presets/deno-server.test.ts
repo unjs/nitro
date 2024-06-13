@@ -1,7 +1,7 @@
-import { resolve } from "pathe";
-import { describe } from "vitest";
 import { execa, execaCommandSync } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
+import { resolve } from "pathe";
+import { describe } from "vitest";
 import { setupTest, testNitro } from "../tests";
 
 const hasDeno =

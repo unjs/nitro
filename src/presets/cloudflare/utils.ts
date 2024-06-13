@@ -1,16 +1,16 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { resolve, join } from "pathe";
+import { parseTOML, stringifyTOML } from "confbox";
+import defu from "defu";
+import { globby } from "globby";
+import type { Nitro } from "nitropack/types";
+import { join, resolve } from "pathe";
+import { isCI } from "std-env";
 import {
   joinURL,
   withLeadingSlash,
   withTrailingSlash,
   withoutLeadingSlash,
 } from "ufo";
-import { parseTOML, stringifyTOML } from "confbox";
-import { globby } from "globby";
-import type { Nitro } from "nitropack/types";
-import defu from "defu";
-import { isCI } from "std-env";
 import type { CloudflarePagesRoutes } from "./types";
 
 export async function writeCFPagesFiles(nitro: Nitro) {

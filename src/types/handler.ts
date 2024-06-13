@@ -1,6 +1,6 @@
 import type { EventHandler, H3Error, H3Event, RouterMethod } from "h3";
-import type { OperationObject } from "openapi-typescript";
 import type { PresetName } from "nitropack/presets";
+import type { OperationObject } from "openapi-typescript";
 
 type MaybeArray<T> = T | T[];
 

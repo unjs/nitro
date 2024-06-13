@@ -1,9 +1,9 @@
-import type { Worker } from "node:worker_threads";
-import type { App } from "h3";
-import type { Listener, ListenOptions } from "listhen";
-import type { FSWatcher } from "chokidar";
 import type { IncomingMessage, OutgoingMessage } from "node:http";
 import type { Duplex } from "node:stream";
+import type { Worker } from "node:worker_threads";
+import type { FSWatcher } from "chokidar";
+import type { App } from "h3";
+import type { ListenOptions, Listener } from "listhen";
 
 export interface DevServerOptions {
   watch: string[];

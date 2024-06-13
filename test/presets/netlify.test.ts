@@ -1,7 +1,7 @@
 import { promises as fsp } from "node:fs";
-import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
 import type { Context } from "@netlify/functions";
+import { resolve } from "pathe";
+import { describe, expect, it } from "vitest";
 import { getPresetTmpDir, setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:netlify", async () => {

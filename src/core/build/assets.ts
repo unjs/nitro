@@ -1,8 +1,8 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { relative, resolve, join } from "pathe";
 import { globby } from "globby";
-import { prettyPath, isDirectory } from "nitropack/kit";
+import { isDirectory, prettyPath } from "nitropack/kit";
 import type { Nitro } from "nitropack/types";
+import { join, relative, resolve } from "pathe";
 import { compressPublicAssets } from "../utils/compress";
 
 const NEGATION_RE = /^(!?)(.*)$/;

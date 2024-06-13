@@ -1,13 +1,13 @@
-import { join } from "pathe";
-import * as rollup from "rollup";
 import { watch } from "chokidar";
-import { debounce } from "perfect-debounce";
-import { GLOB_SCAN_PATTERN, scanHandlers } from "../scan";
-import type { Nitro, RollupConfig } from "nitropack/types";
-import { writeTypes } from "./types";
 import defu from "defu";
-import { formatRollupError } from "./error";
+import type { Nitro, RollupConfig } from "nitropack/types";
+import { join } from "pathe";
+import { debounce } from "perfect-debounce";
+import * as rollup from "rollup";
+import { GLOB_SCAN_PATTERN, scanHandlers } from "../scan";
 import { nitroServerName } from "../utils/nitro";
+import { formatRollupError } from "./error";
+import { writeTypes } from "./types";
 
 export async function watchDev(nitro: Nitro, rollupConfig: RollupConfig) {
   let rollupWatcher: rollup.RollupWatcher;

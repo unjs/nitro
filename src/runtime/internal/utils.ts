@@ -22,14 +22,15 @@ export async function useRequestBody(
       body[entry[0]] = entry[1];
     }
     return body;
-  } else if (JSON_MIME_RE.test(contentType)) {
-    return request.json();
-  } else if (TEXT_MIME_RE.test(contentType)) {
-    return request.text();
-  } else {
-    const blob = await request.blob();
-    return URL.createObjectURL(blob);
   }
+  if (JSON_MIME_RE.test(contentType)) {
+    return request.json();
+  }
+  if (TEXT_MIME_RE.test(contentType)) {
+    return request.text();
+  }
+  const blob = await request.blob();
+  return URL.createObjectURL(blob);
 }
 
 export function hasReqHeader(event: H3Event, name: string, includes: string) {

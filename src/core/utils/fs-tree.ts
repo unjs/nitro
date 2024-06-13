@@ -1,9 +1,9 @@
 import { promises as fsp } from "node:fs";
-import { resolve, dirname, relative } from "pathe";
-import { globby } from "globby";
-import prettyBytes from "pretty-bytes";
-import { gzipSize } from "gzip-size";
 import chalk from "chalk";
+import { globby } from "globby";
+import { gzipSize } from "gzip-size";
+import { dirname, relative, resolve } from "pathe";
+import prettyBytes from "pretty-bytes";
 import { isTest } from "std-env";
 
 export async function generateFSTree(

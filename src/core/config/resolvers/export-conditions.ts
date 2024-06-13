@@ -2,13 +2,13 @@ import type { NitroOptions } from "nitropack/types";
 
 export async function resolveExportConditionsOptions(options: NitroOptions) {
   options.exportConditions = _resolveExportConditions(
-    options.exportConditions,
+    options.exportConditions || [],
     { dev: options.dev, node: options.node, wasm: options.experimental.wasm }
   );
 }
 
 function _resolveExportConditions(
-  conditions: string[] = [],
+  conditions: string[],
   opts: { dev: boolean; node: boolean; wasm?: boolean }
 ) {
   const resolvedConditions: string[] = [];

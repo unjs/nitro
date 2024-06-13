@@ -1,8 +1,8 @@
 import { promises as fsp } from "node:fs";
-import { extname } from "pathe";
 import mime from "mime";
+import type { RawOptions } from "nitropack/types";
+import { extname } from "pathe";
 import type { Plugin } from "rollup";
-import { RawOptions } from "nitropack/types";
 
 const HELPER_ID = "\0raw-helpers";
 
@@ -67,14 +67,11 @@ export function raw(opts: RawOptions = {}): Plugin {
           code: `// ROLLUP_NO_REPLACE \n import {base64ToUint8Array } from "${HELPER_ID}" \n export default base64ToUint8Array("${serialized}")`,
           map: null,
         };
-      } else {
-        return {
-          code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(
-            code
-          )}`,
-          map: null,
-        };
       }
+      return {
+        code: `// ROLLUP_NO_REPLACE \n export default ${JSON.stringify(code)}`,
+        map: null,
+      };
     },
   };
 }

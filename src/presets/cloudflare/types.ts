@@ -1,5 +1,5 @@
-import type { Config as WranglerConfig } from "./types.wrangler";
 import type { ExecutionContext } from "@cloudflare/workers-types";
+import type { Config as WranglerConfig } from "./types.wrangler";
 
 /**
  * https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes

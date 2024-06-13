@@ -1,7 +1,7 @@
-import type { Loader as ESBuildLoader } from "esbuild";
 import type { FilterPattern } from "@rollup/pluginutils";
-import type { TransformOptions as ESBuildTransformOptions } from "esbuild";
 import type { NodeFileTraceOptions } from "@vercel/nft";
+import type { Loader as ESBuildLoader } from "esbuild";
+import type { TransformOptions as ESBuildTransformOptions } from "esbuild";
 import type {
   InputOptions as RollupInputOptions,
   OutputOptions as RollupOutputOptions,

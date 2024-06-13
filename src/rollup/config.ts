@@ -1,47 +1,47 @@
+import { builtinModules, createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
-import { createRequire, builtinModules } from "node:module";
-import { dirname, join, normalize, resolve } from "pathe";
-import type { Plugin } from "rollup";
-import { defu } from "defu";
+import alias from "@rollup/plugin-alias";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import commonjs from "@rollup/plugin-commonjs";
-import alias from "@rollup/plugin-alias";
-import json from "@rollup/plugin-json";
 import inject from "@rollup/plugin-inject";
+import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-import { isWindows } from "std-env";
-import { visualizer } from "rollup-plugin-visualizer";
-import * as unenv from "unenv";
-import type { Preset } from "unenv";
-import { sanitizeFilePath, resolvePath } from "mlly";
-import unimportPlugin from "unimport/unplugin";
-import { hash } from "ohash";
-import { rollup as unwasm } from "unwasm/plugin";
+import { defu } from "defu";
+import { resolvePath, sanitizeFilePath } from "mlly";
+import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
 import type {
   Nitro,
   NitroStaticBuildFlags,
   NodeExternalsOptions,
   RollupConfig,
 } from "nitropack/types";
-import { resolveAliases } from "./utils";
-import { replace } from "./plugins/replace";
-import { virtual } from "./plugins/virtual";
+import { hash } from "ohash";
+import { dirname, join, normalize, resolve } from "pathe";
+import type { Plugin } from "rollup";
+import { visualizer } from "rollup-plugin-visualizer";
+import { isWindows } from "std-env";
+import * as unenv from "unenv";
+import type { Preset } from "unenv";
+import unimportPlugin from "unimport/unplugin";
+import { rollup as unwasm } from "unwasm/plugin";
+import { appConfig } from "./plugins/app-config";
+import { database } from "./plugins/database";
 import { dynamicRequire } from "./plugins/dynamic-require";
+import { esbuild } from "./plugins/esbuild";
 import { externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
-import { timing } from "./plugins/timing";
-import { publicAssets } from "./plugins/public-assets";
-import { serverAssets } from "./plugins/server-assets";
 import { handlers } from "./plugins/handlers";
 import { handlersMeta } from "./plugins/handlers-meta";
-import { esbuild } from "./plugins/esbuild";
-import { raw } from "./plugins/raw";
-import { storage } from "./plugins/storage";
-import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
-import { appConfig } from "./plugins/app-config";
+import { publicAssets } from "./plugins/public-assets";
+import { raw } from "./plugins/raw";
+import { replace } from "./plugins/replace";
+import { serverAssets } from "./plugins/server-assets";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
-import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
+import { storage } from "./plugins/storage";
+import { timing } from "./plugins/timing";
+import { virtual } from "./plugins/virtual";
+import { resolveAliases } from "./utils";
 
 export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [

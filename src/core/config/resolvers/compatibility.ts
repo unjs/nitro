@@ -1,7 +1,7 @@
 import {
-  resolveCompatibilityDatesFromEnv,
+  type DateString,
   formatDate,
-  DateString,
+  resolveCompatibilityDatesFromEnv,
 } from "compatx";
 import _consola from "consola";
 import { colorize } from "consola/utils";
@@ -26,8 +26,8 @@ export async function resolveCompatibilityOptions(options: NitroOptions) {
   }
 }
 
-let _fallbackInfoShown: boolean = false;
-let _promptedUserToUpdate: boolean = false;
+let _fallbackInfoShown = false;
+let _promptedUserToUpdate = false;
 
 async function _resolveDefault(options: NitroOptions): Promise<DateString> {
   const _todayDate = formatDate(new Date());

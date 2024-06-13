@@ -1,5 +1,5 @@
 import type { NitroConfig } from "./config";
-import type { NitroTypes, Nitro } from "./nitro";
+import type { Nitro, NitroTypes } from "./nitro";
 import type { PrerenderRoute } from "./prerender";
 import type { RollupConfig } from "./rollup";
 

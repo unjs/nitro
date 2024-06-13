@@ -1,12 +1,12 @@
-import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
-import { kebabCase } from "scule";
-import { provider, type ProviderName } from "std-env";
-import allPresets from "./_all.gen";
 import {
-  resolveCompatibilityDatesFromEnv,
   type CompatibilityDateSpec,
   type PlatformName,
+  resolveCompatibilityDatesFromEnv,
 } from "compatx";
+import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
+import { kebabCase } from "scule";
+import { type ProviderName, provider } from "std-env";
+import allPresets from "./_all.gen";
 
 // std-env has more specific keys for providers than compatx
 const _stdProviderMap: Partial<Record<ProviderName, PlatformName>> = {

@@ -1,12 +1,12 @@
-import { hash } from "ohash";
+import { runtimeDir } from "nitropack/runtime/meta";
 import type {
   Nitro,
-  NitroRouteRules,
   NitroEventHandler,
+  NitroRouteRules,
 } from "nitropack/types";
-import { virtual } from "./virtual";
+import { hash } from "ohash";
 import { join } from "pathe";
-import { runtimeDir } from "nitropack/runtime/meta";
+import { virtual } from "./virtual";
 
 export function handlers(nitro: Nitro) {
   const getHandlers = () => {

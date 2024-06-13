@@ -1,6 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { join } from "pathe";
 import type { Nitro } from "nitropack/types";
+import { join } from "pathe";
 
 export async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
@@ -119,7 +119,7 @@ export function deprecateSWR(nitro: Nitro) {
       value.isr = !(value as { static: boolean }).static;
       hasLegacyOptions = true;
     }
-    if (value && value.cache && _hasProp(value.cache, "swr")) {
+    if (value?.cache && _hasProp(value.cache, "swr")) {
       value.isr = value.cache.swr;
       hasLegacyOptions = true;
     }
