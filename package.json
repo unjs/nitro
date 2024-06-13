@@ -187,7 +187,6 @@
     "automd": "^0.3.7",
     "better-sqlite3": "^11.0.0",
     "changelogen": "^0.5.5",
-    "codeup": "^0.0.4",
     "edge-runtime": "^2.5.10",
     "eslint": "^9.4.0",
     "eslint-config-unjs": "0.3.2",
