@@ -7,12 +7,12 @@ import {
   normalizeLambdaOutgoingHeaders,
 } from "nitro/runtime/internal/utils.lambda";
 
-import { withQuery } from "ufo";
 import type {
-  HandlerResponse,
   HandlerContext,
   HandlerEvent,
+  HandlerResponse,
 } from "@netlify/functions";
+import { withQuery } from "ufo";
 
 const nitroApp = useNitroApp();
 

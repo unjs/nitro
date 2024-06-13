@@ -1,30 +1,30 @@
 import { loadConfig, watchConfig } from "c12";
+import { type CompatibilityDateSpec, resolveCompatibilityDates } from "compatx";
 import { klona } from "klona/full";
-import { CompatibilityDateSpec, resolveCompatibilityDates } from "compatx";
+import type { PresetName } from "nitro/presets";
 import type {
   LoadConfigOptions,
   NitroConfig,
   NitroOptions,
   NitroPresetMeta,
 } from "nitro/types";
-import type { PresetName } from "nitro/presets";
 
 import { NitroDefaults } from "./defaults";
 
+import { resolveAssetsOptions } from "./resolvers/assets";
 // Resolvers
 import {
   fallbackCompatibilityDate,
   resolveCompatibilityOptions,
 } from "./resolvers/compatibility";
-import { resolvePathOptions } from "./resolvers/paths";
-import { resolveImportsOptions } from "./resolvers/imports";
-import { resolveRouteRulesOptions } from "./resolvers/route-rules";
 import { resolveDatabaseOptions } from "./resolvers/database";
-import { resolveFetchOptions } from "./resolvers/fetch";
 import { resolveExportConditionsOptions } from "./resolvers/export-conditions";
-import { resolveRuntimeConfigOptions } from "./resolvers/runtime-config";
+import { resolveFetchOptions } from "./resolvers/fetch";
+import { resolveImportsOptions } from "./resolvers/imports";
 import { resolveOpenAPIOptions } from "./resolvers/open-api";
-import { resolveAssetsOptions } from "./resolvers/assets";
+import { resolvePathOptions } from "./resolvers/paths";
+import { resolveRouteRulesOptions } from "./resolvers/route-rules";
+import { resolveRuntimeConfigOptions } from "./resolvers/runtime-config";
 import { resolveURLOptions } from "./resolvers/url";
 
 const configResolvers = [

@@ -1,8 +1,8 @@
 import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitro/runtime";
 
-import wsAdapter from "crossws/adapters/deno";
 import type { Deno as _Deno } from "@deno/types";
+import wsAdapter from "crossws/adapters/deno";
 
 const nitroApp = useNitroApp();
 

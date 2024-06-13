@@ -1,15 +1,15 @@
 import { pathToFileURL } from "node:url";
-import { resolve, join, relative } from "pathe";
-import { joinURL, withBase, withoutBase } from "ufo";
 import chalk from "chalk";
-import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import mime from "mime";
-import type { $Fetch } from "ofetch";
-import { createNitro } from "../nitro";
-import { build } from "../build/build";
-import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitro/types";
 import { writeFile } from "nitro/kit";
+import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitro/types";
+import type { $Fetch } from "ofetch";
+import { join, relative, resolve } from "pathe";
+import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
+import { joinURL, withBase, withoutBase } from "ufo";
+import { build } from "../build/build";
+import { createNitro } from "../nitro";
 import { compressPublicAssets } from "../utils/compress";
 import {
   extractLinks,

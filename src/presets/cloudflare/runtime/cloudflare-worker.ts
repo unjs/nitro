@@ -1,15 +1,15 @@
 import "#nitro-internal-pollyfills";
-import { requestHasBody } from "nitro/runtime/internal/utils";
 import { useNitroApp } from "nitro/runtime";
 import { useRuntimeConfig } from "nitro/runtime";
+import { requestHasBody } from "nitro/runtime/internal/utils";
 import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
-import { withoutBase } from "ufo";
-import wsAdapter from "crossws/adapters/cloudflare";
 import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
+import wsAdapter from "crossws/adapters/cloudflare";
+import { withoutBase } from "ufo";
 
 addEventListener("fetch", (event: any) => {
   event.respondWith(handleEvent(event));

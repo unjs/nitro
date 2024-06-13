@@ -1,10 +1,10 @@
 import { defineCommand } from "citty";
-import { resolve } from "pathe";
 import { consola } from "consola";
 import { getArgs, parseArgs } from "listhen/cli";
-import { createNitro, build, prepare, createDevServer } from "nitro/core";
-import { commonArgs } from "../common";
+import { build, createDevServer, createNitro, prepare } from "nitro/core";
 import type { Nitro } from "nitro/types";
+import { resolve } from "pathe";
+import { commonArgs } from "../common";
 
 const hmrKeyRe = /^runtimeConfig\.|routeRules\./;
 

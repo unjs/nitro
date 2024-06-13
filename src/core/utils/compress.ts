@@ -1,10 +1,10 @@
-import zlib from "node:zlib";
-import fsp from "node:fs/promises";
 import { existsSync } from "node:fs";
+import fsp from "node:fs/promises";
+import zlib from "node:zlib";
 import { globby } from "globby";
-import { resolve } from "pathe";
 import mime from "mime";
 import type { Nitro } from "nitro/types";
+import { resolve } from "pathe";
 
 export async function compressPublicAssets(nitro: Nitro) {
   const publicFiles = await globby("**", {

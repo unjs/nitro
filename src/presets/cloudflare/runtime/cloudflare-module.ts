@@ -1,17 +1,17 @@
 import "#nitro-internal-pollyfills";
-import { requestHasBody } from "nitro/runtime/internal/utils";
 import { useNitroApp } from "nitro/runtime";
 import { useRuntimeConfig } from "nitro/runtime";
 import { runCronTasks } from "nitro/runtime/internal/task";
+import { requestHasBody } from "nitro/runtime/internal/utils";
 import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
-import { withoutBase } from "ufo";
-import wsAdapter from "crossws/adapters/cloudflare";
-import type { ExecutionContext } from "@cloudflare/workers-types";
 import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
+import type { ExecutionContext } from "@cloudflare/workers-types";
+import wsAdapter from "crossws/adapters/cloudflare";
+import { withoutBase } from "ufo";
 
 import type { CloudflareEmailContext, CloudflareMessageBatch } from "../types";
 

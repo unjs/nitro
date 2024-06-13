@@ -1,14 +1,14 @@
 import { promises as fsp } from "node:fs";
-import { join, dirname } from "pathe";
 import { defineNitroPreset } from "nitro/kit";
 import type { Nitro } from "nitro/types";
+import { dirname, join } from "pathe";
+import netlifyLegacyPresets from "./legacy/preset";
 import {
   generateNetlifyFunction,
   getGeneratorString,
   writeHeaders,
   writeRedirects,
 } from "./utils";
-import netlifyLegacyPresets from "./legacy/preset";
 
 export type { NetlifyOptions as PresetOptions } from "./types";
 

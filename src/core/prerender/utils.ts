@@ -1,6 +1,6 @@
-import { parseURL } from "ufo";
 import chalk from "chalk";
 import type { PrerenderRoute } from "nitro/types";
+import { parseURL } from "ufo";
 
 const allowedExtensions = new Set(["", ".json"]);
 
