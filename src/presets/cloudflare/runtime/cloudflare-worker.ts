@@ -1,7 +1,7 @@
 import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitro/runtime";
 import { useRuntimeConfig } from "nitro/runtime";
-import { requestHasBody } from "nitro/runtime/internal/utils";
+import { requestHasBody } from "nitro/runtime/internal";
 import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
 import {

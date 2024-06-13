@@ -91,9 +91,6 @@ const netlifyEdge = defineNitroPreset(
         format: "esm",
       },
     },
-    unenv: {
-      polyfill: ["nitro/runtime/internal/polyfill/deno-env"],
-    },
     hooks: {
       "rollup:before": (nitro: Nitro) => {
         deprecateSWR(nitro);

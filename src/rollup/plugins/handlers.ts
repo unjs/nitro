@@ -1,5 +1,7 @@
+import { runtimeDir } from "nitro/runtime/meta";
 import type { Nitro, NitroEventHandler, NitroRouteRules } from "nitro/types";
 import { hash } from "ohash";
+import { join } from "pathe";
 import { virtual } from "./virtual";
 
 export function handlers(nitro: Nitro) {
@@ -32,7 +34,7 @@ export function handlers(nitro: Nitro) {
         if (nitro.options.serveStatic) {
           handlers.unshift({
             middleware: true,
-            handler: "nitro/runtime/internal/static",
+            handler: join(runtimeDir, "internal/static"),
           });
         }
         if (nitro.options.renderer) {

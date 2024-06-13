@@ -1,11 +1,13 @@
 import { consola } from "consola";
 import { createDebugger, createHooks } from "hookable";
+import { runtimeDir } from "nitro/runtime/meta";
 import type {
   LoadConfigOptions,
   Nitro,
   NitroConfig,
   NitroDynamicConfig,
 } from "nitro/types";
+import { join } from "pathe";
 import { createUnimport } from "unimport";
 import { loadOptions } from "./config/loader";
 import { updateNitroConfig } from "./config/update";
@@ -48,10 +50,10 @@ export async function createNitro(
   // Debug and timing
   if (nitro.options.debug) {
     createDebugger(nitro.hooks, { tag: "nitro" });
-    nitro.options.plugins.push("nitro/runtime/internal/debug");
+    nitro.options.plugins.push(join(runtimeDir, "internal/debug"));
   }
   if (nitro.options.timing) {
-    nitro.options.plugins.push("nitro/runtime/internal/timing");
+    nitro.options.plugins.push(join(runtimeDir, "internal/timing"));
   }
 
   // Logger

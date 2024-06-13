@@ -1,6 +1,6 @@
 import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitro/runtime";
-import { trapUnhandledNodeErrors } from "nitro/runtime/internal/utils";
+import { trapUnhandledNodeErrors } from "nitro/runtime/internal";
 
 const nitroApp = useNitroApp();
 
