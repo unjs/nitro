@@ -15,11 +15,11 @@
       "import": "./dist/config/index.mjs"
     },
     ".": {
-      "types": "./types.d.ts",
+      "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.mjs"
     },
     "./core": {
-      "types": "./types.d.ts",
+      "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.mjs"
     },
     "./kit": {
@@ -65,16 +65,12 @@
     "./package.json": "./package.json"
   },
   "main": "./dist/core/index.mjs",
-  "types": "./types.d.ts",
+  "types": "./dist/core/index.d.ts",
   "bin": {
     "nitro": "./dist/cli/index.mjs",
     "nitropack": "./dist/cli/index.mjs"
   },
-  "files": [
-    "dist",
-    "*.d.ts",
-    "runtime-meta.*"
-  ],
+  "files": ["dist", "*.d.ts", "runtime-meta.*"],
   "scripts": {
     "build": "pnpm gen-presets && unbuild",
     "dev": "pnpm nitro dev playground",
@@ -84,6 +80,7 @@
     "lint:fix": "eslint --cache --fix . && biome format . --write",
     "nitro": "JITI_ESM_RESOLVE=1 NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
+    "gen-mirror": "JITI_ESM_RESOLVE=1 pnpm jiti scripts/gen-mirror.ts",
     "gen-presets": "JITI_ESM_RESOLVE=1 pnpm jiti scripts/gen-presets.ts",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
