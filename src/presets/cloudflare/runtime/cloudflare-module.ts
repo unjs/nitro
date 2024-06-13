@@ -13,6 +13,8 @@ import {
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
 
+import type { CloudflareEmailContext, CloudflareMessageBatch } from "../types";
+
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from "__STATIC_CONTENT_MANIFEST";
@@ -98,6 +100,28 @@ export default {
         })
       );
     }
+  },
+
+  email(
+    event: CloudflareEmailContext,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:email", { event, env, context })
+    );
+  },
+
+  queue(
+    event: CloudflareEmailContext,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:queue", { event, env, context })
+    );
   },
 };
 
