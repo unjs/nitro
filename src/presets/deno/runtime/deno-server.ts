@@ -1,7 +1,7 @@
 import "#nitro-internal-pollyfills";
-import { useNitroApp } from "nitropack/runtime";
-import { useRuntimeConfig } from "nitropack/runtime";
-import { startScheduleRunner } from "nitropack/runtime/internal/task";
+import { useNitroApp } from "nitro/runtime";
+import { useRuntimeConfig } from "nitro/runtime";
+import { startScheduleRunner } from "nitro/runtime/internal/task";
 
 import destr from "destr";
 import wsAdapter from "crossws/adapters/deno";

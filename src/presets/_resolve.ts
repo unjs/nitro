@@ -1,4 +1,4 @@
-import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
+import type { NitroPreset, NitroPresetMeta } from "nitro/types";
 import { kebabCase } from "scule";
 import { provider, type ProviderName } from "std-env";
 import allPresets from "./_all.gen";

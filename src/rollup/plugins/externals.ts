@@ -13,8 +13,8 @@ import {
   parseNodeModulePath,
 } from "mlly";
 import semver from "semver";
-import { isDirectory } from "nitropack/kit";
-import type { NodeExternalsOptions } from "nitropack/types";
+import { isDirectory } from "nitro/kit";
+import type { NodeExternalsOptions } from "nitro/types";
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();

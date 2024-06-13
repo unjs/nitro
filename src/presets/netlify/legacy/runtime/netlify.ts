@@ -1,5 +1,5 @@
 import "#nitro-internal-pollyfills";
-import { getRouteRulesForPath } from "nitropack/runtime/internal/route-rules";
+import { getRouteRulesForPath } from "nitro/runtime/internal/route-rules";
 
 import { withQuery } from "ufo";
 import type { Handler } from "@netlify/functions/dist/main";

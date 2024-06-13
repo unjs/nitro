@@ -5,7 +5,7 @@ import mime from "mime";
 import { resolve } from "pathe";
 import { normalizeKey } from "unstorage";
 import { globby } from "globby";
-import type { Nitro } from "nitropack/types";
+import type { Nitro } from "nitro/types";
 import { virtual } from "./virtual";
 
 interface ResolvedAsset {

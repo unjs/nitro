@@ -2,7 +2,7 @@ import { defineCommand } from "citty";
 import { resolve } from "pathe";
 import destr from "destr";
 import { consola } from "consola";
-import { runTask } from "nitropack/core";
+import { runTask } from "nitro/core";
 
 export default defineCommand({
   meta: {

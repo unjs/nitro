@@ -6,7 +6,7 @@ import type {
   NitroDynamicConfig,
   Nitro,
   LoadConfigOptions,
-} from "nitropack/types";
+} from "nitro/types";
 import { loadOptions } from "./config/loader";
 import { createStorage } from "./utils/storage";
 import { installModules } from "./module";
@@ -48,10 +48,10 @@ export async function createNitro(
   // Debug and timing
   if (nitro.options.debug) {
     createDebugger(nitro.hooks, { tag: "nitro" });
-    nitro.options.plugins.push("nitropack/runtime/internal/debug");
+    nitro.options.plugins.push("nitro/runtime/internal/debug");
   }
   if (nitro.options.timing) {
-    nitro.options.plugins.push("nitropack/runtime/internal/timing");
+    nitro.options.plugins.push("nitro/runtime/internal/timing");
   }
 
   // Logger

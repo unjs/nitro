@@ -1,4 +1,4 @@
-import { defineNitroPreset } from "nitropack/kit";
+import { defineNitroPreset } from "nitro/kit";
 import fsp from "node:fs/promises";
 import { join } from "pathe";
 

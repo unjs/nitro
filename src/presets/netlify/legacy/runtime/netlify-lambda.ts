@@ -1,11 +1,11 @@
 import "#nitro-internal-pollyfills";
-import { useNitroApp } from "nitropack/runtime";
-import { normalizeCookieHeader } from "nitropack/runtime/internal/utils";
+import { useNitroApp } from "nitro/runtime";
+import { normalizeCookieHeader } from "nitro/runtime/internal/utils";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/internal/utils.lambda";
+} from "nitro/runtime/internal/utils.lambda";
 
 import { withQuery } from "ufo";
 import type {

@@ -16,18 +16,14 @@ import {
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
 import { createHooks } from "hookable";
-import type {
-  NitroRuntimeHooks,
-  CaptureError,
-  NitroApp,
-} from "nitropack/types";
+import type { NitroRuntimeHooks, CaptureError, NitroApp } from "nitro/types";
 import { useRuntimeConfig } from "./config";
 import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";
 import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
 import { nitroAsyncContext } from "./context";
-import type { NitroAsyncContext } from "nitropack/types";
-import type { $Fetch, NitroFetchRequest } from "nitropack/types";
+import type { NitroAsyncContext } from "nitro/types";
+import type { $Fetch, NitroFetchRequest } from "nitro/types";
 import { plugins } from "#nitro-internal-virtual/plugins";
 import errorHandler from "#nitro-internal-virtual/error-handler";
 import { handlers } from "#nitro-internal-virtual/server-handlers";

@@ -1,6 +1,6 @@
 import { resolve, dirname } from "pathe";
 import type { Plugin } from "rollup";
-import type { RollupVirtualOptions, VirtualModule } from "nitropack/types";
+import type { RollupVirtualOptions, VirtualModule } from "nitro/types";
 
 // Based on https://github.com/rollup/plugins/blob/master/packages/virtual/src/index.ts
 

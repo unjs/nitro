@@ -2,7 +2,7 @@ import { promises as fsp } from "node:fs";
 import { extname } from "pathe";
 import mime from "mime";
 import type { Plugin } from "rollup";
-import { RawOptions } from "nitropack/types";
+import { RawOptions } from "nitro/types";
 
 const HELPER_ID = "\0raw-helpers";
 

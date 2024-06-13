@@ -8,7 +8,7 @@ import {
 } from "ufo";
 import { parseTOML, stringifyTOML } from "confbox";
 import { globby } from "globby";
-import type { Nitro } from "nitropack/types";
+import type { Nitro } from "nitro/types";
 import defu from "defu";
 import { isCI } from "std-env";
 import type { CloudflarePagesRoutes } from "./types";

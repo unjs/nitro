@@ -4,7 +4,7 @@ import { extname, relative } from "pathe";
 import type { Plugin, PluginContext } from "rollup";
 import { Loader, TransformResult, transform } from "esbuild";
 import { createFilter } from "@rollup/pluginutils";
-import { EsbuildOptions } from "nitropack/types";
+import { EsbuildOptions } from "nitro/types";
 
 const defaultLoaders: { [ext: string]: Loader } = {
   ".ts": "ts",

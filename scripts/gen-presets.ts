@@ -4,7 +4,7 @@ import { kebabCase, camelCase, pascalCase, snakeCase } from "scule";
 import { readdirSync, existsSync, writeFileSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
+import type { NitroPreset, NitroPresetMeta } from "nitro/types";
 import { findTypeExports } from "mlly";
 import { subpaths } from "../build.config";
 
@@ -25,10 +25,10 @@ const jitiRequire = createJITI(presetsDir, {
   esmResolve: true,
   interopDefault: true,
   alias: {
-    nitropack: fileURLToPath(new URL("../src/core/index.ts", import.meta.url)),
+    nitro: fileURLToPath(new URL("../src/core/index.ts", import.meta.url)),
     ...Object.fromEntries(
       subpaths.map((pkg) => [
-        `nitropack/${pkg}`,
+        `nitro/${pkg}`,
         fileURLToPath(new URL(`../src/${pkg}/index.ts`, import.meta.url)),
       ])
     ),

@@ -1,5 +1,5 @@
 import { upperFirst } from "scule";
-import { Nitro } from "nitropack/types";
+import { Nitro } from "nitro/types";
 
 export function nitroServerName(nitro: Nitro) {
   return nitro.options.framework.name === "nitro"

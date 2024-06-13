@@ -1,4 +1,4 @@
-import type { NitroOptions } from "nitropack/types";
+import type { NitroOptions } from "nitro/types";
 import escapeRE from "escape-string-regexp";
 import { resolveModuleExportNames } from "mlly";
 import { join } from "pathe";
@@ -58,7 +58,7 @@ export async function resolveImportsOptions(options: NitroOptions) {
 function getNitroImportsPreset(): Preset[] {
   return [
     {
-      from: "nitropack/runtime",
+      from: "nitro/runtime",
       imports: [
         "defineCachedFunction",
         "defineCachedEventHandler",

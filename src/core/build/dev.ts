@@ -3,7 +3,7 @@ import * as rollup from "rollup";
 import { watch } from "chokidar";
 import { debounce } from "perfect-debounce";
 import { GLOB_SCAN_PATTERN, scanHandlers } from "../scan";
-import type { Nitro, RollupConfig } from "nitropack/types";
+import type { Nitro, RollupConfig } from "nitro/types";
 import { writeTypes } from "./types";
 import defu from "defu";
 import { formatRollupError } from "./error";

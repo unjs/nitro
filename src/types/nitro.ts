@@ -4,7 +4,7 @@ import type { ConsolaInstance } from "consola";
 import type { Storage } from "unstorage";
 import type { RouterMethod } from "h3";
 import type { NitroEventHandler } from "./handler";
-import type { PresetName } from "nitropack/presets";
+import type { PresetName } from "nitro/presets";
 import type { NitroConfig, NitroOptions } from "./config";
 import type { NitroHooks } from "./hooks";
 import type { PrerenderRoute } from "./prerender";

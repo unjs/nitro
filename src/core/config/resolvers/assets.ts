@@ -2,7 +2,7 @@ import { resolve } from "pathe";
 import { existsSync } from "node:fs";
 import { withLeadingSlash, withoutTrailingSlash } from "ufo";
 import { defu } from "defu";
-import type { NitroOptions } from "nitropack/types";
+import type { NitroOptions } from "nitro/types";
 
 export async function resolveAssetsOptions(options: NitroOptions) {
   // Public Assets

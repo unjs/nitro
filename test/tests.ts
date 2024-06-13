@@ -16,8 +16,8 @@ import {
   copyPublicAssets,
   prerender,
   createDevServer,
-} from "nitropack/core";
-import type { Nitro, NitroConfig } from "nitropack/types";
+} from "nitro/core";
+import type { Nitro, NitroConfig } from "nitro/types";
 import { nodeMajorVersion, isWindows } from "std-env";
 import { type DateString, formatDate } from "compatx";
 

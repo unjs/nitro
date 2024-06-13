@@ -1,7 +1,7 @@
 import "#nitro-internal-pollyfills";
-import { runCronTasks } from "nitropack/runtime/internal/task";
-import { requestHasBody } from "nitropack/runtime/internal/utils";
-import { useNitroApp } from "nitropack/runtime";
+import { runCronTasks } from "nitro/runtime/internal/task";
+import { requestHasBody } from "nitro/runtime/internal/utils";
+import { useNitroApp } from "nitro/runtime";
 import { isPublicAssetURL } from "#nitro-internal-virtual/public-assets";
 
 import wsAdapter from "crossws/adapters/cloudflare";

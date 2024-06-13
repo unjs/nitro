@@ -24,12 +24,12 @@ import type {
   NitroBuildInfo,
   NitroDevServer,
   NitroWorker,
-} from "nitropack/types";
+} from "nitro/types";
 import { createVFSHandler } from "./vfs";
 import defaultErrorHandler from "./error";
 import type { IncomingMessage, OutgoingMessage } from "node:http";
 import type { Duplex } from "node:stream";
-import { version as nitroVersion } from "nitropack/meta";
+import { version as nitroVersion } from "nitro/meta";
 
 function initWorker(filename: string): Promise<NitroWorker> | undefined {
   if (!existsSync(filename)) {

@@ -8,7 +8,7 @@ import type {
   TaskPayload,
   TaskContext,
   TaskEvent,
-} from "nitropack/types";
+} from "nitro/types";
 
 /** @experimental */
 export function defineTask<RT = unknown>(def: Task<RT>): Task<RT> {

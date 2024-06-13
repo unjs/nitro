@@ -1,5 +1,5 @@
 import { relative, resolve } from "pathe";
-import { Nitro } from "nitropack/types";
+import { Nitro } from "nitro/types";
 import { getProperty } from "dot-prop";
 import consola from "consola";
 import { colorize } from "consola/utils";

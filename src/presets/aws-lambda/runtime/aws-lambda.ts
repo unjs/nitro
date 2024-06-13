@@ -7,13 +7,13 @@ import type {
 } from "aws-lambda";
 import "#nitro-internal-pollyfills";
 import { withQuery } from "ufo";
-import { useNitroApp } from "nitropack/runtime";
+import { useNitroApp } from "nitro/runtime";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/internal/utils.lambda";
-import { normalizeCookieHeader } from "nitropack/runtime/internal/utils";
+} from "nitro/runtime/internal/utils.lambda";
+import { normalizeCookieHeader } from "nitro/runtime/internal/utils";
 
 const nitroApp = useNitroApp();
 

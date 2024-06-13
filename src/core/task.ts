@@ -7,7 +7,7 @@ import type {
   TaskRunnerOptions,
   TaskEvent,
   Nitro,
-} from "nitropack/types";
+} from "nitro/types";
 
 /** @experimental */
 export async function runTask(

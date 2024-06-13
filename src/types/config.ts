@@ -17,11 +17,7 @@ import type {
   NitroDevEventHandler,
   NitroEventHandler,
 } from "./handler";
-import type {
-  PresetName,
-  PresetNameInput,
-  PresetOptions,
-} from "nitropack/presets";
+import type { PresetName, PresetNameInput, PresetOptions } from "nitro/presets";
 import type { NitroModuleInput } from "./module";
 import type { DeepPartial } from "./_utils";
 import type { RollupConfig } from "./rollup";

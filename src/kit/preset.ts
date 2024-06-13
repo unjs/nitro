@@ -1,4 +1,4 @@
-import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
+import type { NitroPreset, NitroPresetMeta } from "nitro/types";
 import { fileURLToPath } from "node:url";
 
 export function defineNitroPreset<

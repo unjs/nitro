@@ -1,9 +1,9 @@
 import { findWorkspaceDir } from "pkg-types";
-import { resolveNitroPath } from "nitropack/kit";
-import type { NitroOptions } from "nitropack/types";
+import { resolveNitroPath } from "nitro/kit";
+import type { NitroOptions } from "nitro/types";
 import { resolve, join } from "pathe";
 import { NitroDefaults } from "../defaults";
-import { pkgDir } from "nitropack/runtime/meta";
+import { pkgDir } from "nitro/runtime/meta";
 import { existsSync } from "node:fs";
 
 export async function resolvePathOptions(options: NitroOptions) {

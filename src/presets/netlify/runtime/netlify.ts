@@ -1,10 +1,10 @@
 import "#nitro-internal-pollyfills";
-import { useNitroApp } from "nitropack/runtime";
-import { getRouteRulesForPath } from "nitropack/runtime/internal/route-rules";
+import { useNitroApp } from "nitro/runtime";
+import { getRouteRulesForPath } from "nitro/runtime/internal/route-rules";
 import {
   joinHeaders,
   normalizeCookieHeader,
-} from "nitropack/runtime/internal/utils";
+} from "nitro/runtime/internal/utils";
 
 const nitroApp = useNitroApp();
 

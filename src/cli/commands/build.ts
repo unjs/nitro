@@ -6,7 +6,7 @@ import {
   build,
   prepare,
   copyPublicAssets,
-} from "nitropack/core";
+} from "nitro/core";
 import { commonArgs } from "../common";
 import type { DateString } from "compatx";
 

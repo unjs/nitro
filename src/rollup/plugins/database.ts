@@ -1,6 +1,6 @@
 import { connectors } from "db0";
 import { camelCase } from "scule";
-import type { Nitro } from "nitropack/types";
+import type { Nitro } from "nitro/types";
 import { virtual } from "./virtual";
 
 export function database(nitro: Nitro) {

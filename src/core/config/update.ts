@@ -1,4 +1,4 @@
-import type { Nitro, NitroDynamicConfig } from "nitropack/types";
+import type { Nitro, NitroDynamicConfig } from "nitro/types";
 import { normalizeRouteRules } from "./resolvers/route-rules";
 import { normalizeRuntimeConfig } from "./resolvers/runtime-config";
 import consola from "consola";

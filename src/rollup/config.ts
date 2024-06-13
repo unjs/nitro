@@ -22,7 +22,7 @@ import type {
   NitroStaticBuildFlags,
   NodeExternalsOptions,
   RollupConfig,
-} from "nitropack/types";
+} from "nitro/types";
 import { resolveAliases } from "./utils";
 import { replace } from "./plugins/replace";
 import { virtual } from "./plugins/virtual";
@@ -41,7 +41,7 @@ import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
 import { appConfig } from "./plugins/app-config";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
-import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
+import { runtimeDependencies, runtimeDir } from "nitro/runtime/meta";
 
 export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [
@@ -379,8 +379,8 @@ export const plugins = [
         "#build": buildDir,
         "#nitro-internal-virtual/error-handler": nitro.options.errorHandler,
         "#internal/nitro": runtimeDir,
-        "nitro/runtime": runtimeDir,
         "nitropack/runtime": runtimeDir,
+        "nitro/runtime": runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,
         "~~": nitro.options.rootDir,
@@ -447,7 +447,7 @@ export const plugins = [
             "@@/",
             "virtual:",
             "nitro/runtime",
-            "nitropack/runtime",
+            "nitro/runtime",
             dirname(nitro.options.entry),
             ...(nitro.options.experimental.wasm
               ? [(id: string) => id?.endsWith(".wasm")]

@@ -1,6 +1,6 @@
 // import ansiHTML from 'ansi-html'
 import { setResponseHeader, setResponseStatus, send } from "h3";
-import type { NitroErrorHandler } from "nitropack/types";
+import type { NitroErrorHandler } from "nitro/types";
 import { normalizeError, isJsonRequest } from "./utils";
 
 export function defineNitroErrorHandler(

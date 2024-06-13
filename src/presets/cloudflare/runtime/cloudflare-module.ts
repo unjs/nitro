@@ -1,8 +1,8 @@
 import "#nitro-internal-pollyfills";
-import { requestHasBody } from "nitropack/runtime/internal/utils";
-import { useNitroApp } from "nitropack/runtime";
-import { useRuntimeConfig } from "nitropack/runtime";
-import { runCronTasks } from "nitropack/runtime/internal/task";
+import { requestHasBody } from "nitro/runtime/internal/utils";
+import { useNitroApp } from "nitro/runtime";
+import { useRuntimeConfig } from "nitro/runtime";
+import { runCronTasks } from "nitro/runtime/internal/task";
 import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
 import { withoutBase } from "ufo";

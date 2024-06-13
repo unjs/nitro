@@ -6,8 +6,8 @@ import type {
   NitroConfig,
   NitroOptions,
   NitroPresetMeta,
-} from "nitropack/types";
-import type { PresetName } from "nitropack/presets";
+} from "nitro/types";
+import type { PresetName } from "nitro/presets";
 
 import { NitroDefaults } from "./defaults";
 
@@ -81,8 +81,8 @@ async function _loadUserConfig(
 
   // Preset resolver
   const { resolvePreset } = (await import(
-    "nitropack/" + "presets"
-  )) as typeof import("nitropack/presets");
+    "nitro/" + "presets"
+  )) as typeof import("nitro/presets");
 
   const loadedConfig = await (opts.watch
     ? watchConfig<NitroConfig & { _meta?: NitroPresetMeta }>
@@ -114,8 +114,8 @@ async function _loadUserConfig(
     defaults: NitroDefaults,
     jitiOptions: {
       alias: {
-        nitropack: "nitropack/config",
-        "nitropack/config": "nitropack/config",
+        nitropack: "nitro/config",
+        "nitro/config": "nitro/config",
       },
     },
     async resolve(id: string) {
