@@ -2,6 +2,7 @@ import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitro/runtime";
 import { getRouteRulesForPath } from "nitro/runtime/internal/route-rules";
 import {
+  getRouteRulesForPath,
   joinHeaders,
   normalizeCookieHeader,
 } from "nitro/runtime/internal/utils";

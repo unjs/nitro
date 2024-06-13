@@ -9,6 +9,7 @@ import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitro/runtime";
 import { normalizeCookieHeader } from "nitro/runtime/internal/utils";
 import {
+  normalizeCookieHeader,
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
