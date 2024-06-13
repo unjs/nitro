@@ -74,9 +74,6 @@ const netlifyEdge = defineNitroPreset(
         format: "esm",
       },
     },
-    unenv: {
-      polyfill: ["nitro/runtime/internal/polyfill/deno-env"],
-    },
     hooks: {
       async compiled(nitro: Nitro) {
         await writeHeaders(nitro);

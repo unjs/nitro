@@ -2,7 +2,7 @@
 import "#nitro-internal-pollyfills";
 import { toPlainHandler } from "h3";
 import { useNitroApp } from "nitro/runtime";
-import { toBuffer } from "nitro/runtime/internal/utils";
+import { toBuffer } from "nitro/runtime/internal";
 import { hasProtocol, joinURL } from "ufo";
 
 // Types are reverse engineered from runtime

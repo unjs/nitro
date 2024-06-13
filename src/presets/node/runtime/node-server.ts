@@ -7,9 +7,11 @@ import destr from "destr";
 import { toNodeListener } from "h3";
 import { useNitroApp } from "nitro/runtime";
 import { useRuntimeConfig } from "nitro/runtime";
-import { setupGracefulShutdown } from "nitro/runtime/internal/shutdown";
-import { startScheduleRunner } from "nitro/runtime/internal/task";
-import { trapUnhandledNodeErrors } from "nitro/runtime/internal/utils";
+import {
+  setupGracefulShutdown,
+  startScheduleRunner,
+  trapUnhandledNodeErrors,
+} from "nitro/runtime/internal";
 
 const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;

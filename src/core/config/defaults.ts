@@ -1,6 +1,7 @@
 import { runtimeDir } from "nitro/runtime/meta";
 import type { NitroConfig } from "nitro/types";
 import { resolve } from "pathe";
+import { join } from "pathe";
 import { isDebug, isTest } from "std-env";
 
 export const NitroDefaults: NitroConfig = {
@@ -58,8 +59,7 @@ export const NitroDefaults: NitroConfig = {
   baseURL: process.env.NITRO_APP_BASE_URL || "/",
   handlers: [],
   devHandlers: [],
-  // errorHandler: "nitro/runtime/internal/error",
-  errorHandler: "#internal/nitro/internal/error",
+  errorHandler: join(runtimeDir, "internal/error"),
   routeRules: {},
   prerender: {
     autoSubfolderIndex: true,

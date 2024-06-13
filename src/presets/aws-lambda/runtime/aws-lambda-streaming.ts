@@ -8,7 +8,7 @@ import { useNitroApp } from "nitro/runtime";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingHeaders,
-} from "nitro/runtime/internal/utils.lambda";
+} from "nitro/runtime/internal";
 import { withQuery } from "ufo";
 
 declare global {
