@@ -1,5 +1,3 @@
-import type { NitroConfig } from "nitropack/types";
-
 // Core
 export { createNitro } from "./nitro";
 
