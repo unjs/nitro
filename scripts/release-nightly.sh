@@ -31,8 +31,8 @@ fi
 # Release packages
 
 echo "Publishing main package..."
-npm publish --access public --tolerate-republish --tag v3
+npm publish --access public --tolerate-republish --tag 3x
 
 echo "Publishing mirror package..."
 cd .mirror
-npm publish --access public --tolerate-republish --tag v3
+npm publish --access public --tolerate-republish --tag 3x
