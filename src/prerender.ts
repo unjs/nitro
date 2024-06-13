@@ -269,7 +269,7 @@ export async function prerender(nitro: Nitro) {
     }
 
     // Crawl route links
-    if (!_route.error && isImplicitHTML) {
+    if (!_route.error && (isImplicitHTML || route.endsWith(".html"))) {
       const extractedLinks = extractLinks(
         dataBuff.toString("utf8"),
         route,

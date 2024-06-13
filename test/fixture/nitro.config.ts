@@ -90,7 +90,7 @@ export default defineNitroConfig({
     ignore: [
       // '/api/param/'
     ],
-    routes: ["/prerender", "/404"],
+    routes: ["/prerender", "/prerender-custom.html", "/404"],
   },
   experimental: {
     openAPI: true,
