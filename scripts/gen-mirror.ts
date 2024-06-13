@@ -1,9 +1,9 @@
-import { subpaths } from "../build.config";
-import { fileURLToPath } from "mlly";
-import { PackageJson, readPackageJSON } from "pkg-types";
-import { writeFile, mkdir, rm, cp } from "node:fs/promises";
-import { join } from "pathe";
+import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { e } from "crossws/dist/shared/crossws.381454fe";
+import { fileURLToPath } from "mlly";
+import { join } from "pathe";
+import { type PackageJson, readPackageJSON } from "pkg-types";
+import { subpaths } from "../build.config";
 
 const copyPkgFields = [
   "description",

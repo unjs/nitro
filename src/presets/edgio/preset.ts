@@ -1,7 +1,7 @@
 import { promises as fsp } from "node:fs";
-import { resolve, dirname } from "pathe";
-import type { PackageJson } from "pkg-types";
 import { defineNitroPreset } from "nitropack/kit";
+import { dirname, resolve } from "pathe";
+import type { PackageJson } from "pkg-types";
 
 const edgio = defineNitroPreset(
   {

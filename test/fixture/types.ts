@@ -1,9 +1,13 @@
 import { expectTypeOf } from "expect-type";
-import { describe, it } from "vitest";
-import { EventHandler, EventHandlerRequest, defineEventHandler } from "h3";
-import type { $Fetch } from "nitropack/types";
+import {
+  type EventHandler,
+  type EventHandlerRequest,
+  defineEventHandler,
+} from "h3";
 import { defineNitroConfig } from "nitropack/config";
+import type { $Fetch } from "nitropack/types";
 import type { Serialize, Simplify } from "nitropack/types";
+import { describe, it } from "vitest";
 
 interface TestResponse {
   message: string;

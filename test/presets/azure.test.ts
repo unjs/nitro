@@ -1,8 +1,8 @@
-import { promises as fsp, existsSync } from "node:fs";
-import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
+import { existsSync, promises as fsp } from "node:fs";
 import { execa } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
+import { resolve } from "pathe";
+import { describe, expect, it } from "vitest";
 import { setupTest, testNitro } from "../tests";
 
 describe(

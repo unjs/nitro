@@ -1,8 +1,8 @@
-import { defineBuildConfig } from "unbuild";
-import { resolve } from "pathe";
-import { fileURLToPath } from "node:url";
-import { normalize } from "pathe";
 import { writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { resolve } from "pathe";
+import { normalize } from "pathe";
+import { defineBuildConfig } from "unbuild";
 
 const srcDir = fileURLToPath(new URL("src", import.meta.url));
 

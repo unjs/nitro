@@ -1,4 +1,4 @@
-import type { H3Event, AppOptions, App as H3App, Router } from "h3";
+import type { AppOptions, App as H3App, H3Event, Router } from "h3";
 import type { Hookable } from "hookable";
 import type {
   createCall,

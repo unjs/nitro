@@ -5,7 +5,7 @@ import {
   normalizeLambdaOutgoingHeaders,
 } from "nitropack/runtime/internal";
 
-import type { HttpResponse, HttpRequest } from "@azure/functions";
+import type { HttpRequest, HttpResponse } from "@azure/functions";
 import { parseURL } from "ufo";
 
 const nitroApp = useNitroApp();

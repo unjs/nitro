@@ -8,12 +8,12 @@ import {
   normalizeLambdaOutgoingHeaders,
 } from "nitropack/runtime/internal";
 
-import { withQuery } from "ufo";
 import type {
-  HandlerResponse,
   HandlerContext,
   HandlerEvent,
+  HandlerResponse,
 } from "@netlify/functions";
+import { withQuery } from "ufo";
 
 const nitroApp = useNitroApp();
 

@@ -1,13 +1,13 @@
 import { promises as fsp } from "node:fs";
-import { relative, resolve } from "pathe";
-import { withTrailingSlash } from "ufo";
 import createEtag from "etag";
-import mime from "mime";
 import { globby } from "globby";
-import type { Plugin } from "rollup";
+import mime from "mime";
 import type { Nitro } from "nitropack/types";
-import { virtual } from "./virtual";
 import type { PublicAsset } from "nitropack/types";
+import { relative, resolve } from "pathe";
+import type { Plugin } from "rollup";
+import { withTrailingSlash } from "ufo";
+import { virtual } from "./virtual";
 
 const readAssetHandler: Record<
   Exclude<Nitro["options"]["serveStatic"] | "true" | "false", boolean>,

@@ -1,8 +1,8 @@
-import os from "node:os";
 import cluster from "node:cluster";
+import os from "node:os";
 import {
-  trapUnhandledNodeErrors,
   getGracefulShutdownConfig,
+  trapUnhandledNodeErrors,
 } from "nitropack/runtime/internal";
 
 function runMaster() {

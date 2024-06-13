@@ -1,9 +1,9 @@
-import { HTTPMethod, eventHandler, getRequestURL } from "h3";
+import { type HTTPMethod, eventHandler, getRequestURL } from "h3";
 import type {
   OpenAPI3,
-  PathItemObject,
   OperationObject,
   ParameterObject,
+  PathItemObject,
   PathsObject,
 } from "openapi-typescript";
 import { joinURL } from "ufo";

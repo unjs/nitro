@@ -1,10 +1,10 @@
 import "#nitro-internal-pollyfills";
 import { Server as HttpServer } from "node:http";
-import type { AddressInfo } from "node:net";
 import { Server as HttpsServer } from "node:https";
+import type { AddressInfo } from "node:net";
+import wsAdapter from "crossws/adapters/node";
 import destr from "destr";
 import { toNodeListener } from "h3";
-import wsAdapter from "crossws/adapters/node";
 import { useNitroApp, useRuntimeConfig } from "nitropack/runtime";
 import {
   setupGracefulShutdown,

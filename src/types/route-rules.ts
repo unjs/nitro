@@ -1,5 +1,5 @@
 import type { ProxyOptions, RouterMethod } from "h3";
-import type { IntRange, ExcludeFunctions } from "./_utils";
+import type { ExcludeFunctions, IntRange } from "./_utils";
 import type { CachedEventHandlerOptions } from "./runtime";
 
 export type HTTPStatusCode = IntRange<100, 600>;

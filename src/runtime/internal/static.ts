@@ -1,13 +1,14 @@
 import {
-  eventHandler,
+  type HTTPMethod,
   createError,
+  eventHandler,
   getRequestHeader,
   getResponseHeader,
+  removeResponseHeader,
   setResponseHeader,
   setResponseStatus,
-  removeResponseHeader,
-  type HTTPMethod,
 } from "h3";
+import type { PublicAsset } from "nitropack/types";
 import {
   decodePath,
   joinURL,
@@ -17,10 +18,9 @@ import {
 } from "ufo";
 import {
   getAsset,
-  readAsset,
   isPublicAssetURL,
+  readAsset,
 } from "#nitro-internal-virtual/public-assets";
-import type { PublicAsset } from "nitropack/types";
 
 const METHODS = new Set(["HEAD", "GET"] as HTTPMethod[]);
 

@@ -1,4 +1,4 @@
-import type { Plugin, ExistingRawSourceMap } from "rollup";
+import type { ExistingRawSourceMap, Plugin } from "rollup";
 
 export function sourcemapMininify() {
   return {

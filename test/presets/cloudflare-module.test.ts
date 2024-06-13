@@ -1,7 +1,7 @@
-import { resolve } from "pathe";
 import { Miniflare } from "miniflare";
-import { describe } from "vitest";
+import { resolve } from "pathe";
 import { Response as _Response } from "undici";
+import { describe } from "vitest";
 
 import { setupTest, testNitro } from "../tests";
 

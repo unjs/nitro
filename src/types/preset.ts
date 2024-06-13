@@ -1,6 +1,6 @@
+import type { DateString } from "compatx";
 import type { ProviderName } from "std-env";
 import type { NitroConfig } from "./config";
-import type { DateString } from "compatx";
 
 export type NitroPreset = NitroConfig | (() => NitroConfig);
 
