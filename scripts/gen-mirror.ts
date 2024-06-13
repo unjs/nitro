@@ -3,6 +3,7 @@ import { fileURLToPath } from "mlly";
 import { PackageJson, readPackageJSON } from "pkg-types";
 import { writeFile, mkdir, rm, cp } from "node:fs/promises";
 import { join } from "pathe";
+import { e } from "crossws/dist/shared/crossws.381454fe";
 
 const copyPkgFields = [
   "description",
@@ -43,16 +44,16 @@ async function main() {
   // Copy package.json fields
   const mirrorPkg: PackageJson = {
     name: mirrrorPkgName,
-    version: `0.0.0-mirror-${mainPkg.name}-${mainPkg.version}`,
-    peerDependencies: {},
+    version: `${mainPkg.version}-${mainPkg.name}-mirror`,
+    dependencies: {},
   };
 
-  // Add peer dependency
+  // Add dependency
   if (isNightly) {
-    mirrorPkg.peerDependencies![mainPkgName] =
+    mirrorPkg.dependencies![mainPkgName] =
       `npm:${mainPkg.name}@${mainPkg.version}`;
   } else {
-    mirrorPkg.peerDependencies![mainPkgName] = `${mainPkg.version}`;
+    mirrorPkg.dependencies![mainPkgName] = `${mainPkg.version}`;
   }
 
   for (const field of copyPkgFields) {
