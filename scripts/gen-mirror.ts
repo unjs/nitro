@@ -19,28 +19,26 @@ const copyPkgFields = [
 
 const copyFiles = ["README.md", "LICENSE"];
 
-// Dirs
-const mainDir = fileURLToPath(new URL("..", import.meta.url));
-const mirrorDir = fileURLToPath(new URL("../.mirror", import.meta.url));
-
 async function main() {
+  // Dirs
+  const mainDir = fileURLToPath(new URL("..", import.meta.url));
+  const mirrorDir = fileURLToPath(new URL("../.mirror", import.meta.url));
+  await rm(mirrorDir, { recursive: true }).catch(() => {});
+  await mkdir(mirrorDir, { recursive: true });
+
   // Read main package
   const mainPkg = await readPackageJSON(mainDir);
 
   // Check for nightly
   const isNightly = mainPkg.name!.includes("nightly");
 
+  // Mirror nitro<>nitropack
+  const mirrrorPkgName = mainPkg.name!.includes("pack")
+    ? mainPkg.name!.replace("pack", "")
+    : mainPkg.name!.replace("nitro", "nitropack");
+
   // Canonical name for main pkg (without -nightly suffix)
   const mainPkgName = mainPkg.name!.replace("-nightly", "");
-
-  // Mirror nitro<>nitropack
-  const mirrrorPkgName = mainPkgName.includes("pack")
-    ? mainPkgName.replace("pack", "")
-    : mainPkgName.replace("nitro", "nitropack");
-
-  // Init mirror dir
-  await rm(mirrorDir, { recursive: true }).catch(() => {});
-  await mkdir(mirrorDir, { recursive: true });
 
   // Copy package.json fields
   const mirrorPkg: PackageJson = {
@@ -54,7 +52,7 @@ async function main() {
     mirrorPkg.peerDependencies![mainPkgName] =
       `npm:${mainPkg.name}@${mainPkg.version}`;
   } else {
-    mirrorPkg.peerDependencies![mainPkgName] = `${mainPkg.version}"`;
+    mirrorPkg.peerDependencies![mainPkgName] = `${mainPkg.version}`;
   }
 
   for (const field of copyPkgFields) {
