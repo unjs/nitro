@@ -1,12 +1,12 @@
-import consola from "consola";
-import { colors } from "consola/utils";
-import { getProperty } from "dot-prop";
-import type { Nitro } from "nitropack/types";
 import { relative, resolve } from "pathe";
+import { Nitro } from "nitro/types";
+import { getProperty } from "dot-prop";
+import consola from "consola";
+import { colorize } from "consola/utils";
 
 export function prettyPath(p: string, highlight = true) {
   p = relative(process.cwd(), p);
-  return highlight ? colors.cyan(p) : p;
+  return highlight ? colorize("cyan", p) : p;
 }
 
 export function resolveNitroPath(

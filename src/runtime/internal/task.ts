@@ -1,14 +1,14 @@
-import { Cron } from "croner";
 import { createError } from "h3";
+import { Cron } from "croner";
+import { isTest } from "std-env";
+import { tasks, scheduledTasks } from "#nitro-internal-virtual/tasks";
 import type {
   Task,
+  TaskResult,
+  TaskPayload,
   TaskContext,
   TaskEvent,
-  TaskPayload,
-  TaskResult,
-} from "nitropack/types";
-import { isTest } from "std-env";
-import { scheduledTasks, tasks } from "#nitro-internal-virtual/tasks";
+} from "nitro/types";
 
 /** @experimental */
 export function defineTask<RT = unknown>(def: Task<RT>): Task<RT> {

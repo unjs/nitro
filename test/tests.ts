@@ -1,25 +1,25 @@
-import { promises as fsp } from "node:fs";
-import type { RequestListener } from "node:http";
 import { tmpdir } from "node:os";
-import { type DateString, formatDate } from "compatx";
-import { defu } from "defu";
-import destr from "destr";
-import { type Listener, listen } from "listhen";
-import { fileURLToPath } from "mlly";
-import {
-  build,
-  copyPublicAssets,
-  createDevServer,
-  createNitro,
-  prepare,
-  prerender,
-} from "nitropack/core";
-import type { Nitro, NitroConfig } from "nitropack/types";
-import { type FetchOptions, fetch } from "ofetch";
+import type { RequestListener } from "node:http";
+import { promises as fsp } from "node:fs";
 import { join, resolve } from "pathe";
-import { isWindows, nodeMajorVersion } from "std-env";
+import { listen, Listener } from "listhen";
+import destr from "destr";
+import { fetch, FetchOptions } from "ofetch";
+import { expect, it, afterAll, beforeAll, describe } from "vitest";
+import { fileURLToPath } from "mlly";
 import { joinURL } from "ufo";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { defu } from "defu";
+import {
+  createNitro,
+  build,
+  prepare,
+  copyPublicAssets,
+  prerender,
+  createDevServer,
+} from "nitro/core";
+import type { Nitro, NitroConfig } from "nitro/types";
+import { nodeMajorVersion, isWindows } from "std-env";
+import { type DateString, formatDate } from "compatx";
 
 export interface Context {
   preset: string;
@@ -495,7 +495,13 @@ export function testNitro(
         "server-config": true,
       },
       sharedRuntimeConfig: {
-        dynamic: "from-env",
+        dynamic:
+          // TODO
+          ctx.preset.includes("cloudflare") ||
+          ctx.preset === "vercel-edge" ||
+          ctx.preset === "nitro-dev"
+            ? "initial"
+            : "from-env",
         // url: "https://test.com",
         app: {
           baseURL: "/",

@@ -1,7 +1,7 @@
-import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import type { Nitro } from "nitropack/types";
+import { writeFile } from "node:fs/promises";
 import { joinURL } from "ufo";
+import type { Nitro } from "nitro/types";
 import type {
   AmplifyDeployManifest,
   AmplifyRoute,

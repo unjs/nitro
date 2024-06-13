@@ -1,25 +1,25 @@
+import { hash } from "ohash";
 import {
-  type EventHandler,
-  createEvent,
-  defineEventHandler,
-  fetchWithEvent,
   handleCacheHeaders,
+  defineEventHandler,
+  createEvent,
+  EventHandler,
   isEvent,
   splitCookiesString,
+  fetchWithEvent,
 } from "h3";
 import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
+import { parseURL } from "ufo";
+import { useStorage } from "./storage";
+import { useNitroApp } from "./app";
 import type {
   $Fetch,
-  CacheEntry,
   CacheOptions,
+  CacheEntry,
   CachedEventHandlerOptions,
-  NitroFetchRequest,
   ResponseCacheEntry,
-} from "nitropack/types";
-import { hash } from "ohash";
-import { parseURL } from "ufo";
-import { useNitroApp } from "./app";
-import { useStorage } from "./storage";
+  NitroFetchRequest,
+} from "nitro/types";
 
 const defaultCacheOptions = {
   name: "_",
@@ -116,7 +116,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
               console.error(`[nitro] [cache] Cache write error.`, error);
               useNitroApp().captureError(error, { event, tags: ["cache"] });
             });
-          if (event?.waitUntil) {
+          if (event && event.waitUntil) {
             event.waitUntil(promise);
           }
         }

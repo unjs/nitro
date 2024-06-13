@@ -1,30 +1,30 @@
 import { loadConfig, watchConfig } from "c12";
-import { type CompatibilityDateSpec, resolveCompatibilityDates } from "compatx";
 import { klona } from "klona/full";
-import type { PresetName } from "nitropack/presets";
+import { CompatibilityDateSpec, resolveCompatibilityDates } from "compatx";
 import type {
   LoadConfigOptions,
   NitroConfig,
   NitroOptions,
   NitroPresetMeta,
-} from "nitropack/types";
+} from "nitro/types";
+import type { PresetName } from "nitro/presets";
 
 import { NitroDefaults } from "./defaults";
 
-import { resolveAssetsOptions } from "./resolvers/assets";
 // Resolvers
 import {
   fallbackCompatibilityDate,
   resolveCompatibilityOptions,
 } from "./resolvers/compatibility";
-import { resolveDatabaseOptions } from "./resolvers/database";
-import { resolveExportConditionsOptions } from "./resolvers/export-conditions";
-import { resolveFetchOptions } from "./resolvers/fetch";
-import { resolveImportsOptions } from "./resolvers/imports";
-import { resolveOpenAPIOptions } from "./resolvers/open-api";
 import { resolvePathOptions } from "./resolvers/paths";
+import { resolveImportsOptions } from "./resolvers/imports";
 import { resolveRouteRulesOptions } from "./resolvers/route-rules";
+import { resolveDatabaseOptions } from "./resolvers/database";
+import { resolveFetchOptions } from "./resolvers/fetch";
+import { resolveExportConditionsOptions } from "./resolvers/export-conditions";
 import { resolveRuntimeConfigOptions } from "./resolvers/runtime-config";
+import { resolveOpenAPIOptions } from "./resolvers/open-api";
+import { resolveAssetsOptions } from "./resolvers/assets";
 import { resolveURLOptions } from "./resolvers/url";
 
 const configResolvers = [
@@ -81,8 +81,8 @@ async function _loadUserConfig(
 
   // Preset resolver
   const { resolvePreset } = (await import(
-    "nitropack/" + "presets"
-  )) as typeof import("nitropack/presets");
+    "nitro/" + "presets"
+  )) as typeof import("nitro/presets");
 
   const loadedConfig = await (opts.watch
     ? watchConfig<NitroConfig & { _meta?: NitroPresetMeta }>
@@ -114,8 +114,8 @@ async function _loadUserConfig(
     defaults: NitroDefaults,
     jitiOptions: {
       alias: {
-        nitropack: "nitropack/config",
-        "nitropack/config": "nitropack/config",
+        nitropack: "nitro/config",
+        "nitro/config": "nitro/config",
       },
     },
     async resolve(id: string) {

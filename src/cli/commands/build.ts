@@ -1,14 +1,14 @@
 import { defineCommand } from "citty";
-import type { DateString } from "compatx";
-import {
-  build,
-  copyPublicAssets,
-  createNitro,
-  prepare,
-  prerender,
-} from "nitropack/core";
 import { resolve } from "pathe";
+import {
+  createNitro,
+  prerender,
+  build,
+  prepare,
+  copyPublicAssets,
+} from "nitro/core";
 import { commonArgs } from "../common";
+import type { DateString } from "compatx";
 
 export default defineCommand({
   meta: {

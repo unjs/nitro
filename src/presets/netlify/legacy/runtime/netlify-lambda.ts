@@ -1,19 +1,18 @@
 import "#nitro-internal-pollyfills";
-import "./_deno-env-polyfill";
-import { useNitroApp } from "nitropack/runtime";
+import { useNitroApp } from "nitro/runtime";
+import { normalizeCookieHeader } from "nitro/runtime/internal/utils";
 import {
-  normalizeCookieHeader,
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingBody,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/internal";
+} from "nitro/runtime/internal/utils.lambda";
 
+import { withQuery } from "ufo";
 import type {
+  HandlerResponse,
   HandlerContext,
   HandlerEvent,
-  HandlerResponse,
 } from "@netlify/functions";
-import { withQuery } from "ufo";
 
 const nitroApp = useNitroApp();
 

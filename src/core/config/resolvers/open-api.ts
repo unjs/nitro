@@ -1,20 +1,18 @@
-import { runtimeDir } from "nitropack/runtime/meta";
-import type { NitroOptions } from "nitropack/types";
-import { join } from "pathe";
+import type { NitroOptions } from "nitro/types";
 
 export async function resolveOpenAPIOptions(options: NitroOptions) {
   if (options.dev && options.experimental.openAPI) {
     options.handlers.push({
       route: "/_nitro/openapi.json",
-      handler: join(runtimeDir, "internal/routes/openapi"),
+      handler: "nitro/runtime/internal/routes/openapi",
     });
     options.handlers.push({
       route: "/_nitro/scalar",
-      handler: join(runtimeDir, "internal/routes/scalar"),
+      handler: "nitro/runtime/internal/routes/scalar",
     });
     options.handlers.push({
       route: "/_nitro/swagger",
-      handler: join(runtimeDir, "internal/routes/swagger"),
+      handler: "nitro/runtime/internal/routes/swagger",
     });
   }
 }

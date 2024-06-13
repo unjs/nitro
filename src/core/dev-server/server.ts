@@ -1,35 +1,35 @@
-import { accessSync, existsSync, promises as fsp } from "node:fs";
-import { writeFile } from "node:fs/promises";
-import type { IncomingMessage, OutgoingMessage } from "node:http";
-import type { Duplex } from "node:stream";
-import type { TLSSocket } from "node:tls";
 import { Worker } from "node:worker_threads";
-import { type FSWatcher, watch } from "chokidar";
+import { existsSync, accessSync, promises as fsp } from "node:fs";
+import { writeFile } from "node:fs/promises";
+import { TLSSocket } from "node:tls";
+import { debounce } from "perfect-debounce";
 import {
-  type H3Error,
-  type H3Event,
   createApp,
   createError,
   eventHandler,
   fromNodeMiddleware,
+  H3Error,
+  H3Event,
   toNodeListener,
 } from "h3";
-import { type ProxyServerOptions, createProxyServer } from "httpxy";
-import { type Listener, listen } from "listhen";
-import { version as nitroVersion } from "nitropack/meta";
+import { createProxyServer, ProxyServerOptions } from "httpxy";
+import { listen, Listener } from "listhen";
+import { servePlaceholder } from "serve-placeholder";
+import serveStatic from "serve-static";
+import { resolve } from "pathe";
+import { joinURL } from "ufo";
+import { FSWatcher, watch } from "chokidar";
 import type {
   Nitro,
   NitroBuildInfo,
   NitroDevServer,
   NitroWorker,
-} from "nitropack/types";
-import { resolve } from "pathe";
-import { debounce } from "perfect-debounce";
-import { servePlaceholder } from "serve-placeholder";
-import serveStatic from "serve-static";
-import { joinURL } from "ufo";
-import defaultErrorHandler from "./error";
+} from "nitro/types";
 import { createVFSHandler } from "./vfs";
+import defaultErrorHandler from "./error";
+import type { IncomingMessage, OutgoingMessage } from "node:http";
+import type { Duplex } from "node:stream";
+import { version as nitroVersion } from "nitro/meta";
 
 function initWorker(filename: string): Promise<NitroWorker> | undefined {
   if (!existsSync(filename)) {

@@ -84,7 +84,7 @@ export interface CloudflareMessageBatch<Body = unknown> {
   retryAll(options?: CloudflareQueueRetryOptions): void;
 }
 
-declare module "nitropack/types" {
+declare module "nitro/types" {
   export interface NitroRuntimeHooks {
     "cloudflare:email": (_: {
       event: CloudflareEmailContext;

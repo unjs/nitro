@@ -1,24 +1,24 @@
 import "#nitro-internal-pollyfills";
-import { useNitroApp } from "nitropack/runtime";
-import { runTask } from "nitropack/runtime";
-import { trapUnhandledNodeErrors } from "nitropack/runtime/internal";
-import { startScheduleRunner } from "nitropack/runtime/internal";
-import { scheduledTasks, tasks } from "#nitro-internal-virtual/tasks";
+import { useNitroApp } from "nitro/runtime";
+import { trapUnhandledNodeErrors } from "nitro/runtime/internal/utils";
+import { runTask } from "nitro/runtime/internal/task";
+import { startScheduleRunner } from "nitro/runtime/internal/task";
+import { tasks, scheduledTasks } from "#nitro-internal-virtual/tasks";
 
-import { mkdirSync } from "node:fs";
 import { Server } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { parentPort, threadId } from "node:worker_threads";
-import wsAdapter from "crossws/adapters/node";
+import { mkdirSync } from "node:fs";
+import { threadId, parentPort } from "node:worker_threads";
+import { isWindows, provider } from "std-env";
 import {
   defineEventHandler,
   getQuery,
   getRouterParam,
-  readBody,
   toNodeListener,
+  readBody,
 } from "h3";
-import { isWindows, provider } from "std-env";
+import wsAdapter from "crossws/adapters/node";
 
 const nitroApp = useNitroApp();
 
@@ -40,10 +40,11 @@ function getAddress() {
   const socketName = `worker-${process.pid}-${threadId}.sock`;
   if (isWindows) {
     return join(String.raw`\\.\pipe\nitro`, socketName);
+  } else {
+    const socketDir = join(tmpdir(), "nitro");
+    mkdirSync(socketDir, { recursive: true });
+    return join(socketDir, socketName);
   }
-  const socketDir = join(tmpdir(), "nitro");
-  mkdirSync(socketDir, { recursive: true });
-  return join(socketDir, socketName);
 }
 
 const listenAddress = getAddress();

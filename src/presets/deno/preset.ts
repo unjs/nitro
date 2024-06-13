@@ -1,9 +1,9 @@
 import { builtinModules } from "node:module";
+import { isAbsolute, resolve } from "pathe";
 import MagicString from "magic-string";
 import { findStaticImports } from "mlly";
-import { defineNitroPreset } from "nitropack/kit";
-import { writeFile } from "nitropack/kit";
-import { isAbsolute, resolve } from "pathe";
+import { defineNitroPreset } from "nitro/kit";
+import { writeFile } from "nitro/kit";
 
 // nitro/src/rollup/plugin/import-meta.ts
 const ImportMetaRe = /import\.meta|globalThis._importMeta_/;
@@ -19,6 +19,9 @@ const denoDeploy = defineNitroPreset(
       preview: "",
       deploy:
         "cd ./ && deployctl deploy --project=<project_name> server/index.ts",
+    },
+    unenv: {
+      polyfill: ["nitro/runtime/internal/polyfill/deno-env"],
     },
     rollupConfig: {
       preserveEntrySignatures: false,

@@ -1,12 +1,11 @@
 import "#nitro-internal-pollyfills";
-import "./_deno-env-polyfill";
-import { useNitroApp } from "nitropack/runtime";
-import { useRuntimeConfig } from "nitropack/runtime";
-import { startScheduleRunner } from "nitropack/runtime/internal";
+import { useNitroApp } from "nitro/runtime";
+import { useRuntimeConfig } from "nitro/runtime";
+import { startScheduleRunner } from "nitro/runtime/internal/task";
 
-import type { Deno as _Deno } from "@deno/types";
-import wsAdapter from "crossws/adapters/deno";
 import destr from "destr";
+import wsAdapter from "crossws/adapters/deno";
+import type { Deno as _Deno } from "@deno/types";
 
 // TODO: Declare conflict with crossws
 // declare global {

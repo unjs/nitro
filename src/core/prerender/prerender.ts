@@ -1,15 +1,15 @@
 import { pathToFileURL } from "node:url";
-import { colors } from "consola/utils";
+import { resolve, join, relative } from "pathe";
+import { joinURL, withBase, withoutBase } from "ufo";
+import chalk from "chalk";
+import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { defu } from "defu";
 import mime from "mime";
-import { writeFile } from "nitropack/kit";
-import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitropack/types";
 import type { $Fetch } from "ofetch";
-import { join, relative, resolve } from "pathe";
-import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
-import { joinURL, withBase, withoutBase } from "ufo";
-import { build } from "../build/build";
 import { createNitro } from "../nitro";
+import { build } from "../build/build";
+import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitro/types";
+import { writeFile } from "nitro/kit";
 import { compressPublicAssets } from "../utils/compress";
 import {
   extractLinks,
@@ -223,6 +223,7 @@ export async function prerender(nitro: Nitro) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error!.statusCode = res.status;
       _route.error!.statusMessage = res.statusText;
+      failedRoutes.add(_route);
     }
 
     // Measure actual time taken for generating route
@@ -252,11 +253,6 @@ export async function prerender(nitro: Nitro) {
     if (_route.contentType !== inferredContentType) {
       nitro._prerenderMeta![_route.fileName] ||= {};
       nitro._prerenderMeta![_route.fileName].contentType = _route.contentType;
-    }
-
-    // After hook to allow ignoring in `prerender:generate` hook
-    if (_route.error) {
-      failedRoutes.add(_route);
     }
 
     // Check if route is skipped or has errors
@@ -322,7 +318,7 @@ export async function prerender(nitro: Nitro) {
       const parents = linkParents.get(route.route);
       const parentsText = parents?.size
         ? `\n${[...parents.values()]
-            .map((link) => colors.gray(`  │ └── Linked from ${link}`))
+            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
             .join("\n")}`
         : "";
       nitro.logger.log(formatPrerenderRoute(route));

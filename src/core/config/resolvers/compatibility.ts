@@ -1,11 +1,11 @@
 import {
-  type DateString,
-  formatDate,
   resolveCompatibilityDatesFromEnv,
+  formatDate,
+  DateString,
 } from "compatx";
 import _consola from "consola";
-import { colors } from "consola/utils";
-import type { NitroOptions } from "nitropack/types";
+import { colorize } from "consola/utils";
+import type { NitroOptions } from "nitro/types";
 import { relative } from "pathe";
 
 // Nitro v2.9.6 release
@@ -26,8 +26,8 @@ export async function resolveCompatibilityOptions(options: NitroOptions) {
   }
 }
 
-let _fallbackInfoShown = false;
-let _promptedUserToUpdate = false;
+let _fallbackInfoShown: boolean = false;
+let _promptedUserToUpdate: boolean = false;
 
 async function _resolveDefault(options: NitroOptions): Promise<DateString> {
   const _todayDate = formatDate(new Date());
@@ -56,7 +56,7 @@ async function _resolveDefault(options: NitroOptions): Promise<DateString> {
     options._cli?.command === "dev" &&
     !_promptedUserToUpdate &&
     (await consola.prompt(
-      `Do you want to auto update config file to set ${colors.cyan(`compatibilityDate: '${_todayDate}'`)}?`,
+      `Do you want to auto update config file to set ${colorize("cyan", `compatibilityDate: '${_todayDate}'`)}?`,
       {
         type: "confirm",
         default: true,
@@ -73,7 +73,7 @@ async function _resolveDefault(options: NitroOptions): Promise<DateString> {
     cwd: options.rootDir,
     async onCreate({ configFile }) {
       const shallCreate = await consola.prompt(
-        `Do you want to initialize a new config in ${colors.cyan(relative(".", configFile))}?`,
+        `Do you want to initialize a new config in ${colorize("cyan", relative(".", configFile))}?`,
         {
           type: "confirm",
           default: true,
@@ -104,7 +104,7 @@ async function _resolveDefault(options: NitroOptions): Promise<DateString> {
 
 function _getDefaultNitroConfig() {
   return /* js */ `
-import { defineNitroConfig } from 'nitropack/config'
+import { defineNitroConfig } from 'nitro/config'
 
 export default defineNitroConfig({})
   `;

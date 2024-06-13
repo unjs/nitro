@@ -1,13 +1,13 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import type {
-  Nitro,
-  NitroBuildInfo,
-  TaskEvent,
-  TaskRunnerOptions,
-} from "nitropack/types";
+import { resolve, normalize } from "pathe";
 import { ofetch } from "ofetch";
-import { normalize, resolve } from "pathe";
+import type {
+  NitroBuildInfo,
+  TaskRunnerOptions,
+  TaskEvent,
+  Nitro,
+} from "nitro/types";
 
 /** @experimental */
 export async function runTask(

@@ -7,15 +7,13 @@ import {
   setResponseHeaders,
   setResponseStatus,
 } from "h3";
-import type { RenderHandler } from "nitropack/types";
 import { useNitroApp } from "./app";
-import { useRuntimeConfig } from "./config";
+import type { RenderHandler } from "nitro/types";
 
 export function defineRenderHandler(handler: RenderHandler) {
-  const runtimeConfig = useRuntimeConfig();
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder
-    if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
+    if (event.path.endsWith("/favicon.ico")) {
       setResponseHeader(event, "Content-Type", "image/x-icon");
       return send(
         event,

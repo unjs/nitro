@@ -1,14 +1,15 @@
 import "#nitro-internal-pollyfills";
-import { useNitroApp } from "nitropack/runtime";
-import { requestHasBody, runCronTasks } from "nitropack/runtime/internal";
+import { runCronTasks } from "nitro/runtime/internal/task";
+import { requestHasBody } from "nitro/runtime/internal/utils";
+import { useNitroApp } from "nitro/runtime";
 import { isPublicAssetURL } from "#nitro-internal-virtual/public-assets";
 
+import wsAdapter from "crossws/adapters/cloudflare";
 import type {
   Request as CFRequest,
   EventContext,
   ExecutionContext,
 } from "@cloudflare/workers-types";
-import wsAdapter from "crossws/adapters/cloudflare";
 
 /**
  * Reference: https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#parameters

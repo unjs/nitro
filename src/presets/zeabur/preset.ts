@@ -1,8 +1,8 @@
 import fsp from "node:fs/promises";
-import { writeFile } from "nitropack/kit";
-import { defineNitroPreset } from "nitropack/kit";
-import type { Nitro } from "nitropack/types";
 import { dirname, relative, resolve } from "pathe";
+import { writeFile } from "nitro/kit";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 
 // https://zeabur.com/docs/advanced/serverless-output-format
 

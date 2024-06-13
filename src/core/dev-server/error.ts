@@ -1,12 +1,12 @@
 import {
-  type H3Event,
+  H3Event,
+  setResponseHeader,
+  setResponseStatus,
   getResponseStatus,
   getResponseStatusText,
   send,
-  setResponseHeader,
-  setResponseStatus,
 } from "h3";
-import type { NitroErrorHandler } from "nitropack/types";
+import { NitroErrorHandler } from "nitro/types";
 
 function errorHandler(error: any, event: H3Event) {
   setResponseHeader(event, "Content-Type", "text/html; charset=UTF-8");

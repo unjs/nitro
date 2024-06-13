@@ -1,15 +1,15 @@
 import type {
   APIGatewayProxyEventV2,
-  APIGatewayProxyStructuredResultV2,
   Context,
+  APIGatewayProxyStructuredResultV2,
 } from "aws-lambda";
 import "#nitro-internal-pollyfills";
-import { useNitroApp } from "nitropack/runtime";
+import { withQuery } from "ufo";
+import { useNitroApp } from "nitro/runtime";
 import {
   normalizeLambdaIncomingHeaders,
   normalizeLambdaOutgoingHeaders,
-} from "nitropack/runtime/internal";
-import { withQuery } from "ufo";
+} from "nitro/runtime/internal/utils.lambda";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

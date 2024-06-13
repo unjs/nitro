@@ -1,14 +1,14 @@
 import { promises as fsp } from "node:fs";
-import { defineNitroPreset } from "nitropack/kit";
-import type { Nitro } from "nitropack/types";
-import { dirname, join } from "pathe";
-import netlifyLegacyPresets from "./legacy/preset";
+import { join, dirname } from "pathe";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import {
   generateNetlifyFunction,
   getGeneratorString,
   writeHeaders,
   writeRedirects,
 } from "./utils";
+import netlifyLegacyPresets from "./legacy/preset";
 
 export type { NetlifyOptions as PresetOptions } from "./types";
 
@@ -74,6 +74,9 @@ const netlifyEdge = defineNitroPreset(
         format: "esm",
       },
     },
+    unenv: {
+      polyfill: ["nitro/runtime/internal/polyfill/deno-env"],
+    },
     hooks: {
       async compiled(nitro: Nitro) {
         await writeHeaders(nitro);
@@ -111,11 +114,10 @@ const netlifyStatic = defineNitroPreset(
   {
     extends: "static",
     output: {
-      dir: "{{ rootDir }}/dist",
       publicDir: "{{ rootDir }}/dist",
     },
     commands: {
-      preview: "npx serve ./",
+      preview: "npx serve ./static",
     },
     hooks: {
       async compiled(nitro: Nitro) {

@@ -1,11 +1,10 @@
 import "#nitro-internal-pollyfills";
-import "./_deno-env-polyfill";
-import { useNitroApp } from "nitropack/runtime";
+import { useNitroApp } from "nitro/runtime";
+import { getRouteRulesForPath } from "nitro/runtime/internal/route-rules";
 import {
-  getRouteRulesForPath,
   joinHeaders,
   normalizeCookieHeader,
-} from "nitropack/runtime/internal";
+} from "nitro/runtime/internal/utils";
 
 const nitroApp = useNitroApp();
 
@@ -64,7 +63,7 @@ function getCacheHeaders(url: string): Record<string, string> {
         : "must-revalidate";
     return {
       "Cache-Control": "public, max-age=0, must-revalidate",
-      "Netlify-CDN-Cache-Control": `public, max-age=${maxAge}, ${revalidateDirective}, durable`,
+      "Netlify-CDN-Cache-Control": `public, max-age=${maxAge}, ${revalidateDirective}`,
     };
   }
   return {};

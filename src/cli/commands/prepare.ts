@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
-import { createNitro, writeTypes } from "nitropack/core";
 import { resolve } from "pathe";
+import { createNitro, writeTypes } from "nitro/core";
 import { commonArgs } from "../common";
 
 export default defineCommand({

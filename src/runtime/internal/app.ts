@@ -1,36 +1,32 @@
-import destr from "destr";
 import {
-  type H3Error,
-  type H3Event,
   createApp,
   createRouter,
   eventHandler,
-  fetchWithEvent,
-  isEvent,
   lazyEventHandler,
   toNodeListener,
+  fetchWithEvent,
+  H3Error,
+  isEvent,
+  H3Event,
 } from "h3";
-import { createHooks } from "hookable";
-import type {
-  CaptureError,
-  NitroApp,
-  NitroRuntimeHooks,
-} from "nitropack/types";
-import type { NitroAsyncContext } from "nitropack/types";
-import type { $Fetch, NitroFetchRequest } from "nitropack/types";
-import { Headers, createFetch } from "ofetch";
+import { createFetch, Headers } from "ofetch";
+import destr from "destr";
 import {
   createCall,
   createFetch as createLocalFetch,
 } from "unenv/runtime/fetch/index";
-import errorHandler from "#nitro-internal-virtual/error-handler";
-import { plugins } from "#nitro-internal-virtual/plugins";
-import { handlers } from "#nitro-internal-virtual/server-handlers";
-import { cachedEventHandler } from "./cache";
+import { createHooks } from "hookable";
+import type { NitroRuntimeHooks, CaptureError, NitroApp } from "nitro/types";
 import { useRuntimeConfig } from "./config";
-import { nitroAsyncContext } from "./context";
-import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
+import { cachedEventHandler } from "./cache";
 import { normalizeFetchResponse } from "./utils";
+import { createRouteRulesHandler, getRouteRulesForPath } from "./route-rules";
+import { nitroAsyncContext } from "./context";
+import type { NitroAsyncContext } from "nitro/types";
+import type { $Fetch, NitroFetchRequest } from "nitro/types";
+import { plugins } from "#nitro-internal-virtual/plugins";
+import errorHandler from "#nitro-internal-virtual/error-handler";
+import { handlers } from "#nitro-internal-virtual/server-handlers";
 
 function createNitroApp(): NitroApp {
   const config = useRuntimeConfig();

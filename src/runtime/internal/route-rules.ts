@@ -1,15 +1,15 @@
-import defu from "defu";
 import {
-  type H3Event,
   eventHandler,
-  proxyRequest,
+  H3Event,
   sendRedirect,
   setHeaders,
+  proxyRequest,
 } from "h3";
-import type { NitroRouteRules } from "nitropack/types";
+import defu from "defu";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
-import { getQuery, joinURL, withQuery, withoutBase } from "ufo";
+import { joinURL, withQuery, getQuery, withoutBase } from "ufo";
 import { useRuntimeConfig } from "./config";
+import type { NitroRouteRules } from "nitro/types";
 
 const config = useRuntimeConfig();
 const _routeRulesMatcher = toRouteMatcher(

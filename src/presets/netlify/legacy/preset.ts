@@ -1,7 +1,7 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { defineNitroPreset } from "nitropack/kit";
-import type { Nitro } from "nitropack/types";
-import { dirname, join } from "pathe";
+import { join, dirname } from "pathe";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import { deprecateSWR, writeHeaders, writeRedirects } from "./utils";
 
 // Netlify functions
@@ -91,6 +91,9 @@ const netlifyEdge = defineNitroPreset(
         format: "esm",
       },
     },
+    unenv: {
+      polyfill: ["nitro/runtime/internal/polyfill/deno-env"],
+    },
     hooks: {
       "rollup:before": (nitro: Nitro) => {
         deprecateSWR(nitro);
@@ -130,11 +133,10 @@ const netlifyStatic = defineNitroPreset(
   {
     extends: "static",
     output: {
-      dir: "{{ rootDir }}/dist",
       publicDir: "{{ rootDir }}/dist",
     },
     commands: {
-      preview: "npx serve ./",
+      preview: "npx serve ./static",
     },
     hooks: {
       "rollup:before": (nitro: Nitro) => {
