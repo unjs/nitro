@@ -95,7 +95,6 @@ export interface NitroOptions extends PresetOptions {
     };
   };
   experimental: {
-    legacyExternals?: boolean;
     openAPI?: boolean;
     /**
      * See https://github.com/microsoft/TypeScript/pull/51669
