@@ -39,7 +39,7 @@ async function main() {
     : mainPkg.name!.replace("nitro", "nitropack");
 
   // Canonical name for main pkg (without -nightly suffix)
-  const mainPkgName = mainPkg.name!.replace("-nightly", "");
+  const canonicalName = mainPkg.name!.replace("-nightly", "");
 
   // Copy package.json fields
   const mirrorPkg: PackageJson = {
@@ -50,10 +50,10 @@ async function main() {
 
   // Add dependency
   if (isNightly) {
-    mirrorPkg.dependencies![mainPkgName] =
+    mirrorPkg.dependencies![canonicalName] =
       `npm:${mainPkg.name}@${mainPkg.version}`;
   } else {
-    mirrorPkg.dependencies![mainPkgName] = `${mainPkg.version}`;
+    mirrorPkg.dependencies![canonicalName] = `${mainPkg.version}`;
   }
 
   for (const field of copyPkgFields) {
@@ -71,15 +71,15 @@ async function main() {
     await mkdir(join(mirrorDir, "dist", subpath), { recursive: true });
     await writeFile(
       join(mirrorDir, "dist", subpath, "index.mjs"),
-      `export * from "${mainPkg.name}/${subpath}";`
+      `export * from "${canonicalName}/${subpath}";`
     );
     await writeFile(
       join(mirrorDir, "dist", subpath, "index.d.ts"),
-      `export * from "${mainPkg.name}/${subpath}";`
+      `export * from "${canonicalName}/${subpath}";`
     );
     await writeFile(
       join(mirrorDir, "dist", subpath, "index.d.mts"),
-      `export * from "${mainPkg.name}/${subpath}";`
+      `export * from "${canonicalName}/${subpath}";`
     );
     await writeFile(
       join(mirrorDir, `${subpath}.d.ts`),
@@ -90,11 +90,11 @@ async function main() {
   // Runtime Meta
   await writeFile(
     join(mirrorDir, "runtime-meta.mjs"),
-    `export * from "${mainPkg.name}/runtime/meta";`
+    `export * from "${canonicalName}/runtime/meta";`
   );
   await writeFile(
     join(mirrorDir, "runtime-meta.d.ts"),
-    `export * from "${mainPkg.name}/runtime/meta";`
+    `export * from "${canonicalName}/runtime/meta";`
   );
 
   // Other files
