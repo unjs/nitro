@@ -34,10 +34,6 @@
       "types": "./presets.d.ts",
       "import": "./dist/presets/index.mjs"
     },
-    "./presets/*": {
-      "types": "./dist/presets/*.d.ts",
-      "import": "./dist/presets/*.mjs"
-    },
     "./rollup": {
       "types": "./rollup.d.ts",
       "import": "./dist/rollup/index.mjs"
@@ -49,14 +45,6 @@
     "./runtime/meta": {
       "types": "./runtime-meta.d.ts",
       "import": "./runtime-meta.mjs"
-    },
-    "./runtime/*": {
-      "types": "./dist/runtime/*.d.ts",
-      "import": "./dist/runtime/*.mjs"
-    },
-    "./dist/runtime/*": {
-      "types": "./dist/runtime/*.d.ts",
-      "import": "./dist/runtime/*.mjs"
     },
     "./types": {
       "types": "./types.d.ts",
