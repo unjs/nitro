@@ -42,6 +42,7 @@ export default defineBuildConfig({
     { input: "src/types/index.ts" },
   ],
   alias: {
+    nitro: "nitro",
     "nitro/meta": resolve(srcDir, "../meta.ts"),
     "nitro/runtime/meta": resolve(srcDir, "../runtime-meta.mjs"),
     ...Object.fromEntries(
