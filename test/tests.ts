@@ -653,10 +653,11 @@ export function testNitro(
       "should setItem before returning response the first time",
       async () => {
         const {
-          data: { timestamp, cache },
+          data: { timestamp, eventContextCache },
         } = await callHandler({ url: "/api/cached" });
 
-        expect(cache).toBeDefined();
+        expect(eventContextCache?.options.swr).toBe(true);
+
         const calls = await Promise.all([
           callHandler({ url: "/api/cached" }),
           callHandler({ url: "/api/cached" }),
@@ -665,6 +666,7 @@ export function testNitro(
 
         for (const call of calls) {
           expect(call.data.timestamp).toBe(timestamp);
+          expect(call.data.eventContextCache.options.swr).toBe(true);
         }
       }
     );
