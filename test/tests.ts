@@ -643,7 +643,11 @@ export function testNitro(
     it.skipIf(ctx.isIsolated)(
       "should setItem before returning response the first time",
       async () => {
-        const { data: timestamp } = await callHandler({ url: "/api/cached" });
+        const {
+          data: { timestamp, eventContextCache },
+        } = await callHandler({ url: "/api/cached" });
+
+        expect(eventContextCache?.options.swr).toBe(true);
 
         const calls = await Promise.all([
           callHandler({ url: "/api/cached" }),
@@ -652,7 +656,8 @@ export function testNitro(
         ]);
 
         for (const call of calls) {
-          expect(call.data).toBe(timestamp);
+          expect(call.data.timestamp).toBe(timestamp);
+          expect(call.data.eventContextCache.options.swr).toBe(true);
         }
       }
     );
