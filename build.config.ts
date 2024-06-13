@@ -13,8 +13,9 @@ export const subpaths = [
   "kit",
   "presets",
   "rollup",
-  "types",
+  "runtime",
   "meta",
+  "types",
 ];
 
 export default defineBuildConfig({
