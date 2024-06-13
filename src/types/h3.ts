@@ -1,4 +1,8 @@
-import type { CaptureError, CapturedErrorContext } from "nitropack/types";
+import type {
+  CaptureError,
+  CapturedErrorContext,
+  CacheOptions,
+} from "nitropack/types";
 import type { NitroFetchRequest, $Fetch } from "./fetch/fetch";
 
 export type H3EventFetch = (
@@ -24,6 +28,10 @@ declare module "h3" {
       _waitUntilPromises?: Promise<unknown>[];
       /** @experimental */
       errors: { error?: Error; context: CapturedErrorContext }[];
+    };
+
+    cache: {
+      options: CacheOptions;
     };
   }
 }
