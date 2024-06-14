@@ -84,4 +84,3 @@ test/fixture/functions
 # Generated types
 *.d.ts
 !runtime-meta.d.ts
-!src/_declarations.d.ts
