@@ -209,10 +209,10 @@ declare module "nitropack/types" {
         esModuleInterop: true,
         allowSyntheticDefaultImports: true,
         skipLibCheck: true,
-        target: 'ESNext',
+        target: "ESNext",
         allowJs: true,
         resolveJsonModule: true,
-        moduleDetection: 'force',
+        moduleDetection: "force",
         isolatedModules: true,
         verbatimModuleSyntax: true,
         /* Strictness */
@@ -222,7 +222,7 @@ declare module "nitropack/types" {
         forceConsistentCasingInFileNames: true,
         /* If NOT transpiling with TypeScript: */
         // TODO: consider using 'module: preserve' (requires TS 5.4+)
-        module: 'ESNext',
+        module: "ESNext",
         noEmit: true,
         moduleResolution:
           nitro.options.experimental.typescriptBundlerResolution === false
