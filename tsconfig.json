@@ -1,19 +1,28 @@
 {
   "compilerOptions": {
+    /* Base options: */
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "lib": ["WebWorker", "DOM.Iterable"],
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
+    "target": "es2022",
     "allowJs": true,
     "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    /* Strictness */
+    "strict": true,
+    // TODO: enable noUncheckedIndexedAccess in subsequent PR
+    // "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
+    /* If NOT transpiling with TypeScript: */
+    "module": "preserve",
+    "noEmit": true,
     "jsx": "preserve",
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
-    "noEmit": true,
+    "lib": ["es2022", "webworker", "dom.iterable"],
     "paths": {
       // CLI
       "nitro/cli": ["./src/cli"],
