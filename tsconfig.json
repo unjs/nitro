@@ -56,6 +56,6 @@
       "#internal/nitro/*": ["./src/runtime/*"]
     }
   },
-  "include": ["src", "test", "scripts/gen-mirror.ts", "src/_declarations.d.ts"],
+  "include": ["src", "test", "scripts/gen-mirror.ts"],
   "exclude": ["dist", "examples", "playground", "test/fixture"]
 }
