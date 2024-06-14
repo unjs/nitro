@@ -22,7 +22,6 @@
     "jsx": "preserve",
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
-    /* If your code runs in the DOM: */
     "lib": ["es2022", "webworker", "dom.iterable"],
     "paths": {
       // CLI
