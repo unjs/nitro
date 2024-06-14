@@ -6,7 +6,7 @@ settings:
 
 overrides:
   nitropack: link:.
-  undici: ^6.18.2
+  undici: ^6.19.0
 
 patchedDependencies:
   unbuild@3.0.0-rc.2:
@@ -198,8 +198,8 @@ importers:
         specifier: ^7.6.2
         version: 7.6.2
       serve-placeholder:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.2
+        version: 2.0.2
       serve-static:
         specifier: ^1.15.0
         version: 1.15.0
@@ -235,8 +235,8 @@ importers:
         specifier: ^3.5.1
         version: 3.5.1
       '@azure/static-web-apps-cli':
-        specifier: ^1.1.8
-        version: 1.1.8
+        specifier: ^1.1.9
+        version: 1.1.9
       '@biomejs/biome':
         specifier: ^1.8.1
         version: 1.8.1
@@ -328,8 +328,8 @@ importers:
         specifier: 3.0.0-rc.2
         version: 3.0.0-rc.2(patch_hash=rrfmssaqzf6ob23oou5wnx366m)(typescript@5.4.5)
       undici:
-        specifier: ^6.18.2
-        version: 6.18.2
+        specifier: ^6.19.0
+        version: 6.19.0
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.2)(terser@5.31.1)
@@ -493,8 +493,8 @@ packages:
     resolution: {integrity: sha512-8tvi6Cos3m+0KmRbPjgkySXi+UQU/QiuVRFnrxIwt5xZlEEFa69O04RTaNESGgImyBBlYbo2mfE8/U8Bbdk1WQ==}
     engines: {node: '>=16'}
 
-  '@azure/static-web-apps-cli@1.1.8':
-    resolution: {integrity: sha512-6/yCxXjAfvBwsT8eqgc5asQFbdKwQJMN8PJmSJKenbQTYgAarwBdNClEvm6sVAWKiixKmIOjvQvZP08UI9ofKw==}
+  '@azure/static-web-apps-cli@1.1.9':
+    resolution: {integrity: sha512-W/BxVHuGMkP+Ycr/Wv6q3IM5tuDeJLob4MTzzT0+h7HIErTq6Ie5tzyqH99qstVv8XP2DJMsb+BwAoj9ZOzy0g==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     hasBin: true
 
@@ -5400,8 +5400,8 @@ packages:
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
-  serve-placeholder@2.0.1:
-    resolution: {integrity: sha512-rUzLlXk4uPFnbEaIz3SW8VISTxMuONas88nYWjAWaM2W9VDbt9tyFOr3lq8RhVOFrT3XISoBw8vni5una8qMnQ==}
+  serve-placeholder@2.0.2:
+    resolution: {integrity: sha512-/TMG8SboeiQbZJWRlfTCqMs2DD3SZgWp0kDQePz9yUuCnDfDh/92gf7/PxGhzXTKBIPASIHxFcZndoNbp6QOLQ==}
 
   serve-static@1.15.0:
     resolution: {integrity: sha512-XGuRDNjXUijsUL0vl6nSD7cwURuzEgglbOaFuZM9g3kwDXOWVTck0jLzjPzGD+TazWbboZYu52/9/XPdUgne9g==}
@@ -5831,8 +5831,8 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  undici@6.18.2:
-    resolution: {integrity: sha512-o/MQLTwRm9IVhOqhZ0NQ9oXax1ygPjw6Vs+Vq/4QRjbOAC3B1GCHy7TYxxbExKlb7bzDRzt9vBWU6BDz0RFfYg==}
+  undici@6.19.0:
+    resolution: {integrity: sha512-9gGwbSLgYMjp4r6M5P9bhqhx1E+RyUIHqZE0r7BmrRoqroJUG6xlVu5TXH9DnwmCPLkcaVNrcYtxUE9d3InnyQ==}
     engines: {node: '>=18.17'}
 
   unenv@1.9.0:
@@ -6416,7 +6416,7 @@ snapshots:
       jsonwebtoken: 9.0.2
       uuid: 8.3.2
 
-  '@azure/static-web-apps-cli@1.1.8':
+  '@azure/static-web-apps-cli@1.1.9':
     dependencies:
       '@azure/arm-appservice': 12.0.0
       '@azure/arm-resources': 5.2.0
@@ -7923,7 +7923,7 @@ snapshots:
   '@types/glob@5.0.38':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 8.10.66
+      '@types/node': 20.14.2
 
   '@types/har-format@1.2.15': {}
 
@@ -7968,7 +7968,7 @@ snapshots:
 
   '@types/mkdirp@0.5.2':
     dependencies:
-      '@types/node': 8.10.66
+      '@types/node': 20.14.2
 
   '@types/ms@0.7.34': {}
 
@@ -8018,7 +8018,7 @@ snapshots:
   '@types/rimraf@2.0.5':
     dependencies:
       '@types/glob': 5.0.38
-      '@types/node': 8.10.66
+      '@types/node': 20.14.2
 
   '@types/semver@7.5.8': {}
 
@@ -11195,7 +11195,7 @@ snapshots:
       exit-hook: 2.2.1
       glob-to-regexp: 0.4.1
       stoppable: 1.1.0
-      undici: 6.18.2
+      undici: 6.19.0
       workerd: 1.20240605.0
       ws: 8.17.0
       youch: 3.3.3
@@ -11423,7 +11423,7 @@ snapshots:
       fast-glob: 3.3.2
       js-yaml: 4.1.0
       supports-color: 9.4.0
-      undici: 6.18.2
+      undici: 6.19.0
       yargs-parser: 21.1.1
 
   optionator@0.9.4:
@@ -12215,7 +12215,7 @@ snapshots:
     dependencies:
       randombytes: 2.1.0
 
-  serve-placeholder@2.0.1:
+  serve-placeholder@2.0.2:
     dependencies:
       defu: 6.1.4
 
@@ -12660,7 +12660,7 @@ snapshots:
 
   undici-types@5.26.5: {}
 
-  undici@6.18.2: {}
+  undici@6.19.0: {}
 
   unenv@1.9.0:
     dependencies:
