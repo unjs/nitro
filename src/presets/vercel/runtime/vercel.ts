@@ -1,8 +1,10 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitro/runtime";
 
-import { toNodeListener, NodeListener } from "h3";
+import { type NodeListener, toNodeListener } from "h3";
 import { parseQuery } from "ufo";
+
+const nitroApp = useNitroApp();
 
 const handler = toNodeListener(nitroApp.h3App);
 

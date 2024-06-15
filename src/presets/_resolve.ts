@@ -1,37 +1,75 @@
-import type { NitroPreset, NitroPresetMeta } from "nitropack";
+import {
+  type CompatibilityDateSpec,
+  type PlatformName,
+  resolveCompatibilityDatesFromEnv,
+} from "compatx";
+import type { NitroPreset, NitroPresetMeta } from "nitro/types";
 import { kebabCase } from "scule";
-import { provider } from 'std-env'
+import { type ProviderName, provider } from "std-env";
 import allPresets from "./_all.gen";
 
-export async function resolvePreset(name: string, opts: { static?: boolean, compatibilityDate?: string }): Promise<(NitroPreset & { _meta?: NitroPresetMeta }) | undefined> {
+// std-env has more specific keys for providers than compatx
+const _stdProviderMap: Partial<Record<ProviderName, PlatformName>> = {
+  aws_amplify: "aws",
+  azure_static: "azure",
+  cloudflare_pages: "cloudflare",
+};
+
+export async function resolvePreset(
+  name: string,
+  opts: { static?: boolean; compatibilityDate?: CompatibilityDateSpec }
+): Promise<(NitroPreset & { _meta?: NitroPresetMeta }) | undefined> {
   const _name = kebabCase(name) || provider;
-  const _date = new Date(opts.compatibilityDate || 0);
 
-  const matches = allPresets.filter((preset) => {
-    const names = [preset._meta.name, preset._meta.stdName, ...(preset._meta.aliases || [])].filter(Boolean);
-    if (!names.includes(_name)) {
-      return false;
-    }
-    if (preset._meta.compatibility?.date && new Date(preset._meta.compatibility?.date || 0) > _date) {
-      return false
-    }
-    return true
-  }).sort((a, b) => {
-    const aDate = new Date(a._meta.compatibility?.date || 0);
-    const bDate = new Date(b._meta.compatibility?.date || 0);
-    return bDate > aDate ? 1 : -1
-  });
+  const _compatDates = resolveCompatibilityDatesFromEnv(opts.compatibilityDate);
 
-  const preset = matches.find(p => (p._meta.static || false) === (opts?.static || false)) || matches[0];
+  const matches = allPresets
+    .filter((preset) => {
+      const names = [
+        preset._meta.name,
+        preset._meta.stdName,
+        ...(preset._meta.aliases || []),
+      ].filter(Boolean);
+      if (!names.includes(_name)) {
+        return false;
+      }
 
-  if (typeof preset === 'function') {
+      const _date =
+        _compatDates[_stdProviderMap[preset._meta.stdName!] as PlatformName] ||
+        _compatDates[preset._meta.stdName as PlatformName] ||
+        _compatDates[preset._meta.name as PlatformName] ||
+        _compatDates.default;
+
+      if (
+        _date &&
+        preset._meta.compatibilityDate &&
+        new Date(preset._meta.compatibilityDate) > new Date(_date)
+      ) {
+        return false;
+      }
+
+      return true;
+    })
+    .sort((a, b) => {
+      const aDate = new Date(a._meta.compatibilityDate || 0);
+      const bDate = new Date(b._meta.compatibilityDate || 0);
+      return bDate > aDate ? 1 : -1;
+    });
+
+  const preset =
+    matches.find(
+      (p) => (p._meta.static || false) === (opts?.static || false)
+    ) || matches[0];
+
+  if (typeof preset === "function") {
     return preset();
   }
 
   if (!name && !preset) {
-    return opts?.static ? resolvePreset('static', opts) : resolvePreset('node-server', opts)
+    return opts?.static
+      ? resolvePreset("static", opts)
+      : resolvePreset("node-server", opts);
   }
 
   return preset;
 }
-

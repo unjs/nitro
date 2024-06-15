@@ -1,9 +1,9 @@
 import { createWriteStream } from "node:fs";
-import archiver from "archiver";
-import { join, resolve } from "pathe";
-import { writeFile } from "../_utils";
-import type { Nitro } from "nitropack";
 import fsp from "node:fs/promises";
+import archiver from "archiver";
+import { writeFile } from "nitro/kit";
+import type { Nitro } from "nitro/types";
+import { join, resolve } from "pathe";
 
 export async function writeFunctionsRoutes(nitro: Nitro) {
   const host = {

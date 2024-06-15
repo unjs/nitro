@@ -1,8 +1,10 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitro/runtime";
 
 import { Server } from "node:http";
 import { toNodeListener } from "h3";
+
+const nitroApp = useNitroApp();
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 

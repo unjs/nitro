@@ -1,6 +1,6 @@
-import { describe } from "vitest";
 import { execa, execaCommandSync } from "execa";
-import { waitForPort, getRandomPort } from "get-port-please";
+import { getRandomPort, waitForPort } from "get-port-please";
+import { describe } from "vitest";
 import { setupTest, testNitro } from "../tests";
 
 const hasWasmer = false;

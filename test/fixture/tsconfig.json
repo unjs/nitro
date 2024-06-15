@@ -6,10 +6,33 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "strict": false,
+    // (currently manually synced with top level tsconfig.json paths)
     "paths": {
-      "nitropack": ["../../src/index"],
-      "#internal/nitro": ["../../src/runtime/index"],
-      "#internal/nitro/*": ["../../src/runtime/*"]
+      // CLI
+      "nitro/cli": ["../../src/cli"],
+      // Config
+      "nitro/config": ["../../src/config"],
+      // Core
+      "nitro/core": ["../../src/core"],
+      // Core alias
+      "nitro": ["../../src/core"],
+      "nitropack": ["../../src/core"],
+      // Runtime
+      "nitro/runtime": ["../../src/runtime"],
+      "nitro/runtime/meta": ["./runtime-meta"],
+      // Kit
+      "nitro/kit": ["../../src/kit"],
+      // Meta
+      "nitro/meta": ["../../src/meta"],
+      // Presets
+      "nitro/presets": ["../../src/presets"],
+      "nitro/presets/*": ["../../src/presets/*"],
+      // Rollup
+      "nitro/rollup": ["../../src/rollup"],
+      // Types
+      "nitro/types": ["../../src/types"],
+      // Virtual files
+      "#nitro-internal-virtual/*": ["../../src/types/virtual/*"]
     }
   }
 }

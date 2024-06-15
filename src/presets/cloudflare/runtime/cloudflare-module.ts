@@ -1,20 +1,25 @@
-import "#internal/nitro/virtual/polyfill";
-import { requestHasBody } from "#internal/nitro/utils";
-import { nitroApp } from "#internal/nitro/app";
-import { runCronTasks, useRuntimeConfig } from "#internal/nitro";
-import { getPublicAssetMeta } from "#internal/nitro/virtual/public-assets";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitro/runtime";
+import { useRuntimeConfig } from "nitro/runtime";
+import { runCronTasks } from "nitro/runtime/internal";
+import { requestHasBody } from "nitro/runtime/internal";
+import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
-import { withoutBase } from "ufo";
-import wsAdapter from "crossws/adapters/cloudflare";
-import type { ExecutionContext } from "@cloudflare/workers-types";
 import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
+import type { ExecutionContext } from "@cloudflare/workers-types";
+import wsAdapter from "crossws/adapters/cloudflare";
+import { withoutBase } from "ufo";
+
+import type { CloudflareEmailContext, CloudflareMessageBatch } from "../types";
 
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
 import manifest from "__STATIC_CONTENT_MANIFEST";
+
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
@@ -95,6 +100,28 @@ export default {
         })
       );
     }
+  },
+
+  email(
+    event: CloudflareEmailContext,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:email", { event, env, context })
+    );
+  },
+
+  queue(
+    event: CloudflareEmailContext,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:queue", { event, env, context })
+    );
   },
 };
 

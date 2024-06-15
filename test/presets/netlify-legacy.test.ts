@@ -1,8 +1,8 @@
 import { promises as fsp } from "node:fs";
-import { resolve } from "pathe";
+import type { APIGatewayEvent, Handler } from "aws-lambda";
 import destr from "destr";
-import { describe, it, expect } from "vitest";
-import { Handler, APIGatewayEvent } from "aws-lambda";
+import { resolve } from "pathe";
+import { describe, expect, it } from "vitest";
 import { getPresetTmpDir, setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:netlify-legacy", async () => {

@@ -1,5 +1,5 @@
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import {
   deprecateSWR,
   generateEdgeFunctionFiles,

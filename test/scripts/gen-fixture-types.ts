@@ -1,9 +1,7 @@
 import { fileURLToPath } from "mlly";
+import { createNitro, writeTypes } from "nitro/core";
 import { resolve } from "pathe";
-import * as _nitro from "../../src";
-
-const { createNitro, scanHandlers, writeTypes } =
-  (_nitro as any as { default: typeof _nitro }).default || _nitro;
+import { scanHandlers } from "../../src/core/scan";
 
 const prepare = async () => {
   const fixtureDir = fileURLToPath(new URL("../fixture", import.meta.url).href);

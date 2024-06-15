@@ -1,6 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
+import type { Nitro } from "nitro/types";
 import { join } from "pathe";
-import type { Nitro } from "nitropack";
 
 export async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");
@@ -101,7 +101,7 @@ export function generateNetlifyFunction(nitro: Nitro) {
 export { default } from "./main.mjs";
 export const config = {
   name: "server handler",
-  generator: ${getGeneratorString(nitro)},
+  generator: "${getGeneratorString(nitro)}",
   path: "/*",
   preferStatic: true,
 };

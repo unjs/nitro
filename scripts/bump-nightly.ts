@@ -1,11 +1,11 @@
 import { promises as fsp } from "node:fs";
 import { execaCommand } from "execa";
-import { resolve } from "pathe";
 import { globby } from "globby";
+import { resolve } from "pathe";
 
 const nightlyPackages = {
   h3: "h3-nightly",
-};
+} as Record<string, string>;
 
 async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, "package.json");

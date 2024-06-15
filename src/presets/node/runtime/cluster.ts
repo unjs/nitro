@@ -1,7 +1,9 @@
-import os from "node:os";
 import cluster from "node:cluster";
-import { getGracefulShutdownConfig } from "#internal/nitro/shutdown";
-import { trapUnhandledNodeErrors } from "#internal/nitro/utils";
+import os from "node:os";
+import {
+  getGracefulShutdownConfig,
+  trapUnhandledNodeErrors,
+} from "nitro/runtime/internal";
 
 function runMaster() {
   const numberOfWorkers =

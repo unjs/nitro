@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
+import { writeFile } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import { join, relative } from "pathe";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
-import { writeFile } from "../_utils";
-import type { Nitro } from "nitropack";
 
 export async function writeFirebaseConfig(nitro: Nitro) {
   const firebaseConfigPath = join(nitro.options.rootDir, "firebase.json");

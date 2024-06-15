@@ -1,8 +1,8 @@
-import type { Nitro } from "nitropack";
 import fsp from "node:fs/promises";
-import { dirname, relative, resolve } from "pathe";
-import { writeFile } from "../_utils";
 import { defu } from "defu";
+import { writeFile } from "nitro/kit";
+import type { Nitro } from "nitro/types";
+import { dirname, relative, resolve } from "pathe";
 import { joinURL, withoutLeadingSlash } from "ufo";
 import type {
   VercelBuildConfigV3,

@@ -1,8 +1,8 @@
 import fsp from "node:fs/promises";
+import { writeFile } from "nitro/kit";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import { dirname, relative, resolve } from "pathe";
-import { writeFile } from "../_utils";
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
 
 // https://zeabur.com/docs/advanced/serverless-output-format
 
@@ -73,7 +73,6 @@ const zeaburStatic = defineNitroPreset(
     name: "zeabur-static" as const,
     url: import.meta.url,
     static: true,
-
   }
 );
 

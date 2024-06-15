@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { applyEnv } from "../../src/runtime/utils.env";
+import { describe, expect, it } from "vitest";
+import { applyEnv } from "../../src/runtime/internal/utils.env";
 
 describe("env utils", () => {
   describe("applyEnv", () => {

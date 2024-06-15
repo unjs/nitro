@@ -1,16 +1,16 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { resolve, join } from "pathe";
+import { parseTOML, stringifyTOML } from "confbox";
+import defu from "defu";
+import { globby } from "globby";
+import type { Nitro } from "nitro/types";
+import { join, resolve } from "pathe";
+import { isCI } from "std-env";
 import {
   joinURL,
   withLeadingSlash,
   withTrailingSlash,
   withoutLeadingSlash,
 } from "ufo";
-import { parseTOML, stringifyTOML } from "confbox";
-import { globby } from "globby";
-import type { Nitro } from "nitropack";
-import defu from "defu";
-import { isCI } from "std-env";
 import type { CloudflarePagesRoutes } from "./types";
 
 export async function writeCFPagesFiles(nitro: Nitro) {
@@ -84,8 +84,16 @@ async function writeCFRoutes(nitro: Nitro) {
       ),
     ],
   });
+  // Remove index.html or the .html extension to support pages pre-rendering
   routes.exclude!.push(
-    ...publicAssetFiles.map((i) => withLeadingSlash(i)).sort(comparePaths)
+    ...publicAssetFiles
+      .map(
+        (i) =>
+          withLeadingSlash(i)
+            .replace(/\/index\.html$/, "")
+            .replace(/\.html$/, "") || "/"
+      )
+      .sort(comparePaths)
   );
 
   // Only allow 100 rules in total (include + exclude)

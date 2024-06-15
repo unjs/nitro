@@ -1,11 +1,12 @@
-import createJITI from "jiti";
-import { consola } from "consola";
-import { kebabCase, camelCase, pascalCase, snakeCase } from "scule";
-import { readdirSync, existsSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { NitroPreset, NitroPresetMeta } from "nitropack";
+import { consola } from "consola";
+import createJITI from "jiti";
 import { findTypeExports } from "mlly";
+import type { NitroPreset, NitroPresetMeta } from "nitro/types";
+import { camelCase, kebabCase, pascalCase, snakeCase } from "scule";
+import { subpaths } from "../build.config";
 
 const autoGenHeader = /* ts */ `// Auto-generated using gen-presets script\n`;
 
@@ -24,8 +25,14 @@ const jitiRequire = createJITI(presetsDir, {
   esmResolve: true,
   interopDefault: true,
   alias: {
-    "nitropack": fileURLToPath(new URL("../src/index.ts", import.meta.url))
-  }
+    nitro: fileURLToPath(new URL("../src/core/index.ts", import.meta.url)),
+    ...Object.fromEntries(
+      subpaths.map((pkg) => [
+        `nitro/${pkg}`,
+        fileURLToPath(new URL(`../src/${pkg}/index.ts`, import.meta.url)),
+      ])
+    ),
+  },
 });
 const allPresets: (NitroPreset & { _meta?: NitroPresetMeta })[] = [];
 for (const preset of presetDirs) {
@@ -44,7 +51,7 @@ for (const preset of allPresets) {
   const names = [preset._meta.name, ...(preset._meta.aliases || [])];
   for (const name of names) {
     if (_names.has(name)) {
-      if (!preset._meta.compatibility?.date) {
+      if (!preset._meta.compatibilityDate) {
         consola.warn(`Preset ${name} is duplicated`);
       }
       continue;
@@ -76,19 +83,34 @@ const presetsWithType = presetDirs.filter((presetDir) => {
   const presetPath = resolve(presetsDir, presetDir, "preset.ts");
   const content = readFileSync(presetPath, "utf8");
   const typeExports = findTypeExports(content);
-  return typeExports.some(type => type.name === "PresetOptions")
+  return typeExports.some((type) => type.name === "PresetOptions");
 });
 writeFileSync(
   resolve(presetsDir, "_types.gen.ts"),
   /* ts */ `${autoGenHeader}
-${presetsWithType.map((preset) => `import { PresetOptions as ${pascalCase(preset)}Options } from "./${preset}/preset";`).join("\n")}
+${presetsWithType
+  .map(
+    (preset) =>
+      `import type { PresetOptions as ${pascalCase(
+        preset
+      )}Options } from "./${preset}/preset";`
+  )
+  .join("\n")}
 
 export interface PresetOptions {
-${presetsWithType.map((preset) => `  ${camelCase(preset)}: ${pascalCase(preset)}Options;`).join("\n")}
+${presetsWithType
+  .map((preset) => `  ${camelCase(preset)}: ${pascalCase(preset)}Options;`)
+  .join("\n")}
 }
 
 export type PresetName = ${names.map((name) => `"${name}"`).join(" | ")};
 
-export type PresetNameInput = ${names.flatMap((name) => [...new Set([kebabCase(name), camelCase(name), snakeCase(name)])].map(n => `"${n}"`)).join(" | ")} | (string & {});
+export type PresetNameInput = ${names
+    .flatMap((name) =>
+      [...new Set([kebabCase(name), camelCase(name), snakeCase(name)])].map(
+        (n) => `"${n}"`
+      )
+    )
+    .join(" | ")} | (string & {});
 `
 );
