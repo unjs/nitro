@@ -13,17 +13,15 @@ async function cli() {
   debug("StatusCode", r.status);
   debug("StatusMessage", r.statusText);
   // @ts-ignore
-  for (const header of r.headers.entries()) {
+  for (const header of Object.entries(r.headers)) {
     debug(header[0], header[1]);
   }
   console.log("\n", r.body?.toString());
 }
 
-if (require.main === module) {
-  // eslint-disable-next-line unicorn/prefer-top-level-await
-  cli().catch((error) => {
-    console.error(error);
-    // eslint-disable-next-line unicorn/no-process-exit
-    process.exit(1);
-  });
-}
+// eslint-disable-next-line unicorn/prefer-top-level-await
+cli().catch((error) => {
+  console.error(error);
+  // eslint-disable-next-line unicorn/no-process-exit
+  process.exit(1);
+});
