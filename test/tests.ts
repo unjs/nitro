@@ -1,20 +1,25 @@
-import { tmpdir } from "node:os";
-import type { RequestListener } from "node:http";
 import { promises as fsp } from "node:fs";
-import { join, resolve } from "pathe";
-import { listen, Listener } from "listhen";
-import destr from "destr";
-import { fetch, FetchOptions } from "ofetch";
-import { expect, it, afterAll, beforeAll, describe } from "vitest";
-import { fileURLToPath } from "mlly";
-import { joinURL } from "ufo";
+import type { RequestListener } from "node:http";
+import { tmpdir } from "node:os";
+import { type DateString, formatDate } from "compatx";
 import { defu } from "defu";
-import * as _nitro from "../src";
-import type { Nitro } from "../src";
-import { nodeMajorVersion } from "std-env";
-
-const { createNitro, build, prepare, copyPublicAssets, prerender } =
-  (_nitro as any as { default: typeof _nitro }).default || _nitro;
+import destr from "destr";
+import { type Listener, listen } from "listhen";
+import { fileURLToPath } from "mlly";
+import {
+  build,
+  copyPublicAssets,
+  createDevServer,
+  createNitro,
+  prepare,
+  prerender,
+} from "nitro/core";
+import type { Nitro, NitroConfig } from "nitro/types";
+import { type FetchOptions, fetch } from "ofetch";
+import { join, resolve } from "pathe";
+import { isWindows, nodeMajorVersion } from "std-env";
+import { joinURL } from "ufo";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 export interface Context {
   preset: string;
@@ -64,7 +69,7 @@ export const getPresetTmpDir = (preset: string) => {
 
 export async function setupTest(
   preset: string,
-  opts: { config?: _nitro.NitroConfig } = {}
+  opts: { config?: NitroConfig; compatibilityDate?: DateString } = {}
 ) {
   const presetTmpDir = getPresetTmpDir(preset);
 
@@ -75,13 +80,13 @@ export async function setupTest(
     preset,
     isDev: preset === "nitro-dev",
     isWorker: [
-      "cloudflare",
+      "cloudflare-worker",
       "cloudflare-module",
       "cloudflare-pages",
       "vercel-edge",
       "winterjs",
     ].includes(preset),
-    isLambda: ["aws-lambda", "netlify-v1"].includes(preset),
+    isLambda: ["aws-lambda", "netlify-legacy"].includes(preset),
     isIsolated: ["winterjs"].includes(preset),
     supportsEnv: !["winterjs"].includes(preset),
     rootDir: fixtureDir,
@@ -104,30 +109,31 @@ export async function setupTest(
     process.env[name] = value;
   }
 
-  const nitro = (ctx.nitro = await createNitro(
-    defu(opts.config, {
-      preset: ctx.preset,
-      dev: ctx.isDev,
-      rootDir: ctx.rootDir,
-      runtimeConfig: {
-        nitro: {
-          envPrefix: "CUSTOM_",
-        },
-        hello: "",
-        helloThere: "",
+  const config = defu(opts.config, {
+    preset: ctx.preset,
+    dev: ctx.isDev,
+    rootDir: ctx.rootDir,
+    runtimeConfig: {
+      nitro: {
+        envPrefix: "CUSTOM_",
       },
-      buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
-      serveStatic: !ctx.isDev && !ctx.isWorker,
-      output: {
-        dir: ctx.outDir,
-      },
-      timing: !ctx.isWorker,
-    })
-  ));
+      hello: "",
+      helloThere: "",
+    },
+    buildDir: resolve(fixtureDir, presetTmpDir, ".nitro"),
+    serveStatic: !ctx.isDev && !ctx.isWorker,
+    output: {
+      dir: ctx.outDir,
+    },
+    timing: !ctx.isWorker,
+  });
+  const nitro = (ctx.nitro = await createNitro(config, {
+    compatibilityDate: opts.compatibilityDate || formatDate(new Date()),
+  }));
 
   if (ctx.isDev) {
     // Setup development server
-    const devServer = _nitro.createDevServer(ctx.nitro);
+    const devServer = createDevServer(ctx.nitro);
     ctx.server = await devServer.listen({});
     await prepare(ctx.nitro);
     const ready = new Promise<void>((resolve) => {
@@ -469,12 +475,6 @@ export function testNitro(
       url: "/config",
     });
     expect(data).toMatchObject({
-      appConfig: {
-        dynamic: "from-middleware",
-        "app-config": true,
-        "nitro-config": true,
-        "server-config": true,
-      },
       runtimeConfig: {
         dynamic: "from-env",
         url: "https://test.com",
@@ -482,20 +482,8 @@ export function testNitro(
           baseURL: "/",
         },
       },
-      sharedAppConfig: {
-        dynamic: "initial",
-        "app-config": true,
-        "nitro-config": true,
-        "server-config": true,
-      },
       sharedRuntimeConfig: {
-        dynamic:
-          // TODO
-          ctx.preset.includes("cloudflare") ||
-          ctx.preset === "vercel-edge" ||
-          ctx.preset === "nitro-dev"
-            ? "initial"
-            : "from-env",
+        dynamic: "from-env",
         // url: "https://test.com",
         app: {
           baseURL: "/",
@@ -578,7 +566,7 @@ export function testNitro(
       // https://github.com/unjs/nitro/issues/1462
       // (vercel and deno-server uses node only for tests only)
       const notSplittingPresets = [
-        "node",
+        "node-listener",
         "nitro-dev",
         "vercel",
         (nodeMajorVersion || 0) < 18 && "deno-server",
@@ -646,7 +634,11 @@ export function testNitro(
     it.skipIf(ctx.isIsolated)(
       "should setItem before returning response the first time",
       async () => {
-        const { data: timestamp } = await callHandler({ url: "/api/cached" });
+        const {
+          data: { timestamp, eventContextCache },
+        } = await callHandler({ url: "/api/cached" });
+
+        expect(eventContextCache?.options.swr).toBe(true);
 
         const calls = await Promise.all([
           callHandler({ url: "/api/cached" }),
@@ -655,7 +647,8 @@ export function testNitro(
         ]);
 
         for (const call of calls) {
-          expect(call.data).toBe(timestamp);
+          expect(call.data.timestamp).toBe(timestamp);
+          expect(call.data.eventContextCache.options.swr).toBe(true);
         }
       }
     );
@@ -670,7 +663,7 @@ export function testNitro(
     });
   });
 
-  describe.skipIf(ctx.preset === "cloudflare")("wasm", () => {
+  describe.skipIf(ctx.preset === "cloudflare-worker")("wasm", () => {
     it("dynamic import wasm", async () => {
       expect((await callHandler({ url: "/wasm/dynamic-import" })).data).toBe(
         "2+3=5"
@@ -685,10 +678,17 @@ export function testNitro(
   });
 
   describe.skipIf(
-    !ctx.nitro!.options.node ||
+    isWindows ||
+      !ctx.nitro!.options.node ||
       ctx.isLambda ||
       ctx.isWorker ||
-      ["bun", "deno-server", "deno-deploy"].includes(ctx.preset)
+      [
+        "bun",
+        "deno-server",
+        "deno-deploy",
+        "netlify",
+        "netlify-legacy",
+      ].includes(ctx.preset)
   )("Database", () => {
     it("works", async () => {
       const { data } = await callHandler({ url: "/api/db" });
