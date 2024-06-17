@@ -9,6 +9,32 @@ export async function resolveRuntimeConfigOptions(options: NitroOptions) {
   options.runtimeConfig = normalizeRuntimeConfig(options);
 }
 
+function checkSerializableRuntimeConfig(obj: any, path: string[] = []) {
+  for (const key in obj) {
+    const value = obj[key];
+    if (
+      value === null ||
+      typeof value === "string" ||
+      value === undefined ||
+      typeof value === "number" ||
+      typeof value === "boolean"
+    ) {
+      continue;
+    }
+
+    if (Array.isArray(value)) {
+      for (const [index, item] of value.entries())
+        checkSerializableRuntimeConfig(item, [...path, `${key}[${index}]`]);
+    } else if (typeof value === "object") {
+      checkSerializableRuntimeConfig(value, [...path, key]);
+    } else {
+      console.warn(
+        `Runtime config option \`${[...path, key].join(".")}\` may not be able to be serialized.`
+      );
+    }
+  }
+}
+
 export function normalizeRuntimeConfig(config: NitroConfig) {
   provideFallbackValues(config.runtimeConfig || {});
   const runtimeConfig: NitroRuntimeConfig = defu(
@@ -24,6 +50,7 @@ export function normalizeRuntimeConfig(config: NitroConfig) {
     }
   );
   runtimeConfig.nitro.routeRules = config.routeRules;
+  checkSerializableRuntimeConfig(runtimeConfig);
   return runtimeConfig as NitroRuntimeConfig;
 }
 
