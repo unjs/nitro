@@ -1,5 +1,6 @@
 import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitropack/runtime";
+import path from "node:path";
 
 const nitroApp = useNitroApp();
 
@@ -19,9 +20,11 @@ async function cli() {
   console.log("\n", r.body?.toString());
 }
 
-// eslint-disable-next-line unicorn/prefer-top-level-await
-cli().catch((error) => {
-  console.error(error);
-  // eslint-disable-next-line unicorn/no-process-exit
-  process.exit(1);
-});
+if (process.argv.some((arg) => globalThis._importMeta_.url.includes(arg.split(path.sep).join(path.posix.sep)))) {
+  // eslint-disable-next-line unicorn/prefer-top-level-await
+  cli().catch((error) => {
+    console.error(error);
+    // eslint-disable-next-line unicorn/no-process-exit
+    process.exit(1);
+  });
+}
