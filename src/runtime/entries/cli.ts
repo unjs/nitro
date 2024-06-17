@@ -1,4 +1,5 @@
 import "#internal/nitro/virtual/polyfill";
+import { normalize } from "pathe";
 import { nitroApp } from "../app";
 
 async function cli() {
@@ -10,14 +11,13 @@ async function cli() {
   debug("StatusCode", r.status);
   debug("StatusMessage", r.statusText);
   // @ts-ignore
-  for (const header of r.headers.entries()) {
+  for (const header of Object.entries(r.headers)) {
     debug(header[0], header[1]);
   }
   console.log("\n", r.body.toString());
 }
 
-// eslint-disable-next-line unicorn/prefer-module
-if (require.main === module) {
+if (process.argv.some((arg) => import.meta.url.includes(normalize(arg)))) {
   // eslint-disable-next-line unicorn/prefer-top-level-await
   cli().catch((err) => {
     console.error(err);
