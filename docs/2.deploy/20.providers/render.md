@@ -10,7 +10,7 @@
 
 1. [Create a new Web Service](https://dashboard.render.com/select-repo?type=web) and select the repository that contains your code.
 2. Ensure the 'Node' environment is selected.
-3. Update the build command to `npm install; npm run build` (you may replace `npm` with your package manager of choice, e.g. `yarn` or `bun`)
+3. Update the build command to `npx nypm install && npm run build`
 4. Update the start command to `node .output/server/index.mjs`
 5. Click 'Create Web Service'.
 
