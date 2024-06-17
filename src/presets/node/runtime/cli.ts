@@ -20,7 +20,7 @@ async function cli() {
   console.log("\n", r.body?.toString());
 }
 
-if (process.argv.some((arg) => globalThis._importMeta_.url.includes(normalize(arg)))) {
+if (process.argv.some((arg) => import.meta.url.includes(normalize(arg)))) {
   // eslint-disable-next-line unicorn/prefer-top-level-await
   cli().catch((error) => {
     console.error(error);
