@@ -190,19 +190,31 @@ declare module "nitro/types" {
     const tsconfigDir = dirname(tsConfigPath);
     const tsConfig: TSConfig = defu(nitro.options.typescript.tsConfig, {
       compilerOptions: {
-        forceConsistentCasingInFileNames: true,
-        strict: nitro.options.typescript.strict,
-        noEmit: true,
+        /* Base options: */
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        skipLibCheck: true,
         target: "ESNext",
+        allowJs: true,
+        resolveJsonModule: true,
+        moduleDetection: "force",
+        isolatedModules: true,
+        verbatimModuleSyntax: true,
+        /* Strictness */
+        strict: nitro.options.typescript.strict,
+        noUncheckedIndexedAccess: true,
+        noImplicitOverride: true,
+        forceConsistentCasingInFileNames: true,
+        /* If NOT transpiling with TypeScript: */
+        // TODO: consider using 'module: preserve' (requires TS 5.4+)
         module: "ESNext",
+        noEmit: true,
         moduleResolution:
           nitro.options.experimental.typescriptBundlerResolution === false
             ? "Node"
             : "Bundler",
-        allowJs: true,
-        resolveJsonModule: true,
+        /* JSX support */
         jsx: "preserve",
-        allowSyntheticDefaultImports: true,
         jsxFactory: "h",
         jsxFragmentFactory: "Fragment",
         paths: {
