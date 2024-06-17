@@ -1,6 +1,6 @@
 import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitropack/runtime";
-import path from "node:path";
+import { normalize } from "pathe";
 
 const nitroApp = useNitroApp();
 
@@ -20,7 +20,7 @@ async function cli() {
   console.log("\n", r.body?.toString());
 }
 
-if (process.argv.some((arg) => globalThis._importMeta_.url.includes(arg.split(path.sep).join(path.posix.sep)))) {
+if (process.argv.some((arg) => globalThis._importMeta_.url.includes(normalize(arg)))) {
   // eslint-disable-next-line unicorn/prefer-top-level-await
   cli().catch((error) => {
     console.error(error);
