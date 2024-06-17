@@ -25,7 +25,7 @@ function checkSerializableRuntimeConfig(obj: any, path: string[] = []) {
     if (Array.isArray(value)) {
       for (const [index, item] of value.entries())
         checkSerializableRuntimeConfig(item, [...path, `${key}[${index}]`]);
-    } else if (typeof value === "object") {
+    } else if (typeof value === "object" && value.constructor === Object && (!value.constructor?.name || value.constructor.name === 'Object')) {
       checkSerializableRuntimeConfig(value, [...path, key]);
     } else {
       console.warn(
