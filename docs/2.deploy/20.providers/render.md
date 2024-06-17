@@ -18,7 +18,7 @@
 
 1. [Create a new Web Service](https://dashboard.render.com/select-repo?type=web) and select the repository that contains your code.
 2. Ensure the 'Node' environment is selected.
-3. Update the build command to `bun install; bun run build`
+3. Update the build command to `bun install && bun run build`
 4. Update the start command to `bun run .output/server/index.mjs`
 5. Click 'Advanced' and add an environment variable with `NITRO_PRESET` set to `bun`.
 6. Click 'Create Web Service'.
