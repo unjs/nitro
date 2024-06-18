@@ -91,10 +91,10 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^6.19.0"
+    "undici": "^6.19.2"
   },
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "^0.3.2",
+    "@cloudflare/kv-asset-handler": "^0.3.3",
     "@netlify/functions": "^2.7.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
@@ -170,11 +170,11 @@
     "@azure/functions": "^3.5.1",
     "@azure/static-web-apps-cli": "^1.1.9",
     "@biomejs/biome": "^1.8.1",
-    "@cloudflare/workers-types": "^4.20240605.0",
+    "@cloudflare/workers-types": "^4.20240614.0",
     "@deno/types": "^0.0.1",
-    "@scalar/api-reference": "^1.23.5",
+    "@scalar/api-reference": "^1.24.11",
     "@types/archiver": "^6.0.2",
-    "@types/aws-lambda": "^8.10.138",
+    "@types/aws-lambda": "^8.10.140",
     "@types/bun": "^1.1.4",
     "@types/estree": "^1.0.5",
     "@types/etag": "^1.8.3",
@@ -188,18 +188,18 @@
     "better-sqlite3": "^11.0.0",
     "changelogen": "^0.5.5",
     "edge-runtime": "^2.5.10",
-    "eslint": "^9.4.0",
+    "eslint": "^9.5.0",
     "eslint-config-unjs": "0.3.2",
     "execa": "^9.2.0",
     "expect-type": "^0.19.0",
     "firebase-admin": "^12.1.1",
     "firebase-functions": "^4.9.0",
     "get-port-please": "^3.1.2",
-    "miniflare": "^3.20240605.0",
+    "miniflare": "^3.20240610.1",
     "prettier": "^3.3.2",
     "typescript": "^5.4.5",
     "unbuild": "3.0.0-rc.2",
-    "undici": "^6.19.0",
+    "undici": "^6.19.2",
     "vitest": "^1.6.0",
     "xml2js": "^0.6.2"
   },
@@ -211,7 +211,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@9.3.0",
+  "packageManager": "pnpm@9.4.0",
   "engines": {
     "node": "^16.11.0 || >=17.0.0"
   },
