@@ -18,4 +18,3 @@ export { build } from "./build/build";
 export { copyPublicAssets } from "./build/assets";
 export { prepare } from "./build/prepare";
 export { writeTypes } from "./build/types";
-export { scanHandlers } from "./scan";
