@@ -8,7 +8,7 @@ import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { defu } from "defu";
 import { resolvePath, sanitizeFilePath } from "mlly";
-import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
+import { runtimeDependencies, runtimeDir, pkgDir } from "nitropack/runtime/meta";
 import type {
   Nitro,
   NitroStaticBuildFlags,
@@ -77,10 +77,19 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const chunkNamePrefixes = [
     [nitro.options.buildDir, "build"],
     [buildServerDir, "app"],
+    [runtimeDir, "nitro"],
+    [pkgDir, "nitro"],
     ["\0raw:", "raw"],
     ["\0nitro-wasm:", "wasm"],
     ["\0", "virtual"],
   ] as const;
+
+  function getChunkGroup(id: string): string | void {
+    if (id.startsWith(runtimeDir) || id.startsWith('#internal/nitro') || id.startsWith(pkgDir)) {
+      return "nitro";
+    }
+  }
+
   function getChunkName(id: string) {
     // Runtime
     if (id.startsWith(runtimeDir)) {
@@ -131,14 +140,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         const lastModule = normalize(chunk.moduleIds.at(-1) || "");
         return getChunkName(lastModule);
       },
-      manualChunks: {
-        nitro: [
-          runtimeDir,
-          "nitropack/runtime",
-          "nitro/runtime",
-          "#internal/nitro",
-          "#imports",
-        ],
+      manualChunks(id) {
+        return getChunkGroup(id)
       },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: "esm",
