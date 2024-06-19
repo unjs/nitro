@@ -137,7 +137,6 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
           "nitropack/runtime",
           "nitro/runtime",
           "#internal/nitro",
-          "#internal/app",
           "#imports",
         ],
       },
