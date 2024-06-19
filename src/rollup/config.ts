@@ -71,19 +71,25 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
 
+  const presetsDir = resolve(runtimeDir, "../presets");
+
   const chunkNamePrefixes = [
     [nitro.options.buildDir, "build"],
     [buildServerDir, "app"],
+    [runtimeDir, "nitro"],
+    [presetsDir, "nitro"],
     ["\0raw:", "raw"],
     ["\0nitro-wasm:", "wasm"],
     ["\0", "virtual"],
   ] as const;
-  function getChunkName(id: string) {
-    // Runtime
-    if (id.startsWith(runtimeDir)) {
-      return `chunks/runtime.mjs`;
-    }
 
+  function getChunkGroup(id: string): string | void {
+    if (id.startsWith(runtimeDir) || id.startsWith(presetsDir)) {
+      return "nitro";
+    }
+  }
+
+  function getChunkName(id: string) {
     // Known path prefixes
     for (const [dir, name] of chunkNamePrefixes) {
       if (id.startsWith(dir)) {
@@ -127,6 +133,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       chunkFileNames(chunk) {
         const lastModule = normalize(chunk.moduleIds.at(-1) || "");
         return getChunkName(lastModule);
+      },
+      manualChunks(id) {
+        return getChunkGroup(id);
       },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: "esm",
@@ -173,6 +182,10 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       },
     },
   });
+
+  if (rollupConfig.output.inlineDynamicImports) {
+    delete rollupConfig.output.manualChunks;
+  }
 
   if (nitro.options.timing) {
     rollupConfig.plugins.push(timing());
