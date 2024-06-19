@@ -8,11 +8,7 @@ import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { defu } from "defu";
 import { resolvePath, sanitizeFilePath } from "mlly";
-import {
-  pkgDir,
-  runtimeDependencies,
-  runtimeDir,
-} from "nitropack/runtime/meta";
+import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
 import type {
   Nitro,
   NitroStaticBuildFlags,
@@ -78,32 +74,25 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
 
+  const presetsDir = resolve(runtimeDir, "../presets");
+
   const chunkNamePrefixes = [
     [nitro.options.buildDir, "build"],
     [buildServerDir, "app"],
     [runtimeDir, "nitro"],
-    [pkgDir, "nitro"],
+    [presetsDir, "nitro"],
     ["\0raw:", "raw"],
     ["\0nitro-wasm:", "wasm"],
     ["\0", "virtual"],
   ] as const;
 
   function getChunkGroup(id: string): string | void {
-    if (
-      id.startsWith(runtimeDir) ||
-      id.startsWith("#internal/nitro") ||
-      id.startsWith(pkgDir)
-    ) {
+    if (id.startsWith(runtimeDir) || id.startsWith(presetsDir)) {
       return "nitro";
     }
   }
 
   function getChunkName(id: string) {
-    // Runtime
-    if (id.startsWith(runtimeDir)) {
-      return `chunks/runtime.mjs`;
-    }
-
     // Known path prefixes
     for (const [dir, name] of chunkNamePrefixes) {
       if (id.startsWith(dir)) {
