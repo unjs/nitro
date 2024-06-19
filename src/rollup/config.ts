@@ -186,6 +186,10 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     },
   });
 
+  if(rollupConfig.output.inlineDynamicImports) {
+    delete rollupConfig.output.manualChunks
+  }
+
   if (nitro.options.timing) {
     rollupConfig.plugins.push(timing());
   }
