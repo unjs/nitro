@@ -8,7 +8,11 @@ import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { defu } from "defu";
 import { resolvePath, sanitizeFilePath } from "mlly";
-import { runtimeDependencies, runtimeDir, pkgDir } from "nitropack/runtime/meta";
+import {
+  pkgDir,
+  runtimeDependencies,
+  runtimeDir,
+} from "nitropack/runtime/meta";
 import type {
   Nitro,
   NitroStaticBuildFlags,
@@ -85,7 +89,11 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   ] as const;
 
   function getChunkGroup(id: string): string | void {
-    if (id.startsWith(runtimeDir) || id.startsWith('#internal/nitro') || id.startsWith(pkgDir)) {
+    if (
+      id.startsWith(runtimeDir) ||
+      id.startsWith("#internal/nitro") ||
+      id.startsWith(pkgDir)
+    ) {
       return "nitro";
     }
   }
@@ -141,7 +149,7 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         return getChunkName(lastModule);
       },
       manualChunks(id) {
-        return getChunkGroup(id)
+        return getChunkGroup(id);
       },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: "esm",
@@ -189,8 +197,8 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
     },
   });
 
-  if(rollupConfig.output.inlineDynamicImports) {
-    delete rollupConfig.output.manualChunks
+  if (rollupConfig.output.inlineDynamicImports) {
+    delete rollupConfig.output.manualChunks;
   }
 
   if (nitro.options.timing) {
