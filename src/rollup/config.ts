@@ -131,6 +131,16 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
         const lastModule = normalize(chunk.moduleIds.at(-1) || "");
         return getChunkName(lastModule);
       },
+      manualChunks: {
+        nitro: [
+          runtimeDir,
+          "nitropack/runtime",
+          "nitro/runtime",
+          "#internal/nitro",
+          "#internal/app",
+          "#imports",
+        ],
+      },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: "esm",
       exports: "auto",
