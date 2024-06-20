@@ -183,6 +183,9 @@ describe("API routes", () => {
   });
 
   it("generates the correct type depending on the method used", () => {
+    expectTypeOf($fetch("/api/methods")).toEqualTypeOf<
+      Promise<"Index get">
+    >();
     expectTypeOf($fetch("/api/methods", { method: "get" })).toEqualTypeOf<
       Promise<"Index get">
     >();
