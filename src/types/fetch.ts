@@ -79,7 +79,13 @@ export interface $Fetch<
   >(
     request: R,
     opts?: O
-  ): Promise<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>;
+  ): Promise<
+    TypedInternalResponse<
+      R,
+      T,
+      NitroFetchOptions<R> extends O ? "get" : ExtractedRouteMethod<R, O>
+    >
+  >;
   raw<
     T = DefaultT,
     R extends NitroFetchRequest = DefaultR,
@@ -88,7 +94,13 @@ export interface $Fetch<
     request: R,
     opts?: O
   ): Promise<
-    FetchResponse<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>
+    FetchResponse<
+      TypedInternalResponse<
+        R,
+        T,
+        NitroFetchOptions<R> extends O ? "get" : ExtractedRouteMethod<R, O>
+      >
+    >
   >;
   create<T = DefaultT, R extends NitroFetchRequest = DefaultR>(
     defaults: FetchOptions
