@@ -9,7 +9,7 @@ import {
 } from "h3";
 import type { RenderHandler } from "nitropack/types";
 import { useNitroApp } from "./app";
-import { useRuntimeConfig } from './config'
+import { useRuntimeConfig } from "./config";
 
 export function defineRenderHandler(handler: RenderHandler) {
   const runtimeConfig = useRuntimeConfig();

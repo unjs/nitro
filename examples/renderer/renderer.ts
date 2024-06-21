@@ -1,4 +1,4 @@
-import {  defineRenderHandler} from 'nitropack/runtime'
+import { defineRenderHandler } from "nitropack/runtime";
 
 export default defineRenderHandler((_event) => {
   return {
@@ -10,6 +10,6 @@ export default defineRenderHandler((_event) => {
         <body>
             <h1>Rendered by Nitro!</h1>
         </body>
-    </html>`
-  }
-})
+    </html>`,
+  };
+});
