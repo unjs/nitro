@@ -371,6 +371,12 @@ importers:
         specifier: link:../..
         version: link:../..
 
+  examples/renderer:
+    devDependencies:
+      nitropack:
+        specifier: link:../..
+        version: link:../..
+
   examples/websocket:
     devDependencies:
       nitropack:

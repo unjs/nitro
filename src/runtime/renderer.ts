@@ -8,6 +8,7 @@ import {
   setResponseStatus,
 } from "h3";
 import { useNitroApp } from "./app";
+import { useRuntimeConfig } from "./config";
 
 export interface RenderResponse {
   body: any;
@@ -21,9 +22,10 @@ export type RenderHandler = (
 ) => Partial<RenderResponse> | Promise<Partial<RenderResponse>>;
 
 export function defineRenderHandler(handler: RenderHandler) {
+  const runtimeConfig = useRuntimeConfig();
   return eventHandler(async (event) => {
     // TODO: Use serve-placeholder
-    if (event.path.endsWith("/favicon.ico")) {
+    if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
       setResponseHeader(event, "Content-Type", "image/x-icon");
       return send(
         event,
