@@ -131,7 +131,6 @@
     "hookable": "^5.5.3",
     "httpxy": "^0.1.5",
     "ioredis": "^5.4.1",
-    "is-primitive": "^3.0.1",
     "jiti": "^1.21.6",
     "klona": "^2.0.6",
     "knitwork": "^1.1.0",
