@@ -130,10 +130,11 @@ const netlifyStatic = defineNitroPreset(
   {
     extends: "static",
     output: {
+      dir: "{{ rootDir }}/dist",
       publicDir: "{{ rootDir }}/dist",
     },
     commands: {
-      preview: "npx serve ./static",
+      preview: "npx serve ./",
     },
     hooks: {
       "rollup:before": (nitro: Nitro) => {
