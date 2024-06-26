@@ -9,6 +9,10 @@ import type { ConnectorName } from "db0";
 import type { NestedHooks } from "hookable";
 import type { ProxyServerOptions } from "httpxy";
 import type {
+  NitroRuntimeConfigApp as NitroTypesRuntimeConfigApp,
+  NitroRuntimeConfig as NitroTypeskRuntimeConfig,
+} from "nitropack";
+import type {
   PresetName,
   PresetNameInput,
   PresetOptions,
@@ -341,11 +345,13 @@ export type DatabaseConnectionConfigs = Record<
 >;
 
 // Runtime config
-export interface NitroRuntimeConfigApp {
+
+export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {
   baseURL: string;
   [key: string]: any;
 }
-export interface NitroRuntimeConfig {
+
+export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {
   app: NitroRuntimeConfigApp;
   nitro: {
     envPrefix?: string;
