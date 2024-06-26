@@ -63,6 +63,7 @@ export default defineBuildConfig({
     },
   },
   externals: [
+    "nitro",
     "nitropack",
     "nitropack/runtime/meta",
     ...subpaths.map((subpath) => `nitropack/${subpath}`),
