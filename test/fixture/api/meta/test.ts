@@ -5,9 +5,9 @@ defineRouteMeta({
     parameters: [{ in: "query", name: "test", required: true }],
     responses: {
       200: {
-        description: "OK"
-      }
-    }
+        description: "OK",
+      },
+    },
   },
 });
 
