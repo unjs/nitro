@@ -81,7 +81,7 @@ function astToObject(node: Expression | Literal): any {
       const obj: Record<string, any> = {};
       for (const prop of node.properties) {
         if (prop.type === "Property") {
-          const key = (prop.key as any).name;
+          const key = (prop.key as any).name ?? (prop.key as any).value;
           obj[key] = astToObject(prop.value as any);
         }
       }

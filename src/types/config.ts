@@ -325,10 +325,12 @@ export type DatabaseConnectionConfigs = Record<
 >;
 
 // Runtime config
+
 export interface NitroRuntimeConfigApp {
   baseURL: string;
   [key: string]: any;
 }
+
 export interface NitroRuntimeConfig {
   app: NitroRuntimeConfigApp;
   nitro: {

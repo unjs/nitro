@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
         if: ${{ matrix.os != 'windows-latest' }}
         with:
           bun-version: latest
