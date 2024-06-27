@@ -28,7 +28,7 @@ export interface CacheOptions<T = any> {
 export interface ResponseCacheEntry<T = any> {
   body: T | undefined;
   code: number;
-  headers: Record<string, string | number | string[] | undefined>;
+  headers: Record<string, string>;
 }
 
 export interface CachedEventHandlerOptions<T = any>

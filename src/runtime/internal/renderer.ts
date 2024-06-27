@@ -1,8 +1,6 @@
 import {
-  H3Event,
-  eventHandler,
+  defineEventHandler,
   getResponseStatus,
-  send,
   setResponseHeader,
   setResponseHeaders,
   setResponseStatus,
@@ -11,24 +9,18 @@ import type { RenderHandler } from "nitro/types";
 import { useNitroApp } from "./app";
 
 export function defineRenderHandler(handler: RenderHandler) {
-  return eventHandler(async (event) => {
+  return defineEventHandler(async (event) => {
     // TODO: Use serve-placeholder
     if (event.path.endsWith("/favicon.ico")) {
       setResponseHeader(event, "Content-Type", "image/x-icon");
-      return send(
-        event,
-        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-      );
+      return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     }
 
     const response = await handler(event);
     if (!response) {
       const _currentStatus = getResponseStatus(event);
       setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
-      return send(
-        event,
-        "No response returned from render handler: " + event.path
-      );
+      return `No response returned from render handler: ${event.path}`;
     }
 
     // Allow hooking and modifying response

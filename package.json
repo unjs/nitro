@@ -79,7 +79,8 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^6.19.2"
+    "undici": "^6.19.2",
+    "h3": "npm:h3-nightly@2.0.0-1719263766.03048c6"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.3",

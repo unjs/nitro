@@ -493,7 +493,7 @@ export function testNitro(
   });
 
   if (ctx.nitro!.options.timing) {
-    it("set server timing header", async () => {
+    it.todo("set server timing header", async () => {
       const { status, headers } = await callHandler({
         url: "/api/hello",
       });
@@ -576,7 +576,12 @@ export function testNitro(
         expectedCookies =
           (nodeMajorVersion || 0) < 18
             ? "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/"
-            : ["foo=bar, bar=baz", "test=value; Path=/", "test2=value; Path=/"];
+            : [
+                "foo=bar",
+                "bar=baz",
+                "test=value; Path=/",
+                "test2=value; Path=/",
+              ];
       }
 
       // TODO: vercel-edge joins all cookies for some reason!

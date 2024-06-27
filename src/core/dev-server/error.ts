@@ -2,7 +2,6 @@ import {
   type H3Event,
   getResponseStatus,
   getResponseStatusText,
-  send,
   setResponseHeader,
   setResponseStatus,
 } from "h3";
@@ -23,9 +22,7 @@ function errorHandler(error: any, event: H3Event) {
       "<progress></progress><script>document.querySelector('progress').indeterminate=true</script>";
   }
 
-  return send(
-    event,
-    `<!DOCTYPE html>
+  return /* html */ `<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -48,8 +45,7 @@ function errorHandler(error: any, event: H3Event) {
   </main>
   </body>
 </html>
-`
-  );
+`;
 }
 
 export default errorHandler as NitroErrorHandler;

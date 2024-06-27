@@ -13,6 +13,7 @@ import {
   eventHandler,
   fromNodeMiddleware,
   toNodeListener,
+  getNodeContext,
 } from "h3";
 import { type ProxyServerOptions, createProxyServer } from "httpxy";
 import { type Listener, listen } from "listhen";
@@ -305,7 +306,8 @@ function createProxy(defaults: ProxyServerOptions = {}) {
   const proxy = createProxyServer(defaults);
   const handle = async (event: H3Event, opts: ProxyServerOptions = {}) => {
     try {
-      await proxy.web(event.node.req, event.node.res, opts);
+      const { req, res } = getNodeContext(event)!;
+      await proxy.web(req, res, opts);
     } catch (error: any) {
       if (error?.code !== "ECONNRESET") {
         throw error;

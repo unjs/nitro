@@ -108,7 +108,7 @@ export default eventHandler((event) => {
   }
 
   if (asset.size > 0 && !getResponseHeader(event, "Content-Length")) {
-    setResponseHeader(event, "Content-Length", asset.size);
+    setResponseHeader(event, "Content-Length", asset.size + "");
   }
 
   return readAsset(id);

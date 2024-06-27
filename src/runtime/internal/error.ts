@@ -1,5 +1,5 @@
 // import ansiHTML from 'ansi-html'
-import { send, setResponseHeader, setResponseStatus } from "h3";
+import { setResponseHeader, setResponseStatus } from "h3";
 import type { NitroErrorHandler } from "nitro/types";
 import { isJsonRequest, normalizeError } from "./utils";
 
@@ -53,10 +53,10 @@ export default defineNitroErrorHandler(
 
     if (isJsonRequest(event)) {
       setResponseHeader(event, "Content-Type", "application/json");
-      return send(event, JSON.stringify(errorObject));
+      return errorObject;
     }
     setResponseHeader(event, "Content-Type", "text/html");
-    return send(event, renderHTMLError(errorObject));
+    return renderHTMLError(errorObject);
   }
 );
 
