@@ -11,7 +11,8 @@ export default eventHandler((event) => {
     ...runtimeConfig.nitro.openAPI?.ui?.scalar,
     spec: {
       url: "/_openapi.json",
-      ...(runtimeConfig.nitro.openAPI?.ui?.scalar as ReferenceConfiguration)?.spec,
+      ...(runtimeConfig.nitro.openAPI?.ui?.scalar as ReferenceConfiguration)
+        ?.spec,
     },
   };
 
