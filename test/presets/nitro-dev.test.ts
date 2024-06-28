@@ -26,8 +26,7 @@ describe.skipIf(isCI)("nitro:preset:nitro-dev", async () => {
       describe("openAPI", () => {
         let spec: OpenAPI3;
         it("/_openapi.json", async () => {
-          spec = ((await callHandler({ url: "/_openapi.json" })) as any)
-            .data;
+          spec = ((await callHandler({ url: "/_openapi.json" })) as any).data;
           expect(spec.openapi).to.match(/^3\.\d+\.\d+$/);
           expect(spec.info.title).toBe("Nitro Test Fixture");
           expect(spec.info.description).toBe("Nitro Test Fixture API");

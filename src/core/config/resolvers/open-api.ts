@@ -16,9 +16,9 @@ export async function resolveOpenAPIOptions(options: NitroOptions) {
   const shouldPrerender =
     !options.dev && options.openAPI?.production === "prerender";
 
-    const handlersEnv = shouldPrerender ? "prerender" : "";
+  const handlersEnv = shouldPrerender ? "prerender" : "";
 
-    const prerenderRoutes: string[] = [];
+  const prerenderRoutes: string[] = [];
 
   // Add openapi json route
   const jsonRoute = options.openAPI?.route || "/_openapi.json";
@@ -42,8 +42,7 @@ export async function resolveOpenAPIOptions(options: NitroOptions) {
 
   // Swagger UI
   if (options.openAPI?.ui?.swagger !== false) {
-    const swaggerRoute =
-      options.openAPI?.ui?.swagger?.route || "/_swagger";
+    const swaggerRoute = options.openAPI?.ui?.swagger?.route || "/_swagger";
     prerenderRoutes.push(swaggerRoute);
     options.handlers.push({
       route: swaggerRoute,
