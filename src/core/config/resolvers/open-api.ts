@@ -15,11 +15,13 @@ export async function resolveOpenAPIOptions(options: NitroOptions) {
 
   const shouldPrerender =
     !options.dev && options.openAPI?.production === "prerender";
-  const handlersEnv = shouldPrerender ? "prerender" : "";
-  const prerenderRoutes: string[] = [];
+
+    const handlersEnv = shouldPrerender ? "prerender" : "";
+
+    const prerenderRoutes: string[] = [];
 
   // Add openapi json route
-  const jsonRoute = options.openAPI?.route || "/_nitro/openapi.json";
+  const jsonRoute = options.openAPI?.route || "/_openapi.json";
   prerenderRoutes.push(jsonRoute);
   options.handlers.push({
     route: jsonRoute,
@@ -29,10 +31,10 @@ export async function resolveOpenAPIOptions(options: NitroOptions) {
 
   // Scalar UI
   if (options.openAPI?.ui?.scalar !== false) {
-    const scalarRoute = options.openAPI?.ui?.scalar?.route || "/_nitro/scalar";
+    const scalarRoute = options.openAPI?.ui?.scalar?.route || "/_scalar";
     prerenderRoutes.push(scalarRoute);
     options.handlers.push({
-      route: options.openAPI?.ui?.scalar?.route || "/_nitro/scalar",
+      route: options.openAPI?.ui?.scalar?.route || "/_scalar",
       env: handlersEnv,
       handler: join(runtimeDir, "internal/routes/scalar"),
     });
@@ -41,7 +43,7 @@ export async function resolveOpenAPIOptions(options: NitroOptions) {
   // Swagger UI
   if (options.openAPI?.ui?.swagger !== false) {
     const swaggerRoute =
-      options.openAPI?.ui?.swagger?.route || "/_nitro/swagger";
+      options.openAPI?.ui?.swagger?.route || "/_swagger";
     prerenderRoutes.push(swaggerRoute);
     options.handlers.push({
       route: swaggerRoute,

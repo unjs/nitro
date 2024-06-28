@@ -16,7 +16,7 @@ export interface NitroOpenAPIConfig {
   /**
    * OpenAPI json route
    *
-   * Default is `/_nitro/openapi.json`
+   * Default is `/_openapi.json`
    */
   route?: string;
 
@@ -38,7 +38,7 @@ export interface NitroOpenAPIConfig {
           /**
            * Scalar UI route
            *
-           * Default is `/_nitro/scalar`
+           * Default is `/_scalar`
            */
           route?: string;
         });
@@ -51,7 +51,7 @@ export interface NitroOpenAPIConfig {
           /**
            * Swagger UI route
            *
-           * Default is `/_nitro/swagger`
+           * Default is `/_swagger`
            */
           route?: string;
         };

@@ -2,7 +2,7 @@ import { eventHandler } from "h3";
 
 // https://github.com/swagger-api/swagger-ui
 
-// Served as /_nitro/swagger
+// Served as /_swagger
 export default eventHandler((event) => {
   const title = "Nitro Swagger UI";
   const CDN_BASE = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@^5";

@@ -2,7 +2,7 @@ import type { ReferenceConfiguration } from "@scalar/api-reference";
 import { eventHandler } from "h3";
 import { useRuntimeConfig } from "../config";
 
-// Served as /_nitro/scalar
+// Served as /_scalar
 export default eventHandler((event) => {
   const runtimeConfig = useRuntimeConfig(event);
 
@@ -10,7 +10,7 @@ export default eventHandler((event) => {
   const configuration: ReferenceConfiguration = {
     ...runtimeConfig.nitro.openAPI?.ui?.scalar,
     spec: {
-      url: "/_nitro/openapi.json",
+      url: "/_openapi.json",
       ...runtimeConfig.nitro.openAPI?.ui?.scalar?.spec,
     },
   };
