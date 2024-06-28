@@ -1,17 +1,23 @@
+import type { ReferenceConfiguration } from "@scalar/api-reference";
 import { eventHandler } from "h3";
+import { useRuntimeConfig } from "../config";
 
 // https://github.com/swagger-api/swagger-ui
 
-// Served as /_swagger
 export default eventHandler((event) => {
-  const title = "Nitro Swagger UI";
+  const runtimeConfig = useRuntimeConfig(event);
+  const title = runtimeConfig.nitro.openAPI?.meta?.title || "API Reference";
+  const description = runtimeConfig.nitro.openAPI?.meta?.description || "";
+  const openAPIEndpoint =
+    runtimeConfig.nitro.openAPI?.route || "./_openapi.json";
+
   const CDN_BASE = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@^5";
   return /* html */ `<!doctype html>
     <html lang="en">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="${title}" />
+        <meta name="description" content="${description}" />
         <title>${title}</title>
         <link rel="stylesheet" href="${CDN_BASE}/swagger-ui.css" />
       </head>
@@ -25,7 +31,7 @@ export default eventHandler((event) => {
         <script>
           window.onload = () => {
             window.ui = SwaggerUIBundle({
-              url: "./openapi.json",
+              url: ${JSON.stringify(openAPIEndpoint)},
               dom_id: "#swagger-ui",
               presets: [
                 SwaggerUIBundle.presets.apis,

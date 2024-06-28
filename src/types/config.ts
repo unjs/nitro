@@ -350,7 +350,7 @@ export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
-    openAPI?: NitroOptions["openAPI"];
+    openAPI?: NitroOpenAPIConfig;
   };
   [key: string]: any;
 }
