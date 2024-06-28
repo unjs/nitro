@@ -23,7 +23,7 @@ export interface NitroOpenAPIConfig {
   /**
    * Enable OpenAPI generation for production builds
    */
-  production?: false | "runtime" | "prerender"
+  production?: false | "runtime" | "prerender";
 
   /**
    * UI configurations
@@ -32,24 +32,28 @@ export interface NitroOpenAPIConfig {
     /**
      * Scalar UI configuration
      */
-    scalar?: ScalarConfig & {
-      /**
-       * Scalar UI route
-       *
-       * Default is `_nitro/scalar`
-       */
-      route?: string;
-    };
+    scalar?:
+      | false
+      | (ScalarConfig & {
+          /**
+           * Scalar UI route
+           *
+           * Default is `/_nitro/scalar`
+           */
+          route?: string;
+        });
     /**
      * Swagger UI configuration
      */
-    swagger?: {
-      /**
-       * Swagger UI route
-       *
-       * Default is `_nitro/swagger`
-       */
-      route?: string;
-    }
+    swagger?:
+      | false
+      | {
+          /**
+           * Swagger UI route
+           *
+           * Default is `/_nitro/swagger`
+           */
+          route?: string;
+        };
   };
 }

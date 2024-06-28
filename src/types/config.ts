@@ -32,11 +32,11 @@ import type {
 import type { NitroHooks } from "./hooks";
 import type { NitroModuleInput } from "./module";
 import type { NitroFrameworkInfo } from "./nitro";
+import type { NitroOpenAPIConfig } from "./openapi";
 import type { NitroPreset } from "./preset";
 import type { EsbuildOptions, NodeExternalsOptions } from "./rollup";
 import type { RollupConfig } from "./rollup";
 import type { NitroRouteConfig, NitroRouteRules } from "./route-rules";
-import type { NitroOpenAPIConfig } from "./openapi";
 
 /**
  * Nitro normalized options (nitro.options)

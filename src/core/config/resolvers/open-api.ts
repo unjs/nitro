@@ -8,31 +8,52 @@ export async function resolveOpenAPIOptions(options: NitroOptions) {
     return;
   }
 
-  // Add openapi json route
-  if (options.dev || options.openAPI?.production) {
-    const shouldPrerender = !options.dev && options.openAPI?.production === 'prerender';
-    const route = options.openAPI?.route || "/_nitro/openapi.json"
-    options.handlers.push({
-      route,
-      handler: join(runtimeDir, "internal/routes/openapi"),
-      env: shouldPrerender ? 'prerender' : undefined /* runtime */
-    });
-    if (shouldPrerender) {
-      options.prerender ??= {} as any;
-      options.prerender.routes ??= [];
-      options.prerender.routes.push(route);
-    }
+  // Only enable for dev and (opt-in) production
+  if (!options.dev && !options.openAPI?.production) {
+    return;
   }
 
-  // Add /_nitro/scalar and /_nitro/swagger routes in dev mode
-  if (options.dev) {
+  const shouldPrerender =
+    !options.dev && options.openAPI?.production === "prerender";
+  const handlersEnv = shouldPrerender ? "prerender" : "";
+  const prerenderRoutes: string[] = [];
+
+  // Add openapi json route
+  const jsonRoute = options.openAPI?.route || "/_nitro/openapi.json";
+  prerenderRoutes.push(jsonRoute);
+  options.handlers.push({
+    route: jsonRoute,
+    env: handlersEnv,
+    handler: join(runtimeDir, "internal/routes/openapi"),
+  });
+
+  // Scalar UI
+  if (options.openAPI?.ui?.scalar !== false) {
+    const scalarRoute = options.openAPI?.ui?.scalar?.route || "/_nitro/scalar";
+    prerenderRoutes.push(scalarRoute);
     options.handlers.push({
       route: options.openAPI?.ui?.scalar?.route || "/_nitro/scalar",
+      env: handlersEnv,
       handler: join(runtimeDir, "internal/routes/scalar"),
     });
+  }
+
+  // Swagger UI
+  if (options.openAPI?.ui?.swagger !== false) {
+    const swaggerRoute =
+      options.openAPI?.ui?.swagger?.route || "/_nitro/swagger";
+    prerenderRoutes.push(swaggerRoute);
     options.handlers.push({
-      route: options.openAPI?.ui?.swagger?.route ?? "/_nitro/swagger",
+      route: swaggerRoute,
+      env: handlersEnv,
       handler: join(runtimeDir, "internal/routes/swagger"),
     });
+  }
+
+  // Prerender
+  if (shouldPrerender) {
+    options.prerender ??= {} as any;
+    options.prerender.routes ??= [];
+    options.prerender.routes.push(...prerenderRoutes);
   }
 }
