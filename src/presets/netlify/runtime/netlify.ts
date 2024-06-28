@@ -64,7 +64,7 @@ function getCacheHeaders(url: string): Record<string, string> {
         : "must-revalidate";
     return {
       "Cache-Control": "public, max-age=0, must-revalidate",
-      "Netlify-CDN-Cache-Control": `public, max-age=${maxAge}, ${revalidateDirective}`,
+      "Netlify-CDN-Cache-Control": `public, max-age=${maxAge}, ${revalidateDirective}, durable`,
     };
   }
   return {};
