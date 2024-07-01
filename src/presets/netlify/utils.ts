@@ -1,5 +1,5 @@
 import { existsSync, promises as fsp } from "node:fs";
-import type { Nitro } from "nitropack/types";
+import type { Nitro } from "nitro/types";
 import { join } from "pathe";
 
 export async function writeRedirects(nitro: Nitro) {

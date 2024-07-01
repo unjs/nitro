@@ -4,7 +4,7 @@ import type {
   NitroOptions,
   NitroRouteConfig,
   NitroRouteRules,
-} from "nitropack/types";
+} from "nitro/types";
 
 export async function resolveRouteRulesOptions(options: NitroOptions) {
   // Backward compatibility for options.routes

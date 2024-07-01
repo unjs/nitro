@@ -3,7 +3,7 @@ import {
   type PlatformName,
   resolveCompatibilityDatesFromEnv,
 } from "compatx";
-import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
+import type { NitroPreset, NitroPresetMeta } from "nitro/types";
 import { kebabCase } from "scule";
 import { type ProviderName, provider } from "std-env";
 import allPresets from "./_all.gen";
