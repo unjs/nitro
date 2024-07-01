@@ -4,7 +4,7 @@
 
 ## Cloudflare Pages
 
-**Preset:** `cloudflare_pages`
+**Preset:** `cloudflare-pages`
 
 :read-more{title="Cloudflare Pages" to="https://pages.cloudflare.com/"}
 
