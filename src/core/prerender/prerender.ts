@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import chalk from "chalk";
+import { colors } from "consola/utils";
 import { defu } from "defu";
 import mime from "mime";
 import { writeFile } from "nitropack/kit";
@@ -318,7 +318,7 @@ export async function prerender(nitro: Nitro) {
       const parents = linkParents.get(route.route);
       const parentsText = parents?.size
         ? `\n${[...parents.values()]
-            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
+            .map((link) => colors.gray(`  │ └── Linked from ${link}`))
             .join("\n")}`
         : "";
       nitro.logger.log(formatPrerenderRoute(route));

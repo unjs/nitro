@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import { colors } from "consola/utils";
 import type { PrerenderRoute } from "nitropack/types";
 import { parseURL } from "ufo";
 
@@ -117,9 +117,10 @@ export function formatPrerenderRoute(route: PrerenderRoute) {
 
   if (route.error) {
     const parents = linkParents.get(route.route);
-    const errorColor = chalk[route.error.statusCode === 404 ? "yellow" : "red"];
+    const errorColor =
+      colors[route.error.statusCode === 404 ? "yellow" : "red"];
     const errorLead = parents?.size ? "├──" : "└──";
-    str += `\n  │ ${errorLead} ${errorColor(route.error)}`;
+    str += `\n  │ ${errorLead} ${errorColor(route.error.message)}`;
 
     if (parents?.size) {
       str += `\n${[...parents.values()]
@@ -129,10 +130,10 @@ export function formatPrerenderRoute(route: PrerenderRoute) {
   }
 
   if (route.skip) {
-    str += chalk.gray(" (skipped)");
+    str += colors.gray(" (skipped)");
   }
 
-  return chalk.gray(str);
+  return colors.gray(str);
 }
 
 // prettier-ignore
