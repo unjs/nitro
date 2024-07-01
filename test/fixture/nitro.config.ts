@@ -118,6 +118,7 @@ export default defineNitroConfig({
     },
   },
   openAPI: {
+    production: "prerender",
     meta: {
       title: "Nitro Test Fixture",
       description: "Nitro Test Fixture API",

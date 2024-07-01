@@ -2,37 +2,39 @@ import type { ReferenceConfiguration } from "@scalar/api-reference";
 import { eventHandler } from "h3";
 import { useRuntimeConfig } from "../config";
 
-// Served as /_nitro/scalar
+// Served as /_scalar
 export default eventHandler((event) => {
   const runtimeConfig = useRuntimeConfig(event);
+  const title = runtimeConfig.nitro.openAPI?.meta?.title || "API Reference";
+  const description = runtimeConfig.nitro.openAPI?.meta?.description || "";
+  const openAPIEndpoint =
+    runtimeConfig.nitro.openAPI?.route || "./_openapi.json";
 
   // https://github.com/scalar/scalar
-  const configuration: ReferenceConfiguration = {
-    ...runtimeConfig.nitro.openAPI?.ui?.scalar,
-    spec: {
-      url: "/_nitro/openapi.json",
-      ...runtimeConfig.nitro.openAPI?.ui?.scalar?.spec,
-    },
+  const _config = runtimeConfig.nitro.openAPI?.ui
+    ?.scalar as ReferenceConfiguration;
+  const scalarConfig: ReferenceConfiguration = {
+    ..._config,
+    spec: { url: openAPIEndpoint, ..._config?.spec },
   };
 
   // The default page title
-  const title = "Nitro Scalar API Reference";
 
   return /* html */ `<!doctype html>
     <html lang="en">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="${title}" />
+        <meta name="description" content="${description}" />
         <title>${title}</title>
         <style>
-          ${configuration.theme ? null : customTheme}
+          ${scalarConfig.theme ? null : customTheme}
         </style>
       </head>
       <body>
         <script
           id="api-reference"
-          data-configuration="${JSON.stringify(configuration)
+          data-configuration="${JSON.stringify(scalarConfig)
             .split('"')
             .join("&quot;")}"
         ></script>
