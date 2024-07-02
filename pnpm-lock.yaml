@@ -318,8 +318,8 @@ importers:
         specifier: ^5.4.5
         version: 5.5.3
       unbuild:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(typescript@5.5.3)
+        specifier: 3.0.0-rc.5
+        version: 3.0.0-rc.5(typescript@5.5.3)
       undici:
         specifier: ^6.19.2
         version: 6.19.2
@@ -5798,8 +5798,8 @@ packages:
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
 
-  unbuild@3.0.0-rc.3:
-    resolution: {integrity: sha512-cn8FLDWhm1xX6ywTlpJTLNC6Xm5X/aSUgTi0C4jzDY5RgJMbe/4xRlygIpH5nWuN3FFLh4JBMJY4i+Fffrg2jA==}
+  unbuild@3.0.0-rc.5:
+    resolution: {integrity: sha512-JraRltgzIqUCwTRaZBT2pbkT7wXylz217X6HZBm6LDlr8tdsrGgWp4T/PANwPtHaaFRKNi8TySReUNaJ8vgApw==}
     hasBin: true
     peerDependencies:
       typescript: ^5.5.3
@@ -12535,7 +12535,7 @@ snapshots:
 
   ufo@1.5.3: {}
 
-  unbuild@3.0.0-rc.3(typescript@5.5.3):
+  unbuild@3.0.0-rc.5(typescript@5.5.3):
     dependencies:
       '@rollup/plugin-alias': 5.1.0(rollup@4.18.0)
       '@rollup/plugin-commonjs': 26.0.1(rollup@4.18.0)
