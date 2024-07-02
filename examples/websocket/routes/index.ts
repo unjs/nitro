@@ -3,5 +3,5 @@ export default defineEventHandler(async () => {
     "https://raw.githubusercontent.com/unjs/crossws/main/examples/h3/public/index.html"
   );
 
-  return data;
+  return data
 });
