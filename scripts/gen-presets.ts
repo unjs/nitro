@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { consola } from "consola";
-import createJITI from "jiti";
+import { createJiti } from "jiti";
 import { findTypeExports } from "mlly";
 import type { NitroPreset, NitroPresetMeta } from "nitro/types";
 import { camelCase, kebabCase, pascalCase, snakeCase } from "scule";
@@ -21,8 +21,7 @@ const presetDirs: string[] = readdirSync(presetsDir, { withFileTypes: true })
   .map((dir) => dir.name);
 
 // --- Load presets ---
-const jitiRequire = createJITI(presetsDir, {
-  esmResolve: true,
+const jiti = createJiti(presetsDir, {
   interopDefault: true,
   alias: {
     nitro: fileURLToPath(new URL("../src/core/index.ts", import.meta.url)),
@@ -37,7 +36,7 @@ const jitiRequire = createJITI(presetsDir, {
 const allPresets: (NitroPreset & { _meta?: NitroPresetMeta })[] = [];
 for (const preset of presetDirs) {
   const presetPath = resolve(presetsDir, preset, "preset.ts");
-  const _presets = jitiRequire(presetPath);
+  const _presets = (await jiti.import(presetPath)) as NitroPreset[];
   allPresets.push(..._presets);
 }
 
