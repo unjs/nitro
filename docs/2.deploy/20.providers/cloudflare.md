@@ -26,16 +26,16 @@ If you use the [Cloudflare Pages GitHub/GitLab integration](https://developers.c
 
 If instead you want preview your application locally and/or manually deploy it, when building the application you will need to let Nitro know that the target environment is the Cloudflare Pages one, you can do that in two ways:
 
-1. By defining either the `NITRO_PRESET` or the `SERVER_PRESET` environment variable set to `cloudflare-pages` when running the build process, like so:
+1. By defining either the `NITRO_PRESET` or the `SERVER_PRESET` environment variable set to `cloudflare_pages` when running the build process, like so:
 
   ```bash
-  NITRO_PRESET=cloudflare-pages npm run build
+  NITRO_PRESET=cloudflare_pages npm run build
   ```
 
 1. Or by updating your Nitro [preset configuration](/config#preset):
 
   ```json5
-  "preset": "cloudflare-pages",
+  "preset": "cloudflare_pages",
   ```
 
 and then running the standard build command:
