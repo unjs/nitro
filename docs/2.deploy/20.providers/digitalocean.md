@@ -2,7 +2,7 @@
 
 > Deploy Nitro apps to DigitalOcean.
 
-**Preset:** `digital-ocean`
+**Preset:** `digital_ocean`
 
 :read-more{title="Digital Ocean App Platform" to="https://docs.digitalocean.com/products/app-platform/"}
 
@@ -13,7 +13,7 @@
 1. Next, you'll need to configure environment variables. In your app settings, ensure the following app-level environment variables are set:
 
    ```bash
-   NITRO_PRESET=digital-ocean
+   NITRO_PRESET=digital_ocean
    ```
 
    [More information](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/).
