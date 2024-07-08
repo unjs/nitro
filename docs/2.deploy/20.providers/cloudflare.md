@@ -309,6 +309,6 @@ export default defineNuxtConfig({
 
 From this moment, when running
 
-::pm-run{script="dev"}
+:pm-run{script="dev"}
 
 you will be able to access the `MY_VARIABLE` and `MY_KV` from the request event just as illustrated above.
