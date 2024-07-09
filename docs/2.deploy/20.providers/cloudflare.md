@@ -255,7 +255,7 @@ For more details on Bindings and how to use them please refer to the Cloudflare 
 In runtime, you can access bindings from the request event, by accessing its `context.cloudflare.env` field, this is for example how you can access a D1 bindings:
 
 ```ts
-defineEventHandler((event) => {
+defineEventHandler(async (event) => {
   const { cloudflare } = event.context
   const stmt = await cloudflare.env.MY_D1.prepare('SELECT id FROM table')
   const { results } = await stmt.all()
