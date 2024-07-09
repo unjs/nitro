@@ -38,9 +38,9 @@ If instead you want preview your application locally and/or manually deploy it, 
     "preset": "cloudflare_pages",
     ```
 
-and then running the standard build command:
+    and then running the standard build command:
 
-:pm-run{script="build"}
+    :pm-run{script="build"}
 
 ### Wrangler
 
