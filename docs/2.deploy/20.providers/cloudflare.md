@@ -120,7 +120,7 @@ npm i wrangler
 wrangler login
 ```
 
-Generate your app using the `cloudflare` preset:
+Generate your app using the `cloudflare_module` preset:
 
 ```bash
 NITRO_PRESET=cloudflare_module npm run build
