@@ -65,7 +65,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
       useNitroApp().captureError(error, { event, tags: ["cache"] });
     }
 
-    const ttl = (opts.maxAge ?? opts.maxAge ?? 0) * 1000;
+    const ttl = (opts.maxAge ?? 0) * 1000;
     if (ttl) {
       entry.expires = Date.now() + ttl;
     }
