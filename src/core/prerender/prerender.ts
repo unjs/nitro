@@ -223,7 +223,6 @@ export async function prerender(nitro: Nitro) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error!.statusCode = res.status;
       _route.error!.statusMessage = res.statusText;
-      failedRoutes.add(_route);
     }
 
     // Measure actual time taken for generating route
@@ -253,6 +252,10 @@ export async function prerender(nitro: Nitro) {
     if (_route.contentType !== inferredContentType) {
       nitro._prerenderMeta![_route.fileName] ||= {};
       nitro._prerenderMeta![_route.fileName].contentType = _route.contentType;
+    }
+
+    if (_route.error) {
+      failedRoutes.add(_route);
     }
 
     // Check if route is skipped or has errors
