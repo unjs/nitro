@@ -10,6 +10,7 @@ import {
   normalizeLambdaOutgoingHeaders,
 } from "nitropack/runtime/internal";
 import { withQuery } from "ufo";
+import { Readable } from "node:stream";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -72,11 +73,27 @@ export const handler = awslambda.streamifyResponse(
       },
     };
     if (r.body) {
-      const reader = r.body as ReadableStream;
       const writer = awslambda.HttpResponseStream.from(
         responseStream,
         httpResponseMetadata
       );
+
+      let reader;
+      if (r.body instanceof ReadableStream) {
+        reader = r.body.getReader();
+      } else if (typeof r.body === 'string') {
+        reader = Readable.toWeb(Readable.from(r.body)).getReader();
+      } else if (r.body instanceof Uint8Array || r.body instanceof ArrayBuffer) {
+        reader = Readable.toWeb(Readable.from(Buffer.from(r.body))).getReader();
+      } else if (r.body instanceof Blob) {
+        const arrayBuffer = await r.body.arrayBuffer();
+        reader = Readable.toWeb(Readable.from(Buffer.from(arrayBuffer))).getReader();
+      } else if (r.body instanceof FormData || r.body instanceof URLSearchParams) {
+        reader = Readable.toWeb(Readable.from(r.body.toString())).getReader();
+      } else {
+        reader = Readable.toWeb(Readable.from(JSON.stringify(r.body))).getReader();
+      }
+
       await streamToNodeStream(reader.getReader(), responseStream);
       writer.end();
     }
