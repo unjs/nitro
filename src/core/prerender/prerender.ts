@@ -254,6 +254,7 @@ export async function prerender(nitro: Nitro) {
       nitro._prerenderMeta![_route.fileName].contentType = _route.contentType;
     }
 
+    // After hook to allow ignoring in `prerender:generate` hook
     if (_route.error) {
       failedRoutes.add(_route);
     }
