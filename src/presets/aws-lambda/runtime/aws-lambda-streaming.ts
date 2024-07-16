@@ -94,7 +94,7 @@ export const handler = awslambda.streamifyResponse(
         reader = Readable.toWeb(Readable.from(JSON.stringify(r.body))).getReader();
       }
 
-      await streamToNodeStream(reader.getReader(), responseStream);
+      await streamToNodeStream(reader, responseStream);
       writer.end();
     }
   }
