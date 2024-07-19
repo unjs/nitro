@@ -92,7 +92,7 @@ declare module "nitropack/types" {
       context: ExecutionContext;
     }) => void;
     "cloudflare:queue": (_: {
-      event: CloudflareEmailContext;
+      event: CloudflareMessageBatch;
       env: any;
       context: ExecutionContext;
     }) => void;

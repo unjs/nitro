@@ -112,7 +112,7 @@ export default {
   },
 
   queue(
-    event: CloudflareEmailContext,
+    event: CloudflareMessageBatch,
     env: CFModuleEnv,
     context: ExecutionContext
   ) {
