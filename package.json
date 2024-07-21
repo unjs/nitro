@@ -1,6 +1,3 @@
-// 20240721090755
-// https://raw.githubusercontent.com/unjs/nitro/v2/package.json
-
 {
   "name": "nitropack",
   "version": "2.9.6",
@@ -73,11 +70,7 @@
     "nitro": "./dist/cli/index.mjs",
     "nitropack": "./dist/cli/index.mjs"
   },
-  "files": [
-    "dist",
-    "*.d.ts",
-    "runtime-meta.*"
-  ],
+  "files": ["dist", "*.d.ts", "runtime-meta.*"],
   "scripts": {
     "build": "pnpm gen-presets && unbuild",
     "dev": "pnpm nitro dev playground",
