@@ -57,7 +57,7 @@ export interface CloudflareEmailContext {
   readonly from?: string;
   readonly to?: string;
   readonly headers?: Headers;
-  readonly raw?: ReadableStream;
+  readonly raw?: ReadableStream<Uint8Array>;
   readonly rawSize?: number;
 
   setReject?(reason: string): void;
