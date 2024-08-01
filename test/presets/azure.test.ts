@@ -125,6 +125,14 @@ describe(
               "route": "/api/hey",
             },
             {
+              "rewrite": "/_swagger/index.html",
+              "route": "/_swagger",
+            },
+            {
+              "rewrite": "/_scalar/index.html",
+              "route": "/_scalar",
+            },
+            {
               "rewrite": "/prerender/index.html",
               "route": "/prerender",
             },
