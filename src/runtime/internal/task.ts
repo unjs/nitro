@@ -1,12 +1,6 @@
 import { Cron } from "croner";
 import { createError } from "h3";
-import type {
-  Task,
-  TaskContext,
-  TaskEvent,
-  TaskPayload,
-  TaskResult,
-} from "nitropack/types";
+import type { Task, TaskContext, TaskEvent, TaskPayload, TaskResult } from "nitropack/types";
 import { isTest } from "std-env";
 import { scheduledTasks, tasks } from "#nitro-internal-virtual/tasks";
 
@@ -53,8 +47,7 @@ export async function runTask<RT = unknown>(
   __runningTasks__[name] = handler.run(taskEvent);
 
   try {
-    const res = await __runningTasks__[name];
-    return res;
+    return await __runningTasks__[name];
   } finally {
     delete __runningTasks__[name];
   }
@@ -71,7 +64,7 @@ export function startScheduleRunner() {
   };
 
   for (const schedule of scheduledTasks) {
-    const cron = new Cron(schedule.cron, async () => {
+    new Cron(schedule.cron, async () => {
       await Promise.all(
         schedule.tasks.map((name) =>
           runTask(name, {

@@ -45,10 +45,10 @@ export function addNitroTasksVirtualFile(nitro: Nitro) {
             return true;
           }
         );
-        return { cron, tasks };
+        return { cron, tasks, once: false };
       })
       .filter((e) => e.tasks.length > 0);
-    const scheduledTasks: false | { cron: string; tasks: string[] }[] =
+    const scheduledTasks: false | { cron: string; tasks: string[]; once: boolean; }[] =
       _scheduledTasks.length > 0 ? _scheduledTasks : false;
 
     return /* js */ `
