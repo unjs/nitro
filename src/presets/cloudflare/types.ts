@@ -57,7 +57,7 @@ export interface CloudflareEmailContext {
   readonly from?: string;
   readonly to?: string;
   readonly headers?: Headers;
-  readonly raw?: ReadableStream;
+  readonly raw?: ReadableStream<Uint8Array>;
   readonly rawSize?: number;
 
   setReject?(reason: string): void;
@@ -92,7 +92,7 @@ declare module "nitropack/types" {
       context: ExecutionContext;
     }) => void;
     "cloudflare:queue": (_: {
-      event: CloudflareEmailContext;
+      event: CloudflareMessageBatch;
       env: any;
       context: ExecutionContext;
     }) => void;
