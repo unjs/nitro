@@ -77,7 +77,12 @@ export function startScheduleRunner() {
             );
           })
         )
-      );
+      ).then(() => {
+        // Remove the schedule if it's one-time
+        if (schedule.once && scheduledTasks) {
+          scheduledTasks.splice(scheduledTasks!.indexOf(schedule), 1);
+        }
+      });
     });
   }
 }
