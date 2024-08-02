@@ -33,6 +33,11 @@ export interface Task<RT = unknown> {
 }
 
 /** @experimental */
+export interface TaskOptions {
+  runAt?: Date | string;
+}
+
+/** @experimental */
 export interface TaskRunnerOptions {
   cwd?: string;
   buildDir?: string;
