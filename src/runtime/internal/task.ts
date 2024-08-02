@@ -25,12 +25,22 @@ export async function runTask<RT = unknown>(
   }: { payload?: TaskPayload; context?: TaskContext } = {},
   opts: TaskOptions = {}
 ): Promise<TaskResult<RT>> {
-  if (opts.runAt) {
+  if (opts.runAt || opts.runAfter) {
+    let date;
     if (typeof opts.runAt === "string") {
-      opts.runAt = new Date(opts.runAt);
+      date = new Date(opts.runAt);
+    } else if (opts.runAt instanceof Date) {
+      date = opts.runAt;
+    } else if (opts.runAfter) {
+      date = new Date(Date.now() + opts.runAfter * 1000);
+    } else {
+      throw createError({
+        message: "Invalid `runAt` or `runAfter` option!",
+        statusCode: 400,
+      });
     }
 
-    const cron = `${opts.runAt.getSeconds()} ${opts.runAt.getMinutes()} ${opts.runAt.getHours()} ${opts.runAt.getDate()} ${opts.runAt.getMonth() + 1} *`;
+    const cron = `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth() + 1} *`;
     scheduleTask(name, cron);
     return {};
   }
