@@ -1,12 +1,6 @@
 import { Cron } from "croner";
 import { createError } from "h3";
-import type {
-  Task,
-  TaskContext,
-  TaskEvent,
-  TaskPayload,
-  TaskResult,
-} from "nitropack/types";
+import type { Task, TaskContext, TaskEvent, TaskPayload, TaskResult, TaskOptions } from "nitropack/types";
 import { isTest } from "std-env";
 import { scheduledTasks, tasks } from "#nitro-internal-virtual/tasks";
 
@@ -28,8 +22,31 @@ export async function runTask<RT = unknown>(
   {
     payload = {},
     context = {},
-  }: { payload?: TaskPayload; context?: TaskContext } = {}
+  }: { payload?: TaskPayload; context?: TaskContext } = {},
+  opts: TaskOptions = {}
 ): Promise<TaskResult<RT>> {
+  if (opts.runAt || opts.runAfter) {
+    if (opts.runAt && opts.runAfter) {
+      throw createError({
+        message: "Cannot use both `runAt` and `runAfter` options!",
+        statusCode: 400,
+      });
+    }
+
+    let date: Date;
+    if (opts.runAt) {
+      date = typeof opts.runAt === "string" ? new Date(opts.runAt) : opts.runAt;
+    } else if (opts.runAfter) {
+      date = new Date(Date.now() + opts.runAfter * 1000);
+    } else {
+      throw new Error("Invalid options!");
+    }
+
+    const cron = `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth() + 1} *`;
+    scheduleTask(name, cron);
+    return {};
+  }
+
   if (__runningTasks__[name]) {
     return __runningTasks__[name];
   }
@@ -53,8 +70,7 @@ export async function runTask<RT = unknown>(
   __runningTasks__[name] = handler.run(taskEvent);
 
   try {
-    const res = await __runningTasks__[name];
-    return res;
+    return await __runningTasks__[name];
   } finally {
     delete __runningTasks__[name];
   }
@@ -71,7 +87,7 @@ export function startScheduleRunner() {
   };
 
   for (const schedule of scheduledTasks) {
-    const cron = new Cron(schedule.cron, async () => {
+    new Cron(schedule.cron, async () => {
       await Promise.all(
         schedule.tasks.map((name) =>
           runTask(name, {
@@ -84,9 +100,40 @@ export function startScheduleRunner() {
             );
           })
         )
-      );
+      )
     });
   }
+}
+
+/** @experimental */
+export function scheduleTask(name: string, cron: string) {
+  if (!scheduledTasks) {
+    throw new Error("Scheduled tasks are not available!");
+  }
+
+  scheduledTasks.push({ cron, tasks: [name], once: true });
+
+  const payload: TaskPayload = {
+    scheduledTime: Date.now(),
+  };
+
+  new Cron(cron, {
+    maxRuns: 1,
+  }, async () => {
+    await runTask(name, {
+      payload,
+      context: {},
+    }).catch((error) => {
+      console.error(`[nitro] Error while running scheduled task "${name}"`, error);
+    });
+
+    if (scheduledTasks) {
+      const index = scheduledTasks.findIndex((task) => task.cron === cron);
+      if (index >= 0) {
+        scheduledTasks.splice(index, 1);
+      }
+    }
+  });
 }
 
 /** @experimental */
