@@ -1,6 +1,6 @@
 // import ansiHTML from 'ansi-html'
 import { send, setResponseHeader, setResponseStatus } from "h3";
-import type { NitroErrorHandler } from "nitropack/types";
+import type { NitroErrorHandler } from "nitro/types";
 import { isJsonRequest, normalizeError } from "./utils";
 
 export function defineNitroErrorHandler(
@@ -21,10 +21,7 @@ interface ParsedError {
 
 export default defineNitroErrorHandler(
   function defaultNitroErrorHandler(error, event) {
-    const { stack, statusCode, statusMessage, message } = normalizeError(
-      error,
-      isDev
-    );
+    const { stack, statusCode, statusMessage, message } = normalizeError(error);
 
     const showDetails = isDev && statusCode !== 404;
 

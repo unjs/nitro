@@ -1,8 +1,8 @@
 import { promises as fsp } from "node:fs";
 import { formatCompatibilityDate } from "compatx";
-import { writeFile } from "nitropack/kit";
-import { version as nitroVersion } from "nitropack/meta";
-import type { Nitro, NitroBuildInfo, RollupConfig } from "nitropack/types";
+import { writeFile } from "nitro/kit";
+import { version as nitroVersion } from "nitro/meta";
+import type { Nitro, NitroBuildInfo, RollupConfig } from "nitro/types";
 import { dirname, join, relative, resolve } from "pathe";
 import * as rollup from "rollup";
 import { scanHandlers } from "../scan";
@@ -22,7 +22,7 @@ export async function buildProduction(
 
   if (!nitro.options.static) {
     nitro.logger.info(
-      `Building ${nitroServerName(nitro)} (preset: \`${nitro.options.preset}\`, compatibility date: \`${formatCompatibilityDate(nitro.options.compatibilityDate)}\`)`
+      `Building ${nitroServerName(nitro)} (preset: \`${nitro.options.preset}\`, compatibility date: \`${formatCompatibilityDate(nitro.options.compatibilityDate)}\` )`
     );
     const build = await rollup.rollup(rollupConfig).catch((error) => {
       nitro.logger.error(formatRollupError(error));

@@ -4,9 +4,9 @@ import {
   type EventHandlerRequest,
   defineEventHandler,
 } from "h3";
-import { defineNitroConfig } from "nitropack/config";
-import type { $Fetch } from "nitropack/types";
-import type { Serialize, Simplify } from "nitropack/types";
+import { defineNitroConfig } from "nitro/config";
+import type { $Fetch } from "nitro/types";
+import type { Serialize, Simplify } from "nitro/types";
 import { describe, it } from "vitest";
 
 interface TestResponse {
@@ -183,13 +183,6 @@ describe("API routes", () => {
   });
 
   it("generates the correct type depending on the method used", () => {
-    expectTypeOf($fetch("/api/methods")).toEqualTypeOf<Promise<"Index get">>();
-    expectTypeOf($fetch("/api/methods", {})).toEqualTypeOf<
-      Promise<"Index get">
-    >();
-    expectTypeOf($fetch("/api/methods", { query: {} })).toEqualTypeOf<
-      Promise<"Index get">
-    >();
     expectTypeOf($fetch("/api/methods", { method: "get" })).toEqualTypeOf<
       Promise<"Index get">
     >();

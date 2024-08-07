@@ -15,7 +15,7 @@ import type {
   CachedEventHandlerOptions,
   NitroFetchRequest,
   ResponseCacheEntry,
-} from "nitropack/types";
+} from "nitro/types";
 import { hash } from "ohash";
 import { parseURL } from "ufo";
 import { useNitroApp } from "./app";

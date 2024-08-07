@@ -42,12 +42,12 @@ export default defineBuildConfig({
     { input: "src/types/index.ts" },
   ],
   alias: {
-    nitropack: "nitropack",
-    "nitropack/meta": resolve(srcDir, "../meta.ts"),
-    "nitropack/runtime/meta": resolve(srcDir, "../runtime-meta.mjs"),
+    nitro: "nitro",
+    "nitro/meta": resolve(srcDir, "../meta.ts"),
+    "nitro/runtime/meta": resolve(srcDir, "../runtime-meta.mjs"),
     ...Object.fromEntries(
       subpaths.map((subpath) => [
-        `nitropack/${subpath}`,
+        `nitro/${subpath}`,
         resolve(srcDir, `${subpath}/index.ts`),
       ])
     ),
@@ -64,9 +64,8 @@ export default defineBuildConfig({
   },
   externals: [
     "nitro",
-    "nitropack",
-    "nitropack/runtime/meta",
-    ...subpaths.map((subpath) => `nitropack/${subpath}`),
+    "nitro/runtime/meta",
+    ...subpaths.map((subpath) => `nitro/${subpath}`),
     "firebase-functions",
     "@scalar/api-reference",
   ],
