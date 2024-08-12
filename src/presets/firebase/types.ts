@@ -7,6 +7,7 @@ export interface FirebaseOptionsBase {
   gen: 1 | 2;
   /**
    * Firebase functions node runtime version.
+   * @see https://cloud.google.com/functions/docs/runtime-support
    * @see https://cloud.google.com/functions/docs/concepts/nodejs-runtime
    */
   nodeVersion?: "22" | "20" | "18" | "16";
