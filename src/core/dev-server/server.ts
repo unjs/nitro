@@ -46,8 +46,7 @@ function initWorker(filename: string): Promise<NitroWorker> | undefined {
       );
     });
     worker.once("error", (err) => {
-      const newErr = new Error("[worker init] " + err.message);
-      newErr.stack = err.stack;
+      const newErr = new Error(`[worker init] ${filename} failed`, { cause: err });
       reject(newErr);
     });
     const addressListener = (event: any) => {
