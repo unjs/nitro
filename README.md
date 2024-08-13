@@ -35,7 +35,7 @@ Published under the [MIT](https://github.com/unjs/nitro/blob/main/LICENSE) licen
 Made by [@pi0](https://github.com/pi0) and [community](https://github.com/unjs/nitro/graphs/contributors) 💛
 <br><br>
 <a href="https://github.com/unjs/nitro/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=unjs/nitro" />
+<img src="https://markupgo.com/github/unjs/nitro/contributors?count=0&center=true" />
 </a>
 
 <!-- /automd -->
