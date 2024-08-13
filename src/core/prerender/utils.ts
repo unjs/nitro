@@ -85,7 +85,7 @@ export function extractLinks(
 
   for (const link of _links.filter(Boolean)) {
     const _link = parseURL(link);
-    if (_link.protocol) {
+    if (_link.protocol || _link.host) {
       continue;
     }
     if (!_link.pathname.startsWith("/")) {
