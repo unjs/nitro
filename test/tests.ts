@@ -239,6 +239,13 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("group routes", async () => {
+    const { status } = await callHandler({ url: '/group-route' })
+    expect(status).toBe(200)
+    const { status : apiStatus } = await callHandler({ url: '/api/group-route' })
+    expect(apiStatus).toBe(200)
+  })
+
   it("Handle 404 not found", async () => {
     const res = await callHandler({ url: "/api/not-found" });
     expect(res.status).toBe(404);
