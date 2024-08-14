@@ -1,5 +1,7 @@
 // Auto-generated using gen-presets script
 
+import _nitro from "./_nitro/preset";
+import _static from "./_static/preset";
 import _alwaysdata from "./alwaysdata/preset";
 import _awsAmplify from "./aws-amplify/preset";
 import _awsLambda from "./aws-lambda/preset";
@@ -23,10 +25,10 @@ import _stormkit from "./stormkit/preset";
 import _vercel from "./vercel/preset";
 import _winterjs from "./winterjs/preset";
 import _zeabur from "./zeabur/preset";
-import _nitro from "./_nitro/preset";
-import _static from "./_static/preset";
 
 export default [
+  ..._nitro,
+  ..._static,
   ..._alwaysdata,
   ..._awsAmplify,
   ..._awsLambda,
@@ -50,6 +52,4 @@ export default [
   ..._vercel,
   ..._winterjs,
   ..._zeabur,
-  ..._nitro,
-  ..._static,
 ] as const;
