@@ -382,12 +382,6 @@ importers:
         specifier: link:../..
         version: link:../..
 
-  examples/modules:
-    devDependencies:
-      nitropack:
-        specifier: link:../..
-        version: link:../..
-
   examples/nano-jsx:
     devDependencies:
       nano-jsx:
