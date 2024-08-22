@@ -1,6 +1,6 @@
-import type { NitroOptions } from "nitropack/types";
 import escapeRE from "escape-string-regexp";
 import { resolveModuleExportNames } from "mlly";
+import type { NitroOptions } from "nitropack/types";
 import { join } from "pathe";
 import type { Preset } from "unimport";
 

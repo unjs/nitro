@@ -1,6 +1,6 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { join } from "pathe";
 import type { Nitro } from "nitropack/types";
+import { join } from "pathe";
 
 export async function writeRedirects(nitro: Nitro) {
   const redirectsPath = join(nitro.options.output.publicDir, "_redirects");

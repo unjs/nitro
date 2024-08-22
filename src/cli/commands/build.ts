@@ -1,12 +1,13 @@
 import { defineCommand } from "citty";
-import { resolve } from "pathe";
+import type { DateString } from "compatx";
 import {
-  createNitro,
-  prerender,
   build,
-  prepare,
   copyPublicAssets,
+  createNitro,
+  prepare,
+  prerender,
 } from "nitropack/core";
+import { resolve } from "pathe";
 import { commonArgs } from "../common";
 
 export default defineCommand({
@@ -42,7 +43,7 @@ export default defineCommand({
         preset: args.preset,
       },
       {
-        compatibilityDate: args.compatibilityDate || "2024-05-17",
+        compatibilityDate: args.compatibilityDate as DateString,
       }
     );
     await prepare(nitro);

@@ -1,25 +1,25 @@
-import { hash } from "ohash";
 import {
-  handleCacheHeaders,
-  defineEventHandler,
+  type EventHandler,
   createEvent,
-  EventHandler,
+  defineEventHandler,
+  fetchWithEvent,
+  handleCacheHeaders,
   isEvent,
   splitCookiesString,
-  fetchWithEvent,
 } from "h3";
 import type { EventHandlerRequest, EventHandlerResponse, H3Event } from "h3";
-import { parseURL } from "ufo";
-import { useStorage } from "./storage";
-import { useNitroApp } from "./app";
 import type {
   $Fetch,
-  CacheOptions,
   CacheEntry,
+  CacheOptions,
   CachedEventHandlerOptions,
-  ResponseCacheEntry,
   NitroFetchRequest,
+  ResponseCacheEntry,
 } from "nitropack/types";
+import { hash } from "ohash";
+import { parseURL } from "ufo";
+import { useNitroApp } from "./app";
+import { useStorage } from "./storage";
 
 const defaultCacheOptions = {
   name: "_",
@@ -116,7 +116,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
               console.error(`[nitro] [cache] Cache write error.`, error);
               useNitroApp().captureError(error, { event, tags: ["cache"] });
             });
-          if (event && event.waitUntil) {
+          if (event?.waitUntil) {
             event.waitUntil(promise);
           }
         }
@@ -349,6 +349,9 @@ export function defineCachedEventHandler<
           fetch: globalThis.$fetch as any,
         })) as $Fetch<unknown, NitroFetchRequest>;
       event.context = incomingEvent.context;
+      event.context.cache = {
+        options: _opts,
+      };
       const body = (await handler(event)) || _resSendBody;
 
       // Collect cacheable headers

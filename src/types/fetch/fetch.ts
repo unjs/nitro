@@ -1,5 +1,5 @@
 import type { RouterMethod } from "h3";
-import type { FetchRequest, FetchOptions, FetchResponse } from "ofetch";
+import type { FetchOptions, FetchRequest, FetchResponse } from "ofetch";
 import type { MatchedRoutes } from "./_match";
 
 // An interface to extend in a local project
@@ -78,7 +78,13 @@ export interface $Fetch<
   >(
     request: R,
     opts?: O
-  ): Promise<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>;
+  ): Promise<
+    TypedInternalResponse<
+      R,
+      T,
+      NitroFetchOptions<R> extends O ? "get" : ExtractedRouteMethod<R, O>
+    >
+  >;
   raw<
     T = DefaultT,
     R extends NitroFetchRequest = DefaultR,
@@ -87,7 +93,13 @@ export interface $Fetch<
     request: R,
     opts?: O
   ): Promise<
-    FetchResponse<TypedInternalResponse<R, T, ExtractedRouteMethod<R, O>>>
+    FetchResponse<
+      TypedInternalResponse<
+        R,
+        T,
+        NitroFetchOptions<R> extends O ? "get" : ExtractedRouteMethod<R, O>
+      >
+    >
   >;
   create<T = DefaultT, R extends NitroFetchRequest = DefaultR>(
     defaults: FetchOptions
@@ -105,4 +117,4 @@ declare global {
   }
 }
 
-export {};
+export type {};

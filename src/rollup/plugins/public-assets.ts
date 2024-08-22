@@ -1,12 +1,13 @@
 import { promises as fsp } from "node:fs";
-import { relative, resolve } from "pathe";
 import createEtag from "etag";
-import mime from "mime";
 import { globby } from "globby";
-import type { Plugin } from "rollup";
+import mime from "mime";
 import type { Nitro } from "nitropack/types";
-import { virtual } from "./virtual";
 import type { PublicAsset } from "nitropack/types";
+import { relative, resolve } from "pathe";
+import type { Plugin } from "rollup";
+import { withTrailingSlash } from "ufo";
+import { virtual } from "./virtual";
 
 const readAssetHandler: Record<
   Exclude<Nitro["options"]["serveStatic"] | "true" | "false", boolean>,
@@ -112,7 +113,10 @@ export function readAsset (id) {
         const publicAssetBases = Object.fromEntries(
           nitro.options.publicAssets
             .filter((dir) => !dir.fallthrough && dir.baseURL !== "/")
-            .map((dir) => [dir.baseURL, { maxAge: dir.maxAge }])
+            .map((dir) => [
+              withTrailingSlash(dir.baseURL),
+              { maxAge: dir.maxAge },
+            ])
         );
 
         // prettier-ignore

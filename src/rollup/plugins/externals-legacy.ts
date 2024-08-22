@@ -1,11 +1,11 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { resolve, dirname, normalize, join, isAbsolute } from "pathe";
+import { type NodeFileTraceOptions, nodeFileTrace } from "@vercel/nft";
 import { consola } from "consola";
-import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
-import type { Plugin } from "rollup";
-import { resolvePath, isValidNodeImport, normalizeid } from "mlly";
-import semver from "semver";
+import { isValidNodeImport, normalizeid, resolvePath } from "mlly";
 import { isDirectory } from "nitropack/kit";
+import { dirname, isAbsolute, join, normalize, resolve } from "pathe";
+import type { Plugin } from "rollup";
+import semver from "semver";
 import { normalizeMatcher } from "./externals";
 
 interface NodeExternalsOptions {

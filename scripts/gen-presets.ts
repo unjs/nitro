@@ -1,11 +1,11 @@
-import createJITI from "jiti";
-import { consola } from "consola";
-import { kebabCase, camelCase, pascalCase, snakeCase } from "scule";
-import { readdirSync, existsSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
+import { consola } from "consola";
+import createJITI from "jiti";
 import { findTypeExports } from "mlly";
+import type { NitroPreset, NitroPresetMeta } from "nitropack/types";
+import { camelCase, kebabCase, pascalCase, snakeCase } from "scule";
 import { subpaths } from "../build.config";
 
 const autoGenHeader = /* ts */ `// Auto-generated using gen-presets script\n`;
@@ -51,7 +51,7 @@ for (const preset of allPresets) {
   const names = [preset._meta.name, ...(preset._meta.aliases || [])];
   for (const name of names) {
     if (_names.has(name)) {
-      if (!preset._meta.compatibility?.date) {
+      if (!preset._meta.compatibilityDate) {
         consola.warn(`Preset ${name} is duplicated`);
       }
       continue;
@@ -91,7 +91,7 @@ writeFileSync(
 ${presetsWithType
   .map(
     (preset) =>
-      `import { PresetOptions as ${pascalCase(
+      `import type { PresetOptions as ${pascalCase(
         preset
       )}Options } from "./${preset}/preset";`
   )

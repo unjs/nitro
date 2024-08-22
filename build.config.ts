@@ -1,7 +1,8 @@
-import { defineBuildConfig } from "unbuild";
-import { resolve } from "pathe";
+import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { resolve } from "pathe";
 import { normalize } from "pathe";
+import { defineBuildConfig } from "unbuild";
 
 const srcDir = fileURLToPath(new URL("src", import.meta.url));
 
@@ -12,8 +13,9 @@ export const subpaths = [
   "kit",
   "presets",
   "rollup",
-  "types",
+  "runtime",
   "meta",
+  "types",
 ];
 
 export default defineBuildConfig({
@@ -50,7 +52,18 @@ export default defineBuildConfig({
       ])
     ),
   },
+  hooks: {
+    async "build:prepare"(ctx) {
+      for (const subpath of subpaths) {
+        await writeFile(
+          `./${subpath}.d.ts`,
+          `export * from "./dist/${subpath}/index";`
+        );
+      }
+    },
+  },
   externals: [
+    "nitro",
     "nitropack",
     "nitropack/runtime/meta",
     ...subpaths.map((subpath) => `nitropack/${subpath}`),
@@ -59,7 +72,7 @@ export default defineBuildConfig({
   ],
   rollup: {
     output: {
-      chunkFileNames(chunk) {
+      chunkFileNames(chunk: any) {
         const id = normalize(chunk.moduleIds.at(-1));
         if (id.includes("/src/cli/")) {
           return "cli/[name].mjs";

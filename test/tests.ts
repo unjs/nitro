@@ -1,24 +1,25 @@
-import { tmpdir } from "node:os";
-import type { RequestListener } from "node:http";
 import { promises as fsp } from "node:fs";
-import { join, resolve } from "pathe";
-import { listen, Listener } from "listhen";
-import destr from "destr";
-import { fetch, FetchOptions } from "ofetch";
-import { expect, it, afterAll, beforeAll, describe } from "vitest";
-import { fileURLToPath } from "mlly";
-import { joinURL } from "ufo";
+import type { RequestListener } from "node:http";
+import { tmpdir } from "node:os";
+import { type DateString, formatDate } from "compatx";
 import { defu } from "defu";
+import destr from "destr";
+import { type Listener, listen } from "listhen";
+import { fileURLToPath } from "mlly";
 import {
-  createNitro,
   build,
-  prepare,
   copyPublicAssets,
-  prerender,
   createDevServer,
+  createNitro,
+  prepare,
+  prerender,
 } from "nitropack/core";
 import type { Nitro, NitroConfig } from "nitropack/types";
-import { nodeMajorVersion, isWindows } from "std-env";
+import { type FetchOptions, fetch } from "ofetch";
+import { join, resolve } from "pathe";
+import { isWindows, nodeMajorVersion } from "std-env";
+import { joinURL } from "ufo";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 export interface Context {
   preset: string;
@@ -68,7 +69,7 @@ export const getPresetTmpDir = (preset: string) => {
 
 export async function setupTest(
   preset: string,
-  opts: { config?: NitroConfig; compatibilityDate?: string } = {}
+  opts: { config?: NitroConfig; compatibilityDate?: DateString } = {}
 ) {
   const presetTmpDir = getPresetTmpDir(preset);
 
@@ -127,7 +128,7 @@ export async function setupTest(
     timing: !ctx.isWorker,
   });
   const nitro = (ctx.nitro = await createNitro(config, {
-    compatibilityDate: opts.compatibilityDate || "2024-05-17",
+    compatibilityDate: opts.compatibilityDate || formatDate(new Date()),
   }));
 
   if (ctx.isDev) {
@@ -494,13 +495,7 @@ export function testNitro(
         "server-config": true,
       },
       sharedRuntimeConfig: {
-        dynamic:
-          // TODO
-          ctx.preset.includes("cloudflare") ||
-          ctx.preset === "vercel-edge" ||
-          ctx.preset === "nitro-dev"
-            ? "initial"
-            : "from-env",
+        dynamic: "from-env",
         // url: "https://test.com",
         app: {
           baseURL: "/",
@@ -651,7 +646,11 @@ export function testNitro(
     it.skipIf(ctx.isIsolated)(
       "should setItem before returning response the first time",
       async () => {
-        const { data: timestamp } = await callHandler({ url: "/api/cached" });
+        const {
+          data: { timestamp, eventContextCache },
+        } = await callHandler({ url: "/api/cached" });
+
+        expect(eventContextCache?.options.swr).toBe(true);
 
         const calls = await Promise.all([
           callHandler({ url: "/api/cached" }),
@@ -660,7 +659,8 @@ export function testNitro(
         ]);
 
         for (const call of calls) {
-          expect(call.data).toBe(timestamp);
+          expect(call.data.timestamp).toBe(timestamp);
+          expect(call.data.eventContextCache.options.swr).toBe(true);
         }
       }
     );

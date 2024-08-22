@@ -155,19 +155,19 @@ function GracefulShutdown(server, opts) {
 
   // set up server/process events
   // ----------------------------------
-  server.on("request", function (req, res) {
+  server.on("request", (req, res) => {
     req.socket._isIdle = false;
     if (isShuttingDown && !res.headersSent) {
       res.setHeader("connection", "close");
     }
 
-    res.on("finish", function () {
+    res.on("finish", () => {
       req.socket._isIdle = true;
       destroy(req.socket);
     });
   });
 
-  server.on("connection", function (socket) {
+  server.on("connection", (socket) => {
     if (isShuttingDown) {
       socket.destroy();
     } else {
@@ -197,7 +197,7 @@ function GracefulShutdown(server, opts) {
     }
   });
 
-  process.on("close", function () {
+  process.on("close", () => {
     debug("closed");
   });
 

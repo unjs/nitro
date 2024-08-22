@@ -9,6 +9,9 @@
 
 Create web servers that run anywhere! 📖 [**documentation**](https://nitro.unjs.io)
 
+> [!NOTE]
+> You are on the v2 branch. Check [main branch](https://github.com/unjs/nitro/tree/main) for v3 development tree.
+
 ## Contribution
 
 <details>

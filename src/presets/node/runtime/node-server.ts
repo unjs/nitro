@@ -1,15 +1,16 @@
 import "#nitro-internal-pollyfills";
 import { Server as HttpServer } from "node:http";
-import type { AddressInfo } from "node:net";
 import { Server as HttpsServer } from "node:https";
+import type { AddressInfo } from "node:net";
+import wsAdapter from "crossws/adapters/node";
 import destr from "destr";
 import { toNodeListener } from "h3";
-import wsAdapter from "crossws/adapters/node";
-import { useNitroApp } from "nitropack/runtime";
-import { setupGracefulShutdown } from "nitropack/runtime/internal/shutdown";
-import { trapUnhandledNodeErrors } from "nitropack/runtime/internal/utils";
-import { useRuntimeConfig } from "nitropack/runtime";
-import { startScheduleRunner } from "nitropack/runtime/internal/task";
+import { useNitroApp, useRuntimeConfig } from "nitropack/runtime";
+import {
+  setupGracefulShutdown,
+  startScheduleRunner,
+  trapUnhandledNodeErrors,
+} from "nitropack/runtime/internal";
 
 const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;

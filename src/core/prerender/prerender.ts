@@ -1,15 +1,15 @@
 import { pathToFileURL } from "node:url";
-import { resolve, join, relative } from "pathe";
-import { joinURL, withBase, withoutBase } from "ufo";
-import chalk from "chalk";
-import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
+import { colors } from "consola/utils";
 import { defu } from "defu";
 import mime from "mime";
-import type { $Fetch } from "ofetch";
-import { createNitro } from "../nitro";
-import { build } from "../build/build";
-import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitropack/types";
 import { writeFile } from "nitropack/kit";
+import type { Nitro, NitroRouteRules, PrerenderRoute } from "nitropack/types";
+import type { $Fetch } from "ofetch";
+import { join, relative, resolve } from "pathe";
+import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
+import { joinURL, withBase, withoutBase } from "ufo";
+import { build } from "../build/build";
+import { createNitro } from "../nitro";
 import { compressPublicAssets } from "../utils/compress";
 import {
   extractLinks,
@@ -223,7 +223,6 @@ export async function prerender(nitro: Nitro) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error!.statusCode = res.status;
       _route.error!.statusMessage = res.statusText;
-      failedRoutes.add(_route);
     }
 
     // Measure actual time taken for generating route
@@ -255,6 +254,11 @@ export async function prerender(nitro: Nitro) {
       nitro._prerenderMeta![_route.fileName].contentType = _route.contentType;
     }
 
+    // After hook to allow ignoring in `prerender:generate` hook
+    if (_route.error) {
+      failedRoutes.add(_route);
+    }
+
     // Check if route is skipped or has errors
     if (_route.skip || _route.error) {
       await nitro.hooks.callHook("prerender:route", _route);
@@ -273,7 +277,7 @@ export async function prerender(nitro: Nitro) {
     }
 
     // Crawl route links
-    if (!_route.error && isImplicitHTML) {
+    if (!_route.error && (isImplicitHTML || route.endsWith(".html"))) {
       const extractedLinks = extractLinks(
         dataBuff.toString("utf8"),
         route,
@@ -318,7 +322,7 @@ export async function prerender(nitro: Nitro) {
       const parents = linkParents.get(route.route);
       const parentsText = parents?.size
         ? `\n${[...parents.values()]
-            .map((link) => chalk.gray(`  │ └── Linked from ${link}`))
+            .map((link) => colors.gray(`  │ └── Linked from ${link}`))
             .join("\n")}`
         : "";
       nitro.logger.log(formatPrerenderRoute(route));

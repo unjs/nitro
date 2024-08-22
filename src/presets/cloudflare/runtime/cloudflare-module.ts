@@ -1,17 +1,17 @@
 import "#nitro-internal-pollyfills";
-import { requestHasBody } from "nitropack/runtime/internal/utils";
-import { useNitroApp } from "nitropack/runtime";
-import { useRuntimeConfig } from "nitropack/runtime";
-import { runCronTasks } from "nitropack/runtime/internal/task";
+import { useNitroApp, useRuntimeConfig } from "nitropack/runtime";
+import { requestHasBody, runCronTasks } from "nitropack/runtime/internal";
 import { getPublicAssetMeta } from "#nitro-internal-virtual/public-assets";
 
-import { withoutBase } from "ufo";
-import wsAdapter from "crossws/adapters/cloudflare";
-import type { ExecutionContext } from "@cloudflare/workers-types";
 import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
+import type { ExecutionContext } from "@cloudflare/workers-types";
+import wsAdapter from "crossws/adapters/cloudflare";
+import { withoutBase } from "ufo";
+
+import type { CloudflareEmailContext, CloudflareMessageBatch } from "../types";
 
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
@@ -98,6 +98,28 @@ export default {
         })
       );
     }
+  },
+
+  email(
+    event: CloudflareEmailContext,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:email", { event, env, context })
+    );
+  },
+
+  queue(
+    event: CloudflareEmailContext,
+    env: CFModuleEnv,
+    context: ExecutionContext
+  ) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:queue", { event, env, context })
+    );
   },
 };
 

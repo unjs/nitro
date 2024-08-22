@@ -1,47 +1,47 @@
+import { builtinModules, createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
-import { createRequire, builtinModules } from "node:module";
-import { dirname, join, normalize, resolve } from "pathe";
-import type { Plugin } from "rollup";
-import { defu } from "defu";
+import alias from "@rollup/plugin-alias";
 // import terser from "@rollup/plugin-terser"; // TODO: Investigate jiti issue
 import commonjs from "@rollup/plugin-commonjs";
-import alias from "@rollup/plugin-alias";
-import json from "@rollup/plugin-json";
 import inject from "@rollup/plugin-inject";
+import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-import { isWindows } from "std-env";
-import { visualizer } from "rollup-plugin-visualizer";
-import * as unenv from "unenv";
-import type { Preset } from "unenv";
-import { sanitizeFilePath, resolvePath } from "mlly";
-import unimportPlugin from "unimport/unplugin";
-import { hash } from "ohash";
-import { rollup as unwasm } from "unwasm/plugin";
+import { defu } from "defu";
+import { resolvePath, sanitizeFilePath } from "mlly";
+import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
 import type {
   Nitro,
   NitroStaticBuildFlags,
   NodeExternalsOptions,
   RollupConfig,
 } from "nitropack/types";
-import { resolveAliases } from "./utils";
-import { replace } from "./plugins/replace";
-import { virtual } from "./plugins/virtual";
+import { hash } from "ohash";
+import { dirname, join, normalize, resolve } from "pathe";
+import type { Plugin } from "rollup";
+import { visualizer } from "rollup-plugin-visualizer";
+import { isWindows } from "std-env";
+import * as unenv from "unenv";
+import type { Preset } from "unenv";
+import unimportPlugin from "unimport/unplugin";
+import { rollup as unwasm } from "unwasm/plugin";
+import { appConfig } from "./plugins/app-config";
+import { database } from "./plugins/database";
 import { dynamicRequire } from "./plugins/dynamic-require";
+import { esbuild } from "./plugins/esbuild";
 import { externals } from "./plugins/externals";
 import { externals as legacyExternals } from "./plugins/externals-legacy";
-import { timing } from "./plugins/timing";
-import { publicAssets } from "./plugins/public-assets";
-import { serverAssets } from "./plugins/server-assets";
 import { handlers } from "./plugins/handlers";
 import { handlersMeta } from "./plugins/handlers-meta";
-import { esbuild } from "./plugins/esbuild";
-import { raw } from "./plugins/raw";
-import { storage } from "./plugins/storage";
-import { database } from "./plugins/database";
 import { importMeta } from "./plugins/import-meta";
-import { appConfig } from "./plugins/app-config";
+import { publicAssets } from "./plugins/public-assets";
+import { raw } from "./plugins/raw";
+import { replace } from "./plugins/replace";
+import { serverAssets } from "./plugins/server-assets";
 import { sourcemapMininify } from "./plugins/sourcemap-min";
-import { runtimeDependencies, runtimeDir } from "nitropack/runtime/meta";
+import { storage } from "./plugins/storage";
+import { timing } from "./plugins/timing";
+import { virtual } from "./plugins/virtual";
+import { resolveAliases } from "./utils";
 
 export const getRollupConfig = (nitro: Nitro): RollupConfig => {
   const extensions: string[] = [
@@ -74,19 +74,25 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
 
   const buildServerDir = join(nitro.options.buildDir, "dist/server");
 
+  const presetsDir = resolve(runtimeDir, "../presets");
+
   const chunkNamePrefixes = [
     [nitro.options.buildDir, "build"],
     [buildServerDir, "app"],
+    [runtimeDir, "nitro"],
+    [presetsDir, "nitro"],
     ["\0raw:", "raw"],
     ["\0nitro-wasm:", "wasm"],
     ["\0", "virtual"],
   ] as const;
-  function getChunkName(id: string) {
-    // Runtime
-    if (id.startsWith(runtimeDir)) {
-      return `chunks/runtime.mjs`;
-    }
 
+  function getChunkGroup(id: string): string | void {
+    if (id.startsWith(runtimeDir) || id.startsWith(presetsDir)) {
+      return "nitro";
+    }
+  }
+
+  function getChunkName(id: string) {
     // Known path prefixes
     for (const [dir, name] of chunkNamePrefixes) {
       if (id.startsWith(dir)) {
@@ -130,6 +136,9 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       chunkFileNames(chunk) {
         const lastModule = normalize(chunk.moduleIds.at(-1) || "");
         return getChunkName(lastModule);
+      },
+      manualChunks(id) {
+        return getChunkGroup(id);
       },
       inlineDynamicImports: nitro.options.inlineDynamicImports,
       format: "esm",
@@ -176,6 +185,10 @@ export const getRollupConfig = (nitro: Nitro): RollupConfig => {
       },
     },
   });
+
+  if (rollupConfig.output.inlineDynamicImports) {
+    delete rollupConfig.output.manualChunks;
+  }
 
   if (nitro.options.timing) {
     rollupConfig.plugins.push(timing());
@@ -379,6 +392,7 @@ export const plugins = [
         "#build": buildDir,
         "#nitro-internal-virtual/error-handler": nitro.options.errorHandler,
         "#internal/nitro": runtimeDir,
+        "nitro/runtime": runtimeDir,
         "nitropack/runtime": runtimeDir,
         "~": nitro.options.srcDir,
         "@/": nitro.options.srcDir,
@@ -445,6 +459,7 @@ export const plugins = [
             "~~",
             "@@/",
             "virtual:",
+            "nitro/runtime",
             "nitropack/runtime",
             dirname(nitro.options.entry),
             ...(nitro.options.experimental.wasm

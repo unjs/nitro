@@ -1,6 +1,6 @@
 import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitropack/runtime";
-import { normalizeLambdaOutgoingBody } from "nitropack/runtime/internal/utils.lambda";
+import { normalizeLambdaOutgoingBody } from "nitropack/runtime/internal";
 
 import type { Handler } from "aws-lambda";
 

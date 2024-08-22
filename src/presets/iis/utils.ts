@@ -1,9 +1,9 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { defu } from "defu";
-import type { Nitro } from "nitropack/types";
 import { writeFile } from "nitropack/kit";
+import type { Nitro } from "nitropack/types";
 import { resolve } from "pathe";
-import { existsSync } from "node:fs";
 
 export async function writeIISFiles(nitro: Nitro) {
   await writeFile(
@@ -106,7 +106,8 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
 
     if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
       return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
-    } else if (nitro.options.iis?.overrideConfig) {
+    }
+    if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }
@@ -139,7 +140,8 @@ async function iisXmlTemplate(nitro: Nitro) {
 
     if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
       return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
-    } else if (nitro.options.iis?.overrideConfig) {
+    }
+    if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }

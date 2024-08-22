@@ -1,8 +1,8 @@
 import { pathToFileURL } from "node:url";
-import { resolve } from "pathe";
 import { globby } from "globby";
-import type { Plugin } from "rollup";
 import { genSafeVariableName } from "knitwork";
+import { resolve } from "pathe";
+import type { Plugin } from "rollup";
 
 const PLUGIN_NAME = "dynamic-require";
 const HELPER_DYNAMIC = `\0${PLUGIN_NAME}.mjs`;

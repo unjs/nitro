@@ -1,3 +1,4 @@
+import type { DateString } from "compatx";
 import type { ProviderName } from "std-env";
 import type { NitroConfig } from "./config";
 
@@ -9,7 +10,5 @@ export interface NitroPresetMeta {
   stdName?: ProviderName;
   aliases?: string[];
   static?: boolean;
-  compatibility?: {
-    date?: string;
-  };
+  compatibilityDate?: DateString;
 }

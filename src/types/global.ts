@@ -30,4 +30,4 @@ declare global {
   const defineNitroModule: (definition: NitroModule) => NitroModule;
 }
 
-export {};
+export type {};

@@ -1,19 +1,19 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { resolve, join, dirname, isAbsolute } from "pathe";
-import { resolveAlias } from "pathe/utils";
 import { defu } from "defu";
 import { genTypeImport } from "knitwork";
-import type { TSConfig } from "pkg-types";
 import {
   lookupNodeModuleSubpath,
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
-import { JSValue, generateTypes, resolveSchema } from "untyped";
-import { writeFile, isDirectory, resolveNitroPath } from "nitropack/kit";
-import type { Nitro, NitroTypes } from "nitropack/types";
+import { isDirectory, resolveNitroPath, writeFile } from "nitropack/kit";
 import { runtimeDir } from "nitropack/runtime/meta";
+import type { Nitro, NitroTypes } from "nitropack/types";
+import { dirname, isAbsolute, join, resolve } from "pathe";
 import { relative } from "pathe";
+import { resolveAlias } from "pathe/utils";
+import type { TSConfig } from "pkg-types";
+import { type JSValue, generateTypes, resolveSchema } from "untyped";
 
 export async function writeTypes(nitro: Nitro) {
   const types: NitroTypes = {
@@ -43,7 +43,7 @@ export async function writeTypes(nitro: Nitro) {
   }
 
   let autoImportedTypes: string[] = [];
-  let autoImportExports: string = "";
+  let autoImportExports = "";
 
   if (nitro.unimport) {
     await nitro.unimport.init();

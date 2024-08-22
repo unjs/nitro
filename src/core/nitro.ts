@@ -1,18 +1,20 @@
-import { createHooks, createDebugger } from "hookable";
-import { createUnimport } from "unimport";
 import { consola } from "consola";
+import { createDebugger, createHooks } from "hookable";
+import { runtimeDir } from "nitropack/runtime/meta";
 import type {
+  LoadConfigOptions,
+  Nitro,
   NitroConfig,
   NitroDynamicConfig,
-  Nitro,
-  LoadConfigOptions,
 } from "nitropack/types";
+import { join } from "pathe";
+import { createUnimport } from "unimport";
 import { loadOptions } from "./config/loader";
-import { createStorage } from "./utils/storage";
-import { installModules } from "./module";
 import { updateNitroConfig } from "./config/update";
-import { addNitroTasksVirtualFile } from "./task";
+import { installModules } from "./module";
 import { scanAndSyncOptions } from "./scan";
+import { addNitroTasksVirtualFile } from "./task";
+import { createStorage } from "./utils/storage";
 
 export async function createNitro(
   config: NitroConfig = {},
@@ -48,10 +50,10 @@ export async function createNitro(
   // Debug and timing
   if (nitro.options.debug) {
     createDebugger(nitro.hooks, { tag: "nitro" });
-    nitro.options.plugins.push("nitropack/runtime/internal/debug");
+    nitro.options.plugins.push(join(runtimeDir, "internal/debug"));
   }
   if (nitro.options.timing) {
-    nitro.options.plugins.push("nitropack/runtime/internal/timing");
+    nitro.options.plugins.push(join(runtimeDir, "internal/timing"));
   }
 
   // Logger
