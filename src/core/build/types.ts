@@ -127,6 +127,7 @@ export async function writeTypes(nitro: Nitro) {
     `
 // App Config
 import type { Defu } from 'defu'
+import type { NitroModule } from 'nitropack/types'
 
 ${nitro.options.appConfigFiles
   .map((file, index) =>
@@ -160,6 +161,12 @@ declare module "nitropack/types" {
           }
         )
       : "",
+    "",
+    "interface NitroConfig {",
+    (nitro.options._resolvedModules ?? [])?.map((module) => {
+      return `  ["${module.configKey}"]: typeof import("${module._url}").default extends NitroModule<infer O> ? Partial<O> : Record<string, any>`;
+    }),
+    "}",
     `}`,
     // Makes this a module for augmentation purposes
     "export {}",

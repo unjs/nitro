@@ -30,7 +30,7 @@ import type {
   NitroEventHandler,
 } from "./handler";
 import type { NitroHooks } from "./hooks";
-import type { NitroModuleInput } from "./module";
+import type { NitroModule, NitroModuleInput } from "./module";
 import type { NitroFrameworkInfo } from "./nitro";
 import type { NitroOpenAPIConfig } from "./openapi";
 import type { NitroPreset } from "./preset";
@@ -48,6 +48,7 @@ export interface NitroOptions extends PresetOptions {
   _cli?: {
     command?: string;
   };
+  _resolvedModules?: (NitroModule & { _url?: string })[];
 
   // Compatibility
   compatibilityDate: CompatibilityDates;
@@ -252,6 +253,8 @@ export interface NitroOptions extends PresetOptions {
     mergeConfig?: boolean;
     overrideConfig?: boolean;
   };
+
+  [key: string]: any;
 }
 
 /**

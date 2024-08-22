@@ -1,5 +1,5 @@
 import type { NitroConfig, NitroOptions } from "./config";
-import type { NitroModule } from "./module";
+import type { NitroModule, NitroModuleOptions } from "./module";
 
 export interface NitroStaticBuildFlags {
   _asyncContext?: boolean;
@@ -27,7 +27,9 @@ declare global {
 
 declare global {
   const defineNitroConfig: (config: NitroConfig) => NitroConfig;
-  const defineNitroModule: (definition: NitroModule) => NitroModule;
+  const defineNitroModule: <O extends NitroModuleOptions>(
+    definition: NitroModule<O>
+  ) => NitroModule<O>;
 }
 
 export type {};

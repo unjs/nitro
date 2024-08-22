@@ -6,6 +6,8 @@ export async function installModules(nitro: Nitro) {
   const modules = await Promise.all(
     _modules.map((mod) => _resolveNitroModule(mod, nitro.options))
   );
+  nitro.options._resolvedModules = modules;
+
   const _installedURLs = new Set<string>();
   for (const mod of modules) {
     if (mod._url) {
@@ -14,7 +16,7 @@ export async function installModules(nitro: Nitro) {
       }
       _installedURLs.add(mod._url);
     }
-    await mod.setup(nitro);
+    await mod.setup(nitro, nitro.options[mod.configKey || ""]);
   }
 }
 
