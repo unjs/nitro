@@ -25,6 +25,12 @@ describe("nitro:preset:vercel", async () => {
         expect(config).toMatchInlineSnapshot(`
           {
             "overrides": {
+              "_scalar/index.html": {
+                "path": "_scalar",
+              },
+              "_swagger/index.html": {
+                "path": "_swagger",
+              },
               "api/hey/index.html": {
                 "path": "api/hey",
               },

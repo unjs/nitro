@@ -1,5 +1,5 @@
 import { promises as fsp } from "node:fs";
-import chalk from "chalk";
+import { colors } from "consola/utils";
 import { globby } from "globby";
 import { gzipSize } from "gzip-size";
 import { dirname, relative, resolve } from "pathe";
@@ -52,18 +52,18 @@ export async function generateFSTree(
       continue;
     }
 
-    treeText += chalk.gray(
+    treeText += colors.gray(
       `  ${treeChar} ${rpath} (${prettyBytes(item.size)})`
     );
     if (options.compressedSizes) {
-      treeText += chalk.gray(` (${prettyBytes(item.gzip)} gzip)`);
+      treeText += colors.gray(` (${prettyBytes(item.gzip)} gzip)`);
     }
     treeText += "\n";
     totalSize += item.size;
     totalGzip += item.gzip;
   }
 
-  treeText += `${chalk.cyan("Σ Total size:")} ${prettyBytes(
+  treeText += `${colors.cyan("Σ Total size:")} ${prettyBytes(
     totalSize + totalNodeModulesSize
   )}`;
   if (options.compressedSizes) {

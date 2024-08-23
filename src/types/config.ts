@@ -1,5 +1,4 @@
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
-import type { ReferenceConfiguration } from "@scalar/api-reference";
 import type { C12InputConfig, ConfigWatcher, ResolvedConfig } from "c12";
 import type { WatchConfigOptions } from "c12";
 import type { WatchOptions } from "chokidar";
@@ -25,6 +24,7 @@ import type {
 import type { NitroHooks } from "./hooks";
 import type { NitroModuleInput } from "./module";
 import type { NitroFrameworkInfo } from "./nitro";
+import type { NitroOpenAPIConfig } from "./openapi";
 import type { NitroPreset } from "./preset";
 import type { EsbuildOptions, NodeExternalsOptions } from "./rollup";
 import type { RollupConfig } from "./rollup";
@@ -82,16 +82,7 @@ export interface NitroOptions extends PresetOptions {
    * @see https://github.com/unjs/unwasm
    */
   wasm?: UnwasmPluginOptions;
-  openAPI?: {
-    meta?: {
-      title?: string;
-      description?: string;
-      version?: string;
-    };
-    ui?: {
-      scalar?: ReferenceConfiguration;
-    };
-  };
+  openAPI?: NitroOpenAPIConfig;
   experimental: {
     openAPI?: boolean;
     /**
@@ -339,7 +330,7 @@ export interface NitroRuntimeConfig {
     routeRules?: {
       [path: string]: NitroRouteConfig;
     };
-    openAPI?: NitroOptions["openAPI"];
+    openAPI?: NitroOpenAPIConfig;
   };
   [key: string]: any;
 }

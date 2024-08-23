@@ -421,7 +421,7 @@ export function testNitro(
       method: "PUT",
       body: "world",
     });
-    expect(putRes.data).toMatchObject("world");
+    expect(putRes.data).toBe("world");
 
     expect(
       (
@@ -580,12 +580,13 @@ export function testNitro(
       }
 
       // TODO: vercel-edge joins all cookies for some reason!
-      if (ctx.preset === "vercel-edge") {
-        expectedCookies =
-          "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
+      if (typeof expectedCookies === "string") {
+        expect(headers["set-cookie"]).toBe(expectedCookies);
+      } else {
+        expect((headers["set-cookie"] as string[]).join(", ")).toBe(
+          expectedCookies.join(", ")
+        );
       }
-
-      expect(headers["set-cookie"]).toMatchObject(expectedCookies);
     });
   });
 

@@ -482,13 +482,15 @@ function compareVersions(v1 = "0.0.0", v2 = "0.0.0") {
   }
 }
 
-export function applyProductionCondition(
-  exports: PackageJsonExports | undefined
-) {
-  if (!exports || typeof exports === "string" || Array.isArray(exports)) {
+export function applyProductionCondition(exports: PackageJson["exports"]) {
+  if (
+    !exports ||
+    typeof exports === "string" ||
+    Array.isArray(exports) /* TODO: unhandled */
+  ) {
     return;
   }
-  if (exports.production) {
+  if ("production" in exports) {
     if (typeof exports.production === "string") {
       exports.default = exports.production;
     } else {
@@ -496,7 +498,7 @@ export function applyProductionCondition(
     }
   }
   for (const key in exports) {
-    applyProductionCondition(exports[key]);
+    applyProductionCondition(exports[key as keyof typeof exports]);
   }
 }
 

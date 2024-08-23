@@ -1,5 +1,5 @@
 import { promises as fsp } from "node:fs";
-import createEtag from "etag";
+import * as _etag from "etag";
 import { globby } from "globby";
 import mime from "mime";
 import type { Nitro } from "nitro/types";
@@ -7,6 +7,8 @@ import { resolve } from "pathe";
 import type { Plugin } from "rollup";
 import { normalizeKey } from "unstorage";
 import { virtual } from "./virtual";
+
+const createEtag = (_etag as unknown as { default: typeof import('etag')}).default || _etag
 
 interface ResolvedAsset {
   fsPath: string;
