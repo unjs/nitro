@@ -8,7 +8,8 @@ import type { Plugin } from "rollup";
 import { normalizeKey } from "unstorage";
 import { virtual } from "./virtual";
 
-const createEtag = (_etag as unknown as { default: typeof import('etag')}).default || _etag
+const createEtag =
+  (_etag as unknown as { default: typeof import("etag") }).default || _etag;
 
 interface ResolvedAsset {
   fsPath: string;
