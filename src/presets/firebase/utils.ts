@@ -48,8 +48,7 @@ export async function updatePackageJSON(nitro: Nitro) {
     ),
     engines: {
       // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
-      // const supportedNodeVersions = new Set(["20", "18", "16"]);
-      node: nitro.options.firebase?.nodeVersion || "18",
+      node: nitro.options.firebase?.nodeVersion || "20",
     },
   });
 }
