@@ -218,7 +218,7 @@ You might also need to add a runtime key to your `firebase.json` file:
 {
   "functions": {
     "source": ".output/server",
-    "runtime": "nodejs18"
+    "runtime": "nodejs20"
   }
 }
 ```
