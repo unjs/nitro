@@ -193,7 +193,7 @@ You can set custom Node.js version in configuration:
 ```ts [nitro.config.ts]
 export default defineNitroConfig({
   firebase: {
-    nodeVersion: "18" // Can be "16", "18", "20" or "22"
+    nodeVersion: "20" // Can be "16", "18", "20" or "22"
   },
 });
 ```
@@ -202,7 +202,7 @@ export default defineNitroConfig({
 export default defineNuxtConfig({
   nitro: {
     firebase: {
-      nodeVersion: "18" // Can be "16", "18", "20" or "22"
+      nodeVersion: "20" // Can be "16", "18", "20" or "22"
     },
   },
 });
