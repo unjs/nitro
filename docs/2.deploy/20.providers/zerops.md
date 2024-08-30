@@ -70,7 +70,7 @@ To tell Zerops how to build and run your app, add a `zerops.yml` to your root:
 
 ```yml [zerops.yml]
 zerops:
-  - setup: nitro
+  - setup: app
     build:
       base: nodejs@20
       envVariables:
