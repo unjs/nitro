@@ -10,4 +10,16 @@ const zerops = defineNitroPreset(
   }
 );
 
-export default [zerops] as const;
+const zeropsStatic = defineNitroPreset(
+  {
+    extends: "static",
+  },
+  {
+    name: "zerops-static" as const,
+    url: import.meta.url,
+    static: true,
+  }
+);
+
+
+export default [zerops, zeropsStatic] as const;
