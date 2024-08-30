@@ -25,6 +25,7 @@ import _stormkit from "./stormkit/preset";
 import _vercel from "./vercel/preset";
 import _winterjs from "./winterjs/preset";
 import _zeabur from "./zeabur/preset";
+import _zerops from "./zerops/preset";
 
 export default [
   ..._nitro,
@@ -52,4 +53,5 @@ export default [
   ..._vercel,
   ..._winterjs,
   ..._zeabur,
+  ..._zerops,
 ] as const;
