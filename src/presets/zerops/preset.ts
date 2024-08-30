@@ -13,6 +13,10 @@ const zerops = defineNitroPreset(
 const zeropsStatic = defineNitroPreset(
   {
     extends: "static",
+    output: {
+      dir: "{{ rootDir }}/.zerops/output",
+      publicDir: "{{ output.dir }}/static",
+    },
   },
   {
     name: "zerops-static" as const,
