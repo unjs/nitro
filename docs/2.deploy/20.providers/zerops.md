@@ -17,7 +17,7 @@ Projects and services can be added either through a [Project add wizard](https:/
 
 ### Creating a Project
 
-```yaml [zerops-project-import.yml]
+```yml [zerops-project-import.yml]
 project:
   name: recipe-nitro
 
@@ -31,7 +31,7 @@ This will create a project called `recipe-nitro` with a Zerops Static service ca
 
 To tell Zerops how to build and run your app, add a `zerops.yml` to your root:
 
-```yaml [zerops.yaml]
+```yml [zerops.yml]
 zerops:
   - setup: app
     build:
@@ -53,7 +53,7 @@ Now you can trigger the [build & deploy pipeline using the Zerops CLI](#building
 
 Projects and services can be added either through a [Project add wizard](https://app.zerops.io/dashboard/project-add) or imported using a YAML structure:
 
-```yaml [zerops-project-import.yml]
+```yml [zerops-project-import.yml]
 project:
   name: recipe-nitro
 
@@ -68,7 +68,7 @@ This will create a project called `recipe-nitro` with a Zerops Static service ca
 
 To tell Zerops how to build and run your app, add a `zerops.yml` to your root:
 
-```yaml [zerops.yaml]
+```yml [zerops.yml]
 zerops:
   - setup: nitro
     build:
