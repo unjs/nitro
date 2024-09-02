@@ -33,9 +33,6 @@ export interface ResponseCacheEntry<T = any> {
 
 export interface CachedEventHandlerOptions<T = any>
   extends Omit<CacheOptions<ResponseCacheEntry<T>, [H3Event]>, "transform" | "validate"> {
-  shouldInvalidateCache?: (event: H3Event) => boolean | Promise<boolean>;
-  shouldBypassCache?: (event: H3Event) => boolean | Promise<boolean>;
-  getKey?: (event: H3Event) => string | Promise<string>;
   headersOnly?: boolean;
   varies?: string[] | readonly string[];
 }
