@@ -14,6 +14,7 @@ import _digitalocean from "./digitalocean/preset";
 import _edgio from "./edgio/preset";
 import _firebase from "./firebase/preset";
 import _flightcontrol from "./flightcontrol/preset";
+import _genezio from "./genezio/preset";
 import _heroku from "./heroku/preset";
 import _iis from "./iis/preset";
 import _koyeb from "./koyeb/preset";
@@ -42,6 +43,7 @@ export default [
   ..._edgio,
   ..._firebase,
   ..._flightcontrol,
+  ..._genezio,
   ..._heroku,
   ..._iis,
   ..._koyeb,
