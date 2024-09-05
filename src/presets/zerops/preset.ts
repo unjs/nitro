@@ -25,5 +25,4 @@ const zeropsStatic = defineNitroPreset(
   }
 );
 
-
 export default [zerops, zeropsStatic] as const;
