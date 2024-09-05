@@ -5,4 +5,4 @@ export const tasks: Record<
   { resolve?: () => Promise<Task>; meta: TaskMeta }
 > = {};
 
-export const scheduledTasks: false | { cron: string; tasks: string[] }[] = [];
+export const scheduledTasks: { cron: string; tasks: string[]; once: boolean; }[] = [];
