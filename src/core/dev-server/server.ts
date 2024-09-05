@@ -12,6 +12,7 @@ import {
   createError,
   eventHandler,
   fromNodeMiddleware,
+  sendRedirect,
   toNodeListener,
 } from "h3";
 import { type ProxyServerOptions, createProxyServer } from "httpxy";
@@ -232,6 +233,9 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
   app.use(
     eventHandler(async (event) => {
       await reloadPromise;
+      if (nitro.options.baseURL && nitro.options.baseURL !== '/' && !event.path.startsWith(nitro.options.baseURL)) {
+        return sendRedirect(event, nitro.options.baseURL, 307)
+      }
       const address = getWorkerAddress();
       if (!address) {
         const error = lastError || createError("Worker not ready");
