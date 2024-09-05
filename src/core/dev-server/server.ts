@@ -234,11 +234,10 @@ export function createDevServer(nitro: Nitro): NitroDevServer {
     eventHandler(async (event) => {
       await reloadPromise;
       if (
-        nitro.options.baseURL &&
-        nitro.options.baseURL !== "/" &&
+        nitro.options.baseURL?.length > 1 &&
         !event.path.startsWith(nitro.options.baseURL)
       ) {
-        return sendRedirect(event, nitro.options.baseURL, 307);
+        return sendRedirect(event, joinURL(nitro.options.baseURL, event.path), 307);
       }
       const address = getWorkerAddress();
       if (!address) {
