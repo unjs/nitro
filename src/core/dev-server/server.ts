@@ -17,13 +17,13 @@ import {
 } from "h3";
 import { type ProxyServerOptions, createProxyServer } from "httpxy";
 import { type Listener, listen } from "listhen";
-import { version as nitroVersion } from "nitropack/meta";
+import { version as nitroVersion } from "nitro/meta";
 import type {
   Nitro,
   NitroBuildInfo,
   NitroDevServer,
   NitroWorker,
-} from "nitropack/types";
+} from "nitro/types";
 import { resolve } from "pathe";
 import { debounce } from "perfect-debounce";
 import { servePlaceholder } from "serve-placeholder";

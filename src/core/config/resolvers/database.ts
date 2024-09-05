@@ -1,9 +1,9 @@
-import type { NitroOptions } from "nitropack/types";
+import type { NitroOptions } from "nitro/types";
 
 export async function resolveDatabaseOptions(options: NitroOptions) {
   if (options.experimental.database && options.imports) {
     options.imports.presets.push({
-      from: "nitropack/runtime",
+      from: "nitro/runtime",
       imports: ["useDatabase"],
     });
     if (options.dev && !options.database && !options.devDatabase) {

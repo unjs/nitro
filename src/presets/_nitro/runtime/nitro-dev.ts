@@ -1,8 +1,10 @@
 import "#nitro-internal-pollyfills";
-import { useNitroApp } from "nitropack/runtime";
-import { runTask } from "nitropack/runtime";
-import { trapUnhandledNodeErrors } from "nitropack/runtime/internal";
-import { startScheduleRunner } from "nitropack/runtime/internal";
+import { useNitroApp } from "nitro/runtime";
+import { runTask } from "nitro/runtime";
+import {
+  startScheduleRunner,
+  trapUnhandledNodeErrors,
+} from "nitro/runtime/internal";
 import { scheduledTasks, tasks } from "#nitro-internal-virtual/tasks";
 
 import { mkdirSync } from "node:fs";

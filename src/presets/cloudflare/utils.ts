@@ -2,7 +2,7 @@ import { existsSync, promises as fsp } from "node:fs";
 import { parseTOML, stringifyTOML } from "confbox";
 import defu from "defu";
 import { globby } from "globby";
-import type { Nitro } from "nitropack/types";
+import type { Nitro } from "nitro/types";
 import { join, resolve } from "pathe";
 import { isCI } from "std-env";
 import {

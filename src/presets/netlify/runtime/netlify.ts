@@ -1,11 +1,10 @@
 import "#nitro-internal-pollyfills";
-import "./_deno-env-polyfill";
-import { useNitroApp } from "nitropack/runtime";
+import { useNitroApp } from "nitro/runtime";
 import {
   getRouteRulesForPath,
   joinHeaders,
   normalizeCookieHeader,
-} from "nitropack/runtime/internal";
+} from "nitro/runtime/internal";
 
 const nitroApp = useNitroApp();
 

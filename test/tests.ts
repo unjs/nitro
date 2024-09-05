@@ -13,8 +13,8 @@ import {
   createNitro,
   prepare,
   prerender,
-} from "nitropack/core";
-import type { Nitro, NitroConfig } from "nitropack/types";
+} from "nitro/core";
+import type { Nitro, NitroConfig } from "nitro/types";
 import { type FetchOptions, fetch } from "ofetch";
 import { join, resolve } from "pathe";
 import { isWindows, nodeMajorVersion } from "std-env";
@@ -475,24 +475,12 @@ export function testNitro(
       url: "/config",
     });
     expect(data).toMatchObject({
-      appConfig: {
-        dynamic: "from-middleware",
-        "app-config": true,
-        "nitro-config": true,
-        "server-config": true,
-      },
       runtimeConfig: {
         dynamic: "from-env",
         url: "https://test.com",
         app: {
           baseURL: "/",
         },
-      },
-      sharedAppConfig: {
-        dynamic: "initial",
-        "app-config": true,
-        "nitro-config": true,
-        "server-config": true,
       },
       sharedRuntimeConfig: {
         dynamic: "from-env",

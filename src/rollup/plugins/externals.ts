@@ -8,10 +8,10 @@ import {
   parseNodeModulePath,
   resolvePath,
 } from "mlly";
-import { isDirectory } from "nitropack/kit";
-import type { NodeExternalsOptions } from "nitropack/types";
+import { isDirectory } from "nitro/kit";
+import type { NodeExternalsOptions } from "nitro/types";
 import { dirname, isAbsolute, join, normalize, relative, resolve } from "pathe";
-import type { PackageJson } from "pkg-types";
+import type { PackageJson, PackageJsonExports } from "pkg-types";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
 import type { Plugin } from "rollup";
 import semver from "semver";

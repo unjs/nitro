@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
-import { resolveNitroPath } from "nitropack/kit";
-import { pkgDir } from "nitropack/runtime/meta";
-import type { NitroOptions } from "nitropack/types";
+import { resolveNitroPath } from "nitro/kit";
+import { pkgDir } from "nitro/runtime/meta";
+import type { NitroOptions } from "nitro/types";
 import { join, resolve } from "pathe";
 import { findWorkspaceDir } from "pkg-types";
 import { NitroDefaults } from "../defaults";
@@ -69,20 +69,6 @@ export async function resolvePathOptions(options: NitroOptions) {
     resolve(options.srcDir, dir)
   );
   options.scanDirs = [...new Set(options.scanDirs)];
-
-  // Normalize app.config file paths
-  options.appConfigFiles ??= [];
-  options.appConfigFiles = options.appConfigFiles
-    .map((file) => _tryResolve(resolveNitroPath(file, options)))
-    .filter(Boolean) as string[];
-
-  // Detect app.config from scanDirs
-  for (const dir of options.scanDirs) {
-    const configFile = _tryResolve("app.config", dir);
-    if (configFile && !options.appConfigFiles.includes(configFile)) {
-      options.appConfigFiles.push(configFile);
-    }
-  }
 }
 
 function _tryResolve(

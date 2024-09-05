@@ -1,5 +1,5 @@
 import { promises as fsp } from "node:fs";
-import { defineNitroPreset } from "nitropack/kit";
+import { defineNitroPreset } from "nitro/kit";
 import { dirname, resolve } from "pathe";
 import type { PackageJson } from "pkg-types";
 

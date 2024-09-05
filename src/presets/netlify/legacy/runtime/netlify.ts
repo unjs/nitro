@@ -1,7 +1,7 @@
 import "#nitro-internal-pollyfills";
 import "./_deno-env-polyfill";
 import type { Handler } from "@netlify/functions";
-import { getRouteRulesForPath } from "nitropack/runtime/internal";
+import { getRouteRulesForPath } from "nitro/runtime/internal";
 import { withQuery } from "ufo";
 import { lambda } from "./netlify-lambda";
 

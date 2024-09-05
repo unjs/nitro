@@ -5,12 +5,13 @@ import type { AddressInfo } from "node:net";
 import wsAdapter from "crossws/adapters/node";
 import destr from "destr";
 import { toNodeListener } from "h3";
-import { useNitroApp, useRuntimeConfig } from "nitropack/runtime";
+import { useNitroApp } from "nitro/runtime";
+import { useRuntimeConfig } from "nitro/runtime";
 import {
   setupGracefulShutdown,
   startScheduleRunner,
   trapUnhandledNodeErrors,
-} from "nitropack/runtime/internal";
+} from "nitro/runtime/internal";
 
 const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;

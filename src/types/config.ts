@@ -7,15 +7,7 @@ import type { LogLevel } from "consola";
 import type { ConnectorName } from "db0";
 import type { NestedHooks } from "hookable";
 import type { ProxyServerOptions } from "httpxy";
-import type {
-  NitroRuntimeConfigApp as NitroTypesRuntimeConfigApp,
-  NitroRuntimeConfig as NitroTypeskRuntimeConfig,
-} from "nitropack";
-import type {
-  PresetName,
-  PresetNameInput,
-  PresetOptions,
-} from "nitropack/presets";
+import type { PresetName, PresetNameInput, PresetOptions } from "nitro/presets";
 import type { TSConfig } from "pkg-types";
 import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
 import type { Preset as UnenvPreset } from "unenv";
@@ -58,8 +50,6 @@ export interface NitroOptions extends PresetOptions {
   static: boolean;
   logLevel: LogLevel;
   runtimeConfig: NitroRuntimeConfig;
-  appConfig: AppConfig;
-  appConfigFiles: string[];
 
   // Dirs
   workspaceDir: string;
@@ -94,7 +84,6 @@ export interface NitroOptions extends PresetOptions {
   wasm?: UnwasmPluginOptions;
   openAPI?: NitroOpenAPIConfig;
   experimental: {
-    legacyExternals?: boolean;
     openAPI?: boolean;
     /**
      * See https://github.com/microsoft/TypeScript/pull/51669
@@ -118,10 +107,6 @@ export interface NitroOptions extends PresetOptions {
      * Disable Experimental Sourcemap Minification
      */
     sourcemapMinify?: false;
-    /**
-     * Backward compatibility support for Node fetch (required for Node < 18)
-     */
-    nodeFetchCompat?: boolean;
     /**
      * Allow env expansion in runtime config
      *
@@ -286,11 +271,6 @@ export interface LoadConfigOptions {
 // Partial types
 // ------------------------------------------------------------
 
-// App config
-export interface AppConfig {
-  [key: string]: any;
-}
-
 // Public assets
 export interface PublicAssetDir {
   baseURL?: string;
@@ -337,12 +317,12 @@ export type DatabaseConnectionConfigs = Record<
 
 // Runtime config
 
-export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {
+export interface NitroRuntimeConfigApp {
   baseURL: string;
   [key: string]: any;
 }
 
-export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {
+export interface NitroRuntimeConfig {
   app: NitroRuntimeConfigApp;
   nitro: {
     envPrefix?: string;

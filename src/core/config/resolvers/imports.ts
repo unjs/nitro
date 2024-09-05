@@ -1,6 +1,6 @@
 import escapeRE from "escape-string-regexp";
 import { resolveModuleExportNames } from "mlly";
-import type { NitroOptions } from "nitropack/types";
+import type { NitroOptions } from "nitro/types";
 import { join } from "pathe";
 import type { Preset } from "unimport";
 
@@ -58,7 +58,7 @@ export async function resolveImportsOptions(options: NitroOptions) {
 function getNitroImportsPreset(): Preset[] {
   return [
     {
-      from: "nitropack/runtime",
+      from: "nitro/runtime",
       imports: [
         "defineCachedFunction",
         "defineCachedEventHandler",
@@ -72,7 +72,6 @@ function getNitroImportsPreset(): Preset[] {
         "defineRenderHandler",
         "defineRouteMeta",
         "getRouteRules",
-        "useAppConfig",
         "useEvent",
         "defineTask",
         "runTask",
