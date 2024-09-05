@@ -1,6 +1,6 @@
-import { resolve, dirname } from "pathe";
 import fsp from "node:fs/promises";
 import type { Nitro } from "nitropack/types";
+import { dirname, resolve } from "pathe";
 export async function generateFunctionFiles(nitro: Nitro) {
   const name = await getNameFromPackage();
   const initialPath = dirname(nitro.options.output.dir);
