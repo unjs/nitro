@@ -1,7 +1,10 @@
+import type { AppOptions, H3Event } from "h3";
 import type {
+  CaptureError,
   NitroConfig,
   NitroOpenAPIConfig,
   NitroRouteConfig,
+  RenderResponse,
 } from "nitropack/types";
 
 // Core
@@ -65,6 +68,21 @@ export interface NitroRuntimeConfig {
     openAPI?: NitroOpenAPIConfig;
   };
   [key: string]: any;
+}
+
+/** @deprecated Use `NitroRuntimeHooks` from `nitropack/types` */
+export interface NitroRuntimeHooks {
+  close: () => void;
+  error: CaptureError;
+
+  request: NonNullable<AppOptions["onRequest"]>;
+  beforeResponse: NonNullable<AppOptions["onBeforeResponse"]>;
+  afterResponse: NonNullable<AppOptions["onAfterResponse"]>;
+
+  "render:response": (
+    response: Partial<RenderResponse>,
+    context: { event: H3Event }
+  ) => void;
 }
 
 /** @deprecated Use `NitroRuntimeConfigApp` from `nitropack/types` */
