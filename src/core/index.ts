@@ -1,4 +1,8 @@
-import type { NitroConfig } from "nitropack/types";
+import type {
+  NitroConfig,
+  NitroOpenAPIConfig,
+  NitroRouteConfig,
+} from "nitropack/types";
 
 // Core
 export { createNitro } from "./nitro";
@@ -50,10 +54,24 @@ export {
 } from "./scan";
 
 /** @deprecated Use `NitroRuntimeConfig` from `nitropack/types` */
-export interface NitroRuntimeConfig {}
+export interface NitroRuntimeConfig {
+  app: NitroRuntimeConfigApp;
+  nitro: {
+    envPrefix?: string;
+    envExpansion?: boolean;
+    routeRules?: {
+      [path: string]: NitroRouteConfig;
+    };
+    openAPI?: NitroOpenAPIConfig;
+  };
+  [key: string]: any;
+}
 
 /** @deprecated Use `NitroRuntimeConfigApp` from `nitropack/types` */
-export interface NitroRuntimeConfigApp {}
+export interface NitroRuntimeConfigApp {
+  baseURL: string;
+  [key: string]: any;
+}
 
 /** @deprecated Directly import { ... } from "nitropack/types"; */
 export type {
