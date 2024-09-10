@@ -1,5 +1,4 @@
-import type { NitroConfig, NitroRouteConfig } from "nitropack/types";
-import type { NitroOpenAPIConfig } from "../types/openapi";
+import type { NitroConfig, NitroOpenAPIConfig, NitroRouteConfig } from "nitropack/types";
 
 // Core
 export { createNitro } from "./nitro";
