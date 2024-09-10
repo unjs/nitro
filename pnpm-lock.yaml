@@ -195,8 +195,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       serve-static:
-        specifier: ^1.15.0
-        version: 1.15.0
+        specifier: ^2.1.0
+        version: 2.1.0
       std-env:
         specifier: ^3.7.0
         version: 3.7.0
@@ -1581,21 +1581,27 @@ packages:
 
   '@scalar/snippetz-core@0.1.4':
     resolution: {integrity: sha512-NMnDzl5dHgUj0k8ZtfssDfy6wv1wO/M+GhpdGr/4OH3m8UZB27CZ3hM7wXh+fm75hZO5XIBsANW20kJVnzpaHg==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@scalar/snippetz-plugin-js-fetch@0.1.1':
     resolution: {integrity: sha512-9ODfi0OaEvZHdCe09c91eH1R5QPynL+FPxtYuK/9K5ElRE2NqxYysri9AsgOhr1Fqhpy5qKzDj4Gi5FHsJSGXw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@scalar/snippetz-plugin-js-ofetch@0.1.1':
     resolution: {integrity: sha512-fPIJlY4q1j5gbnsYSxix0IJ7hqcvm8Ly7iVoK66vaL738AIMiGZMhGKtLrTVPad77PimwO+jeq5iDIZ495UY7Q==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@scalar/snippetz-plugin-node-fetch@0.1.2':
     resolution: {integrity: sha512-kD6erA6aAqjHkj+JrJQKqrqcH4fnCrLi2uYw16CmELIGtqVHFau7ew2c087y4OQTltdi5rEk2zj5zOBu9yaS3Q==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@scalar/snippetz-plugin-node-ofetch@0.1.1':
     resolution: {integrity: sha512-9NpvdMKebg82FkVWoWyOxd1JXAB8KNxmrsFFwQKNjhAw0A5hjNR5oW9lD+FtB1Laupg2FNtw9dcCydnF+LcCWw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@scalar/snippetz-plugin-node-undici@0.1.6':
     resolution: {integrity: sha512-CivUl7wgZ6vlUb01FMdqOt/NVyOWqT0iHZRp5YlPp1pflXZLnAyi5antUTtBEUHUtHM2EO/WR7vx4kRsPcrgLg==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@scalar/snippetz@0.1.6':
     resolution: {integrity: sha512-z3DEpT/FIZq9yeHL/tz2v6WvdHIiZ4uvK96RdeTPKUUJ0IXvA5vONG3PF5LE0Q/408PCzWsZpGs9f97ztaeJSQ==}
@@ -2869,6 +2875,10 @@ packages:
 
   encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
+    engines: {node: '>= 0.8'}
+
+  encodeurl@2.0.0:
+    resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
     engines: {node: '>= 0.8'}
 
   end-of-stream@1.4.4:
@@ -5180,6 +5190,10 @@ packages:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
     engines: {node: '>= 0.8.0'}
 
+  send@1.1.0:
+    resolution: {integrity: sha512-v67WcEouB5GxbTWL/4NeToqcZiAWEq90N888fczVArY8A79J0L4FD7vj5hm3eUMua5EpoQ59wa/oovY6TLvRUA==}
+    engines: {node: '>= 18'}
+
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
@@ -5189,6 +5203,10 @@ packages:
   serve-static@1.15.0:
     resolution: {integrity: sha512-XGuRDNjXUijsUL0vl6nSD7cwURuzEgglbOaFuZM9g3kwDXOWVTck0jLzjPzGD+TazWbboZYu52/9/XPdUgne9g==}
     engines: {node: '>= 0.8.0'}
+
+  serve-static@2.1.0:
+    resolution: {integrity: sha512-A3We5UfEjG8Z7VkDv6uItWw6HY2bBSBJT1KtVESn6EOoOr2jAxNhxWCLY3jDE2WcuHXByWju74ck3ZgLwL8xmA==}
+    engines: {node: '>= 18'}
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
@@ -8907,6 +8925,8 @@ snapshots:
 
   encodeurl@1.0.2: {}
 
+  encodeurl@2.0.0: {}
+
   end-of-stream@1.4.4:
     dependencies:
       once: 1.4.0
@@ -11713,6 +11733,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  send@1.1.0:
+    dependencies:
+      debug: 4.3.6(supports-color@9.4.0)
+      destroy: 1.2.0
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      etag: 1.8.1
+      fresh: 0.5.2
+      http-errors: 2.0.0
+      mime-types: 2.1.35
+      ms: 2.1.3
+      on-finished: 2.4.1
+      range-parser: 1.2.1
+      statuses: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
+
   serialize-javascript@6.0.2:
     dependencies:
       randombytes: 2.1.0
@@ -11727,6 +11764,15 @@ snapshots:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.18.0
+    transitivePeerDependencies:
+      - supports-color
+
+  serve-static@2.1.0:
+    dependencies:
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      parseurl: 1.3.3
+      send: 1.1.0
     transitivePeerDependencies:
       - supports-color
 
