@@ -337,20 +337,6 @@ export type DatabaseConnectionConfigs = Record<
 
 // Runtime config
 
-export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {
-  baseURL: string;
-  [key: string]: any;
-}
+export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {}
 
-export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {
-  app: NitroRuntimeConfigApp;
-  nitro: {
-    envPrefix?: string;
-    envExpansion?: boolean;
-    routeRules?: {
-      [path: string]: NitroRouteConfig;
-    };
-    openAPI?: NitroOpenAPIConfig;
-  };
-  [key: string]: any;
-}
+export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {}
