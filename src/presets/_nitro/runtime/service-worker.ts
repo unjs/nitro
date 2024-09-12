@@ -4,6 +4,7 @@ import { isPublicAssetURL } from "#nitro-internal-virtual/public-assets";
 
 const nitroApp = useNitroApp();
 
+// @ts-expect-error
 addEventListener("fetch", (event: FetchEvent) => {
   const url = new URL(event.request.url);
   if (isPublicAssetURL(url.pathname) || url.pathname.includes("/_server/")) {

@@ -1,3 +1,4 @@
+// @ts-expect-error jiti v1 compat
 import jiti from "jiti";
 import type { Nitro, NitroModule, NitroModuleInput } from "nitropack/types";
 
@@ -30,8 +31,10 @@ function _resolveNitroModule(
       // @ts-ignore
       globalThis.defineNitroModule || ((mod) => mod);
 
+    // @ts-expect-error jiti v1 compat
     const _jiti = jiti(nitroOptions.rootDir, {
       interopDefault: true,
+      // @ts-expect-error jiti v1 compat
       esmResolve: true,
       alias: nitroOptions.alias,
     });

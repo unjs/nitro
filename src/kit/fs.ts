@@ -11,7 +11,7 @@ export async function writeFile(
   await fsp.mkdir(dirname(file), { recursive: true });
   await fsp.writeFile(
     file,
-    contents as any,
+    contents,
     typeof contents === "string" ? "utf8" : undefined
   );
   if (log) {
