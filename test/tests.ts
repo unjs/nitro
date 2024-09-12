@@ -362,20 +362,14 @@ export function testNitro(
       const { status, headers } = await callHandler({ url: "/favicon.ico" });
       expect(status).toBe(200);
       expect(headers.etag).toBeDefined();
-      expect(headers["content-type"]).toMatchInlineSnapshot(
-        '"image/vnd.microsoft.icon"'
-      );
+      expect(headers["content-type"]).toMatch("image/vnd.microsoft.icon");
     });
 
     it("serve static asset /build/test.txt", async () => {
       const { status, headers } = await callHandler({ url: "/build/test.txt" });
       expect(status).toBe(200);
-      expect(headers.etag).toMatchInlineSnapshot(
-        `""7-vxGfAKTuGVGhpDZqQLqV60dnKPw""`
-      );
-      expect(headers["content-type"]).toMatchInlineSnapshot(
-        '"text/plain; charset=utf-8"'
-      );
+      expect(headers.etag).toMatch(`"7-vxGfAKTuGVGhpDZqQLqV60dnKPw"`);
+      expect(headers["content-type"]).toMatch("text/plain; charset=utf-8");
     });
 
     it("stores content-type for prerendered routes", async () => {
@@ -394,11 +388,7 @@ export function testNitro(
 
   it("find auto imported utils", async () => {
     const res = await callHandler({ url: "/imports" });
-    expect(res.data).toMatchInlineSnapshot(`
-        {
-          "testUtil": 123,
-        }
-      `);
+    expect(JSON.parse(res.data)).toMatchObject({ testUtil: 123 });
   });
 
   it.skipIf(ctx.preset === "deno-server")(
