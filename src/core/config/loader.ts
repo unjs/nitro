@@ -105,7 +105,8 @@ async function _loadUserConfig(
       const framework = configs.overrides?.framework || configs.main?.framework;
       return {
         typescript: {
-          generateRuntimeConfigTypes: !framework?.name || framework.name === 'nitro'
+          generateRuntimeConfigTypes:
+            !framework?.name || framework.name === "nitro",
         },
         preset: (
           await resolvePreset("" /* auto detect */, {
