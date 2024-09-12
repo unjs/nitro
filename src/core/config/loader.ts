@@ -102,7 +102,12 @@ async function _loadUserConfig(
           configs.rc?.compatibilityDate ||
           configs.packageJson?.compatibilityDate;
       }
+      const framework = configs.overrides?.framework || configs.main?.framework;
       return {
+        typescript: {
+          generateRuntimeConfigTypes:
+            !framework?.name || framework.name === "nitro",
+        },
         preset: (
           await resolvePreset("" /* auto detect */, {
             static: configOverrides.static,
