@@ -185,18 +185,24 @@ function createNitroApp(): NitroApp {
     captureError,
   };
 
+  return app;
+}
+
+function runNitroPlugins(nitroApp: NitroApp) {
   for (const plugin of plugins) {
     try {
-      plugin(app);
+      plugin(nitroApp);
     } catch (error: any) {
-      captureError(error, { tags: ["plugin"] });
+      nitroApp.captureError(error, { tags: ["plugin"] });
       throw error;
     }
   }
-
-  return app;
 }
 
 export const nitroApp: NitroApp = createNitroApp();
 
-export const useNitroApp = () => nitroApp;
+export function useNitroApp() {
+  return nitroApp;
+}
+
+runNitroPlugins(nitroApp);
