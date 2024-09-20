@@ -84,9 +84,11 @@ async function _loadUserConfig(
     "nitropack/" + "presets"
   )) as typeof import("nitropack/presets");
 
-  const loadedConfig = await (opts.watch
-    ? watchConfig<NitroConfig & { _meta?: NitroPresetMeta }>
-    : loadConfig<NitroConfig & { _meta?: NitroPresetMeta }>)({
+  const loadedConfig = await (
+    opts.watch
+      ? watchConfig<NitroConfig & { _meta?: NitroPresetMeta }>
+      : loadConfig<NitroConfig & { _meta?: NitroPresetMeta }>
+  )({
     name: "nitro",
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,

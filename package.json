@@ -80,8 +80,8 @@
     "dev": "pnpm nitro dev playground",
     "dev:build": "pnpm nitro build playground",
     "dev:start": "node playground/.output/server/index.mjs",
-    "lint": "eslint --cache . && biome check .",
-    "lint:fix": "eslint --cache --fix . && biome check . --write",
+    "lint": "eslint --cache . && prettier -c .",
+    "lint:fix": "eslint --cache --fix . && prettier -w .",
     "nitro": "NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
     "gen-mirror": "pnpm jiti scripts/gen-mirror.ts",
@@ -172,7 +172,6 @@
   "devDependencies": {
     "@azure/functions": "^3.5.1",
     "@azure/static-web-apps-cli": "^1.1.10",
-    "@biomejs/biome": "^1.9.2",
     "@cloudflare/workers-types": "^4.20240919.0",
     "@deno/types": "^0.0.1",
     "@scalar/api-reference": "^1.25.13",
