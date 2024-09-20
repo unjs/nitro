@@ -1,7 +1,7 @@
+import type { APIGatewayProxyEvent, APIGatewayProxyEventV2 } from "aws-lambda";
+import destr from "destr";
 import { resolve } from "pathe";
 import { describe } from "vitest";
-import destr from "destr";
-import type { APIGatewayProxyEvent, APIGatewayProxyEventV2 } from "aws-lambda";
 import { setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:aws-lambda", async () => {

@@ -1,13 +1,12 @@
 import { extname } from "pathe";
 import type { Plugin, RenderedChunk } from "rollup";
 
-// TODO
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Options {}
+interface Options {}
 
 const TIMING = "globalThis.__timing__";
 
-const iife = (code) => `(function() { ${code.trim()} })();`.replace(/\n/g, "");
+const iife = (code: string) =>
+  `(function() { ${code.trim()} })();`.replace(/\n/g, "");
 
 const HELPER = iife(`
 const start = () => Date.now();

@@ -1,4 +1,13 @@
-import type { EventHandler, H3Event, H3Error } from "h3";
+import type { EventHandler, H3Error, H3Event, RouterMethod } from "h3";
+import type { PresetName } from "nitropack/presets";
+import type { OperationObject } from "openapi-typescript";
+
+type MaybeArray<T> = T | T[];
+
+/** @exprerimental */
+export interface NitroRouteMeta {
+  openAPI?: OperationObject;
+}
 
 export interface NitroEventHandler {
   /**
@@ -28,7 +37,20 @@ export interface NitroEventHandler {
   /**
    * Router method matcher
    */
-  method?: string;
+  method?: RouterMethod;
+
+  /**
+   * Meta
+   */
+  meta?: NitroRouteMeta;
+
+  /*
+   * Environments to include this handler
+   */
+  env?: MaybeArray<
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    "dev" | "prod" | "prerender" | PresetName | (string & {})
+  >;
 }
 
 export interface NitroDevEventHandler {

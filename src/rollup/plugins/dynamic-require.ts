@@ -1,8 +1,8 @@
 import { pathToFileURL } from "node:url";
-import { resolve } from "pathe";
 import { globby } from "globby";
-import type { Plugin } from "rollup";
 import { genSafeVariableName } from "knitwork";
+import { resolve } from "pathe";
+import type { Plugin } from "rollup";
 
 const PLUGIN_NAME = "dynamic-require";
 const HELPER_DYNAMIC = `\0${PLUGIN_NAME}.mjs`;
@@ -81,7 +81,7 @@ export function dynamicRequire({ dir, ignore, inline }: Options): Plugin {
             meta: await getWebpackChunkMeta(resolve(dir, id)),
           }))
         )
-      ).filter((chunk) => chunk.meta);
+      ).filter((chunk) => chunk.meta) as Chunk[];
 
       return inline ? TMPL_INLINE({ chunks }) : TMPL_LAZY({ chunks });
     },

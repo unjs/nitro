@@ -1,7 +1,7 @@
-import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
 import { execa, execaCommandSync } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
+import { resolve } from "pathe";
+import { describe } from "vitest";
 import { setupTest, testNitro } from "../tests";
 
 const hasBun =
@@ -18,7 +18,9 @@ describe.runIf(hasBun)("nitro:preset:bun", async () => {
     });
     ctx.server = {
       url: `http://127.0.0.1:${port}`,
-      close: () => p.kill(),
+      close: () => {
+        // p.kill()
+      },
     } as any;
     await waitForPort(port);
     return async ({ url, ...opts }) => {

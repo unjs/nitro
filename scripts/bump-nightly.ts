@@ -1,11 +1,11 @@
 import { promises as fsp } from "node:fs";
 import { execaCommand } from "execa";
-import { resolve } from "pathe";
 import { globby } from "globby";
+import { resolve } from "pathe";
 
 const nightlyPackages = {
   h3: "h3-nightly",
-};
+} as Record<string, string>;
 
 async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, "package.json");
@@ -130,9 +130,8 @@ async function main() {
 }
 
 // eslint-disable-next-line unicorn/prefer-top-level-await
-main().catch((err) => {
-  // eslint-disable-next-line no-console
-  console.error(err);
+main().catch((error) => {
+  console.error(error);
   // eslint-disable-next-line unicorn/no-process-exit
   process.exit(1);
 });

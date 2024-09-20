@@ -1,6 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { setupTest, startServer, testNitro } from "../tests";
 
 describe("nitro:preset:vercel", async () => {
@@ -25,6 +25,12 @@ describe("nitro:preset:vercel", async () => {
         expect(config).toMatchInlineSnapshot(`
           {
             "overrides": {
+              "_scalar/index.html": {
+                "path": "_scalar",
+              },
+              "_swagger/index.html": {
+                "path": "_swagger",
+              },
               "api/hey/index.html": {
                 "path": "api/hey",
               },
@@ -39,6 +45,13 @@ describe("nitro:preset:vercel", async () => {
                 },
                 "src": "/rules/redirect/obj",
                 "status": 308,
+              },
+              {
+                "headers": {
+                  "Location": "https://nitro.unjs.io/$1",
+                },
+                "src": "/rules/redirect/wildcard/(.*)",
+                "status": 307,
               },
               {
                 "headers": {
@@ -74,14 +87,14 @@ describe("nitro:preset:vercel", async () => {
                   "Location": "/base",
                   "x-test": "test",
                 },
-                "src": "/rules/nested/.*",
+                "src": "/rules/nested/(.*)",
                 "status": 307,
               },
               {
                 "headers": {
                   "cache-control": "public, max-age=3600, immutable",
                 },
-                "src": "/build/.*",
+                "src": "/build/(.*)",
               },
               {
                 "continue": true,

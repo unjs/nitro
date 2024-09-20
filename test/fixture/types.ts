@@ -1,9 +1,13 @@
 import { expectTypeOf } from "expect-type";
+import {
+  type EventHandler,
+  type EventHandlerRequest,
+  defineEventHandler,
+} from "h3";
+import { defineNitroConfig } from "nitropack/config";
+import type { $Fetch } from "nitropack/types";
+import type { Serialize, Simplify } from "nitropack/types";
 import { describe, it } from "vitest";
-import { EventHandler, EventHandlerRequest, defineEventHandler } from "h3";
-import { $Fetch } from "../..";
-import { defineNitroConfig } from "../../src/config";
-import { Serialize, Simplify } from "../../src/types";
 
 interface TestResponse {
   message: string;
@@ -12,7 +16,6 @@ interface TestResponse {
 const $fetch = {} as $Fetch;
 
 describe("API routes", () => {
-  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   const dynamicString: string = "";
 
   it("generates types for middleware, unknown and manual typed routes", () => {
@@ -180,6 +183,13 @@ describe("API routes", () => {
   });
 
   it("generates the correct type depending on the method used", () => {
+    expectTypeOf($fetch("/api/methods")).toEqualTypeOf<Promise<"Index get">>();
+    expectTypeOf($fetch("/api/methods", {})).toEqualTypeOf<
+      Promise<"Index get">
+    >();
+    expectTypeOf($fetch("/api/methods", { query: {} })).toEqualTypeOf<
+      Promise<"Index get">
+    >();
     expectTypeOf($fetch("/api/methods", { method: "get" })).toEqualTypeOf<
       Promise<"Index get">
     >();
@@ -208,7 +218,7 @@ describe("API routes", () => {
       Promise<{
         statusCode: number;
         statusMessage?: string;
-        data?: any;
+        data?: NonNullable<unknown>;
         message: string;
       }>
     >();
@@ -291,11 +301,13 @@ describe("defineCachedEventHandler", () => {
     >();
   });
   it("is backwards compatible with old generic signature", () => {
-    const a = defineCachedEventHandler<
-      Promise<{
-        message: string;
-      }>
-    >(fixture);
+    // prettier-ignore
+    const a =
+      defineCachedEventHandler<
+        Promise<{
+          message: string;
+        }>
+      >(fixture);
     const b = defineEventHandler(fixture);
     expectTypeOf(a).toEqualTypeOf(b);
     expectTypeOf(b).toEqualTypeOf<
@@ -311,7 +323,14 @@ describe("defineCachedEventHandler", () => {
 
 describe("type helpers", () => {
   it("Serialize", () => {
+    expectTypeOf<Serialize<undefined>>().toEqualTypeOf<undefined>();
+    expectTypeOf<Serialize<{ test?: string }>>().toEqualTypeOf<{
+      test?: string;
+    }>();
     expectTypeOf<Serialize<{ test: Date }>>().toEqualTypeOf<{ test: string }>();
+    expectTypeOf<Serialize<{ test?: Date }>>().toEqualTypeOf<{
+      test?: string;
+    }>();
     expectTypeOf<Serialize<{ test: Map<string, string> }>>().toEqualTypeOf<{
       test: Record<string, never>;
     }>();

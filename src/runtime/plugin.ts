@@ -1,11 +1,3 @@
-import type { NitroApp } from "./app";
+// Backward compatibility for imports from "#internal/nitro/*" or "nitropack/runtime/*"
 
-export interface NitroAppPlugin {
-  (nitro: NitroApp): void;
-}
-
-export function defineNitroPlugin(def: NitroAppPlugin) {
-  return def;
-}
-
-export const nitroPlugin = defineNitroPlugin;
+export { defineNitroPlugin, nitroPlugin } from "./internal/plugin";

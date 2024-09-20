@@ -1,6 +1,6 @@
-import { builtinDrivers } from "unstorage";
 import { genImport, genSafeVariableName } from "knitwork";
-import type { Nitro } from "../../types";
+import type { Nitro } from "nitropack/types";
+import { builtinDrivers } from "unstorage";
 import { virtual } from "./virtual";
 
 export function storage(nitro: Nitro) {
@@ -16,7 +16,9 @@ export function storage(nitro: Nitro) {
     const mount = storageMounts[path];
     mounts.push({
       path,
-      driver: builtinDrivers[mount.driver] || mount.driver,
+      driver:
+        builtinDrivers[mount.driver as keyof typeof builtinDrivers] ||
+        mount.driver,
       opts: mount,
     });
   }
@@ -42,9 +44,9 @@ for (const base of bundledStorage) {
 
   return virtual(
     {
-      "#internal/nitro/virtual/storage": `
+      "#nitro-internal-virtual/storage": `
 import { createStorage } from 'unstorage'
-import { assets } from '#internal/nitro/virtual/server-assets'
+import { assets } from '#nitro-internal-virtual/server-assets'
 
 ${driverImports.map((i) => genImport(i, genSafeVariableName(i))).join("\n")}
 

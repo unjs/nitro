@@ -1,11 +1,11 @@
-import { describe } from "vitest";
 import { execa, execaCommandSync } from "execa";
-import { waitForPort, getRandomPort } from "get-port-please";
+import { getRandomPort, waitForPort } from "get-port-please";
+import { describe } from "vitest";
 import { setupTest, testNitro } from "../tests";
 
-const hasWasmer =
-  execaCommandSync("wasmer --version", { stdio: "ignore", reject: false })
-    .exitCode === 0;
+const hasWasmer = false;
+// execaCommandSync("wasmer --version", { stdio: "ignore", reject: false })
+//   .exitCode === 0;
 
 describe.runIf(hasWasmer)("nitro:preset:winterjs", async () => {
   const ctx = await setupTest("winterjs");

@@ -1,8 +1,7 @@
 import { promises as fsp } from "node:fs";
+import type { Context } from "@netlify/functions";
 import { resolve } from "pathe";
-import destr from "destr";
-import { describe, it, expect } from "vitest";
-import { Handler, APIGatewayEvent } from "aws-lambda";
+import { describe, expect, it } from "vitest";
 import { getPresetTmpDir, setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:netlify", async () => {
@@ -11,68 +10,53 @@ describe("nitro:preset:netlify", async () => {
       output: {
         publicDir: resolve(getPresetTmpDir("netlify"), "dist"),
       },
+      netlify: {
+        images: {
+          remote_images: ["https://example.com/.*"],
+        },
+      },
     },
   });
   testNitro(
     ctx,
     async () => {
-      const { handler } = (await import(
-        resolve(ctx.outDir, "server/server.mjs")
-      )) as { handler: Handler };
+      const { default: handler } = (await import(
+        resolve(ctx.outDir, "server/main.mjs")
+      )) as { default: (req: Request, ctx: Context) => Promise<Response> };
       return async ({ url: rawRelativeUrl, headers, method, body }) => {
         // creating new URL object to parse query easier
         const url = new URL(`https://example.com${rawRelativeUrl}`);
-        const queryStringParameters = Object.fromEntries(
-          url.searchParams.entries()
-        );
-        const event: Partial<APIGatewayEvent> = {
-          resource: "/my/path",
-          path: url.pathname,
-          headers: headers || {},
-          httpMethod: method || "GET",
-          queryStringParameters,
-          body: body || "",
-        };
-        const res = await handler(event, {} as any, () => {});
-        const resHeaders = { ...res.headers, ...res.multiValueHeaders };
-        return {
-          data: destr(res.body),
-          status: res.statusCode,
-          headers: resHeaders,
-        };
+        const req = new Request(url, {
+          headers: headers ?? {},
+          method,
+          body,
+        });
+        const res = await handler(req, {} as Context);
+        return res;
       };
     },
-    () => {
-      it("should add route rules - redirects", async () => {
+    (_ctx, callHandler) => {
+      it("adds route rules - redirects", async () => {
         const redirects = await fsp.readFile(
           resolve(ctx.outDir, "../dist/_redirects"),
           "utf8"
         );
-        /* eslint-disable no-tabs */
+
         expect(redirects).toMatchInlineSnapshot(`
         "/rules/nested/override	/other	302
+        /rules/redirect/wildcard/*	https://nitro.unjs.io/:splat	302
         /rules/redirect/obj	https://nitro.unjs.io/	301
         /rules/nested/*	/base	302
         /rules/redirect	/base	302
-        /rules/_/cached/noncached	/.netlify/functions/server 200
-        /rules/_/noncached/cached	/.netlify/builders/server 200
-        /rules/_/cached/*	/.netlify/builders/server 200
-        /rules/_/noncached/*	/.netlify/functions/server 200
-        /rules/swr-ttl/*	/.netlify/builders/server 200
-        /rules/swr/*	/.netlify/builders/server 200
-        /rules/isr-ttl/*	/.netlify/builders/server 200
-        /rules/isr/*	/.netlify/builders/server 200
-        /rules/dynamic	/.netlify/functions/server 200
-        /* /.netlify/functions/server 200"
-      `);
-        /* eslint-enable no-tabs */
+        "
+        `);
       });
-      it("should add route rules - headers", async () => {
+      it("adds route rules - headers", async () => {
         const headers = await fsp.readFile(
           resolve(ctx.outDir, "../dist/_headers"),
           "utf8"
         );
-        /* eslint-disable no-tabs */
+
         expect(headers).toMatchInlineSnapshot(`
         "/rules/headers
           cache-control: s-maxage=60
@@ -87,7 +71,68 @@ describe("nitro:preset:netlify", async () => {
           cache-control: public, max-age=3600, immutable
         "
       `);
-        /* eslint-enable no-tabs */
+      });
+      it("writes config.json", async () => {
+        const config = await fsp
+          .readFile(resolve(ctx.outDir, "../deploy/v1/config.json"), "utf8")
+          .then((r) => JSON.parse(r));
+        expect(config).toMatchInlineSnapshot(`
+          {
+            "images": {
+              "remote_images": [
+                "https://example.com/.*",
+              ],
+            },
+          }
+        `);
+      });
+      describe("matching ISR route rule with no max-age", () => {
+        it("sets Netlify-CDN-Cache-Control header with revalidation after 1 year and durable directive", async () => {
+          const { headers } = await callHandler({ url: "/rules/isr" });
+          expect(
+            (headers as Record<string, string>)["netlify-cdn-cache-control"]
+          ).toBe("public, max-age=31536000, must-revalidate, durable");
+        });
+        it("sets Cache-Control header with immediate revalidation", async () => {
+          const { headers } = await callHandler({ url: "/rules/isr" });
+          expect((headers as Record<string, string>)["cache-control"]).toBe(
+            "public, max-age=0, must-revalidate"
+          );
+        });
+      });
+      describe("matching ISR route rule with a max-age", () => {
+        it("sets Netlify-CDN-Cache-Control header with SWC=1yr, given max-age, and durable directive", async () => {
+          const { headers } = await callHandler({ url: "/rules/isr-ttl" });
+          expect(
+            (headers as Record<string, string>)["netlify-cdn-cache-control"]
+          ).toBe(
+            "public, max-age=60, stale-while-revalidate=31536000, durable"
+          );
+        });
+        it("sets Cache-Control header with immediate revalidation", async () => {
+          const { headers } = await callHandler({ url: "/rules/isr-ttl" });
+          expect((headers as Record<string, string>)["cache-control"]).toBe(
+            "public, max-age=0, must-revalidate"
+          );
+        });
+      });
+      it("does not overwrite Cache-Control headers given a matching non-ISR route rule", async () => {
+        const { headers } = await callHandler({ url: "/rules/dynamic" });
+        expect(
+          (headers as Record<string, string>)["cache-control"]
+        ).not.toBeDefined();
+        expect(
+          (headers as Record<string, string>)["netlify-cdn-cache-control"]
+        ).not.toBeDefined();
+      });
+      // Regression test for https://github.com/unjs/nitro/issues/2431
+      it("matches paths with a query string", async () => {
+        const { headers } = await callHandler({
+          url: "/rules/isr-ttl?foo=bar",
+        });
+        expect(
+          (headers as Record<string, string>)["netlify-cdn-cache-control"]
+        ).toBe("public, max-age=60, stale-while-revalidate=31536000, durable");
       });
     }
   );

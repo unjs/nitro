@@ -1,6 +1,6 @@
 import { promises as fsp } from "node:fs";
-import { resolve } from "pathe";
 import { EdgeRuntime } from "edge-runtime";
+import { resolve } from "pathe";
 import { isWindows } from "std-env";
 import { describeIf, setupTest, testNitro } from "../tests";
 
@@ -16,7 +16,7 @@ describeIf(!isWindows, "nitro:preset:vercel-edge", async () => {
     });
     runtime.evaluate(
       initialCode.replace(
-        "export{handleEvent as default}",
+        /export ?{ ?handleEvent as default ?}/,
         "globalThis.handleEvent = handleEvent"
       )
     );

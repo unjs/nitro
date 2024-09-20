@@ -1,5 +1,9 @@
-import type { CaptureError, CapturedErrorContext } from "../runtime/types";
-import type { NitroFetchRequest, $Fetch } from "./fetch";
+import type {
+  CacheOptions,
+  CaptureError,
+  CapturedErrorContext,
+} from "nitropack/types";
+import type { $Fetch, NitroFetchRequest } from "./fetch/fetch";
 
 export type H3EventFetch = (
   request: NitroFetchRequest,
@@ -25,7 +29,11 @@ declare module "h3" {
       /** @experimental */
       errors: { error?: Error; context: CapturedErrorContext }[];
     };
+
+    cache: {
+      options: CacheOptions;
+    };
   }
 }
 
-export {};
+export type {};

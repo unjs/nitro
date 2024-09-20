@@ -1,13 +1,8 @@
-import { resolve, dirname } from "pathe";
+import type { RollupVirtualOptions, VirtualModule } from "nitropack/types";
+import { dirname, resolve } from "pathe";
 import type { Plugin } from "rollup";
 
 // Based on https://github.com/rollup/plugins/blob/master/packages/virtual/src/index.ts
-
-export type VirtualModule = string | (() => string | Promise<string>);
-
-export interface RollupVirtualOptions {
-  [id: string]: VirtualModule;
-}
 
 const PREFIX = "\0virtual:";
 
@@ -57,6 +52,10 @@ export function virtual(
       let m = _modules.get(idNoPrefix);
       if (typeof m === "function") {
         m = await m();
+      }
+
+      if (!m) {
+        return null;
       }
 
       cache[id.replace(PREFIX, "")] = m;

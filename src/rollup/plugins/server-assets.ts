@@ -1,22 +1,12 @@
 import { promises as fsp } from "node:fs";
-import type { Plugin } from "rollup";
 import createEtag from "etag";
-import mime from "mime";
-import { resolve } from "pathe";
-import { normalizeKey } from "unstorage";
 import { globby } from "globby";
-import type { Nitro } from "../../types";
+import mime from "mime";
+import type { Nitro } from "nitropack/types";
+import { resolve } from "pathe";
+import type { Plugin } from "rollup";
+import { normalizeKey } from "unstorage";
 import { virtual } from "./virtual";
-
-export interface ServerAssetOptions {
-  inline: boolean;
-  dirs: {
-    [assetdir: string]: {
-      dir: string;
-      meta?: boolean;
-    };
-  };
-}
 
 interface ResolvedAsset {
   fsPath: string;
@@ -31,7 +21,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Development: Use filesystem
   if (nitro.options.dev || nitro.options.preset === "nitro-prerender") {
     return virtual(
-      { "#internal/nitro/virtual/server-assets": getAssetsDev(nitro) },
+      { "#nitro-internal-virtual/server-assets": getAssetsDev(nitro) },
       nitro.vfs
     );
   }
@@ -39,13 +29,14 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Production: Bundle assets
   return virtual(
     {
-      "#internal/nitro/virtual/server-assets": async () => {
+      "#nitro-internal-virtual/server-assets": async () => {
         // Scan all assets
         const assets: Record<string, ResolvedAsset> = {};
         for (const asset of nitro.options.serverAssets) {
           const files = await globby("**/*.*", {
             cwd: asset.dir,
             absolute: false,
+            ignore: asset.ignore,
           });
           for (const _id of files) {
             const fsPath = resolve(asset.dir, _id);
@@ -78,7 +69,7 @@ const serverAssets = ${JSON.stringify(nitro.options.serverAssets)}
 export const assets = createStorage()
 
 for (const asset of serverAssets) {
-  assets.mount(asset.baseName, fsDriver({ base: asset.dir }))
+  assets.mount(asset.baseName, fsDriver({ base: asset.dir, ignore: (asset?.ignore || []) }))
 }`;
 }
 

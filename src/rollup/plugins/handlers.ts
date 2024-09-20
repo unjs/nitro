@@ -1,22 +1,44 @@
+import { runtimeDir } from "nitropack/runtime/meta";
+import type {
+  Nitro,
+  NitroEventHandler,
+  NitroRouteRules,
+} from "nitropack/types";
 import { hash } from "ohash";
-import type { Nitro, NitroRouteRules, NitroEventHandler } from "../../types";
+import { join } from "pathe";
 import { virtual } from "./virtual";
 
 export function handlers(nitro: Nitro) {
-  const getHandlers = () =>
-    [
+  const getHandlers = () => {
+    const handlers: NitroEventHandler[] = [
       ...nitro.scannedHandlers,
       ...nitro.options.handlers,
-    ] as NitroEventHandler[];
+    ];
+
+    const envConditions = new Set(
+      [
+        nitro.options.dev ? "dev" : "prod",
+        nitro.options.preset,
+        nitro.options.preset === "nitro-prerender" ? "prerender" : undefined,
+      ].filter(Boolean) as string[]
+    );
+
+    return handlers.filter((h) => {
+      const envs = (Array.isArray(h.env) ? h.env : [h.env]).filter(
+        Boolean
+      ) as string[];
+      return envs.length === 0 || envs.some((env) => envConditions.has(env));
+    });
+  };
 
   return virtual(
     {
-      "#internal/nitro/virtual/server-handlers": () => {
+      "#nitro-internal-virtual/server-handlers": () => {
         const handlers = getHandlers();
         if (nitro.options.serveStatic) {
           handlers.unshift({
             middleware: true,
-            handler: "#internal/nitro/static",
+            handler: join(runtimeDir, "internal/static"),
           });
         }
         if (nitro.options.renderer) {
@@ -41,16 +63,7 @@ export function handlers(nitro: Nitro) {
           handlers.filter((h) => h.lazy).map((h) => h.handler)
         );
 
-        const handlersMeta = getHandlers()
-          .filter((h) => h.route)
-          .map((h) => {
-            return {
-              route: h.route,
-              method: h.method,
-            };
-          });
-
-        const code = `
+        const code = /* js */ `
 ${imports
   .map((handler) => `import ${getImportId(handler)} from '${handler}';`)
   .join("\n")}
@@ -70,15 +83,33 @@ ${handlers
         h.handler,
         h.lazy
       )}, lazy: ${!!h.lazy}, middleware: ${!!h.middleware}, method: ${JSON.stringify(
-        h.method
+        h.method?.toLowerCase()
       )} }`
   )
   .join(",\n")}
 ];
-
-export const handlersMeta = ${JSON.stringify(handlersMeta, null, 2)}
   `.trim();
         return code;
+      },
+      "#nitro-internal-virtual/server-handlers-meta": () => {
+        const handlers = getHandlers();
+        return /* js */ `
+  ${handlers
+    .map(
+      (h) => `import ${getImportId(h.handler)}Meta from "${h.handler}?meta";`
+    )
+    .join("\n")}
+export const handlersMeta = [
+  ${handlers
+    .map(
+      (h) =>
+        /* js */ `{ route: ${JSON.stringify(h.route)}, method: ${JSON.stringify(
+          h.method?.toLowerCase()
+        )}, meta: ${getImportId(h.handler)}Meta }`
+    )
+    .join(",\n")}
+  ];
+        `;
       },
     },
     nitro.vfs

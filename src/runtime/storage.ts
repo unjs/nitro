@@ -1,9 +1,3 @@
-import type { Storage, StorageValue } from "unstorage";
-import { prefixStorage } from "unstorage";
-import { storage } from "#internal/nitro/virtual/storage";
+// Backward compatibility for imports from "#internal/nitro/*" or "nitropack/runtime/*"
 
-export function useStorage<T extends StorageValue = StorageValue>(
-  base = ""
-): Storage<T> {
-  return base ? prefixStorage<T>(storage, base) : storage;
-}
+export { useStorage } from "./internal/storage";
