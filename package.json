@@ -177,7 +177,6 @@
     "@scalar/api-reference": "^1.25.13",
     "@types/archiver": "^6.0.2",
     "@types/aws-lambda": "^8.10.145",
-    "@types/bun": "^1.1.9",
     "@types/estree": "^1.0.6",
     "@types/etag": "^1.8.3",
     "@types/fs-extra": "^11.0.4",
