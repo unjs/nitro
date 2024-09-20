@@ -21,18 +21,20 @@ import { parseURL } from "ufo";
 import { useNitroApp } from "./app";
 import { useStorage } from "./storage";
 
-const defaultCacheOptions = {
-  name: "_",
-  base: "/cache",
-  swr: true,
-  maxAge: 1,
-};
+function defaultCacheOptions() {
+  return {
+    name: "_",
+    base: "/cache",
+    swr: true,
+    maxAge: 1,
+  } as const
+}
 
 export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
   fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
 ): (...args: ArgsT) => Promise<T | undefined> {
-  opts = { ...defaultCacheOptions, ...opts };
+  opts = { ...defaultCacheOptions(), ...opts };
 
   const pending: { [key: string]: Promise<T> } = {};
 
@@ -163,7 +165,12 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
   };
 }
 
-export const cachedFunction = defineCachedFunction;
+export function cachedFunction<T, ArgsT extends unknown[] = any[]>(
+  fn: (...args: ArgsT) => T | Promise<T>,
+  opts: CacheOptions<T> = {}
+): (...args: ArgsT) => Promise<T | undefined> {
+  return defineCachedFunction(fn, opts)
+}
 
 function getKey(...args: unknown[]) {
   return args.length > 0 ? hash(args, {}) : "";
@@ -202,7 +209,7 @@ export function defineCachedEventHandler<
   Response = EventHandlerResponse,
 >(
   handler: EventHandler<Request, Response>,
-  opts: CachedEventHandlerOptions<Response> = defaultCacheOptions
+  opts: CachedEventHandlerOptions<Response> = defaultCacheOptions()
 ): EventHandler<Request, Response> {
   const variableHeaderNames = (opts.varies || [])
     .filter(Boolean)
