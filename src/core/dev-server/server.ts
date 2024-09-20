@@ -45,10 +45,14 @@ function initWorker(filename: string): Promise<NitroWorker> | undefined {
         )
       );
     });
-    worker.once("error", (err) => {
-      const newErr = new Error("[worker init] " + err.message);
-      newErr.stack = err.stack;
-      reject(newErr);
+    worker.once("error", (error) => {
+      const newError = new Error(`[worker init] ${filename} failed`, {
+        cause: error,
+      });
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(newError, initWorker);
+      }
+      reject(newError);
     });
     const addressListener = (event: any) => {
       if (!event || !event?.address) {
