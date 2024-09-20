@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import { consola } from "consola";
-import { listTasks } from "nitropack/core";
+import { listTasks, loadOptions } from "nitropack/core";
 import { resolve } from "pathe";
 
 export default defineCommand({
@@ -16,7 +16,12 @@ export default defineCommand({
   },
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
-    const tasks = await listTasks({ cwd, buildDir: ".nitro" });
+    const options = await loadOptions({ rootDir: cwd }).catch(() => undefined);
+
+    const tasks = await listTasks({
+      cwd,
+      buildDir: options?.buildDir || ".nitro",
+    });
     for (const [name, task] of Object.entries(tasks)) {
       consola.log(
         ` - \`${name}\`${
