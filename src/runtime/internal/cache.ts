@@ -27,7 +27,7 @@ function defaultCacheOptions() {
     base: "/cache",
     swr: true,
     maxAge: 1,
-  } as const
+  } as const;
 }
 
 export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
@@ -169,7 +169,7 @@ export function cachedFunction<T, ArgsT extends unknown[] = any[]>(
   fn: (...args: ArgsT) => T | Promise<T>,
   opts: CacheOptions<T> = {}
 ): (...args: ArgsT) => Promise<T | undefined> {
-  return defineCachedFunction(fn, opts)
+  return defineCachedFunction(fn, opts);
 }
 
 function getKey(...args: unknown[]) {
