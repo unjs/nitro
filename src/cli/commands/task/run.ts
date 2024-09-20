@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import { consola } from "consola";
 import destr from "destr";
-import { runTask } from "nitropack/core";
+import { createNitro, loadOptions, runTask } from "nitropack/core";
 import { resolve } from "pathe";
 
 export default defineCommand({
@@ -27,6 +27,8 @@ export default defineCommand({
   },
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
+    const options = await loadOptions({ rootDir: cwd }).catch(() => undefined);
+
     consola.info(`Running task \`${args.name}\`...`);
     let payload: any = destr(args.payload || "{}");
     if (typeof payload !== "object") {
@@ -44,7 +46,7 @@ export default defineCommand({
         },
         {
           cwd,
-          buildDir: ".nitro",
+          buildDir: options?.buildDir || ".nitro",
         }
       );
       consola.success("Result:", result);
