@@ -82,20 +82,21 @@
     "dev:start": "node playground/.output/server/index.mjs",
     "lint": "eslint --cache . && biome check .",
     "lint:fix": "eslint --cache --fix . && biome check . --write",
-    "nitro": "JITI_ESM_RESOLVE=1 NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
+    "nitro": "NODE_OPTIONS=\"--enable-source-maps\" jiti ./src/cli/index.ts",
     "prepack": "pnpm build",
-    "gen-mirror": "JITI_ESM_RESOLVE=1 pnpm jiti scripts/gen-mirror.ts",
-    "gen-presets": "JITI_ESM_RESOLVE=1 pnpm jiti scripts/gen-presets.ts",
+    "gen-mirror": "pnpm jiti scripts/gen-mirror.ts",
+    "gen-presets": "pnpm jiti scripts/gen-presets.ts",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "stub": "unbuild --stub",
     "test": "pnpm lint && pnpm vitest-es run --silent",
-    "test:fixture:types": "pnpm stub && JITI_ESM_RESOLVE=1 jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit",
+    "test:fixture:types": "pnpm stub && jiti ./test/scripts/gen-fixture-types.ts && cd test/fixture && tsc --noEmit",
     "test:types": "tsc --noEmit && pnpm test:fixture:types",
     "vitest-es": "NODE_OPTIONS=\"--enable-source-maps --experimental-vm-modules\" vitest"
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^6.19.2"
+    "undici": "^6.19.2",
+    "jiti": "^2.0.0-rc.1"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.4",
@@ -134,7 +135,7 @@
     "hookable": "^5.5.3",
     "httpxy": "^0.1.5",
     "ioredis": "^5.4.1",
-    "jiti": "^1.21.6",
+    "jiti": "^2.0.0-rc.1",
     "klona": "^2.0.6",
     "knitwork": "^1.1.0",
     "listhen": "^1.7.2",
