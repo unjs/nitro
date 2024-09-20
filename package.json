@@ -112,7 +112,7 @@
     "@types/http-proxy": "^1.17.15",
     "@vercel/nft": "^0.27.3",
     "archiver": "^7.0.1",
-    "c12": "^1.11.1",
+    "c12": "^2.0.0-beta.2",
     "chokidar": "^3.6.0",
     "citty": "^0.1.6",
     "compatx": "^0.1.8",
