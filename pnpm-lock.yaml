@@ -9,11 +9,6 @@ overrides:
   undici: ^6.19.2
   jiti: ^2.0.0-rc.1
 
-patchedDependencies:
-  unbuild@3.0.0-rc.2:
-    hash: rrfmssaqzf6ob23oou5wnx366m
-    path: patches/unbuild@3.0.0-rc.2.patch
-
 importers:
 
   .:
@@ -321,7 +316,7 @@ importers:
         version: 5.5.4
       unbuild:
         specifier: 3.0.0-rc.2
-        version: 3.0.0-rc.2(patch_hash=rrfmssaqzf6ob23oou5wnx366m)(typescript@5.5.4)
+        version: 3.0.0-rc.2(typescript@5.5.4)
       undici:
         specifier: ^6.19.2
         version: 6.19.8
@@ -12142,7 +12137,7 @@ snapshots:
 
   ufo@1.5.4: {}
 
-  unbuild@3.0.0-rc.2(patch_hash=rrfmssaqzf6ob23oou5wnx366m)(typescript@5.5.4):
+  unbuild@3.0.0-rc.2(typescript@5.5.4):
     dependencies:
       '@rollup/plugin-alias': 5.1.0(rollup@4.21.0)
       '@rollup/plugin-commonjs': 25.0.8(rollup@4.21.0)

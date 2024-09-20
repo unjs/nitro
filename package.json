@@ -226,9 +226,6 @@
         "react-dom",
         "@algolia/client-search"
       ]
-    },
-    "patchedDependencies": {
-      "unbuild@3.0.0-rc.2": "patches/unbuild@3.0.0-rc.2.patch"
     }
   }
 }
