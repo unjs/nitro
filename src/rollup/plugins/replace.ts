@@ -12,7 +12,6 @@ export function replace(options: RollupReplaceOptions): Plugin {
     renderChunk(code, chunk, options) {
       if (!NO_REPLACE_RE.test(code)) {
         // prettier-ignore
-        // biome-ignore format: keep ts-ignore working
         // @ts-ignore
         return (_plugin.renderChunk as () => any).call(this, code, chunk, options );
       }
