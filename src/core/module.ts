@@ -36,7 +36,7 @@ async function _resolveNitroModule(
     });
     const _modPath = jiti.esmResolve(mod);
     _url = _modPath;
-    mod = await jiti.import(_modPath) as NitroModule;
+    mod = (await jiti.import(_modPath)) as NitroModule;
   }
 
   if (typeof mod === "function") {
@@ -51,5 +51,5 @@ async function _resolveNitroModule(
   return {
     _url,
     ...mod,
-  }
+  };
 }
