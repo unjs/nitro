@@ -16,9 +16,12 @@ export default defineCommand({
   },
   async run({ args }) {
     const cwd = resolve((args.dir || args.cwd || ".") as string);
-    const options = await loadOptions({ rootDir: cwd });
+    const options = await loadOptions({ rootDir: cwd }).catch(() => undefined);
 
-    const tasks = await listTasks({ cwd, buildDir: options.buildDir });
+    const tasks = await listTasks({
+      cwd,
+      buildDir: options?.buildDir || ".nitro",
+    });
     for (const [name, task] of Object.entries(tasks)) {
       consola.log(
         ` - \`${name}\`${
