@@ -1,8 +1,4 @@
 {
-  "extends": [
-    "github>unjs/renovate-config"
-  ],
-  "ignoreDeps": [
-    "crossws"
-  ]
+  "extends": ["github>unjs/renovate-config"],
+  "ignoreDeps": ["crossws"]
 }
