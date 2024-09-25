@@ -96,7 +96,7 @@
   "resolutions": {
     "nitropack": "link:.",
     "undici": "^6.19.8",
-    "jiti": "^2.0.0-rc.1"
+    "jiti": "^2.0.0"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.4",
@@ -135,7 +135,7 @@
     "hookable": "^5.5.3",
     "httpxy": "^0.1.5",
     "ioredis": "^5.4.1",
-    "jiti": "2.0.0-rc.1",
+    "jiti": "^2.0.0",
     "klona": "^2.0.6",
     "knitwork": "^1.1.0",
     "listhen": "^1.7.2",
