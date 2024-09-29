@@ -32,7 +32,7 @@ function defaultCacheOptions() {
 
 export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
   fn: (...args: ArgsT) => T | Promise<T>,
-  opts: CacheOptions<T> = {}
+  opts: CacheOptions<T, ArgsT> = {}
 ): (...args: ArgsT) => Promise<T | undefined> {
   opts = { ...defaultCacheOptions(), ...opts };
 
