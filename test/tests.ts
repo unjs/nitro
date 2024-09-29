@@ -247,7 +247,7 @@ export function testNitro(
     const { status } = await callHandler({ url: "/route-group" });
     expect(status).toBe(200);
     const { status: apiStatus } = await callHandler({
-      url: "/api/route-group",
+      url: "/route-group",
     });
     expect(apiStatus).toBe(200);
   });
