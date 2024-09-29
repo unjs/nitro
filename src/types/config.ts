@@ -323,7 +323,6 @@ export interface StorageMounts {
 }
 
 // Database
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type DatabaseConnectionName = "default" | (string & {});
 export type DatabaseConnectionConfig = {
   connector: ConnectorName;

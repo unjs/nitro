@@ -35,7 +35,6 @@ export type NitroTypes = {
 };
 
 export interface NitroFrameworkInfo {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   name?: "nitro" | (string & {});
   version?: string;
 }
