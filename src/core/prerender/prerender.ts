@@ -9,9 +9,9 @@ import { join, relative, resolve } from "pathe";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { joinURL, withBase, withoutBase } from "ufo";
 import { build } from "../build/build";
-import { runParallel } from "../utils/parallel";
 import { createNitro } from "../nitro";
 import { compressPublicAssets } from "../utils/compress";
+import { runParallel } from "../utils/parallel";
 import {
   extractLinks,
   formatPrerenderRoute,
