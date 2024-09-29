@@ -32,7 +32,10 @@ export interface ResponseCacheEntry<T = any> {
 }
 
 export interface CachedEventHandlerOptions<T = any>
-  extends Omit<CacheOptions<ResponseCacheEntry<T>, [H3Event]>, "transform" | "validate"> {
+  extends Omit<
+    CacheOptions<ResponseCacheEntry<T>, [H3Event]>,
+    "transform" | "validate"
+  > {
   headersOnly?: boolean;
   varies?: string[] | readonly string[];
 }
