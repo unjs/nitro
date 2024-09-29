@@ -5,35 +5,7 @@ import { gzipSize } from "gzip-size";
 import { dirname, relative, resolve } from "pathe";
 import prettyBytes from "pretty-bytes";
 import { isTest } from "std-env";
-import asyncPool from "tiny-async-pool";
-
-type CollectedFile = {
-  file: string;
-  path: string;
-  size: number;
-  gzip: number;
-}
-
-async function collectFiles(dir: string, options: { compressedSizes?: boolean } = {}): Promise<CollectedFile[]> {
-  const files = await globby("**/*.*", { cwd: dir, ignore: ["*.map"] });
-
-  const arr: CollectedFile[] = [];
-
-  // TODO: could probably take the CPU core count instead...
-  const parallelism = 8;
-
-  for await (const data of asyncPool(parallelism, files, async file => {
-    const path = resolve(dir, file);
-    const src = await fsp.readFile(path);
-    const size = src.byteLength;
-    const gzip = options.compressedSizes ? await gzipSize(src) : 0;
-    return { file, path, size, gzip };
-  })) {
-    arr.push(data);
-  };
-
-  return arr;
-}
+import { runParallel } from "./parallel";
 
 export async function generateFSTree(
   dir: string,
@@ -43,7 +15,24 @@ export async function generateFSTree(
     return;
   }
 
-  const items = (await collectFiles(dir, options)).sort((a, b) => a.path.localeCompare(b.path));
+  const files = await globby("**/*.*", { cwd: dir, ignore: ["*.map"] });
+
+  const items: { file: string; path: string; size: number; gzip: number }[] =
+    [];
+
+  await runParallel(
+    new Set(files),
+    async (file) => {
+      const path = resolve(dir, file);
+      const src = await fsp.readFile(path);
+      const size = src.byteLength;
+      const gzip = options.compressedSizes ? await gzipSize(src) : 0;
+      items.push({ file, path, size, gzip });
+    },
+    { concurrency: 10 }
+  );
+
+  items.sort((a, b) => a.path.localeCompare(b.path));
 
   let totalSize = 0;
   let totalGzip = 0;

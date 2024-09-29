@@ -9,13 +9,13 @@ import { join, relative, resolve } from "pathe";
 import { createRouter as createRadixRouter, toRouteMatcher } from "radix3";
 import { joinURL, withBase, withoutBase } from "ufo";
 import { build } from "../build/build";
+import { runParallel } from "../utils/parallel";
 import { createNitro } from "../nitro";
 import { compressPublicAssets } from "../utils/compress";
 import {
   extractLinks,
   formatPrerenderRoute,
   matchesIgnorePattern,
-  runParallel,
 } from "./utils";
 
 const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/; // From unjs/destr
