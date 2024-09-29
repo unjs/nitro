@@ -230,7 +230,6 @@ describe("API routes", () => {
     expectTypeOf($fetch("/api/serialized/null")).toEqualTypeOf<Promise<any>>();
 
     expectTypeOf($fetch("/api/serialized/function")).toEqualTypeOf<
-      // eslint-disable-next-line @typescript-eslint/ban-types
       Promise<{}>
     >();
 
@@ -297,7 +296,6 @@ describe("defineCachedEventHandler", () => {
       Promise<{ message: string }>
     >(fixture);
     expectTypeOf(b).toEqualTypeOf<
-      // eslint-disable-next-line @typescript-eslint/ban-types
       EventHandler<{}, Promise<{ message: string }>>
     >();
   });

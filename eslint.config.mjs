@@ -8,5 +8,6 @@ export default unjs({
     "@typescript-eslint/no-unused-vars": 0,
     "unicorn/filename-case": 0,
     "unicorn/consistent-function-scoping": 0,
+    "@typescript-eslint/no-empty-object-type": 0,
   },
 });
