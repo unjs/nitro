@@ -95,7 +95,7 @@ export async function scanServerRoutes(
   return files.map((file) => {
     let route = file.path
       .replace(/\.[A-Za-z]+$/, "")
-      .replace(/\\\((\w+)\)/g, "")
+      .replace(/\(([^(/\\]+)\)[/\\]/g, "")
       .replace(/\[\.{3}]/g, "**")
       .replace(/\[\.{3}(\w+)]/g, "**:$1")
       .replace(/\[(\w+)]/g, ":$1");
