@@ -1,5 +1,5 @@
+import type { Nitro } from "nitro/types";
 import type { Plugin } from "rollup";
-import { Nitro } from "../../types";
 
 export const ImportMetaRe = /import\.meta|globalThis._importMeta_/;
 

@@ -1,5 +1,5 @@
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import {
   deprecateSWR,
   generateEdgeFunctionFiles,
@@ -18,7 +18,7 @@ const vercel = defineNitroPreset(
     output: {
       dir: "{{ rootDir }}/.vercel/output",
       serverDir: "{{ output.dir }}/functions/__nitro.func",
-      publicDir: "{{ output.dir }}/static",
+      publicDir: "{{ output.dir }}/static/{{ baseURL }}",
     },
     commands: {
       deploy: "",
@@ -48,7 +48,7 @@ const vercelEdge = defineNitroPreset(
     output: {
       dir: "{{ rootDir }}/.vercel/output",
       serverDir: "{{ output.dir }}/functions/__nitro.func",
-      publicDir: "{{ output.dir }}/static",
+      publicDir: "{{ output.dir }}/static/{{ baseURL }}",
     },
     commands: {
       deploy: "",
@@ -88,7 +88,7 @@ const vercelStatic = defineNitroPreset(
     extends: "static",
     output: {
       dir: "{{ rootDir }}/.vercel/output",
-      publicDir: "{{ output.dir }}/static",
+      publicDir: "{{ output.dir }}/static/{{ baseURL }}",
     },
     commands: {
       preview: "npx serve ./static",

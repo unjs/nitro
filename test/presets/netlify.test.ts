@@ -1,7 +1,7 @@
 import { promises as fsp } from "node:fs";
-import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
 import type { Context } from "@netlify/functions";
+import { resolve } from "pathe";
+import { describe, expect, it } from "vitest";
 import { getPresetTmpDir, setupTest, testNitro } from "../tests";
 
 describe("nitro:preset:netlify", async () => {
@@ -87,11 +87,11 @@ describe("nitro:preset:netlify", async () => {
         `);
       });
       describe("matching ISR route rule with no max-age", () => {
-        it("sets Netlify-CDN-Cache-Control header with revalidation after 1 year", async () => {
+        it("sets Netlify-CDN-Cache-Control header with revalidation after 1 year and durable directive", async () => {
           const { headers } = await callHandler({ url: "/rules/isr" });
           expect(
             (headers as Record<string, string>)["netlify-cdn-cache-control"]
-          ).toBe("public, max-age=31536000, must-revalidate");
+          ).toBe("public, max-age=31536000, must-revalidate, durable");
         });
         it("sets Cache-Control header with immediate revalidation", async () => {
           const { headers } = await callHandler({ url: "/rules/isr" });
@@ -101,11 +101,13 @@ describe("nitro:preset:netlify", async () => {
         });
       });
       describe("matching ISR route rule with a max-age", () => {
-        it("sets Netlify-CDN-Cache-Control header with SWC=1yr and given max-age", async () => {
+        it("sets Netlify-CDN-Cache-Control header with SWC=1yr, given max-age, and durable directive", async () => {
           const { headers } = await callHandler({ url: "/rules/isr-ttl" });
           expect(
             (headers as Record<string, string>)["netlify-cdn-cache-control"]
-          ).toBe("public, max-age=60, stale-while-revalidate=31536000");
+          ).toBe(
+            "public, max-age=60, stale-while-revalidate=31536000, durable"
+          );
         });
         it("sets Cache-Control header with immediate revalidation", async () => {
           const { headers } = await callHandler({ url: "/rules/isr-ttl" });
@@ -130,7 +132,7 @@ describe("nitro:preset:netlify", async () => {
         });
         expect(
           (headers as Record<string, string>)["netlify-cdn-cache-control"]
-        ).toBe("public, max-age=60, stale-while-revalidate=31536000");
+        ).toBe("public, max-age=60, stale-while-revalidate=31536000, durable");
       });
     }
   );

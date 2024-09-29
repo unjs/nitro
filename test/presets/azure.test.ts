@@ -1,8 +1,8 @@
-import { promises as fsp, existsSync } from "node:fs";
-import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
+import { existsSync, promises as fsp } from "node:fs";
 import { execa } from "execa";
 import { getRandomPort, waitForPort } from "get-port-please";
+import { resolve } from "pathe";
+import { describe, expect, it } from "vitest";
 import { setupTest, testNitro } from "../tests";
 
 describe(
@@ -117,8 +117,20 @@ describe(
               "route": "/logout",
             },
             {
+              "rewrite": "/prerender-custom.html",
+              "route": "/prerender-custom",
+            },
+            {
               "rewrite": "/api/hey/index.html",
               "route": "/api/hey",
+            },
+            {
+              "rewrite": "/_swagger/index.html",
+              "route": "/_swagger",
+            },
+            {
+              "rewrite": "/_scalar/index.html",
+              "route": "/_scalar",
             },
             {
               "rewrite": "/prerender/index.html",

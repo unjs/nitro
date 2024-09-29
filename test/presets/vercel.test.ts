@@ -1,6 +1,6 @@
 import { promises as fsp } from "node:fs";
 import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { setupTest, startServer, testNitro } from "../tests";
 
 describe("nitro:preset:vercel", async () => {
@@ -25,6 +25,12 @@ describe("nitro:preset:vercel", async () => {
         expect(config).toMatchInlineSnapshot(`
           {
             "overrides": {
+              "_scalar/index.html": {
+                "path": "_scalar",
+              },
+              "_swagger/index.html": {
+                "path": "_swagger",
+              },
               "api/hey/index.html": {
                 "path": "api/hey",
               },

@@ -1,22 +1,15 @@
 import { promises as fsp } from "node:fs";
-import type { Plugin } from "rollup";
-import createEtag from "etag";
-import mime from "mime";
-import { resolve } from "pathe";
-import { normalizeKey } from "unstorage";
+import * as _etag from "etag";
 import { globby } from "globby";
-import type { Nitro } from "../../types";
+import mime from "mime";
+import type { Nitro } from "nitro/types";
+import { resolve } from "pathe";
+import type { Plugin } from "rollup";
+import { normalizeKey } from "unstorage";
 import { virtual } from "./virtual";
 
-export interface ServerAssetOptions {
-  inline: boolean;
-  dirs: {
-    [assetdir: string]: {
-      dir: string;
-      meta?: boolean;
-    };
-  };
-}
+const createEtag =
+  (_etag as unknown as { default: typeof import("etag") }).default || _etag;
 
 interface ResolvedAsset {
   fsPath: string;
@@ -31,7 +24,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Development: Use filesystem
   if (nitro.options.dev || nitro.options.preset === "nitro-prerender") {
     return virtual(
-      { "#internal/nitro/virtual/server-assets": getAssetsDev(nitro) },
+      { "#nitro-internal-virtual/server-assets": getAssetsDev(nitro) },
       nitro.vfs
     );
   }
@@ -39,7 +32,7 @@ export function serverAssets(nitro: Nitro): Plugin {
   // Production: Bundle assets
   return virtual(
     {
-      "#internal/nitro/virtual/server-assets": async () => {
+      "#nitro-internal-virtual/server-assets": async () => {
         // Scan all assets
         const assets: Record<string, ResolvedAsset> = {};
         for (const asset of nitro.options.serverAssets) {

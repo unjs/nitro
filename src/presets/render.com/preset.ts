@@ -1,4 +1,4 @@
-import { defineNitroPreset } from "nitropack";
+import { defineNitroPreset } from "nitro/kit";
 
 const renderCom = defineNitroPreset(
   {

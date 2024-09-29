@@ -1,15 +1,14 @@
-import "#internal/nitro/virtual/polyfill";
-import { runCronTasks } from "#internal/nitro/task";
-import { requestHasBody } from "#internal/nitro/utils";
-import { nitroApp } from "#internal/nitro/app";
-import { isPublicAssetURL } from "#internal/nitro/virtual/public-assets";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitro/runtime";
+import { requestHasBody, runCronTasks } from "nitro/runtime/internal";
+import { isPublicAssetURL } from "#nitro-internal-virtual/public-assets";
 
-import wsAdapter from "crossws/adapters/cloudflare";
 import type {
   Request as CFRequest,
   EventContext,
   ExecutionContext,
 } from "@cloudflare/workers-types";
+import wsAdapter from "crossws/adapters/cloudflare";
 
 /**
  * Reference: https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#parameters
@@ -23,6 +22,8 @@ interface CFPagesEnv {
   CF_PAGES_URL: string;
   [key: string]: any;
 }
+
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)

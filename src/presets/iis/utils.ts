@@ -1,8 +1,8 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { defu } from "defu";
-import { resolveFile } from "../_utils";
-import type { Nitro } from "nitropack";
-import { writeFile } from "../_utils";
+import { writeFile } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import { resolve } from "pathe";
 
 export async function writeIISFiles(nitro: Nitro) {
@@ -31,7 +31,7 @@ export async function writeIISNodeFiles(nitro: Nitro) {
 }
 
 async function iisnodeXmlTemplate(nitro: Nitro) {
-  const path = resolveFile("web.config", nitro.options.rootDir, ["config"]);
+  const path = resolve(nitro.options.rootDir, "web.config");
   const originalString = /* xml */ `<?xml version="1.0" encoding="utf-8"?>
   <!--
        This configuration file is required if iisnode is used to run node processes behind
@@ -97,7 +97,7 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
     </system.webServer>
   </configuration>
 `;
-  if (path !== undefined) {
+  if (existsSync(path)) {
     const fileString = await readFile(path, "utf8");
     const originalWebConfig: Record<string, unknown> =
       await parseXmlDoc(originalString);
@@ -106,7 +106,8 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
 
     if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
       return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
-    } else if (nitro.options.iis?.overrideConfig) {
+    }
+    if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }
@@ -114,7 +115,7 @@ async function iisnodeXmlTemplate(nitro: Nitro) {
 }
 
 async function iisXmlTemplate(nitro: Nitro) {
-  const path = resolveFile("web.config", nitro.options.rootDir, ["config"]);
+  const path = resolve(nitro.options.rootDir, "web.config");
   const originalString = /* xml */ `<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <system.webServer>
@@ -130,7 +131,7 @@ async function iisXmlTemplate(nitro: Nitro) {
   </system.webServer>
 </configuration>
 `;
-  if (path !== undefined) {
+  if (existsSync(path)) {
     const fileString = await readFile(path, "utf8");
     const originalWebConfig: Record<string, unknown> =
       await parseXmlDoc(originalString);
@@ -139,7 +140,8 @@ async function iisXmlTemplate(nitro: Nitro) {
 
     if (nitro.options.iis?.mergeConfig && !nitro.options.iis.overrideConfig) {
       return buildNewXmlDoc(defu(fileWebConfig, originalWebConfig));
-    } else if (nitro.options.iis?.overrideConfig) {
+    }
+    if (nitro.options.iis?.overrideConfig) {
       return buildNewXmlDoc({ ...fileWebConfig });
     }
   }
@@ -153,7 +155,7 @@ async function parseXmlDoc(xml: string): Promise<Record<string, unknown>> {
   if (xml === undefined || !xml) {
     return {};
   }
-  const parser = new Parser();
+  const parser = new Parser({ explicitArray: false });
   let parsedRecord: Record<string, unknown> = {};
   parser.parseString(xml, (_, r) => {
     parsedRecord = r;

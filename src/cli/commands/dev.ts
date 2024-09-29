@@ -1,12 +1,10 @@
-import { ParsedArgs, defineCommand } from "citty";
-import { resolve } from "pathe";
+import { defineCommand } from "citty";
 import { consola } from "consola";
 import { getArgs, parseArgs } from "listhen/cli";
-import { createNitro } from "../../nitro";
-import { build, prepare } from "../../build";
-import { createDevServer } from "../../dev/server";
+import { build, createDevServer, createNitro, prepare } from "nitro/core";
+import type { Nitro } from "nitro/types";
+import { resolve } from "pathe";
 import { commonArgs } from "../common";
-import type { Nitro } from "../../types";
 
 const hmrKeyRe = /^runtimeConfig\.|routeRules\./;
 
@@ -35,6 +33,7 @@ export default defineCommand({
           rootDir,
           dev: true,
           preset: "nitro-dev",
+          _cli: { command: "dev" },
         },
         {
           watch: true,

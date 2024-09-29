@@ -1,6 +1,6 @@
 import fsp from "node:fs/promises";
 import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { setupTest } from "../tests";
 
 describe("nitro:preset:static", async () => {

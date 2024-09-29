@@ -1,5 +1,5 @@
-import type { HttpsOptions } from "firebase-functions/v2/https";
 import type { RuntimeOptions, region } from "firebase-functions";
+import type { HttpsOptions } from "firebase-functions/v2/https";
 
 export type FirebaseOptions = FirebaseOptionsGen1 | FirebaseOptionsGen2;
 
@@ -7,9 +7,10 @@ export interface FirebaseOptionsBase {
   gen: 1 | 2;
   /**
    * Firebase functions node runtime version.
+   * @see https://cloud.google.com/functions/docs/runtime-support
    * @see https://cloud.google.com/functions/docs/concepts/nodejs-runtime
    */
-  nodeVersion?: "20" | "18" | "16";
+  nodeVersion?: "22" | "20" | "18" | "16";
   /**
    * When deploying multiple apps within the same Firebase project
    * you must give your server a unique name in order to avoid overwriting your functions.

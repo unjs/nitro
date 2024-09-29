@@ -1,8 +1,7 @@
 import { existsSync, promises as fsp } from "node:fs";
-import { join, dirname } from "pathe";
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
-import nitroPkg from "../../../../package.json";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
+import { dirname, join } from "pathe";
 import { deprecateSWR, writeHeaders, writeRedirects } from "./utils";
 
 // Netlify functions
@@ -92,9 +91,6 @@ const netlifyEdge = defineNitroPreset(
         format: "esm",
       },
     },
-    unenv: {
-      polyfill: ["#internal/nitro/polyfill/deno-env"],
-    },
     hooks: {
       "rollup:before": (nitro: Nitro) => {
         deprecateSWR(nitro);
@@ -111,7 +107,7 @@ const netlifyEdge = defineNitroPreset(
               path: "/*",
               name: "nitro server handler",
               function: "server",
-              generator: `${nitroPkg.name}@${nitroPkg.version}`,
+              generator: `${nitro.options.framework.name}@${nitro.options.framework.version}`,
             },
           ],
         };
@@ -134,10 +130,11 @@ const netlifyStatic = defineNitroPreset(
   {
     extends: "static",
     output: {
+      dir: "{{ rootDir }}/dist",
       publicDir: "{{ rootDir }}/dist",
     },
     commands: {
-      preview: "npx serve ./static",
+      preview: "npx serve ./",
     },
     hooks: {
       "rollup:before": (nitro: Nitro) => {
@@ -153,7 +150,6 @@ const netlifyStatic = defineNitroPreset(
     name: "netlify-static" as const,
     url: import.meta.url,
     static: true,
-
   }
 );
 

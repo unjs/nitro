@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { transform } from "esbuild";
-import type { Plugin } from "rollup";
-import type { Literal, Expression } from "estree";
+import type { Expression, Literal } from "estree";
+import type { Nitro, NitroEventHandler } from "nitro/types";
 import { extname } from "pathe";
-import { Nitro, NitroEventHandler } from "../../types";
+import type { Plugin } from "rollup";
 
 const virtualPrefix = "\0nitro-handler-meta:";
 
@@ -81,7 +81,7 @@ function astToObject(node: Expression | Literal): any {
       const obj: Record<string, any> = {};
       for (const prop of node.properties) {
         if (prop.type === "Property") {
-          const key = (prop.key as any).name;
+          const key = (prop.key as any).name ?? (prop.key as any).value;
           obj[key] = astToObject(prop.value as any);
         }
       }

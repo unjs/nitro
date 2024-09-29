@@ -1,14 +1,14 @@
 import { promises as fsp } from "node:fs";
-import { join, dirname } from "pathe";
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
+import { defineNitroPreset } from "nitro/kit";
+import type { Nitro } from "nitro/types";
+import { dirname, join } from "pathe";
+import netlifyLegacyPresets from "./legacy/preset";
 import {
   generateNetlifyFunction,
   getGeneratorString,
   writeHeaders,
   writeRedirects,
 } from "./utils";
-import netlifyLegacyPresets from "./legacy/preset";
 
 export type { NetlifyOptions as PresetOptions } from "./types";
 
@@ -54,9 +54,7 @@ const netlify = defineNitroPreset(
     name: "netlify" as const,
     stdName: "netlify",
     url: import.meta.url,
-    compatibility: {
-      date: "2024-05-07",
-    },
+    compatibilityDate: "2024-05-07",
   }
 );
 
@@ -75,9 +73,6 @@ const netlifyEdge = defineNitroPreset(
         entryFileNames: "server.js",
         format: "esm",
       },
-    },
-    unenv: {
-      polyfill: ["#internal/nitro/polyfill/deno-env"],
     },
     hooks: {
       async compiled(nitro: Nitro) {
@@ -108,9 +103,7 @@ const netlifyEdge = defineNitroPreset(
   {
     name: "netlify-edge" as const,
     url: import.meta.url,
-    compatibility: {
-      date: "2024-05-07",
-    },
+    compatibilityDate: "2024-05-07",
   }
 );
 
@@ -118,10 +111,11 @@ const netlifyStatic = defineNitroPreset(
   {
     extends: "static",
     output: {
+      dir: "{{ rootDir }}/dist",
       publicDir: "{{ rootDir }}/dist",
     },
     commands: {
-      preview: "npx serve ./static",
+      preview: "npx serve ./",
     },
     hooks: {
       async compiled(nitro: Nitro) {
@@ -135,9 +129,7 @@ const netlifyStatic = defineNitroPreset(
     stdName: "netlify",
     static: true,
     url: import.meta.url,
-    compatibility: {
-      date: "2024-05-07",
-    },
+    compatibilityDate: "2024-05-07",
   }
 );
 

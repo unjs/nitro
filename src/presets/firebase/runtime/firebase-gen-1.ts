@@ -1,11 +1,11 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { useAppConfig } from "#internal/nitro";
-
+import "#nitro-internal-pollyfills";
 import functions from "firebase-functions";
 import { toNodeListener } from "h3";
+import { useNitroApp, useRuntimeConfig } from "nitro/runtime";
 
-const firebaseConfig = useAppConfig().nitro.firebase;
+const nitroApp = useNitroApp();
+
+const firebaseConfig = useRuntimeConfig()._firebase;
 
 export const __firebaseServerFunctionName__ = functions
   .region(firebaseConfig.region ?? functions.RESET_VALUE)

@@ -1,5 +1,8 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitro/runtime";
+import { normalize } from "pathe";
+
+const nitroApp = useNitroApp();
 
 async function cli() {
   const url = process.argv[2] || "/";
@@ -11,13 +14,13 @@ async function cli() {
   debug("StatusCode", r.status);
   debug("StatusMessage", r.statusText);
   // @ts-ignore
-  for (const header of r.headers.entries()) {
+  for (const header of Object.entries(r.headers)) {
     debug(header[0], header[1]);
   }
   console.log("\n", r.body?.toString());
 }
 
-if (require.main === module) {
+if (process.argv.some((arg) => import.meta.url.includes(normalize(arg)))) {
   // eslint-disable-next-line unicorn/prefer-top-level-await
   cli().catch((error) => {
     console.error(error);

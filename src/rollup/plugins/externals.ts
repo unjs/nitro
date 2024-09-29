@@ -1,40 +1,20 @@
 import { existsSync, promises as fsp } from "node:fs";
 import { platform } from "node:os";
-import { resolve, dirname, normalize, join, isAbsolute, relative } from "pathe";
-import type { PackageJson } from "pkg-types";
-import { readPackageJSON, writePackageJSON } from "pkg-types";
-import { nodeFileTrace, NodeFileTraceOptions } from "@vercel/nft";
-import type { Plugin } from "rollup";
+import { nodeFileTrace } from "@vercel/nft";
 import {
-  resolvePath,
   isValidNodeImport,
   lookupNodeModuleSubpath,
   normalizeid,
   parseNodeModulePath,
+  resolvePath,
 } from "mlly";
+import { isDirectory } from "nitro/kit";
+import type { NodeExternalsOptions } from "nitro/types";
+import { dirname, isAbsolute, join, normalize, relative, resolve } from "pathe";
+import type { PackageJson, PackageJsonExports } from "pkg-types";
+import { readPackageJSON, writePackageJSON } from "pkg-types";
+import type { Plugin } from "rollup";
 import semver from "semver";
-import { isDirectory } from "../../utils";
-
-export interface NodeExternalsOptions {
-  inline?: Array<
-    | string
-    | RegExp
-    | ((id: string, importer?: string) => Promise<boolean> | boolean)
-  >;
-  external?: Array<
-    | string
-    | RegExp
-    | ((id: string, importer?: string) => Promise<boolean> | boolean)
-  >;
-  rootDir?: string;
-  outDir: string;
-  trace?: boolean;
-  traceOptions?: NodeFileTraceOptions;
-  moduleDirectories?: string[];
-  exportConditions?: string[];
-  traceInclude?: string[];
-  traceAlias?: Record<string, string>;
-}
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
@@ -365,7 +345,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
         const src = join(opts.outDir, "node_modules", from);
         const dst = join(opts.outDir, "node_modules", to);
         const dstStat = await fsp.lstat(dst).catch(() => null);
-        const exists = dstStat && dstStat.isSymbolicLink();
+        const exists = dstStat?.isSymbolicLink();
         // console.log("Linking", from, "to", to, exists ? "!!!!" : "");
         if (exists) {
           return;
@@ -503,10 +483,14 @@ function compareVersions(v1 = "0.0.0", v2 = "0.0.0") {
 }
 
 export function applyProductionCondition(exports: PackageJson["exports"]) {
-  if (!exports || typeof exports === "string") {
+  if (
+    !exports ||
+    typeof exports === "string" ||
+    Array.isArray(exports) /* TODO: unhandled */
+  ) {
     return;
   }
-  if (exports.production) {
+  if ("production" in exports) {
     if (typeof exports.production === "string") {
       exports.default = exports.production;
     } else {
@@ -514,7 +498,7 @@ export function applyProductionCondition(exports: PackageJson["exports"]) {
     }
   }
   for (const key in exports) {
-    applyProductionCondition(exports[key]);
+    applyProductionCondition(exports[key as keyof typeof exports]);
   }
 }
 

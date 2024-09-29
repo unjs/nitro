@@ -1,7 +1,7 @@
 import { promises as fsp } from "node:fs";
-import { resolve, dirname } from "pathe";
+import { defineNitroPreset } from "nitro/kit";
+import { dirname, resolve } from "pathe";
 import type { PackageJson } from "pkg-types";
-import { defineNitroPreset } from "nitropack";
 
 const edgio = defineNitroPreset(
   {
@@ -109,7 +109,7 @@ module.exports = async function entry (port) {
   }
 );
 
-export default [edgio] as const
+export default [edgio] as const;
 
 async function writeFile(path: string, contents: string) {
   await fsp.mkdir(dirname(path), { recursive: true });

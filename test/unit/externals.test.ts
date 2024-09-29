@@ -1,4 +1,4 @@
-import { expect, describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { applyProductionCondition } from "../../src/rollup/plugins/externals";
 
 describe("externals:applyProductionCondition", () => {

@@ -1,8 +1,8 @@
-import { defineNitroPreset } from "nitropack";
-import type { Nitro } from "nitropack";
-import { writeCFPagesFiles, writeCFPagesStaticFiles } from "./utils";
-import { writeFile } from "../_utils";
+import { defineNitroPreset } from "nitro/kit";
+import { writeFile } from "nitro/kit";
+import type { Nitro } from "nitro/types";
 import { resolve } from "pathe";
+import { writeCFPagesFiles, writeCFPagesStaticFiles } from "./utils";
 
 export type { CloudflareOptions as PresetOptions } from "./types";
 
@@ -70,7 +70,6 @@ const cloudflarePagesStatic = defineNitroPreset(
     stdName: "cloudflare_pages",
     url: import.meta.url,
     static: true,
-
   }
 );
 

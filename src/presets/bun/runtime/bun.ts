@@ -1,9 +1,11 @@
-import "#internal/nitro/virtual/polyfill";
-import { nitroApp } from "#internal/nitro/app";
-import { startScheduleRunner } from "#internal/nitro/task";
+import "#nitro-internal-pollyfills";
+import { useNitroApp } from "nitro/runtime";
+import { startScheduleRunner } from "nitro/runtime/internal";
 
 import type {} from "bun";
 import wsAdapter from "crossws/adapters/bun";
+
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
