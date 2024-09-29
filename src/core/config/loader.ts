@@ -84,9 +84,11 @@ async function _loadUserConfig(
     "nitropack/" + "presets"
   )) as typeof import("nitropack/presets");
 
-  const loadedConfig = await (opts.watch
-    ? watchConfig<NitroConfig & { _meta?: NitroPresetMeta }>
-    : loadConfig<NitroConfig & { _meta?: NitroPresetMeta }>)({
+  const loadedConfig = await (
+    opts.watch
+      ? watchConfig<NitroConfig & { _meta?: NitroPresetMeta }>
+      : loadConfig<NitroConfig & { _meta?: NitroPresetMeta }>
+  )({
     name: "nitro",
     cwd: configOverrides.rootDir,
     dotenv: configOverrides.dev,
@@ -102,7 +104,12 @@ async function _loadUserConfig(
           configs.rc?.compatibilityDate ||
           configs.packageJson?.compatibilityDate;
       }
+      const framework = configs.overrides?.framework || configs.main?.framework;
       return {
+        typescript: {
+          generateRuntimeConfigTypes:
+            !framework?.name || framework.name === "nitro",
+        },
         preset: (
           await resolvePreset("" /* auto detect */, {
             static: configOverrides.static,

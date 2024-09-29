@@ -1,4 +1,4 @@
 export default defineNitroConfig({
-  compatibilityDate: "2024-06-21",
+  compatibilityDate: "2024-09-29",
   renderer: "~/renderer",
 });

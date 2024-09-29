@@ -33,6 +33,7 @@ import type { NitroHooks } from "./hooks";
 import type { NitroModuleInput } from "./module";
 import type { NitroFrameworkInfo } from "./nitro";
 import type { NitroOpenAPIConfig } from "./openapi";
+export type { NitroOpenAPIConfig } from "./openapi";
 import type { NitroPreset } from "./preset";
 import type { EsbuildOptions, NodeExternalsOptions } from "./rollup";
 import type { RollupConfig } from "./rollup";
@@ -322,7 +323,6 @@ export interface StorageMounts {
 }
 
 // Database
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type DatabaseConnectionName = "default" | (string & {});
 export type DatabaseConnectionConfig = {
   connector: ConnectorName;
@@ -337,20 +337,6 @@ export type DatabaseConnectionConfigs = Record<
 
 // Runtime config
 
-export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {
-  baseURL: string;
-  [key: string]: any;
-}
+export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {}
 
-export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {
-  app: NitroRuntimeConfigApp;
-  nitro: {
-    envPrefix?: string;
-    envExpansion?: boolean;
-    routeRules?: {
-      [path: string]: NitroRouteConfig;
-    };
-    openAPI?: NitroOpenAPIConfig;
-  };
-  [key: string]: any;
-}
+export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {}

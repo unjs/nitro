@@ -47,10 +47,7 @@ export interface NitroEventHandler {
   /*
    * Environments to include this handler
    */
-  env?: MaybeArray<
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    "dev" | "prod" | "prerender" | PresetName | (string & {})
-  >;
+  env?: MaybeArray<"dev" | "prod" | "prerender" | PresetName | (string & {})>;
 }
 
 export interface NitroDevEventHandler {
