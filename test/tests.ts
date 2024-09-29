@@ -244,10 +244,10 @@ export function testNitro(
   });
 
   it("group routes", async () => {
-    const { status } = await callHandler({ url: "/group-route" });
+    const { status } = await callHandler({ url: "/route-group" });
     expect(status).toBe(200);
     const { status: apiStatus } = await callHandler({
-      url: "/api/group-route",
+      url: "/api/route-group",
     });
     expect(apiStatus).toBe(200);
   });
