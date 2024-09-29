@@ -14,6 +14,7 @@ export function raw(opts: RawOptions = {}): Plugin {
     ".css",
     ".htm",
     ".html",
+    ".sql",
     ...(opts.extensions || []),
   ]);
 
@@ -81,7 +82,7 @@ function isBinary(id: string) {
   if (idMime.startsWith("text/")) {
     return false;
   }
-  if (/application\/(json|xml|yaml)/.test(idMime)) {
+  if (/application\/(json|sql|xml|yaml)/.test(idMime)) {
     return false;
   }
   return true;

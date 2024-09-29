@@ -3,7 +3,7 @@
 {
   "name": "nitro-devcontainer",
   "forwardPorts": [3000],
-  "image": "node:20.14.0",
+  "image": "node:20.17.0",
   "features": {},
   "customizations": {
     "vscode": {
