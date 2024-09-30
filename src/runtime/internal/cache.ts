@@ -364,21 +364,23 @@ export function defineCachedEventHandler<
           headers["last-modified"] ||
           new Date().toUTCString()
       );
-      const cacheControl = [];
-      if (opts.swr) {
-        if (opts.maxAge) {
-          cacheControl.push(`s-maxage=${opts.maxAge}`);
+      if (!headers["cache-control"]) {
+        const cacheControl = [];
+        if (opts.swr) {
+          if (opts.maxAge) {
+            cacheControl.push(`s-maxage=${opts.maxAge}`);
+          }
+          if (opts.staleMaxAge) {
+            cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`);
+          } else {
+            cacheControl.push("stale-while-revalidate");
+          }
+        } else if (opts.maxAge) {
+          cacheControl.push(`max-age=${opts.maxAge}`);
         }
-        if (opts.staleMaxAge) {
-          cacheControl.push(`stale-while-revalidate=${opts.staleMaxAge}`);
-        } else {
-          cacheControl.push("stale-while-revalidate");
+        if (cacheControl.length > 0) {
+          headers["cache-control"] = cacheControl.join(", ");
         }
-      } else if (opts.maxAge) {
-        cacheControl.push(`max-age=${opts.maxAge}`);
-      }
-      if (cacheControl.length > 0) {
-        headers["cache-control"] = cacheControl.join(", ");
       }
 
       // Create cache entry for response
