@@ -18,7 +18,7 @@ landing:
   featuresTitle: "A Server for the Modern Web"
   features:
     - title: "Rapid Development"
-      description: "Zero config setup with hot module replacement for server code in development."
+      description: "Zero config setup with Hot Module Replacement for server code in development."
       icon: "🐇"
     - title: "Deploy Anywhere"
       description: "Deploy the same codebase to any [deployment provider](/deploy) with no extra config."
