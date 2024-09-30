@@ -70,6 +70,12 @@ export default defineBuildConfig({
     "firebase-functions",
     "@scalar/api-reference",
   ],
+  stubOptions: {
+    jiti: {
+      // TOODO: remove when unbuild upgraded
+      interopDefault: true,
+    },
+  },
   rollup: {
     output: {
       chunkFileNames(chunk: any) {
