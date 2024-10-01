@@ -1,7 +1,5 @@
 // Auto-generated using gen-presets script
 
-import _nitro from "./_nitro/preset";
-import _static from "./_static/preset";
 import _alwaysdata from "./alwaysdata/preset";
 import _awsAmplify from "./aws-amplify/preset";
 import _awsLambda from "./aws-lambda/preset";
@@ -9,6 +7,7 @@ import _azure from "./azure/preset";
 import _bun from "./bun/preset";
 import _cleavr from "./cleavr/preset";
 import _cloudflare from "./cloudflare/preset";
+import _coolify from "./coolify/preset";
 import _deno from "./deno/preset";
 import _digitalocean from "./digitalocean/preset";
 import _edgio from "./edgio/preset";
@@ -27,10 +26,10 @@ import _vercel from "./vercel/preset";
 import _winterjs from "./winterjs/preset";
 import _zeabur from "./zeabur/preset";
 import _zerops from "./zerops/preset";
+import _nitro from "./_nitro/preset";
+import _static from "./_static/preset";
 
 export default [
-  ..._nitro,
-  ..._static,
   ..._alwaysdata,
   ..._awsAmplify,
   ..._awsLambda,
@@ -38,6 +37,7 @@ export default [
   ..._bun,
   ..._cleavr,
   ..._cloudflare,
+  ..._coolify,
   ..._deno,
   ..._digitalocean,
   ..._edgio,
@@ -56,4 +56,6 @@ export default [
   ..._winterjs,
   ..._zeabur,
   ..._zerops,
+  ..._nitro,
+  ..._static,
 ] as const;
