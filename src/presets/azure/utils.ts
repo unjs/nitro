@@ -210,7 +210,7 @@ function _zipDirectory(dir: string, outfile: string): Promise<undefined> {
 
   return new Promise((resolve, reject) => {
     archive
-      .directory(dir, false)
+      .glob("**/*", { cwd: dir, nodir: true, dot: true, follow: true })
       .on("error", (err: Error) => reject(err))
       .pipe(stream);
 
