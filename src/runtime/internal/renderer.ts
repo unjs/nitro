@@ -33,9 +33,7 @@ export function defineRenderHandler(render: RenderHandler) {
       }
 
       ctx.response = await ctx.render(event);
-    }
 
-    if (!ctx.response) {
       const _currentStatus = getResponseStatus(event);
       setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
       return send(
