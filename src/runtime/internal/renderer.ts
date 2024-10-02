@@ -17,7 +17,7 @@ export function defineRenderHandler(render: RenderHandler) {
     const nitroApp = useNitroApp();
 
     // Create shared context for hooks
-    const ctx: RenderContext = { event, render };
+    const ctx: RenderContext = { event, render, response: undefined };
 
     // Call initial hook to prepare and optionally custom render
     await nitroApp.hooks.callHook("render:before", ctx);
