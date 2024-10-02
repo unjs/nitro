@@ -34,6 +34,12 @@ export type RenderHandler = (
   event: H3Event
 ) => Partial<RenderResponse> | Promise<Partial<RenderResponse>>;
 
+export interface RenderContext {
+  event: H3Event;
+  render: RenderHandler;
+  response?: Partial<RenderResponse>;
+}
+
 export interface CapturedErrorContext {
   event?: H3Event;
   [key: string]: unknown;

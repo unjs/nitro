@@ -5,6 +5,7 @@ import type {
   NitroOpenAPIConfig,
   NitroRouteConfig,
   RenderResponse,
+  RenderContext,
 } from "nitropack/types";
 
 // Core
@@ -79,9 +80,11 @@ export interface NitroRuntimeHooks {
   beforeResponse: NonNullable<AppOptions["onBeforeResponse"]>;
   afterResponse: NonNullable<AppOptions["onAfterResponse"]>;
 
+  "render:before": (context: RenderContext) => void;
+
   "render:response": (
     response: Partial<RenderResponse>,
-    context: { event: H3Event }
+    context: RenderContext
   ) => void;
 }
 
