@@ -31,7 +31,6 @@ async function _resolveNitroModule(
       globalThis.defineNitroModule || ((mod) => mod);
 
     const jiti = createJiti(nitroOptions.rootDir, {
-      interopDefault: true,
       alias: nitroOptions.alias,
     });
     const _modPath = jiti.esmResolve(mod);
