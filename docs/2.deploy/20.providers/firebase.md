@@ -263,3 +263,7 @@ export default defineNuxtConfig({
 ```
 
 ::
+
+::important
+`serverFunctionName` should not include dashes (`-`).
+::

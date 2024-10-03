@@ -33,6 +33,12 @@ const firebase = defineNitroPreset(
         nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
         nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
 
+        if(nitro.options.firebase?.serverFunctionName.includes('-')){
+          nitro.logger.warn(
+            "Your `serverFunctionName` should not include dashes (`-`). We have normalized it to use underscores (`_`) but it is recommended that you change it."
+          );
+        }
+
         // Replace __firebaseServerFunctionName__ to actual name in entries
         (rollupConfig.plugins as Plugin[]).unshift({
           name: "nitro:firebase",
@@ -41,7 +47,7 @@ const firebase = defineNitroPreset(
               return {
                 code: code.replace(
                   /__firebaseServerFunctionName__/g,
-                  nitro.options.firebase?.serverFunctionName || "server"
+                  nitro.options.firebase?.serverFunctionName.replace(/-/g, '_') || "server"
                 ),
                 map: null,
               };
