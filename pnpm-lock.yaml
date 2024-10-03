@@ -287,8 +287,8 @@ importers:
         specifier: ^9.4.0
         version: 9.4.0
       expect-type:
-        specifier: ^0.20.0
-        version: 0.20.0
+        specifier: ^1.0.0
+        version: 1.0.0
       firebase-admin:
         specifier: ^12.5.0
         version: 12.6.0
@@ -3120,8 +3120,8 @@ packages:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
     engines: {node: '>=6'}
 
-  expect-type@0.20.0:
-    resolution: {integrity: sha512-uHaC9LYNv6BcW+8SvXcwUUDCrrUxt3GSa61DFvTHj8JC+M0hekMFBwMlCarLQDk5bbpZ2vStpnQPIwRuV98YMw==}
+  expect-type@1.0.0:
+    resolution: {integrity: sha512-WcdwgWmGAE48kSHjxPVLriBuvJdJdi1VKTh7HmHvcm6WPdIT1Z04wUVX8BLiqnq0Rz5SnfJ+P0kM1RBqSLLoPQ==}
     engines: {node: '>=12.0.0'}
 
   express@4.21.0:
@@ -9303,7 +9303,7 @@ snapshots:
 
   expand-template@2.0.3: {}
 
-  expect-type@0.20.0: {}
+  expect-type@1.0.0: {}
 
   express@4.21.0:
     dependencies:
