@@ -57,6 +57,7 @@ trapUnhandledNodeErrors();
 setupGracefulShutdown(listener, nitroApp);
 
 // Websocket support
+// https://crossws.unjs.io/adapters/node
 if (import.meta._websocket) {
   const { handleUpgrade } = wsAdapter(nitroApp.h3App.websocket);
   server.on("upgrade", handleUpgrade);

@@ -32,6 +32,7 @@ interface CFModuleEnv {
 export default {
   async fetch(request: Request, env: CFModuleEnv, context: ExecutionContext) {
     // Websocket upgrade
+    // https://crossws.unjs.io/adapters/cloudflare
     if (
       import.meta._websocket &&
       request.headers.get("upgrade") === "websocket"
