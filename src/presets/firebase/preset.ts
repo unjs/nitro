@@ -1,7 +1,7 @@
 import { defineNitroPreset } from "nitropack/kit";
 import { basename } from "pathe";
 import type { Plugin } from "rollup";
-import { genSafeVariableName } from "knitwork"
+import { genSafeVariableName } from "knitwork";
 import { updatePackageJSON, writeFirebaseConfig } from "./utils";
 
 export type { FirebaseOptions as PresetOptions } from "./types";
@@ -34,9 +34,12 @@ const firebase = defineNitroPreset(
         nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
         nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
 
-        const { serverFunctionName } = nitro.options.firebase
-        if(serverFunctionName && serverFunctionName !== genSafeVariableName(serverFunctionName)) {
-          throw new Error("`serverFunctionName` cannot include dashes")
+        const { serverFunctionName } = nitro.options.firebase;
+        if (
+          serverFunctionName &&
+          serverFunctionName !== genSafeVariableName(serverFunctionName)
+        ) {
+          throw new Error("`serverFunctionName` cannot include dashes");
         }
 
         // Replace __firebaseServerFunctionName__ to actual name in entries
