@@ -15,8 +15,9 @@ const server = Bun.serve({
   port: process.env.NITRO_PORT || process.env.PORT || 3000,
   websocket: import.meta._websocket ? ws!.websocket : (undefined as any),
   async fetch(req: Request, server: any) {
-    if (import.meta._websocket && (await ws!.handleUpgrade(req, server))) {
-      return;
+    // https://crossws.unjs.io/adapters/bun
+    if (import.meta._websocket && req.headers.get("upgrade") === "websocket") {
+      return ws!.handleUpgrade(req, server);
     }
 
     const url = new URL(req.url);
