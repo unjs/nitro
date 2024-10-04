@@ -1,6 +1,7 @@
 import { defineNitroPreset } from "nitropack/kit";
 import { basename } from "pathe";
 import type { Plugin } from "rollup";
+import { genSafeVariableName } from "knitwork"
 import { updatePackageJSON, writeFirebaseConfig } from "./utils";
 
 export type { FirebaseOptions as PresetOptions } from "./types";
@@ -33,10 +34,9 @@ const firebase = defineNitroPreset(
         nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
         nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
 
-        if(nitro.options.firebase?.serverFunctionName.includes('-')){
-          nitro.logger.warn(
-            "Your `serverFunctionName` should not include dashes (`-`). We have normalized it to use underscores (`_`) but it is recommended that you change it."
-          );
+        const { serverFunctionName } = nitro.options.firebase
+        if(serverFunctionName && serverFunctionName !== genSafeVariableName(serverFunctionName)) {
+          throw new Error("`serverFunctionName` cannot include dashes")
         }
 
         // Replace __firebaseServerFunctionName__ to actual name in entries
@@ -47,7 +47,7 @@ const firebase = defineNitroPreset(
               return {
                 code: code.replace(
                   /__firebaseServerFunctionName__/g,
-                  nitro.options.firebase?.serverFunctionName.replace(/-/g, '_') || "server"
+                  serverFunctionName || "server"
                 ),
                 map: null,
               };
