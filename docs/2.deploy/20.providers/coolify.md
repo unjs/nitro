@@ -4,20 +4,35 @@
 
 **Preset:** `coolify`
 
-:read-more{title="coolify.io" to="https://coolify.io"}
+:read-more{title="coolify.io" to="https://coolify.io/docs/"}
 
 ::note
 This is the recommended preset for Coolify deployments.
 ::
 
-::note
-Integration with this provider is possible with [zero configuration](/deploy#zero-config-providers).
-::
-
 Coolify supports deploying both static and server-side rendered apps with zero configuration.
 
-## Starter templates
+## Set up your web app
 
-If you want to quckly get started with coolify and nitro you can use the public nitro example in the [coolify examples repository](https://github.com/coollabsio/coolify-examples) to get started with from the Coolify dashboard.
+In your project, set Nitro preset to `coolify`.
 
+```js
+export default {
+  nitro: {
+    preset: 'coolify'
+  }
+}
+```
 
+## Getting started
+
+1. Log in to Coolify dashboard and create a new project.
+2. Select GitHub App and repository, then click "Load Repository".
+3. Set `Build Pack` to `nixpacks` and `Port` to `3000`.
+4. Enable healthchecks in project sidebar.
+5. Add environment variables if needed.
+6. Click "Deploy".
+
+You're all set up!
+
+When you push changes to your repository, Coolify will automatically rebuild your app.
