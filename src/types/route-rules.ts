@@ -10,7 +10,16 @@ export interface NitroRouteConfig {
   redirect?: string | { to: string; statusCode?: HTTPStatusCode };
   prerender?: boolean;
   proxy?: string | ({ to: string } & ProxyOptions);
-  isr?: number | boolean;
+  isr?:
+    | number /* expiration */
+    | boolean
+    | {
+        expiration?: number | false;
+        group?: number;
+        fallback?: string;
+        allowQuery?: string[];
+        passQuery?: boolean;
+      };
 
   // Shortcuts
   cors?: boolean;

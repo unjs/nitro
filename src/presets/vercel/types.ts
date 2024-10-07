@@ -91,3 +91,15 @@ export interface VercelOptions {
 
   functions?: VercelServerlessFunctionConfig;
 }
+
+/**
+ * https://vercel.com/docs/build-output-api/v3/primitives#prerender-configuration-file
+ */
+export type PrerenderFunctionConfig = {
+  expiration: number | false;
+  group?: number;
+  bypassToken?: string;
+  fallback?: string;
+  allowQuery?: string[];
+  passQuery?: boolean;
+};
