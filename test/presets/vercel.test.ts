@@ -151,6 +151,20 @@ describe("nitro:preset:vercel", async () => {
           }
         `);
       });
+
+      it("should generate prerender config", async () => {
+        const isrRouteConfig = await fsp.readFile(
+          resolve(
+            ctx.outDir,
+            "functions/__nitro--rules-isr.prerender-config.json"
+          ),
+          "utf8"
+        );
+        expect(JSON.parse(isrRouteConfig)).toMatchObject({
+          expiration: false,
+          allowQuery: ["q", "url"],
+        });
+      });
     }
   );
 });
