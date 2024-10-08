@@ -1,6 +1,7 @@
 import { defineNitroPreset } from "nitropack/kit";
 import { basename } from "pathe";
 import type { Plugin } from "rollup";
+import { genSafeVariableName } from "knitwork";
 import { updatePackageJSON, writeFirebaseConfig } from "./utils";
 
 export type { FirebaseOptions as PresetOptions } from "./types";
@@ -33,6 +34,16 @@ const firebase = defineNitroPreset(
         nitro.options.appConfig.nitro = nitro.options.appConfig.nitro || {};
         nitro.options.appConfig.nitro.firebase = nitro.options.firebase;
 
+        const { serverFunctionName } = nitro.options.firebase;
+        if (
+          serverFunctionName &&
+          serverFunctionName !== genSafeVariableName(serverFunctionName)
+        ) {
+          throw new Error(
+            `\`firebase.serverFunctionName\` must be a valid JS variable name: \`${serverFunctionName}\``
+          );
+        }
+
         // Replace __firebaseServerFunctionName__ to actual name in entries
         (rollupConfig.plugins as Plugin[]).unshift({
           name: "nitro:firebase",
@@ -41,7 +52,7 @@ const firebase = defineNitroPreset(
               return {
                 code: code.replace(
                   /__firebaseServerFunctionName__/g,
-                  nitro.options.firebase?.serverFunctionName || "server"
+                  serverFunctionName || "server"
                 ),
                 map: null,
               };
