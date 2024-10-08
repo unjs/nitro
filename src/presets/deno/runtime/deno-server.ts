@@ -58,6 +58,7 @@ const ws = import.meta._websocket
   : undefined;
 
 async function handler(request: Request, info: any) {
+  // https://crossws.unjs.io/adapters/deno
   if (
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"

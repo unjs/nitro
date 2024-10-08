@@ -5,6 +5,7 @@ import type { Nitro } from "nitropack/types";
 import { dirname, relative, resolve } from "pathe";
 import { joinURL, withoutLeadingSlash } from "ufo";
 import type {
+  PrerenderFunctionConfig,
   VercelBuildConfigV3,
   VercelServerlessFunctionConfig,
 } from "./types";
@@ -35,6 +36,32 @@ export async function generateFunctionFiles(nitro: Nitro) {
     if (!value.isr) {
       continue;
     }
+
+    // Normalize route rule
+    let isrConfig = value.isr;
+    if (typeof isrConfig === "number") {
+      isrConfig = { expiration: isrConfig };
+    } else if (isrConfig === true) {
+      isrConfig = { expiration: false };
+    } else {
+      isrConfig = { ...isrConfig };
+    }
+
+    // Generate prerender config
+    const prerenderConfig: PrerenderFunctionConfig = {
+      expiration: isrConfig.expiration ?? false,
+      bypassToken: nitro.options.vercel?.config?.bypassToken,
+      ...isrConfig,
+    };
+
+    // Allow query parameter for wildcard routes
+    if (key.includes("/**") /* wildcard */) {
+      isrConfig.allowQuery = isrConfig.allowQuery || [];
+      if (!isrConfig.allowQuery.includes("url")) {
+        isrConfig.allowQuery.push("url");
+      }
+    }
+
     const funcPrefix = resolve(
       nitro.options.output.serverDir,
       ".." + generateEndpoint(key)
@@ -47,11 +74,7 @@ export async function generateFunctionFiles(nitro: Nitro) {
     );
     await writeFile(
       funcPrefix + ".prerender-config.json",
-      JSON.stringify({
-        expiration: value.isr === true ? false : value.isr,
-        allowQuery: key.includes("/**") ? ["url"] : undefined,
-        bypassToken: nitro.options.vercel?.config?.bypassToken,
-      })
+      JSON.stringify(prerenderConfig, null, 2)
     );
   }
 }

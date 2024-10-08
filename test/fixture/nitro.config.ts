@@ -72,7 +72,7 @@ export default defineNitroConfig({
     },
     "/rules/dynamic": { cache: false, isr: false },
     "/rules/redirect": { redirect: "/base" },
-    "/rules/isr/**": { isr: true },
+    "/rules/isr/**": { isr: { allowQuery: ["q"] } },
     "/rules/isr-ttl/**": { isr: 60 },
     "/rules/swr/**": { swr: true },
     "/rules/swr-ttl/**": { swr: 60 },

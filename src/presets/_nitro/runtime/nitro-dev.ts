@@ -24,6 +24,7 @@ const nitroApp = useNitroApp();
 
 const server = new Server(toNodeListener(nitroApp.h3App));
 
+// https://crossws.unjs.io/adapters/node
 if (import.meta._websocket) {
   const { handleUpgrade } = wsAdapter(nitroApp.h3App.websocket);
   server.on("upgrade", handleUpgrade);
