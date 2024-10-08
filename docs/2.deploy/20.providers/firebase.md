@@ -265,5 +265,5 @@ export default defineNuxtConfig({
 ::
 
 ::important
-`serverFunctionName` cannot include dashes (`-`).
+`firebase.serverFunctionName` must be a valid JS variable name and cannot include dashes (`-`).
 ::
