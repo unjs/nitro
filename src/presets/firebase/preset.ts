@@ -39,7 +39,9 @@ const firebase = defineNitroPreset(
           serverFunctionName &&
           serverFunctionName !== genSafeVariableName(serverFunctionName)
         ) {
-          throw new Error(`\`firebase.serverFunctionName\` must be a valid JS variable name: \`${serverFunctionName}\``);
+          throw new Error(
+            `\`firebase.serverFunctionName\` must be a valid JS variable name: \`${serverFunctionName}\``
+          );
         }
 
         // Replace __firebaseServerFunctionName__ to actual name in entries
