@@ -79,8 +79,8 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1
       db0:
-        specifier: ^0.1.4
-        version: 0.1.4(better-sqlite3@11.3.0)
+        specifier: ^0.2.0
+        version: 0.2.0(better-sqlite3@11.3.0)
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -2605,18 +2605,24 @@ packages:
     resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
     engines: {node: '>=0.11'}
 
-  db0@0.1.4:
-    resolution: {integrity: sha512-Ft6eCwONYxlwLjBXSJxw0t0RYtA5gW9mq8JfBXn9TtC0nDPlqePAhpv9v4g9aONBi6JI1OXHTKKkUYGd+BOrCA==}
+  db0@0.2.0:
+    resolution: {integrity: sha512-xpaHr5hJ8o7dKHvJsdDW5Kepfmtm9Y7W+z5MZwSLwPNtNhtdwCpIMjBQK+UsgLfeU+3Sr9j6ejmwSAopcslJRA==}
     peerDependencies:
-      '@libsql/client': ^0.5.2
-      better-sqlite3: ^9.4.3
-      drizzle-orm: ^0.29.4
+      '@electric-sql/pglite': '*'
+      '@libsql/client': '*'
+      better-sqlite3: '*'
+      drizzle-orm: '*'
+      mysql2: '*'
     peerDependenciesMeta:
+      '@electric-sql/pglite':
+        optional: true
       '@libsql/client':
         optional: true
       better-sqlite3:
         optional: true
       drizzle-orm:
+        optional: true
+      mysql2:
         optional: true
 
   debug@2.6.9:
@@ -8617,7 +8623,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.25.7
 
-  db0@0.1.4(better-sqlite3@11.3.0):
+  db0@0.2.0(better-sqlite3@11.3.0):
     optionalDependencies:
       better-sqlite3: 11.3.0
 
