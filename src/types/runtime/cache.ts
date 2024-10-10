@@ -7,13 +7,13 @@ export interface CacheEntry<T = any> {
   integrity?: string;
 }
 
-export interface CacheOptions<T = any> {
+export interface CacheOptions<T = any, ArgsT extends unknown[] = any[]> {
   name?: string;
-  getKey?: (...args: any[]) => string | Promise<string>;
-  transform?: (entry: CacheEntry<T>, ...args: any[]) => any;
-  validate?: (entry: CacheEntry<T>) => boolean;
-  shouldInvalidateCache?: (...args: any[]) => boolean | Promise<boolean>;
-  shouldBypassCache?: (...args: any[]) => boolean | Promise<boolean>;
+  getKey?: (...args: ArgsT) => string | Promise<string>;
+  transform?: (entry: CacheEntry<T>, ...args: ArgsT) => any;
+  validate?: (entry: CacheEntry<T>, ...args: ArgsT) => boolean;
+  shouldInvalidateCache?: (...args: ArgsT) => boolean | Promise<boolean>;
+  shouldBypassCache?: (...args: ArgsT) => boolean | Promise<boolean>;
   group?: string;
   integrity?: any;
   /**
@@ -32,10 +32,10 @@ export interface ResponseCacheEntry<T = any> {
 }
 
 export interface CachedEventHandlerOptions<T = any>
-  extends Omit<CacheOptions<ResponseCacheEntry<T>>, "transform" | "validate"> {
-  shouldInvalidateCache?: (event: H3Event) => boolean | Promise<boolean>;
-  shouldBypassCache?: (event: H3Event) => boolean | Promise<boolean>;
-  getKey?: (event: H3Event) => string | Promise<string>;
+  extends Omit<
+    CacheOptions<ResponseCacheEntry<T>, [H3Event]>,
+    "transform" | "validate"
+  > {
   headersOnly?: boolean;
   varies?: string[] | readonly string[];
 }

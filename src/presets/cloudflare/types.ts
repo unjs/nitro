@@ -1,4 +1,8 @@
-import type { ExecutionContext } from "@cloudflare/workers-types";
+import type {
+  ExecutionContext,
+  ForwardableEmailMessage,
+  MessageBatch,
+} from "@cloudflare/workers-types";
 import type { Config as WranglerConfig } from "./types.wrangler";
 
 /**
@@ -52,47 +56,15 @@ export interface CloudflareOptions {
   };
 }
 
-/** @experimental */
-export interface CloudflareEmailContext {
-  readonly from?: string;
-  readonly to?: string;
-  readonly headers?: Headers;
-  readonly raw?: ReadableStream;
-  readonly rawSize?: number;
-
-  setReject?(reason: string): void;
-  forward?(rcptTo: string, headers?: Headers): Promise<void>;
-  reply?(message: CloudflareEmailContext): Promise<void>;
-}
-
-export interface CloudflareQueueRetryOptions {
-  delaySeconds?: number;
-}
-
-export interface CloudflareMessageBody<Body = unknown> {
-  readonly id: string;
-  readonly timestamp: Date;
-  readonly body: Body;
-  adk(): void;
-  retry(options?: CloudflareQueueRetryOptions): void;
-}
-
-export interface CloudflareMessageBatch<Body = unknown> {
-  readonly queue: string;
-  readonly messages: CloudflareMessageBody<Body>[];
-  ackAll(): void;
-  retryAll(options?: CloudflareQueueRetryOptions): void;
-}
-
 declare module "nitropack/types" {
   export interface NitroRuntimeHooks {
     "cloudflare:email": (_: {
-      event: CloudflareEmailContext;
+      event: ForwardableEmailMessage;
       env: any;
       context: ExecutionContext;
     }) => void;
     "cloudflare:queue": (_: {
-      event: CloudflareEmailContext;
+      event: MessageBatch;
       env: any;
       context: ExecutionContext;
     }) => void;

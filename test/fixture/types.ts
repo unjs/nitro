@@ -230,7 +230,6 @@ describe("API routes", () => {
     expectTypeOf($fetch("/api/serialized/null")).toEqualTypeOf<Promise<any>>();
 
     expectTypeOf($fetch("/api/serialized/function")).toEqualTypeOf<
-      // eslint-disable-next-line @typescript-eslint/ban-types
       Promise<{}>
     >();
 
@@ -255,6 +254,7 @@ describe("API routes", () => {
 describe("defineNitroConfig", () => {
   it("should not accept functions to routeRules.cache", () => {
     defineNitroConfig({
+      compatibilityDate: "2024-09-29",
       routeRules: {
         "/**": {
           cache: {
@@ -296,7 +296,6 @@ describe("defineCachedEventHandler", () => {
       Promise<{ message: string }>
     >(fixture);
     expectTypeOf(b).toEqualTypeOf<
-      // eslint-disable-next-line @typescript-eslint/ban-types
       EventHandler<{}, Promise<{ message: string }>>
     >();
   });

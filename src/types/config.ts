@@ -1,5 +1,4 @@
 import type { RollupCommonJSOptions } from "@rollup/plugin-commonjs";
-import type { ReferenceConfiguration } from "@scalar/api-reference";
 import type { C12InputConfig, ConfigWatcher, ResolvedConfig } from "c12";
 import type { WatchConfigOptions } from "c12";
 import type { WatchOptions } from "chokidar";
@@ -33,6 +32,8 @@ import type {
 import type { NitroHooks } from "./hooks";
 import type { NitroModuleInput } from "./module";
 import type { NitroFrameworkInfo } from "./nitro";
+import type { NitroOpenAPIConfig } from "./openapi";
+export type { NitroOpenAPIConfig } from "./openapi";
 import type { NitroPreset } from "./preset";
 import type { EsbuildOptions, NodeExternalsOptions } from "./rollup";
 import type { RollupConfig } from "./rollup";
@@ -92,16 +93,7 @@ export interface NitroOptions extends PresetOptions {
    * @see https://github.com/unjs/unwasm
    */
   wasm?: UnwasmPluginOptions;
-  openAPI?: {
-    meta?: {
-      title?: string;
-      description?: string;
-      version?: string;
-    };
-    ui?: {
-      scalar?: ReferenceConfiguration;
-    };
-  };
+  openAPI?: NitroOpenAPIConfig;
   experimental: {
     legacyExternals?: boolean;
     openAPI?: boolean;
@@ -331,7 +323,6 @@ export interface StorageMounts {
 }
 
 // Database
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type DatabaseConnectionName = "default" | (string & {});
 export type DatabaseConnectionConfig = {
   connector: ConnectorName;
@@ -346,20 +337,6 @@ export type DatabaseConnectionConfigs = Record<
 
 // Runtime config
 
-export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {
-  baseURL: string;
-  [key: string]: any;
-}
+export interface NitroRuntimeConfigApp extends NitroTypesRuntimeConfigApp {}
 
-export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {
-  app: NitroRuntimeConfigApp;
-  nitro: {
-    envPrefix?: string;
-    envExpansion?: boolean;
-    routeRules?: {
-      [path: string]: NitroRouteConfig;
-    };
-    openAPI?: NitroOptions["openAPI"];
-  };
-  [key: string]: any;
-}
+export interface NitroRuntimeConfig extends NitroTypeskRuntimeConfig {}

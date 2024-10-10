@@ -105,18 +105,28 @@ async function loadWorkspace(dir: string) {
   };
 }
 
+function fmtDate(d: Date): string {
+  // YYMMDD-HHMMSS: 20240919-140954
+  const date = joinNumbers([d.getFullYear(), d.getMonth() + 1, d.getDate()]);
+  const time = joinNumbers([d.getHours(), d.getMinutes(), d.getSeconds()]);
+  return `${date}-${time}`;
+}
+
+function joinNumbers(items: number[]): string {
+  return items.map((i) => (i + "").padStart(2, "0")).join("");
+}
+
 async function main() {
   const workspace = await loadWorkspace(process.cwd());
 
   const commit = await execaCommand("git rev-parse --short HEAD").then((r) =>
     r.stdout.trim()
   );
-  const date = Math.round(Date.now() / (1000 * 60));
 
   for (const pkg of workspace.packages.filter((p) => !p.data.private)) {
     workspace.setVersion(
       pkg.data.name,
-      `${pkg.data.version}-${date}.${commit}`
+      `${pkg.data.version}-${fmtDate(new Date())}.${commit}`
     );
     workspace.rename(pkg.data.name, pkg.data.name + "-nightly");
     pkg.updateDeps((dep) => {

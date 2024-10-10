@@ -8,7 +8,6 @@ export interface InternalApi {}
 export type NitroFetchRequest =
   | Exclude<keyof InternalApi, `/_${string}` | `/api/_${string}`>
   | Exclude<FetchRequest, string>
-  // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
 export type MiddlewareOf<

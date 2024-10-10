@@ -1,4 +1,4 @@
-import jiti from "jiti";
+import { createJiti } from "jiti";
 import type { Nitro, NitroModule, NitroModuleInput } from "nitropack/types";
 
 export async function installModules(nitro: Nitro) {
@@ -18,7 +18,7 @@ export async function installModules(nitro: Nitro) {
   }
 }
 
-function _resolveNitroModule(
+async function _resolveNitroModule(
   mod: NitroModuleInput,
   nitroOptions: Nitro["options"]
 ): Promise<NitroModule & { _url?: string }> {
@@ -30,14 +30,12 @@ function _resolveNitroModule(
       // @ts-ignore
       globalThis.defineNitroModule || ((mod) => mod);
 
-    const _jiti = jiti(nitroOptions.rootDir, {
-      interopDefault: true,
-      esmResolve: true,
+    const jiti = createJiti(nitroOptions.rootDir, {
       alias: nitroOptions.alias,
     });
-    const _modPath = _jiti.resolve(mod);
+    const _modPath = jiti.esmResolve(mod);
     _url = _modPath;
-    mod = _jiti(_modPath) as NitroModule;
+    mod = (await jiti.import(_modPath, { default: true })) as NitroModule;
   }
 
   if (typeof mod === "function") {
@@ -49,8 +47,8 @@ function _resolveNitroModule(
     mod.setup = () => {};
   }
 
-  return Promise.resolve({
+  return {
     _url,
     ...mod,
-  });
+  };
 }

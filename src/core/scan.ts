@@ -10,7 +10,6 @@ const suffixRegex =
   /\.(connect|delete|get|head|options|patch|post|put|trace)(\.(dev|prod|prerender))?$/;
 
 // prettier-ignore
-// biome-ignore format: keep inline for better readability
 type MatchedMethodSuffix = "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
 type MatchedEnvSuffix = "dev" | "prod" | "prerender";
 
@@ -96,6 +95,7 @@ export async function scanServerRoutes(
   return files.map((file) => {
     let route = file.path
       .replace(/\.[A-Za-z]+$/, "")
+      .replace(/\(([^(/\\]+)\)[/\\]/g, "")
       .replace(/\[\.{3}]/g, "**")
       .replace(/\[\.{3}(\w+)]/g, "**:$1")
       .replace(/\[(\w+)]/g, ":$1");

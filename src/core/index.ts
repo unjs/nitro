@@ -1,4 +1,12 @@
-import type { NitroConfig } from "nitropack/types";
+import type { AppOptions, H3Event } from "h3";
+import type {
+  CaptureError,
+  NitroConfig,
+  NitroOpenAPIConfig,
+  NitroRouteConfig,
+  RenderResponse,
+  RenderContext,
+} from "nitropack/types";
 
 // Core
 export { createNitro } from "./nitro";
@@ -50,10 +58,41 @@ export {
 } from "./scan";
 
 /** @deprecated Use `NitroRuntimeConfig` from `nitropack/types` */
-export interface NitroRuntimeConfig {}
+export interface NitroRuntimeConfig {
+  app: NitroRuntimeConfigApp;
+  nitro: {
+    envPrefix?: string;
+    envExpansion?: boolean;
+    routeRules?: {
+      [path: string]: NitroRouteConfig;
+    };
+    openAPI?: NitroOpenAPIConfig;
+  };
+  [key: string]: any;
+}
+
+/** @deprecated Use `NitroRuntimeHooks` from `nitropack/types` */
+export interface NitroRuntimeHooks {
+  close: () => void;
+  error: CaptureError;
+
+  request: NonNullable<AppOptions["onRequest"]>;
+  beforeResponse: NonNullable<AppOptions["onBeforeResponse"]>;
+  afterResponse: NonNullable<AppOptions["onAfterResponse"]>;
+
+  "render:before": (context: RenderContext) => void;
+
+  "render:response": (
+    response: Partial<RenderResponse>,
+    context: RenderContext
+  ) => void;
+}
 
 /** @deprecated Use `NitroRuntimeConfigApp` from `nitropack/types` */
-export interface NitroRuntimeConfigApp {}
+export interface NitroRuntimeConfigApp {
+  baseURL: string;
+  [key: string]: any;
+}
 
 /** @deprecated Directly import { ... } from "nitropack/types"; */
 export type {

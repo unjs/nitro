@@ -5,6 +5,7 @@ import { gzipSize } from "gzip-size";
 import { dirname, relative, resolve } from "pathe";
 import prettyBytes from "pretty-bytes";
 import { isTest } from "std-env";
+import { runParallel } from "./parallel";
 
 export async function generateFSTree(
   dir: string,
@@ -16,17 +17,22 @@ export async function generateFSTree(
 
   const files = await globby("**/*.*", { cwd: dir, ignore: ["*.map"] });
 
-  const items = (
-    await Promise.all(
-      files.map(async (file) => {
-        const path = resolve(dir, file);
-        const src = await fsp.readFile(path);
-        const size = src.byteLength;
-        const gzip = options.compressedSizes ? await gzipSize(src) : 0;
-        return { file, path, size, gzip };
-      })
-    )
-  ).sort((a, b) => a.path.localeCompare(b.path));
+  const items: { file: string; path: string; size: number; gzip: number }[] =
+    [];
+
+  await runParallel(
+    new Set(files),
+    async (file) => {
+      const path = resolve(dir, file);
+      const src = await fsp.readFile(path);
+      const size = src.byteLength;
+      const gzip = options.compressedSizes ? await gzipSize(src) : 0;
+      items.push({ file, path, size, gzip });
+    },
+    { concurrency: 10 }
+  );
+
+  items.sort((a, b) => a.path.localeCompare(b.path));
 
   let totalSize = 0;
   let totalGzip = 0;

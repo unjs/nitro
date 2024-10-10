@@ -12,7 +12,7 @@ export type IntRange<F extends number, T extends number> = Exclude<
 
 export type ExcludeFunctions<G extends Record<string, any>> = Pick<
   G,
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   { [P in keyof G]: NonNullable<G[P]> extends Function ? never : P }[keyof G]
 >;
 

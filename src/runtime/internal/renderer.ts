@@ -7,24 +7,33 @@ import {
   setResponseHeaders,
   setResponseStatus,
 } from "h3";
-import type { RenderHandler } from "nitropack/types";
+import type { RenderHandler, RenderContext } from "nitropack/types";
 import { useNitroApp } from "./app";
 import { useRuntimeConfig } from "./config";
 
-export function defineRenderHandler(handler: RenderHandler) {
+export function defineRenderHandler(render: RenderHandler) {
   const runtimeConfig = useRuntimeConfig();
   return eventHandler(async (event) => {
-    // TODO: Use serve-placeholder
-    if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
-      setResponseHeader(event, "Content-Type", "image/x-icon");
-      return send(
-        event,
-        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-      );
-    }
+    const nitroApp = useNitroApp();
 
-    const response = await handler(event);
-    if (!response) {
+    // Create shared context for hooks
+    const ctx: RenderContext = { event, render, response: undefined };
+
+    // Call initial hook to prepare and optionally custom render
+    await nitroApp.hooks.callHook("render:before", ctx);
+
+    if (!ctx.response /* not handled by hook */) {
+      // TODO: Use serve-placeholder
+      if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
+        setResponseHeader(event, "Content-Type", "image/x-icon");
+        return send(
+          event,
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        );
+      }
+
+      ctx.response = await ctx.render(event);
+
       const _currentStatus = getResponseStatus(event);
       setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
       return send(
@@ -33,23 +42,22 @@ export function defineRenderHandler(handler: RenderHandler) {
       );
     }
 
-    // Allow hooking and modifying response
-    const nitroApp = useNitroApp();
-    await nitroApp.hooks.callHook("render:response", response, { event });
-
-    // TODO: Warn if response is already handled
-
-    // TODO: Caching support
+    // Allow  modifying response
+    await nitroApp.hooks.callHook("render:response", ctx.response, ctx);
 
     // Send headers
-    if (response.headers) {
-      setResponseHeaders(event, response.headers);
+    if (ctx.response.headers) {
+      setResponseHeaders(event, ctx.response.headers);
     }
-    if (response.statusCode || response.statusMessage) {
-      setResponseStatus(event, response.statusCode, response.statusMessage);
+    if (ctx.response.statusCode || ctx.response.statusMessage) {
+      setResponseStatus(
+        event,
+        ctx.response.statusCode,
+        ctx.response.statusMessage
+      );
     }
 
     // Send response body
-    return response.body;
+    return ctx.response.body;
   });
 }
