@@ -113,7 +113,7 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
         delete pending[key];
         if (validate(entry) !== false) {
           const promise = useStorage()
-            .setItem(cacheKey, entry)
+            .setItem(cacheKey, entry, { ttl: opts.maxAge })
             .catch((error) => {
               console.error(`[nitro] [cache] Cache write error.`, error);
               useNitroApp().captureError(error, { event, tags: ["cache"] });
@@ -368,8 +368,8 @@ export function defineCachedEventHandler<
       );
       headers["last-modified"] = String(
         headers["Last-Modified"] ||
-          headers["last-modified"] ||
-          new Date().toUTCString()
+        headers["last-modified"] ||
+        new Date().toUTCString()
       );
       const cacheControl = [];
       if (opts.swr) {
