@@ -20,6 +20,7 @@ import { hash } from "ohash";
 import { parseURL } from "ufo";
 import { useNitroApp } from "./app";
 import { useStorage } from "./storage";
+import type { TransactionOptions } from "unstorage";
 
 function defaultCacheOptions() {
   return {
@@ -112,8 +113,12 @@ export function defineCachedFunction<T, ArgsT extends unknown[] = any[]>(
         entry.integrity = integrity;
         delete pending[key];
         if (validate(entry) !== false) {
+          let setOpts: TransactionOptions | undefined;
+          if (opts.maxAge) {
+            setOpts = { ttl: opts.maxAge };
+          }
           const promise = useStorage()
-            .setItem(cacheKey, entry, { ttl: opts.maxAge })
+            .setItem(cacheKey, entry, setOpts)
             .catch((error) => {
               console.error(`[nitro] [cache] Cache write error.`, error);
               useNitroApp().captureError(error, { event, tags: ["cache"] });
