@@ -368,8 +368,8 @@ export function defineCachedEventHandler<
       );
       headers["last-modified"] = String(
         headers["Last-Modified"] ||
-        headers["last-modified"] ||
-        new Date().toUTCString()
+          headers["last-modified"] ||
+          new Date().toUTCString()
       );
       const cacheControl = [];
       if (opts.swr) {
