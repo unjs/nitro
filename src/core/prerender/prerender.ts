@@ -11,11 +11,11 @@ import { joinURL, withBase, withoutBase } from "ufo";
 import { build } from "../build/build";
 import { createNitro } from "../nitro";
 import { compressPublicAssets } from "../utils/compress";
+import { runParallel } from "../utils/parallel";
 import {
   extractLinks,
   formatPrerenderRoute,
   matchesIgnorePattern,
-  runParallel,
 } from "./utils";
 
 const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/; // From unjs/destr
@@ -223,7 +223,6 @@ export async function prerender(nitro: Nitro) {
       _route.error = new Error(`[${res.status}] ${res.statusText}`) as any;
       _route.error!.statusCode = res.status;
       _route.error!.statusMessage = res.statusText;
-      failedRoutes.add(_route);
     }
 
     // Measure actual time taken for generating route
@@ -253,6 +252,11 @@ export async function prerender(nitro: Nitro) {
     if (_route.contentType !== inferredContentType) {
       nitro._prerenderMeta![_route.fileName] ||= {};
       nitro._prerenderMeta![_route.fileName].contentType = _route.contentType;
+    }
+
+    // After hook to allow ignoring in `prerender:generate` hook
+    if (_route.error) {
+      failedRoutes.add(_route);
     }
 
     // Check if route is skipped or has errors

@@ -6,43 +6,6 @@ const allowedExtensions = new Set(["", ".json"]);
 
 const linkParents = new Map<string, Set<string>>();
 
-export async function runParallel<T>(
-  inputs: Set<T>,
-  cb: (input: T) => unknown | Promise<unknown>,
-  opts: { concurrency: number; interval: number }
-) {
-  const tasks = new Set<Promise<unknown>>();
-
-  function queueNext(): undefined | Promise<unknown> {
-    const route = inputs.values().next().value;
-    if (!route) {
-      return;
-    }
-
-    inputs.delete(route);
-    const task = new Promise((resolve) => setTimeout(resolve, opts.interval))
-      .then(() => cb(route))
-      .catch((error) => {
-        console.error(error);
-      });
-
-    tasks.add(task);
-    return task.then(() => {
-      tasks.delete(task);
-      if (inputs.size > 0) {
-        return refillQueue();
-      }
-    });
-  }
-
-  function refillQueue(): Promise<unknown> {
-    const workers = Math.min(opts.concurrency - tasks.size, inputs.size);
-    return Promise.all(Array.from({ length: workers }, () => queueNext()));
-  }
-
-  await refillQueue();
-}
-
 const LINK_REGEX = /(?<=\s)href=(?!&quot;)["']?([^"'>]+)/g;
 
 const HTML_ENTITIES = {
@@ -85,7 +48,7 @@ export function extractLinks(
 
   for (const link of _links.filter(Boolean)) {
     const _link = parseURL(link);
-    if (_link.protocol) {
+    if (_link.protocol || _link.host) {
       continue;
     }
     if (!_link.pathname.startsWith("/")) {

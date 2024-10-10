@@ -2,7 +2,6 @@ import "#nitro-internal-pollyfills";
 import { useNitroApp } from "nitropack/runtime";
 import { startScheduleRunner } from "nitropack/runtime/internal";
 
-import type {} from "bun";
 import wsAdapter from "crossws/adapters/bun";
 
 const nitroApp = useNitroApp();
@@ -11,12 +10,14 @@ const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
+// @ts-expect-error
 const server = Bun.serve({
   port: process.env.NITRO_PORT || process.env.PORT || 3000,
   websocket: import.meta._websocket ? ws!.websocket : (undefined as any),
-  async fetch(req, server) {
-    if (import.meta._websocket && (await ws!.handleUpgrade(req, server))) {
-      return;
+  async fetch(req: Request, server: any) {
+    // https://crossws.unjs.io/adapters/bun
+    if (import.meta._websocket && req.headers.get("upgrade") === "websocket") {
+      return ws!.handleUpgrade(req, server);
     }
 
     const url = new URL(req.url);

@@ -36,6 +36,7 @@ export default {
     context: EventContext<CFPagesEnv, string, any>
   ) {
     // Websocket upgrade
+    // https://crossws.unjs.io/adapters/cloudflare
     if (
       import.meta._websocket &&
       request.headers.get("upgrade") === "websocket"

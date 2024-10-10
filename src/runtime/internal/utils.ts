@@ -60,36 +60,35 @@ export function normalizeError(error: any, isDev?: boolean) {
   // TODO: investigate vercel-edge not using unenv pollyfill
   const cwd = typeof process.cwd === "function" ? process.cwd() : "/";
 
-  // Hide details of unhandled/fatal errors in production
-  const hideDetails = !isDev && (error.unhandled || error.fatal);
-
-  const stack = hideDetails
-    ? []
-    : ((error.stack as string) || "")
-        .split("\n")
-        .splice(1)
-        .filter((line) => line.includes("at "))
-        .map((line) => {
-          const text = line
-            .replace(cwd + "/", "./")
-            .replace("webpack:/", "")
-            .replace("file://", "")
-            .trim();
-          return {
-            text,
-            internal:
-              (line.includes("node_modules") && !line.includes(".cache")) ||
-              line.includes("internal") ||
-              line.includes("new Promise"),
-          };
-        });
+  const stack =
+    !isDev && !import.meta.prerender && (error.unhandled || error.fatal)
+      ? []
+      : ((error.stack as string) || "")
+          .split("\n")
+          .splice(1)
+          .filter((line) => line.includes("at "))
+          .map((line) => {
+            const text = line
+              .replace(cwd + "/", "./")
+              .replace("webpack:/", "")
+              .replace("file://", "")
+              .trim();
+            return {
+              text,
+              internal:
+                (line.includes("node_modules") && !line.includes(".cache")) ||
+                line.includes("internal") ||
+                line.includes("new Promise"),
+            };
+          });
 
   const statusCode = error.statusCode || 500;
   const statusMessage =
     error.statusMessage ?? (statusCode === 404 ? "Not Found" : "");
-  const message = hideDetails
-    ? "internal server error"
-    : error.message || error.toString();
+  const message =
+    !isDev && error.unhandled
+      ? "internal server error"
+      : error.message || error.toString();
 
   return {
     stack,

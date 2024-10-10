@@ -12,6 +12,7 @@ const ws = import.meta._websocket
   : undefined;
 
 Deno.serve((request: Request, info: _Deno.ServeHandlerInfo) => {
+  // https://crossws.unjs.io/adapters/deno
   if (
     import.meta._websocket &&
     request.headers.get("upgrade") === "websocket"

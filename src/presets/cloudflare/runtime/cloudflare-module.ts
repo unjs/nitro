@@ -7,11 +7,13 @@ import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
-import type { ExecutionContext } from "@cloudflare/workers-types";
+import type {
+  ExecutionContext,
+  ForwardableEmailMessage,
+  MessageBatch,
+} from "@cloudflare/workers-types";
 import wsAdapter from "crossws/adapters/cloudflare";
 import { withoutBase } from "ufo";
-
-import type { CloudflareEmailContext, CloudflareMessageBatch } from "../types";
 
 // @ts-ignore Bundled by Wrangler
 // See https://github.com/cloudflare/kv-asset-handler#asset_manifest-required-for-es-modules
@@ -30,6 +32,7 @@ interface CFModuleEnv {
 export default {
   async fetch(request: Request, env: CFModuleEnv, context: ExecutionContext) {
     // Websocket upgrade
+    // https://crossws.unjs.io/adapters/cloudflare
     if (
       import.meta._websocket &&
       request.headers.get("upgrade") === "websocket"
@@ -101,7 +104,7 @@ export default {
   },
 
   email(
-    event: CloudflareEmailContext,
+    event: ForwardableEmailMessage,
     env: CFModuleEnv,
     context: ExecutionContext
   ) {
@@ -111,11 +114,7 @@ export default {
     );
   },
 
-  queue(
-    event: CloudflareEmailContext,
-    env: CFModuleEnv,
-    context: ExecutionContext
-  ) {
+  queue(event: MessageBatch, env: CFModuleEnv, context: ExecutionContext) {
     (globalThis as any).__env__ = env;
     context.waitUntil(
       nitroApp.hooks.callHook("cloudflare:queue", { event, env, context })

@@ -3,7 +3,7 @@ import { defineNitroConfig } from "nitropack/config";
 
 export default defineNitroConfig({
   compressPublicAssets: true,
-  compatibilityDate: "2024-06-12",
+  compatibilityDate: "2024-09-29",
   imports: {
     presets: [
       {
@@ -72,7 +72,7 @@ export default defineNitroConfig({
     },
     "/rules/dynamic": { cache: false, isr: false },
     "/rules/redirect": { redirect: "/base" },
-    "/rules/isr/**": { isr: true },
+    "/rules/isr/**": { isr: { allowQuery: ["q"] } },
     "/rules/isr-ttl/**": { isr: 60 },
     "/rules/swr/**": { swr: true },
     "/rules/swr-ttl/**": { swr: 60 },
@@ -118,6 +118,7 @@ export default defineNitroConfig({
     },
   },
   openAPI: {
+    production: "prerender",
     meta: {
       title: "Nitro Test Fixture",
       description: "Nitro Test Fixture API",

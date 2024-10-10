@@ -21,6 +21,8 @@ export const runtimeDependencies = [
   "radix3",
   "scule",
   "ufo",
+  "db0",
+  "std-env",
   "uncrypto",
   "unctx",
   "unenv",

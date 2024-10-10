@@ -10,7 +10,7 @@ import { joinURL } from "ufo";
 import { handlersMeta } from "#nitro-internal-virtual/server-handlers-meta";
 import { useRuntimeConfig } from "../config";
 
-// Served as /_nitro/openapi.json
+// Served as /_openapi.json
 export default eventHandler((event) => {
   const runtimeConfig = useRuntimeConfig(event);
 

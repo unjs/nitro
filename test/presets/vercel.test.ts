@@ -25,6 +25,12 @@ describe("nitro:preset:vercel", async () => {
         expect(config).toMatchInlineSnapshot(`
           {
             "overrides": {
+              "_scalar/index.html": {
+                "path": "_scalar",
+              },
+              "_swagger/index.html": {
+                "path": "_swagger",
+              },
               "api/hey/index.html": {
                 "path": "api/hey",
               },
@@ -144,6 +150,20 @@ describe("nitro:preset:vercel", async () => {
             "version": 3,
           }
         `);
+      });
+
+      it("should generate prerender config", async () => {
+        const isrRouteConfig = await fsp.readFile(
+          resolve(
+            ctx.outDir,
+            "functions/__nitro--rules-isr.prerender-config.json"
+          ),
+          "utf8"
+        );
+        expect(JSON.parse(isrRouteConfig)).toMatchObject({
+          expiration: false,
+          allowQuery: ["q", "url"],
+        });
       });
     }
   );

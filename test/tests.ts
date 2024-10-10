@@ -47,7 +47,9 @@ export const describeIf = (
   condition
     ? describe(title, factory)
     : describe(title, () => {
-        it.skip("skipped", () => {});
+        it.skip("skipped", () => {
+          // Ignore
+        });
       });
 
 export const fixtureDir = fileURLToPath(
@@ -73,7 +75,9 @@ export async function setupTest(
 ) {
   const presetTmpDir = getPresetTmpDir(preset);
 
-  await fsp.rm(presetTmpDir, { recursive: true }).catch(() => {});
+  await fsp.rm(presetTmpDir, { recursive: true }).catch(() => {
+    // Ignore
+  });
   await fsp.mkdir(presetTmpDir, { recursive: true });
 
   const ctx: Context = {
@@ -239,6 +243,15 @@ export function testNitro(
     expect(paramsData2).toBe("foo/bar/baz");
   });
 
+  it("group routes", async () => {
+    const { status } = await callHandler({ url: "/route-group" });
+    expect(status).toBe(200);
+    const { status: apiStatus } = await callHandler({
+      url: "/route-group",
+    });
+    expect(apiStatus).toBe(200);
+  });
+
   it("Handle 404 not found", async () => {
     const res = await callHandler({ url: "/api/not-found" });
     expect(res.status).toBe(404);
@@ -362,20 +375,14 @@ export function testNitro(
       const { status, headers } = await callHandler({ url: "/favicon.ico" });
       expect(status).toBe(200);
       expect(headers.etag).toBeDefined();
-      expect(headers["content-type"]).toMatchInlineSnapshot(
-        '"image/vnd.microsoft.icon"'
-      );
+      expect(headers["content-type"]).toBe("image/vnd.microsoft.icon");
     });
 
     it("serve static asset /build/test.txt", async () => {
       const { status, headers } = await callHandler({ url: "/build/test.txt" });
       expect(status).toBe(200);
-      expect(headers.etag).toMatchInlineSnapshot(
-        `""7-vxGfAKTuGVGhpDZqQLqV60dnKPw""`
-      );
-      expect(headers["content-type"]).toMatchInlineSnapshot(
-        '"text/plain; charset=utf-8"'
-      );
+      expect(headers.etag).toBe('"7-vxGfAKTuGVGhpDZqQLqV60dnKPw"');
+      expect(headers["content-type"]).toBe("text/plain; charset=utf-8");
     });
 
     it("stores content-type for prerendered routes", async () => {
@@ -394,11 +401,9 @@ export function testNitro(
 
   it("find auto imported utils", async () => {
     const res = await callHandler({ url: "/imports" });
-    expect(res.data).toMatchInlineSnapshot(`
-        {
-          "testUtil": 123,
-        }
-      `);
+    expect(res.data).toMatchObject({
+      testUtil: 123,
+    });
   });
 
   it.skipIf(ctx.preset === "deno-server")(
@@ -421,7 +426,7 @@ export function testNitro(
       method: "PUT",
       body: "world",
     });
-    expect(putRes.data).toMatchObject("world");
+    expect(putRes.data).toBe("world");
 
     expect(
       (
@@ -592,12 +597,13 @@ export function testNitro(
       }
 
       // TODO: vercel-edge joins all cookies for some reason!
-      if (ctx.preset === "vercel-edge") {
-        expectedCookies =
-          "foo=bar, bar=baz, test=value; Path=/, test2=value; Path=/";
+      if (typeof expectedCookies === "string") {
+        expect(headers["set-cookie"]).toBe(expectedCookies);
+      } else {
+        expect((headers["set-cookie"] as string[]).join(", ")).toBe(
+          expectedCookies.join(", ")
+        );
       }
-
-      expect(headers["set-cookie"]).toMatchObject(expectedCookies);
     });
   });
 

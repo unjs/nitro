@@ -1,5 +1,6 @@
-import type { AppOptions, App as H3App, H3Event, Router } from "h3";
+import type { App as H3App, H3Event, Router } from "h3";
 import type { Hookable } from "hookable";
+import type { NitroRuntimeHooks as NitroTypesRuntimeHooks } from "nitropack";
 import type {
   createCall,
   createFetch as createLocalFetch,
@@ -33,6 +34,12 @@ export type RenderHandler = (
   event: H3Event
 ) => Partial<RenderResponse> | Promise<Partial<RenderResponse>>;
 
+export interface RenderContext {
+  event: H3Event;
+  render: RenderHandler;
+  response?: Partial<RenderResponse>;
+}
+
 export interface CapturedErrorContext {
   event?: H3Event;
   [key: string]: unknown;
@@ -43,16 +50,4 @@ export type CaptureError = (
   context: CapturedErrorContext
 ) => void;
 
-export interface NitroRuntimeHooks {
-  close: () => void;
-  error: CaptureError;
-
-  request: NonNullable<AppOptions["onRequest"]>;
-  beforeResponse: NonNullable<AppOptions["onBeforeResponse"]>;
-  afterResponse: NonNullable<AppOptions["onAfterResponse"]>;
-
-  "render:response": (
-    response: Partial<RenderResponse>,
-    context: { event: H3Event }
-  ) => void;
-}
+export interface NitroRuntimeHooks extends NitroTypesRuntimeHooks {}

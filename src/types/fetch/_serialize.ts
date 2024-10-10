@@ -5,14 +5,11 @@ type JsonPrimitive =
   | string
   | number
   | boolean
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | String
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | Number
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | Boolean
+  | string
+  | number
+  | boolean
   | null;
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 type NonJsonPrimitive = undefined | Function | symbol;
 
 /*
