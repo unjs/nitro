@@ -106,50 +106,51 @@ declare global {
   }
 }
 
-const streamingHandler = () => awslambda.streamifyResponse(
-  async (event: APIGatewayProxyEventV2, responseStream, context) => {
-    const query = {
-      ...event.queryStringParameters,
-    };
-    const url = withQuery(event.rawPath, query);
-    const method = event.requestContext?.http?.method || "get";
+const streamingHandler = () =>
+  awslambda.streamifyResponse(
+    async (event: APIGatewayProxyEventV2, responseStream, context) => {
+      const query = {
+        ...event.queryStringParameters,
+      };
+      const url = withQuery(event.rawPath, query);
+      const method = event.requestContext?.http?.method || "get";
 
-    if ("cookies" in event && event.cookies) {
-      event.headers.cookie = event.cookies.join(";");
-    }
+      if ("cookies" in event && event.cookies) {
+        event.headers.cookie = event.cookies.join(";");
+      }
 
-    const r = await nitroApp.localCall({
-      event,
-      url,
-      context,
-      headers: normalizeLambdaIncomingHeaders(event.headers) as Record<
-        string,
-        string | string[]
-      >,
-      method,
-      query,
-      body: event.isBase64Encoded
-        ? Buffer.from(event.body || "", "base64").toString("utf8")
-        : event.body,
-    });
-    const httpResponseMetadata = {
-      statusCode: r.status,
-      headers: {
-        ...normalizeLambdaOutgoingHeaders(r.headers, true),
-        "Transfer-Encoding": "chunked",
-      },
-    };
-    if (r.body) {
-      const reader = r.body as ReadableStream;
-      const writer = awslambda.HttpResponseStream.from(
-        responseStream,
-        httpResponseMetadata
-      );
-      await streamToNodeStream(reader.getReader(), responseStream);
-      writer.end();
+      const r = await nitroApp.localCall({
+        event,
+        url,
+        context,
+        headers: normalizeLambdaIncomingHeaders(event.headers) as Record<
+          string,
+          string | string[]
+        >,
+        method,
+        query,
+        body: event.isBase64Encoded
+          ? Buffer.from(event.body || "", "base64").toString("utf8")
+          : event.body,
+      });
+      const httpResponseMetadata = {
+        statusCode: r.status,
+        headers: {
+          ...normalizeLambdaOutgoingHeaders(r.headers, true),
+          "Transfer-Encoding": "chunked",
+        },
+      };
+      if (r.body) {
+        const reader = r.body as ReadableStream;
+        const writer = awslambda.HttpResponseStream.from(
+          responseStream,
+          httpResponseMetadata
+        );
+        await streamToNodeStream(reader.getReader(), responseStream);
+        writer.end();
+      }
     }
-  }
-);
+  );
 
 const streamToNodeStream = async (
   reader: ReadableStreamDefaultReader<Uint8Array>,
