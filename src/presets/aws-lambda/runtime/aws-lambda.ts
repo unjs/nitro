@@ -16,7 +16,7 @@ import {
 } from "nitropack/runtime/internal";
 import { withQuery } from "ufo";
 import { useRuntimeConfig } from "nitropack/runtime/config";
-import { Readable } from "stream";
+import { Readable } from "node:stream";
 
 const nitroApp = useNitroApp();
 
