@@ -1,4 +1,5 @@
 import { defineNitroPreset } from "nitropack/kit";
+export type { AwsLambdaOptions as PresetOptions } from "./types";
 
 const awsLambda = defineNitroPreset(
   {
@@ -10,15 +11,4 @@ const awsLambda = defineNitroPreset(
   }
 );
 
-const awsLambdaStreaming = defineNitroPreset(
-  {
-    extends: "aws-lambda",
-    entry: "./runtime/aws-lambda-streaming",
-  },
-  {
-    name: "aws-lambda-streaming" as const,
-    url: import.meta.url,
-  }
-);
-
-export default [awsLambda, awsLambdaStreaming] as const;
+export default [awsLambda] as const;
