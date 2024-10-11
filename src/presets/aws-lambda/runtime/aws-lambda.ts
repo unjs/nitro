@@ -15,7 +15,7 @@ import {
   normalizeLambdaOutgoingHeaders,
 } from "nitropack/runtime/internal";
 import { withQuery } from "ufo";
-import { useRuntimeConfig } from "nitro/runtime/index";
+import { useRuntimeConfig } from "nitropack/runtime/config";
 
 const nitroApp = useNitroApp();
 
