@@ -16,6 +16,7 @@ import {
 } from "nitropack/runtime/internal";
 import { withQuery } from "ufo";
 import { useRuntimeConfig } from "nitropack/runtime/config";
+import { Readable } from "stream";
 
 const nitroApp = useNitroApp();
 
@@ -141,19 +142,24 @@ const streamingHandler = () =>
         },
       };
       if (r.body) {
-        const reader = r.body as ReadableStream;
         const writer = awslambda.HttpResponseStream.from(
           responseStream,
           httpResponseMetadata
         );
-        await streamToNodeStream(reader.getReader(), responseStream);
+        if (!r.body.getReader) {
+          writer.write(r.body);
+          writer.end();
+          return;
+        }
+        const reader = r.body.getReader();
+        await streamToNodeStream(reader, responseStream);
         writer.end();
       }
     }
   );
 
 const streamToNodeStream = async (
-  reader: ReadableStreamDefaultReader<Uint8Array>,
+  reader: Readable,
   writer: NodeJS.WritableStream
 ) => {
   let readResult = await reader.read();
