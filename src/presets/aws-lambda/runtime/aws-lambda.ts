@@ -3,6 +3,7 @@ import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResult,
   APIGatewayProxyResultV2,
+  APIGatewayProxyStructuredResultV2,
   Context,
 } from "aws-lambda";
 import "#nitro-internal-pollyfills";
