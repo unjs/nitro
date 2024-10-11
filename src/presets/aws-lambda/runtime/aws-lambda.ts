@@ -106,7 +106,7 @@ declare global {
   }
 }
 
-const streamingHandler = awslambda.streamifyResponse(
+const streamingHandler = () => awslambda.streamifyResponse(
   async (event: APIGatewayProxyEventV2, responseStream, context) => {
     const query = {
       ...event.queryStringParameters,
@@ -164,5 +164,5 @@ const streamToNodeStream = async (
 };
 
 export const handler = useRuntimeConfig().streaming
-  ? streamingHandler
+  ? streamingHandler()
   : bufferedHandler;
