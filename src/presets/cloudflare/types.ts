@@ -2,6 +2,9 @@ import type {
   ExecutionContext,
   ForwardableEmailMessage,
   MessageBatch,
+  ScheduledController,
+  TraceItem,
+  TestController,
 } from "@cloudflare/workers-types";
 import type { Config as WranglerConfig } from "./types.wrangler";
 
@@ -58,14 +61,38 @@ export interface CloudflareOptions {
 
 declare module "nitropack/types" {
   export interface NitroRuntimeHooks {
-    "cloudflare:email": (_: {
-      event: ForwardableEmailMessage;
-      env: any;
+    "cloudflare:scheduled": (_: /*ExportedHandlerScheduledHandler */ {
+      controller: ScheduledController;
+      env: unknown;
       context: ExecutionContext;
     }) => void;
-    "cloudflare:queue": (_: {
+    "cloudflare:email": (_: /* EmailExportedHandler */ {
+      message: ForwardableEmailMessage;
+      /** @deprecated please use `message` */
+      event: ForwardableEmailMessage;
+      env: unknown;
+      context: ExecutionContext;
+    }) => void;
+    "cloudflare:queue": (_: /* ExportedHandlerQueueHandler */ {
+      batch: MessageBatch;
+      /** @deprecated please use `batch` */
       event: MessageBatch;
-      env: any;
+      env: unknown;
+      context: ExecutionContext;
+    }) => void;
+    "cloudflare:tail": (_: /* ExportedHandlerTailHandler */ {
+      traces: TraceItem[];
+      env: unknown;
+      context: ExecutionContext;
+    }) => void;
+    "cloudflare:trace": (_: /* ExportedHandlerTraceHandler */ {
+      traces: TraceItem[];
+      env: unknown;
+      context: ExecutionContext;
+    }) => void;
+    "cloudflare:test": (_: /* ExportedHandlerTestHandler */ {
+      controller: TestController;
+      env: unknown;
       context: ExecutionContext;
     }) => void;
   }
