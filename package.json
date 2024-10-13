@@ -95,7 +95,7 @@
   },
   "resolutions": {
     "nitropack": "link:.",
-    "undici": "^6.19.8"
+    "undici": "^6.20.0"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.4",
@@ -120,7 +120,7 @@
     "cookie-es": "^1.2.2",
     "croner": "^8.1.2",
     "crossws": "^0.3.1",
-    "db0": "^0.2.0",
+    "db0": "^0.2.1",
     "defu": "^6.1.4",
     "destr": "^2.0.3",
     "dot-prop": "^9.0.0",
@@ -138,7 +138,7 @@
     "klona": "^2.0.6",
     "knitwork": "^1.1.0",
     "listhen": "^1.9.0",
-    "magic-string": "^0.30.11",
+    "magic-string": "^0.30.12",
     "magicast": "^0.3.5",
     "mime": "^4.0.4",
     "mlly": "^1.7.2",
@@ -171,9 +171,9 @@
   "devDependencies": {
     "@azure/functions": "^3.5.1",
     "@azure/static-web-apps-cli": "^1.1.10",
-    "@cloudflare/workers-types": "^4.20241004.0",
+    "@cloudflare/workers-types": "^4.20241011.0",
     "@deno/types": "^0.0.1",
-    "@scalar/api-reference": "^1.25.32",
+    "@scalar/api-reference": "^1.25.35",
     "@types/archiver": "^6.0.2",
     "@types/aws-lambda": "^8.10.145",
     "@types/estree": "^1.0.6",
@@ -195,10 +195,10 @@
     "firebase-admin": "^12.6.0",
     "firebase-functions": "^4.9.0",
     "get-port-please": "^3.1.2",
-    "miniflare": "^3.20240925.1",
+    "miniflare": "^3.20241004.0",
     "prettier": "^3.3.3",
     "typescript": "^5.6.3",
-    "unbuild": "3.0.0-rc.10",
+    "unbuild": "3.0.0-rc.11",
     "undici": "^6.20.0",
     "vitest": "^2.1.2",
     "xml2js": "^0.6.2"
@@ -211,7 +211,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@9.11.0",
+  "packageManager": "pnpm@9.12.1",
   "engines": {
     "node": "^16.11.0 || >=17.0.0"
   },
