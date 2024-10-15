@@ -97,6 +97,22 @@ rules = [
 bucket = ".output/public"
 ```
 
+## Runtime hooks
+
+You can use [runtime hooks](/guide/plugins#nitro-runtime-hooks) bellow in order to extend lifecycle events.
+
+:read-more{to="/guide/plugins#nitro-runtime-hooks"}
+
+> [!NOTE]
+> This feature is currently available in [nightly channel](https://nitro.unjs.io/guide/nightly) only.
+
+- `cloudflare:scheduled`
+- `cloudflare:email`
+- `cloudflare:queue`
+- `cloudflare:tail`
+- `cloudflare:trace`
+
+
 ### Preview your app locally
 
 You can use [wrangler](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler), to preview your app locally:
