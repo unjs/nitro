@@ -4,7 +4,6 @@ import type {
   MessageBatch,
   ScheduledController,
   TraceItem,
-  TestController,
 } from "@cloudflare/workers-types";
 import type { Config as WranglerConfig } from "./types.wrangler";
 
@@ -87,11 +86,6 @@ declare module "nitropack/types" {
     }) => void;
     "cloudflare:trace": (_: /* ExportedHandlerTraceHandler */ {
       traces: TraceItem[];
-      env: unknown;
-      context: ExecutionContext;
-    }) => void;
-    "cloudflare:test": (_: /* ExportedHandlerTestHandler */ {
-      controller: TestController;
       env: unknown;
       context: ExecutionContext;
     }) => void;

@@ -152,17 +152,6 @@ export default <ExportedHandler<Env>>{
       })
     );
   },
-
-  test(controller, env, context) {
-    (globalThis as any).__env__ = env;
-    context.waitUntil(
-      nitroApp.hooks.callHook("cloudflare:test", {
-        controller,
-        env,
-        context,
-      })
-    );
-  },
 };
 
 function assetsCacheControl(_request: Request) {
