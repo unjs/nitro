@@ -7,11 +7,7 @@ import {
   getAssetFromKV,
   mapRequestToAsset,
 } from "@cloudflare/kv-asset-handler";
-import type {
-  ExecutionContext,
-  ForwardableEmailMessage,
-  MessageBatch,
-} from "@cloudflare/workers-types";
+import type { ExportedHandler } from "@cloudflare/workers-types";
 import wsAdapter from "crossws/adapters/cloudflare";
 import { withoutBase } from "ufo";
 
@@ -25,12 +21,12 @@ const ws = import.meta._websocket
   ? wsAdapter(nitroApp.h3App.websocket)
   : undefined;
 
-interface CFModuleEnv {
-  [key: string]: any;
+interface Env {
+  __STATIC_CONTENT?: any;
 }
 
-export default {
-  async fetch(request: Request, env: CFModuleEnv, context: ExecutionContext) {
+export default <ExportedHandler<Env>>{
+  async fetch(request, env, context) {
     // Websocket upgrade
     // https://crossws.unjs.io/adapters/cloudflare
     if (
@@ -44,7 +40,7 @@ export default {
       // https://github.com/cloudflare/kv-asset-handler#es-modules
       return await getAssetFromKV(
         {
-          request,
+          request: request as unknown as Request,
           waitUntil(promise) {
             return context.waitUntil(promise);
           },
@@ -62,7 +58,7 @@ export default {
 
     const url = new URL(request.url);
     let body;
-    if (requestHasBody(request)) {
+    if (requestHasBody(request as unknown as Request)) {
       body = Buffer.from(await request.arrayBuffer());
     }
 
@@ -82,15 +78,23 @@ export default {
       host: url.hostname,
       protocol: url.protocol,
       method: request.method,
-      headers: request.headers,
+      headers: request.headers as unknown as Headers,
       body,
     });
   },
-  scheduled(event: any, env: CFModuleEnv, context: ExecutionContext) {
+
+  scheduled(controller, env, context) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:scheduled", {
+        controller,
+        env,
+        context,
+      })
+    );
     if (import.meta._tasks) {
-      (globalThis as any).__env__ = env;
       context.waitUntil(
-        runCronTasks(event.cron, {
+        runCronTasks(controller.cron, {
           context: {
             cloudflare: {
               env,
@@ -103,21 +107,49 @@ export default {
     }
   },
 
-  email(
-    event: ForwardableEmailMessage,
-    env: CFModuleEnv,
-    context: ExecutionContext
-  ) {
+  email(message, env, context) {
     (globalThis as any).__env__ = env;
     context.waitUntil(
-      nitroApp.hooks.callHook("cloudflare:email", { event, env, context })
+      nitroApp.hooks.callHook("cloudflare:email", {
+        message,
+        event: message, // backward compat
+        env,
+        context,
+      })
     );
   },
 
-  queue(event: MessageBatch, env: CFModuleEnv, context: ExecutionContext) {
+  queue(batch, env, context) {
     (globalThis as any).__env__ = env;
     context.waitUntil(
-      nitroApp.hooks.callHook("cloudflare:queue", { event, env, context })
+      nitroApp.hooks.callHook("cloudflare:queue", {
+        batch,
+        event: batch,
+        env,
+        context,
+      })
+    );
+  },
+
+  tail(traces, env, context) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:tail", {
+        traces,
+        env,
+        context,
+      })
+    );
+  },
+
+  trace(traces, env, context) {
+    (globalThis as any).__env__ = env;
+    context.waitUntil(
+      nitroApp.hooks.callHook("cloudflare:trace", {
+        traces,
+        env,
+        context,
+      })
     );
   },
 };
