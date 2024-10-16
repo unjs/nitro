@@ -1,8 +1,14 @@
 import { existsSync } from "node:fs";
-import { writeFile } from "nitropack/kit";
+import { writeFile, getDefaultNodeVersion } from "nitropack/kit";
 import type { Nitro } from "nitropack/types";
 import { join, relative } from "pathe";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
+
+/**
+ * Supported Node.js versions for Firebase Functions.
+ * @link https://cloud.google.com/functions/docs/runtime-support#node.js
+ */
+const supportedNodeVersions = new Set([18, 20]);
 
 export async function writeFirebaseConfig(nitro: Nitro) {
   const firebaseConfigPath = join(nitro.options.rootDir, "firebase.json");
@@ -48,7 +54,9 @@ export async function updatePackageJSON(nitro: Nitro) {
     ),
     engines: {
       // https://cloud.google.com/functions/docs/concepts/nodejs-runtime
-      node: nitro.options.firebase?.nodeVersion || "20",
+      node:
+        nitro.options.firebase?.nodeVersion ||
+        getDefaultNodeVersion(supportedNodeVersions),
     },
   });
 }
