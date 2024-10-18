@@ -8,22 +8,26 @@ type MaybePromise<T> = T | Promise<T>;
 
 export function createHandler<Env>(hooks: {
   fetch: (
-    ...params: Parameters<NonNullable<ExportedHandler<Env>["fetch"]>>
+    ...params: [
+      ...Parameters<NonNullable<ExportedHandler<Env>["fetch"]>>,
+      url: URL,
+    ]
   ) => MaybePromise<Response | CF.Response | undefined>;
 }) {
   const nitroApp = useNitroApp();
 
   return <ExportedHandler<Env>>{
     async fetch(request, env, context) {
+      const url = new URL(request.url);
+
       // Preset-specific logic
       if (hooks.fetch) {
-        const res = await hooks.fetch(request, env, context);
+        const res = await hooks.fetch(request, env, context, url);
         if (res) {
           return res;
         }
       }
 
-      const url = new URL(request.url);
       let body;
       if (requestHasBody(request as unknown as Request)) {
         body = Buffer.from(await request.arrayBuffer());

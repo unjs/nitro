@@ -3,7 +3,7 @@ import { defineNitroConfig } from "nitropack/config";
 
 export default defineNitroConfig({
   compressPublicAssets: true,
-  compatibilityDate: "2024-09-29",
+  compatibilityDate: "2024-10-19",
   imports: {
     presets: [
       {
