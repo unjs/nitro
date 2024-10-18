@@ -5,6 +5,7 @@ import type {
   ScheduledController,
   TraceItem,
 } from "@cloudflare/workers-types";
+import type { DurableObject } from "cloudflare:workers";
 import type { Config as WranglerConfig } from "./types.wrangler";
 
 /**
@@ -57,6 +58,8 @@ export interface CloudflareOptions {
     defaultRoutes?: boolean;
   };
 }
+
+type DurableObjectState = ConstructorParameters<typeof DurableObject>[0];
 
 declare module "nitropack/types" {
   export interface NitroRuntimeHooks {
