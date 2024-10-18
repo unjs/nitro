@@ -93,5 +93,15 @@ declare module "nitropack/types" {
       env: unknown;
       context: ExecutionContext;
     }) => void;
+
+    "cloudflare:durable:init": (
+      durable: DurableObject,
+      _: {
+        state: DurableObjectState;
+        env: unknown;
+      }
+    ) => void;
+
+    "cloudflare:durable:alarm": (durable: DurableObject) => void;
   }
 }
