@@ -187,10 +187,25 @@ const cloudflareModule = defineNitroPreset(
   }
 );
 
+const cloudflareDurable = defineNitroPreset(
+  {
+    extends: "cloudflare-module",
+    entry: "./runtime/cloudflare-durable",
+    rollupConfig: {
+      external: ["cloudflare:workers"],
+    },
+  },
+  {
+    name: "cloudflare-durable" as const,
+    url: import.meta.url,
+  }
+);
+
 export default [
   cloudflare,
   cloudflareModuleLegacy,
   cloudflareModule,
+  cloudflareDurable,
   cloudflarePages,
   cloudflarePagesStatic,
 ];
