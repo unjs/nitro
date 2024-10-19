@@ -90,6 +90,6 @@ if (import.meta._tasks) {
 export default {
   fetch(request: Request) {
     // todo: integrate serveOptions
-    return handler(request);
+    return handler(request, undefined);
   },
 };
