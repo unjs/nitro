@@ -91,5 +91,5 @@ export default {
   fetch(request: Request) {
     // todo: integrate serveOptions
     return handler(request);
-  }
+  },
 };
