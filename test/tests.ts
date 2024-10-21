@@ -86,6 +86,7 @@ export async function setupTest(
     isWorker: [
       "cloudflare-worker",
       "cloudflare-module",
+      "cloudflare-module-legacy",
       "cloudflare-pages",
       "vercel-edge",
       "winterjs",
@@ -226,8 +227,11 @@ export function testNitro(
     const { data: helloData } = await callHandler({ url: "/api/hello" });
     expect(helloData).to.toMatchObject({ message: "Hello API" });
 
-    const { data: heyData } = await callHandler({ url: "/api/hey" });
-    expect(heyData).to.have.string("Hey API");
+    if (ctx.nitro?.options.serveStatic) {
+      // /api/hey is expected to be prerendered
+      const { data: heyData } = await callHandler({ url: "/api/hey" });
+      expect(heyData).to.have.string("Hey API");
+    }
 
     const { data: kebabData } = await callHandler({ url: "/api/kebab" });
     expect(kebabData).to.have.string("hello-world");
@@ -339,8 +343,6 @@ export function testNitro(
       },
     });
     expect(status).toBe(503);
-    const { data: heyData } = await callHandler({ url: "/api/hey" });
-    expect(heyData).to.have.string("Hey API");
   });
 
   it("universal import.meta", async () => {
