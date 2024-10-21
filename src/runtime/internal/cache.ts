@@ -227,8 +227,14 @@ export function defineCachedEventHandler<
       // Auto-generated key
       const _path =
         event.node.req.originalUrl || event.node.req.url || event.path;
-      const _pathname =
-        escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) || "index";
+      let _pathname: string;
+      try {
+        _pathname =
+          escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) ||
+          "index";
+      } catch {
+        _pathname = "-";
+      }
       const _hashedPath = `${_pathname}.${hash(_path)}`;
       const _headers = variableHeaderNames
         .map((header) => [header, event.node.req.headers[header]])
