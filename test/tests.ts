@@ -74,6 +74,7 @@ export async function setupTest(
     preset,
     isDev: preset === "nitro-dev",
     isWorker: [
+      "bunny-edge-scripting",
       "cloudflare-worker",
       "cloudflare-module",
       "cloudflare-module-legacy",
@@ -697,6 +698,7 @@ export function testNitro(
         // TODO: Investigate
         ctx.preset === "bun" ||
         ctx.preset === "deno-server" ||
+        ctx.preset === "bunny-edge-scripting" ||
         ctx.preset === "nitro-dev"
     )("sourcemap works", async () => {
       const { data } = await callHandler({ url: "/errors/stack" });
