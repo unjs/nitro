@@ -54,8 +54,8 @@ describe("deploy", () => {
   it("calls a function deploy command", async () => {
     const fn = vi.fn();
     const nitro = mockNitro({ deploy: fn });
-    await deploy(nitro);
-    expect(fn).toHaveBeenCalledWith(nitro);
+    await deploy(nitro, { args: ["--flag"] });
+    expect(fn).toHaveBeenCalledWith(nitro, { args: ["--flag"] });
     expect(execSyncMock).not.toHaveBeenCalled();
   });
 
@@ -78,6 +78,12 @@ describe("getBuildInfo", () => {
     const res = await getBuildInfo({ outputDir });
     expect(res.outputDir).toBe(outputDir);
     expect(res.buildInfo?.commands?.deploy).toBe("echo deploy");
+  });
+
+  it("resolves a relative outputDir against rootDir", async () => {
+    const res = await getBuildInfo({ rootDir, outputDir: "dist/server-output" });
+    expect(res.outputDir).toBe(outputDir);
+    expect(res.buildInfo?.preset).toBe("test-preset");
   });
 
   it("falls back to .output under rootDir", async () => {

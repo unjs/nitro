@@ -23,7 +23,7 @@ export interface PreviewInstance {
 export interface PreviewOptions {
   /** Project root directory (used to locate the build output and load `.env` files). */
   rootDir: string;
-  /** Explicit build output directory (defaults to the last build output of `rootDir`). */
+  /** Explicit build output directory, resolved relative to `rootDir` (defaults to the last build output). */
   outputDir?: string;
   loader?: LoadOptions;
 }

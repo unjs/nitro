@@ -29,13 +29,20 @@ export default defineCommand({
     const rootDir = resolve((args.dir || args._dir || ".") as string);
 
     let preset = args.preset;
+    let outputDir: string | undefined;
     if (args.prebuilt) {
-      const { buildInfo } = await getBuildInfo(rootDir);
-      if (!buildInfo) {
+      const lastBuild = await getBuildInfo(rootDir);
+      if (!lastBuild.buildInfo) {
         consola.error("No build info found, cannot deploy.");
         process.exit(1);
       }
-      preset = buildInfo.preset;
+      if (preset && preset !== lastBuild.buildInfo.preset) {
+        consola.warn(
+          `Ignoring \`--preset ${preset}\` and using \`${lastBuild.buildInfo.preset}\` from the existing build.`
+        );
+      }
+      preset = lastBuild.buildInfo.preset;
+      outputDir = lastBuild.outputDir;
     }
 
     const nitro = await createNitro(
@@ -45,6 +52,7 @@ export default defineCommand({
         minify: args.minify,
         preset,
         builder: args.builder as "rollup" | "rolldown" | "vite",
+        output: outputDir ? { dir: outputDir } : undefined,
       },
       {
         compatibilityDate: args.compatibilityDate as DateString,
@@ -63,7 +71,7 @@ export default defineCommand({
     try {
       await deploy(nitro, { args: extraArgs });
     } catch (error) {
-      consola.error((error as Error).message);
+      consola.error(error);
       process.exit(1);
     } finally {
       await nitro.close();

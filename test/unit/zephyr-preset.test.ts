@@ -122,7 +122,7 @@ describe("zephyr preset", () => {
     expect(importDepMock).not.toHaveBeenCalled();
     expect(uploadOutputToZephyr).not.toHaveBeenCalled();
     expect(nitro.logger.info).toHaveBeenCalledWith(
-      "[zephyr-nitro-preset] Zephyr deploy skipped on build."
+      "[zephyr-nitro-preset] Skipping Zephyr deploy on build (use `nitro deploy` or set `zephyr.deployOnBuild`)."
     );
     expect(nitro.logger.success).not.toHaveBeenCalled();
   });

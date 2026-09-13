@@ -25,7 +25,7 @@ export async function deploy(nitro: Nitro, opts: DeployOptions = {}): Promise<vo
   }
 
   if (typeof deployCommand === "function") {
-    await deployCommand(nitro);
+    await deployCommand(nitro, opts);
     return;
   }
 

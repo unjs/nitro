@@ -893,7 +893,7 @@ export interface NitroOptions extends PresetOptions {
      * Can be a shell command (`./` paths are resolved relative to the output directory)
      * or a function (used by presets that deploy programmatically).
      */
-    deploy?: string | ((nitro: Nitro) => void | Promise<void>);
+    deploy?: string | ((nitro: Nitro, opts: { args?: string[] }) => void | Promise<void>);
   };
 
   /**
