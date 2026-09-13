@@ -18,8 +18,8 @@ describe("vite: service fetch handler", { sequential: true }, () => {
   const originalCwd = process.cwd();
   const originalPreset = process.env.NITRO_PRESET;
 
-  const missingHandler = (name: string, entry: string, details: string) =>
-    `Service "${name}" (${entry}) does not export a \`fetch\` handler (expected \`export default { fetch }\` or \`export function fetch\`, got ${details}).`;
+  const missingHandler = (name: string, entry: string) =>
+    `Service "${name}" (${entry}) does not export a \`fetch\` handler (expected \`export default { fetch }\` or \`export function fetch\`).`;
 
   beforeAll(async () => {
     process.chdir(rootDir);
@@ -47,17 +47,15 @@ describe("vite: service fetch handler", { sequential: true }, () => {
       expect(res.status).toBe(200);
       expect(await res.text()).toBe(`rendered:${url("/")}:function:function`);
 
-      for (const [name, entry, details] of [
-        ["render", "app/entry-render.ts", "object with keys [render]"],
-        ["bad", "app/entry-bad.ts", "object with keys [buildId, renderPage]"],
+      for (const [name, entry] of [
+        ["render", "app/entry-render.ts"],
+        ["bad", "app/entry-bad.ts"],
       ]) {
         const res = await fetch(url(`/${name}`));
         expect(res.status).toBe(500);
         // The dev error handler keeps the stack (with the message) in the JSON body
         const body = (await res.json()) as { stack: string[] };
-        expect(body.stack.join("\n")).toContain(
-          missingHandler(name, join(rootDir, entry), details)
-        );
+        expect(body.stack.join("\n")).toContain(missingHandler(name, join(rootDir, entry)));
       }
     } finally {
       await server.close();
@@ -93,16 +91,16 @@ describe("vite: service fetch handler", { sequential: true }, () => {
     expect(res.status).toBe(200);
     expect(await res.text()).toBe("rendered:http://localhost/:function:function");
 
-    for (const [name, entry, details] of [
-      ["render", "app/entry-render.ts", "object with keys [render]"],
-      ["bad", "app/entry-bad.ts", "object with keys [buildId, renderPage]"],
+    for (const [name, entry] of [
+      ["render", "app/entry-render.ts"],
+      ["bad", "app/entry-bad.ts"],
     ]) {
       const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       try {
         const res = await serverFetch(`/${name}`);
         expect(res.status).toBe(500);
         expect(errorSpy.mock.calls.flat().map(String).join("\n")).toContain(
-          missingHandler(name, entry, details)
+          missingHandler(name, entry)
         );
       } finally {
         errorSpy.mockRestore();

@@ -1,22 +1,15 @@
-// Resolves the handlers of a Vite service entry. Shared by the production wrapper (`lazyService`)
-// and the dev worker so both accept the same shapes: `export default { fetch }` wins over a named
-// `fetch` export.
+// Shared by the production wrapper and the dev worker: `export default { fetch }` wins over a named
+// `fetch` export. Handlers are looked up on every call to keep `this` and pick up reassignments.
 export function resolveServiceFetch(mod, { name, entry }) {
   const fetch = resolveServiceExport(mod, "fetch");
-  if (fetch) {
-    return fetch;
+  if (!fetch) {
+    throw new TypeError(
+      `[nitro] Service "${name}" (${entry}) does not export a \`fetch\` handler (expected \`export default { fetch }\` or \`export function fetch\`).`
+    );
   }
-  throw new TypeError(
-    `[nitro] Service "${name}" (${entry}) does not export a \`fetch\` handler ` +
-      "(expected `export default { fetch }` or `export function fetch`, " +
-      `got ${describeExports(mod)}).`,
-    { cause: { resolved: mod } }
-  );
+  return fetch;
 }
 
-// Resolves an exported method (`default` export first, then the module namespace). The property is
-// read on every call so `this` stays bound to the object it belongs to and a handler replaced
-// after load (a framework recompiling its `fetch`, a reassigned `export let`) is picked up.
 export function resolveServiceExport(mod, key) {
   const service = mod?.default ?? mod;
   if (typeof service?.[key] === "function") {
@@ -27,10 +20,8 @@ export function resolveServiceExport(mod, key) {
   }
 }
 
-// Production service wrapper: loads the entry on first use and keeps the resolved handler. A
-// rejected load is not kept so the next request retries it (a module whose `fetch` shows up later
-// recovers; a module whose evaluation failed keeps rejecting, as runtimes cache that).
-export function lazyService(loader, { name, entry }) {
+// Loads the entry on first use; a rejected load is not kept so the next request retries it.
+export function lazyService(loader, ctx) {
   let promise, handler;
   return {
     fetch(req) {
@@ -38,7 +29,7 @@ export function lazyService(loader, { name, entry }) {
         return handler(req);
       }
       promise ??= loader()
-        .then((mod) => (handler = resolveServiceFetch(mod, { name, entry })))
+        .then((mod) => (handler = resolveServiceFetch(mod, ctx)))
         .catch((error) => {
           promise = undefined;
           throw error;
@@ -46,24 +37,4 @@ export function lazyService(loader, { name, entry }) {
       return promise.then((handler) => handler(req));
     },
   };
-}
-
-function describeExports(mod) {
-  const service = mod?.default ?? mod;
-  if (service === null || service === undefined) {
-    return String(service);
-  }
-  if (typeof service !== "object") {
-    return typeof service;
-  }
-  if ("fetch" in service) {
-    return `\`fetch\` of type ${typeof service.fetch}`;
-  }
-  const ctor = service.constructor?.name;
-  const label = ctor && ctor !== "Object" ? `${ctor} instance` : "object";
-  const keys = Object.keys(service);
-  if (keys.length === 0) {
-    return `empty ${label}`;
-  }
-  return `${label} with keys [${keys.slice(0, 10).join(", ")}${keys.length > 10 ? ", ..." : ""}]`;
 }

@@ -184,37 +184,16 @@ describe("resolveServiceFetch", () => {
   });
 
   it.each([
-    [
-      { default: { buildId: "x", renderPage() {}, handleApiRoute() {} } },
-      "object with keys [buildId, renderPage, handleApiRoute]",
-    ],
-    [{ default: {} }, "empty object"],
-    [{ default: new (class Router {})() }, "empty Router instance"],
-    [{ default: { fetch: "oops" } }, "`fetch` of type string"],
-    [{ default: 42 }, "number"],
-    [{ default: () => "render" }, "function"],
-    [{ default: null, other: 1 }, "object with keys [default, other]"],
-    [
-      { default: Object.fromEntries(Array.from({ length: 12 }, (_, i) => [`k${i}`, i])) },
-      "object with keys [k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, ...]",
-    ],
-    [null, "null"],
-  ])("describes %o", (mod, details) => {
+    [{ default: { buildId: "x", renderPage() {} } }],
+    [{ default: { fetch: "oops" } }],
+    [{ default: () => "render" }],
+    [{ default: null, other: 1 }],
+    [null],
+  ])("throws for %o", (mod) => {
     expect(() => resolveServiceFetch(mod, ctx)).toThrow(
       new TypeError(
-        `[nitro] Service "ssr" (/app/ssr.ts) does not export a \`fetch\` handler (expected \`export default { fetch }\` or \`export function fetch\`, got ${details}).`
+        '[nitro] Service "ssr" (/app/ssr.ts) does not export a `fetch` handler (expected `export default { fetch }` or `export function fetch`).'
       )
     );
-  });
-
-  it("attaches the resolved module as cause", () => {
-    const mod = { default: {} };
-    let error: any;
-    try {
-      resolveServiceFetch(mod, ctx);
-    } catch (e) {
-      error = e;
-    }
-    expect(error.cause).toEqual({ resolved: mod });
   });
 });
