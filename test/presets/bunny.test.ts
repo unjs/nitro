@@ -62,6 +62,11 @@ describe("nitro:preset:bunny", async () => {
     expect(nodeImports.filter((id) => !builtinNodeModules.includes(id))).toEqual([]);
   });
 
+  it("should not bundle the websocket adapter when the feature is off", async () => {
+    const entry = await fsp.readFile(resolve(ctx.outDir, "bunny-edge-scripting.mjs"), "utf8");
+    expect(entry).not.toContain("upgradeWebSocket");
+  });
+
   it("should have minified output", async () => {
     const entry = await fsp.readFile(resolve(ctx.outDir, "bunny-edge-scripting.mjs"), "utf8");
     const newlineCount = (entry.match(/\n/g) || []).length;
@@ -99,6 +104,28 @@ describe("nitro:preset:bunny:inline", async () => {
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
     expect(await res.text()).toBe("Works!\n");
+  });
+});
+
+// Build-only: Bunny websockets are still blocked by an upstream PoP issue, so
+// this only asserts the adapter is wired into the bundle.
+describe("nitro:preset:bunny:websocket", async () => {
+  const ctx = await setupTest("bunny-edge-scripting", {
+    outDirSuffix: "-ws",
+    config: {
+      features: { websocket: true },
+      handlers: [
+        {
+          route: "/_ws",
+          handler: resolve(import.meta.dirname, "fixtures/websocket.ts"),
+        },
+      ],
+    },
+  });
+
+  it("should bundle the crossws bunny adapter", async () => {
+    const entry = await fsp.readFile(resolve(ctx.outDir, "bunny-edge-scripting.mjs"), "utf8");
+    expect(entry).toContain("upgradeWebSocket");
   });
 });
 
