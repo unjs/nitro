@@ -9,6 +9,8 @@ import { toFetchHandler } from "srvx/node";
 
 const presetFixturesDir = resolve(import.meta.dirname, "fixtures");
 
+const VERCEL_REQUEST_CONTEXT = Symbol.for("@vercel/request-context");
+
 // NOTE: Always prefer extending the existing `nitro:preset:vercel:web` matrix
 // (its setup/build is shared across assertions) over adding new top-level
 // `describe` blocks, which trigger a separate build and slow down CI.
@@ -373,6 +375,10 @@ describe("nitro:preset:vercel:web", async () => {
                 "src": "/api/middleware-order",
               },
               {
+                "dest": "/api/methods/search",
+                "src": "/api/methods/search",
+              },
+              {
                 "dest": "/api/methods/get",
                 "src": "/api/methods/get",
               },
@@ -567,6 +573,7 @@ describe("nitro:preset:vercel:web", async () => {
             "functions/api/meta/test.func (symlink)",
             "functions/api/methods/foo.get.func (symlink)",
             "functions/api/methods/get.func (symlink)",
+            "functions/api/methods/search.func (symlink)",
             "functions/api/middleware-order.func (symlink)",
             "functions/api/param/[test-id].func (symlink)",
             "functions/api/storage/item.func (symlink)",
@@ -757,6 +764,31 @@ describe("nitro:preset:vercel:node", async () => {
       };
     },
     () => {
+      it("should forward event.waitUntil to the Vercel request context", async () => {
+        const nodeHandler = await import(
+          resolve(ctx.outDir, "functions/__server.func/index.mjs")
+        ).then((r) => r.default || r);
+
+        const waitUntil = vi.fn();
+        const prev = (globalThis as any)[VERCEL_REQUEST_CONTEXT];
+        (globalThis as any)[VERCEL_REQUEST_CONTEXT] = { get: () => ({ waitUntil }) };
+        try {
+          const res = await toFetchHandler(nodeHandler)(
+            new Request("https://example.com/wait-until")
+          );
+          expect(await res.text()).toBe("done");
+        } finally {
+          if (prev === undefined) {
+            delete (globalThis as any)[VERCEL_REQUEST_CONTEXT];
+          } else {
+            (globalThis as any)[VERCEL_REQUEST_CONTEXT] = prev;
+          }
+        }
+
+        expect(waitUntil).toHaveBeenCalled();
+        expect(waitUntil.mock.calls[0][0]).toBeInstanceOf(Promise);
+      });
+
       it.skipIf(typeof WebSocket !== "function")(
         "should handle Vercel request context websocket upgrades",
         async () => {
