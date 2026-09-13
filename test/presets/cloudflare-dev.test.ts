@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { rm } from "node:fs/promises";
+import { afterAll, beforeAll, describe, expect, it, vi, type MockInstance } from "vitest";
 import { build, createDevServer, createNitro, prepare } from "nitro/builder";
 
 const { createServer } = (await import(
@@ -10,11 +11,15 @@ const rootDir = fileURLToPath(new URL("../fixture/cloudflare-dev", import.meta.u
 
 for (const mode of ["nitro", "vite"] as const) {
   describe(`cloudflare dev bindings: ${mode}`, { sequential: true }, () => {
-    let fetchRequest: (request: Request) => Promise<Response>;
+    let fetchPath: (path: string) => Promise<Response>;
+    let reload: (() => Promise<void>) | undefined;
     let close: () => Promise<void>;
+    let warn: MockInstance | undefined;
     const originalCwd = process.cwd();
 
     beforeAll(async () => {
+      await rm(`${rootDir}/.wrangler`, { recursive: true, force: true });
+      // Inline `cloudflare.wrangler` is merged with the wrangler config found in the cwd
       process.chdir(rootDir);
       if (mode === "nitro") {
         const nitro = await createNitro({
@@ -23,6 +28,7 @@ for (const mode of ["nitro", "vite"] as const) {
           builder: (process.env.NITRO_BUILDER as "rollup" | "rolldown") || "rolldown",
         });
         close = () => nitro.close();
+        warn = vi.spyOn(nitro.logger, "warn");
         const server = createDevServer(nitro);
         await prepare(nitro);
         const ready = new Promise<void>((resolve) =>
@@ -30,13 +36,16 @@ for (const mode of ["nitro", "vite"] as const) {
         );
         await build(nitro);
         await ready;
-        fetchRequest = (request) => Promise.resolve(server.fetch(request));
+        fetchPath = async (path) => server.fetch(new Request(new URL(path, "http://localhost")));
+        reload = async () => {
+          await nitro.hooks.callHook("dev:reload");
+        };
       } else {
         const server = await createServer({ root: rootDir, logLevel: "warn" });
         close = () => server.close();
         await server.listen(0);
         const url = server.resolvedUrls!.local[0];
-        fetchRequest = (request) => fetch(new URL(new URL(request.url).pathname, url));
+        fetchPath = (path) => fetch(new URL(path, url));
       }
     }, 60_000);
 
@@ -46,7 +55,7 @@ for (const mode of ["nitro", "vite"] as const) {
     });
 
     it("exposes KV, D1 and execution context from the selected Wrangler environment", async () => {
-      const response = await fetchRequest(new Request("http://localhost/bindings"));
+      const response = await fetchPath("/bindings");
       const body = await response.text();
       expect(response.status, body).toBe(200);
       expect(JSON.parse(body)).toEqual({
@@ -57,6 +66,13 @@ for (const mode of ["nitro", "vite"] as const) {
         inlineVariable: "inline",
         waitUntil: "function",
       });
+    });
+
+    it.runIf(mode === "nitro")("keeps binding state across reloads", async () => {
+      await reload!();
+      const response = await fetchPath("/kv");
+      expect(await response.json()).toEqual({ value: "works" });
+      expect(warn).not.toHaveBeenCalledWith(expect.stringContaining("did not shut down"));
     });
   });
 }

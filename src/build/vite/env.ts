@@ -7,7 +7,7 @@ import { join, resolve } from "node:path";
 import { runtimeDependencies, runtimeDir } from "nitro/meta";
 import { resolveModulePath } from "exsolve";
 import { isAbsolute } from "pathe";
-import { resolveMiniflareDeps, resolveRunnerDeps } from "../../dev/runner-deps.ts";
+import { resolveRunnerDeps } from "../../dev/runner-deps.ts";
 import { shutdownRunner } from "../../dev/shutdown.ts";
 import { writeDevWorkerEntry } from "./_dev-worker.ts";
 
@@ -195,27 +195,11 @@ export async function reloadEnvRunner(ctx: NitroPluginContext) {
 async function _loadRunner(ctx: NitroPluginContext, manager: RunnerManager) {
   const runnerName = _devRunner(ctx);
   const entry = await writeDevWorkerEntry(ctx.nitro!);
-  let runner;
-  if (runnerName === "miniflare") {
-    const { MiniflareEnvRunner } = await import("env-runner/runners/miniflare");
-    const { miniflare, wranglerModule } = await resolveMiniflareDeps(ctx.nitro!);
-    runner = new MiniflareEnvRunner({
-      name: "nitro-vite",
-      miniflare,
-      wranglerModule,
-      wrangler: {
-        ...ctx.nitro!.options.cloudflare?.wrangler,
-      },
-      wranglerEnv: ctx.nitro!.options.cloudflare?.wranglerEnv,
-      data: { entry },
-    });
-  } else {
-    runner = await loadRunner(runnerName, {
-      ...(await resolveRunnerDeps(ctx.nitro!, runnerName)),
-      name: "nitro-vite",
-      data: { entry },
-    });
-  }
+  const runner = await loadRunner(runnerName, {
+    ...(await resolveRunnerDeps(ctx.nitro!, runnerName)),
+    name: "nitro-vite",
+    data: { entry },
+  });
   await manager.reload(runner);
 }
 

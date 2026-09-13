@@ -1,8 +1,9 @@
 {
   "name": "nitro-dev-bindings-test",
-  "compatibility_date": "2026-07-01",
+  "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat"],
   "vars": { "TEST_VAR": "default" },
+  "assets": { "directory": "./.output/public", "binding": "ASSETS" },
   "env": {
     "test": {
       "vars": { "TEST_VAR": "configured" },
@@ -13,7 +14,8 @@
           "database_name": "test",
           "database_id": "00000000-0000-0000-0000-000000000001"
         }
-      ]
+      ],
+      "services": [{ "binding": "OTHER_WORKER", "service": "other-worker" }]
     }
   }
 }

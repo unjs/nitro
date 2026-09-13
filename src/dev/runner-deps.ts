@@ -3,11 +3,16 @@ import type { Nitro } from "nitro/types";
 
 import { pathToFileURL } from "node:url";
 import { resolveModulePath } from "exsolve";
+import { resolve } from "pathe";
+import { findNearestFile } from "pkg-types";
 import { ensureDep } from "../utils/dep.ts";
 
 export interface MiniflareRunnerDeps {
   miniflare?: URL;
   wranglerModule?: URL;
+  wrangler?: string | Record<string, unknown> | false;
+  wranglerEnv?: string;
+  miniflareOptions?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -45,11 +50,46 @@ export async function resolveMiniflareDeps(nitro: Nitro): Promise<MiniflareRunne
     reason: "the `miniflare` dev runner",
     version: "^4",
   });
+  const miniflareURL = miniflare ? pathToFileURL(miniflare) : undefined;
   return {
-    miniflare: miniflare ? pathToFileURL(miniflare) : undefined,
+    miniflare: miniflareURL,
     // Optional: without it, a built-in minimal reader handles plain JSON
     // wrangler configs and inline objects.
     wranglerModule: _resolve("wrangler", nitro.options.rootDir),
+    ...(await _resolveWranglerOptions(nitro, miniflareURL)),
+  };
+}
+
+async function _resolveWranglerOptions(
+  nitro: Nitro,
+  miniflare: URL | undefined
+): Promise<MiniflareRunnerDeps> {
+  const { rootDir } = nitro.options;
+  const inline = nitro.options.cloudflare?.wrangler;
+  const configPath = await findNearestFile(["wrangler.json", "wrangler.jsonc", "wrangler.toml"], {
+    startingFrom: rootDir,
+  }).catch(() => undefined);
+  const { supportedCompatibilityDate } = miniflare ? await import(miniflare.href) : {};
+  return {
+    // env-runner merges an inline config with the wrangler config of the cwd. Otherwise, use the
+    // config nearest to `rootDir`, like the production build.
+    wrangler: inline && Object.keys(inline).length > 0 ? { ...inline } : configPath || false,
+    wranglerEnv: nitro.options.cloudflare?.wranglerEnv,
+    miniflareOptions: {
+      // The dev bundle imports Node.js built-ins that workerd only provides at recent dates
+      compatibilityDate: supportedCompatibilityDate,
+      defaultPersistRoot: resolve(rootDir, ".wrangler/state/v3"),
+      // The dev worker is the only worker and exports `fetch` only: static assets are served by
+      // Nitro, and bindings to other workers or to classes and handlers it does not export would
+      // prevent it from starting.
+      assets: undefined,
+      serviceBindings: undefined,
+      durableObjects: undefined,
+      workflows: undefined,
+      queueConsumers: undefined,
+      tails: undefined,
+      streamingTails: undefined,
+    },
   };
 }
 
