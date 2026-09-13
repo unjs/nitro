@@ -59,20 +59,19 @@ export default defineCommand({
       }
     );
 
-    if (!args.prebuilt) {
-      await prepare(nitro);
-      await copyPublicAssets(nitro);
-      await prerender(nitro);
-      await build(nitro);
-    }
-
     const extraArgs = rawArgs.includes("--") ? rawArgs.slice(rawArgs.indexOf("--") + 1) : [];
 
     try {
+      if (!args.prebuilt) {
+        await prepare(nitro);
+        await copyPublicAssets(nitro);
+        await prerender(nitro);
+        await build(nitro);
+      }
       await deploy(nitro, { args: extraArgs });
     } catch (error) {
       consola.error(error);
-      process.exit(1);
+      process.exitCode = 1;
     } finally {
       await nitro.close();
     }

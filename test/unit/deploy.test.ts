@@ -51,6 +51,14 @@ describe("deploy", () => {
     );
   });
 
+  it("rewrites a leading ./ path", async () => {
+    await deploy(mockNitro({ deploy: "./deploy.sh --out ./" }));
+    expect(execSyncMock).toHaveBeenCalledWith(
+      "dist/server-output/deploy.sh --out dist/server-output/",
+      { stdio: "inherit", cwd: rootDir }
+    );
+  });
+
   it("calls a function deploy command", async () => {
     const fn = vi.fn();
     const nitro = mockNitro({ deploy: fn });
