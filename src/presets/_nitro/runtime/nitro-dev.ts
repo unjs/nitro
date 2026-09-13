@@ -26,8 +26,9 @@ const ws = import.meta._websocket
   : undefined;
 
 export default {
+  // env-runner currently only forwards `middleware` and `plugins` (unjs/env-runner#49)
+  ...serverEntryOptions,
   fetch: nitroApp.fetch,
-  middleware: serverEntryOptions.middleware,
   plugins: [...tracingSrvxPlugins, ...(serverEntryOptions.plugins || [])],
   upgrade: ws
     ? (context: { node: { req: any; socket: any; head: any } }) => {
