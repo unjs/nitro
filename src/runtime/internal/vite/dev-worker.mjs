@@ -1,4 +1,5 @@
 import { createViteTransport } from "env-runner/vite";
+import { resolveServiceFetch } from "./service.mjs";
 
 // `vite` is an optional dependency Nitro resolves from the app, so the module runner cannot be
 // imported from here. The generated entry injects it instead (see `build/vite/_dev-worker.ts`).
@@ -185,11 +186,7 @@ class ViteEnvRunner {
     if (!this.entry) {
       throw httpError(503, `Vite environment "${this.name}" is unavailable`);
     }
-    const entryFetch = this.entry.fetch || this.entry.default?.fetch;
-    if (!entryFetch) {
-      throw httpError(500, `No fetch handler exported from ${this.entryPath}`);
-    }
-    return entryFetch(req, init);
+    return resolveServiceFetch(this.entry, { name: this.name, entry: this.entryPath })(req, init);
   }
 }
 

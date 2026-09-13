@@ -288,6 +288,18 @@ function nitroMain(ctx: NitroPluginContext): VitePlugin {
             this.error(`No entry point found for service "${this.environment.name}".`);
           }
           ctx._entryPoints![this.environment.name] = entryFile!;
+          // `export default { render }` can only be caught at runtime, but an entry chunk
+          // exporting neither `default` nor `fetch` is visible here (#4606).
+          const chunk = bundle[entryFile!];
+          if (
+            chunk?.type === "chunk" &&
+            !chunk.exports.some((e) => e === "default" || e === "fetch" || e.startsWith("*")) &&
+            !chunk.code.includes("export *")
+          ) {
+            this.warn(
+              `Service "${environment.name}" entry (${prettyPath(ctx.services[environment.name].entry)}) exports neither \`default\` nor \`fetch\` (got: ${chunk.exports.join(", ") || "none"}).`
+            );
+          }
         }
       },
     },
