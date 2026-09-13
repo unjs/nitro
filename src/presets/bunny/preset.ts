@@ -1,4 +1,5 @@
 import { defineNitroPreset } from "../_utils/preset.ts";
+import { isDenoSpecifier } from "../_utils/externals.ts";
 import { unenvBunny } from "./unenv/preset.ts";
 import { builtinNodeModules } from "./unenv/node-compat.ts";
 import { rm } from "node:fs/promises";
@@ -27,7 +28,7 @@ const edgeScripting = defineNitroPreset(
         inlineDynamicImports: true,
         hoistTransitiveImports: false,
       },
-      external: (id) => id.startsWith("https://") || builtinNodeModules.includes(id),
+      external: (id) => isDenoSpecifier(id) || builtinNodeModules.includes(id),
     },
 
     serveStatic: "inline",

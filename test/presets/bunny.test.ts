@@ -49,20 +49,15 @@ describe("nitro:preset:bunny", async () => {
 
     // Anything left as a bare specifier would be resolved from `node_modules`
     // at runtime, which Edge Scripting cannot do for a single-file script.
-    const entry = await fsp.readFile(resolve(ctx.outDir, "bunny-edge-scripting.mjs"), "utf8");
-    const imports = [...entry.matchAll(/(?:^|[;}])import\s*(?:[^"';]*from\s*)?"([^"]+)"/g)].map(
-      (m) => m[1]!
-    );
-    expect(imports.filter((id) => !/^(node:|https?:|\.{0,2}\/)/.test(id))).toEqual([]);
+    // `npm:`/`jsr:` carry their own source and version, so they are allowed.
+    const imports = await readImports(ctx.outDir);
+    expect(imports.filter((id) => !/^(node:|https?:|npm:|jsr:|\.{0,2}\/)/.test(id))).toEqual([]);
   });
 
   it("should only import node builtins allowed by Bunny", async () => {
     // Importing anything outside Bunny's allow-list fails at deploy time with
     // `Unknown: disallowed module reference`.
-    const entry = await fsp.readFile(resolve(ctx.outDir, "bunny-edge-scripting.mjs"), "utf8");
-    const imports = [...entry.matchAll(/(?:^|[;}])import\s*(?:[^"';]*from\s*)?"([^"]+)"/g)].map(
-      (m) => m[1]!
-    );
+    const imports = await readImports(ctx.outDir);
     const nodeImports = [...new Set(imports.filter((id) => id.startsWith("node:")))];
     expect(nodeImports.filter((id) => !builtinNodeModules.includes(id))).toEqual([]);
   });
@@ -133,4 +128,9 @@ async function serveBundle(outDir: string) {
   await runner.waitForReady(10_000);
 
   return manager;
+}
+
+async function readImports(outDir: string) {
+  const entry = await fsp.readFile(resolve(outDir, "bunny-edge-scripting.mjs"), "utf8");
+  return [...entry.matchAll(/(?:^|[;}])import\s*(?:[^"';]*from\s*)?"([^"]+)"/g)].map((m) => m[1]!);
 }

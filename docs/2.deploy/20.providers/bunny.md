@@ -39,3 +39,14 @@ With `serveStatic: false` the assets are left in `.output/public` for you to upl
 Edge Scripting runs on Deno, but cannot resolve every Node.js built-in. This preset builds with `node: false` and externalizes only the built-ins Bunny resolves; the rest (`node:worker_threads`, `node:child_process`, `node:vm`, `node:v8`, ...) are replaced with an [unenv](https://github.com/unjs/unenv) stub, since importing one of them stops the script from loading.
 
 Stubs do not throw on import, so code paths depending on those modules fail only when reached. Bunny also documents that resolvable modules may be partially stubbed on their side, so prefer Web APIs where possible.
+
+## Importing from npm and JSR
+
+Edge Scripting resolves `npm:` and `jsr:` specifiers itself, so they are left out of the bundle and fetched at deploy time. Pin a version, since the specifier is all Bunny has to go on:
+
+```ts
+import { escape } from "npm:lodash-es@4.17.21";
+import { encodeHex } from "jsr:@std/encoding@1/hex";
+```
+
+This keeps large dependencies out of the 10MB script limit. Bare specifiers (`lodash-es`) are bundled as usual.
