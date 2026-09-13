@@ -249,6 +249,14 @@ export function testNitro(
     expect(headers["x-test"]).toBe("test");
   });
 
+  it.runIf(["bun", "deno-server", "nitro-dev"].includes(ctx.preset))(
+    "Server entry options are passed to srvx",
+    async () => {
+      const { data } = await callHandler({ url: "/srvx-middleware" });
+      expect(data).toBe("server entry middleware works!");
+    }
+  );
+
   it("middleware runs in order: route rules, global, routed, then the route handler", async () => {
     const { data, headers } = await callHandler({ url: "/api/middleware-order" });
     // `rules` is recorded by the global middleware when `event.context.routeRules`
