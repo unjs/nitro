@@ -16,6 +16,7 @@ import type { PackageJson } from "pkg-types";
 import { readPackageJSON, writePackageJSON } from "pkg-types";
 import type { Plugin } from "rollup";
 import semver from "semver";
+import { withoutTrailingSlash } from "ufo";
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const trackedExternals = new Set<string>();
@@ -156,13 +157,17 @@ export function externals(opts: NodeExternalsOptions): Plugin {
           // Reverse engineer subpath export
           const guessedSubpath: string | null | undefined =
             await lookupNodeModuleSubpath(id).catch(() => null);
-          const resolvedGuess =
-            guessedSubpath &&
-            tryResolve(join(pkgName, guessedSubpath), importer);
+          // The package root export is reported as "./", and join() keeps the
+          // trailing slash. Specifiers ending in "/" are a deprecated exports
+          // pattern (DEP0155) that never resolve.
+          const guessedId = guessedSubpath
+            ? join(pkgName, withoutTrailingSlash(guessedSubpath))
+            : undefined;
+          const resolvedGuess = guessedId && tryResolve(guessedId, importer);
           if (resolvedGuess === id) {
             trackedExternals.add(resolvedGuess);
             return {
-              id: join(pkgName, guessedSubpath!),
+              id: guessedId!,
               external: true,
             };
           }
