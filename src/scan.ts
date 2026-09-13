@@ -5,8 +5,8 @@ import { withBase, withLeadingSlash, withoutTrailingSlash } from "ufo";
 
 export const GLOB_SCAN_PATTERN = "**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}";
 
-// Modules are only auto-registered from `modules/*.ts` and `modules/*/index.ts`
-// so that a module's own nested files are not registered as modules themselves.
+// Modules are only auto-registered from `modules/*` and `modules/*/index` (any supported
+// extension) so that a module's own nested files are not registered as modules themselves.
 const GLOB_MODULES_SCAN_PATTERN = [
   "*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}",
   "*/index.{js,mjs,cjs,ts,mts,cts,tsx,jsx}",
