@@ -1,6 +1,6 @@
 import type { NitroPluginContext } from "./types.ts";
 import type { Plugin as VitePlugin } from "vite";
-import { resolve } from "pathe";
+import { relative, resolve } from "pathe";
 
 export function viteServicesTemplate(ctx: NitroPluginContext): string {
   const serviceNames = Object.keys(ctx.services);
@@ -48,7 +48,7 @@ export const viteServices = {
 ${serviceEntries
   .map(
     ([name, entry]) =>
-      `[${JSON.stringify(name)}]: lazyService(${JSON.stringify(name)}, ${JSON.stringify(ctx.services[name].entry)}, () => import(${JSON.stringify(entry)}))`
+      `[${JSON.stringify(name)}]: lazyService(${JSON.stringify(name)}, ${JSON.stringify(relative(ctx.nitro!.options.rootDir, ctx.services[name].entry))}, () => import(${JSON.stringify(entry)}))`
   )
   .join(",\n")}
 };

@@ -7,7 +7,7 @@ function template(opts: { dev?: boolean; services?: string[] } = {}) {
   const names = opts.services || ["ssr"];
   return viteServicesTemplate({
     services: Object.fromEntries(names.map((name) => [name, { entry: `/app/${name}.ts` }])),
-    nitro: { options: { dev: !!opts.dev, buildDir: "/app/.nitro" } },
+    nitro: { options: { dev: !!opts.dev, rootDir: "/app", buildDir: "/app/.nitro" } },
     _entryPoints: Object.fromEntries(names.map((name) => [name, "index.mjs"])),
   } as unknown as NitroPluginContext);
 }
@@ -19,14 +19,14 @@ describe("viteServicesTemplate", () => {
     expect(code).not.toContain("lazyService");
   });
 
-  it("prod: wraps each service entry with lazyService", () => {
+  it("prod: wraps each service entry with lazyService (entry relative to rootDir)", () => {
     const code = template({ services: ["ssr", "api"] });
     expect(code).toContain('import { resolveServiceFetch } from "#nitro/runtime/vite/service"');
     expect(code).toContain(
-      '["ssr"]: lazyService("ssr", "/app/ssr.ts", () => import("/app/.nitro/vite/services/ssr/index.mjs"))'
+      '["ssr"]: lazyService("ssr", "ssr.ts", () => import("/app/.nitro/vite/services/ssr/index.mjs"))'
     );
     expect(code).toContain(
-      '["api"]: lazyService("api", "/app/api.ts", () => import("/app/.nitro/vite/services/api/index.mjs"))'
+      '["api"]: lazyService("api", "api.ts", () => import("/app/.nitro/vite/services/api/index.mjs"))'
     );
   });
 });
@@ -39,7 +39,7 @@ describe("lazyService", () => {
     const fn = new Function(
       "resolveServiceFetch",
       "loader",
-      `${code}; return lazyService("ssr", "/app/ssr.ts", loader)`
+      `${code}; return lazyService("ssr", "ssr.ts", loader)`
     );
     return fn(resolveServiceFetch, loader) as { fetch: (req: Request) => Promise<Response> };
   }
@@ -77,7 +77,7 @@ describe("lazyService", () => {
       return mod;
     });
     await expect(service.fetch(new Request("http://localhost/"))).rejects.toThrow(
-      'Service "ssr" (/app/ssr.ts) does not export a `fetch` handler'
+      'Service "ssr" (ssr.ts) does not export a `fetch` handler'
     );
     mod.fetch = () => new Response("late");
     expect(await (await service.fetch(new Request("http://localhost/"))).text()).toBe("late");
@@ -122,10 +122,6 @@ describe("resolveServiceFetch", () => {
     expect(await text(mod)).toBe("default");
   });
 
-  it("resolves `export default function`", async () => {
-    expect(await text({ default: () => new Response("fn") })).toBe("fn");
-  });
-
   it("resolves `export function fetch`", async () => {
     expect(await text({ fetch: () => new Response("named") })).toBe("named");
   });
@@ -134,6 +130,9 @@ describe("resolveServiceFetch", () => {
     const mod = { default: { fetch: "nope" }, fetch: () => new Response("named") };
     expect(await text(mod)).toBe("named");
     expect(await text({ default: null, fetch: () => new Response("named") })).toBe("named");
+    expect(await text({ default: () => "render", fetch: () => new Response("named") })).toBe(
+      "named"
+    );
   });
 
   it.each([
@@ -145,6 +144,7 @@ describe("resolveServiceFetch", () => {
     [{ default: new (class Router {})() }, "empty Router instance"],
     [{ default: { fetch: "oops" } }, "`fetch` of type string"],
     [{ default: 42 }, "number"],
+    [{ default: () => "render" }, "function"],
     [{ default: null, other: 1 }, "object with keys [default, other]"],
     [
       { default: Object.fromEntries(Array.from({ length: 12 }, (_, i) => [`k${i}`, i])) },
@@ -154,7 +154,7 @@ describe("resolveServiceFetch", () => {
   ])("describes %o", (mod, details) => {
     expect(() => resolveServiceFetch(mod, ctx)).toThrow(
       new TypeError(
-        `[nitro] Service "ssr" (/app/ssr.ts) does not export a \`fetch\` handler (expected \`export default { fetch }\`, \`export default function\` or \`export function fetch\`, got ${details}).`
+        `[nitro] Service "ssr" (/app/ssr.ts) does not export a \`fetch\` handler (expected \`export default { fetch }\` or \`export function fetch\`, got ${details}).`
       )
     );
   });

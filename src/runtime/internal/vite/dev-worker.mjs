@@ -157,7 +157,8 @@ class ViteEnvRunner {
   // reload so the entry the hooks belong to is the one that is closed.
   async close() {
     await this.reloadPromise;
-    const entryClose = this.entry?.close || this.entry?.default?.close;
+    const service = this.entry?.default ?? this.entry;
+    const entryClose = service?.close || this.entry?.close;
     if (entryClose) {
       await entryClose();
     }

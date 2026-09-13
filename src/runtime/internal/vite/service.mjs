@@ -9,15 +9,12 @@ export function resolveServiceFetch(mod, { name, entry }) {
   if (typeof service?.fetch === "function") {
     return service.fetch.bind(service);
   }
-  if (typeof service === "function") {
-    return service;
-  }
   if (service !== mod && typeof mod.fetch === "function") {
     return mod.fetch;
   }
   throw new TypeError(
     `[nitro] Service "${name}" (${entry}) does not export a \`fetch\` handler ` +
-      "(expected `export default { fetch }`, `export default function` or `export function fetch`, " +
+      "(expected `export default { fetch }` or `export function fetch`, " +
       `got ${describeExports(mod)}).`,
     { cause: { resolved: mod } }
   );
@@ -28,7 +25,7 @@ function describeExports(mod) {
   if (service === null || service === undefined) {
     return String(service);
   }
-  if (typeof service !== "object" && typeof service !== "function") {
+  if (typeof service !== "object") {
     return typeof service;
   }
   if ("fetch" in service) {

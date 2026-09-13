@@ -4,12 +4,13 @@ import { toRequest } from "h3";
 import { join } from "pathe";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
-const { createBuilder, createLogger } = (await import(
+const { createBuilder, createLogger, createServer } = (await import(
   process.env.NITRO_VITE_PKG || "vite"
 )) as typeof import("vite");
 
-// #4606: the production service wrapper resolves the entry's `fetch` handler like the dev
-// worker does, and an entry without one is reported at build time and with a clear runtime error.
+// #4606: dev and prod resolve a service entry's `fetch` handler the same way (the `default`
+// export wins over a `fetch` helper hoisted onto the entry chunk), and an entry without one is
+// reported at build time and with a clear runtime error instead of `mod.fetch is not a function`.
 describe("vite: service fetch handler", { sequential: true }, () => {
   const rootDir = fileURLToPath(new URL("./service-fetch-fixture", import.meta.url));
   const originalCwd = process.cwd();
@@ -46,7 +47,25 @@ describe("vite: service fetch handler", { sequential: true }, () => {
     return (input: string) => entry.fetch(toRequest(input)) as Promise<Response>;
   }
 
-  test("prefers `default.fetch` over a named `fetch` hoisted onto the entry chunk", async () => {
+  test("dev: prefers `default.fetch` over a named `fetch` export", async () => {
+    const server = await createServer({
+      root: rootDir,
+      configFile: join(rootDir, "vite.config.ts"),
+      logLevel: "warn",
+    });
+    try {
+      await server.listen("0" as unknown as number);
+      const addr = server.httpServer!.address() as { port: number };
+      const res = await fetch(`http://localhost:${addr.port}/`);
+      expect(res.status).toBe(200);
+      expect(await res.text()).toBe(`rendered:http://localhost:${addr.port}/:function:function`);
+    } finally {
+      await server.close();
+      delete (globalThis as any).__nitro__;
+    }
+  }, 60_000);
+
+  test("prod: prefers `default.fetch` over a named `fetch` hoisted onto the entry chunk", async () => {
     const { warnings } = await build(join(rootDir, "vite.config.ts"));
     expect(warnings.filter((w) => w.includes("exports neither"))).toEqual([]);
     const fetch = await load("good");
@@ -76,7 +95,7 @@ describe("vite: service fetch handler", { sequential: true }, () => {
       console.error = consoleError;
     }
     expect(errors.map(String).join("\n")).toContain(
-      'Service "ssr" (' + join(rootDir, "app/entry-bad.ts") + ") does not export a `fetch` handler"
+      'Service "ssr" (app/entry-bad.ts) does not export a `fetch` handler'
     );
   }, 60_000);
 });
