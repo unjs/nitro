@@ -1,5 +1,5 @@
 import { createViteTransport } from "env-runner/vite";
-import { resolveServiceFetch } from "./service.mjs";
+import { resolveServiceExport, resolveServiceFetch } from "./service.mjs";
 
 // `vite` is an optional dependency Nitro resolves from the app, so the module runner cannot be
 // imported from here. The generated entry injects it instead (see `build/vite/_dev-worker.ts`).
@@ -157,10 +157,9 @@ class ViteEnvRunner {
   // reload so the entry the hooks belong to is the one that is closed.
   async close() {
     await this.reloadPromise;
-    const service = this.entry?.default ?? this.entry;
-    const entryClose = service?.close || this.entry?.close;
-    if (entryClose) {
-      await entryClose();
+    const close = resolveServiceExport(this.entry, "close");
+    if (close) {
+      await close();
     }
   }
 

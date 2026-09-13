@@ -1,19 +1,25 @@
 import { rm } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { stripVTControlCharacters } from "node:util";
 import { toRequest } from "h3";
 import { join } from "pathe";
-import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 
 const { createBuilder, createLogger, createServer } = (await import(
   process.env.NITRO_VITE_PKG || "vite"
 )) as typeof import("vite");
 
-// #4606: dev and prod resolve a service entry's `fetch` handler the same way (the `default`
-// export wins over a `fetch` helper hoisted onto the entry chunk), and an entry without one is
-// reported at build time and with a clear runtime error instead of `mod.fetch is not a function`.
+// #4606: dev and prod resolve a service entry's `fetch` handler the same way (`default.fetch` wins
+// over a named `fetch` export, and a `fetch` helper shared with another chunk is never mistaken for
+// the handler), and an entry without a handler is reported at build time and with a clear runtime
+// error instead of `mod.fetch is not a function`.
 describe("vite: service fetch handler", { sequential: true }, () => {
   const rootDir = fileURLToPath(new URL("./service-fetch-fixture", import.meta.url));
   const originalCwd = process.cwd();
+  const originalPreset = process.env.NITRO_PRESET;
+
+  const missingHandler = (name: string, entry: string, details: string) =>
+    `Service "${name}" (${entry}) does not export a \`fetch\` handler (expected \`export default { fetch }\` or \`export function fetch\`, got ${details}).`;
 
   beforeAll(async () => {
     process.chdir(rootDir);
@@ -21,81 +27,86 @@ describe("vite: service fetch handler", { sequential: true }, () => {
     await rm(join(rootDir, ".output"), { recursive: true, force: true });
   });
 
-  afterAll(async () => {
+  afterAll(() => {
     process.chdir(originalCwd);
-    delete process.env.NITRO_PRESET;
+    if (originalPreset === undefined) {
+      delete process.env.NITRO_PRESET;
+    } else {
+      process.env.NITRO_PRESET = originalPreset;
+    }
   });
 
-  async function build(configFile: string) {
-    const warnings: string[] = [];
-    const logger = createLogger("warn", { allowClearScreen: false });
-    const warn = logger.warn;
-    logger.warn = (msg, opts) => {
-      warnings.push(msg);
-      warn(msg, opts);
-    };
-    const builder = await createBuilder({ root: rootDir, configFile, customLogger: logger });
-    await builder.buildApp();
-    delete (globalThis as any).__nitro__;
-    return { warnings };
-  }
-
-  async function load(dir: string) {
-    const { default: entry } = await import(
-      pathToFileURL(join(rootDir, ".output", dir, "server/index.mjs")).href
-    );
-    return (input: string) => entry.fetch(toRequest(input)) as Promise<Response>;
-  }
-
-  test("dev: prefers `default.fetch` over a named `fetch` export", async () => {
-    const server = await createServer({
-      root: rootDir,
-      configFile: join(rootDir, "vite.config.ts"),
-      logLevel: "warn",
-    });
+  test("dev: prefers `default.fetch` and rejects entries without a handler", async () => {
+    const server = await createServer({ root: rootDir, logLevel: "warn" });
     try {
       await server.listen("0" as unknown as number);
-      const addr = server.httpServer!.address() as { port: number };
-      const res = await fetch(`http://localhost:${addr.port}/`);
+      const { port } = server.httpServer!.address() as { port: number };
+      const url = (path: string) => `http://localhost:${port}${path}`;
+
+      const res = await fetch(url("/"));
       expect(res.status).toBe(200);
-      expect(await res.text()).toBe(`rendered:http://localhost:${addr.port}/:function:function`);
+      expect(await res.text()).toBe(`rendered:${url("/")}:function:function`);
+
+      for (const [name, entry, details] of [
+        ["render", "app/entry-render.ts", "object with keys [render]"],
+        ["bad", "app/entry-bad.ts", "object with keys [buildId, renderPage]"],
+      ]) {
+        const res = await fetch(url(`/${name}`));
+        expect(res.status).toBe(500);
+        // The dev error handler keeps the stack (with the message) in the JSON body
+        const body = (await res.json()) as { stack: string[] };
+        expect(body.stack.join("\n")).toContain(
+          missingHandler(name, join(rootDir, entry), details)
+        );
+      }
     } finally {
       await server.close();
       delete (globalThis as any).__nitro__;
     }
   }, 60_000);
 
-  test("prod: prefers `default.fetch` over a named `fetch` hoisted onto the entry chunk", async () => {
-    const { warnings } = await build(join(rootDir, "vite.config.ts"));
-    expect(warnings.filter((w) => w.includes("exports neither"))).toEqual([]);
-    const fetch = await load("good");
-    const res = await fetch("/");
+  test("prod: prefers `default.fetch` and reports entries without a handler", async () => {
+    const warnings: string[] = [];
+    const logger = createLogger("warn", { allowClearScreen: false });
+    const warn = logger.warn;
+    logger.warn = (msg, opts) => {
+      warnings.push(stripVTControlCharacters(msg));
+      warn(msg, opts);
+    };
+    const builder = await createBuilder({ root: rootDir, customLogger: logger });
+    await builder.buildApp();
+
+    // Only the entry exporting neither `default` nor `fetch` is visible at build time
+    expect(warnings.filter((w) => w.includes("exports neither"))).toEqual([
+      expect.stringContaining(
+        'Service "bad" entry (app/entry-bad.ts) exports neither `default` nor `fetch` (got: buildId, renderPage).'
+      ),
+    ]);
+
+    delete (globalThis as any).__nitro__;
+    const { default: entry } = await import(
+      pathToFileURL(join(rootDir, ".output/server/index.mjs")).href
+    );
+    const serverFetch = (path: string) => entry.fetch(toRequest(path)) as Promise<Response>;
+
+    const res = await serverFetch("/");
     expect(res.status).toBe(200);
     expect(await res.text()).toBe("rendered:http://localhost/:function:function");
-  }, 60_000);
 
-  test("reports an entry without a fetch handler at build and request time", async () => {
-    const { warnings } = await build(join(rootDir, "vite.config.bad.ts"));
-    expect(
-      warnings.some((w) =>
-        /Service "ssr" entry \(.*entry-bad\.ts\) exports neither `default` nor `fetch` \(got: buildId, renderPage\)/.test(
-          w
-        )
-      )
-    ).toBe(true);
-    const fetch = await load("bad");
-    const res = await fetch("/");
-    expect(res.status).toBe(500);
-    const consoleError = console.error;
-    const errors: unknown[] = [];
-    console.error = (...args) => errors.push(...args);
-    try {
-      await fetch("/");
-    } finally {
-      console.error = consoleError;
+    for (const [name, entry, details] of [
+      ["render", "app/entry-render.ts", "object with keys [render]"],
+      ["bad", "app/entry-bad.ts", "object with keys [buildId, renderPage]"],
+    ]) {
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const res = await serverFetch(`/${name}`);
+        expect(res.status).toBe(500);
+        expect(errorSpy.mock.calls.flat().map(String).join("\n")).toContain(
+          missingHandler(name, entry, details)
+        );
+      } finally {
+        errorSpy.mockRestore();
+      }
     }
-    expect(errors.map(String).join("\n")).toContain(
-      'Service "ssr" (app/entry-bad.ts) does not export a `fetch` handler'
-    );
   }, 60_000);
 });

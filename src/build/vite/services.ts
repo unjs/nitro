@@ -18,39 +18,20 @@ ${serviceNames
   `;
   }
 
+  const { rootDir, buildDir } = ctx.nitro!.options;
   const serviceEntries = serviceNames.map((name) => {
-    const entry = resolve(
-      ctx.nitro!.options.buildDir,
-      "vite/services",
-      name,
-      ctx._entryPoints[name]
-    );
-    return [name, entry];
+    const chunk = resolve(buildDir, "vite/services", name, ctx._entryPoints[name]);
+    // Label for runtime errors, relative to the project (the entry may itself be relative or a
+    // virtual id).
+    const entry = relative(rootDir, resolve(rootDir, ctx.services[name].entry));
+    return `  [${JSON.stringify(name)}]: lazyService(() => import(${JSON.stringify(chunk)}), ${JSON.stringify({ name, entry })})`;
   });
 
   return /* js */ `
-import { resolveServiceFetch } from "#nitro/runtime/vite/service";
-
-function lazyService(name, entry, loader) {
-  let promise, handler
-  return {
-    fetch(req) {
-      if (handler) { return handler(req) }
-      promise ??= loader()
-        .then(mod => (handler = resolveServiceFetch(mod, { name, entry })))
-        .catch(error => { promise = undefined; throw error })
-      return promise.then(handler => handler(req))
-    }
-  }
-}
+import { lazyService } from "#nitro/runtime/vite/service";
 
 export const viteServices = {
-${serviceEntries
-  .map(
-    ([name, entry]) =>
-      `[${JSON.stringify(name)}]: lazyService(${JSON.stringify(name)}, ${JSON.stringify(relative(ctx.nitro!.options.rootDir, ctx.services[name].entry))}, () => import(${JSON.stringify(entry)}))`
-  )
-  .join(",\n")}
+${serviceEntries.join(",\n")}
 };
   `;
 }

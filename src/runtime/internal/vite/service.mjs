@@ -1,16 +1,10 @@
-// Resolves the `fetch` handler of a Vite service entry. Shared by the production wrapper
-// (`build/vite/services.ts`) and the dev worker so both accept the same shapes.
-//
-// The default export wins over a named `fetch` export: server builds keep the entry signature
-// (`preserveEntrySignatures`), so a `fetch` helper imported anywhere in the graph can end up
-// re-exported from the entry chunk next to the real handler.
+// Resolves the handlers of a Vite service entry. Shared by the production wrapper (`lazyService`)
+// and the dev worker so both accept the same shapes: `export default { fetch }` wins over a named
+// `fetch` export.
 export function resolveServiceFetch(mod, { name, entry }) {
-  const service = mod?.default ?? mod;
-  if (typeof service?.fetch === "function") {
-    return service.fetch.bind(service);
-  }
-  if (service !== mod && typeof mod.fetch === "function") {
-    return mod.fetch;
+  const fetch = resolveServiceExport(mod, "fetch");
+  if (fetch) {
+    return fetch;
   }
   throw new TypeError(
     `[nitro] Service "${name}" (${entry}) does not export a \`fetch\` handler ` +
@@ -18,6 +12,40 @@ export function resolveServiceFetch(mod, { name, entry }) {
       `got ${describeExports(mod)}).`,
     { cause: { resolved: mod } }
   );
+}
+
+// Resolves an exported method (`default` export first, then the module namespace). The property is
+// read on every call so `this` stays bound to the object it belongs to and a handler replaced
+// after load (a framework recompiling its `fetch`, a reassigned `export let`) is picked up.
+export function resolveServiceExport(mod, key) {
+  const service = mod?.default ?? mod;
+  if (typeof service?.[key] === "function") {
+    return (...args) => service[key](...args);
+  }
+  if (service !== mod && typeof mod[key] === "function") {
+    return (...args) => mod[key](...args);
+  }
+}
+
+// Production service wrapper: loads the entry on first use and keeps the resolved handler. A
+// rejected load is not kept so the next request retries it (a module whose `fetch` shows up later
+// recovers; a module whose evaluation failed keeps rejecting, as runtimes cache that).
+export function lazyService(loader, { name, entry }) {
+  let promise, handler;
+  return {
+    fetch(req) {
+      if (handler) {
+        return handler(req);
+      }
+      promise ??= loader()
+        .then((mod) => (handler = resolveServiceFetch(mod, { name, entry })))
+        .catch((error) => {
+          promise = undefined;
+          throw error;
+        });
+      return promise.then((handler) => handler(req));
+    },
+  };
 }
 
 function describeExports(mod) {

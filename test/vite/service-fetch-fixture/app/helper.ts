@@ -1,4 +1,4 @@
-// A `fetch` helper shared with a lazy chunk gets re-exported from the entry chunk
-// (`preserveEntrySignatures: "allow-extension"`), next to the real service handler.
-export const fetch = (input: RequestInfo | URL, init?: RequestInit) =>
-  globalThis.fetch(input, init);
+// A helper named `fetch`, shared with a lazy chunk. It must never be picked as a service handler,
+// neither as an explicit named export next to the real handler nor when a bundler hoists it onto
+// the entry chunk (`preserveEntrySignatures`).
+export const fetch = () => new Response("helper");
