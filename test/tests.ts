@@ -252,8 +252,9 @@ export function testNitro(
   it.runIf(["bun", "deno-server", "nitro-dev"].includes(ctx.preset))(
     "Server entry options are passed to srvx",
     async () => {
-      const { data } = await callHandler({ url: "/srvx-middleware" });
+      const { data, headers } = await callHandler({ url: "/srvx-middleware" });
       expect(data).toBe("server entry middleware works!");
+      expect(headers["x-srvx-plugin"]).toBe("works");
     }
   );
 

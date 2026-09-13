@@ -17,4 +17,15 @@ export default defineServerEntry({
       return next();
     },
   ],
+  plugins: [
+    (server) => {
+      server.options.middleware.unshift(async (req, next) => {
+        const res = await next();
+        if (new URL(req.url).pathname === "/srvx-middleware") {
+          res.headers.set("x-srvx-plugin", "works");
+        }
+        return res;
+      });
+    },
+  ],
 });

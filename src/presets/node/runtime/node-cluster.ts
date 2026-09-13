@@ -21,7 +21,7 @@ const server = serve(
   resolveServeOptions({
     fetch: nitroApp.fetch,
     node: { exclusive: false },
-    ...(clusterId ? { silent: clusterId !== "1" } : {}),
+    ...(clusterId && clusterId !== "1" ? { silent: true } : {}),
   })
 );
 

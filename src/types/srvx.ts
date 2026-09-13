@@ -10,6 +10,6 @@ export type { ServerRequest, ServerRequestContext, ServerRuntimeContext } from "
  *
  * @see https://nitro.build/docs/server-entry
  */
-export interface NitroServerEntry extends Omit<ServerOptions, "fetch"> {
+export interface NitroServerEntry extends Omit<ServerOptions, "fetch" | "manual"> {
   fetch: (request: ServerRequest) => Response | undefined | Promise<Response | undefined>;
 }

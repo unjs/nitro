@@ -10,7 +10,8 @@ export default function serverEntry(nitro: Nitro) {
       }
       return /* js */ `
 import serverEntry from "${entry.handler}";
-const { fetch: _fetch, ...serverEntryOptions } = serverEntry || {};
+const proto = serverEntry && Object.getPrototypeOf(serverEntry);
+const { fetch: _fetch, ...serverEntryOptions } = proto === Object.prototype || proto === null ? serverEntry : {};
 export { serverEntryOptions };
 `;
     },
