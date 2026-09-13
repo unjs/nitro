@@ -25,5 +25,3 @@ serve({
   fetch: _fetch,
   plugins: [...tracingSrvxPlugins],
 });
-
-export default {};

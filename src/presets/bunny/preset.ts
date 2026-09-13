@@ -1,5 +1,4 @@
 import { defineNitroPreset } from "../_utils/preset.ts";
-import type { Nitro } from "nitro/types";
 import { builtinModules } from "node:module";
 import { rm } from "node:fs/promises";
 
@@ -25,7 +24,7 @@ const edgeScripting = defineNitroPreset(
         inlineDynamicImports: true,
         hoistTransitiveImports: false,
       },
-      external: (id: string) =>
+      external: (id) =>
         id.startsWith("https://") || id.startsWith("node:") || builtinModules.includes(id),
     },
 
@@ -33,7 +32,7 @@ const edgeScripting = defineNitroPreset(
     minify: true,
 
     hooks: {
-      "build:before": (nitro: Nitro) => {
+      "build:before": (nitro) => {
         if (nitro.options.serveStatic !== "inline" && nitro.options.serveStatic !== false) {
           nitro.options.serveStatic = "inline";
           nitro.logger.warn(
@@ -41,7 +40,7 @@ const edgeScripting = defineNitroPreset(
           );
         }
       },
-      async compiled(nitro: Nitro) {
+      async compiled(nitro) {
         // Remove public dir when inlined, usecase is for
         // managing assets directly in Bunny Storage
         if (nitro.options.serveStatic === "inline") {
