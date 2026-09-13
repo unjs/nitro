@@ -26,6 +26,7 @@ describe("vite:hmr", { sequential: true }, () => {
   };
 
   beforeAll(async () => {
+    rmSync(addedRouteFile, { force: true });
     process.chdir(rootDir);
     server = await createServer({ root: rootDir, logLevel: "warn" });
 
@@ -46,7 +47,6 @@ describe("vite:hmr", { sequential: true }, () => {
   }, 30_000);
 
   afterAll(async () => {
-    rmSync(addedRouteFile, { force: true });
     await server?.close();
   });
 

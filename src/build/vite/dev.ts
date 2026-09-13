@@ -212,7 +212,7 @@ export async function configureViteDevServer(ctx: NitroPluginContext, server: Vi
     path = normalize(path);
     return (
       scanDirs.some((dir) => path === dir || path.startsWith(dir + "/")) ||
-      (serverEntryRe.test(basename(path)) && dirname(path) === nitro.options.rootDir)
+      (serverEntryRe.test(basename(path)) && dirname(path) + "/" === nitro.options.rootDir)
     );
   };
   server.watcher.on("error", (error) => onWatchError(nitro, error));
