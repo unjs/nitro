@@ -1,5 +1,6 @@
 import { defineNitroPreset } from "../_utils/preset.ts";
-import { builtinModules } from "node:module";
+import { unenvBunny } from "./unenv/preset.ts";
+import { builtinNodeModules } from "./unenv/node-compat.ts";
 import { rm } from "node:fs/promises";
 
 const edgeScripting = defineNitroPreset(
@@ -7,6 +8,8 @@ const edgeScripting = defineNitroPreset(
     entry: "./bunny/runtime/edge-scripting",
 
     exportConditions: ["deno"],
+    node: false,
+    unenv: unenvBunny,
     commands: {
       preview: "deno -A ./bunny-edge-scripting.mjs",
     },
@@ -24,8 +27,7 @@ const edgeScripting = defineNitroPreset(
         inlineDynamicImports: true,
         hoistTransitiveImports: false,
       },
-      external: (id) =>
-        id.startsWith("https://") || id.startsWith("node:") || builtinModules.includes(id),
+      external: (id) => id.startsWith("https://") || builtinNodeModules.includes(id),
     },
 
     serveStatic: "inline",
