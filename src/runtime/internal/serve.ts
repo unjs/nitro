@@ -12,15 +12,16 @@ import { tracingSrvxPlugins } from "#nitro/virtual/tracing";
 export function resolveServeOptions(opts: ServerOptions): ServerOptions {
   const { port, hostname, tls, plugins, ...entryOptions } = serverEntryOptions;
 
-  const _parsedPort = Number.parseInt(process.env.NITRO_PORT ?? process.env.PORT ?? "");
-  const cert = process.env.NITRO_SSL_CERT;
-  const key = process.env.NITRO_SSL_KEY;
-  // const socketPath = process.env.NITRO_UNIX_SOCKET; // TODO
+  const env: Record<string, string | undefined> = globalThis.process?.env || {};
+  const _parsedPort = Number.parseInt(env.NITRO_PORT ?? env.PORT ?? "");
+  const cert = env.NITRO_SSL_CERT;
+  const key = env.NITRO_SSL_KEY;
+  // const socketPath = env.NITRO_UNIX_SOCKET; // TODO
 
   const resolved: ServerOptions = {
     ...entryOptions,
     port: Number.isNaN(_parsedPort) ? (port ?? 3000) : _parsedPort,
-    hostname: process.env.NITRO_HOST || process.env.HOST || hostname,
+    hostname: env.NITRO_HOST || env.HOST || hostname,
     tls: cert && key ? { cert, key } : tls,
     ...opts,
     plugins: [...tracingSrvxPlugins, ...(plugins || []), ...(opts.plugins || [])],
