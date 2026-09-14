@@ -1,5 +1,5 @@
 import { HTTPError, type H3Event, type HTTPEvent } from "h3";
-import type { InternalHandlerResponse } from "./utils.ts";
+import { createErrorHeaders, type InternalHandlerResponse } from "./utils.ts";
 import { FastResponse } from "srvx";
 import type { NitroErrorHandler } from "nitro/types";
 
@@ -28,16 +28,7 @@ export function defaultHandler(error: HTTPError, event: HTTPEvent): InternalHand
     }
   }
 
-  // Headers staged on the event (route rules, middleware, `event.res.headers`)
-  // must survive into the error response: h3 skips its staged-header merge for
-  // responses returned by `onError` handlers, so error handlers have to carry
-  // them over themselves (https://github.com/nitrojs/nitro/issues/4183).
-  const eventHeaders = (event as H3Event).res;
-  const headers = new Headers([
-    ...(eventHeaders?.headers || []),
-    ...(eventHeaders?.errHeaders || []),
-    ...(!unhandled && error.headers ? error.headers : []),
-  ]);
+  const headers = createErrorHeaders(event, unhandled ? undefined : error.headers);
   headers.set("content-type", "application/json; charset=utf-8");
 
   const jsonBody = unhandled
