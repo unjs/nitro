@@ -28,7 +28,16 @@ export function defaultHandler(error: HTTPError, event: HTTPEvent): InternalHand
     }
   }
 
-  const headers = new Headers(unhandled ? {} : error.headers);
+  // Headers staged on the event (route rules, middleware, `event.res.headers`)
+  // must survive into the error response: h3 skips its staged-header merge for
+  // responses returned by `onError` handlers, so error handlers have to carry
+  // them over themselves (https://github.com/nitrojs/nitro/issues/4183).
+  const eventHeaders = (event as H3Event).res;
+  const headers = new Headers([
+    ...(eventHeaders?.headers || []),
+    ...(eventHeaders?.errHeaders || []),
+    ...(!unhandled && error.headers ? error.headers : []),
+  ]);
   headers.set("content-type", "application/json; charset=utf-8");
 
   const jsonBody = unhandled

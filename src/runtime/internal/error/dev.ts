@@ -1,4 +1,4 @@
-import { HTTPError, type HTTPEvent } from "h3";
+import { HTTPError, type H3Event, type HTTPEvent } from "h3";
 import { getRequestURL } from "h3";
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "pathe";
@@ -61,7 +61,16 @@ export async function defaultHandler(
   // Use HTML response only when user-agent expects it (browsers)
   const useJSON = opts?.json ?? !event.req.headers.get("accept")?.includes("text/html");
 
-  const headers = new Headers(unhandled ? {} : error.headers);
+  // Headers staged on the event (route rules, middleware, `event.res.headers`)
+  // must survive into the error response: h3 skips its staged-header merge for
+  // responses returned by `onError` handlers, so error handlers have to carry
+  // them over themselves (https://github.com/nitrojs/nitro/issues/4183).
+  const eventHeaders = (event as H3Event).res;
+  const headers = new Headers([
+    ...(eventHeaders?.headers || []),
+    ...(eventHeaders?.errHeaders || []),
+    ...(!unhandled && error.headers ? error.headers : []),
+  ]);
 
   if (useJSON) {
     headers.set("Content-Type", "application/json; charset=utf-8");

@@ -704,6 +704,24 @@ export function testNitro(
       expect(data.stack).toMatch("test/fixture/server/routes/errors/stack.ts");
     });
 
+    it("error responses keep headers staged on the event", async () => {
+      // https://github.com/nitrojs/nitro/issues/4183 — headers staged by a
+      // handler or middleware (e.g. CORS via `event.res.headers`) must survive
+      // into the error response, or browsers block the error from JS callers.
+      const res = await callHandler({ url: "/errors/staged-headers" });
+      expect(res).toMatchObject({
+        status: 401,
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "x-staged-header": "staged-value",
+          "access-control-allow-origin": "https://example.com",
+        },
+        data: {
+          message: "unauthorized",
+        },
+      });
+    });
+
     for (const errorAction of ["throw", "return"]) {
       it(`handled errors (${errorAction})`, async () => {
         const res = await callHandler({ url: `/errors/throw?handled&action=${errorAction}` });
