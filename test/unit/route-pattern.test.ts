@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { H3, mockEvent } from "h3";
 
-import { normalizeRoute } from "../../src/utils/route.ts";
 import { Router } from "../../src/routing.ts";
 
-// `normalizeRoute` is an inline port of h3's internal util (see src/utils/route.ts).
-// These cases pin it to h3's own behavior: a pattern that reaches a handler in a
-// plain h3 app must reach one through Nitro's compiled rou3 router too.
+// A pattern that reaches a handler in a plain h3 app must reach one through
+// Nitro's compiled rou3 router too.
 const cases: [pattern: string, normalized: string][] = [
   ["/about", "/about"],
   ["/について", "/%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"],
@@ -29,21 +27,6 @@ const cases: [pattern: string, normalized: string][] = [
   ["/**", "/**"],
   ["/**:slug", "/**:slug"],
 ];
-
-describe("normalizeRoute", () => {
-  it.each(cases)("normalizes %j", (pattern, expected) => {
-    expect(normalizeRoute(pattern)).toBe(expected);
-  });
-
-  it.each(cases)("is idempotent for %j", (pattern) => {
-    const once = normalizeRoute(pattern);
-    expect(normalizeRoute(once)).toBe(once);
-  });
-
-  it("rejects an absolute URL", () => {
-    expect(() => normalizeRoute("http://evil.com/admin")).toThrow(/pathnames/);
-  });
-});
 
 describe("Router", () => {
   it("matches a normalized pattern against a wire pathname", () => {

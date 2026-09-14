@@ -4,10 +4,10 @@ import type { RouterCompilerOptions } from "rou3/compiler";
 
 import { join } from "pathe";
 import { runtimeDir } from "nitro/meta";
+import { normalizeRoute } from "h3";
 import { addRoute, createRouter, findRoute, findAllRoutes } from "rou3";
 import { compileRouterToString } from "rou3/compiler";
 import { hash } from "./utils/hash.ts";
-import { normalizeRoute } from "./utils/route.ts";
 
 const isGlobalMiddleware = (h: NitroEventHandler) => !h.method && (!h.route || h.route === "/**");
 
