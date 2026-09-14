@@ -60,8 +60,6 @@ for (const mode of ["nitro", "vite"] as const) {
         row: { value: 42 },
         variable: "configured",
         inlineVariable: "inline",
-        waitUntil: "function",
-        internalBindings: [],
       });
     });
 

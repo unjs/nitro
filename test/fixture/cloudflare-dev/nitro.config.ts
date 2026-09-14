@@ -4,7 +4,6 @@ export default defineConfig({
   preset: "cloudflare-module",
   compatibilityDate: "2026-07-01",
   serverDir: ".",
-  errorHandler: "./error.ts",
   cloudflare: {
     wranglerEnv: "test",
     wrangler: {
