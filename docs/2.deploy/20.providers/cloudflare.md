@@ -420,7 +420,7 @@ A few things differ from `wrangler dev`:
 - Local data of the bindings (KV, D1, R2, ...) is persisted in `.wrangler/state/v3`, shared with `wrangler dev`.
 - The newest compatibility date supported by the installed `miniflare` is used, regardless of `compatibility_date`.
 - Static assets are served by Nitro, and bindings to other workers (`services`, `tail_consumers`) and to classes or handlers (`durable_objects`, `workflows`, queue consumers) are not available.
-- When `cloudflare.wrangler` is set, it is merged with the Wrangler config file of the current working directory.
+- When `cloudflare.wrangler` is set, it is merged with the nearest Wrangler config file.
 
 #### Wrangler environments
 

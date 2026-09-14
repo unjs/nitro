@@ -15,12 +15,9 @@ for (const mode of ["nitro", "vite"] as const) {
     let reload: (() => Promise<void>) | undefined;
     let close: () => Promise<void>;
     let warn: MockInstance | undefined;
-    const originalCwd = process.cwd();
 
     beforeAll(async () => {
       await rm(`${rootDir}/.wrangler`, { recursive: true, force: true });
-      // Inline `cloudflare.wrangler` is merged with the wrangler config found in the cwd
-      process.chdir(rootDir);
       if (mode === "nitro") {
         const nitro = await createNitro({
           rootDir,
@@ -51,7 +48,6 @@ for (const mode of ["nitro", "vite"] as const) {
 
     afterAll(async () => {
       await close?.();
-      process.chdir(originalCwd);
     });
 
     it("exposes KV, D1 and execution context from the selected Wrangler environment", async () => {

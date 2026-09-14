@@ -1,4 +1,5 @@
 import type { RunnerName } from "env-runner";
+import type { MiniflareEnvRunnerOptions } from "env-runner/runners/miniflare";
 import type { Nitro } from "nitro/types";
 
 import { pathToFileURL } from "node:url";
@@ -7,14 +8,16 @@ import { resolve } from "pathe";
 import { findNearestFile } from "pkg-types";
 import { ensureDep } from "../utils/dep.ts";
 
-export interface MiniflareRunnerDeps {
-  miniflare?: URL;
-  wranglerModule?: URL;
-  wrangler?: string | Record<string, unknown> | false;
-  wranglerEnv?: string;
-  miniflareOptions?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+type MiniflareRunnerDeps = Pick<
+  MiniflareEnvRunnerOptions,
+  | "miniflare"
+  | "wranglerModule"
+  | "wrangler"
+  | "wranglerConfigPath"
+  | "wranglerEnv"
+  | "compatibilityDate"
+  | "miniflareOptions"
+>;
 
 /**
  * Resolve the platform packages a dev runner needs from the user project.
@@ -43,52 +46,30 @@ export async function resolveRunnerDeps(
   }
 }
 
-export async function resolveMiniflareDeps(nitro: Nitro): Promise<MiniflareRunnerDeps> {
+async function resolveMiniflareDeps(nitro: Nitro): Promise<MiniflareRunnerDeps> {
+  const { rootDir } = nitro.options;
   const miniflare = await ensureDep({
     id: "miniflare",
-    dir: nitro.options.rootDir,
+    dir: rootDir,
     reason: "the `miniflare` dev runner",
     version: "^4",
   });
-  const miniflareURL = miniflare ? pathToFileURL(miniflare) : undefined;
-  return {
-    miniflare: miniflareURL,
-    // Optional: without it, a built-in minimal reader handles plain JSON
-    // wrangler configs and inline objects.
-    wranglerModule: _resolve("wrangler", nitro.options.rootDir),
-    ...(await _resolveWranglerOptions(nitro, miniflareURL)),
-  };
-}
-
-async function _resolveWranglerOptions(
-  nitro: Nitro,
-  miniflare: URL | undefined
-): Promise<MiniflareRunnerDeps> {
-  const { rootDir } = nitro.options;
   const inline = nitro.options.cloudflare?.wrangler;
   const configPath = await findNearestFile(["wrangler.json", "wrangler.jsonc", "wrangler.toml"], {
     startingFrom: rootDir,
   }).catch(() => undefined);
-  const { supportedCompatibilityDate } = miniflare ? await import(miniflare.href) : {};
   return {
-    // env-runner merges an inline config with the wrangler config of the cwd. Otherwise, use the
-    // config nearest to `rootDir`, like the production build.
-    wrangler: inline && Object.keys(inline).length > 0 ? { ...inline } : configPath || false,
+    miniflare: miniflare ? pathToFileURL(miniflare) : undefined,
+    // Optional: without it, a built-in minimal reader handles plain JSON
+    // wrangler configs and inline objects.
+    wranglerModule: _resolve("wrangler", rootDir),
+    wrangler: inline && Object.keys(inline).length > 0 ? inline : Boolean(configPath),
+    wranglerConfigPath: configPath,
     wranglerEnv: nitro.options.cloudflare?.wranglerEnv,
+    // The dev bundle imports Node.js built-ins that workerd only provides at recent dates
+    compatibilityDate: "latest",
     miniflareOptions: {
-      // The dev bundle imports Node.js built-ins that workerd only provides at recent dates
-      compatibilityDate: supportedCompatibilityDate,
       defaultPersistRoot: resolve(rootDir, ".wrangler/state/v3"),
-      // The dev worker is the only worker and exports `fetch` only: static assets are served by
-      // Nitro, and bindings to other workers or to classes and handlers it does not export would
-      // prevent it from starting.
-      assets: undefined,
-      serviceBindings: undefined,
-      durableObjects: undefined,
-      workflows: undefined,
-      queueConsumers: undefined,
-      tails: undefined,
-      streamingTails: undefined,
     },
   };
 }

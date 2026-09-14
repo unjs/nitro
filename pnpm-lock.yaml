@@ -27,8 +27,8 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1
       env-runner:
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.2.3
+        version: 0.2.3
       h3:
         specifier: ^2.0.1-rc.31
         version: 2.0.1-rc.31(crossws@0.4.12)(ocache@0.3.0)
@@ -4564,8 +4564,8 @@ packages:
     resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
     engines: {node: '>=0.12'}
 
-  env-runner@0.2.2:
-    resolution: {integrity: sha512-Mg9MqUq6fMe6Smd4x/bXJJTavobIXlPsJ+/ePWkoLSVTrGmQ+1YrzwjoCn1Bl7tMD9aNqB7c5NIWKRAIl3l7hw==}
+  env-runner@0.2.3:
+    resolution: {integrity: sha512-S8EFBKyznRwPVwayK187cYjvnpgC92xy+q0BIF++V965pfjMVVRbQ/HoTYGA/1EHmZ7E68k6Heq+4WnvVhOL5w==}
     hasBin: true
 
   eol@0.9.1:
@@ -6696,6 +6696,11 @@ packages:
 
   srvx@1.0.4:
     resolution: {integrity: sha512-eZmYaxUfZSo7/8m8UdsHRJNmTLSCTPPom9d7a60vMmuVeZvwhbvflRR+00/CxTCjMOFa5+H8tgBeNDVZ+w7AAQ==}
+    engines: {node: '>=20.16.0'}
+    hasBin: true
+
+  srvx@1.0.5:
+    resolution: {integrity: sha512-KvSKRpgPG/oaq3cyT614OQ2bAa7DynuGamivCZeoZzIUULOdbQz6wUtnnVuC4+DCx2Zglzo8v5gBYmWIWYhDxA==}
     engines: {node: '>=20.16.0'}
     hasBin: true
 
@@ -10903,6 +10908,10 @@ snapshots:
     optionalDependencies:
       srvx: 1.0.4
 
+  crossws@0.4.12(srvx@1.0.5):
+    optionalDependencies:
+      srvx: 1.0.5
+
   crypt@0.0.2: {}
 
   css-select@5.2.2:
@@ -11125,12 +11134,12 @@ snapshots:
 
   entities@7.0.1: {}
 
-  env-runner@0.2.2:
+  env-runner@0.2.3:
     dependencies:
-      crossws: 0.4.12(srvx@1.0.4)
+      crossws: 0.4.12(srvx@1.0.5)
       exsolve: 1.1.1
       httpxy: 0.5.5
-      srvx: 1.0.4
+      srvx: 1.0.5
 
   eol@0.9.1: {}
 
@@ -11562,7 +11571,7 @@ snapshots:
       rou3: 0.8.1
       srvx: 0.11.22
     optionalDependencies:
-      crossws: 0.4.12(srvx@1.0.4)
+      crossws: 0.4.12(srvx@1.0.5)
 
   h3@2.0.1-rc.31(crossws@0.4.12)(ocache@0.3.0):
     dependencies:
@@ -13642,6 +13651,8 @@ snapshots:
   srvx@0.9.8: {}
 
   srvx@1.0.4: {}
+
+  srvx@1.0.5: {}
 
   stack-trace@1.0.0: {}
 
