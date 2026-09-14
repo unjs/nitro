@@ -255,6 +255,19 @@ export function testNitro(
       const { data, headers } = await callHandler({ url: "/srvx-middleware" });
       expect(data).toBe("server entry middleware works!");
       expect(headers["x-srvx-plugin"]).toBe("works");
+
+      const small = await callHandler({
+        url: "/api/body-size",
+        method: "POST",
+        body: "x".repeat(1024),
+      });
+      expect(small.data).toEqual({ length: 1024 });
+      const large = await callHandler({
+        url: "/api/body-size",
+        method: "POST",
+        body: "x".repeat(128 * 1024),
+      });
+      expect(large.status).toBe(413);
     }
   );
 

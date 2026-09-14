@@ -9,6 +9,7 @@ export default defineServerEntry({
     return new Response("404 Not Found", { status: 404 });
   },
   // Passed to srvx (node, bun and deno servers)
+  maxRequestBodySize: 64 * 1024,
   middleware: [
     (req, next) => {
       if (new URL(req.url).pathname === "/srvx-middleware") {

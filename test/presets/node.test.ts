@@ -60,6 +60,11 @@ describe("nitro:preset:node-server", async () => {
       await waitForPort(port, { delay: 1000, retries: 20, host: "127.0.0.1" });
       const res = await fetch(`http://127.0.0.1:${port}/srvx-middleware`);
       expect(await res.text()).toBe("server entry middleware works!");
+      const large = await fetch(`http://127.0.0.1:${port}/api/body-size`, {
+        method: "POST",
+        body: "x".repeat(128 * 1024),
+      });
+      expect(large.status).toBe(413);
     } finally {
       child.kill("SIGKILL");
     }
