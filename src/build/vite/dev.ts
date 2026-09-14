@@ -6,13 +6,12 @@ import type { RunnerRPCHooks } from "env-runner";
 import { IncomingMessage, ServerResponse } from "node:http";
 import { NodeRequest, sendNodeResponse } from "srvx/node";
 import { createViteHotChannel } from "env-runner/vite";
-import { watch as chokidarWatch } from "chokidar";
-import { watch as fsWatch } from "node:fs";
-import { join } from "pathe";
+import { basename, dirname, join, normalize } from "pathe";
 import { debounce } from "perfect-debounce";
 import { withBase, withoutBase } from "ufo";
 import { scanHandlers } from "../../scan.ts";
 import { getEnvRunner } from "./env.ts";
+import { onWatchError } from "../../utils/watch.ts";
 import { importVite } from "./_import.ts";
 
 // https://vite.dev/guide/api-environment-runtimes.html#modulerunner
@@ -206,30 +205,24 @@ export async function configureViteDevServer(ctx: NitroPluginContext, server: Vi
     join(dir, "modules"),
   ]);
 
+  // Reuse vite's watcher (root is already watched) to avoid extra system watchers
+  const serverEntryRe = /^server\.[mc]?[jt]sx?$/;
   const watchReloadEvents = new Set(["add", "addDir", "unlink", "unlinkDir"]);
-  const scanDirsWatcher = chokidarWatch(scanDirs, {
-    ignoreInitial: true,
-  }).on("all", (event, path, stat) => {
-    if (watchReloadEvents.has(event)) {
+  const shouldReload = (path: string) => {
+    path = normalize(path);
+    return (
+      scanDirs.some((dir) => path === dir || path.startsWith(dir + "/")) ||
+      (serverEntryRe.test(basename(path)) && dirname(path) + "/" === nitro.options.rootDir)
+    );
+  };
+  server.watcher.on("error", (error) => onWatchError(nitro, error));
+  server.watcher.add(scanDirs.filter((dir) => !dir.startsWith(server.config.root + "/")));
+  server.watcher.on("all", (event, path) => {
+    if (watchReloadEvents.has(event) && shouldReload(path)) {
       reload();
     }
   });
-
-  const rootDirWatcher = fsWatch(
-    nitro.options.rootDir,
-    { persistent: false },
-    (_event, filename) => {
-      if (filename && /^server\.[mc]?[jt]sx?$/.test(filename)) {
-        reload();
-      }
-    }
-  );
   nitro.hooks.hook("rollup:reload", () => reload());
-
-  nitro.hooks.hook("close", () => {
-    scanDirsWatcher.close();
-    rootDirWatcher.close();
-  });
 
   // Vite only installs a `SIGTERM` handler, so Ctrl+C (`SIGINT`) tears the process down before
   // any `close` hook runs and leaves the dev worker (and its resources) behind (#4586). In
