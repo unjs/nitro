@@ -1,5 +1,4 @@
 import { createViteTransport } from "env-runner/vite";
-import { augmentDevRequest } from "../dev-request.mjs";
 
 // `vite` is an optional dependency Nitro resolves from the app, so the module runner cannot be
 // imported from here. The generated entry injects it instead (see `build/vite/_dev-worker.ts`).
@@ -264,8 +263,11 @@ globalThis.__transform_html__ = async function (html) {
 
 // ----- Exports (env-runner AppEntry) -----
 
-export async function fetch(req, bindings, context) {
-  augmentDevRequest(req, { env: bindings, context });
+export async function fetch(req) {
+  // Bindings lookup of unstorage and db0 cloudflare drivers
+  if (req.runtime?.name === "cloudflare") {
+    globalThis.__env__ = req.runtime.cloudflare?.env;
+  }
   const viteEnv = req?.headers.get("x-vite-env") || "nitro";
   const env = envs[viteEnv];
   if (!env) {

@@ -27,8 +27,8 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1
       env-runner:
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.2.2
+        version: 0.2.2
       h3:
         specifier: ^2.0.1-rc.31
         version: 2.0.1-rc.31(crossws@0.4.12)(ocache@0.3.0)
@@ -4431,8 +4431,8 @@ packages:
     resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
     engines: {node: '>=0.12'}
 
-  env-runner@0.2.1:
-    resolution: {integrity: sha512-2iDP2DfheAMMAKeXBggEuFmpSq+1Xs6wQoHba1g65pZFXlC3VHD1O6/tgVzS6GQLv+P2koPKZPKgKhXkigNBdg==}
+  env-runner@0.2.2:
+    resolution: {integrity: sha512-Mg9MqUq6fMe6Smd4x/bXJJTavobIXlPsJ+/ePWkoLSVTrGmQ+1YrzwjoCn1Bl7tMD9aNqB7c5NIWKRAIl3l7hw==}
     hasBin: true
 
   eol@0.9.1:
@@ -10904,7 +10904,7 @@ snapshots:
 
   entities@7.0.1: {}
 
-  env-runner@0.2.1:
+  env-runner@0.2.2:
     dependencies:
       crossws: 0.4.12(srvx@1.0.3)
       exsolve: 1.1.1

@@ -4,7 +4,6 @@ import { useNitroApp, useNitroHooks } from "nitro/app";
 import { startScheduleRunner } from "#nitro/runtime/task";
 import { trapUnhandledErrors } from "#nitro/runtime/error/hooks";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
-import { augmentDevRequest } from "#nitro/runtime/dev-request";
 import { tracingSrvxPlugins } from "#nitro/virtual/tracing";
 
 import type { AppEntry } from "env-runner";
@@ -26,8 +25,11 @@ const ws = import.meta._websocket
   : undefined;
 
 export default {
-  fetch(request, env?: Record<string, unknown>, context?: ExecutionContext) {
-    augmentDevRequest(request, { env, context });
+  fetch(request) {
+    // Bindings lookup of unstorage and db0 cloudflare drivers
+    if (request.runtime?.name === "cloudflare") {
+      (globalThis as any).__env__ = request.runtime.cloudflare?.env;
+    }
     return nitroApp.fetch(request);
   },
   plugins: [...tracingSrvxPlugins],
