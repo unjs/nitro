@@ -264,10 +264,6 @@ globalThis.__transform_html__ = async function (html) {
 // ----- Exports (env-runner AppEntry) -----
 
 export async function fetch(req) {
-  // Bindings lookup of unstorage and db0 cloudflare drivers
-  if (req.runtime?.name === "cloudflare") {
-    globalThis.__env__ = req.runtime.cloudflare?.env;
-  }
   const viteEnv = req?.headers.get("x-vite-env") || "nitro";
   const env = envs[viteEnv];
   if (!env) {

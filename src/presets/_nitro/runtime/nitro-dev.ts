@@ -25,13 +25,7 @@ const ws = import.meta._websocket
   : undefined;
 
 export default {
-  fetch(request) {
-    // Bindings lookup of unstorage and db0 cloudflare drivers
-    if (request.runtime?.name === "cloudflare") {
-      (globalThis as any).__env__ = request.runtime.cloudflare?.env;
-    }
-    return nitroApp.fetch(request);
-  },
+  fetch: nitroApp.fetch,
   plugins: [...tracingSrvxPlugins],
   upgrade: ws
     ? (context: { node: { req: any; socket: any; head: any } }) => {

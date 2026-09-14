@@ -14,7 +14,6 @@ export default defineHandler(async (event) => {
     variable: env.TEST_VAR,
     inlineVariable: env.INLINE_VAR,
     waitUntil: typeof context.waitUntil,
-    globalEnv: (globalThis as any).__env__ === env,
     internalBindings: Object.keys(env).filter((key) => key.startsWith("__ENV_RUNNER")),
   };
 });
