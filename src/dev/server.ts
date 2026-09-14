@@ -11,11 +11,11 @@ import { HTTPError } from "h3";
 
 import consola from "consola";
 import { resolve } from "pathe";
-import { watch } from "chokidar";
 import { serve } from "srvx/node";
 import { debounce } from "perfect-debounce";
 import { isTest, isCI } from "std-env";
 import { NitroDevApp } from "./app.ts";
+import { createWatcher } from "../utils/watch.ts";
 import { resolveRunnerDeps } from "./runner-deps.ts";
 import { shutdownRunner } from "./shutdown.ts";
 import { writeDevBuildInfo } from "../build/info.ts";
@@ -122,7 +122,7 @@ export class NitroDevServer extends NitroDevApp implements RunnerRPCHooks {
     const devWatch = nitro.options.devServer.watch;
     if (devWatch && devWatch.length > 0) {
       const debouncedReload = debounce(() => this.reload());
-      this.#watcher = watch(devWatch, nitro.options.watchOptions);
+      this.#watcher = createWatcher(nitro, devWatch, nitro.options.watchOptions);
       this.#watcher.on("add", debouncedReload).on("change", debouncedReload);
     }
   }
