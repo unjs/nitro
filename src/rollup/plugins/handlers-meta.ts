@@ -4,8 +4,16 @@ import type { Expression, Literal } from "estree";
 import type { Nitro, NitroEventHandler } from "nitropack/types";
 import { extname } from "pathe";
 import type { Plugin } from "rollup";
+import { fileURLToPath } from "node:url";
 
 const virtualPrefix = "\0nitro-handler-meta:";
+
+// The `?meta` specifier is resolved by the host bundler before this plugin's
+// `resolveId` runs, and bundlers report absolute paths as `file://` URLs when
+// the file lives outside the project root (e.g. server routes in Nuxt
+// layers). The URL has to be converted back to a path before `readFile`,
+// which does not understand URL strings (nitrojs/nitro#4564).
+const fileURLPrefix = "file://";
 
 // From esbuild.ts
 const esbuildLoaders = {
@@ -36,11 +44,14 @@ export function handlersMeta(nitro: Nitro) {
     },
     async load(id) {
       if (id.startsWith(virtualPrefix)) {
-        const fullPath = id.slice(virtualPrefix.length);
+        let fullPath = id.slice(virtualPrefix.length);
         // Bail out to rollup for virtual files (#3324)
         if (fullPath.startsWith("\0")) {
           const { code } = await this.load({ id: fullPath });
           return code;
+        }
+        if (fullPath.startsWith(fileURLPrefix)) {
+          fullPath = fileURLToPath(fullPath);
         }
         return readFile(fullPath, { encoding: "utf8" });
       }
