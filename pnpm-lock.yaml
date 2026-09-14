@@ -67,11 +67,11 @@ importers:
         specifier: ^2.0.10
         version: 2.0.10(debug@4.4.3)(supports-color@10.2.2)
       '@cloudflare/workers-types':
-        specifier: ^5.20260910.1
+        specifier: ^5.20260911.1
         version: 5.20260911.1
       '@cloudflare/workers-utils':
-        specifier: ^0.37.0
-        version: 0.37.0(vitest@4.1.11)
+        specifier: ^0.38.0
+        version: 0.38.0(vitest@4.1.11)
       '@deno/types':
         specifier: ^0.0.1
         version: 0.0.1
@@ -289,7 +289,7 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.5.1)(@vitest/coverage-v8@4.1.11)(vite@8.3.0)
       wrangler:
-        specifier: ^4.130.0
+        specifier: ^4.131.0
         version: 4.131.1(@cloudflare/workers-types@5.20260911.1)(@types/node@26.5.1)
       xml2js:
         specifier: ^0.6.2
@@ -1116,8 +1116,8 @@ packages:
   '@cloudflare/workers-types@5.20260911.1':
     resolution: {integrity: sha512-yiAvknjulcU85B3yB4aKOn9+l+garWP+AbHgsdCFckeRYDdhZ1rPULi64BDf52R3VTaKqxi47kF+o9ZbjsCt5g==}
 
-  '@cloudflare/workers-utils@0.37.0':
-    resolution: {integrity: sha512-yP95xUAAUL/h+Kye6Yb3CIygINdrhzOB+58cfoMGG0lZriJYW4p+6O/bX6kmlxgNDz8CajJ6IT3ytmFGDLWHpg==}
+  '@cloudflare/workers-utils@0.38.0':
+    resolution: {integrity: sha512-Lt/BRkOKgv7Mrq/YyuGjTgzn0iVdGSFsUV+gAoOojQxGGmjwJOGJzBKIiqogj6aHGLhIrgObQdiYDKiujM6m9w==}
     peerDependencies:
       vitest: ^4.1.0
     peerDependenciesMeta:
@@ -8050,7 +8050,7 @@ snapshots:
 
   '@cloudflare/workers-types@5.20260911.1': {}
 
-  '@cloudflare/workers-utils@0.37.0(vitest@4.1.11)':
+  '@cloudflare/workers-utils@0.38.0(vitest@4.1.11)':
     dependencies:
       chalk: 5.3.0
       dotenv: 16.3.1
