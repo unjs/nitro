@@ -161,7 +161,7 @@
     "vite": "^8.3.0",
     "vite7": "npm:vite@^7.3.6",
     "vitest": "^4.1.11",
-    "wrangler": "^4.131.0",
+    "wrangler": "^4.131.1",
     "xml2js": "^0.6.2",
     "youch": "^4.1.1",
     "youch-core": "^0.3.3",
