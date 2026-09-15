@@ -31,6 +31,7 @@ export class NitroDevServer extends NitroDevApp implements RunnerRPCHooks {
   #watcher?: FSWatcher;
   #manager: RunnerManager;
   #workerIdCtr: number = 0;
+  #runnerName?: RunnerName;
   #workerError?: unknown;
   #workerRetries: number = 0;
   #building?: boolean = true; // Assume initial build will start soon
@@ -192,6 +193,7 @@ export class NitroDevServer extends NitroDevApp implements RunnerRPCHooks {
     const runnerName = (this.nitro.options.devServer.runner ||
       process.env.NITRO_DEV_RUNNER ||
       "node-worker") as RunnerName;
+    this.#runnerName = runnerName;
     const runner = await loadRunner(runnerName, {
       ...(await resolveRunnerDeps(this.nitro, runnerName)),
       name: `Nitro_${this.#workerIdCtr++}`,
@@ -217,7 +219,8 @@ export class NitroDevServer extends NitroDevApp implements RunnerRPCHooks {
   // #region Private Methods
 
   async #shutdownWorker() {
-    if (!this.#manager.ready) {
+    // The miniflare runner runs the same handshake itself when it is disposed
+    if (!this.#manager.ready || this.#runnerName === "miniflare") {
       return;
     }
     this.#shuttingDown = true;
