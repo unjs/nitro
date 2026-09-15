@@ -120,6 +120,9 @@ export async function initEnvRunner(ctx: NitroPluginContext) {
   if (ctx._envRunner) {
     return ctx._envRunner;
   }
+  if (ctx._closingEnvRunner) {
+    throw new Error("Nitro dev env runner is closed.");
+  }
   if (!ctx._initPromise) {
     ctx._initPromise = (async () => {
       const manager = new RunnerManager();
@@ -163,11 +166,14 @@ export async function initEnvRunner(ctx: NitroPluginContext) {
  * runtime is terminated (#4586).
  */
 export async function closeEnvRunner(ctx: NitroPluginContext) {
-  const manager = ctx._envRunner || (await ctx._initPromise);
-  if (!manager || ctx._closingEnvRunner) {
+  if (ctx._closingEnvRunner) {
     return;
   }
   ctx._closingEnvRunner = true;
+  const manager = ctx._envRunner || (await ctx._initPromise?.catch(() => undefined));
+  if (!manager) {
+    return;
+  }
   // The miniflare runner runs the same handshake itself when it is disposed, so it is only
   // needed for the runners that terminate their runtime outright.
   if (manager.ready && !_isWorkerdRunner(ctx)) {
