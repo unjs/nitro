@@ -4,7 +4,6 @@ import type { ServerRequest, ServerRuntimeContext } from "srvx";
 
 import { runCronTasks } from "#nitro/runtime/task";
 import { useNitroApp, useNitroHooks } from "nitro/app";
-import { withServerEntryOptions } from "#nitro/runtime/serve";
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -17,7 +16,7 @@ export function createHandler<Env>(hooks: {
     ]
   ) => MaybePromise<Response | CF.Response | undefined>;
 }) {
-  const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
+  const nitroApp = useNitroApp();
   const nitroHooks = useNitroHooks();
 
   return {
@@ -36,7 +35,7 @@ export function createHandler<Env>(hooks: {
         }
       }
 
-      return (await fetchHandler(request as any)) as any;
+      return (await nitroApp.fetch(request)) as any;
     },
 
     scheduled(controller, env, context) {

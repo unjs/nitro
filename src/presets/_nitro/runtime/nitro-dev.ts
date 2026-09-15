@@ -27,7 +27,7 @@ const ws = import.meta._websocket
 
 export default {
   ...serverEntryOptions,
-  fetch: nitroApp.fetch,
+  fetch: nitroApp["~fetch"],
   plugins: [...tracingSrvxPlugins, ...(serverEntryOptions.plugins || [])],
   upgrade: ws
     ? (context: { node: { req: any; socket: any; head: any } }) => {

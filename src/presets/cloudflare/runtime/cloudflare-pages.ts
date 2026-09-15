@@ -10,7 +10,6 @@ import { useNitroApp } from "nitro/app";
 import { isPublicAssetURL } from "#nitro/virtual/public-assets";
 import { runCronTasks } from "#nitro/runtime/task";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
-import { withServerEntryOptions } from "#nitro/runtime/serve";
 
 import { augmentReq } from "./_module-handler.ts";
 
@@ -27,7 +26,7 @@ interface CFPagesEnv {
   [key: string]: any;
 }
 
-const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
+const nitroApp = useNitroApp();
 
 const ws = import.meta._websocket ? wsAdapter({ resolve: resolveWebsocketHooks }) : undefined;
 
@@ -49,7 +48,7 @@ export default {
       return env.ASSETS.fetch(cfReq);
     }
 
-    return fetchHandler(cfReq as any);
+    return nitroApp.fetch(cfReq as any);
   },
   scheduled(event: any, env: CFPagesEnv, context: ExecutionContext) {
     if (import.meta._tasks) {

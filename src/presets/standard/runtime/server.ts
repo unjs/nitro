@@ -1,7 +1,8 @@
 import "#nitro/virtual/polyfills";
 import { useNitroApp } from "nitro/app";
-import { withServerEntryOptions } from "#nitro/runtime/serve";
+
+const nitroApp = useNitroApp();
 
 export default {
-  fetch: withServerEntryOptions(useNitroApp().fetch),
+  fetch: nitroApp.fetch,
 };

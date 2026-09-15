@@ -1,4 +1,4 @@
-import type { Server, ServerOptions, ServerRequest } from "srvx";
+import type { Server, ServerHandler, ServerOptions, ServerRequest } from "srvx";
 import { serverEntryOptions } from "#nitro/virtual/server-entry";
 import { tracingSrvxPlugins } from "#nitro/virtual/tracing";
 
@@ -37,10 +37,10 @@ export function resolveServeOptions(opts: ServerOptions): ServerOptions {
 }
 
 /**
- * Apply server entry `middleware`, `plugins` and `error` options to the fetch handler of a preset
- * that does not start a srvx server (serverless, edge and worker runtimes).
+ * Apply server entry `middleware`, `plugins` and `error` options to the Nitro app fetch handler.
  *
- * Listener options (`port`, `hostname`, `tls`, ...) and runtime specific options have no effect there.
+ * Plugins are called with a minimal server object (`runtime` and `options`) on first request.
+ * Presets starting a srvx server use the raw handler (`nitroApp["~fetch"]`) and pass options to srvx instead.
  */
 export function withServerEntryOptions<
   T extends (req: ServerRequest) => Response | Promise<Response>,
@@ -49,6 +49,12 @@ export function withServerEntryOptions<
   if (!middleware?.length && !plugins?.length && !error) {
     return fetch;
   }
+  let handler: ServerHandler | undefined;
+  return ((req: ServerRequest) => (handler ??= composeHandler(fetch))(req)) as T;
+}
+
+function composeHandler(fetch: ServerHandler): ServerHandler {
+  const { middleware, plugins, error } = serverEntryOptions;
 
   const server = {
     runtime: "generic",
@@ -75,5 +81,5 @@ export function withServerEntryOptions<
     const next = handler;
     handler = (req) => mw(req, () => next(req));
   }
-  return handler as T;
+  return handler;
 }

@@ -1,6 +1,5 @@
 import "#nitro/virtual/polyfills";
 import { useNitroApp } from "nitro/app";
-import { withServerEntryOptions } from "#nitro/runtime/serve";
 
 import type { Handler } from "aws-lambda";
 import type { ServerRequest } from "srvx";
@@ -24,7 +23,7 @@ type StormkitResponse = {
   errorStack?: string;
 };
 
-const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
+const nitroApp = useNitroApp();
 
 export const handler: Handler<StormkitEvent, StormkitResponse> = async function (event, context) {
   const req = new Request(event.url, {
@@ -37,7 +36,7 @@ export const handler: Handler<StormkitEvent, StormkitResponse> = async function 
   req.runtime ??= { name: "stormkit" };
   req.runtime.stormkit ??= { event, context } as any;
 
-  const response = await fetchHandler(req);
+  const response = await nitroApp.fetch(req);
 
   const { body, isBase64Encoded } = await encodeResponseBody(response);
 
