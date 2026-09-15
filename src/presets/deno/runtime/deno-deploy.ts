@@ -5,12 +5,13 @@ import wsAdapter from "crossws/adapters/deno";
 
 import { useNitroApp } from "nitro/app";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 
 declare global {
   var Deno: typeof _Deno;
 }
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 
 const ws = import.meta._websocket ? wsAdapter({ resolve: resolveWebsocketHooks }) : undefined;
 
@@ -27,5 +28,5 @@ Deno.serve((denoReq: Request, info: _Deno.ServeHandlerInfo) => {
     return ws!.handleUpgrade(req, info);
   }
 
-  return nitroApp.fetch(req);
+  return fetchHandler(req);
 });

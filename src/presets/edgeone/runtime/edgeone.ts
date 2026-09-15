@@ -1,9 +1,10 @@
 import "#nitro/virtual/polyfills";
 import { NodeRequest } from "srvx/node";
 import { useNitroApp } from "nitro/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 import type { IncomingMessage } from "node:http";
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 
 interface EdgeOneRequest extends IncomingMessage {
   url: string;
@@ -15,5 +16,5 @@ interface EdgeOneRequest extends IncomingMessage {
 export default async function handle(req: EdgeOneRequest) {
   // Use srvx NodeRequest to convert Node.js request to Web Request
   const request = new NodeRequest({ req });
-  return nitroApp.fetch(request);
+  return fetchHandler(request);
 }

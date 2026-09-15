@@ -1,9 +1,10 @@
 import "#nitro/virtual/polyfills";
 import { useNitroApp } from "nitro/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 import { isPublicAssetURL } from "#nitro/virtual/public-assets";
 import type { ServerRequest } from "srvx";
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 
 // @ts-expect-error
 addEventListener("fetch", (event: FetchEvent) => {
@@ -18,7 +19,7 @@ addEventListener("fetch", (event: FetchEvent) => {
   req.runtime.serviceWorker ??= { event } as any;
   req.waitUntil = event.waitUntil.bind(event);
 
-  event.respondWith(nitroApp.fetch(req));
+  event.respondWith(fetchHandler(req));
 });
 
 declare const self: ServiceWorkerGlobalScope;

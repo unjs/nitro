@@ -1,4 +1,5 @@
-import type { ServerOptions } from "srvx";
+import type { ServerOptions, ServerPlugin, ServerRequest } from "srvx";
+import { serve as serveGeneric } from "srvx/generic";
 import { serverEntryOptions } from "#nitro/virtual/server-entry";
 import { tracingSrvxPlugins } from "#nitro/virtual/tracing";
 
@@ -34,4 +35,49 @@ export function resolveServeOptions(opts: ServerOptions): ServerOptions {
   }
 
   return resolved;
+}
+
+/**
+ * Apply server entry `middleware`, `plugins` and `error` options to the fetch handler of a preset
+ * that does not start a srvx server (serverless, edge and worker runtimes), using the srvx generic adapter.
+ *
+ * Listener options (`port`, `hostname`, `tls`, ...) and runtime specific options have no effect there.
+ */
+export function withServerEntryOptions<
+  T extends (req: ServerRequest) => Response | Promise<Response>,
+>(fetch: T): T {
+  const { middleware, plugins, error } = serverEntryOptions;
+  if (!middleware?.length && !plugins?.length && !error) {
+    return fetch;
+  }
+
+  // The generic adapter overrides `request.waitUntil` with its own (never awaited) implementation.
+  // Restore the one provided by the platform before server entry middleware runs.
+  const platformWaitUntil = new WeakMap<Request, ServerRequest["waitUntil"]>();
+  const restoreWaitUntil: ServerPlugin = (server) => {
+    server.options.middleware.unshift((req, next) => {
+      const waitUntil = platformWaitUntil.get(req);
+      if (waitUntil) {
+        Object.defineProperty(req, "waitUntil", {
+          value: waitUntil,
+          writable: true,
+          configurable: true,
+        });
+      }
+      return next();
+    });
+  };
+
+  const server = serveGeneric({
+    ...serverEntryOptions,
+    fetch,
+    plugins: [...(plugins || []), restoreWaitUntil],
+  });
+
+  return ((req: ServerRequest) => {
+    if (req.waitUntil) {
+      platformWaitUntil.set(req, req.waitUntil);
+    }
+    return server.fetch(req);
+  }) as T;
 }

@@ -7,6 +7,7 @@ import { createHandler, augmentReq } from "./_module-handler.ts";
 import { useNitroApp, useNitroHooks } from "nitro/app";
 import { isPublicAssetURL } from "#nitro/virtual/public-assets";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 
 const DURABLE_BINDING = "$DurableObject";
 const DURABLE_INSTANCE = "server";
@@ -16,7 +17,7 @@ interface Env {
   [DURABLE_BINDING]?: CF.DurableObjectNamespace;
 }
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 const nitroHooks = useNitroHooks();
 
 const getDurableStub = (env: Env) => {
@@ -78,7 +79,7 @@ export class $DurableObject extends DurableObject {
       return ws!.handleDurableUpgrade(this, request);
     }
 
-    return nitroApp.fetch(request);
+    return fetchHandler(request);
   }
 
   override alarm(): void | Promise<void> {

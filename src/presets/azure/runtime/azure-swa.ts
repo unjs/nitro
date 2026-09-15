@@ -1,11 +1,12 @@
 import "#nitro/virtual/polyfills";
 import { parseURL } from "ufo";
 import { useNitroApp } from "nitro/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 import { getAzureParsedCookiesFromHeaders, resolveBaseUrl } from "./_utils.ts";
 
 import type { HttpRequest, HttpResponse, HttpResponseSimple } from "@azure/functions";
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 
 export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
   let url: string;
@@ -27,7 +28,7 @@ export async function handle(context: { res: HttpResponse }, req: HttpRequest) {
     body: req.bufferBody ?? req.rawBody,
   });
 
-  const response = await nitroApp.fetch(request);
+  const response = await fetchHandler(request);
 
   // (v3 - current) https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v3#http-response
   // (v4) https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=typescript%2Cwindows%2Cazure-cli&pivots=nodejs-model-v4#http-response

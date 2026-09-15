@@ -10,6 +10,7 @@ export default defineServerEntry({
   },
   // Passed to srvx (node, bun and deno servers)
   maxRequestBodySize: 64 * 1024,
+  // Applied by all presets
   middleware: [
     (req, next) => {
       if (new URL(req.url).pathname === "/srvx-middleware") {

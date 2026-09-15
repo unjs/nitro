@@ -1,8 +1,9 @@
 import "#nitro/virtual/polyfills";
 import { useNitroApp } from "nitro/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 import type { ServerRequest } from "srvx";
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 
 const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
 
@@ -10,7 +11,7 @@ const handler = async (req: ServerRequest): Promise<Response> => {
   req.runtime ??= { name: "netlify" };
   req.ip ??= req.headers.get("x-nf-client-connection-ip") || undefined;
 
-  const response = await nitroApp.fetch(req);
+  const response = await fetchHandler(req);
 
   const isr = req.context?.routeRules?.isr;
   if (isr) {

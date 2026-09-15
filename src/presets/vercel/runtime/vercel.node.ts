@@ -5,6 +5,7 @@ import { toNodeHandler } from "srvx/node";
 import wsAdapter from "crossws/adapters/vercel";
 import { useNitroApp, getRouteRules } from "nitro/app";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 import { isrRouteRewrite } from "./isr.ts";
 
 interface VercelRequestContext {
@@ -17,7 +18,7 @@ interface VercelRequestContextReader {
 
 const REQUEST_CONTEXT_SYMBOL = Symbol.for("@vercel/request-context");
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 
 // The Node runtime has no per-request `context` argument, so the request
 // context (`waitUntil`, ...) is read from the global symbol the runtime
@@ -33,7 +34,7 @@ const handler = toNodeHandler((req: ServerRequest) => {
     req.waitUntil = context.waitUntil;
   }
 
-  return nitroApp.fetch(req);
+  return fetchHandler(req);
 });
 
 const ws = import.meta._websocket ? wsAdapter({ resolve: resolveWebsocketHooks }) : undefined;

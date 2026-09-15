@@ -2,11 +2,12 @@ import "#nitro/virtual/polyfills";
 import wsAdapter from "crossws/adapters/vercel";
 import { useNitroApp, getRouteRules } from "nitro/app";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
+import { withServerEntryOptions } from "#nitro/runtime/serve";
 
 import type { ServerRequest } from "srvx";
 import { isrRouteRewrite } from "./isr.ts";
 
-const nitroApp = useNitroApp();
+const fetchHandler = withServerEntryOptions(useNitroApp().fetch);
 
 const ws = import.meta._websocket ? wsAdapter({ resolve: resolveWebsocketHooks }) : undefined;
 
@@ -46,6 +47,6 @@ export default {
 
     req.waitUntil = context?.waitUntil;
 
-    return nitroApp.fetch(req);
+    return fetchHandler(req);
   },
 };
