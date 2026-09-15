@@ -257,7 +257,11 @@ export function testNitro(
 
   it("useNitroApp().fetch applies server entry middleware and plugins", async () => {
     const { data } = await callHandler({ url: "/api/app-fetch" });
-    expect(data).toEqual({ body: "server entry middleware works!", plugin: "works" });
+    expect(data).toEqual({
+      body: "server entry middleware works!",
+      plugin: "works",
+      pluginRuns: 1,
+    });
   });
 
   it.runIf(["bun", "deno-server", "nitro-dev"].includes(ctx.preset))(

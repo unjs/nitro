@@ -1,4 +1,5 @@
 import { defineServerEntry } from "nitro";
+import { srvxPluginRuns } from "./server/utils/srvx-plugin.ts";
 
 export default defineServerEntry({
   async fetch(req) {
@@ -21,10 +22,11 @@ export default defineServerEntry({
   ],
   plugins: [
     (server) => {
+      srvxPluginRuns.count++;
       server.options.middleware.unshift(async (req, next) => {
         const res = await next();
         if (new URL(req.url).pathname === "/srvx-middleware") {
-          res.headers.set("x-srvx-plugin", "works");
+          res.headers.append("x-srvx-plugin", "works");
         }
         return res;
       });

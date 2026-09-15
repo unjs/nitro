@@ -7,7 +7,7 @@ import { useNitroApp } from "nitro/app";
 import { startScheduleRunner } from "#nitro/runtime/task";
 import { trapUnhandledErrors } from "#nitro/runtime/error/hooks";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
-import { resolveServeOptions } from "#nitro/runtime/serve";
+import { appFetchPlugin, resolveServeOptions } from "#nitro/runtime/serve";
 import { setupCloseHooks } from "#nitro/runtime/shutdown";
 
 const nitroApp = useNitroApp();
@@ -28,6 +28,7 @@ if (import.meta._websocket) {
 const server = serve(
   resolveServeOptions({
     fetch: _fetch,
+    plugins: [appFetchPlugin(nitroApp)],
     ...(import.meta._websocket ? { bun: { websocket: ws!.websocket } } : {}),
   })
 );
