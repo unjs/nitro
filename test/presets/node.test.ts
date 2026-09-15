@@ -1,4 +1,6 @@
 import { existsSync } from "node:fs";
+import { execa } from "execa";
+import { getRandomPort, waitForPort } from "get-port-please";
 import { resolve } from "pathe";
 // import { isWindows } from "std-env";
 import { describe, expect, it } from "vitest";
@@ -46,6 +48,28 @@ describe("nitro:preset:node-middleware", async () => {
 
 describe("nitro:preset:node-server", async () => {
   const ctx = await setupTest("node-server");
+
+  it("passes server entry options to srvx", async () => {
+    const port = await getRandomPort();
+    const child = execa(process.execPath, [resolve(ctx.outDir, "server/index.mjs")], {
+      env: { NITRO_PORT: String(port), NITRO_HOST: "127.0.0.1" },
+      stdio: process.env.TEST_DEBUG ? "inherit" : "ignore",
+      reject: false,
+    });
+    try {
+      await waitForPort(port, { delay: 1000, retries: 20, host: "127.0.0.1" });
+      const res = await fetch(`http://127.0.0.1:${port}/srvx-middleware`);
+      expect(await res.text()).toBe("server entry middleware works!");
+      expect(res.headers.get("x-srvx-plugin")).toBe("works");
+      const large = await fetch(`http://127.0.0.1:${port}/api/body-size`, {
+        method: "POST",
+        body: "x".repeat(128 * 1024),
+      });
+      expect(large.status).toBe(413);
+    } finally {
+      child.kill("SIGKILL");
+    }
+  }, 40_000);
 
   testCloseHook(ctx, { command: process.execPath, args: (entry) => [entry] });
 });
