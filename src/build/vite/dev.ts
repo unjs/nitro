@@ -1,7 +1,7 @@
 import type { NitroPluginContext } from "./types.ts";
 import type { DevEnvironment, DevEnvironmentContext, ResolvedConfig, ViteDevServer } from "vite";
 import type { FetchFunctionOptions, FetchResult } from "vite/module-runner";
-import type { RunnerRPCHooks } from "env-runner";
+import type { RunnerRPCHooks, UpgradeContext } from "env-runner";
 
 import { IncomingMessage, ServerResponse } from "node:http";
 import { NodeRequest, sendNodeResponse } from "srvx/node";
@@ -10,7 +10,6 @@ import { basename, dirname, join, normalize } from "pathe";
 import { debounce } from "perfect-debounce";
 import { withBase, withoutBase } from "ufo";
 import { scanHandlers } from "../../scan.ts";
-import { getEnvRunner } from "./env.ts";
 import { onWatchError } from "../../utils/watch.ts";
 import { importVite } from "./_import.ts";
 
@@ -39,6 +38,7 @@ type NitroDevRequest = IncomingMessage & {
 
 export interface DevServer extends RunnerRPCHooks {
   fetch: FetchHandler;
+  upgrade?: (context: UpgradeContext) => void;
   init?: () => void | Promise<void>;
   close?: () => void | Promise<void>;
 }
@@ -185,7 +185,7 @@ export async function configureViteDevServer(ctx: NitroPluginContext, server: Vi
         // Vite HMR WebSocket connection
         return;
       }
-      getEnvRunner(ctx).upgrade?.({ node: { req, socket, head } });
+      nitroEnv.devServer.upgrade?.({ node: { req, socket, head } });
     });
   }
 
@@ -269,7 +269,7 @@ export async function configureViteDevServer(ctx: NitroPluginContext, server: Vi
       !nodeReq.url ||
       /^\/@(?:vite|fs|id)\//.test(withoutBase(nodeReq.url, viteBase)) ||
       nodeReq._nitroHandled ||
-      server.middlewares.stack.some((mw) => mw.route && nodeReq.url!.startsWith(mw.route))
+      server.middlewares.stack.some((mw) => matchesMiddlewareRoute(mw.route, nodeReq.url!))
     ) {
       return next();
     }
@@ -422,4 +422,20 @@ export async function configureViteDevServer(ctx: NitroPluginContext, server: Vi
   return () => {
     server.middlewares.use(nitroDevMiddleware);
   };
+}
+
+/**
+ * Whether a connect middleware mounted on `route` handles `url` (same matching as connect).
+ */
+export function matchesMiddlewareRoute(route: string | undefined, url: string): boolean {
+  route = route?.replace(/\/$/, "").toLowerCase();
+  if (!route) {
+    return false;
+  }
+  const path = url.replace(/[?#].*$/, "").toLowerCase();
+  if (!path.startsWith(route)) {
+    return false;
+  }
+  const boundary = path[route.length];
+  return !boundary || boundary === "/" || boundary === ".";
 }

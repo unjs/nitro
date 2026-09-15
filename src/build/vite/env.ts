@@ -52,7 +52,7 @@ export function createNitroEnvironment(ctx: NitroPluginContext): EnvironmentOpti
         const env = await createFetchableDevEnvironment(
           envName,
           envConfig,
-          getEnvRunner(ctx),
+          await initEnvRunner(ctx),
           entry,
           { preventExternalize: isWorkerdRunner }
         );
@@ -97,7 +97,7 @@ export function createServiceEnvironment(
         const entry = tryResolve(serviceConfig.entry);
         (ctx._viteEnvs ??= new Map()).set(envName, entry);
         const { createFetchableDevEnvironment } = await import("./dev.ts");
-        return createFetchableDevEnvironment(envName, envConfig, getEnvRunner(ctx), entry, {
+        return createFetchableDevEnvironment(envName, envConfig, await initEnvRunner(ctx), entry, {
           preventExternalize: isWorkerdRunner,
         });
       },
@@ -158,19 +158,12 @@ export async function initEnvRunner(ctx: NitroPluginContext) {
   return await ctx._initPromise;
 }
 
-export function getEnvRunner(ctx: NitroPluginContext) {
-  if (!ctx._envRunner) {
-    throw new Error("Env runner not initialized. Call initEnvRunner() first.");
-  }
-  return ctx._envRunner;
-}
-
 /**
  * Shut the dev runner down gracefully: the runtime `close` hooks run in the worker before the
  * runtime is terminated (#4586).
  */
 export async function closeEnvRunner(ctx: NitroPluginContext) {
-  const manager = ctx._envRunner;
+  const manager = ctx._envRunner || (await ctx._initPromise);
   if (!manager || ctx._closingEnvRunner) {
     return;
   }
