@@ -1,25 +1,11 @@
-import type { NitroApp } from "nitro/types";
-import type { Server, ServerHandler, ServerPlugin, ServerRequest } from "srvx";
+import type { Server, ServerHandler, ServerRequest } from "srvx";
 import { serverEntryOptions } from "#nitro/virtual/server-entry";
-
-/**
- * srvx plugin for presets starting a srvx server: points `nitroApp.fetch` to the server middleware
- * (including middleware added by plugins) around its fetch handler, so direct `nitroApp.fetch()` calls
- * get the same options without running plugins again.
- */
-export function appFetchPlugin(nitroApp: NitroApp): ServerPlugin {
-  return (server) => {
-    let handler: ServerHandler | undefined;
-    // Bun and Deno pass `error` to the native server, the Node.js adapter registers it as middleware.
-    nitroApp.fetch = (req) => (handler ??= composeFetch(server, server.runtime !== "node"))(req);
-  };
-}
 
 /**
  * Apply server entry `middleware`, `plugins` and `error` options to the Nitro app fetch handler.
  *
  * Plugins are called with a minimal server object (`runtime` and `options`) on first request.
- * Presets starting a srvx server replace it using {@link appFetchPlugin}.
+ * Presets starting a srvx server replace it (see `appFetchPlugin`).
  */
 export function withServerEntryOptions<
   T extends (req: ServerRequest) => Response | Promise<Response>,
@@ -51,7 +37,7 @@ function createGenericFetch(fetch: ServerHandler): ServerHandler {
   return composeFetch(server, true);
 }
 
-function composeFetch(server: Server, withError: boolean): ServerHandler {
+export function composeFetch(server: Server, withError: boolean): ServerHandler {
   const { middleware, error } = server.options;
   let handler = server.options.fetch;
   for (let i = middleware.length - 1; i >= 0; i--) {

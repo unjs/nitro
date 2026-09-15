@@ -1,8 +1,8 @@
-import type { ServerOptions } from "srvx";
+import type { ServerHandler, ServerOptions, ServerPlugin } from "srvx";
 import { serverEntryOptions } from "#nitro/virtual/server-entry";
 import { tracingSrvxPlugins } from "#nitro/virtual/tracing";
 import { useNitroApp } from "./app.ts";
-import { appFetchPlugin } from "./app-fetch.ts";
+import { composeFetch } from "./app-fetch.ts";
 
 /**
  * Resolve srvx `serve()` options for a server preset.
@@ -28,12 +28,7 @@ export function resolveServeOptions(opts: ServerOptions): ServerOptions {
     hostname: env.NITRO_HOST || env.HOST || hostname,
     tls: cert && key ? { cert, key } : tls,
     ...opts,
-    plugins: [
-      ...tracingSrvxPlugins,
-      ...(plugins || []),
-      ...(opts.plugins || []),
-      appFetchPlugin(useNitroApp()),
-    ],
+    plugins: [...tracingSrvxPlugins, ...(plugins || []), ...(opts.plugins || []), appFetchPlugin],
   };
 
   for (const runtime of ["node", "bun", "deno"] as const) {
@@ -44,3 +39,14 @@ export function resolveServeOptions(opts: ServerOptions): ServerOptions {
 
   return resolved;
 }
+
+/**
+ * srvx plugin for presets starting a srvx server: points `useNitroApp().fetch` to the server middleware
+ * (including middleware added by plugins) around its fetch handler, so direct calls get the same
+ * options without running plugins again.
+ */
+export const appFetchPlugin: ServerPlugin = (server) => {
+  let handler: ServerHandler | undefined;
+  // Bun and Deno pass `error` to the native server, the Node.js adapter registers it as middleware.
+  useNitroApp().fetch = (req) => (handler ??= composeFetch(server, server.runtime !== "node"))(req);
+};
