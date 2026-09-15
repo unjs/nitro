@@ -106,7 +106,7 @@ export default function app(nitro: Nitro) {
       }
 
       if (hasServerEntry) {
-        imports.push(`import { withServerEntryOptions } from "#nitro/runtime/serve";`);
+        imports.push(`import { withServerEntryOptions } from "#nitro/runtime/app-fetch";`);
       }
 
       code.push(

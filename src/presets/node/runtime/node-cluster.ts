@@ -7,7 +7,7 @@ import { useNitroApp } from "nitro/app";
 import { startScheduleRunner } from "#nitro/runtime/task";
 import { trapUnhandledErrors } from "#nitro/runtime/error/hooks";
 import { resolveWebsocketHooks } from "#nitro/runtime/app";
-import { appFetchPlugin, resolveServeOptions } from "#nitro/runtime/serve";
+import { resolveServeOptions } from "#nitro/runtime/serve";
 import { setupCloseHooks } from "#nitro/runtime/shutdown";
 
 const clusterId = cluster.isWorker && process.env.WORKER_ID;
@@ -20,7 +20,6 @@ const nitroApp = useNitroApp();
 const server = serve(
   resolveServeOptions({
     fetch: nitroApp["~fetch"],
-    plugins: [appFetchPlugin(nitroApp)],
     node: { exclusive: false },
     ...(clusterId && clusterId !== "1" ? { silent: true } : {}),
   })
